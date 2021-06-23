@@ -1,0 +1,75 @@
+
+/*******************************************************************************
+** exvr-designer                                                              **
+** No license (to be defined)                                                 **
+** Copyright (c) [2018] [Florian Lance][EPFL-LNCO]                            **
+********************************************************************************/
+
+#pragma once
+
+// Qt
+#include <QDesktopServices>
+#include <QDirIterator>
+#include <QDir>
+#include <QListWidget>
+
+// local
+#include "config_pw.hpp"
+#include "path_utility.hpp"
+#include "ex_line_edit_w.hpp"
+
+namespace tool::ex {
+
+class CSharpScriptInitConfigParametersW : public ConfigParametersW{
+
+public :
+
+    ExLineEditW m_className;
+    ExParametersGeneratorWidgetW m_generator;
+
+    void insert_widgets() override{
+
+        auto l1 = ui::L::HB();
+        m_layout->addWidget(ui::F::gen(l1, {ui::W::txt("Component class to load:"),m_className()},  LStretch{true},LMargins{true}, QFrame::Box));
+        l1->setStretch(0,1);
+        l1->setStretch(1,10);
+        l1->setStretch(2,1);
+
+        m_layout->addWidget(ui::F::gen(ui::L::HB(), {m_generator()},  LStretch{false},LMargins{false}, QFrame::Box));
+        m_layout->setStretch(0,1);
+        m_layout->setStretch(1,50);
+    }
+
+    void init_and_register_widgets() override{
+        m_generatorsUiElements["generator"]         = m_generator.init_widget(&m_inputUiElements, "generator");
+        m_inputUiElements["component_class_name"]   = m_className.init_widget("TemplateComponent");
+    }
+
+    void create_connections() override{
+    }
+
+    void late_update_ui() override{}
+};
+
+class CSharpScriptConfigParametersW : public ConfigParametersW{
+
+public :
+
+    ExParametersGeneratorWidgetW m_generator;
+
+
+    void insert_widgets() override{
+        m_layout->addWidget(ui::F::gen(ui::L::HB(), {m_generator()},  LStretch{false},LMargins{false}, QFrame::Box));
+        m_layout->setStretch(0,10);
+    }
+
+    void init_and_register_widgets() override{
+        m_generatorsUiElements["generator"] = m_generator.init_widget(&m_inputUiElements, "generator");
+    }
+
+
+    void create_connections() override{}
+    void late_update_ui() override{}
+};
+
+}

@@ -1,0 +1,49 @@
+
+/*******************************************************************************
+** exvr-designer                                                              **
+** No license (to be defined)                                                 **
+** Copyright (c) [2018] [Florian Lance][EPFL-LNCO]                            **
+********************************************************************************/
+
+#pragma once
+
+// local
+#include "config_pw.hpp"
+#include "path_utility.hpp"
+
+namespace tool::ex {
+
+class UdpReaderInitConfigParametersW : public ConfigParametersW{
+
+public :
+
+    ExSpinBoxW m_sbReadingPort;
+    ExLineEditW m_leReadingIpAdress;
+
+    void insert_widgets() override{
+        add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Reading port:"), m_sbReadingPort()}, LStretch{true}, LMargins{false}));
+        add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Reading IP adress (or hostname):"), m_leReadingIpAdress()}, LStretch{true}, LMargins{false}));
+    }
+
+    void init_and_register_widgets() override{
+        m_inputUiElements["reading_port"]       = m_sbReadingPort.init_widget( MinV<int>{0}, V<int>{8060}, MaxV<int>{100000}, StepV<int>{1});
+        m_inputUiElements["reading_address"]  = m_leReadingIpAdress.init_widget("127.0.0.1");
+    }
+
+
+    void create_connections() override{}
+    void late_update_ui() override{}
+};
+
+
+class UdpReaderConfigParametersW : public ConfigParametersW{
+
+public :
+
+    void insert_widgets() override{}
+    void init_and_register_widgets() override{}
+    void create_connections() override{}
+    void late_update_ui() override{}
+};
+
+}

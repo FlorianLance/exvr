@@ -1,0 +1,39 @@
+
+
+/*******************************************************************************
+** exvr-designer                                                              **
+** No license (to be defined)                                                 **
+** Copyright (c) [2018] [Florian Lance][EPFL-LNCO]                            **
+********************************************************************************/
+
+#include "plot_resource_pw.hpp"
+
+
+using namespace tool::ex;
+
+
+void PlotResourceConfigParametersW::insert_widgets(){
+    layout()->setContentsMargins(0,0,0,0);
+    add_widget(ui::F::gen(ui::L::HB(), {m_plot()}, LStretch{false}, LMargins{true}, QFrame::Box));
+
+    add_widget(ui::F::gen(ui::L::VB(), {m_randomSelection(), m_plotsList()}, LStretch{false}, LMargins{true}, QFrame::Box));
+}
+
+void PlotResourceConfigParametersW::init_and_register_widgets(){
+    m_inputUiElements["plot"] = m_plot.init_widget(Resource::Type::Plot, "Selected plot resource: ");
+    m_inputUiElements["random"] = m_randomSelection.init_widget("Random resource selection from list: ", false);
+    m_inputUiElements["plots_list"] = m_plotsList.init_widget(Resource::Type::Plot, "Plots list");
+
+}
+
+void PlotResourceConfigParametersW::create_connections(){
+    connect(m_randomSelection(), &QCheckBox::clicked, this, [&]{
+        m_plot.w->setEnabled(!m_randomSelection.w->isChecked());
+        m_plotsList.w->setEnabled(m_randomSelection.w->isChecked());
+    });
+}
+
+void PlotResourceConfigParametersW::late_update_ui(){
+    m_plot.w->setEnabled(!m_randomSelection.w->isChecked());
+    m_plotsList.w->setEnabled(m_randomSelection.w->isChecked());
+}

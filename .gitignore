@@ -1,32 +1,60 @@
-# Prerequisites
-*.d
+## cpp
+cpp/*.pro.user*
 
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
+## bin
+cpp/bin/**/*.exe
+cpp/bin/**/*.lib
+cpp/bin/**/export/*.dll
+cpp/bin/**/designer/exp-launcher/**/*.dll
+cpp/bin/**/designer/exp-launcher/**/*.pdb
+cpp/bin/**/designer/exp-launcher/**/*.py
+cpp/bin/**/designer/exp-launcher/**/*.exe.config
+cpp/bin/**/designer/exp-launcher/**/*.xsd
+cpp/bin/**/designer/exp-launcher/**/*.config
+cpp/bin/**/designer/exp-launcher/**/*.config
+cpp/bin/**/designer/exp-launcher/**/*.targets
+cpp/bin/**/designer/exp-launcher/**/*.psb
+cpp/bin/**/designer/exp-launcher/**/*.json
+cpp/bin/**/designer/exp-launcher/**/*.psb
+cpp/bin/**/designer/exp-launcher/**/*.xml
+cpp/bin/**/designer/exp-launcher/**/*.tasks
+cpp/bin/**/designer/exp-launcher/**/*.rsp
+cpp/bin/**/designer/exp-launcher/**/*.resS
+cpp/bin/**/designer/exp-launcher/**/*.resource
+cpp/bin/**/designer/exp-launcher/**/*.mdb
+cpp/bin/**/designer/exp-launcher/**/*.info
+cpp/bin/**/designer/exp-launcher/**/*.bat
+cpp/bin/**/designer/exp-launcher/**/*.browser
+cpp/bin/**/designer/exp-launcher/**/*.aspx
 
-# Precompiled Headers
-*.gch
-*.pch
+## temp
+cpp/temp/**/*.obj
+cpp/temp/**/*.cpp
+cpp/temp/**/*.h
+cpp/temp/**/*.hpp
 
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
+## qmake
+cpp/qmake/**/*.pch
+cpp/qmake/**/*.obj
+cpp/qmake/**/.qmake.stash
+cpp/qmake/**/MakeFile
+cpp/qmake/**/MakeFile.Debug
+cpp/qmake/**/MakeFile.Release
 
-# Fortran module files
-*.mod
-*.smod
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
-
-# Executables
-*.exe
-*.out
-*.app
+## thirdparty
+cpp/thirdparty/**/*.sh
+cpp/thirdparty/**/*.re
+cpp/thirdparty/**/*.txt
+cpp/thirdparty/**/*.dtd
+cpp/thirdparty/**/*.pl
+cpp/thirdparty/**/*.m4
+cpp/thirdparty/**/*.ilk
+cpp/thirdparty/**/*.inc
+cpp/thirdparty/**/*.db
+cpp/thirdparty/**/*.shm
+cpp/thirdparty/**/*.erb
+cpp/thirdparty/**/*.wal
+cpp/thirdparty/**/*.bat
+cpp/thirdparty/**/*.patch
+cpp/thirdparty/**/*.exe
+cpp/thirdparty/**/.editorconfig

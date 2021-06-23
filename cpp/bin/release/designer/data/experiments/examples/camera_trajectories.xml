@@ -1,0 +1,1339 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Experiment name="camera_trajectories" version="0.99z46" mode="designer" designer-used="E:/DEV/EPFL/exvr/build/bin/release/designer/ExVR.exe">
+    <Settings debug="1" csharp_debug_info="0" catch_components_exceptions="0" positional_tracking="1" catch_external_keyboard_events="0">
+        <Display mode="1" stereo_fov="60" fullscreen="0" monitor_id="1" resolution_id="2" custom_width="1920" custom_height="1080"/>
+        <Camera neutral_x="0" neutral_y="1" neutral_z="0"/>
+    </Settings>
+    <Resources reload="200">
+        <Resource key="1" type="UnityAssetBundle" alias="lab-room" path="../../../../../../../unity/assetsbundles/lab-room.unity3d"/>
+    </Resources>
+    <Components>
+        <Component key="0" name="Room" type="AssetBundle">
+            <InitConfig key="0" name="standard">
+                <Arg key="0" name="asset_bundle" ui="Resource" value="lab-room%%%1" type="System.String" dim="1" sep="%%%" sizes="2"/>
+                <Arg key="1" name="name_sub_object" ui="Line text editor" value="" type="System.String" dim="0"/>
+            </InitConfig>
+            <Configs>
+                <Config key="1" name="standard">
+                    <Arg key="2" name="transform" ui="Transformation" value="0 0 0 0 0 0 1 1 1" type="System.Single" dim="1" sep=" " sizes="9"/>
+                </Config>
+            </Configs>
+        </Component>
+        <Component key="1" name="Camera target" type="CameraTarget">
+            <InitConfig key="2" name="standard"/>
+            <Configs>
+                <Config key="3" name="mt1">
+                    <Arg key="20" name="do_nothing" ui="Radio buttons" value="false" type="System.Boolean" dim="0"/>
+                    <Arg key="12" name="duration" ui="Float spin box" value="2" type="System.Single" dim="0"/>
+                    <Arg key="19" name="move_back" ui="Radio buttons" value="false" type="System.Boolean" dim="0"/>
+                    <Arg key="18" name="move_to_target" ui="Radio buttons" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="14" name="nb_inter_pos" ui="Integer spin box" value="100" type="System.Int32" dim="0"/>
+                    <Arg key="15" name="pitch" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="17" name="roll" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="34" name="speed_curve" ui="Curve" value="0 0 1 1" type="System.Single" dim="1" sep=" " sizes="4"/>
+                    <Arg key="13" name="spherical_linear_interpolation" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="23" name="target_component" ui="Line text editor" value="1" type="System.String" dim="0"/>
+                    <Arg key="24" name="target_pos" ui="Vector 3D" value="0 0 0" type="System.Single" dim="1" sep=" " sizes="3"/>
+                    <Arg key="28" name="target_rot" ui="Vector 3D" value="0 0 0" type="System.Single" dim="1" sep=" " sizes="3"/>
+                    <Arg key="22" name="use_eye" ui="Radio buttons" value="false" type="System.Boolean" dim="0"/>
+                    <Arg key="33" name="use_factor" ui="Radio buttons" value="false" type="System.Boolean" dim="0"/>
+                    <Arg key="21" name="use_neutral" ui="Radio buttons" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="32" name="use_time" ui="Radio buttons" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="16" name="yaw" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                </Config>
+                <Config key="14" name="mt2">
+                    <Arg key="52" name="do_nothing" ui="Radio buttons" value="false" type="System.Boolean" dim="0"/>
+                    <Arg key="44" name="duration" ui="Float spin box" value="2" type="System.Single" dim="0"/>
+                    <Arg key="51" name="move_back" ui="Radio buttons" value="false" type="System.Boolean" dim="0"/>
+                    <Arg key="50" name="move_to_target" ui="Radio buttons" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="46" name="nb_inter_pos" ui="Integer spin box" value="100" type="System.Int32" dim="0"/>
+                    <Arg key="47" name="pitch" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="49" name="roll" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="66" name="speed_curve" ui="Curve" value="0 0 1 1" type="System.Single" dim="1" sep=" " sizes="4"/>
+                    <Arg key="45" name="spherical_linear_interpolation" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="55" name="target_component" ui="Line text editor" value="2" type="System.String" dim="0"/>
+                    <Arg key="56" name="target_pos" ui="Vector 3D" value="0 0 0" type="System.Single" dim="1" sep=" " sizes="3"/>
+                    <Arg key="60" name="target_rot" ui="Vector 3D" value="0 0 0" type="System.Single" dim="1" sep=" " sizes="3"/>
+                    <Arg key="54" name="use_eye" ui="Radio buttons" value="false" type="System.Boolean" dim="0"/>
+                    <Arg key="65" name="use_factor" ui="Radio buttons" value="false" type="System.Boolean" dim="0"/>
+                    <Arg key="53" name="use_neutral" ui="Radio buttons" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="64" name="use_time" ui="Radio buttons" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="48" name="yaw" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                </Config>
+                <Config key="15" name="mt3">
+                    <Arg key="84" name="do_nothing" ui="Radio buttons" value="false" type="System.Boolean" dim="0"/>
+                    <Arg key="76" name="duration" ui="Float spin box" value="2" type="System.Single" dim="0"/>
+                    <Arg key="83" name="move_back" ui="Radio buttons" value="false" type="System.Boolean" dim="0"/>
+                    <Arg key="82" name="move_to_target" ui="Radio buttons" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="78" name="nb_inter_pos" ui="Integer spin box" value="100" type="System.Int32" dim="0"/>
+                    <Arg key="79" name="pitch" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="81" name="roll" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="98" name="speed_curve" ui="Curve" value="0 0 1 1" type="System.Single" dim="1" sep=" " sizes="4"/>
+                    <Arg key="77" name="spherical_linear_interpolation" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="87" name="target_component" ui="Line text editor" value="3" type="System.String" dim="0"/>
+                    <Arg key="88" name="target_pos" ui="Vector 3D" value="0 0 0" type="System.Single" dim="1" sep=" " sizes="3"/>
+                    <Arg key="92" name="target_rot" ui="Vector 3D" value="0 0 0" type="System.Single" dim="1" sep=" " sizes="3"/>
+                    <Arg key="86" name="use_eye" ui="Radio buttons" value="false" type="System.Boolean" dim="0"/>
+                    <Arg key="97" name="use_factor" ui="Radio buttons" value="false" type="System.Boolean" dim="0"/>
+                    <Arg key="85" name="use_neutral" ui="Radio buttons" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="96" name="use_time" ui="Radio buttons" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="80" name="yaw" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                </Config>
+                <Config key="16" name="mt4">
+                    <Arg key="116" name="do_nothing" ui="Radio buttons" value="false" type="System.Boolean" dim="0"/>
+                    <Arg key="108" name="duration" ui="Float spin box" value="2" type="System.Single" dim="0"/>
+                    <Arg key="115" name="move_back" ui="Radio buttons" value="false" type="System.Boolean" dim="0"/>
+                    <Arg key="114" name="move_to_target" ui="Radio buttons" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="110" name="nb_inter_pos" ui="Integer spin box" value="100" type="System.Int32" dim="0"/>
+                    <Arg key="111" name="pitch" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="113" name="roll" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="130" name="speed_curve" ui="Curve" value="0 0 1 1" type="System.Single" dim="1" sep=" " sizes="4"/>
+                    <Arg key="109" name="spherical_linear_interpolation" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="119" name="target_component" ui="Line text editor" value="4" type="System.String" dim="0"/>
+                    <Arg key="120" name="target_pos" ui="Vector 3D" value="0 0 0" type="System.Single" dim="1" sep=" " sizes="3"/>
+                    <Arg key="124" name="target_rot" ui="Vector 3D" value="0 0 0" type="System.Single" dim="1" sep=" " sizes="3"/>
+                    <Arg key="118" name="use_eye" ui="Radio buttons" value="false" type="System.Boolean" dim="0"/>
+                    <Arg key="129" name="use_factor" ui="Radio buttons" value="false" type="System.Boolean" dim="0"/>
+                    <Arg key="117" name="use_neutral" ui="Radio buttons" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="128" name="use_time" ui="Radio buttons" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="112" name="yaw" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                </Config>
+                <Config key="17" name="t1">
+                    <Arg key="148" name="do_nothing" ui="Radio buttons" value="false" type="System.Boolean" dim="0"/>
+                    <Arg key="140" name="duration" ui="Float spin box" value="0" type="System.Single" dim="0"/>
+                    <Arg key="147" name="move_back" ui="Radio buttons" value="false" type="System.Boolean" dim="0"/>
+                    <Arg key="146" name="move_to_target" ui="Radio buttons" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="142" name="nb_inter_pos" ui="Integer spin box" value="1" type="System.Int32" dim="0"/>
+                    <Arg key="143" name="pitch" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="145" name="roll" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="162" name="speed_curve" ui="Curve" value="0 0 1 1" type="System.Single" dim="1" sep=" " sizes="4"/>
+                    <Arg key="141" name="spherical_linear_interpolation" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="151" name="target_component" ui="Line text editor" value="1" type="System.String" dim="0"/>
+                    <Arg key="152" name="target_pos" ui="Vector 3D" value="0 0 0" type="System.Single" dim="1" sep=" " sizes="3"/>
+                    <Arg key="156" name="target_rot" ui="Vector 3D" value="0 0 0" type="System.Single" dim="1" sep=" " sizes="3"/>
+                    <Arg key="150" name="use_eye" ui="Radio buttons" value="false" type="System.Boolean" dim="0"/>
+                    <Arg key="161" name="use_factor" ui="Radio buttons" value="false" type="System.Boolean" dim="0"/>
+                    <Arg key="149" name="use_neutral" ui="Radio buttons" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="160" name="use_time" ui="Radio buttons" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="144" name="yaw" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                </Config>
+                <Config key="20" name="t4">
+                    <Arg key="180" name="do_nothing" ui="Radio buttons" value="false" type="System.Boolean" dim="0"/>
+                    <Arg key="172" name="duration" ui="Float spin box" value="0" type="System.Single" dim="0"/>
+                    <Arg key="179" name="move_back" ui="Radio buttons" value="false" type="System.Boolean" dim="0"/>
+                    <Arg key="178" name="move_to_target" ui="Radio buttons" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="174" name="nb_inter_pos" ui="Integer spin box" value="1" type="System.Int32" dim="0"/>
+                    <Arg key="175" name="pitch" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="177" name="roll" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="194" name="speed_curve" ui="Curve" value="0 0 1 1" type="System.Single" dim="1" sep=" " sizes="4"/>
+                    <Arg key="173" name="spherical_linear_interpolation" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="183" name="target_component" ui="Line text editor" value="4" type="System.String" dim="0"/>
+                    <Arg key="184" name="target_pos" ui="Vector 3D" value="0 0 0" type="System.Single" dim="1" sep=" " sizes="3"/>
+                    <Arg key="188" name="target_rot" ui="Vector 3D" value="0 0 0" type="System.Single" dim="1" sep=" " sizes="3"/>
+                    <Arg key="182" name="use_eye" ui="Radio buttons" value="false" type="System.Boolean" dim="0"/>
+                    <Arg key="193" name="use_factor" ui="Radio buttons" value="false" type="System.Boolean" dim="0"/>
+                    <Arg key="181" name="use_neutral" ui="Radio buttons" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="192" name="use_time" ui="Radio buttons" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="176" name="yaw" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                </Config>
+                <Config key="18" name="t2">
+                    <Arg key="212" name="do_nothing" ui="Radio buttons" value="false" type="System.Boolean" dim="0"/>
+                    <Arg key="204" name="duration" ui="Float spin box" value="0" type="System.Single" dim="0"/>
+                    <Arg key="211" name="move_back" ui="Radio buttons" value="false" type="System.Boolean" dim="0"/>
+                    <Arg key="210" name="move_to_target" ui="Radio buttons" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="206" name="nb_inter_pos" ui="Integer spin box" value="1" type="System.Int32" dim="0"/>
+                    <Arg key="207" name="pitch" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="209" name="roll" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="226" name="speed_curve" ui="Curve" value="0 0 1 1" type="System.Single" dim="1" sep=" " sizes="4"/>
+                    <Arg key="205" name="spherical_linear_interpolation" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="215" name="target_component" ui="Line text editor" value="2" type="System.String" dim="0"/>
+                    <Arg key="216" name="target_pos" ui="Vector 3D" value="0 0 0" type="System.Single" dim="1" sep=" " sizes="3"/>
+                    <Arg key="220" name="target_rot" ui="Vector 3D" value="0 0 0" type="System.Single" dim="1" sep=" " sizes="3"/>
+                    <Arg key="214" name="use_eye" ui="Radio buttons" value="false" type="System.Boolean" dim="0"/>
+                    <Arg key="225" name="use_factor" ui="Radio buttons" value="false" type="System.Boolean" dim="0"/>
+                    <Arg key="213" name="use_neutral" ui="Radio buttons" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="224" name="use_time" ui="Radio buttons" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="208" name="yaw" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                </Config>
+                <Config key="19" name="t3">
+                    <Arg key="244" name="do_nothing" ui="Radio buttons" value="false" type="System.Boolean" dim="0"/>
+                    <Arg key="236" name="duration" ui="Float spin box" value="0" type="System.Single" dim="0"/>
+                    <Arg key="243" name="move_back" ui="Radio buttons" value="false" type="System.Boolean" dim="0"/>
+                    <Arg key="242" name="move_to_target" ui="Radio buttons" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="238" name="nb_inter_pos" ui="Integer spin box" value="1" type="System.Int32" dim="0"/>
+                    <Arg key="239" name="pitch" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="241" name="roll" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="258" name="speed_curve" ui="Curve" value="0 0 1 1" type="System.Single" dim="1" sep=" " sizes="4"/>
+                    <Arg key="237" name="spherical_linear_interpolation" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="247" name="target_component" ui="Line text editor" value="3" type="System.String" dim="0"/>
+                    <Arg key="248" name="target_pos" ui="Vector 3D" value="0 0 0" type="System.Single" dim="1" sep=" " sizes="3"/>
+                    <Arg key="252" name="target_rot" ui="Vector 3D" value="0 0 0" type="System.Single" dim="1" sep=" " sizes="3"/>
+                    <Arg key="246" name="use_eye" ui="Radio buttons" value="false" type="System.Boolean" dim="0"/>
+                    <Arg key="257" name="use_factor" ui="Radio buttons" value="false" type="System.Boolean" dim="0"/>
+                    <Arg key="245" name="use_neutral" ui="Radio buttons" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="256" name="use_time" ui="Radio buttons" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="240" name="yaw" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                </Config>
+                <Config key="23" name="mf1">
+                    <Arg key="276" name="do_nothing" ui="Radio buttons" value="false" type="System.Boolean" dim="0"/>
+                    <Arg key="268" name="duration" ui="Float spin box" value="2" type="System.Single" dim="0"/>
+                    <Arg key="275" name="move_back" ui="Radio buttons" value="false" type="System.Boolean" dim="0"/>
+                    <Arg key="274" name="move_to_target" ui="Radio buttons" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="270" name="nb_inter_pos" ui="Integer spin box" value="100" type="System.Int32" dim="0"/>
+                    <Arg key="271" name="pitch" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="273" name="roll" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="290" name="speed_curve" ui="Curve" value="0 0 1 1" type="System.Single" dim="1" sep=" " sizes="4"/>
+                    <Arg key="269" name="spherical_linear_interpolation" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="279" name="target_component" ui="Line text editor" value="1" type="System.String" dim="0"/>
+                    <Arg key="280" name="target_pos" ui="Vector 3D" value="0 0 0" type="System.Single" dim="1" sep=" " sizes="3"/>
+                    <Arg key="284" name="target_rot" ui="Vector 3D" value="0 0 0" type="System.Single" dim="1" sep=" " sizes="3"/>
+                    <Arg key="278" name="use_eye" ui="Radio buttons" value="false" type="System.Boolean" dim="0"/>
+                    <Arg key="289" name="use_factor" ui="Radio buttons" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="277" name="use_neutral" ui="Radio buttons" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="288" name="use_time" ui="Radio buttons" value="false" type="System.Boolean" dim="0"/>
+                    <Arg key="272" name="yaw" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                </Config>
+                <Config key="24" name="mf2">
+                    <Arg key="308" name="do_nothing" ui="Radio buttons" value="false" type="System.Boolean" dim="0"/>
+                    <Arg key="300" name="duration" ui="Float spin box" value="2" type="System.Single" dim="0"/>
+                    <Arg key="307" name="move_back" ui="Radio buttons" value="false" type="System.Boolean" dim="0"/>
+                    <Arg key="306" name="move_to_target" ui="Radio buttons" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="302" name="nb_inter_pos" ui="Integer spin box" value="100" type="System.Int32" dim="0"/>
+                    <Arg key="303" name="pitch" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="305" name="roll" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="322" name="speed_curve" ui="Curve" value="0 0 1 1" type="System.Single" dim="1" sep=" " sizes="4"/>
+                    <Arg key="301" name="spherical_linear_interpolation" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="311" name="target_component" ui="Line text editor" value="2" type="System.String" dim="0"/>
+                    <Arg key="312" name="target_pos" ui="Vector 3D" value="0 0 0" type="System.Single" dim="1" sep=" " sizes="3"/>
+                    <Arg key="316" name="target_rot" ui="Vector 3D" value="0 0 0" type="System.Single" dim="1" sep=" " sizes="3"/>
+                    <Arg key="310" name="use_eye" ui="Radio buttons" value="false" type="System.Boolean" dim="0"/>
+                    <Arg key="321" name="use_factor" ui="Radio buttons" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="309" name="use_neutral" ui="Radio buttons" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="320" name="use_time" ui="Radio buttons" value="false" type="System.Boolean" dim="0"/>
+                    <Arg key="304" name="yaw" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                </Config>
+                <Config key="25" name="mf3">
+                    <Arg key="340" name="do_nothing" ui="Radio buttons" value="false" type="System.Boolean" dim="0"/>
+                    <Arg key="332" name="duration" ui="Float spin box" value="2" type="System.Single" dim="0"/>
+                    <Arg key="339" name="move_back" ui="Radio buttons" value="false" type="System.Boolean" dim="0"/>
+                    <Arg key="338" name="move_to_target" ui="Radio buttons" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="334" name="nb_inter_pos" ui="Integer spin box" value="100" type="System.Int32" dim="0"/>
+                    <Arg key="335" name="pitch" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="337" name="roll" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="354" name="speed_curve" ui="Curve" value="0 0 1 1" type="System.Single" dim="1" sep=" " sizes="4"/>
+                    <Arg key="333" name="spherical_linear_interpolation" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="343" name="target_component" ui="Line text editor" value="3" type="System.String" dim="0"/>
+                    <Arg key="344" name="target_pos" ui="Vector 3D" value="0 0 0" type="System.Single" dim="1" sep=" " sizes="3"/>
+                    <Arg key="348" name="target_rot" ui="Vector 3D" value="0 0 0" type="System.Single" dim="1" sep=" " sizes="3"/>
+                    <Arg key="342" name="use_eye" ui="Radio buttons" value="false" type="System.Boolean" dim="0"/>
+                    <Arg key="353" name="use_factor" ui="Radio buttons" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="341" name="use_neutral" ui="Radio buttons" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="352" name="use_time" ui="Radio buttons" value="false" type="System.Boolean" dim="0"/>
+                    <Arg key="336" name="yaw" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                </Config>
+                <Config key="26" name="mf4">
+                    <Arg key="372" name="do_nothing" ui="Radio buttons" value="false" type="System.Boolean" dim="0"/>
+                    <Arg key="364" name="duration" ui="Float spin box" value="2" type="System.Single" dim="0"/>
+                    <Arg key="371" name="move_back" ui="Radio buttons" value="false" type="System.Boolean" dim="0"/>
+                    <Arg key="370" name="move_to_target" ui="Radio buttons" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="366" name="nb_inter_pos" ui="Integer spin box" value="100" type="System.Int32" dim="0"/>
+                    <Arg key="367" name="pitch" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="369" name="roll" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="386" name="speed_curve" ui="Curve" value="0 0 1 1" type="System.Single" dim="1" sep=" " sizes="4"/>
+                    <Arg key="365" name="spherical_linear_interpolation" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="375" name="target_component" ui="Line text editor" value="4" type="System.String" dim="0"/>
+                    <Arg key="376" name="target_pos" ui="Vector 3D" value="0 0 0" type="System.Single" dim="1" sep=" " sizes="3"/>
+                    <Arg key="380" name="target_rot" ui="Vector 3D" value="0 0 0" type="System.Single" dim="1" sep=" " sizes="3"/>
+                    <Arg key="374" name="use_eye" ui="Radio buttons" value="false" type="System.Boolean" dim="0"/>
+                    <Arg key="385" name="use_factor" ui="Radio buttons" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="373" name="use_neutral" ui="Radio buttons" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="384" name="use_time" ui="Radio buttons" value="false" type="System.Boolean" dim="0"/>
+                    <Arg key="368" name="yaw" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                </Config>
+            </Configs>
+        </Component>
+        <Component key="2" name="1" type="Cube">
+            <InitConfig key="4" name="standard">
+                <Arg key="396" name="size" ui="Float spin box" value="1" type="System.Single" dim="0"/>
+                <Arg key="397" name="transparent" ui="Check box" value="false" type="System.Boolean" dim="0"/>
+            </InitConfig>
+            <Configs>
+                <Config key="5" name="standard">
+                    <Arg key="408" name="color" ui="Color pick" value="1 0.627451 0.627451 0.643137" type="System.Single" dim="1" sep=" " sizes="4"/>
+                    <Arg key="409" name="metallic" ui="Float spin box" value="0" type="System.Single" dim="0"/>
+                    <Arg key="410" name="smoothness" ui="Float spin box" value="0" type="System.Single" dim="0"/>
+                    <Arg key="398" name="transform" ui="Transformation" value="0 1 1 90 90 0 0.05 0.05 0.05" type="System.Single" dim="1" sep=" " sizes="9"/>
+                </Config>
+            </Configs>
+        </Component>
+        <Component key="3" name="2" type="Cube">
+            <InitConfig key="6" name="standard">
+                <Arg key="411" name="size" ui="Float spin box" value="1" type="System.Single" dim="0"/>
+                <Arg key="412" name="transparent" ui="Check box" value="false" type="System.Boolean" dim="0"/>
+            </InitConfig>
+            <Configs>
+                <Config key="7" name="standard">
+                    <Arg key="423" name="color" ui="Color pick" value="1 1 0.737255 0.215686" type="System.Single" dim="1" sep=" " sizes="4"/>
+                    <Arg key="424" name="metallic" ui="Float spin box" value="0" type="System.Single" dim="0"/>
+                    <Arg key="425" name="smoothness" ui="Float spin box" value="0" type="System.Single" dim="0"/>
+                    <Arg key="413" name="transform" ui="Transformation" value="-1 1 0 0 0 90 0.05 0.05 0.05" type="System.Single" dim="1" sep=" " sizes="9"/>
+                </Config>
+            </Configs>
+        </Component>
+        <Component key="4" name="3" type="Cube">
+            <InitConfig key="8" name="standard">
+                <Arg key="426" name="size" ui="Float spin box" value="1" type="System.Single" dim="0"/>
+                <Arg key="427" name="transparent" ui="Check box" value="false" type="System.Boolean" dim="0"/>
+            </InitConfig>
+            <Configs>
+                <Config key="9" name="standard">
+                    <Arg key="438" name="color" ui="Color pick" value="1 0 0.243137 0.639216" type="System.Single" dim="1" sep=" " sizes="4"/>
+                    <Arg key="439" name="metallic" ui="Float spin box" value="0" type="System.Single" dim="0"/>
+                    <Arg key="440" name="smoothness" ui="Float spin box" value="0" type="System.Single" dim="0"/>
+                    <Arg key="428" name="transform" ui="Transformation" value="1 1 0 0 90 0 0.05 0.05 0.05" type="System.Single" dim="1" sep=" " sizes="9"/>
+                </Config>
+            </Configs>
+        </Component>
+        <Component key="5" name="4" type="Cube">
+            <InitConfig key="10" name="standard">
+                <Arg key="441" name="size" ui="Float spin box" value="1" type="System.Single" dim="0"/>
+                <Arg key="442" name="transparent" ui="Check box" value="false" type="System.Boolean" dim="0"/>
+            </InitConfig>
+            <Configs>
+                <Config key="11" name="standard">
+                    <Arg key="453" name="color" ui="Color pick" value="1 0.639216 0 0" type="System.Single" dim="1" sep=" " sizes="4"/>
+                    <Arg key="454" name="metallic" ui="Float spin box" value="0" type="System.Single" dim="0"/>
+                    <Arg key="455" name="smoothness" ui="Float spin box" value="0" type="System.Single" dim="0"/>
+                    <Arg key="443" name="transform" ui="Transformation" value="0 1 -1 90 0 0 0.05 0.05 0.05" type="System.Single" dim="1" sep=" " sizes="9"/>
+                </Config>
+            </Configs>
+        </Component>
+        <Component key="6" name="Camera" type="Camera">
+            <InitConfig key="21" name="standard">
+                <Arg key="459" name="position" ui="Vector 3D" value="0 0 0" type="System.Single" dim="1" sep=" " sizes="3"/>
+                <Arg key="463" name="rotation" ui="Vector 3D" value="0 0 0" type="System.Single" dim="1" sep=" " sizes="3"/>
+                <Arg key="458" name="start_experiment" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                <Arg key="456" name="use_eye" ui="Radio buttons" value="false" type="System.Boolean" dim="0"/>
+                <Arg key="457" name="use_neutral" ui="Radio buttons" value="true" type="System.Boolean" dim="0"/>
+            </InitConfig>
+            <Configs>
+                <Config key="22" name="standard">
+                    <Arg key="467" name="debug_camera" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="472" name="position" ui="Vector 3D" value="0 0 0" type="System.Single" dim="1" sep=" " sizes="3"/>
+                    <Arg key="476" name="rotation" ui="Vector 3D" value="0 0 0" type="System.Single" dim="1" sep=" " sizes="3"/>
+                    <Arg key="470" name="start_routine" ui="Check box" value="false" type="System.Boolean" dim="0"/>
+                    <Arg key="471" name="update_on" ui="Check box" value="false" type="System.Boolean" dim="0"/>
+                    <Arg key="468" name="use_eye" ui="Radio buttons" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="469" name="use_neutral" ui="Radio buttons" value="false" type="System.Boolean" dim="0"/>
+                </Config>
+            </Configs>
+        </Component>
+    </Components>
+    <FlowElements>
+        <Routines>
+            <Routine key="9" name="Init">
+                <Condition key="4" name="default" duration="1000" ui_scale="10" ui_size="1" sets_keys="0">
+                    <Action key="0" key_component="0" key_config="1" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component Room with config standard-->
+                        <Timeline key="0" type="Update">
+                            <!--Starts at 0(s) and ends at 1000s(), duration: 1000(s)-->
+                            <Interval key="178" t1="0" t2="1000"/>
+                        </Timeline>
+                        <Timeline key="1" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 1000s(), duration: 1000(s)-->
+                            <Interval key="179" t1="0" t2="1000"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="1" key_component="2" key_config="5" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component 1 with config standard-->
+                        <Timeline key="2" type="Update">
+                            <!--Starts at 0(s) and ends at 1000s(), duration: 1000(s)-->
+                            <Interval key="180" t1="0" t2="1000"/>
+                        </Timeline>
+                        <Timeline key="3" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 1000s(), duration: 1000(s)-->
+                            <Interval key="181" t1="0" t2="1000"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="2" key_component="3" key_config="7" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component 2 with config standard-->
+                        <Timeline key="4" type="Update">
+                            <!--Starts at 0(s) and ends at 1000s(), duration: 1000(s)-->
+                            <Interval key="182" t1="0" t2="1000"/>
+                        </Timeline>
+                        <Timeline key="5" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 1000s(), duration: 1000(s)-->
+                            <Interval key="183" t1="0" t2="1000"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="11" key_component="4" key_config="9" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component 3 with config standard-->
+                        <Timeline key="22" type="Update">
+                            <!--Starts at 0(s) and ends at 1000s(), duration: 1000(s)-->
+                            <Interval key="184" t1="0" t2="1000"/>
+                        </Timeline>
+                        <Timeline key="23" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 1000s(), duration: 1000(s)-->
+                            <Interval key="185" t1="0" t2="1000"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="16" key_component="5" key_config="11" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component 4 with config standard-->
+                        <Timeline key="32" type="Update">
+                            <!--Starts at 0(s) and ends at 1000s(), duration: 1000(s)-->
+                            <Interval key="186" t1="0" t2="1000"/>
+                        </Timeline>
+                        <Timeline key="33" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 1000s(), duration: 1000(s)-->
+                            <Interval key="187" t1="0" t2="1000"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="88" key_component="6" key_config="22" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component Camera with config standard-->
+                        <Timeline key="176" type="Update">
+                            <!--Starts at 0(s) and ends at 1000s(), duration: 1000(s)-->
+                            <Interval key="188" t1="0" t2="1000"/>
+                        </Timeline>
+                        <Timeline key="177" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 1000s(), duration: 1000(s)-->
+                            <Interval key="189" t1="0" t2="1000"/>
+                        </Timeline>
+                    </Action>
+                </Condition>
+            </Routine>
+            <Routine key="1" name="T1">
+                <Condition key="5" name="default" duration="100" ui_scale="10" ui_size="1" sets_keys="0">
+                    <Action key="36" key_component="0" key_config="1" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component Room with config standard-->
+                        <Timeline key="72" type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="72" t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline key="73" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="73" t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="37" key_component="2" key_config="5" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component 1 with config standard-->
+                        <Timeline key="74" type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="74" t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline key="75" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="75" t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="38" key_component="3" key_config="7" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component 2 with config standard-->
+                        <Timeline key="76" type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="76" t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline key="77" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="77" t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="39" key_component="4" key_config="9" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component 3 with config standard-->
+                        <Timeline key="78" type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="78" t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline key="79" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="79" t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="40" key_component="5" key_config="11" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component 4 with config standard-->
+                        <Timeline key="80" type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="80" t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline key="81" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="81" t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="42" key_component="1" key_config="3" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component Camera target with config mt1-->
+                        <Timeline key="84" type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="84" t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline key="85" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="85" t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                </Condition>
+            </Routine>
+            <Routine key="3" name="T2">
+                <Condition key="6" name="default" duration="100" ui_scale="10" ui_size="1" sets_keys="0">
+                    <Action key="43" key_component="0" key_config="1" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component Room with config standard-->
+                        <Timeline key="86" type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="86" t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline key="87" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="87" t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="44" key_component="2" key_config="5" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component 1 with config standard-->
+                        <Timeline key="88" type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="88" t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline key="89" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="89" t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="45" key_component="3" key_config="7" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component 2 with config standard-->
+                        <Timeline key="90" type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="90" t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline key="91" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="91" t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="46" key_component="4" key_config="9" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component 3 with config standard-->
+                        <Timeline key="92" type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="92" t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline key="93" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="93" t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="47" key_component="5" key_config="11" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component 4 with config standard-->
+                        <Timeline key="94" type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="94" t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline key="95" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="95" t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="49" key_component="1" key_config="14" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component Camera target with config mt2-->
+                        <Timeline key="98" type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="98" t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline key="99" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="99" t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                </Condition>
+            </Routine>
+            <Routine key="5" name="T3">
+                <Condition key="7" name="default" duration="100" ui_scale="10" ui_size="1" sets_keys="0">
+                    <Action key="50" key_component="0" key_config="1" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component Room with config standard-->
+                        <Timeline key="100" type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="100" t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline key="101" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="101" t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="51" key_component="2" key_config="5" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component 1 with config standard-->
+                        <Timeline key="102" type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="102" t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline key="103" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="103" t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="52" key_component="3" key_config="7" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component 2 with config standard-->
+                        <Timeline key="104" type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="104" t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline key="105" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="105" t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="53" key_component="4" key_config="9" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component 3 with config standard-->
+                        <Timeline key="106" type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="106" t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline key="107" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="107" t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="54" key_component="5" key_config="11" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component 4 with config standard-->
+                        <Timeline key="108" type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="108" t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline key="109" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="109" t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="56" key_component="1" key_config="15" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component Camera target with config mt3-->
+                        <Timeline key="112" type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="112" t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline key="113" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="113" t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                </Condition>
+            </Routine>
+            <Routine key="7" name="T4">
+                <Condition key="8" name="default" duration="100" ui_scale="10" ui_size="1" sets_keys="0">
+                    <Action key="57" key_component="0" key_config="1" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component Room with config standard-->
+                        <Timeline key="114" type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="114" t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline key="115" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="115" t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="58" key_component="2" key_config="5" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component 1 with config standard-->
+                        <Timeline key="116" type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="116" t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline key="117" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="117" t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="59" key_component="3" key_config="7" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component 2 with config standard-->
+                        <Timeline key="118" type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="118" t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline key="119" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="119" t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="60" key_component="4" key_config="9" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component 3 with config standard-->
+                        <Timeline key="120" type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="120" t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline key="121" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="121" t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="61" key_component="5" key_config="11" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component 4 with config standard-->
+                        <Timeline key="122" type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="122" t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline key="123" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="123" t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="63" key_component="1" key_config="16" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component Camera target with config mt4-->
+                        <Timeline key="126" type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="126" t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline key="127" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="127" t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                </Condition>
+            </Routine>
+            <Routine key="44" name="T1">
+                <Condition key="14" name="default" duration="100" ui_scale="10" ui_size="1" sets_keys="2">
+                    <Action key="89" key_component="0" key_config="1" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component Room with config standard-->
+                        <Timeline key="178" type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="190" t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline key="179" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="191" t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="90" key_component="2" key_config="5" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component 1 with config standard-->
+                        <Timeline key="180" type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="192" t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline key="181" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="193" t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="91" key_component="3" key_config="7" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component 2 with config standard-->
+                        <Timeline key="182" type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="194" t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline key="183" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="195" t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="92" key_component="4" key_config="9" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component 3 with config standard-->
+                        <Timeline key="184" type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="196" t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline key="185" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="197" t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="93" key_component="5" key_config="11" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component 4 with config standard-->
+                        <Timeline key="186" type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="198" t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline key="187" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="199" t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="94" key_component="1" key_config="23" node_used="1" node_position="729 140" node_size="-1 -1">
+                        <!--Component Camera target with config mf1-->
+                        <Timeline key="188" type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="200" t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline key="189" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="201" t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Connector key="4" name="Time" node_position="154 194" node_size="-1 -1">
+                        <Arg key="500" name="value" ui="Combo box text" value="Time since routine|30" type="System.String" dim="1" sep="|" sizes="2"/>
+                    </Connector>
+                    <Connector key="5" name="Real" node_position="170 95" node_size="-1 -1">
+                        <Arg key="502" name="value" ui="Double spin box" value="0.001" type="System.Double" dim="0"/>
+                    </Connector>
+                    <Connector key="6" name="DecimalOperation" node_position="395 161" node_size="-1 -1">
+                        <Arg key="503" name="value" ui="Combo box text" value="Multiply" type="System.String" dim="0"/>
+                    </Connector>
+                    <!--Connection between Key4:Connector:Time:Port0 and Key6:Connector:DecimalOperation:Port1-->
+                    <Connection key="7" out_type="connector" out_key="4" signal_id="0" out_data_type="real" signal="output value 0" in_type="connector" in_key="6" slot_id="1" in_data_type="decimal" slot="input value 1"/>
+                    <!--Connection between Key5:Connector:Real:Port0 and Key6:Connector:DecimalOperation:Port0-->
+                    <Connection key="8" out_type="connector" out_key="5" signal_id="0" out_data_type="real" signal="output value 0" in_type="connector" in_key="6" slot_id="0" in_data_type="decimal" slot="input value 0"/>
+                    <!--Connection between Key6:Connector:DecimalOperation:Port0 and Key1:Component:Camera target:Port0-->
+                    <Connection key="9" out_type="connector" out_key="6" signal_id="0" out_data_type="decimal" signal="output value 0" in_type="component" in_key="1" slot_id="0" in_data_type="float" slot="set factor"/>
+                </Condition>
+            </Routine>
+            <Routine key="49" name="T2">
+                <Condition key="15" name="default" duration="100" ui_scale="10" ui_size="1" sets_keys="2">
+                    <Action key="95" key_component="0" key_config="1" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component Room with config standard-->
+                        <Timeline key="190" type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="202" t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline key="191" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="203" t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="96" key_component="2" key_config="5" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component 1 with config standard-->
+                        <Timeline key="192" type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="204" t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline key="193" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="205" t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="97" key_component="3" key_config="7" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component 2 with config standard-->
+                        <Timeline key="194" type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="206" t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline key="195" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="207" t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="98" key_component="4" key_config="9" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component 3 with config standard-->
+                        <Timeline key="196" type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="208" t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline key="197" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="209" t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="99" key_component="5" key_config="11" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component 4 with config standard-->
+                        <Timeline key="198" type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="210" t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline key="199" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="211" t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="100" key_component="1" key_config="24" node_used="1" node_position="0 0" node_size="-1 -1">
+                        <!--Component Camera target with config mf2-->
+                        <Timeline key="200" type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="212" t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline key="201" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="213" t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Connector key="7" name="Time" node_position="154 194" node_size="-1 -1">
+                        <Arg key="500" name="value" ui="Combo box text" value="Time since routine|30" type="System.String" dim="1" sep="|" sizes="2"/>
+                    </Connector>
+                    <Connector key="8" name="Real" node_position="170 95" node_size="-1 -1">
+                        <Arg key="502" name="value" ui="Double spin box" value="0.001" type="System.Double" dim="0"/>
+                    </Connector>
+                    <Connector key="9" name="DecimalOperation" node_position="395 161" node_size="-1 -1">
+                        <Arg key="503" name="value" ui="Combo box text" value="Multiply" type="System.String" dim="0"/>
+                    </Connector>
+                    <!--Connection between Key7:Connector:Time:Port0 and Key9:Connector:DecimalOperation:Port1-->
+                    <Connection key="10" out_type="connector" out_key="7" signal_id="0" out_data_type="real" signal="output value 0" in_type="connector" in_key="9" slot_id="1" in_data_type="decimal" slot="input value 1"/>
+                    <!--Connection between Key8:Connector:Real:Port0 and Key9:Connector:DecimalOperation:Port0-->
+                    <Connection key="11" out_type="connector" out_key="8" signal_id="0" out_data_type="real" signal="output value 0" in_type="connector" in_key="9" slot_id="0" in_data_type="decimal" slot="input value 0"/>
+                    <!--Connection between Key9:Connector:DecimalOperation:Port0 and Key1:Component:Camera target:Port0-->
+                    <Connection key="12" out_type="connector" out_key="9" signal_id="0" out_data_type="decimal" signal="output value 0" in_type="component" in_key="1" slot_id="0" in_data_type="float" slot="set factor"/>
+                </Condition>
+            </Routine>
+            <Routine key="51" name="T3">
+                <Condition key="16" name="default" duration="100" ui_scale="10" ui_size="1" sets_keys="2">
+                    <Action key="101" key_component="0" key_config="1" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component Room with config standard-->
+                        <Timeline key="202" type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="214" t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline key="203" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="215" t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="102" key_component="2" key_config="5" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component 1 with config standard-->
+                        <Timeline key="204" type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="216" t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline key="205" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="217" t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="103" key_component="3" key_config="7" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component 2 with config standard-->
+                        <Timeline key="206" type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="218" t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline key="207" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="219" t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="104" key_component="4" key_config="9" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component 3 with config standard-->
+                        <Timeline key="208" type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="220" t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline key="209" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="221" t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="105" key_component="5" key_config="11" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component 4 with config standard-->
+                        <Timeline key="210" type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="222" t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline key="211" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="223" t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="106" key_component="1" key_config="25" node_used="1" node_position="153 -28" node_size="-1 -1">
+                        <!--Component Camera target with config mf3-->
+                        <Timeline key="212" type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="224" t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline key="213" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="225" t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Connector key="10" name="Time" node_position="154 194" node_size="-1 -1">
+                        <Arg key="500" name="value" ui="Combo box text" value="Time since routine|30" type="System.String" dim="1" sep="|" sizes="2"/>
+                    </Connector>
+                    <Connector key="11" name="Real" node_position="170 95" node_size="-1 -1">
+                        <Arg key="502" name="value" ui="Double spin box" value="0.001" type="System.Double" dim="0"/>
+                    </Connector>
+                    <Connector key="12" name="DecimalOperation" node_position="395 161" node_size="-1 -1">
+                        <Arg key="503" name="value" ui="Combo box text" value="Multiply" type="System.String" dim="0"/>
+                    </Connector>
+                    <!--Connection between Key10:Connector:Time:Port0 and Key12:Connector:DecimalOperation:Port1-->
+                    <Connection key="13" out_type="connector" out_key="10" signal_id="0" out_data_type="real" signal="output value 0" in_type="connector" in_key="12" slot_id="1" in_data_type="decimal" slot="input value 1"/>
+                    <!--Connection between Key11:Connector:Real:Port0 and Key12:Connector:DecimalOperation:Port0-->
+                    <Connection key="14" out_type="connector" out_key="11" signal_id="0" out_data_type="real" signal="output value 0" in_type="connector" in_key="12" slot_id="0" in_data_type="decimal" slot="input value 0"/>
+                    <!--Connection between Key12:Connector:DecimalOperation:Port0 and Key1:Component:Camera target:Port0-->
+                    <Connection key="15" out_type="connector" out_key="12" signal_id="0" out_data_type="decimal" signal="output value 0" in_type="component" in_key="1" slot_id="0" in_data_type="float" slot="set factor"/>
+                </Condition>
+            </Routine>
+            <Routine key="53" name="T4">
+                <Condition key="17" name="default" duration="100" ui_scale="10" ui_size="1" sets_keys="2">
+                    <Action key="107" key_component="0" key_config="1" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component Room with config standard-->
+                        <Timeline key="214" type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="226" t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline key="215" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="227" t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="108" key_component="2" key_config="5" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component 1 with config standard-->
+                        <Timeline key="216" type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="228" t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline key="217" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="229" t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="109" key_component="3" key_config="7" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component 2 with config standard-->
+                        <Timeline key="218" type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="230" t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline key="219" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="231" t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="110" key_component="4" key_config="9" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component 3 with config standard-->
+                        <Timeline key="220" type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="232" t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline key="221" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="233" t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="111" key_component="5" key_config="11" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component 4 with config standard-->
+                        <Timeline key="222" type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="234" t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline key="223" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="235" t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="112" key_component="1" key_config="26" node_used="1" node_position="0 0" node_size="-1 -1">
+                        <!--Component Camera target with config mf4-->
+                        <Timeline key="224" type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="236" t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline key="225" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="237" t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Connector key="13" name="Time" node_position="154 194" node_size="-1 -1">
+                        <Arg key="500" name="value" ui="Combo box text" value="Time since routine|30" type="System.String" dim="1" sep="|" sizes="2"/>
+                    </Connector>
+                    <Connector key="14" name="Real" node_position="170 95" node_size="-1 -1">
+                        <Arg key="502" name="value" ui="Double spin box" value="0.001" type="System.Double" dim="0"/>
+                    </Connector>
+                    <Connector key="15" name="DecimalOperation" node_position="395 161" node_size="-1 -1">
+                        <Arg key="503" name="value" ui="Combo box text" value="Multiply" type="System.String" dim="0"/>
+                    </Connector>
+                    <!--Connection between Key13:Connector:Time:Port0 and Key15:Connector:DecimalOperation:Port1-->
+                    <Connection key="16" out_type="connector" out_key="13" signal_id="0" out_data_type="real" signal="output value 0" in_type="connector" in_key="15" slot_id="1" in_data_type="decimal" slot="input value 1"/>
+                    <!--Connection between Key14:Connector:Real:Port0 and Key15:Connector:DecimalOperation:Port0-->
+                    <Connection key="17" out_type="connector" out_key="14" signal_id="0" out_data_type="real" signal="output value 0" in_type="connector" in_key="15" slot_id="0" in_data_type="decimal" slot="input value 0"/>
+                    <!--Connection between Key15:Connector:DecimalOperation:Port0 and Key1:Component:Camera target:Port0-->
+                    <Connection key="18" out_type="connector" out_key="15" signal_id="0" out_data_type="decimal" signal="output value 0" in_type="component" in_key="1" slot_id="0" in_data_type="float" slot="set factor"/>
+                </Condition>
+            </Routine>
+            <Routine key="23" name="T1">
+                <Condition key="9" name="default" duration="100" ui_scale="10" ui_size="1" sets_keys="1">
+                    <Action key="64" key_component="0" key_config="1" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component Room with config standard-->
+                        <Timeline key="128" type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="128" t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline key="129" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="129" t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="65" key_component="2" key_config="5" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component 1 with config standard-->
+                        <Timeline key="130" type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="130" t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline key="131" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="131" t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="66" key_component="3" key_config="7" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component 2 with config standard-->
+                        <Timeline key="132" type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="132" t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline key="133" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="133" t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="67" key_component="4" key_config="9" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component 3 with config standard-->
+                        <Timeline key="134" type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="134" t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline key="135" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="135" t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="68" key_component="5" key_config="11" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component 4 with config standard-->
+                        <Timeline key="136" type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="136" t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline key="137" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="137" t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="69" key_component="1" key_config="17" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component Camera target with config t1-->
+                        <Timeline key="138" type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="138" t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline key="139" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="139" t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                </Condition>
+            </Routine>
+            <Routine key="25" name="T2">
+                <Condition key="10" name="default" duration="100" ui_scale="10" ui_size="1" sets_keys="1">
+                    <Action key="70" key_component="0" key_config="1" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component Room with config standard-->
+                        <Timeline key="140" type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="140" t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline key="141" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="141" t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="71" key_component="2" key_config="5" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component 1 with config standard-->
+                        <Timeline key="142" type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="142" t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline key="143" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="143" t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="72" key_component="3" key_config="7" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component 2 with config standard-->
+                        <Timeline key="144" type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="144" t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline key="145" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="145" t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="73" key_component="4" key_config="9" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component 3 with config standard-->
+                        <Timeline key="146" type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="146" t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline key="147" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="147" t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="74" key_component="5" key_config="11" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component 4 with config standard-->
+                        <Timeline key="148" type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="148" t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline key="149" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="149" t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="75" key_component="1" key_config="18" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component Camera target with config t2-->
+                        <Timeline key="150" type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="150" t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline key="151" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="151" t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                </Condition>
+            </Routine>
+            <Routine key="27" name="T3">
+                <Condition key="11" name="default" duration="100" ui_scale="10" ui_size="1" sets_keys="1">
+                    <Action key="76" key_component="0" key_config="1" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component Room with config standard-->
+                        <Timeline key="152" type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="152" t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline key="153" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="153" t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="77" key_component="2" key_config="5" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component 1 with config standard-->
+                        <Timeline key="154" type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="154" t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline key="155" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="155" t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="78" key_component="3" key_config="7" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component 2 with config standard-->
+                        <Timeline key="156" type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="156" t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline key="157" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="157" t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="79" key_component="4" key_config="9" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component 3 with config standard-->
+                        <Timeline key="158" type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="158" t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline key="159" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="159" t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="80" key_component="5" key_config="11" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component 4 with config standard-->
+                        <Timeline key="160" type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="160" t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline key="161" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="161" t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="81" key_component="1" key_config="19" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component Camera target with config t3-->
+                        <Timeline key="162" type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="162" t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline key="163" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="163" t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                </Condition>
+            </Routine>
+            <Routine key="29" name="T4">
+                <Condition key="12" name="default" duration="100" ui_scale="10" ui_size="1" sets_keys="1">
+                    <Action key="82" key_component="0" key_config="1" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component Room with config standard-->
+                        <Timeline key="164" type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="164" t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline key="165" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="165" t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="83" key_component="2" key_config="5" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component 1 with config standard-->
+                        <Timeline key="166" type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="166" t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline key="167" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="167" t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="84" key_component="3" key_config="7" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component 2 with config standard-->
+                        <Timeline key="168" type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="168" t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline key="169" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="169" t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="85" key_component="4" key_config="9" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component 3 with config standard-->
+                        <Timeline key="170" type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="170" t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline key="171" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="171" t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="86" key_component="5" key_config="11" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component 4 with config standard-->
+                        <Timeline key="172" type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="172" t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline key="173" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="173" t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="87" key_component="1" key_config="20" node_used="0" node_position="0 0" node_size="-1 -1">
+                        <!--Component Camera target with config t4-->
+                        <Timeline key="174" type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="174" t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline key="175" type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s)-->
+                            <Interval key="175" t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                </Condition>
+            </Routine>
+        </Routines>
+        <ISIs/>
+        <Loops>
+            <Loop key="11" name="Trajectory time" type="fixed" nbReps="5">
+                <Set key="0" name="default" occu="1"/>
+            </Loop>
+            <Loop key="20" name="Teleport" type="fixed" nbReps="5">
+                <Set key="1" name="default" occu="1"/>
+            </Loop>
+            <Loop key="46" name="Trajectory factor" type="fixed" nbReps="5">
+                <Set key="2" name="default" occu="1"/>
+            </Loop>
+        </Loops>
+    </FlowElements>
+    <FlowSequence>
+        <Element key="9" type="Routine"/>
+        <Element key="11" type="LoopStart"/>
+        <Element key="1" type="Routine"/>
+        <Element key="3" type="Routine"/>
+        <Element key="5" type="Routine"/>
+        <Element key="7" type="Routine"/>
+        <Element key="11" type="LoopEnd"/>
+        <Element key="46" type="LoopStart"/>
+        <Element key="44" type="Routine"/>
+        <Element key="49" type="Routine"/>
+        <Element key="51" type="Routine"/>
+        <Element key="53" type="Routine"/>
+        <Element key="46" type="LoopEnd"/>
+        <Element key="20" type="LoopStart"/>
+        <Element key="23" type="Routine"/>
+        <Element key="25" type="Routine"/>
+        <Element key="27" type="Routine"/>
+        <Element key="29" type="Routine"/>
+        <Element key="20" type="LoopEnd"/>
+    </FlowSequence>
+</Experiment>
