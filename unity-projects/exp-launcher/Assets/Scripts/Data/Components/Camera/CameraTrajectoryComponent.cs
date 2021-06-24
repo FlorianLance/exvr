@@ -1,1 +1,0 @@
-        Quaternion originRotation = new Quaternion();
