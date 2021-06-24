@@ -1,6 +1,6 @@
 
 
-include(../../toolbox/cpp/projects/thirdparty.pri)
+include(../toolbox/projects/thirdparty.pri)
 
 
 ########################################################### DIRECTORIES

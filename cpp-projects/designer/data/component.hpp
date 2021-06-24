@@ -116,7 +116,7 @@ struct Component {
     using CO = ConfigO;
 
     enum class Restricted : int {
-        Publ, LNCO
+        OpenSource, ClosedSource, LNCO
     };
     using R = Restricted;
 
@@ -147,89 +147,89 @@ struct Component {
     static constexpr size_t ColIconStr      = 10;
 
     using TComponent = std::tuple<
-        Type,                         Category,       TimelineO, ConfigO, Unicity, Restricted, State, TypeStr, FullStr, UnityStr, IconStr>;
+        Type,                         Category,       TimelineO, ConfigO, Unicity, Restricted,      State, TypeStr, FullStr, UnityStr, IconStr>;
     static constexpr TupleArray<T::SizeEnum, TComponent> components ={{
         TComponent
         // Audio
-        {T::AudioSource,              C::Audio,       TO::B,     CO::B,   false,   R::LNCO,    S::Exp, "AudioSource"sv, "Audio source"sv, "AudioSource"sv, ":/icons/Sound"sv},
-        {T::Microphone,               C::Audio,       TO::B,     CO::B,   false,   R::LNCO,    S::Exp, "Microphone"sv, "Microphone"sv, "Microphone"sv, ":/icons/Micro"sv},
+        {T::AudioSource,              C::Audio,       TO::B,     CO::B,   false,   R::OpenSource,   S::Exp, "AudioSource"sv, "Audio source"sv, "AudioSource"sv, ":/icons/Sound"sv},
+        {T::Microphone,               C::Audio,       TO::B,     CO::B,   false,   R::OpenSource,   S::Exp, "Microphone"sv, "Microphone"sv, "Microphone"sv, ":/icons/Micro"sv},
         // Avatar
-        {T::Humanoid_controller,      C::Avatar,      TO::B,     CO::B,   false,   R::LNCO,    S::Exp, "Humanoid_controller"sv, "Humanoid controller"sv, "HumanoidController"sv, ":/icons/Avatar"sv},
+        {T::Humanoid_controller,      C::Avatar,      TO::B,     CO::B,   false,   R::ClosedSource, S::Exp, "Humanoid_controller"sv, "Humanoid controller"sv, "HumanoidController"sv, ":/icons/Avatar"sv},
         // Camera
-        {T::Camera,                   C::Camera,      TO::U,     CO::B,   true,    R::LNCO,    S::Exp, "Camera"sv, "Camera"sv, "Camera"sv, ":/icons/Camera"sv},
-        {T::Camera_target,            C::Camera,      TO::U,     CO::C,   false,   R::LNCO,    S::Exp, "Camera_target"sv, "Camera target"sv, "CameraTarget"sv, ":/icons/Camera"sv},
-        {T::Camera_trajectory,        C::Camera,      TO::B,     CO::C,   false,   R::LNCO,    S::Exp, "Camera_trajectory"sv, "Camera trajectory"sv, "CameraTrajectory"sv, ":/icons/Camera"sv},
-        {T::Camera_trajectory_file,   C::Camera,      TO::B,     CO::C,   false,   R::LNCO,    S::Exp, "Camera_trajectory_file"sv, "Camera trajectory file"sv, "CameraTrajectoryFile"sv, ":/icons/Camera"sv},
+        {T::Camera,                   C::Camera,      TO::U,     CO::B,   true,    R::OpenSource,   S::Exp, "Camera"sv, "Camera"sv, "Camera"sv, ":/icons/Camera"sv},
+        {T::Camera_target,            C::Camera,      TO::U,     CO::C,   false,   R::OpenSource,   S::Exp, "Camera_target"sv, "Camera target"sv, "CameraTarget"sv, ":/icons/Camera"sv},
+        {T::Camera_trajectory,        C::Camera,      TO::B,     CO::C,   false,   R::OpenSource,   S::Exp, "Camera_trajectory"sv, "Camera trajectory"sv, "CameraTrajectory"sv, ":/icons/Camera"sv},
+        {T::Camera_trajectory_file,   C::Camera,      TO::B,     CO::C,   false,   R::OpenSource,   S::Exp, "Camera_trajectory_file"sv, "Camera trajectory file"sv, "CameraTrajectoryFile"sv, ":/icons/Camera"sv},
         // Cloud
-        {T::Cloud,                    C::Cloud,       TO::V,     CO::B,   false,   R::LNCO,    S::Exp, "Cloud"sv, "Cloud"sv, "Cloud"sv, ":/icons/Cloud"sv},
-        {T::Scaner_video,             C::Cloud,       TO::B,     CO::B,   false,   R::LNCO,    S::Exp, "Scaner_video"sv, "Scaner video"sv, "ScanerVideo"sv, ":/icons/Video_cloud"sv},
+        {T::Cloud,                    C::Cloud,       TO::V,     CO::B,   false,   R::OpenSource,   S::Exp, "Cloud"sv, "Cloud"sv, "Cloud"sv, ":/icons/Cloud"sv},
+        {T::Scaner_video,             C::Cloud,       TO::B,     CO::B,   false,   R::LNCO,         S::Exp, "Scaner_video"sv, "Scaner video"sv, "ScanerVideo"sv, ":/icons/Video_cloud"sv},
         // Environment
-        {T::Sky,                      C::Environment, TO::N,     CO::C,   true,    R::LNCO,    S::Exp, "Sky"sv, "Sky"sv, "Sky"sv, ":/icons/Sky"sv},
+        {T::Sky,                      C::Environment, TO::N,     CO::C,   true,    R::OpenSource,   S::Exp, "Sky"sv, "Sky"sv, "Sky"sv, ":/icons/Sky"sv},
         // Input
-        {T::Joypad,                   C::Input,       TO::U,     CO::I,   true,    R::LNCO,    S::Exp, "Joypad"sv, "Joypad"sv, "Joypad"sv,":/icons/Joypad"sv},
-        {T::Keyboard,                 C::Input,       TO::U,     CO::I,   true,    R::Publ,    S::Sta, "Keyboard"sv, "Keyboard"sv, "Keyboard"sv, ":/icons/Keyboard"sv},
-        {T::Mouse,                    C::Input,       TO::U,     CO::I,   true,    R::LNCO,    S::Exp, "Mouse"sv, "Mouse"sv, "Mouse"sv, ":/icons/Mouse"sv},
+        {T::Joypad,                   C::Input,       TO::U,     CO::I,   true,    R::OpenSource,   S::Exp, "Joypad"sv, "Joypad"sv, "Joypad"sv,":/icons/Joypad"sv},
+        {T::Keyboard,                 C::Input,       TO::U,     CO::I,   true,    R::OpenSource,   S::Sta, "Keyboard"sv, "Keyboard"sv, "Keyboard"sv, ":/icons/Keyboard"sv},
+        {T::Mouse,                    C::Input,       TO::U,     CO::I,   true,    R::OpenSource,   S::Exp, "Mouse"sv, "Mouse"sv, "Mouse"sv, ":/icons/Mouse"sv},
         // Interaction
-        {T::Mark_to_clean,            C::Interaction, TO::B,     CO::B,   false,   R::LNCO,    S::Exp, "Mark_to_clean"sv, "Mark to clean"sv, "MarkToClean"sv, ":/icons/Mark_to_clean"sv},
-        {T::Target_to_grab,           C::Interaction, TO::B,     CO::B,   false,   R::LNCO,    S::Exp, "Target_to_grab"sv, "Target to grab"sv, "TargetToGrab"sv, ":/icons/Grab_target"sv},
+        {T::Mark_to_clean,            C::Interaction, TO::B,     CO::B,   false,   R::LNCO,         S::Exp, "Mark_to_clean"sv, "Mark to clean"sv, "MarkToClean"sv, ":/icons/Mark_to_clean"sv},
+        {T::Target_to_grab,           C::Interaction, TO::B,     CO::B,   false,   R::LNCO,         S::Exp, "Target_to_grab"sv, "Target to grab"sv, "TargetToGrab"sv, ":/icons/Grab_target"sv},
         // Model
-        {T::Cube,                     C::Model,       TO::V,     CO::B,   false,   R::Publ,    S::Sta, "Cube"sv, "Cube"sv, "Cube"sv,":/icons/Cube"sv},
-        {T::Cylinder,                 C::Model,       TO::V,     CO::B,   false,   R::Publ,    S::Sta, "Cylinder"sv, "Cylinder"sv, "Cylinder"sv,":/icons/Sphere"sv},
-        {T::Landmark,                 C::Model,       TO::V,     CO::C,   false,   R::Publ,    S::Sta, "Landmark"sv, "Landmark"sv, "Landmark"sv,":/icons/Sphere"sv},
-        {T::Lines,                    C::Model,       TO::V,     CO::C,   false,   R::Publ,    S::Exp, "Lines"sv, "Lines"sv, "Lines"sv,":/icons/Line"sv},
-        {T::Sphere,                   C::Model,       TO::V,     CO::B,   false,   R::Publ,    S::Sta, "Sphere"sv, "Sphere"sv, "Sphere"sv,":/icons/Sphere"sv},
-        {T::Torus,                    C::Model,       TO::V,     CO::B,   false,   R::Publ,    S::Sta, "Torus"sv, "Torus"sv, "Torus"sv,":/icons/Torus"sv},
+        {T::Cube,                     C::Model,       TO::V,     CO::B,   false,   R::OpenSource,   S::Sta, "Cube"sv, "Cube"sv, "Cube"sv,":/icons/Cube"sv},
+        {T::Cylinder,                 C::Model,       TO::V,     CO::B,   false,   R::OpenSource,   S::Sta, "Cylinder"sv, "Cylinder"sv, "Cylinder"sv,":/icons/Sphere"sv},
+        {T::Landmark,                 C::Model,       TO::V,     CO::C,   false,   R::OpenSource,   S::Sta, "Landmark"sv, "Landmark"sv, "Landmark"sv,":/icons/Sphere"sv},
+        {T::Lines,                    C::Model,       TO::V,     CO::C,   false,   R::OpenSource,   S::Exp, "Lines"sv, "Lines"sv, "Lines"sv,":/icons/Line"sv},
+        {T::Sphere,                   C::Model,       TO::V,     CO::B,   false,   R::OpenSource,   S::Sta, "Sphere"sv, "Sphere"sv, "Sphere"sv,":/icons/Sphere"sv},
+        {T::Torus,                    C::Model,       TO::V,     CO::B,   false,   R::OpenSource,   S::Sta, "Torus"sv, "Torus"sv, "Torus"sv,":/icons/Torus"sv},
         // Network
-        {T::Parallel_port_writer,     C::Network,     TO::U,     CO::B,   false,   R::LNCO,    S::Exp, "Parallel_port_writer"sv, "Parallel port writer"sv, "ParallelPortWriter"sv, ":/icons/USB"sv},
-        {T::Serial_port_writer,       C::Network,     TO::U,     CO::B,   false,   R::LNCO,    S::Exp, "Serial_port_writer"sv, "Serial port writer"sv, "SerialPortWriter"sv, ":/icons/USB"sv},
-        {T::Udp_reader,               C::Network,     TO::U,     CO::I,   false,   R::LNCO,    S::Exp, "Udp_reader"sv, "UDP reader"sv, "UdpReader"sv, ":/icons/UDP"sv},
-        {T::Udp_writer,               C::Network,     TO::U,     CO::I,   false,   R::LNCO,    S::Exp, "Udp_writer"sv, "UDP writer"sv, "UdpWriter"sv, ":/icons/UDP"sv},
+        {T::Parallel_port_writer,     C::Network,     TO::U,     CO::B,   false,   R::OpenSource,   S::Exp, "Parallel_port_writer"sv, "Parallel port writer"sv, "ParallelPortWriter"sv, ":/icons/USB"sv},
+        {T::Serial_port_writer,       C::Network,     TO::U,     CO::B,   false,   R::OpenSource,   S::Exp, "Serial_port_writer"sv, "Serial port writer"sv, "SerialPortWriter"sv, ":/icons/USB"sv},
+        {T::Udp_reader,               C::Network,     TO::U,     CO::I,   false,   R::OpenSource,   S::Exp, "Udp_reader"sv, "UDP reader"sv, "UdpReader"sv, ":/icons/UDP"sv},
+        {T::Udp_writer,               C::Network,     TO::U,     CO::I,   false,   R::OpenSource,   S::Exp, "Udp_writer"sv, "UDP writer"sv, "UdpWriter"sv, ":/icons/UDP"sv},
         // Output
-        {T::Logger,                   C::Output,      TO::N,     CO::I,   false,   R::Publ,    S::Sta, "Logger"sv, "Logger"sv, "Logger"sv, ":/icons/Logger"sv},
-        {T::LoggerColumns,            C::Output,      TO::N,     CO::I,   false,   R::Publ,    S::Sta, "Logger_columns"sv, "Logger columns"sv, "LoggerColumns"sv, ":/icons/Logger"sv},
-        {T::LoggerCondition,          C::Output,      TO::N,     CO::I,   false,   R::Publ,    S::Sta, "Logger_condition"sv, "Logger condition"sv, "LoggerCondition"sv, ":/icons/Logger"sv},
+        {T::Logger,                   C::Output,      TO::N,     CO::I,   false,   R::OpenSource,   S::Sta, "Logger"sv, "Logger"sv, "Logger"sv, ":/icons/Logger"sv},
+        {T::LoggerColumns,            C::Output,      TO::N,     CO::I,   false,   R::OpenSource,   S::Sta, "Logger_columns"sv, "Logger columns"sv, "LoggerColumns"sv, ":/icons/Logger"sv},
+        {T::LoggerCondition,          C::Output,      TO::N,     CO::I,   false,   R::OpenSource,   S::Sta, "Logger_condition"sv, "Logger condition"sv, "LoggerCondition"sv, ":/icons/Logger"sv},
         // Resource
-        {T::Image_resource,           C::Resource,    TO::N,     CO::C,   false,   R::LNCO,    S::Exp, "Image_resource"sv, "Image resource"sv, "ImageResource"sv, ":/icons/Image"sv},
-        {T::Plot_resource,            C::Resource,    TO::N,     CO::C,   false,   R::LNCO,    S::Exp, "Plot_resource"sv,  "Plot resource"sv, "PlotResource"sv, ":/icons/Plot"sv},
-        {T::Text_resource,            C::Resource,    TO::N,     CO::C,   false,   R::LNCO,    S::Exp, "Text_resource"sv,  "Text resource"sv, "TextResource"sv, ":/icons/Text"sv},
+        {T::Image_resource,           C::Resource,    TO::N,     CO::C,   false,   R::OpenSource,   S::Exp, "Image_resource"sv, "Image resource"sv, "ImageResource"sv, ":/icons/Image"sv},
+        {T::Plot_resource,            C::Resource,    TO::N,     CO::C,   false,   R::OpenSource,   S::Exp, "Plot_resource"sv,  "Plot resource"sv, "PlotResource"sv, ":/icons/Plot"sv},
+        {T::Text_resource,            C::Resource,    TO::N,     CO::C,   false,   R::OpenSource,   S::Exp, "Text_resource"sv,  "Text resource"sv, "TextResource"sv, ":/icons/Text"sv},
         // Scene
-        {T::Falling_spheres,          C::Scene,       TO::B,     CO::B,   false,   R::LNCO,    S::Exp, "Falling_spheres"sv, "Falling spheres"sv, "FallingSpheres"sv, ":/icons/Falling_spheres"sv},
-        {T::Flashing_dot,             C::Scene,       TO::B,     CO::B,   false,   R::LNCO,    S::Exp, "Flashing_dot"sv, "Flashing dot"sv, "FlashingDot"sv,":/icons/Dot"sv},
-        {T::Mirror,                   C::Scene,       TO::V,     CO::C,   false,   R::LNCO,    S::Exp, "Mirror"sv, "Mirror"sv, "Mirror"sv, ":/icons/Mirror"sv},
-        {T::MRI,                      C::Scene,       TO::B,     CO::B,   false,   R::LNCO,    S::Exp, "MRI"sv, "MRI"sv, "MRI"sv, ":/icons/MRI"sv},
-        {T::Multi_AB,                 C::Scene,       TO::V,     CO::B,   false,   R::LNCO,    S::Exp, "Multi_AB"sv, "Multi assets bundles"sv, "MultiAB"sv, ":/icons/Unity_scene_bundle"sv},
-        {T::Unity_asset_bundle,       C::Scene,       TO::V,     CO::B,   false,   R::LNCO,    S::Exp, "Unity_asset_bundle"sv, "Unity asset bundle"sv, "AssetBundle"sv, ":/icons/Unity_scene_bundle"sv},
+        {T::Falling_spheres,          C::Scene,       TO::B,     CO::B,   false,   R::OpenSource,   S::Exp, "Falling_spheres"sv, "Falling spheres"sv, "FallingSpheres"sv, ":/icons/Falling_spheres"sv},
+        {T::Flashing_dot,             C::Scene,       TO::B,     CO::B,   false,   R::OpenSource,   S::Exp, "Flashing_dot"sv, "Flashing dot"sv, "FlashingDot"sv,":/icons/Dot"sv},
+        {T::Mirror,                   C::Scene,       TO::V,     CO::C,   false,   R::OpenSource,   S::Exp, "Mirror"sv, "Mirror"sv, "Mirror"sv, ":/icons/Mirror"sv},
+        {T::MRI,                      C::Scene,       TO::B,     CO::B,   false,   R::OpenSource,   S::Exp, "MRI"sv, "MRI"sv, "MRI"sv, ":/icons/MRI"sv},
+        {T::Multi_AB,                 C::Scene,       TO::V,     CO::B,   false,   R::OpenSource,   S::Exp, "Multi_AB"sv, "Multi assets bundles"sv, "MultiAB"sv, ":/icons/Unity_scene_bundle"sv},
+        {T::Unity_asset_bundle,       C::Scene,       TO::V,     CO::B,   false,   R::OpenSource,   S::Exp, "Unity_asset_bundle"sv, "Unity asset bundle"sv, "AssetBundle"sv, ":/icons/Unity_scene_bundle"sv},
         // Script
-        {T::CSharp_script,            C::Script,      TO::B,     CO::B,   false,   R::LNCO,    S::Exp, "CSharp_script"sv, "CSharp script"sv, "CSharpScript"sv, ":/icons/CSharp"sv},
-        {T::Python_script,            C::Script,      TO::B,     CO::B,   false,   R::LNCO,    S::Exp, "Python_script"sv, "Python script"sv, "PythonScript"sv, ":/icons/Python_script"sv},
+        {T::CSharp_script,            C::Script,      TO::B,     CO::B,   false,   R::OpenSource,   S::Exp, "CSharp_script"sv, "CSharp script"sv, "CSharpScript"sv, ":/icons/CSharp"sv},
+        {T::Python_script,            C::Script,      TO::B,     CO::B,   false,   R::OpenSource,   S::Exp, "Python_script"sv, "Python script"sv, "PythonScript"sv, ":/icons/Python_script"sv},
         // Tracking
-        {T::Attach_object_to_hand,    C::Tracking,    TO::B,     CO::B,   true,    R::LNCO,    S::Exp, "Attach_object_to_hand"sv, "Attach object to hand"sv, "AttachObjectToHand"sv, ":/icons/Sponge"sv},
-        {T::Biopac,                   C::Tracking,    TO::U,     CO::I,   true,    R::LNCO,    S::Exp, "Biopac"sv, "Biopac device"sv, "Biopac"sv, ":/icons/Physio"sv},
-        {T::Fop_robot,                C::Tracking,    TO::U,     CO::B,   true,    R::LNCO,    S::Exp, "Fop_robot"sv, "FOP robot"sv, "FOPRobot"sv,":/icons/Body_scanner"sv},
-        {T::Kinect_manager,           C::Tracking,    TO::U,     CO::B,   true,    R::LNCO,    S::Exp, "Kinect_manager"sv, "Kinect manager"sv, "KinectManager"sv,":/icons/Kinect"sv},
-        {T::Kinect_body_tracking,     C::Tracking,    TO::B,     CO::B,   true,    R::LNCO,    S::Exp, "Kinect_body_tracking"sv, "Kinect body tracking"sv, "KinectBodyTracking"sv,":/icons/Kinect"sv},
-        {T::Leap_motion,              C::Tracking,    TO::U,     CO::N,   true,    R::LNCO,    S::Exp, "Leap_motion"sv, "LeapMotion"sv, "LeapMotion"sv, ":/icons/Hand"sv},
-        {T::Leap_motion_arms_display, C::Tracking,    TO::V,     CO::B,   true,    R::LNCO,    S::Exp, "Leap_motion_arms_display"sv, "LeapMotion realistic arms"sv, "LeapMotionArmsDisplay"sv, ":/icons/Hand"sv},
-        {T::Leap_motion_tracking,     C::Tracking,    TO::V,     CO::N,   true,    R::LNCO,    S::Exp, "Leap_motion_tracking"sv, "LeapMotion debug hand tracking"sv, "LeapMotionTracking"sv, ":/icons/Hand"sv},
-        {T::Qualisys,                 C::Tracking,    TO::B,     CO::B,   true,    R::LNCO,    S::Exp, "Qualisys_tracking"sv, "Qualisys tracking"sv, "QualisysTracking"sv, ":/icons/Qualisys"sv},
-        {T::Scene_scaner,             C::Tracking,    TO::B,     CO::B,   true,    R::LNCO,    S::Exp, "Scene_scaner"sv, "Scene scaner"sv, "SceneScaner"sv,":/icons/Body_scanner"sv},
-        {T::Sonceboz_SG,              C::Tracking,    TO::U,     CO::B,   true,    R::LNCO,    S::Exp, "Sonceboz_SG"sv, "Sonceboz SG"sv, "SoncebozSG"sv,":/icons/Body_scanner"sv},
-        {T::Thera_trainer_tracking,   C::Tracking,    TO::U,     CO::I,   true,    R::LNCO,    S::Exp, "Thera_trainer_tracking"sv, "Thera trainer tracking"sv, "TheraTrainerTracking"sv, ":/icons/Thera_trainer"sv},
-        {T::Thera_trainer_platform,   C::Tracking,    TO::B,     CO::C,   false,   R::LNCO,    S::Exp, "Thera_trainer_platform"sv, "Thera trainer platform"sv, "TheraTrainerPlatform"sv, ":/icons/Thera_trainer"sv},
+        {T::Attach_object_to_hand,    C::Tracking,    TO::B,     CO::B,   true,    R::OpenSource,   S::Exp, "Attach_object_to_hand"sv, "Attach object to hand"sv, "AttachObjectToHand"sv, ":/icons/Sponge"sv},
+        {T::Biopac,                   C::Tracking,    TO::U,     CO::I,   true,    R::OpenSource,   S::Exp, "Biopac"sv, "Biopac device"sv, "Biopac"sv, ":/icons/Physio"sv},
+        {T::Fop_robot,                C::Tracking,    TO::U,     CO::B,   true,    R::LNCO,         S::Exp, "Fop_robot"sv, "FOP robot"sv, "FOPRobot"sv,":/icons/Body_scanner"sv},
+        {T::Kinect_manager,           C::Tracking,    TO::U,     CO::B,   true,    R::LNCO,         S::Exp, "Kinect_manager"sv, "Kinect manager"sv, "KinectManager"sv,":/icons/Kinect"sv},
+        {T::Kinect_body_tracking,     C::Tracking,    TO::B,     CO::B,   true,    R::LNCO,         S::Exp, "Kinect_body_tracking"sv, "Kinect body tracking"sv, "KinectBodyTracking"sv,":/icons/Kinect"sv},
+        {T::Leap_motion,              C::Tracking,    TO::U,     CO::N,   true,    R::OpenSource,   S::Exp, "Leap_motion"sv, "LeapMotion"sv, "LeapMotion"sv, ":/icons/Hand"sv},
+        {T::Leap_motion_arms_display, C::Tracking,    TO::V,     CO::B,   true,    R::ClosedSource, S::Exp, "Leap_motion_arms_display"sv, "LeapMotion realistic arms"sv, "LeapMotionArmsDisplay"sv, ":/icons/Hand"sv},
+        {T::Leap_motion_tracking,     C::Tracking,    TO::V,     CO::N,   true,    R::OpenSource,   S::Exp, "Leap_motion_tracking"sv, "LeapMotion debug hand tracking"sv, "LeapMotionTracking"sv, ":/icons/Hand"sv},
+        {T::Qualisys,                 C::Tracking,    TO::B,     CO::B,   true,    R::OpenSource,   S::Exp, "Qualisys_tracking"sv, "Qualisys tracking"sv, "QualisysTracking"sv, ":/icons/Qualisys"sv},
+        {T::Scene_scaner,             C::Tracking,    TO::B,     CO::B,   true,    R::LNCO,         S::Exp, "Scene_scaner"sv, "Scene scaner"sv, "SceneScaner"sv,":/icons/Body_scanner"sv},
+        {T::Sonceboz_SG,              C::Tracking,    TO::U,     CO::B,   true,    R::LNCO,         S::Exp, "Sonceboz_SG"sv, "Sonceboz SG"sv, "SoncebozSG"sv,":/icons/Body_scanner"sv},
+        {T::Thera_trainer_tracking,   C::Tracking,    TO::U,     CO::I,   true,    R::OpenSource,   S::Exp, "Thera_trainer_tracking"sv, "Thera trainer tracking"sv, "TheraTrainerTracking"sv, ":/icons/Thera_trainer"sv},
+        {T::Thera_trainer_platform,   C::Tracking,    TO::B,     CO::C,   false,   R::OpenSource,   S::Exp, "Thera_trainer_platform"sv, "Thera trainer platform"sv, "TheraTrainerPlatform"sv, ":/icons/Thera_trainer"sv},
         // UI
-        {T::Slider_ui,                C::UI,          TO::B,     CO::B,   false,   R::LNCO,    S::Exp, "Slider_ui"sv, "Slider ui"sv, "SliderUI"sv, ":/icons/Slider_overlay"sv},
+        {T::Slider_ui,                C::UI,          TO::B,     CO::B,   false,   R::OpenSource,   S::Exp, "Slider_ui"sv, "Slider ui"sv, "SliderUI"sv, ":/icons/Slider_overlay"sv},
         // Video
-        {T::Video_file,               C::Video,       TO::U,     CO::I,   false,   R::LNCO,    S::Exp, "Video_file"sv, "Video file"sv, "VideoFile"sv,":/icons/Video_file"sv},
-        {T::Video_file_camera_viewer, C::Video,       TO::B,     CO::B,   false,   R::LNCO,    S::Exp, "Video_file_camera_viewer"sv, "Video file camera viewer"sv, "VideoFileCameraViewer"sv,":/icons/Video_file"sv},
-        {T::Video_saver,              C::Video,       TO::B,     CO::B,   false,   R::LNCO,    S::Exp, "Video_saver"sv, "Video saver"sv, "VideoSaver"sv,":/icons/Video_record"sv},
-        {T::Webcam,                   C::Video,       TO::U,     CO::B,   false,   R::LNCO,    S::Exp, "Webcam"sv, "Webcam"sv, "Webcam"sv,":/icons/Webcam"sv},
+        {T::Video_file,               C::Video,       TO::U,     CO::I,   false,   R::OpenSource,   S::Exp, "Video_file"sv, "Video file"sv, "VideoFile"sv,":/icons/Video_file"sv},
+        {T::Video_file_camera_viewer, C::Video,       TO::B,     CO::B,   false,   R::OpenSource,   S::Exp, "Video_file_camera_viewer"sv, "Video file camera viewer"sv, "VideoFileCameraViewer"sv,":/icons/Video_file"sv},
+        {T::Video_saver,              C::Video,       TO::B,     CO::B,   false,   R::OpenSource,   S::Exp, "Video_saver"sv, "Video saver"sv, "VideoSaver"sv,":/icons/Video_record"sv},
+        {T::Webcam,                   C::Video,       TO::U,     CO::B,   false,   R::OpenSource,   S::Exp, "Webcam"sv, "Webcam"sv, "Webcam"sv,":/icons/Webcam"sv},
         // Viewer
-        {T::Blend_fade_viewer,        C::Viewer,      TO::B,     CO::C,   false,   R::LNCO,    S::Exp, "Blend_fade_viewer"sv, "Blend fade viewer"sv, "BlendFadeViewer"sv, ":/icons/FOV"sv},
-        {T::Fixation_cross_viewer,    C::Viewer,      TO::B,     CO::C,   false,   R::LNCO,    S::Exp, "Fixation_cross_viewer"sv, "Fixation cross viewer"sv, "FixationCrossViewer"sv, ":/icons/Fixation_cross"sv},
-        {T::Fov_simulator_viewer,     C::Viewer,      TO::B,     CO::B,   false,   R::LNCO,    S::Exp, "Fov_simulator"sv, "FOV simulator"sv, "FovSimulator"sv, ":/icons/FOV"sv},
-        {T::Image_viewer,             C::Viewer,      TO::B,     CO::C,   false,   R::LNCO,    S::Exp, "Image_viewer"sv, "Image viewer"sv, "ImageViewer"sv, ":/icons/Image"sv},
-        {T::Text_viewer,              C::Viewer,      TO::B,     CO::C,   false,   R::LNCO,    S::Exp, "Text_viewer"sv, "Text viewer"sv, "TextViewer"sv, ":/icons/Text_camera"sv},
-        {T::Webcam_viewer,            C::Viewer,      TO::B,     CO::B,   false,   R::LNCO,    S::Exp, "Webcam_viewer"sv, "Webcam viewer"sv, "WebcamViewer"sv, ":/icons/Webcam"sv},
+        {T::Blend_fade_viewer,        C::Viewer,      TO::B,     CO::C,   false,   R::OpenSource,   S::Exp, "Blend_fade_viewer"sv, "Blend fade viewer"sv, "BlendFadeViewer"sv, ":/icons/FOV"sv},
+        {T::Fixation_cross_viewer,    C::Viewer,      TO::B,     CO::C,   false,   R::OpenSource,   S::Exp, "Fixation_cross_viewer"sv, "Fixation cross viewer"sv, "FixationCrossViewer"sv, ":/icons/Fixation_cross"sv},
+        {T::Fov_simulator_viewer,     C::Viewer,      TO::B,     CO::B,   false,   R::OpenSource,   S::Exp, "Fov_simulator"sv, "FOV simulator"sv, "FovSimulator"sv, ":/icons/FOV"sv},
+        {T::Image_viewer,             C::Viewer,      TO::B,     CO::C,   false,   R::OpenSource,   S::Exp, "Image_viewer"sv, "Image viewer"sv, "ImageViewer"sv, ":/icons/Image"sv},
+        {T::Text_viewer,              C::Viewer,      TO::B,     CO::C,   false,   R::OpenSource,   S::Exp, "Text_viewer"sv, "Text viewer"sv, "TextViewer"sv, ":/icons/Text_camera"sv},
+        {T::Webcam_viewer,            C::Viewer,      TO::B,     CO::B,   false,   R::OpenSource,   S::Exp, "Webcam_viewer"sv, "Webcam viewer"sv, "WebcamViewer"sv, ":/icons/Webcam"sv},
     }};
 
     static Category get_category(Type type) {

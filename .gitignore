@@ -43,6 +43,7 @@ temp/**/*.obj
 temp/**/*.cpp
 temp/**/*.h
 temp/**/*.hpp
+temp/**/*.opt
 
 ## qmake
 qmake/**/*.rc
