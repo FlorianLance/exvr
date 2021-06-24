@@ -1,4 +1,7 @@
 
+## only for LNCO
+unity-projects/exp-launcher/Assets/Scripts/Data/LNCO-Components
+
 *.pro.user
 *.pro.user*
 
@@ -49,6 +52,21 @@ qmake/**/.qmake.stash
 qmake/**/MakeFile
 qmake/**/MakeFile.Debug
 qmake/**/MakeFile.Release
+
+## unity-projects
+unity-projects/exp-launcher/*.exe
+unity-projects/exp-launcher/.vs
+unity-projects/exp-launcher/Packages
+unity-projects/exp-launcher/AssetBundles
+unity-projects/exp-launcher/etc
+unity-projects/exp-launcher/Library
+unity-projects/exp-launcher/UnityPackageManager
+unity-projects/exp-launcher/obj
+unity-projects/exp-launcher/Temp
+unity-projects/exp-launcher/Temp
+unity-projects/exp-launcher/Assets/Plugins
+unity-projects/exp-launcher/Assets/AssetBundles
+unity-projects/exp-launcher/Assets/Thirdparty/private
 
 ## thirdparty
 thirdparty/**/*.sh
