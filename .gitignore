@@ -1,4 +1,5 @@
 
+*.pro.user
 *.pro.user*
 
 ## bin
@@ -41,6 +42,7 @@ temp/**/*.h
 temp/**/*.hpp
 
 ## qmake
+qmake/**/*.rc
 qmake/**/*.pch
 qmake/**/*.obj
 qmake/**/.qmake.stash
