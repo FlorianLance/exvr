@@ -20,12 +20,12 @@ TOOLBOX_UI_DIR              = $$TOOLBOX_TEMP_DIR"/ui"
 
 # exvr
 ## sub dir
-EXVR_PROJECTS_DIR        = $$EXVR_REPOSITORY_DIR"/projects"
+EXVR_CPP_PROJECTS_DIR    = $$EXVR_REPOSITORY_DIR"/cpp-projects"
 EXVR_QMAKE_DIR           = $$EXVR_REPOSITORY_DIR"/qmake"
 EXVR_BIN_DIR             = $$EXVR_REPOSITORY_DIR"/bin"
 EXVR_TEMP_DIR            = $$EXVR_REPOSITORY_DIR"/temp"
 EXVR_THIRDPARTY_DIR      = $$EXVR_REPOSITORY_DIR"/thirdparty"
-EXVR_RESOURCES_DIR       = $$EXVR_PROJECTS_DIR"/resources"
+EXVR_RESOURCES_DIR       = $$EXVR_CPP_PROJECTS_DIR"/resources"
 ## compilation directories
 EXVR_OBJ_DIR             = $$EXVR_TEMP_DIR"/obj"
 EXVR_MOC_DIR             = $$EXVR_TEMP_DIR"/moc"
@@ -68,7 +68,7 @@ defineTest(generate_toolbox_variables) {
 defineTest(generate_exvr_variables) {
 
     # include
-    eval($${1}_INCLUDES = $$EXVR_PROJECTS_DIR/$${2})
+    eval($${1}_INCLUDES = $$EXVR_CPP_PROJECTS_DIR/$${2})
     eval(export($${1}_INCLUDES))
 
     # objects files

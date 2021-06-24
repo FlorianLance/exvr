@@ -33,8 +33,8 @@ TEMPLATE = subdirs
 CONFIG += ordered
 
 SUBDIRS = \
-        projects/components\
-        projects/export\
-	projects/designer\
+	cpp-projects/components\
+	cpp-projects/export\
+	cpp-projects/designer\
 
 
