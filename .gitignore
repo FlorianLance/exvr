@@ -1,6 +1,10 @@
 
+## close-sources components
+unity-projects/exp-launcher/Assets/Scripts/Data/Components/Closed
 ## only for LNCO
-unity-projects/exp-launcher/Assets/Scripts/Data/LNCO-Components
+unity-projects/exp-launcher/Assets/Scripts/Data/Components/LNCO-only
+
+
 
 *.pro.user
 *.pro.user*
@@ -14,29 +18,29 @@ bin/**/*.ilk
 bin/**/*.pdb
 bin/**/*.exp
 bin/**/*logs.html
-bin/**/designer/logs
-bin/**/designer/exp-launcher/mono-scripting
-bin/**/designer/exp-launcher/**/*.dll
-bin/**/designer/exp-launcher/**/*.pdb
-bin/**/designer/exp-launcher/**/*.py
-bin/**/designer/exp-launcher/**/*.exe.config
-bin/**/designer/exp-launcher/**/*.xsd
-bin/**/designer/exp-launcher/**/*.config
-bin/**/designer/exp-launcher/**/*.config
-bin/**/designer/exp-launcher/**/*.targets
-bin/**/designer/exp-launcher/**/*.psb
-bin/**/designer/exp-launcher/**/*.json
-bin/**/designer/exp-launcher/**/*.psb
-bin/**/designer/exp-launcher/**/*.xml
-bin/**/designer/exp-launcher/**/*.tasks
-bin/**/designer/exp-launcher/**/*.rsp
-bin/**/designer/exp-launcher/**/*.resS
-bin/**/designer/exp-launcher/**/*.resource
-bin/**/designer/exp-launcher/**/*.mdb
-bin/**/designer/exp-launcher/**/*.info
-bin/**/designer/exp-launcher/**/*.bat
-bin/**/designer/exp-launcher/**/*.browser
-bin/**/designer/exp-launcher/**/*.aspx
+bin/**/exvr-designer/logs
+bin/**/exvr-designer/exp-launcher/mono-scripting
+bin/**/exvr-designer/exp-launcher/**/*.dll
+bin/**/exvr-designer/exp-launcher/**/*.pdb
+bin/**/exvr-designer/exp-launcher/**/*.py
+bin/**/exvr-designer/exp-launcher/**/*.exe.config
+bin/**/exvr-designer/exp-launcher/**/*.xsd
+bin/**/exvr-designer/exp-launcher/**/*.config
+bin/**/exvr-designer/exp-launcher/**/*.config
+bin/**/exvr-designer/exp-launcher/**/*.targets
+bin/**/exvr-designer/exp-launcher/**/*.psb
+bin/**/exvr-designer/exp-launcher/**/*.json
+bin/**/exvr-designer/exp-launcher/**/*.psb
+bin/**/exvr-designer/exp-launcher/**/*.xml
+bin/**/exvr-designer/exp-launcher/**/*.tasks
+bin/**/exvr-designer/exp-launcher/**/*.rsp
+bin/**/exvr-designer/exp-launcher/**/*.resS
+bin/**/exvr-designer/exp-launcher/**/*.resource
+bin/**/exvr-designer/exp-launcher/**/*.mdb
+bin/**/exvr-designer/exp-launcher/**/*.info
+bin/**/exvr-designer/exp-launcher/**/*.bat
+bin/**/exvr-designer/exp-launcher/**/*.browser
+bin/**/exvr-designer/exp-launcher/**/*.aspx
 
 ## temp
 temp/**/*.obj
@@ -55,6 +59,10 @@ qmake/**/MakeFile.Debug
 qmake/**/MakeFile.Release
 
 ## unity-projects
+unity-projects/exp-launcher/Logs
+unity-projects/exp-launcher/SteamVR*
+unity-projects/exp-launcher/Unity.XRLineRenderer*
+unity-projects/exp-launcher/Assets/_TerrainAutoUpgrade
 unity-projects/exp-launcher/*.exe
 unity-projects/exp-launcher/.vs
 unity-projects/exp-launcher/Packages

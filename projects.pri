@@ -1,18 +1,18 @@
 
 
 # lib
-## components
-#COMPONENTS_T        = "app" # debug
-COMPONENTS_T        = "lib"
+## exvr-components
+#EXVR_COMPONENTS_T   = "app" # debug
+EXVR_COMPONENTS_T   = "lib"
 
 # dll
-## export
-#EXPORT_T            = "app" # debug
-EXPORT_T            = "dll"
+## exvr-export
+#EXVR_EXPORT_T       = "app" # debug
+EXVR_EXPORT_T       = "dll"
 
 # app
-## designer
-DESIGNER_T          = "app"
+## exvr-designer
+EXVR_DESIGNER_T          = "app"
 
 # projects list
 TOOLBOX_PROJECTS +=\
@@ -21,6 +21,6 @@ TOOLBOX_PROJECTS +=\
     NODES:nodes \
 
 EXVR_PROJECTS +=\
-    COMPONENTS:components \
-    EXPORT:export \
-    DESIGNER:designer \
+    EXVR_COMPONENTS:exvr-components \
+    EXVR_EXPORT:exvr-export \
+    EXVR_DESIGNER:exvr-designer \

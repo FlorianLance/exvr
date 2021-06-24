@@ -1,7 +1,7 @@
 
 
 # /*******************************************************************************
-# ** Toolbox                                                                    **
+# ** exvr                                                                       **
 # ** MIT License                                                                **
 # ** Copyright (c) [2018] [Florian Lance]                                       **
 # **                                                                            **
@@ -33,8 +33,8 @@ TEMPLATE = subdirs
 CONFIG += ordered
 
 SUBDIRS = \
-	cpp-projects/components\
-	cpp-projects/export\
-	cpp-projects/designer\
+        cpp-projects/exvr-components\
+        cpp-projects/exvr-export\
+        cpp-projects/exvr-designer\
 
 
