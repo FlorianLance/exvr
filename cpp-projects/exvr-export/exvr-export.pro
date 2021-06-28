@@ -10,7 +10,7 @@ TARGET = exvr-export
 
 ####################################### PRI
 # defines projects settings
-include(../../projects.pri)
+include(../projects.pri)
 # defines compiling options
 include(../settings.pri)
 # generate paths
@@ -70,6 +70,10 @@ LIBS +=  \
     $$PYTHON_LIBS \
     # boost
     $$BOOST_LIBS \
+    # turbojpg
+    $$TURBOJPG_LIBS \
+    # fastfor
+    $$FASTPFOR_LIBS \
 
 ######################################## PROJECT FILES
 
@@ -89,6 +93,4 @@ SOURCES += \
     # main
     main.cpp \
 
-DISTFILES += \
-    ../config.pri
 

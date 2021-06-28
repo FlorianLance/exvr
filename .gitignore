@@ -4,59 +4,57 @@ unity-projects/exp-launcher/Assets/Scripts/Data/Components/Closed
 ## only for LNCO
 unity-projects/exp-launcher/Assets/Scripts/Data/Components/LNCO-only
 
-
-
 *.pro.user
 *.pro.user*
 
 ## bin
-bin/**/*.exe
-bin/**/*.lib
-bin/**/*.pdb
-bin/**/export/*.dll
-bin/**/*.ilk
-bin/**/*.pdb
-bin/**/*.exp
-bin/**/*logs.html
-bin/**/exvr-designer/logs
-bin/**/exvr-designer/exp-launcher/mono-scripting
-bin/**/exvr-designer/exp-launcher/**/*.dll
-bin/**/exvr-designer/exp-launcher/**/*.pdb
-bin/**/exvr-designer/exp-launcher/**/*.py
-bin/**/exvr-designer/exp-launcher/**/*.exe.config
-bin/**/exvr-designer/exp-launcher/**/*.xsd
-bin/**/exvr-designer/exp-launcher/**/*.config
-bin/**/exvr-designer/exp-launcher/**/*.config
-bin/**/exvr-designer/exp-launcher/**/*.targets
-bin/**/exvr-designer/exp-launcher/**/*.psb
-bin/**/exvr-designer/exp-launcher/**/*.json
-bin/**/exvr-designer/exp-launcher/**/*.psb
-bin/**/exvr-designer/exp-launcher/**/*.xml
-bin/**/exvr-designer/exp-launcher/**/*.tasks
-bin/**/exvr-designer/exp-launcher/**/*.rsp
-bin/**/exvr-designer/exp-launcher/**/*.resS
-bin/**/exvr-designer/exp-launcher/**/*.resource
-bin/**/exvr-designer/exp-launcher/**/*.mdb
-bin/**/exvr-designer/exp-launcher/**/*.info
-bin/**/exvr-designer/exp-launcher/**/*.bat
-bin/**/exvr-designer/exp-launcher/**/*.browser
-bin/**/exvr-designer/exp-launcher/**/*.aspx
+cpp-projects/_bin/**/*.exe
+cpp-projects/_bin/**/*.lib
+cpp-projects/_bin/**/*.pdb
+cpp-projects/_bin/**/export/*.dll
+cpp-projects/_bin/**/*.ilk
+cpp-projects/_bin/**/*.pdb
+cpp-projects/_bin/**/*.exp
+cpp-projects/_bin/**/*logs.html
+cpp-projects/_bin/**/exvr-designer/logs
+cpp-projects/_bin/**/exvr-designer/exp-launcher/mono-scripting
+cpp-projects/_bin/**/exvr-designer/exp-launcher/**/*.dll
+cpp-projects/_bin/**/exvr-designer/exp-launcher/**/*.pdb
+cpp-projects/_bin/**/exvr-designer/exp-launcher/**/*.py
+cpp-projects/_bin/**/exvr-designer/exp-launcher/**/*.exe.config
+cpp-projects/_bin/**/exvr-designer/exp-launcher/**/*.xsd
+cpp-projects/_bin/**/exvr-designer/exp-launcher/**/*.config
+cpp-projects/_bin/**/exvr-designer/exp-launcher/**/*.config
+cpp-projects/_bin/**/exvr-designer/exp-launcher/**/*.targets
+cpp-projects/_bin/**/exvr-designer/exp-launcher/**/*.psb
+cpp-projects/_bin/**/exvr-designer/exp-launcher/**/*.json
+cpp-projects/_bin/**/exvr-designer/exp-launcher/**/*.psb
+cpp-projects/_bin/**/exvr-designer/exp-launcher/**/*.xml
+cpp-projects/_bin/**/exvr-designer/exp-launcher/**/*.tasks
+cpp-projects/_bin/**/exvr-designer/exp-launcher/**/*.rsp
+cpp-projects/_bin/**/exvr-designer/exp-launcher/**/*.resS
+cpp-projects/_bin/**/exvr-designer/exp-launcher/**/*.resource
+cpp-projects/_bin/**/exvr-designer/exp-launcher/**/*.mdb
+cpp-projects/_bin/**/exvr-designer/exp-launcher/**/*.info
+cpp-projects/_bin/**/exvr-designer/exp-launcher/**/*.bat
+cpp-projects/_bin/**/exvr-designer/exp-launcher/**/*.browser
+cpp-projects/_bin/**/exvr-designer/exp-launcher/**/*.aspx
 
 ## temp
-temp/**/*.obj
-temp/**/*.cpp
-temp/**/*.h
-temp/**/*.hpp
-temp/**/*.opt
+cpp-projects/_temp/**/*.obj
+cpp-projects/_temp/**/*.cpp
+cpp-projects/_temp/**/*.h
+cpp-projects/_temp/**/*.hpp
+cpp-projects/_temp/**/*.opt
 
 ## qmake
-qmake/**/*.rc
-qmake/**/*.pch
-qmake/**/*.obj
-qmake/**/.qmake.stash
-qmake/**/MakeFile
-qmake/**/MakeFile.Debug
-qmake/**/MakeFile.Release
+cpp-projects/_qmake/**/*.rc
+cpp-projects/_qmake/**/*.pch
+cpp-projects/_qmake/**/*.obj
+cpp-projects/_qmake/**/.qmake.stash
+cpp-projects/_qmake/**/MakeFile
+cpp-projects/_qmake/**/MakeFile.Debug
+cpp-projects/_qmake/**/MakeFile.Release
 
 ## unity-projects
 unity-projects/exp-launcher/Logs
@@ -78,19 +76,19 @@ unity-projects/exp-launcher/Assets/AssetBundles
 unity-projects/exp-launcher/Assets/Thirdparty/private
 
 ## thirdparty
-thirdparty/**/*.sh
-thirdparty/**/*.re
-thirdparty/**/*.txt
-thirdparty/**/*.dtd
-thirdparty/**/*.pl
-thirdparty/**/*.m4
-thirdparty/**/*.ilk
-thirdparty/**/*.inc
-thirdparty/**/*.db
-thirdparty/**/*.shm
-thirdparty/**/*.erb
-thirdparty/**/*.wal
-thirdparty/**/*.bat
-thirdparty/**/*.patch
-thirdparty/**/*.exe
-thirdparty/**/.editorconfig
+cpp-projects/_thirdparty/**/*.sh
+cpp-projects/_thirdparty/**/*.re
+cpp-projects/_thirdparty/**/*.txt
+cpp-projects/_thirdparty/**/*.dtd
+cpp-projects/_thirdparty/**/*.pl
+cpp-projects/_thirdparty/**/*.m4
+cpp-projects/_thirdparty/**/*.ilk
+cpp-projects/_thirdparty/**/*.inc
+cpp-projects/_thirdparty/**/*.db
+cpp-projects/_thirdparty/**/*.shm
+cpp-projects/_thirdparty/**/*.erb
+cpp-projects/_thirdparty/**/*.wal
+cpp-projects/_thirdparty/**/*.bat
+cpp-projects/_thirdparty/**/*.patch
+cpp-projects/_thirdparty/**/*.exe
+cpp-projects/_thirdparty/**/.editorconfig

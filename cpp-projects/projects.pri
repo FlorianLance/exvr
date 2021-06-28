@@ -15,12 +15,12 @@ EXVR_EXPORT_T       = "dll"
 EXVR_DESIGNER_T          = "app"
 
 # projects list
-TOOLBOX_PROJECTS +=\
+TOOLBOX_CPP_PROJECTS +=\
     BASE:base \
     QT_UTILITY:qt-utility \
     NODES:nodes \
 
-EXVR_PROJECTS +=\
+EXVR_CPP_PROJECTS +=\
     EXVR_COMPONENTS:exvr-components \
     EXVR_EXPORT:exvr-export \
     EXVR_DESIGNER:exvr-designer \

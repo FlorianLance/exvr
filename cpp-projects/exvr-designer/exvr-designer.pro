@@ -10,7 +10,7 @@ TARGET = ExVR
 
 ####################################### PRI
 # defines projects settings
-include(../../projects.pri)
+include(../projects.pri)
 # defines compiling options
 include(../settings.pri)
 # generate paths
@@ -586,7 +586,7 @@ FORMS += \
     forms/resource_type.ui
 
 RESOURCES += \
-    ../resources/resources.qrc \
+    $$EXVR_CPP_RESOURCES_DIR"/resources.qrc" \
 
 
 RC_ICONS = ExVR_logo.ico

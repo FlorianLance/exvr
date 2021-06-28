@@ -1,13 +1,13 @@
 
 
-include(../toolbox/projects/thirdparty.pri)
+include(../toolbox/cpp-projects/thirdparty.pri)
 
 
 ########################################################### DIRECTORIES
 ############################# third-party headers only libraries
 ############################# third-party others
-PYTHON_DIR                           = $$EXVR_THIRDPARTY_DIR"/Python37"
-QWT_DIR                              = $$EXVR_THIRDPARTY_DIR"/qwt-6.1.4"
+PYTHON_DIR                           = $$EXVR_CPP_THIRDPARTY_DIR"/Python37"
+QWT_DIR                              = $$EXVR_CPP_THIRDPARTY_DIR"/qwt-6.1.4"
 
 ########################################################### INCLUDES
 
