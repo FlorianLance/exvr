@@ -107,52 +107,52 @@ namespace Ex{
             #region DllImport
 
             // memory management
-            [DllImport("exvr-export", EntryPoint = "create_scaner_video_file", CallingConvention = CallingConvention.Cdecl)]
+            [DllImport("lnco-exvr-export", EntryPoint = "create_scaner_video_file", CallingConvention = CallingConvention.Cdecl)]
             static private extern IntPtr create_scaner_video_file();
 
-            [DllImport("exvr-export", EntryPoint = "delete_scaner_video_file", CallingConvention = CallingConvention.Cdecl)]
+            [DllImport("lnco-exvr-export", EntryPoint = "delete_scaner_video_file", CallingConvention = CallingConvention.Cdecl)]
             static private extern void delete_scaner_video_file(HandleRef scanerVideoFile);
 
-            [DllImport("exvr-export", EntryPoint = "load_scaner_video_file", CallingConvention = CallingConvention.Cdecl)]
+            [DllImport("lnco-exvr-export", EntryPoint = "load_scaner_video_file", CallingConvention = CallingConvention.Cdecl)]
             static private extern int load_scaner_video_file(HandleRef scanerVideoFile, string pathVideoFile);
 
-            [DllImport("exvr-export", EntryPoint = "get_duration_ms_scaner_video_file", CallingConvention = CallingConvention.Cdecl)]
+            [DllImport("lnco-exvr-export", EntryPoint = "get_duration_ms_scaner_video_file", CallingConvention = CallingConvention.Cdecl)]
             static private extern int get_duration_ms_scaner_video_file(HandleRef scanerVideoFile);
 
-            [DllImport("exvr-export", EntryPoint = "get_camera_nb_scaner_video_file", CallingConvention = CallingConvention.Cdecl)]
+            [DllImport("lnco-exvr-export", EntryPoint = "get_camera_nb_scaner_video_file", CallingConvention = CallingConvention.Cdecl)]
             static private extern int get_camera_nb_scaner_video_file(HandleRef scanerVideoFile);
 
-            [DllImport("exvr-export", EntryPoint = "get_camera_cloud_size_video_file", CallingConvention = CallingConvention.Cdecl)]
+            [DllImport("lnco-exvr-export", EntryPoint = "get_camera_cloud_size_video_file", CallingConvention = CallingConvention.Cdecl)]
             static private extern int get_camera_cloud_size_video_file(HandleRef scanerVideoFile, int idC);            
 
-            [DllImport("exvr-export", EntryPoint = "get_cloud_model_transform_scaner_video_file", CallingConvention = CallingConvention.Cdecl)]
+            [DllImport("lnco-exvr-export", EntryPoint = "get_cloud_model_transform_scaner_video_file", CallingConvention = CallingConvention.Cdecl)]
             static private extern void get_cloud_model_transform_scaner_video_file(HandleRef scanerVideoFile, int idC, float[] model);
 
-            [DllImport("exvr-export", EntryPoint = "update_cloud_data_scaner_video_file", CallingConvention = CallingConvention.Cdecl)]
+            [DllImport("lnco-exvr-export", EntryPoint = "update_cloud_data_scaner_video_file", CallingConvention = CallingConvention.Cdecl)]
             static private extern int update_cloud_data_scaner_video_file(HandleRef scanerVideoFile, int idC, int timeMs, int maxDiffTimeMs, int loop, IntPtr vertices, IntPtr colors);
 
-            [DllImport("exvr-export", EntryPoint = "get_nb_bodies_scaner_video_file", CallingConvention = CallingConvention.Cdecl)]
+            [DllImport("lnco-exvr-export", EntryPoint = "get_nb_bodies_scaner_video_file", CallingConvention = CallingConvention.Cdecl)]
             static private extern int get_nb_bodies_scaner_video_file(HandleRef scanerVideoFile, int idC);
 
-            [DllImport("exvr-export", EntryPoint = "is_body_tracked_scaner_video_file", CallingConvention = CallingConvention.Cdecl)]
+            [DllImport("lnco-exvr-export", EntryPoint = "is_body_tracked_scaner_video_file", CallingConvention = CallingConvention.Cdecl)]
             static private extern int is_body_tracked_scaner_video_file(HandleRef scanerVideoFile, int idC, int idBody);
 
-            [DllImport("exvr-export", EntryPoint = "is_body_restricted_scaner_video_file", CallingConvention = CallingConvention.Cdecl)]
+            [DllImport("lnco-exvr-export", EntryPoint = "is_body_restricted_scaner_video_file", CallingConvention = CallingConvention.Cdecl)]
             static private extern int is_body_restricted_scaner_video_file(HandleRef scanerVideoFile, int idC, int idBody);
 
-            [DllImport("exvr-export", EntryPoint = "is_body_hand_detected_scaner_video_file", CallingConvention = CallingConvention.Cdecl)]
+            [DllImport("lnco-exvr-export", EntryPoint = "is_body_hand_detected_scaner_video_file", CallingConvention = CallingConvention.Cdecl)]
             static private extern int is_body_hand_detected_scaner_video_file(HandleRef scanerVideoFile, int idC, int idBody, int leftHand);
 
-            [DllImport("exvr-export", EntryPoint = "is_body_hand_confident_scaner_video_file", CallingConvention = CallingConvention.Cdecl)]
+            [DllImport("lnco-exvr-export", EntryPoint = "is_body_hand_confident_scaner_video_file", CallingConvention = CallingConvention.Cdecl)]
             static private extern int is_body_hand_confident_scaner_video_file(HandleRef scanerVideoFile, int idC, int idBody, int leftHand);
 
-            [DllImport("exvr-export", EntryPoint = "body_joints_positions_scaner_video_file", CallingConvention = CallingConvention.Cdecl)]
+            [DllImport("lnco-exvr-export", EntryPoint = "body_joints_positions_scaner_video_file", CallingConvention = CallingConvention.Cdecl)]
             static private extern void body_joints_positions_scaner_video_file(HandleRef scanerVideoFile, int idC, int idBody, float[] positions);
 
-            [DllImport("exvr-export", EntryPoint = "body_joints_rotations_scaner_video_file", CallingConvention = CallingConvention.Cdecl)]
+            [DllImport("lnco-exvr-export", EntryPoint = "body_joints_rotations_scaner_video_file", CallingConvention = CallingConvention.Cdecl)]
             static private extern void body_joints_rotations_scaner_video_file(HandleRef scanerVideoFile, int idC, int idBody, float[] rotations);
 
-            [DllImport("exvr-export", EntryPoint = "body_joints_states_scaner_video_file", CallingConvention = CallingConvention.Cdecl)]
+            [DllImport("lnco-exvr-export", EntryPoint = "body_joints_states_scaner_video_file", CallingConvention = CallingConvention.Cdecl)]
             static private extern void body_joints_states_scaner_video_file(HandleRef scanerVideoFile, int idC, int idBody, int[] states);
 
             #endregion DllImport        

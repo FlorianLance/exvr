@@ -51,7 +51,7 @@ namespace Modified.Mono.CSharp{
         static CSharpCodeCompiler() {
             if (Path.DirectorySeparatorChar == '\\') {
 
-                string monoFolderPath = Ex.ExVR.Paths().monoDir;
+                string monoFolderPath = Ex.ExVR.Paths().expLauncherMonoDir;
                 windowsMonoPath = Path.Combine(monoFolderPath, "bin\\mono.bat");
                 if (!File.Exists(windowsMonoPath)) {
                     windowsMonoPath = Path.Combine(monoFolderPath, "bin\\mono.exe");

@@ -74,10 +74,10 @@ namespace Ex{
                     instanceFilePath = ExVR.Paths().lastLoadedInstanceFile;
                 } else {
                     ExVR.Log().warning("No last loaded instance file found, will try to load default instance file instead.");
-                    instanceFilePath = ExVR.Paths().defaultInstanceFile;
+                    instanceFilePath = ExVR.Paths().designerDefaultInstanceFile;
                 }
 
-                ExVR.Network().send_command_from_exp_launcher(NetworkManager.Command.Load, string.Format("{0}|{1}", ExVR.Paths().expFile, instanceFilePath));
+                ExVR.Network().send_command_from_exp_launcher(NetworkManager.Command.Load, string.Format("{0}|{1}", ExVR.Paths().designerTempExpFile, instanceFilePath));
             });
             bStop.onClick.AddListener(() => {
                 ExVR.Network().send_command_from_exp_launcher(NetworkManager.Command.Stop);

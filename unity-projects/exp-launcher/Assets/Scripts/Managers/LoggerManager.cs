@@ -267,8 +267,8 @@ namespace Ex {
                 componentsFunctionsStr[f] = f.ToString();
             }
 
-            filePath     = string.Format("{0}/exp_log.txt", ExVR.Paths().logDir);
-            prevFilePath = string.Format("{0}/exp_log_previous.txt", ExVR.Paths().logDir);
+            filePath     = string.Format("{0}/exp_log.txt", ExVR.Paths().designerLogDir);
+            prevFilePath = string.Format("{0}/exp_log_previous.txt", ExVR.Paths().designerLogDir);
 
             // copy previous log file
             if (File.Exists(filePath)) {

@@ -147,7 +147,7 @@ namespace Ex {
             foreach (var resource in resources) {
 
                 if (!Path.IsPathRooted(resource.Path)) {
-                    resource.Path = Path.GetFullPath(ExVR.Paths().expDir + "/" + resource.Path);
+                    resource.Path = Path.GetFullPath(ExVR.Paths().designerDataTempDir + "/" + resource.Path);
                 }
 
                 var type = (ResourceType)Enum.Parse(typeof(ResourceType), resource.Type);
@@ -180,7 +180,7 @@ namespace Ex {
         private bool add_resource_from_xml(XML.Resource resource, ResourceType type) {
 
             if (!Path.IsPathRooted(resource.Path)) {
-                resource.Path = Path.GetFullPath(ExVR.Paths().expDir + "/" + resource.Path);
+                resource.Path = Path.GetFullPath(ExVR.Paths().designerDataTempDir + "/" + resource.Path);
             }
 
             bool exists = (type == ResourceType.Directory) ? Directory.Exists(resource.Path) : File.Exists(resource.Path);

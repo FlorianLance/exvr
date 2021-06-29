@@ -14,54 +14,55 @@ namespace Ex{
 
     public class PathsManager : MonoBehaviour{
 
-        public string exeFile;
+        public string expLauncherExeFile;
+        public string expLauncherMainDir;
+        public string expLauncherDataDir;
+        public string expLauncherMonoDir;
 
-        public string unityMainDir;
-        public string unityDataDir;
-
-        public string expDir;
-        public string expFile;
-        public string defaultInstanceFile;
+        public string designerMainDir;
+        public string designerDataTempDir;
+        public string designerTempExpFile;
+        public string designerDefaultInstanceFile;
+        public string designerLogDir;
 
         public string lastLoadedInstanceFile = "";
 
-        public string logDir;
 
-        public string monoDir;
-        
         public void initialize() {
 
-            unityDataDir = Application.dataPath;
+            expLauncherDataDir = Application.dataPath;
             var platform = Application.platform;
             if (platform == RuntimePlatform.WindowsPlayer || platform == RuntimePlatform.WindowsEditor) {
-                unityMainDir = unityDataDir + "/..";
-                exeFile      = unityMainDir + "/ExVR-exp.exe";
+                expLauncherMainDir = expLauncherDataDir + "/..";
+                expLauncherExeFile = expLauncherMainDir + "/ExVR-exp.exe";
             } else if (platform == RuntimePlatform.LinuxPlayer) {
-                //unityMainDir = unityDataDir + "/../.."; 
-                //exeFile = unityMainDir + "/ExVR-exp.exe";
-            } else if (platform == RuntimePlatform.OSXPlayer) {
-                //unityMainDir = unityDataDir + "/../..";
-                //exeFile = unityMainDir + "/ExVR-exp.exe";
+                //expLauncherMainDir = ...; 
+                //expLauncherExeFile = ...;
             }
-            monoDir = unityDataDir + "/../mono-scripting";
+            else if (platform == RuntimePlatform.OSXPlayer) {
+                //expLauncherMainDir = ...;
+                //expLauncherExeFile = ...;
+            }
+            expLauncherMonoDir = expLauncherMainDir + "/mono-scripting";
 
 #if UNITY_EDITOR
-            string config   = "release";// ExVR.GuiSettings().designerDebugBuild ? "debug" : "release";
-            expDir          = string.Format("{0}/../../../build/bin/{1}/designer/data/temp", unityDataDir, config);
-            expFile         = string.Format("{0}/../../../build/bin/{1}/designer/data/temp/exp.xml", unityDataDir, config);            
-            defaultInstanceFile    = string.Format("{0}/../../../build/bin/{1}/designer/data/temp/debug-instance.xml", unityDataDir, config);
-            logDir          = string.Format("{0}/../../../build/bin/{1}/designer/logs", unityDataDir, config);
+            string config               = "release";// ExVR.GuiSettings().designerDebugBuild ? "debug" : "release";
+            designerMainDir             = string.Format("{0}/../../cpp-projects/_bin/{1}/exvr-designer", expLauncherMainDir, config);
+            designerDataTempDir         = string.Format("{0}/data/temp", designerMainDir);
+            designerTempExpFile         = string.Format("{0}/data/temp/exp.xml", designerMainDir);                        
+            designerLogDir              = string.Format("{0}/logs", designerMainDir);
+            designerDefaultInstanceFile = string.Format("{0}/data/temp/debug-instance.xml", designerMainDir);
 #else
-            expDir  = unityDataDir + "/../../data/temp";
-            expFile = unityDataDir + "/../../data/temp/exp.xml";
-            defaultInstanceFile = unityDataDir + "/../../data/temp/debug-instance.xml";  
-            logDir = unityDataDir + "/../../logs";
+            designerMainDir             = expLauncherMainDir + "/..";
+            designerDataTempDir         = designerMainDir + "/data/temp";
+            designerTempExpFile         = designerMainDir + "/data/temp/exp.xml";           
+            designerLogDir              = designerMainDir + "/logs";
+            designerDefaultInstanceFile = designerMainDir + "/data/temp/debug-instance.xml";
 #endif
 
-            if (!File.Exists(expFile)) {                
-                expDir              = unityDataDir;
-                expFile             = unityDataDir + "/exp.xml";
-                defaultInstanceFile = unityDataDir + "/debug-instance.xml";
+            if (!File.Exists(designerTempExpFile)) {                
+                designerTempExpFile         = expLauncherMainDir + "/exp.xml";
+                designerDefaultInstanceFile = expLauncherMainDir + "/debug-instance.xml";
             }
         }
     }

@@ -17,8 +17,9 @@ cpp-projects/_bin/**/*.pdb
 cpp-projects/_bin/**/*.exp
 cpp-projects/_bin/**/*logs.html
 cpp-projects/_bin/**/exvr-designer/logs
-cpp-projects/_bin/**/exvr-designer/exp-launcher/mono-scripting
-cpp-projects/_bin/**/exvr-designer/exp-launcher/**/*.dll
+cpp-projects/_bin/**/exvr-designer/exp-launcher/ExVR-exp_Data
+cpp-projects/_bin/**/exvr-designer/exp-launcher/MonoBleedingEdge
+cpp-projects/_bin/**/exvr-designer/exp-launcher/UnityPlayer.dll
 cpp-projects/_bin/**/exvr-designer/exp-launcher/**/*.pdb
 cpp-projects/_bin/**/exvr-designer/exp-launcher/**/*.py
 cpp-projects/_bin/**/exvr-designer/exp-launcher/**/*.exe.config
