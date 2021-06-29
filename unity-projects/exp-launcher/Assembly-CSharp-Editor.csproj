@@ -363,9 +363,6 @@
     <Reference Include="UnityEditor.WindowsStandalone.Extensions">
       <HintPath>C:\Program Files\Unity\Hub\Editor\2019.4.28f1\Editor\Data\PlaybackEngines\WindowsStandaloneSupport\UnityEditor.WindowsStandalone.Extensions.dll</HintPath>
     </Reference>
-    <Reference Include="Valve.Newtonsoft.Json">
-      <HintPath>Assets\Thirdparty\public\Steam\SteamVR\Input\Plugins\JSON.NET\Valve.Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.Dynamic">
       <HintPath>Assets\Plugins\Microsoft.Dynamic.dll</HintPath>
     </Reference>
@@ -377,6 +374,9 @@
     </Reference>
     <Reference Include="Microsoft.Scripting">
       <HintPath>Assets\Plugins\Microsoft.Scripting.dll</HintPath>
+    </Reference>
+    <Reference Include="Valve.Newtonsoft.Json">
+      <HintPath>Assets\Thirdparty\public\Steam\SteamVR\Input\Plugins\JSON.NET\Valve.Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework">
       <HintPath>Library\PackageCache\com.unity.ext.nunit@1.0.6\net35\unity-custom\nunit.framework.dll</HintPath>

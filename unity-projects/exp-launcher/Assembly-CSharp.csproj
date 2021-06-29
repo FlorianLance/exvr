@@ -242,6 +242,7 @@
     <Compile Include="Assets\Scripts\Resources\VideoResource.cs" />
     <Compile Include="Assets\Scripts\Scheduler.cs" />
     <Compile Include="Assets\Scripts\Utility\Animation\AnimationController.cs" />
+    <Compile Include="Assets\Scripts\Utility\AssetsBundle\AssetBundleBuilder.cs" />
     <Compile Include="Assets\Scripts\Utility\Audio\SaveAudioClip.cs" />
     <Compile Include="Assets\Scripts\Utility\Camera\CameraSettings.cs" />
     <Compile Include="Assets\Scripts\Utility\Camera\CameraTarget.cs" />
@@ -1030,9 +1031,6 @@
     <Reference Include="UnityEditor">
       <HintPath>C:\Program Files\Unity\Hub\Editor\2019.4.28f1\Editor\Data\Managed\UnityEditor.dll</HintPath>
     </Reference>
-    <Reference Include="Valve.Newtonsoft.Json">
-      <HintPath>Assets\Thirdparty\public\Steam\SteamVR\Input\Plugins\JSON.NET\Valve.Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.Dynamic">
       <HintPath>Assets\Plugins\Microsoft.Dynamic.dll</HintPath>
     </Reference>
@@ -1044,6 +1042,9 @@
     </Reference>
     <Reference Include="Microsoft.Scripting">
       <HintPath>Assets\Plugins\Microsoft.Scripting.dll</HintPath>
+    </Reference>
+    <Reference Include="Valve.Newtonsoft.Json">
+      <HintPath>Assets\Thirdparty\public\Steam\SteamVR\Input\Plugins\JSON.NET\Valve.Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="mscorlib">
       <HintPath>C:\Program Files\Unity\Hub\Editor\2019.4.28f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\mscorlib.dll</HintPath>
