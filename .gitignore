@@ -2,7 +2,7 @@
 ## close-sources components
 unity-projects/exp-launcher/Assets/Scripts/Data/Components/Closed
 ## only for LNCO
-unity-projects/exp-launcher/Assets/Scripts/Data/Components/LNCO-only
+unity-projects/exp-launcher/Assets/Scripts/Data/Components/LNCO
 
 *.pro.user
 *.pro.user*
@@ -20,6 +20,7 @@ cpp-projects/_bin/**/exvr-designer/logs
 cpp-projects/_bin/**/exvr-designer/exp-launcher/ExVR-exp_Data
 cpp-projects/_bin/**/exvr-designer/exp-launcher/MonoBleedingEdge
 cpp-projects/_bin/**/exvr-designer/exp-launcher/UnityPlayer.dll
+cpp-projects/_bin/**/exvr-designer/exp-launcher/exvr-export.dll
 cpp-projects/_bin/**/exvr-designer/exp-launcher/lnco-exvr-export.dll
 cpp-projects/_bin/**/exvr-designer/exp-launcher/**/*.pdb
 cpp-projects/_bin/**/exvr-designer/exp-launcher/**/*.py
@@ -59,6 +60,7 @@ cpp-projects/_qmake/**/MakeFile.Debug
 cpp-projects/_qmake/**/MakeFile.Release
 
 ## unity-projects
+unity-projects/exp-launcher/lnco-exvr-export.dll
 unity-projects/exp-launcher/Logs
 unity-projects/exp-launcher/SteamVR*
 unity-projects/exp-launcher/Unity.XRLineRenderer*
@@ -72,8 +74,6 @@ unity-projects/exp-launcher/Library
 unity-projects/exp-launcher/UnityPackageManager
 unity-projects/exp-launcher/obj
 unity-projects/exp-launcher/Temp
-unity-projects/exp-launcher/Temp
-unity-projects/exp-launcher/Assets/Plugins
 unity-projects/exp-launcher/Assets/AssetBundles
 unity-projects/exp-launcher/Assets/Thirdparty/private
 
