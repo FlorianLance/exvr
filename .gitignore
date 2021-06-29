@@ -17,7 +17,7 @@ cpp-projects/**/*.rc
 cpp-projects/_build/bin/**/*.exe
 cpp-projects/_build/bin/**/*.lib
 cpp-projects/_build/bin/**/*.pdb
-cpp-projects/_build/bin/**/export/*.dll
+cpp-projects/_build/bin/**/exvr-export.dll
 cpp-projects/_build/bin/**/*.ilk
 cpp-projects/_build/bin/**/*.pdb
 cpp-projects/_build/bin/**/*.exp
@@ -55,6 +55,8 @@ cpp-projects/_build/temp/**/*.cpp
 cpp-projects/_build/temp/**/*.h
 cpp-projects/_build/temp/**/*.hpp
 cpp-projects/_build/temp/**/*.opt
+cpp-projects/_build/temp/**/*.res
+cpp-projects/_build/temp/**/*.pdb
 
 ## unity-projects
 unity-projects/exp-launcher/exvr-export.dll
