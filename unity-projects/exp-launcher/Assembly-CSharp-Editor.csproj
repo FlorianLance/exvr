@@ -56,6 +56,52 @@
     <Analyzer Include="C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\Extensions\Microsoft\Visual Studio Tools for Unity\Analyzers\Microsoft.Unity.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Thirdparty\private\RootMotion\Editor\FinalIK\AimIKInspector.cs" />
+    <Compile Include="Assets\Thirdparty\private\RootMotion\Editor\FinalIK\AimPoserInspector.cs" />
+    <Compile Include="Assets\Thirdparty\private\RootMotion\Editor\FinalIK\ArmIKInspector.cs" />
+    <Compile Include="Assets\Thirdparty\private\RootMotion\Editor\FinalIK\BipedIKInspector.cs" />
+    <Compile Include="Assets\Thirdparty\private\RootMotion\Editor\FinalIK\BipedIKSolversInspector.cs" />
+    <Compile Include="Assets\Thirdparty\private\RootMotion\Editor\FinalIK\CCDIKInspector.cs" />
+    <Compile Include="Assets\Thirdparty\private\RootMotion\Editor\FinalIK\ConstraintsInspector.cs" />
+    <Compile Include="Assets\Thirdparty\private\RootMotion\Editor\FinalIK\FABRIKInspector.cs" />
+    <Compile Include="Assets\Thirdparty\private\RootMotion\Editor\FinalIK\FABRIKRootInspector.cs" />
+    <Compile Include="Assets\Thirdparty\private\RootMotion\Editor\FinalIK\FingerRigInspector.cs" />
+    <Compile Include="Assets\Thirdparty\private\RootMotion\Editor\FinalIK\FullBodyBipedIKInspector.cs" />
+    <Compile Include="Assets\Thirdparty\private\RootMotion\Editor\FinalIK\GroundingInspector.cs" />
+    <Compile Include="Assets\Thirdparty\private\RootMotion\Editor\FinalIK\IKEffectorInspector.cs" />
+    <Compile Include="Assets\Thirdparty\private\RootMotion\Editor\FinalIK\IKExecutionOrderInspector.cs" />
+    <Compile Include="Assets\Thirdparty\private\RootMotion\Editor\FinalIK\IKInspector.cs" />
+    <Compile Include="Assets\Thirdparty\private\RootMotion\Editor\FinalIK\IKSolverAimInspector.cs" />
+    <Compile Include="Assets\Thirdparty\private\RootMotion\Editor\FinalIK\IKSolverArmInspector.cs" />
+    <Compile Include="Assets\Thirdparty\private\RootMotion\Editor\FinalIK\IKSolverFABRIKRootInspector.cs" />
+    <Compile Include="Assets\Thirdparty\private\RootMotion\Editor\FinalIK\IKSolverFullBodyBipedInspector.cs" />
+    <Compile Include="Assets\Thirdparty\private\RootMotion\Editor\FinalIK\IKSolverFullBodyInspector.cs" />
+    <Compile Include="Assets\Thirdparty\private\RootMotion\Editor\FinalIK\IKSolverHeuristicInspector.cs" />
+    <Compile Include="Assets\Thirdparty\private\RootMotion\Editor\FinalIK\IKSolverInspector.cs" />
+    <Compile Include="Assets\Thirdparty\private\RootMotion\Editor\FinalIK\IKSolverLegInspector.cs" />
+    <Compile Include="Assets\Thirdparty\private\RootMotion\Editor\FinalIK\IKSolverLimbInspector.cs" />
+    <Compile Include="Assets\Thirdparty\private\RootMotion\Editor\FinalIK\IKSolverLookAtInspector.cs" />
+    <Compile Include="Assets\Thirdparty\private\RootMotion\Editor\FinalIK\IKSolverTrigonometricInspector.cs" />
+    <Compile Include="Assets\Thirdparty\private\RootMotion\Editor\FinalIK\InteractionTargetInspector.cs" />
+    <Compile Include="Assets\Thirdparty\private\RootMotion\Editor\FinalIK\InteractionTriggerInspector.cs" />
+    <Compile Include="Assets\Thirdparty\private\RootMotion\Editor\FinalIK\LegIKInspector.cs" />
+    <Compile Include="Assets\Thirdparty\private\RootMotion\Editor\FinalIK\LimbIKInspector.cs" />
+    <Compile Include="Assets\Thirdparty\private\RootMotion\Editor\FinalIK\LookAtIKInspector.cs" />
+    <Compile Include="Assets\Thirdparty\private\RootMotion\Editor\FinalIK\RotationLimitAngleInspector.cs" />
+    <Compile Include="Assets\Thirdparty\private\RootMotion\Editor\FinalIK\RotationLimitHingeInspector.cs" />
+    <Compile Include="Assets\Thirdparty\private\RootMotion\Editor\FinalIK\RotationLimitInspector.cs" />
+    <Compile Include="Assets\Thirdparty\private\RootMotion\Editor\FinalIK\RotationLimitPolygonalInspector.cs" />
+    <Compile Include="Assets\Thirdparty\private\RootMotion\Editor\FinalIK\RotationLimitSplineInspector.cs" />
+    <Compile Include="Assets\Thirdparty\private\RootMotion\Editor\FinalIK\TrigonometricIKInspector.cs" />
+    <Compile Include="Assets\Thirdparty\private\RootMotion\Editor\FinalIK\VRIKInspector.cs" />
+    <Compile Include="Assets\Thirdparty\private\RootMotion\Editor\FinalIK\_DEMOS\BendGoalInspector.cs" />
+    <Compile Include="Assets\Thirdparty\private\RootMotion\Editor\Shared Demo Scripts\CameraControllerInspector.cs" />
+    <Compile Include="Assets\Thirdparty\private\RootMotion\Editor\Shared Scripts\BipedReferencesInspector.cs" />
+    <Compile Include="Assets\Thirdparty\private\RootMotion\Editor\Shared Scripts\CommentsInspector.cs" />
+    <Compile Include="Assets\Thirdparty\private\RootMotion\Editor\Shared Scripts\Inspector.cs" />
+    <Compile Include="Assets\Thirdparty\private\RootMotion\Editor\Shared Scripts\InspectorCommentDrawer.cs" />
+    <Compile Include="Assets\Thirdparty\private\RootMotion\Editor\Shared Scripts\LargeHeaderDrawer.cs" />
+    <Compile Include="Assets\Thirdparty\private\RootMotion\Editor\Shared Scripts\SerializedContent.cs" />
     <Compile Include="Assets\Thirdparty\public\Graphy - Ultimate Stats Monitor\Scripts\Editor\GraphyDebuggerEditor.cs" />
     <Compile Include="Assets\Thirdparty\public\Graphy - Ultimate Stats Monitor\Scripts\Editor\GraphyManagerEditor.cs" />
     <Compile Include="Assets\Thirdparty\public\LeapMotion\Core\Editor\CorePreferences.cs" />
@@ -316,6 +362,18 @@
     </Reference>
     <Reference Include="UnityEditor.WindowsStandalone.Extensions">
       <HintPath>C:\Software\Unity-editors\2019.4.28f1\Editor\Data\PlaybackEngines\WindowsStandaloneSupport\UnityEditor.WindowsStandalone.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Dynamic">
+      <HintPath>Assets\Plugins\Microsoft.Dynamic.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Scripting.AspNet">
+      <HintPath>Assets\Plugins\Microsoft.Scripting.AspNet.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Scripting.Core">
+      <HintPath>Assets\Plugins\Microsoft.Scripting.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Scripting">
+      <HintPath>Assets\Plugins\Microsoft.Scripting.dll</HintPath>
     </Reference>
     <Reference Include="Valve.Newtonsoft.Json">
       <HintPath>Assets\Thirdparty\public\Steam\SteamVR\Input\Plugins\JSON.NET\Valve.Newtonsoft.Json.dll</HintPath>

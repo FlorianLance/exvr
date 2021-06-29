@@ -60,6 +60,7 @@ cpp-projects/_qmake/**/MakeFile.Debug
 cpp-projects/_qmake/**/MakeFile.Release
 
 ## unity-projects
+unity-projects/exp-launcher/exvr-export.dll
 unity-projects/exp-launcher/lnco-exvr-export.dll
 unity-projects/exp-launcher/Logs
 unity-projects/exp-launcher/SteamVR*
