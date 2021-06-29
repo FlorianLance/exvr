@@ -5,27 +5,34 @@
 # ** Copyright (c) [2018] [Florian Lance][EPFL-LNCO]                            **
 # ********************************************************************************/
 
-####################################### TARGET
-TARGET = ExVR
+####################################### repo
+EXVR_REPOSITORY_DIR      = $$PWD"/../.."
 
 ####################################### PRI
-# defines projects settings
-include(../projects.pri)
 # defines compiling options
-include(../settings.pri)
-# generate paths
-include(../paths.pri)
+include(../exvr-settings.pri)
+# defines projects paths and variables
+include(../exvr-projects.pri)
 # defines thirdparty includes and libs
-include(../thirdparty.pri)
+include(../exvr-thirdparty.pri)
+
+####################################### TARGET
+equals(CFG, "debug"){
+    TARGET = ExVR-designerd
+}
+equals(CFG, "release"){
+    TARGET = ExVR-designer
+}
 
 ####################################### TEMPLATE
-equals(EXVR_DESIGNER_T, "app"){
+equals(EXVR_DESIGNER_TARGET, "app"){
     TEMPLATE = app
     CONFIG += console precompile_header
     DEFINES += QT_MESSAGELOGCONTEXT
     PRECOMPILED_HEADER = stable.h
 }
 
+####################################### BUILD FILES
 OBJECTS_DIR = $$EXVR_DESIGNER_OBJ
 MOC_DIR     = $$EXVR_DESIGNER_MOC
 RCC_DIR     = $$EXVR_DESIGNER_RCC

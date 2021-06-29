@@ -5,33 +5,39 @@
 # ** Copyright (c) [2018] [Florian Lance][EPFL-LNCO]                            **
 # ********************************************************************************/
 
-####################################### TARGET
-TARGET = exvr-components
+####################################### repo
+EXVR_REPOSITORY_DIR      = $$PWD"/../.."
 
 ####################################### PRI
-# defines projects settings
-include(../projects.pri)
 # defines compiling options
-include(../settings.pri)
-# generate paths
-include(../paths.pri)
+include(../exvr-settings.pri)
+# defines projects paths and variables
+include(../exvr-projects.pri)
 # defines thirdparty includes and libs
-include(../thirdparty.pri)
+include(../exvr-thirdparty.pri)
+
+####################################### TARGET
+equals(CFG, "debug"){
+    TARGET = exvr-componentsd
+}
+equals(CFG, "release"){
+    TARGET = exvr-components
+}
 
 ####################################### TEMPLATE
-equals(EXVR_COMPONENTS_T, "lib"){
+equals(EXVR_COMPONENTS_TARGET, "lib"){
     TEMPLATE = lib
     CONFIG += staticlib
     CONFIG -= console
 }
-equals(EXVR_COMPONENTS_T, "app"){
+equals(EXVR_COMPONENTS_TARGET, "app"){
     TEMPLATE = app
     CONFIG += console
 }
 
+####################################### BUILD FILES
 OBJECTS_DIR = $$EXVR_COMPONENTS_OBJ
 DESTDIR     = $$EXVR_COMPONENTS_DEST
-
 
 ####################################### CONFIG
 CONFIG -= qt

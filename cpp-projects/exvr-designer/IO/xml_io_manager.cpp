@@ -1788,6 +1788,7 @@ bool XmlIoManager::read_flow_order(){
 bool XmlIoManager::save_experiment(){
 
     if(m_experiment->states.currentExpfilePath.size() == 0){
+        QtLogger::error(QSL("[XML] No current experiment file defined, use \"Save as\" instead. "));
         return false;
     }
 

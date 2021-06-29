@@ -1,7 +1,6 @@
 
 
-include(../toolbox/cpp-projects/thirdparty.pri)
-
+include(../toolbox/cpp-projects/tb-thirdparty.pri)
 
 ########################################################### DIRECTORIES
 ############################# third-party headers only libraries
@@ -22,9 +21,10 @@ QWT_INCLUDES = \
 equals(COMPILER, "vs"){
 
 ########################################################### DEBUG LIBS
-    CONFIG(debug, debug|release){
+    equals(CFG, "debug"){
 
 ############################# PYTHON
+
 
 ############################# QWT
         QWT_LIBS =\
@@ -33,7 +33,7 @@ equals(COMPILER, "vs"){
     }
 
 ########################################################### RELEASE LIBS
-    CONFIG(release, debug|release){
+    equals(CFG, "release"){
 
 ############################# PYTHON
         PYTHON_LIBS =\

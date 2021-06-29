@@ -5,31 +5,37 @@
 # ** Copyright (c) [2018] [Florian Lance][EPFL-LNCO]                            **
 # ********************************************************************************/
 
-####################################### TARGET
-TARGET = exvr-export
+####################################### repo
+EXVR_REPOSITORY_DIR      = $$PWD"/../.."
 
 ####################################### PRI
-# defines projects settings
-include(../projects.pri)
 # defines compiling options
-include(../settings.pri)
-# generate paths
-include(../paths.pri)
+include(../exvr-settings.pri)
+# defines projects paths and variables
+include(../exvr-projects.pri)
 # defines thirdparty includes and libs
-include(../thirdparty.pri)
+include(../exvr-thirdparty.pri)
 
+####################################### TARGET
+equals(CFG, "debug"){
+    TARGET = exvr-exportd
+}
+equals(CFG, "release"){
+    TARGET = exvr-export
+}
 
 ####################################### TEMPLATE
-equals(EXVR_EXPORT_T, "dll"){
+equals(EXVR_EXPORT_TARGET, "dll"){
     TEMPLATE = lib
     CONFIG += dll
     CONFIG -= console
 }
-equals(EXVR_EXPORT_T, "app"){
+equals(EXVR_EXPORT_TARGET, "app"){
     TEMPLATE = app
     CONFIG += console
 }
 
+####################################### BUILD FILES
 OBJECTS_DIR = $$EXVR_EXPORT_OBJ
 DESTDIR     = $$EXVR_EXPORT_DEST
 

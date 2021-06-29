@@ -27,14 +27,12 @@
 
 PROJECT_NAME = exvr
 
-include(cpp-projects/projects.pri)
-
 TEMPLATE = subdirs
 CONFIG += ordered
 
-SUBDIRS = \
-        cpp-projects/exvr-components\
+SUBDIRS = \        
         cpp-projects/exvr-designer\
+        cpp-projects/exvr-components\
         cpp-projects/exvr-export\
 
 
