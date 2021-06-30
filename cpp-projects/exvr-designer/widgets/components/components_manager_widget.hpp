@@ -40,7 +40,7 @@ public :
 
     ComponentsManagerW(bool onlyPublicComponents, bool onlyStableComponents);
 
-    ComponentsConfigDialog *component_dialog(ComponentKey componentKey);
+    ComponentConfigDialog *component_dialog(ComponentKey componentKey);
     ComponentW *component_widget(ComponentKey componentKey);
     std::pair<int, ComponentW*> component_widget_with_position(ComponentKey componentKey);
 
@@ -75,10 +75,8 @@ private:
 signals:
 
     // component
-    void set_component_static_state_signal(ComponentKey componentKey, bool isStatic, bool staticUpdate, bool staticVisibility);
     void update_component_position_signal(ComponentKey componentKey, RowId id);
     void add_component_signal(Component::Type, RowId id);    
-    void update_component_name_signal(ComponentKey componentKey, QString name);
     void remove_component_signal(ComponentKey componentKey);
     void duplicate_component_signal(ComponentKey componentKey);
     void identify_component_signal(ComponentKey componentKey);
@@ -87,32 +85,9 @@ signals:
     void sort_components_by_type_signal();
     void sort_components_by_name_signal();
 
-    // action
-    void insert_action_signal(ComponentKey componentKey);
-    void insert_action_to_all_selected_routine_conditions_signal(ComponentKey componentKey);
-    void insert_action_to_all_routines_conditions_signal(ComponentKey componentKey);
-    void remove_action_from_all_selected_routine_conditions_signal(ComponentKey componentKey);
-    void remove_action_from_all_routines_conditions_signal(ComponentKey componentKey);
 
-    // arguments
-    void arg_updated_signal(ComponentKey componentKey, ConfigKey configKey, QString name, Arg arg, bool initConfig);
-    void arg_removed_signal(ComponentKey componentKey, ConfigKey configKey, QString name, bool initConfig);
-    void move_arg_up_signal(ComponentKey componentKey, ConfigKey configKey, QString previousName, QString name, bool initConfig);
-    void move_arg_down_signal(ComponentKey componentKey, ConfigKey configKey, QString nextName, QString name, bool initConfig);
-    void new_arg_signal(ComponentKey componentKey, ConfigKey configKey, QString name, Arg arg, bool initConfig);
-    void action_signal(ComponentKey componentKey, ConfigKey configKey, QString name, bool initConfig);
 
     void ask_for_udapte_signal(int);
-
-    // configs
-    void insert_config_in_component_signal(ComponentKey componentKey, RowId id, QString configName);
-    void copy_config_from_component_signal(ComponentKey componentKey, RowId id, QString configName);
-    void remove_config_from_component_signal(ComponentKey componentKey, RowId id);
-    void move_config_in_component_signal(ComponentKey componentKey, RowId from, RowId to);
-    void rename_config_in_component_signal(ComponentKey componentKey, RowId id, QString configName);
-
-    // help
-    void display_component_help_window_signal(Component::Type type, bool resetWindow = true);
 
 private :
 

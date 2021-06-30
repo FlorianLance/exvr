@@ -15,6 +15,9 @@
 // base
 #include "utility/benchmark.hpp"
 
+// local
+#include "global_signals.hpp"
+
 using namespace tool::ex;
 
 ComponentsManagerW::ComponentsManagerW(bool onlyPublicComponents, bool onlyStableComponents) :
@@ -66,7 +69,7 @@ ComponentsManagerW::ComponentsManagerW(bool onlyPublicComponents, bool onlyStabl
 
 }
 
-ComponentsConfigDialog *ComponentsManagerW::component_dialog(ComponentKey componentKey){
+ComponentConfigDialog *ComponentsManagerW::component_dialog(ComponentKey componentKey){
 
     if(m_dialogsW.count(componentKey.v) != 0){
         return m_dialogsW[componentKey.v].get();
@@ -123,70 +126,28 @@ void ComponentsManagerW::update_from_components_manager(ComponentsManager *compM
         }
 
     Bench::stop();
-    Bench::start("[Update components 1]"sv, false);
+    Bench::start("[CM: Generates new components]"sv, false);
 
         // add new widget/dialog
         for(const auto &component : compM->components){
 
              if(!mask[component->key()]){
 
-                 Bench::start("[Update components 110]"sv, false);
-                     auto configDialog = std::make_unique<ComponentsConfigDialog>(this);
-                     ComponentKey componentKey  = ComponentKey{component->key()};
-                     // components
-                     connect(configDialog.get(), &ComponentsConfigDialog::name_changed_signal, [=](QString name){
-                         emit update_component_name_signal(componentKey, name);
-                     });
-                     // help
-                     connect(configDialog.get(), &ComponentsConfigDialog::display_component_help_window_signal, this, &ComponentsManagerW::display_component_help_window_signal);
+                 Bench::start("[CM: Generate component config dialog]"sv, false);
 
-                     // configs
-                     connect(configDialog.get(), &ComponentsConfigDialog::insert_config_signal, this, [=](RowId id, QString name){
-                         emit insert_config_in_component_signal(componentKey, id, name);
-                     });
-                     connect(configDialog.get(), &ComponentsConfigDialog::copy_config_signal, this, [=](RowId id, QString name){
-                         emit copy_config_from_component_signal(componentKey, id, name);
-                     });
-                     connect(configDialog.get(), &ComponentsConfigDialog::remove_config_signal, this, [=](RowId id){
-                         emit remove_config_from_component_signal(componentKey, id);
-                     });
-                     connect(configDialog.get(), &ComponentsConfigDialog::move_config_signal, this, [=](RowId from, RowId to){
-                         emit move_config_in_component_signal(componentKey, from, to);
-                     });
-                     connect(configDialog.get(), &ComponentsConfigDialog::rename_config_signal, this, [=](RowId id, QString name){
-                         emit rename_config_in_component_signal(componentKey, id, name);
-                     });
-                     // args
-                     connect(configDialog.get(), &ComponentsConfigDialog::arg_updated_signal, this, [=](ConfigKey configKey, QString name, Arg arg, bool initConfig){
-                         emit arg_updated_signal(componentKey, configKey, name, arg, initConfig);
-                     });
-                     connect(configDialog.get(), &ComponentsConfigDialog::arg_removed_signal, this, [=](ConfigKey configKey, QString name, bool initConfig){
-                         emit arg_removed_signal(componentKey, configKey, name, initConfig);
-                     });
-                     connect(configDialog.get(), &ComponentsConfigDialog::move_arg_up_signal, this, [=](ConfigKey configKey, QString previousName, QString name, bool initConfig){
-                         emit move_arg_up_signal(componentKey, configKey, previousName, name, initConfig);
-                     });
-                     connect(configDialog.get(), &ComponentsConfigDialog::move_arg_down_signal, this, [=](ConfigKey configKey, QString nextName, QString name, bool initConfig){
-                         emit move_arg_down_signal(componentKey, configKey, nextName, name, initConfig);
-                     });
-                     connect(configDialog.get(), &ComponentsConfigDialog::new_arg_signal, this, [=](ConfigKey configKey, QString name, Arg arg, bool initConfig){
-                         emit new_arg_signal(componentKey, configKey, name, arg, initConfig);
-                     });
-                     connect(configDialog.get(), &ComponentsConfigDialog::action_signal, this, [=](ConfigKey configKey, QString name, bool initConfig){
-                         emit action_signal(componentKey, configKey, name, initConfig);
-                     });
+                     ComponentKey componentKey  = ComponentKey{component->key()};
+
                      // dialog
-                     connect(configDialog.get(), &ComponentsConfigDialog::finished, this, [=](){
+                     auto configDialog = std::make_unique<ComponentConfigDialog>(this, component.get());                     
+                     connect(configDialog.get(), &ComponentConfigDialog::finished, this, [=](){
                          component_widget(componentKey)->showWindow = false;
                          update_style();
                      });
 
                  Bench::stop();
-                 Bench::start("[Update components 111]"sv, false);
-                    configDialog->init(component.get());
                     m_dialogsW[componentKey.v] = std::move(configDialog);
-                 Bench::stop();
-                 Bench::start("[Update components 12]"sv, false);
+
+                 Bench::start("[CM: Generate Component widget]"sv, false);
                      auto componentW = new ComponentW(component.get());
                      connect(componentW, &ComponentW::show_component_custom_menu_signal,     this, &ComponentsManagerW::show_howering_component_custom_menu);
                      connect(componentW, &ComponentW::toggle_component_parameters_signal,    this, &ComponentsManagerW::toggle_component_parameters_dialog);
@@ -195,14 +156,14 @@ void ComponentsManagerW::update_from_components_manager(ComponentsManager *compM
                      connect(componentW, &ComponentW::enter_component_signal,                this, &ComponentsManagerW::update_style);
                      connect(componentW, &ComponentW::leave_component_signal,                this, &ComponentsManagerW::update_style);
                  Bench::stop();
-                 Bench::start("[Update components 13]"sv, false);
+                 Bench::start("[CM: Add component widget]"sv, false);
                     m_componentsListW.add_widget(componentW);
                  Bench::stop();
              }
         }
 
     Bench::stop();
-    Bench::start("[Update components 2]"sv, false);
+    Bench::start("[CM: Move components]"sv, false);
 
         // reorder
         for(int ii = 0; ii < to_signed(compM->components.size()); ++ii){
@@ -217,25 +178,25 @@ void ComponentsManagerW::update_from_components_manager(ComponentsManager *compM
         }
 
     Bench::stop();
-    Bench::start("[Update components 3]"sv, false);
+    Bench::start("[CM: Update components]"sv, false);
 
     // update components
     for(int ii = 0; ii< m_componentsListW.count(); ++ii){
         auto component  = compM->components[to_unsigned(ii)].get();
         auto componentW = qobject_cast<ComponentW*>(m_componentsListW.widget_at(ii));
-        Bench::start("[Update components 31]"sv, false);
+        Bench::start("[CM: Update component]"sv, false);
             componentW->update_from_component(component);
         Bench::stop();
-        Bench::start("[Update components 32]"sv, false);
+        Bench::start("[CM: Update dialog]"sv, false);
             m_dialogsW[component->key()]->update_from_component(component);
         Bench::stop();
     }
 
-    Bench::start("[Update components 33]"sv, false);
+    Bench::start("[CM: Update style]"sv, false);
         update_style();
     Bench::stop();
 
-    Bench::start("[Update components 34]"sv, false);
+    Bench::start("[CM: Update display]"sv, false);
         update_components_to_display();
     Bench::stop();
 
@@ -405,19 +366,19 @@ void ComponentsManagerW::show_howering_component_custom_menu(QPoint pos, Compone
     {
         QAction *addA = new QAction("current condition");
         connect(addA, &QAction::triggered, this, [=](){
-            emit insert_action_signal(componentKey);
+            emit GSignals::get()->insert_action_signal(componentKey);
         });
         addComponentSubMenu.addAction(addA);
 
         addA = new QAction("all conditions of the selected routine");
         connect(addA, &QAction::triggered, this, [=](){
-            emit insert_action_to_all_selected_routine_conditions_signal(componentKey);
+            emit GSignals::get()->insert_action_to_all_selected_routine_conditions_signal(componentKey);
         });
         addComponentSubMenu.addAction(addA);
 
         addA = new QAction("all conditions of every routine");
         connect(addA, &QAction::triggered, this, [=](){
-            emit insert_action_to_all_routines_conditions_signal(componentKey);
+            emit GSignals::get()->insert_action_to_all_routines_conditions_signal(componentKey);
         });
         addComponentSubMenu.addAction(addA);
     }
@@ -427,13 +388,13 @@ void ComponentsManagerW::show_howering_component_custom_menu(QPoint pos, Compone
     {
         QAction *removeA = new QAction("all conditions of the selected routine ");
         connect(removeA, &QAction::triggered, this, [=](){
-            emit remove_action_from_all_selected_routine_conditions_signal(componentKey);
+            emit GSignals::get()->remove_action_from_all_selected_routine_conditions_signal(componentKey);
         });
         removeComponentSubMenu.addAction(removeA);
 
         removeA = new QAction("all conditions of every routine");
         connect(removeA, &QAction::triggered, this, [=](){
-            emit remove_action_from_all_routines_conditions_signal(componentKey);
+            emit GSignals::get()->remove_action_from_all_routines_conditions_signal(componentKey);
         });
         removeComponentSubMenu.addAction(removeA);
     }

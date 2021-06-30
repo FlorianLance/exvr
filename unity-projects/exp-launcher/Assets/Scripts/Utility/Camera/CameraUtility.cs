@@ -85,6 +85,15 @@ namespace Ex {
         public static Vector3 eye_camera_forward() {
             return ExVR.Display().cameras().get_eye_camera_transform().forward;
         }
+
+        public static Vector3 eye_camera_up() {
+            return ExVR.Display().cameras().get_eye_camera_transform().up;
+        }
+
+        public static Vector3 eye_camera_right() {
+            return ExVR.Display().cameras().get_eye_camera_transform().right;
+        }
+
         // # move
         public static void move_eye_camera_forward(float amount) {
             ExVR.Display().cameras().move_eye_camera_forward_by_modifying_camera_rig_transform(amount);

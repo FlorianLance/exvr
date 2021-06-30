@@ -138,6 +138,8 @@ void CurveW::set_x_range(qreal min, qreal max){
 
     QwtPlot::replot();
     QwtPlot::repaint();
+
+    emit settings_updated_signal();
 }
 
 void CurveW::set_y_range(qreal min, qreal max){
@@ -165,6 +167,8 @@ void CurveW::set_y_range(qreal min, qreal max){
 
     QwtPlot::replot();
     QwtPlot::repaint();
+
+    emit settings_updated_signal();
 }
 
 
@@ -196,8 +200,6 @@ void CurveW::mousePressEvent(QMouseEvent *event){
             }
         }
 
-        emit point_added_signal();
-
     }else if(event->button() == Qt::MouseButton::RightButton){
 
         double min = 0.1;
@@ -218,13 +220,13 @@ void CurveW::mousePressEvent(QMouseEvent *event){
             xCoords.erase(std::begin(xCoords) + index);
             yCoords.erase(std::begin(yCoords) + index);
         }
-
-        emit point_removed_signal();
     }
 
     curve.setRawSamples(xCoords.data(), yCoords.data(), static_cast<int>(xCoords.size()));
     QwtPlot::replot();
     QwtPlot::repaint();
+
+    emit data_updated_signal();
 }
 
 void CurveW::reset(){
@@ -235,6 +237,8 @@ void CurveW::reset(){
 
     QwtPlot::replot();
     QwtPlot::repaint();
+
+    emit data_updated_signal();
 }
 
 void CurveW::add_point(double x, double y){
@@ -248,11 +252,12 @@ void CurveW::add_point(double x, double y){
     }
     xCoords.insert(std::begin(xCoords) + id, x);
     yCoords.insert(std::begin(yCoords) + id, y);
-
     curve.setRawSamples(xCoords.data(), yCoords.data(), static_cast<int>(xCoords.size()));
 
     QwtPlot::replot();
     QwtPlot::repaint();
+
+    emit data_updated_signal();
 }
 
 void CurveW::set_points(std_v1<double> x, std_v1<double> y){
@@ -263,6 +268,8 @@ void CurveW::set_points(std_v1<double> x, std_v1<double> y){
 
     QwtPlot::replot();
     QwtPlot::repaint();
+
+    emit data_updated_signal();
 }
 
 void CurveW::set_first_y(double value){
@@ -272,6 +279,8 @@ void CurveW::set_first_y(double value){
 
     QwtPlot::replot();
     QwtPlot::repaint();
+
+    emit data_updated_signal();
 }
 
 void CurveW::set_last_y(double value){
@@ -281,6 +290,8 @@ void CurveW::set_last_y(double value){
 
     QwtPlot::replot();
     QwtPlot::repaint();
+
+    emit data_updated_signal();
 }
 
 void CurveW::set_fitted_state(bool state){
@@ -290,6 +301,8 @@ void CurveW::set_fitted_state(bool state){
 
     QwtPlot::replot();
     QwtPlot::repaint();
+
+    emit settings_updated_signal();
 }
 
 void CurveW::remove_symbol(){
@@ -298,6 +311,8 @@ void CurveW::remove_symbol(){
 
     QwtPlot::replot();
     QwtPlot::repaint();
+
+    emit settings_updated_signal();
 }
 
 
@@ -389,16 +404,17 @@ void ExCurveW::init_connection(const QString &nameParam){
     lastY.init_connection(QSL("last_y"));
     fitted.init_connection(QSL("fitted"));
 
+    connect(curve, &CurveW::data_updated_signal, this, [=]{
+        emit ui_change_signal(nameParam);
+    });
+    connect(curve, &CurveW::settings_updated_signal, this, [=]{
+        emit ui_change_signal(nameParam);
+    });
+
     connect(&fitted, &ExCheckBoxW::ui_change_signal, this, [&,nameParam]{
         curve->set_fitted_state(fitted.w->isChecked());
-        emit ui_change_signal(nameParam);
     });
-    connect(curve, &CurveW::point_added_signal, this, [=]{
-        emit ui_change_signal(nameParam);
-    });
-    connect(curve, &CurveW::point_removed_signal, this, [=]{
-        emit ui_change_signal(nameParam);
-    });
+
     connect(&minX,  &ExDoubleSpinBoxW::ui_change_signal, this, [&,nameParam]{
 
         minX.blockSignals(true);
@@ -408,7 +424,6 @@ void ExCurveW::init_connection(const QString &nameParam){
         minX.blockSignals(false);
 
         curve->set_x_range(minX.w->value(), maxX.w->value());
-        emit ui_change_signal(nameParam);
     });
     connect(&maxX,  &ExDoubleSpinBoxW::ui_change_signal, this, [&,nameParam]{
 
@@ -419,7 +434,6 @@ void ExCurveW::init_connection(const QString &nameParam){
         maxX.blockSignals(false);
 
         curve->set_x_range(minX.w->value(), maxX.w->value());
-        emit ui_change_signal(nameParam);
     });
     connect(&minY,  &ExDoubleSpinBoxW::ui_change_signal, this, [&,nameParam]{
 
@@ -440,7 +454,6 @@ void ExCurveW::init_connection(const QString &nameParam){
         firstY.blockSignals(false);
 
         curve->set_y_range(minY.w->value(), maxY.w->value());
-        emit ui_change_signal(nameParam);
     });
     connect(&maxY,  &ExDoubleSpinBoxW::ui_change_signal, this, [&,nameParam]{
 
@@ -468,7 +481,6 @@ void ExCurveW::init_connection(const QString &nameParam){
         lastY.blockSignals(false);
 
         curve->set_y_range(minY.w->value(), maxY.w->value());
-        emit ui_change_signal(nameParam);
     });
     connect(&firstY,  &ExDoubleSpinBoxW::ui_change_signal, this, [&,nameParam]{
         double v = firstY.w->value();
@@ -479,7 +491,6 @@ void ExCurveW::init_connection(const QString &nameParam){
             v = maxY.w->value();
         }
         curve->set_first_y(v);
-        emit ui_change_signal(nameParam);
     });
     connect(&lastY,  &ExDoubleSpinBoxW::ui_change_signal, this, [&,nameParam]{
         double v = lastY.w->value();
@@ -490,7 +501,6 @@ void ExCurveW::init_connection(const QString &nameParam){
             v = maxY.w->value();
         }
         curve->set_last_y(v);
-        emit ui_change_signal(nameParam);
     });
 
     connect(addPointB,    &QPushButton::clicked,   this, [&]{

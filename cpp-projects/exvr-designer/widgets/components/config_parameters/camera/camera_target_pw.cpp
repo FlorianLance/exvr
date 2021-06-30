@@ -18,8 +18,11 @@ void CameraTargetConfigParametersW::insert_widgets(){
     m_buttonGroup2.addButton(m_useNeutralCamera());
     m_buttonGroup2.addButton(m_useEyeCamera());
 
-    m_buttonGroup3.addButton(m_usingTime());
-    m_buttonGroup3.addButton(m_usingFactor());
+    m_buttonGroup3.addButton(m_relatetiveToEye());
+    m_buttonGroup3.addButton(m_absolute());
+
+    m_buttonGroup4.addButton(m_usingTime());
+    m_buttonGroup4.addButton(m_usingFactor());
 
     add_widget(ui::W::txt("<b>Action</b>"));
     add_widget(ui::F::gen(ui::L::HB(), {m_moveToTarget(), m_moveBack(), m_doNothing()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
@@ -39,6 +42,7 @@ void CameraTargetConfigParametersW::insert_widgets(){
     add_widget(ui::W::txt("<b>Target</b>"));
     add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Name of the component position to match: "), m_componentName()}, LStretch{false}, LMargins{false}));
     add_widget(ui::F::gen(ui::L::VB(), {ui::W::txt("If name empty, use position and rotation below:"), m_targetPos(), m_targetRot()}, LStretch{false}, LMargins{false}));
+    add_widget(ui::F::gen(ui::L::HB(), {m_absolute(), m_relatetiveToEye()}, LStretch{true}, LMargins{false}));
     add_widget(&m_curves);
 
     add_widget(ui::W::txt("<b>Speed</b>"));
@@ -61,6 +65,8 @@ void CameraTargetConfigParametersW::init_and_register_widgets(){
     m_inputUiElements["move_to_target"]  = m_moveToTarget.init_widget("Move to target", true);
     m_inputUiElements["move_back"]       = m_moveBack.init_widget("Move back to previous target", false);
     m_inputUiElements["do_nothing"]      = m_doNothing.init_widget("Do nothing", false);
+    m_inputUiElements["relative_to_eye"] = m_relatetiveToEye.init_widget("Relative to eye", false);
+    m_inputUiElements["absolute"]        = m_absolute.init_widget("Absolute", true);
 
     // cameras
     m_inputUiElements["use_neutral"]    = m_useNeutralCamera.init_widget("Use start neutral camera", true);

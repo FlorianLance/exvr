@@ -16,19 +16,119 @@ using static Ex.ExComponent;
 namespace Ex{
 
 
+    public class ComponentInfo{
+        public ComponentInfo(Category category, Pritority priority, Reserved reserved) {
+            this.category = category;
+            this.priority = priority;
+            this.reserved = reserved;
+        }
+        public Category category;
+        public Pritority priority;
+        public Reserved reserved;
+    }
+
     public class Components : MonoBehaviour{
 
 
         public Dictionary<Category, List<ExComponent>> componentsPerCategory = new Dictionary<Category, List<ExComponent>>();
-        public Dictionary<Type, List<ExComponent>> componentsPerType = new Dictionary<Type, List<ExComponent>>();
-
-        public Dictionary<string, Tuple<Category, Pritority>> Names2Info = null;
         public Dictionary<Category, Transform> Category2Transform = null;
+        public Dictionary<Type, List<ExComponent>> componentsPerType = new Dictionary<Type, List<ExComponent>>();        
 
         // sort by priority
         List<ExComponent> sortedComponents = new List<ExComponent>();
         List<ExComponent> reverseSortedComponents = new List<ExComponent>();
 
+
+        private static ComponentInfo gen_info(Category category, Pritority pritority, Reserved reserved) {
+            return new ComponentInfo(category, pritority, reserved);
+        }
+
+        public static readonly Dictionary<string, ComponentInfo> Names2Info = new Dictionary<string, ComponentInfo> {
+            // audio
+            ["Ex.MicrophoneComponent"]            = gen_info(Category.Audio, Pritority.Medium, Reserved.Public),
+            ["Ex.AudioSourceComponent"]           = gen_info(Category.Audio, Pritority.Medium, Reserved.Public),
+            // input
+            ["Ex.JoypadComponent"]                = gen_info(Category.Input, Pritority.Hight, Reserved.Public),
+            ["Ex.MouseComponent"]                 = gen_info(Category.Input, Pritority.Hight, Reserved.Public),
+            ["Ex.KeyboardComponent"]              = gen_info(Category.Input, Pritority.Hight, Reserved.Public),
+            // network
+            ["Ex.UdpReaderComponent"]             = gen_info(Category.Network, Pritority.Hight, Reserved.Public),
+            ["Ex.UdpWriterComponent"]             = gen_info(Category.Network, Pritority.Hight, Reserved.Public),
+            ["Ex.SerialPortWriterComponent"]      = gen_info(Category.Network, Pritority.Hight, Reserved.Public),
+            ["Ex.ParallelPortWriterComponent"]    = gen_info(Category.Network, Pritority.Hight, Reserved.Public),
+            // output
+            ["Ex.LoggerComponent"]                = gen_info(Category.Output, Pritority.Low, Reserved.Public),
+            ["Ex.LoggerConditionComponent"]       = gen_info(Category.Output, Pritority.Low, Reserved.Public),
+            ["Ex.LoggerColumnsComponent"]         = gen_info(Category.Output, Pritority.Low, Reserved.Public),            
+            // camera
+            ["Ex.CameraTargetComponent"]          = gen_info(Category.Camera, Pritority.Low, Reserved.Public),
+            ["Ex.CameraTrajectoryComponent"]      = gen_info(Category.Camera, Pritority.Low, Reserved.Public),
+            ["Ex.CameraTrajectoryFileComponent"]  = gen_info(Category.Camera, Pritority.Low, Reserved.Public),
+            ["Ex.CameraComponent"]                = gen_info(Category.Camera, Pritority.Low, Reserved.Public),
+            // scene
+            ["Ex.AssetBundleComponent"]           = gen_info(Category.Scene, Pritority.Hight, Reserved.Public),
+            ["Ex.MultiABComponent"]               = gen_info(Category.Scene, Pritority.Hight, Reserved.Public),            
+            ["Ex.FallingSpheresComponent"]        = gen_info(Category.Scene, Pritority.Medium, Reserved.Public),
+            ["Ex.MirrorComponent"]                = gen_info(Category.Scene, Pritority.Medium, Reserved.Public),            
+            ["Ex.FlashingDotComponent"]           = gen_info(Category.Scene, Pritority.Medium, Reserved.Public),
+            ["Ex.MRIComponent"]                   = gen_info(Category.Scene, Pritority.Medium, Reserved.Public),
+            // script
+            ["Ex.CSharpScriptComponent"]          = gen_info(Category.Script, Pritority.Low, Reserved.Public),
+            ["Ex.PythonScriptComponent"]          = gen_info(Category.Script, Pritority.Medium, Reserved.Public),
+            // UI
+            ["Ex.SliderUIComponent"]              = gen_info(Category.UI, Pritority.Medium, Reserved.Public),
+            // video
+            ["Ex.VideoFileComponent"]             = gen_info(Category.Video, Pritority.Medium, Reserved.Public),
+            ["Ex.VideoFileCameraViewerComponent"] = gen_info(Category.Video, Pritority.Medium, Reserved.Public),            
+            ["Ex.WebcamComponent"]                = gen_info(Category.Video, Pritority.Medium, Reserved.Public),            
+            ["Ex.VideoSaverComponent"]            = gen_info(Category.Video, Pritority.Medium, Reserved.Public),
+            // tracking
+            ["Ex.SceneScanerComponent"]           = gen_info(Category.Tracking, Pritority.Medium, Reserved.LNCO),
+            ["Ex.LeapMotionComponent"]            = gen_info(Category.Tracking, Pritority.Hight, Reserved.Public),
+            ["Ex.LeapMotionTrackingComponent"]    = gen_info(Category.Tracking, Pritority.Medium, Reserved.Public),
+            ["Ex.LeapMotionArmsDisplayComponent"] = gen_info(Category.Tracking, Pritority.Medium, Reserved.Closed),
+            ["Ex.BiopacComponent"]                = gen_info(Category.Tracking, Pritority.Hight, Reserved.Public),
+            ["Ex.TheraTrainerTrackingComponent"]  = gen_info(Category.Tracking, Pritority.Medium, Reserved.Public),
+            ["Ex.TheraTrainerPlatformComponent"]  = gen_info(Category.Tracking, Pritority.Medium, Reserved.Public),
+            ["Ex.KinectManagerComponent"]         = gen_info(Category.Tracking, Pritority.Hight, Reserved.LNCO),
+            ["Ex.KinectBodyTrackingComponent"]    = gen_info(Category.Tracking, Pritority.Hight, Reserved.LNCO),
+            ["Ex.OptitrackComponent"]             = gen_info(Category.Tracking, Pritority.Hight, Reserved.Public),
+            ["Ex.AttachObjectToHandComponent"]    = gen_info(Category.Tracking, Pritority.Medium, Reserved.Public),
+            ["Ex.QualisysTrackingComponent"]      = gen_info(Category.Tracking, Pritority.Hight, Reserved.Public),
+            ["Ex.SoncebozSGComponent"]            = gen_info(Category.Tracking, Pritority.Hight, Reserved.LNCO),
+            ["Ex.FOPRobotComponent"]              = gen_info(Category.Tracking, Pritority.Hight, Reserved.LNCO),
+            // model
+            ["Ex.CubeComponent"]                  = gen_info(Category.Model, Pritority.Medium, Reserved.Public),
+            ["Ex.SphereComponent"]                = gen_info(Category.Model, Pritority.Medium, Reserved.Public),
+            ["Ex.TorusComponent"]                 = gen_info(Category.Model, Pritority.Medium, Reserved.Public),
+            ["Ex.LinesComponent"]                 = gen_info(Category.Model, Pritority.Medium, Reserved.Public),
+            ["Ex.CylinderComponent"]              = gen_info(Category.Model, Pritority.Medium, Reserved.Public),
+            ["Ex.LandmarkComponent"]              = gen_info(Category.Model, Pritority.Medium, Reserved.Public),
+            // cloud
+            ["Ex.CloudComponent"]                 = gen_info(Category.Cloud, Pritority.Medium, Reserved.Public),
+            ["Ex.ScanerVideoComponent"]           = gen_info(Category.Cloud, Pritority.Medium, Reserved.LNCO),
+            // avatar
+            ["Ex.HumanoidControllerComponent"]    = gen_info(Category.Avatar, Pritority.Low, Reserved.Closed),
+            // interaction
+            ["Ex.MarkToCleanComponent"]           = gen_info(Category.Interaction, Pritority.Medium, Reserved.Public),
+            ["Ex.TargetToGrabComponent"]          = gen_info(Category.Interaction, Pritority.Medium, Reserved.Public),
+            // environment
+            ["Ex.SkyComponent"]                   = gen_info(Category.Environment, Pritority.Hight, Reserved.Public),
+            // resource
+            ["Ex.ImageResourceComponent"]         = gen_info(Category.Resource, Pritority.Hight, Reserved.Public),
+            ["Ex.PlotResourceComponent"]          = gen_info(Category.Resource, Pritority.Hight, Reserved.Public),
+            ["Ex.TextResourceComponent"]          = gen_info(Category.Resource, Pritority.Hight, Reserved.Public),
+            ["Ex.VideoResourceComponent"]         = gen_info(Category.Resource, Pritority.Hight, Reserved.Public),
+            ["Ex.AudioResourceComponent"]         = gen_info(Category.Resource, Pritority.Hight, Reserved.Public),
+            ["Ex.DirectoryResourceComponent"]     = gen_info(Category.Resource, Pritority.Hight, Reserved.Public),
+            // viewer
+            ["Ex.FixationCrossViewerComponent"]   = gen_info(Category.Viewer, Pritority.Low, Reserved.Public),
+            ["Ex.ImageViewerComponent"]           = gen_info(Category.Viewer, Pritority.Low, Reserved.Public),
+            ["Ex.TextViewerComponent"]            = gen_info(Category.Viewer, Pritority.Low, Reserved.Public),
+            ["Ex.WebcamViewerComponent"]          = gen_info(Category.Viewer, Pritority.Low, Reserved.Public),
+            ["Ex.FovSimulatorComponent"]          = gen_info(Category.Viewer, Pritority.Hight, Reserved.Public),
+            ["Ex.BlendFadeViewerComponent"]       = gen_info(Category.Viewer, Pritority.Hight, Reserved.Public)
+        };
 
         private void log_and_add_to_stacktrace(ExComponent component, ExComponent.Function function, bool start, bool log = false, bool timeExp = false, bool timeElem = false) {
 
@@ -442,95 +542,6 @@ namespace Ex{
         }
 
         public void initialize() {
-
-            Names2Info = new Dictionary<string, Tuple<Category, Pritority>>();
-            // audio
-            Names2Info["Ex.MicrophoneComponent"]            = new Tuple<Category, Pritority>(Category.Audio,       Pritority.Medium);
-            Names2Info["Ex.AudioSourceComponent"]           = new Tuple<Category, Pritority>(Category.Audio,       Pritority.Medium);
-            // image
-            // input
-            Names2Info["Ex.JoypadComponent"]                = new Tuple<Category, Pritority>(Category.Input,       Pritority.Hight);
-            Names2Info["Ex.MouseComponent"]                 = new Tuple<Category, Pritority>(Category.Input,       Pritority.Hight);
-            Names2Info["Ex.KeyboardComponent"]              = new Tuple<Category, Pritority>(Category.Input,       Pritority.Hight);
-            // network
-            Names2Info["Ex.UdpReaderComponent"]             = new Tuple<Category, Pritority>(Category.Network,     Pritority.Hight);
-            Names2Info["Ex.UdpWriterComponent"]             = new Tuple<Category, Pritority>(Category.Network,     Pritority.Hight);
-            Names2Info["Ex.SerialPortWriterComponent"]      = new Tuple<Category, Pritority>(Category.Network,     Pritority.Hight);
-            Names2Info["Ex.ParallelPortWriterComponent"]    = new Tuple<Category, Pritority>(Category.Network,     Pritority.Hight);
-            // output
-            Names2Info["Ex.LoggerComponent"]                = new Tuple<Category, Pritority>(Category.Output,      Pritority.Low);
-            Names2Info["Ex.LoggerConditionComponent"]       = new Tuple<Category, Pritority>(Category.Output,      Pritority.Low);
-            Names2Info["Ex.LoggerColumnsComponent"]         = new Tuple<Category, Pritority>(Category.Output,      Pritority.Low);            
-            // camera
-            Names2Info["Ex.CameraTargetComponent"]          = new Tuple<Category, Pritority>(Category.Camera,      Pritority.Low);
-            Names2Info["Ex.CameraTrajectoryComponent"]      = new Tuple<Category, Pritority>(Category.Camera,      Pritority.Low);
-            Names2Info["Ex.CameraTrajectoryFileComponent"]  = new Tuple<Category, Pritority>(Category.Camera,      Pritority.Low);
-            Names2Info["Ex.CameraComponent"]                = new Tuple<Category, Pritority>(Category.Camera,      Pritority.Low);
-            // scene
-            Names2Info["Ex.AssetBundleComponent"]           = new Tuple<Category, Pritority>(Category.Scene,       Pritority.Hight);
-            Names2Info["Ex.MultiABComponent"]               = new Tuple<Category, Pritority>(Category.Scene,       Pritority.Hight);            
-            Names2Info["Ex.FallingSpheresComponent"]        = new Tuple<Category, Pritority>(Category.Scene,       Pritority.Medium);
-            Names2Info["Ex.MirrorComponent"]                = new Tuple<Category, Pritority>(Category.Scene,       Pritority.Medium);            
-            Names2Info["Ex.FlashingDotComponent"]           = new Tuple<Category, Pritority>(Category.Scene,       Pritority.Medium);
-            Names2Info["Ex.MRIComponent"]                   = new Tuple<Category, Pritority>(Category.Scene,       Pritority.Medium);
-            // script
-            Names2Info["Ex.CSharpScriptComponent"]          = new Tuple<Category, Pritority>(Category.Script,      Pritority.Low);
-            Names2Info["Ex.PythonScriptComponent"]          = new Tuple<Category, Pritority>(Category.Script,      Pritority.Medium);
-            // UI
-            Names2Info["Ex.SliderUIComponent"]              = new Tuple<Category, Pritority>(Category.UI,          Pritority.Medium);
-            // video
-            Names2Info["Ex.VideoFileComponent"]             = new Tuple<Category, Pritority>(Category.Video,       Pritority.Medium);
-            Names2Info["Ex.VideoFileCameraViewerComponent"] = new Tuple<Category, Pritority>(Category.Video,       Pritority.Medium);            
-            Names2Info["Ex.WebcamComponent"]                = new Tuple<Category, Pritority>(Category.Video,       Pritority.Medium);            
-            Names2Info["Ex.VideoSaverComponent"]            = new Tuple<Category, Pritority>(Category.Video,       Pritority.Medium);
-            // tracking
-            Names2Info["Ex.DuoTrackingComponent"]           = new Tuple<Category, Pritority>(Category.Tracking,    Pritority.Medium);
-            Names2Info["Ex.SceneScanerComponent"]           = new Tuple<Category, Pritority>(Category.Tracking,    Pritority.Medium);
-            Names2Info["Ex.LeapMotionComponent"]            = new Tuple<Category, Pritority>(Category.Tracking,    Pritority.Hight);
-            Names2Info["Ex.LeapMotionTrackingComponent"]    = new Tuple<Category, Pritority>(Category.Tracking,    Pritority.Medium);
-            Names2Info["Ex.LeapMotionArmsDisplayComponent"] = new Tuple<Category, Pritority>(Category.Tracking,    Pritority.Medium);
-            Names2Info["Ex.BiopacComponent"]                = new Tuple<Category, Pritority>(Category.Tracking,    Pritority.Hight);            
-            Names2Info["Ex.TheraTrainerTrackingComponent"]  = new Tuple<Category, Pritority>(Category.Tracking,    Pritority.Medium);
-            Names2Info["Ex.TheraTrainerPlatformComponent"]  = new Tuple<Category, Pritority>(Category.Tracking,    Pritority.Medium);
-            Names2Info["Ex.KinectManagerComponent"]         = new Tuple<Category, Pritority>(Category.Tracking,    Pritority.Hight);
-            Names2Info["Ex.KinectBodyTrackingComponent"]    = new Tuple<Category, Pritority>(Category.Tracking,    Pritority.Hight);
-            Names2Info["Ex.OptitrackComponent"]             = new Tuple<Category, Pritority>(Category.Tracking,    Pritority.Hight);
-            Names2Info["Ex.AttachObjectToHandComponent"]    = new Tuple<Category, Pritority>(Category.Tracking,    Pritority.Medium);
-            Names2Info["Ex.QualisysTrackingComponent"]      = new Tuple<Category, Pritority>(Category.Tracking,    Pritority.Hight);
-            Names2Info["Ex.SoncebozSGComponent"]            = new Tuple<Category, Pritority>(Category.Tracking,    Pritority.Hight);
-            Names2Info["Ex.FOPRobotComponent"]              = new Tuple<Category, Pritority>(Category.Tracking,    Pritority.Hight);
-            // model
-            Names2Info["Ex.CubeComponent"]                  = new Tuple<Category, Pritority>(Category.Model,       Pritority.Medium);
-            Names2Info["Ex.SphereComponent"]                = new Tuple<Category, Pritority>(Category.Model,       Pritority.Medium);
-            Names2Info["Ex.TorusComponent"]                 = new Tuple<Category, Pritority>(Category.Model,       Pritority.Medium);
-            Names2Info["Ex.LinesComponent"]                 = new Tuple<Category, Pritority>(Category.Model,       Pritority.Medium);
-            Names2Info["Ex.CylinderComponent"]              = new Tuple<Category, Pritority>(Category.Model,       Pritority.Medium);
-            Names2Info["Ex.LandmarkComponent"]              = new Tuple<Category, Pritority>(Category.Model,       Pritority.Medium);            
-            // cloud
-            Names2Info["Ex.CloudComponent"]                 = new Tuple<Category, Pritority>(Category.Cloud,       Pritority.Medium);
-            Names2Info["Ex.ScanerVideoComponent"]           = new Tuple<Category, Pritority>(Category.Cloud,       Pritority.Medium);
-            // avatar
-            Names2Info["Ex.HumanoidControllerComponent"]    = new Tuple<Category, Pritority>(Category.Avatar,      Pritority.Low);
-            // interaction
-            Names2Info["Ex.MarkToCleanComponent"]           = new Tuple<Category, Pritority>(Category.Interaction, Pritority.Medium);
-            Names2Info["Ex.TargetToGrabComponent"]          = new Tuple<Category, Pritority>(Category.Interaction, Pritority.Medium);
-            // environment
-            Names2Info["Ex.SkyComponent"]                   = new Tuple<Category, Pritority>(Category.Environment, Pritority.Hight);
-            // resource
-            Names2Info["Ex.ImageResourceComponent"]         = new Tuple<Category, Pritority>(Category.Resource, Pritority.Hight);
-            Names2Info["Ex.PlotResourceComponent"]          = new Tuple<Category, Pritority>(Category.Resource, Pritority.Hight);
-            Names2Info["Ex.TextResourceComponent"]          = new Tuple<Category, Pritority>(Category.Resource, Pritority.Hight);
-            Names2Info["Ex.VideoResourceComponent"]         = new Tuple<Category, Pritority>(Category.Resource, Pritority.Hight);
-            Names2Info["Ex.AudioResourceComponent"]         = new Tuple<Category, Pritority>(Category.Resource, Pritority.Hight);
-            Names2Info["Ex.DirectoryResourceComponent"]     = new Tuple<Category, Pritority>(Category.Resource, Pritority.Hight);            
-            // viewer
-            Names2Info["Ex.FixationCrossViewerComponent"]   = new Tuple<Category, Pritority>(Category.Viewer, Pritority.Low);
-            Names2Info["Ex.ImageViewerComponent"]           = new Tuple<Category, Pritority>(Category.Viewer, Pritority.Low);
-            Names2Info["Ex.TextViewerComponent"]            = new Tuple<Category, Pritority>(Category.Viewer, Pritority.Low);
-            Names2Info["Ex.WebcamViewerComponent"]          = new Tuple<Category, Pritority>(Category.Viewer, Pritority.Low);
-            Names2Info["Ex.FovSimulatorComponent"]          = new Tuple<Category, Pritority>(Category.Viewer, Pritority.Hight);
-            Names2Info["Ex.BlendFadeViewerComponent"]       = new Tuple<Category, Pritority>(Category.Viewer, Pritority.Hight);
-            
 
             Transform top = ExVR.GO().Components.transform;
             Category2Transform = new Dictionary<Category, Transform>();

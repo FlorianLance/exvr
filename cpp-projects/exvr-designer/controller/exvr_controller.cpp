@@ -648,7 +648,8 @@ void ExVrController::generate_global_signals_connections(){
     connect(s, &GSignals::show_benchmark_dialog_signal, benchmark(), &BenchmarkDialog::show_dialog);
 
     // -> documentation
-    connect(s, &GSignals::show_documentation_signal, doc(), &DocumentationDialog::show_window);
+    connect(s, &GSignals::display_component_help_window_signal, doc(), &DocumentationDialog::show_components_section);
+    connect(s, &GSignals::show_documentation_signal,            doc(), &DocumentationDialog::show_window);
     connect(s, &GSignals::show_connector_node_documentation_signal, this, [&](ElementKey routineKey, ConditionKey conditionKey, ConnectorKey connectorKey){
         if(auto condition = exp()->get_condition(routineKey, conditionKey); condition != nullptr){
             if(auto connector = condition->get_connector_from_key(connectorKey); connector != nullptr){
@@ -663,20 +664,6 @@ void ExVrController::generate_global_signals_connections(){
     });
     // -> experiment
     connect(s, &GSignals::toggle_mode_signal, exp(), &EXP::toggle_design_mode);
-    connect(s, &GSignals::delete_action_signal, this, [&](ElementKey routineKey, ConditionKey conditionKey, ActionKey actionKey){
-        exp()->remove_action_from_condition(routineKey, conditionKey, actionKey, true);
-    });
-    connect(s, &GSignals::copy_condition_to_signal, this, [&](ElementKey routineKey, ConditionKey conditionKey){
-
-        m_copyToCondD->update_from_data(
-            routineKey,
-            conditionKey,
-            exp()->get_elements_from_type<Routine>(),
-            exp()->get_loops()
-            );
-        m_copyToCondD->exec();
-
-    });
     connect(s, &GSignals::routine_selected_signal, [&]{});
     connect(s, &GSignals::delete_actions_signal,                      exp(), &EXP::delete_actions_from_condition);
     connect(s, &GSignals::fill_actions_signal,                        exp(), &EXP::fill_actions_from_condition);
@@ -700,23 +687,66 @@ void ExVrController::generate_global_signals_connections(){
     connect(s, &GSignals::component_node_created_signal,              exp(), &EXP::create_component_node);
     connect(s, &GSignals::component_node_moved_signal,                exp(), &EXP::move_component_node);
     connect(s, &GSignals::delete_nodes_and_connections_signal,        exp(), &EXP::delete_nodes_and_connections);
-    connect(s, &GSignals::delete_connections_signal,                  exp(), &EXP::delete_connections);
-    connect(s, &GSignals::routine_selected_signal,                    this, [&](ElementKey elementKey){exp()->select_element(elementKey);});
+    connect(s, &GSignals::delete_connections_signal,                  exp(), &EXP::delete_connections);    
     connect(s, &GSignals::unselect_nodes_and_connections_signal,      exp(), &EXP::unselect_nodes_and_connections);
     connect(s, &GSignals::select_nodes_and_connections_signal,        exp(), &EXP::select_nodes_and_connections);
     connect(s, &GSignals::toggle_follow_condition_mode_signal,        exp(), &EXP::toggle_follow_condition_mode);
+    connect(s, &GSignals::arg_removed_signal,                         exp(), &EXP::arg_removed);
+    connect(s, &GSignals::move_arg_up_signal,                         exp(), &EXP::move_arg_up);
+    connect(s, &GSignals::move_arg_down_signal,                       exp(), &EXP::move_arg_down);
+    connect(s, &GSignals::new_arg_signal,                             exp(), &EXP::new_arg);
+    connect(s, &GSignals::arg_updated_signal,                         exp(), &EXP::arg_updated);
+    connect(s, &GSignals::component_name_changed_signal,              exp(), &EXP::update_component_name);
+    connect(s, &GSignals::insert_config_signal,                       exp(), &EXP::insert_config_in_component);
+    connect(s, &GSignals::copy_config_signal,                         exp(), &EXP::copy_config_from_component);
+    connect(s, &GSignals::remove_config_signal,                       exp(), &EXP::remove_config_from_component);
+    connect(s, &GSignals::move_config_signal,                         exp(), &EXP::move_config_in_component);
+    connect(s, &GSignals::rename_config_signal,                       exp(), &EXP::rename_config_in_component);
+    connect(s, &GSignals::exp_state_updated_signal,                   exp(), &EXP::update_exp_state);
+    connect(s, &GSignals::exp_launcher_state_updated_signal,          exp(), &EXP::update_exp_launcher_state);
+    connect(s, &GSignals::connector_info_update_signal,               exp(), &EXP::update_connector_dialog_with_info);
+    connect(s, &GSignals::component_info_update_signal,               exp(), &EXP::update_component_dialog_with_info);
+    connect(s, &GSignals::remove_action_from_all_routines_conditions_signal, exp(), &EXP::remove_action_from_all_routines_conditions);
+    connect(s, &GSignals::insert_action_to_all_routines_conditions_signal,   exp(), &EXP::add_action_to_all_routines_conditions);
+    connect(s, &GSignals::delete_action_signal, this, [&](ElementKey routineKey, ConditionKey conditionKey, ActionKey actionKey){
+        exp()->remove_action_from_condition(routineKey, conditionKey, actionKey, true);
+    });
+    connect(s, &GSignals::copy_condition_to_signal, this, [&](ElementKey routineKey, ConditionKey conditionKey){
 
+        m_copyToCondD->update_from_data(
+            routineKey,
+            conditionKey,
+            exp()->get_elements_from_type<Routine>(),
+            exp()->get_loops()
+            );
+        m_copyToCondD->exec();
+
+    });
+    connect(s, &GSignals::routine_selected_signal,                    this, [&](ElementKey elementKey){
+        exp()->select_element(elementKey);}
+    );
+    connect(s, &GSignals::insert_action_signal, this, [&](ComponentKey componentKey){
+        if(auto cRoutineW = ui()->routines_manager()->current_routine_widget(); cRoutineW != nullptr){
+            if(auto cCondW = cRoutineW->current_condition_widget(); cCondW != nullptr){
+                exp()->add_action(cRoutineW->routine_key(), cCondW->condition_key(), componentKey);
+            }
+        }
+    });
+    connect(s, &GSignals::insert_action_to_all_selected_routine_conditions_signal, this, [&](ComponentKey componentKey){
+        if(auto cRoutineW = ui()->routines_manager()->current_routine_widget(); cRoutineW != nullptr){
+            exp()->add_action_to_all_selected_routine_conditions(cRoutineW->routine_key(), componentKey);
+        }
+    });
+
+    connect(s, &GSignals::remove_action_from_all_selected_routine_conditions_signal, this, [&](ComponentKey componentKey){
+        if(auto cRoutineW = ui()->routines_manager()->current_routine_widget(); cRoutineW != nullptr){
+            exp()->remove_action_from_all_selected_routine_conditions(cRoutineW->routine_key(), componentKey);
+        }
+    });
     // -> exp launcher
-    connect(s, &GSignals::connector_node_modified_signal,             exp_launcher(),   &LAU::update_connector_node);
-
-    // -> ui
-    //  -> components
-    connect(s, &GSignals::component_info_update_signal, exp(), &EXP::update_component_dialog_with_info);
-    //  -> routines
-    connect(s, &GSignals::connector_info_update_signal, exp(),   &EXP::update_connector_dialog_with_info);
-    // -> states
-    connect(s, &GSignals::exp_state_updated_signal,           exp(), &EXP::update_exp_state);
-    connect(s, &GSignals::exp_launcher_state_updated_signal,  exp(), &EXP::update_exp_launcher_state);
+    connect(s, &GSignals::connector_node_modified_signal,             exp_launcher(), &LAU::update_connector_node);
+    connect(s, &GSignals::arg_updated_signal,                         exp_launcher(), &LAU::update_component_config_argument);
+    connect(s, &GSignals::action_signal,                              exp_launcher(), &LAU::trigger_component_config_action);
 }
 
 void ExVrController::generate_main_window_connections(){
@@ -805,47 +835,11 @@ void ExVrController::generate_components_manager_connections(){
     // -> experiment
     connect(componentsM, &COM::sort_components_by_category_signal, exp(), &EXP::sort_components_by_category);
     connect(componentsM, &COM::sort_components_by_type_signal,     exp(), &EXP::sort_components_by_type);
-    connect(componentsM, &COM::sort_components_by_name_signal,     exp(), &EXP::sort_components_by_name);
-    connect(componentsM, &COM::arg_removed_signal,                 exp(), &EXP::arg_removed);
-    connect(componentsM, &COM::move_arg_up_signal,                 exp(), &EXP::move_arg_up);
-    connect(componentsM, &COM::move_arg_down_signal,               exp(), &EXP::move_arg_down);
-    connect(componentsM, &COM::new_arg_signal,                     exp(), &EXP::new_arg);
-    connect(componentsM, &COM::arg_updated_signal,                 exp(), &EXP::arg_updated);
+    connect(componentsM, &COM::sort_components_by_name_signal,     exp(), &EXP::sort_components_by_name);    
     connect(componentsM, &COM::update_component_position_signal,   exp(), &EXP::update_component_position);
     connect(componentsM, &COM::add_component_signal,               exp(), &EXP::add_component);
     connect(componentsM, &COM::remove_component_signal,            exp(), &EXP::remove_component);
     connect(componentsM, &COM::duplicate_component_signal,         exp(), &EXP::duplicate_component);
-    connect(componentsM, &COM::update_component_name_signal,       exp(), &EXP::update_component_name);
-    connect(componentsM, &COM::insert_action_signal, this, [&](ComponentKey componentKey){
-        if(auto cRoutineW = ui()->routines_manager()->current_routine_widget(); cRoutineW != nullptr){
-            if(auto cCondW = cRoutineW->current_condition_widget(); cCondW != nullptr){
-                exp()->add_action(cRoutineW->routine_key(), cCondW->condition_key(), componentKey);
-            }
-        }
-    });
-    connect(componentsM, &COM::insert_action_to_all_selected_routine_conditions_signal, this, [&](ComponentKey componentKey){
-        if(auto cRoutineW = ui()->routines_manager()->current_routine_widget(); cRoutineW != nullptr){
-            exp()->add_action_to_all_selected_routine_conditions(cRoutineW->routine_key(), componentKey);
-        }
-    });
-    connect(componentsM, &COM::insert_action_to_all_routines_conditions_signal,   exp(), &EXP::add_action_to_all_routines_conditions);
-    connect(componentsM, &COM::remove_action_from_all_selected_routine_conditions_signal, this, [&](ComponentKey componentKey){
-        if(auto cRoutineW = ui()->routines_manager()->current_routine_widget(); cRoutineW != nullptr){
-            exp()->remove_action_from_all_selected_routine_conditions(cRoutineW->routine_key(), componentKey);
-        }
-    });
-    connect(componentsM, &COM::remove_action_from_all_routines_conditions_signal, exp(), &EXP::remove_action_from_all_routines_conditions);
-
-    connect(componentsM, &COM::insert_config_in_component_signal,      exp(), &EXP::insert_config_in_component);
-    connect(componentsM, &COM::copy_config_from_component_signal,      exp(), &EXP::copy_config_from_component);
-    connect(componentsM, &COM::remove_config_from_component_signal,    exp(), &EXP::remove_config_from_component);
-    connect(componentsM, &COM::move_config_in_component_signal,        exp(), &EXP::move_config_in_component);
-    connect(componentsM, &COM::rename_config_in_component_signal,      exp(), &EXP::rename_config_in_component);
-    // -> documentation
-    connect(componentsM, &COM::display_component_help_window_signal,   doc(), &DocumentationDialog::show_components_section);
-    // -> unity
-    connect(componentsM, &COM::arg_updated_signal,  exp_launcher(), &LAU::update_component_config_argument);
-    connect(componentsM, &COM::action_signal,       exp_launcher(), &LAU::trigger_component_config_action);
 }
 
 

@@ -19,6 +19,8 @@
 #include "utility/benchmark.hpp"
 
 // local
+#include "global_signals.hpp"
+
 // # parameters
 #include "fixation_cross_viewer_pw.hpp"
 #include "python_script_pw.hpp"
@@ -82,7 +84,7 @@
 
 using namespace tool::ex;
 
-ComponentsConfigDialog::ComponentsConfigDialog(QWidget *parent){
+ComponentConfigDialog::ComponentConfigDialog(QWidget *parent, Component *component){
 
     // set base ui of the dialog
     m_ui.setupUi(this);
@@ -98,27 +100,26 @@ ComponentsConfigDialog::ComponentsConfigDialog(QWidget *parent){
     m_parent = parent;
     defaultFlags = windowFlags() & ~Qt::WindowContextHelpButtonHint;
     setWindowFlags(defaultFlags);
-}
-
-void ComponentsConfigDialog::init(Component *component){
 
     Bench::start("[ComponentsConfigDialog init 1]"sv, false);
-    key = component->key();
+    componentKey = ComponentKey{component->key()};
     m_ui.leName->setText(component->name());
 
     // init widget
     setWindowTitle(QSL("[") % from_view(Component::get_full_name(component->type)) % QSL("] component settings"));
-    setWindowIcon(QIcon(from_view(Component::get_icon_path(component->type))));    
+    setWindowIcon(QIcon(from_view(Component::get_icon_path(component->type))));
 
     // change component name
-    connect(m_ui.leName, &QLineEdit::textChanged, this, &ComponentsConfigDialog::name_changed_signal);
+    connect(m_ui.leName, &QLineEdit::textChanged, this, [=](QString text){
+       emit GSignals::get()->component_name_changed_signal(componentKey, text);
+    });
 
     // remove selected config
     connect(m_ui.pbRemoveConfig, &QPushButton::clicked, this, [=]{
         auto id = m_ui.tabConfigs->currentIndex();
         if(id >= 0 && id < m_ui.tabConfigs->count()){
             m_ui.tabConfigs->removeTab(id);
-            emit remove_config_signal(RowId{id});
+            emit GSignals::get()->remove_config_signal(componentKey, RowId{id});
         }
     });
 
@@ -152,7 +153,7 @@ void ComponentsConfigDialog::init(Component *component){
             if(id == -1){
                 id = 0;
             }
-            emit insert_config_signal(RowId{id}, le->text());
+            emit GSignals::get()->insert_config_signal(componentKey, RowId{id}, le->text());
         }
     });
 
@@ -185,7 +186,7 @@ void ComponentsConfigDialog::init(Component *component){
             if(id == -1){
                 id = 0;
             }
-            emit copy_config_signal(RowId{id}, le->text());
+            emit GSignals::get()->copy_config_signal(componentKey, RowId{id}, le->text());
         }
     });
 
@@ -217,13 +218,13 @@ void ComponentsConfigDialog::init(Component *component){
             if(id == -1){
                 id = 0;
             }
-            emit rename_config_signal(RowId{id}, le->text());
+            emit GSignals::get()->rename_config_signal(componentKey, RowId{id}, le->text());
         }
     });
 
-    auto componentType = component->type;    
+    auto componentType = component->type;
     connect(m_ui.pbHelp, &QPushButton::clicked, this, [=]{
-        emit display_component_help_window_signal(componentType);
+        emit GSignals::get()->display_component_help_window_signal(componentType);
     });
 
     connect(m_ui.pbPin, &QPushButton::clicked, this, [=] {
@@ -277,7 +278,7 @@ void ComponentsConfigDialog::init(Component *component){
 
     // move config
     connect(m_ui.tabConfigs->tabBar(), &QTabBar::tabMoved, this, [&](int from, int to){
-       emit move_config_signal(RowId{from}, RowId{to});
+       emit GSignals::get()->move_config_signal(componentKey, RowId{from}, RowId{to});
     });
 
     Bench::stop();
@@ -289,22 +290,22 @@ void ComponentsConfigDialog::init(Component *component){
     m_ui.vlInitConfig->addWidget(m_initConfigW);
     ConfigKey configKey = ConfigKey{m_initConfigW->key};
     connect(m_initConfigW->p, &ConfigParametersW::arg_updated_signal, this, [=](QString name, Arg arg){
-       emit arg_updated_signal(configKey, name, std::move(arg), true);
+       emit GSignals::get()->arg_updated_signal(componentKey, configKey, name, std::move(arg), true);
     });
     connect(m_initConfigW->p, &ConfigParametersW::move_arg_up_signal, this, [=](QString prevName, QString name){
-        emit move_arg_up_signal(configKey, prevName, name, true);
+        emit GSignals::get()->move_arg_up_signal(componentKey, configKey, prevName, name, true);
     });
     connect(m_initConfigW->p, &ConfigParametersW::move_arg_down_signal, this, [=](QString nextName, QString name){
-        emit move_arg_down_signal(configKey, nextName, name, true);
+        emit GSignals::get()->move_arg_down_signal(componentKey, configKey, nextName, name, true);
     });
     connect(m_initConfigW->p, &ConfigParametersW::arg_removed_signal, this, [=](QString name){
-       emit arg_removed_signal(configKey, name, true);
+       emit GSignals::get()->arg_removed_signal(componentKey, configKey, name, true);
     });
     connect(m_initConfigW->p, &ConfigParametersW::new_arg_signal, this, [=](QString name, Arg arg){
-       emit new_arg_signal(configKey, name, std::move(arg), true);
+       emit GSignals::get()->new_arg_signal(componentKey, configKey, name, std::move(arg), true);
     });
     connect(m_initConfigW->p, &ConfigParametersW::action_signal, this, [=](QString name){
-        emit action_signal(configKey, name, true);
+        emit GSignals::get()->action_signal(componentKey, configKey, name, true);
     });
 
     Bench::stop();
@@ -339,7 +340,8 @@ void ComponentsConfigDialog::init(Component *component){
     Bench::stop();
 }
 
-void ComponentsConfigDialog::update_from_component(Component *component){
+
+void ComponentConfigDialog::update_from_component(Component *component){
 
     Bench::start("[ComponentsConfigDialog 0]"sv);
 
@@ -404,22 +406,22 @@ void ComponentsConfigDialog::update_from_component(Component *component){
 
             ConfigKey configKey = ConfigKey{configW->key};
             connect(configW->p, &ConfigParametersW::arg_updated_signal, this, [=](QString name, Arg arg){
-               emit arg_updated_signal(configKey, name, std::move(arg), false);
+               emit GSignals::get()->arg_updated_signal(componentKey, configKey, name, std::move(arg), false);
             });
             connect(configW->p, &ConfigParametersW::arg_removed_signal, this, [=](QString name){
-               emit arg_removed_signal(configKey, name, false);
+               emit GSignals::get()->arg_removed_signal(componentKey, configKey, name, false);
             });
             connect(configW->p, &ConfigParametersW::move_arg_up_signal, this, [=](QString previousName, QString name){
-                emit move_arg_up_signal(configKey, previousName, name, false);
+                emit GSignals::get()->move_arg_up_signal(componentKey, configKey, previousName, name, false);
             });
             connect(configW->p, &ConfigParametersW::move_arg_down_signal, this, [=](QString nextName, QString name){
-                emit move_arg_down_signal(configKey, nextName, name, false);
+                emit GSignals::get()->move_arg_down_signal(componentKey, configKey, nextName, name, false);
             });
             connect(configW->p, &ConfigParametersW::new_arg_signal, this, [=](QString name, Arg arg){
-               emit new_arg_signal(configKey, name, std::move(arg), false);
+               emit GSignals::get()->new_arg_signal(componentKey, configKey, name, std::move(arg), false);
             });
             connect(configW->p, &ConfigParametersW::action_signal, this, [=](QString name){
-               emit action_signal(configKey, name, false);
+               emit GSignals::get()->action_signal(componentKey, configKey, name, false);
             });
             configW->p->update_from_args(config->args);
             configW->p->late_update_ui();
@@ -438,7 +440,7 @@ void ComponentsConfigDialog::update_from_component(Component *component){
 
 }
 
-void ComponentsConfigDialog::update_with_info(ConfigKey configKey, QStringView id, QStringView value){
+void ComponentConfigDialog::update_with_info(ConfigKey configKey, QStringView id, QStringView value){
 
     auto initConfigW = get_init_config_widget();
     if(initConfigW->key == configKey.v){
@@ -454,7 +456,7 @@ void ComponentsConfigDialog::update_with_info(ConfigKey configKey, QStringView i
     }    
 }
 
-ConfigParametersW *ComponentsConfigDialog::generate_parameters(Component::Type type, bool initConfig){
+ConfigParametersW *ComponentConfigDialog::generate_parameters(Component::Type type, bool initConfig){
 
     using CT = Component::Type;
     using CC = Component::Category;

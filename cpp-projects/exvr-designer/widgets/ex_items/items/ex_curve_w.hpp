@@ -37,8 +37,8 @@ public:
 
 signals:
 
-    void point_added_signal();
-    void point_removed_signal();
+    void data_updated_signal();
+    void settings_updated_signal();
 
 private:
 

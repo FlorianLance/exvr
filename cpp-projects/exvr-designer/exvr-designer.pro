@@ -38,6 +38,7 @@ MOC_DIR     = $$EXVR_DESIGNER_MOC
 RCC_DIR     = $$EXVR_DESIGNER_RCC
 UI_DIR      = $$EXVR_DESIGNER_UI
 DESTDIR     = $$EXVR_DESIGNER_DEST
+PRECOMPILED_DIR = $$EXVR_DESIGNER_OBJ
 
 ####################################### CONFIG
 QT  += core gui network concurrent widgets opengl

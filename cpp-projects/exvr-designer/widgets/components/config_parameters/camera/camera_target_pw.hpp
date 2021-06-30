@@ -56,10 +56,13 @@ public :
 
     // # move to target
     ExLineEditW m_componentName;
+    QButtonGroup   m_buttonGroup3;
+    ExRadioButtonW m_relatetiveToEye;
+    ExRadioButtonW m_absolute;
     ExVector3dW m_targetPos;
     ExVector3dW m_targetRot;
 
-    QButtonGroup   m_buttonGroup3;
+    QButtonGroup   m_buttonGroup4;
     ExRadioButtonW m_usingTime;
     ExRadioButtonW m_usingFactor;
 

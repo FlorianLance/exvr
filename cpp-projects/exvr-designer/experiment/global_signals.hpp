@@ -63,34 +63,53 @@ signals:
     void move_action_signal(ElementKey routineKey, ConditionKey conditionKey, ActionKey actionKey, RowId id);
     void move_action_up_signal(ElementKey routineKey, ConditionKey conditionKey, ActionKey actionKey);
     void move_action_down_signal(ElementKey routineKey, ConditionKey conditionKey, ActionKey actionKey);
-    // ### config
-    // # config
-    void select_config_signal(ElementKey routineKey,ConditionKey conditionKey, ActionKey actionKey, RowId configTabId);
+    void insert_action_signal(ComponentKey componentKey);
+    void insert_action_to_all_selected_routine_conditions_signal(ComponentKey componentKey);
+    void insert_action_to_all_routines_conditions_signal(ComponentKey componentKey);
+    void remove_action_from_all_selected_routine_conditions_signal(ComponentKey componentKey);
+    void remove_action_from_all_routines_conditions_signal(ComponentKey componentKey);
     // ### timeline
     void update_timeline_signal(ElementKey routineKey,ConditionKey conditionKey, double duration, double scale, double uiSize);
     // #### interval
     void add_interval_signal(ElementKey routineKey,ConditionKey conditionKey, ActionKey actionKey, bool updateTimeline, TimelineKey timelineKey, Interval interval);
     void remove_interval_signal(ElementKey routineKey,ConditionKey conditionKey, ActionKey actionKey, bool updateTimeline, TimelineKey timelineKey, Interval interval);
-    // ## connections
+    // ## connections / connectors / nodes
     void delete_connections_signal(ElementKey routineKey, ConditionKey conditionKey);
     void nodes_connection_created_signal(ElementKey routineKey,ConditionKey conditionKey, Connection *connection);
     void connector_input_connection_validity_signal(ElementKey routineKey,ConditionKey conditionKey, ConnectorKey connectorKey, bool state);
-    // ## connectors
     void show_connector_node_documentation_signal(ElementKey routineKey, ConditionKey conditionKey, ConnectorKey connectorKey);
     void connector_node_created_signal(ElementKey routineKey,ConditionKey conditionKey, Connector *connector);
     void connector_node_modified_signal(ElementKey routineKey,ConditionKey conditionKey, ConnectorKey connectorKey, QString name, Arg arg);
     void connector_node_moved_signal(ElementKey routineKey,ConditionKey conditionKey, ConnectorKey connectorKey, QPointF pos);
     void duplicate_connector_node_signal(ElementKey routineKey,ConditionKey conditionKey, ConnectorKey connectorKey);
-    // # components
-    void show_component_node_documentation_signal(ComponentKey componentKey);
     void component_node_created_signal(ElementKey routineKey,ConditionKey conditionKey, ComponentKey componentKey, QPointF pos);
     void component_node_moved_signal(ElementKey routineKey,ConditionKey conditionKey, ComponentKey componentKey, QPointF pos);
-    // ## components / connectors / connections
     void unselect_nodes_and_connections_signal(ElementKey routineKey,ConditionKey conditionKey, bool doUpdate);
     void delete_nodes_and_connections_signal(ElementKey routineKey, ConditionKey conditionKey,
         std_v1<ConnectorKey> connectorsKey, std_v1<ComponentKey> componentsKey, std_v1<ConnectionKey> connectionsKey, bool doUpdate);
     void select_nodes_and_connections_signal(ElementKey routineKey, ConditionKey conditionKey,
         std_v1<ConnectorKey> connectorsKey, std_v1<ComponentKey> componentsKey, std_v1<ConnectionKey> connectionsKey, bool doUpdate);
+
+    // # components
+    void show_component_node_documentation_signal(ComponentKey componentKey);
+    void display_component_help_window_signal(Component::Type type, bool resetWindow = true);
+    void component_name_changed_signal(ComponentKey componentKey, QString name);
+    // ## config
+    void select_config_signal(ElementKey routineKey,ConditionKey conditionKey, ActionKey actionKey, RowId configTabId);
+    void insert_config_signal(ComponentKey componentKey, RowId id, QString name);
+    void copy_config_signal(ComponentKey componentKey, RowId id, QString name);
+    void remove_config_signal(ComponentKey componentKey, RowId id);
+    void move_config_signal(ComponentKey componentKey, RowId from, RowId to);
+    void rename_config_signal(ComponentKey componentKey, RowId id, QString name);
+    // ### args
+    void arg_updated_signal(ComponentKey componentKey, ConfigKey configKey, QString name, Arg arg, bool initConfig);
+    void move_arg_up_signal(ComponentKey componentKey, ConfigKey configKey, QString previousName, QString name, bool initConfig);
+    void move_arg_down_signal(ComponentKey componentKey, ConfigKey configKey, QString nextName, QString name, bool initConfig);
+    void arg_removed_signal(ComponentKey componentKey, ConfigKey configKey, QString name, bool initConfig);
+    void new_arg_signal(ComponentKey componentKey, ConfigKey configKey, QString name, Arg arg, bool initConfig);
+    void action_signal(ComponentKey componentKey, ConfigKey configKey, QString name, bool initConfig);
+
+
 
 private:
     static inline std::unique_ptr<GSignals> m_signals = nullptr;

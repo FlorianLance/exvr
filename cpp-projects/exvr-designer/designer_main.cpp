@@ -59,7 +59,7 @@ constexpr int test(){
 int main(int argc, char *argv[]){
 
     // build parameters
-    const QString numVersion = "0.99z47";
+    const QString numVersion = "0.99z48";
     bool onlyPublicComponents = false;
     bool onlyStableComponents = false;
 

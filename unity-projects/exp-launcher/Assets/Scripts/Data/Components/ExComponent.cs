@@ -68,6 +68,7 @@ namespace Ex{
         };
 
         public enum Pritority { Low, Medium, Hight};
+        public enum Reserved {Public, Closed, LNCO};
 
         public int key = -1; // id component
         public string keyStr;
@@ -382,9 +383,9 @@ namespace Ex{
             catchExceptions = ExVR.GuiSettings().catchComponentsExceptions;
 
             string typeStr = string.Format("Ex.{0}Component", xmlComponent.Type);
-            if (Ex.ExVR.Components().Names2Info.ContainsKey(typeStr)) {
-                category = Ex.ExVR.Components().Names2Info[typeStr].Item1;
-                priority = Ex.ExVR.Components().Names2Info[typeStr].Item2;
+            if (Components.Names2Info.ContainsKey(typeStr)) {
+                category = Components.Names2Info[typeStr].category;
+                priority = Components.Names2Info[typeStr].priority;
             } else {
                 category = Category.Scene;
                 log_error("Component doesn't belong to a category.");

@@ -8,7 +8,6 @@
 // unity
 using UnityEngine;
 
-
 namespace Ex {
 
     public class ExVR {
@@ -143,20 +142,16 @@ namespace Ex{
 
         void Awake() {
 
-            //Debug.LogError("UnityEngine.XR.XRSettings.loadedDeviceName " + UnityEngine.XR.XRSettings.loadedDeviceName);
-            //Debug.LogError("Screen.currentResolution " + Screen.currentResolution);
-            //Debug.LogError("Screen.fullScreen " + Screen.fullScreen);
-
-            //System.AppDomain.CurrentDomain.FirstChanceException += (sender, eventArgs) => {
-            //    Debug.LogError("[FirstChance]" + eventArgs.Exception.ToString());
-            //};
-            // UnityEngine.Debug.Log("QualitySettings.antiAliasing " + QualitySettings.antiAliasing);
-            // UnityEngine.Debug.Log("UnityEngine.XR.XRSettings.eyeTextureResolutionScale " + UnityEngine.XR.XRSettings.eyeTextureResolutionScale);
-
 #if EXVR
             Debug.Log("[EXVR-EXP]");
 #else
             Debug.LogError("EXVR symbol not present.");
+#endif
+#if CLOSED_COMPONENTS
+            Debug.Log("Closed components included.");
+#endif
+#if LNCO_COMPONENTS
+            Debug.Log("LNCO components included.");
 #endif
 
             autoRef = this; // for static access
@@ -201,8 +196,7 @@ namespace Ex{
 
             // indicates to the GUI that unity is ready
             ExVR.ExpLog().builder("Send ready signal to GUI.");
-
-            networkManager.set_launcher_idle_state();            
+            networkManager.set_launcher_idle_state();
         }
 
         void OnApplicationQuit() {
@@ -222,6 +216,17 @@ namespace Ex{
         }
     }
 }
+
+
+//Debug.LogError("UnityEngine.XR.XRSettings.loadedDeviceName " + UnityEngine.XR.XRSettings.loadedDeviceName);
+//Debug.LogError("Screen.currentResolution " + Screen.currentResolution);
+//Debug.LogError("Screen.fullScreen " + Screen.fullScreen);
+
+//System.AppDomain.CurrentDomain.FirstChanceException += (sender, eventArgs) => {
+//    Debug.LogError("[FirstChance]" + eventArgs.Exception.ToString());
+//};
+// UnityEngine.Debug.Log("QualitySettings.antiAliasing " + QualitySettings.antiAliasing);
+// UnityEngine.Debug.Log("UnityEngine.XR.XRSettings.eyeTextureResolutionScale " + UnityEngine.XR.XRSettings.eyeTextureResolutionScale);
 
 
 

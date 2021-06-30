@@ -65,6 +65,7 @@ namespace Ex{
 
             movementStarted = true;
 
+            float duration = currentC.get<float>("duration");
             if (currentC.get<bool>("move_to_target")) {
 
                 bool pitch = currentC.get<bool>("pitch");
@@ -75,9 +76,27 @@ namespace Ex{
 
                 Vector3 targetEuler;
                 Vector3 targetPosition;
+
                 if (targetComponent.Length == 0) { // no component traget to follow, move to defined position/rotation
-                    targetPosition = currentC.get_vector3("target_pos");
-                    targetEuler = currentC.get_vector3("target_rot");
+
+                    if (currentC.get<bool>("absolute")) {
+                        targetPosition = currentC.get_vector3("target_pos");
+                        targetEuler    = currentC.get_vector3("target_rot");
+                    } else {
+                        var positionOffset = currentC.get_vector3("target_pos");
+                        targetPosition = 
+                            CameraUtility.eye_camera_position() + 
+                            CameraUtility.eye_camera_forward() * positionOffset.z +
+                            CameraUtility.eye_camera_up()      * positionOffset.y +
+                            CameraUtility.eye_camera_right()   * positionOffset.x;
+
+                        var rotOffset = currentC.get_vector3("target_rot");
+                        targetEuler =
+                            (CameraUtility.start_neutral_camera_rotation() *
+                            Quaternion.AngleAxis(rotOffset.x, CameraUtility.eye_camera_right()) *
+                            Quaternion.AngleAxis(rotOffset.y, CameraUtility.eye_camera_up()) *
+                            Quaternion.AngleAxis(rotOffset.z, CameraUtility.eye_camera_forward())).eulerAngles;
+                    }
                 } else {
                     var go = get(targetComponent);
                     if (go == null) {
@@ -88,17 +107,14 @@ namespace Ex{
                     targetEuler = go.transform.eulerAngles;
                 }
 
-                
-
                 // remove inused axies from rotation
                 var o = CameraUtility.start_neutral_camera_rotation().eulerAngles;
                 var targetRotation = Quaternion.Euler(new Vector3(
                     pitch ? targetEuler.x : o.x,
-                    yaw ? targetEuler.y : o.y,
-                    roll ? targetEuler.z : o.z)
+                    yaw   ? targetEuler.y : o.y,
+                    roll  ? targetEuler.z : o.z)
                 );
-
-                float duration = currentC.get<float>("duration");
+                
                 int nbInterpolations = currentC.get<int>("nb_inter_pos");
 
                 if (nbInterpolations > 1) {
@@ -145,9 +161,9 @@ namespace Ex{
                 }
                 ExVR.Coroutines().start(move_back(
                     currentC.get<bool>("use_time"),
-                    currentC.get<bool>("use_neutral"), 
-                    currentC.get<float>("duration"))
-                );
+                    currentC.get<bool>("use_neutral"),
+                    duration
+                ));
             }
         }
 
@@ -286,8 +302,8 @@ namespace Ex{
                 }
                 float speedT = speedCurve.Evaluate(percent);
 
-                var pos = previousTrajectory.get_position(speedT);
-                var rot = previousTrajectory.get_rotation(speedT);
+                var pos = previousTrajectory.get_position(1f-speedT);
+                var rot = previousTrajectory.get_rotation(1f-speedT);
                 if (neutral) {
                     CameraUtility.set_start_experiment_neutral_transform(pos + movementOffset, rot);
                 } else {

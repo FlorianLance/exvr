@@ -46,8 +46,7 @@ namespace Ex{
             expLauncherMonoDir = expLauncherMainDir + "/mono-scripting";
 
 #if UNITY_EDITOR
-            string config               = "release";// ExVR.GuiSettings().designerDebugBuild ? "debug" : "release";
-            designerMainDir             = string.Format("{0}/../../cpp-projects/_bin/{1}/exvr-designer", expLauncherMainDir, config);
+            designerMainDir             = string.Format("{0}/../../cpp-projects/_build/bin/exvr-designer", expLauncherMainDir);
             designerDataTempDir         = string.Format("{0}/data/temp", designerMainDir);
             designerTempExpFile         = string.Format("{0}/data/temp/exp.xml", designerMainDir);                        
             designerLogDir              = string.Format("{0}/logs", designerMainDir);
