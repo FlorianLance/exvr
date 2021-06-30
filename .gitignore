@@ -1,8 +1,10 @@
 
 ## close-sources components
 unity-projects/exp-launcher/Assets/Scripts/Data/Components/Closed
+unity-projects/exp-launcher/Assets/Scripts/Data/Components/Closed.meta
 ## only for LNCO
 unity-projects/exp-launcher/Assets/Scripts/Data/Components/LNCO
+unity-projects/exp-launcher/Assets/Scripts/Data/Components/LNCO.meta
 
 *.pro.user
 *.pro.user*
