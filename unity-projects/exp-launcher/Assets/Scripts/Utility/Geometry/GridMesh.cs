@@ -21,25 +21,25 @@ namespace Ex{
         void Awake() {
             MeshFilter filter = gameObject.GetComponent<MeshFilter>();
             var mesh = new Mesh();
-            var verticies = new List<Vector3>();
+            var vertices = new List<Vector3>();
 
-            var indicies = new List<int>();
+            var indices = new List<int>();
             for (int i = 0; i < GridSize; i++) {
-                verticies.Add(new Vector3(i, 0, 0));
-                verticies.Add(new Vector3(i, 0, GridSize));
+                vertices.Add(new Vector3(i, 0, 0));
+                vertices.Add(new Vector3(i, 0, GridSize));
 
-                indicies.Add(4 * i + 0);
-                indicies.Add(4 * i + 1);
+                indices.Add(4 * i + 0);
+                indices.Add(4 * i + 1);
 
-                verticies.Add(new Vector3(0, 0, i));
-                verticies.Add(new Vector3(GridSize, 0, i));
+                vertices.Add(new Vector3(0, 0, i));
+                vertices.Add(new Vector3(GridSize, 0, i));
 
-                indicies.Add(4 * i + 2);
-                indicies.Add(4 * i + 3);
+                indices.Add(4 * i + 2);
+                indices.Add(4 * i + 3);
             }
 
-            mesh.vertices = verticies.ToArray();
-            mesh.SetIndices(indicies.ToArray(), MeshTopology.Lines, 0);
+            mesh.vertices = vertices.ToArray();
+            mesh.SetIndices(indices.ToArray(), MeshTopology.Lines, 0);
             filter.mesh = mesh;
 
             MeshRenderer meshRenderer = gameObject.GetComponent<MeshRenderer>();

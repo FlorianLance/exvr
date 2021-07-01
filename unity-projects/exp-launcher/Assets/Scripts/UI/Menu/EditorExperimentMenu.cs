@@ -13,7 +13,7 @@ using UnityEditor;
 namespace Ex{
 
 
-    public class ExperimentMenu{
+    public class EditorExperimentMenu{
 
         [MenuItem("Experiment/Load")]
         static void load_experiment() {

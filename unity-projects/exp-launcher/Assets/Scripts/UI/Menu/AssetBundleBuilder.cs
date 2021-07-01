@@ -93,7 +93,7 @@ public class AssetBundleSettingsWindow : EditorWindow {
 
 public class AssetBundleBuilder : MonoBehaviour{
 
-    static string assetBundleDirectory = "../assetsBundles";
+    private static readonly string assetBundleDirectory = "../assetsBundles";
     
     [MenuItem("AssetBundles/Choose bundle name for current selection")]
     static void ChangeBundleName() {

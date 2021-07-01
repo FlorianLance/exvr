@@ -112,7 +112,7 @@ namespace Ex{
         [Header("Managers", order = 0)]
         [Rename("GUI settings")]
         public GuiSettingsManager guiSettingsManager = null;
-        [Rename("Paths")]        
+        [Rename("Paths")]
         public PathsManager pathsManager = null;
         [Rename("VR")]
         public DisplayManager displayManager = null;
