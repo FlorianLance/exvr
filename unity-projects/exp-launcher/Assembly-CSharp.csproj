@@ -816,6 +816,7 @@
     <None Include="Assets\Thirdparty\public\LeapMotion\Core\Shaders\PassthroughBackground.shader" />
     <None Include="Assets\Resources\Shaders\EDL.shader" />
     <None Include="Assets\Thirdparty\public\TextMesh Pro\Resources\Shaders\TMPro_Surface.cginc" />
+    <None Include="Assets\Resources\Shaders\DoubleFace.shader" />
     <None Include="Assets\Thirdparty\public\LeapMotion\Core\Shaders\PassthroughForeground.shader" />
     <None Include="Assets\Resources\Shaders\mark2.shader" />
     <None Include="Assets\Thirdparty\public\TextMesh Pro\Resources\LineBreaking Following Characters.txt" />

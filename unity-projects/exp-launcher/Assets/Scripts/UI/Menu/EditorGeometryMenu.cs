@@ -43,6 +43,9 @@ namespace Ex{
                 var mr = grid.AddComponent<MeshRenderer>();
                 mr.sharedMaterial = Resources.Load(string.Format("Materials/Procedural/Grid")) as Material;
                 mf.mesh = PrimitivesMesh.GridBuilder.generate(sizeX, sizeY, bothSides);
+
+                //var cloth = grid.AddComponent<Cloth>();
+                //cloth.
             }
         }
     }

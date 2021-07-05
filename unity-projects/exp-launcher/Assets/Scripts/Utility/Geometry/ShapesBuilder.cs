@@ -18,18 +18,27 @@ namespace Ex.PrimitivesMesh{
                 return null;
             }
 
-            Vector3[] vertices = new Vector3[(nbVerticesH + 1) * (nbVerticesV + 1)];
-            for (int ii = 0, y = 0; y <= nbVerticesV; y++) {
-                for (int x = 0; x <= nbVerticesH; x++, ii++) {
-                    vertices[ii] = new Vector3(x, y, 0);
-                }
-            }
+            //Vector3[] vertices = new Vector3[ ((nbVerticesH + 1) * (nbVerticesV + 1))*2];
+            Vector3[] vertices = new Vector3[nbVerticesH * nbVerticesV * 2];
+            int ii = 0;
+            //for (int  y = 0; y <= nbVerticesV; y++) {
+            //    for (int x = 0; x <= nbVerticesH; x++, ii++) {
+            //        vertices[ii] = new Vector3(x, y, -0.001f);
+            //    }
+            //}
+            //for (int y = 0; y <= nbVerticesV; y++) {
+            //    for (int x = 0; x <= nbVerticesH; x++, ii++) {
+            //        vertices[ii] = new Vector3(x, y, 0.001f);
+            //    }
+            //}
 
-            int[] triangles = new int[nbVerticesH * nbVerticesV * 6];
-            for (int ti = 0, vi = 0, y = 0; y < nbVerticesV; y++, vi++) {
+            int[] triangles = new int[nbVerticesH * nbVerticesV * 6 * 2];
+            int ti = 0;
+            int vi = 0;
+            for (int y = 0; y < nbVerticesV; y++, vi++) {
                 for (int x = 0; x < nbVerticesH; x++, ti += 6, vi++) {
 
-                    triangles[ti]     = vi;
+                    triangles[ti] = vi;
                     triangles[ti + 1] = vi + nbVerticesH + 1;
                     triangles[ti + 2] = vi + 1;
 
@@ -39,71 +48,49 @@ namespace Ex.PrimitivesMesh{
                 }
             }
 
-            Vector3[] normals = new Vector3[vertices.Length];
-            Vector2[] uvs = new Vector2[vertices.Length];
-            Vector4[] tangents = new Vector4[vertices.Length];
-            Vector4 tangent = new Vector4(1f, 0f, 0f, -1f);
-            Vector3 normal = new Vector3(0f, 0f, -1f);
-            for (int i = 0, y = 0; y <= nbVerticesV; y++) {
-                for (int x = 0; x <= nbVerticesH; x++, i++) {
-                    uvs[i] = new Vector2(1f *x / nbVerticesH, 1f * y / nbVerticesV);
-                    tangents[i] = tangent;
-                    normals[i] = normal;
+            vi += nbVerticesV* nbVerticesH;
+            for (int y = 0; y < nbVerticesV; y++, vi++) {
+                for (int x = 0; x < nbVerticesH; x++, ti += 6, vi++) {
+
+                    triangles[ti] = vi;
+                    triangles[ti + 1] = vi + 1;
+                    triangles[ti + 2] = vi + nbVerticesH + 1;
+
+                    triangles[ti + 3] = vi + 1;
+                    triangles[ti + 4] = vi + nbVerticesH + 2;
+                    triangles[ti + 5] = vi + nbVerticesH + 1;
                 }
             }
 
-
-            Mesh mesh = null;
-            if (bothSides) {
-
-                var szV = vertices.Length;
-                var newVerts = new Vector3[szV * 2];
-                var newUv = new Vector2[szV * 2];
-                var newNorms = new Vector3[szV * 2];
-                var newTang = new Vector4[szV * 2];
-                for (var j = 0; j < szV; j++) {
-                    // duplicate vertices and uvs:
-                    newVerts[j] = newVerts[j + szV] = vertices[j];
-                    newUv[j] = newUv[j + szV] = uvs[j];
-                    // copy the original normals...
-                    newNorms[j] = normals[j];
-                    // and revert the new ones
-                    newNorms[j + szV] = -normals[j];
-
-                    newTang[j] = tangents[j];
-                    newTang[j + szV] = -tangents[j];
+            Vector3[] normals   = new Vector3[vertices.Length];
+            Vector2[] uvs       = new Vector2[vertices.Length];
+            Vector4[] tangents  = new Vector4[vertices.Length];
+            Vector4 tangent     = new Vector4(1f, 0f, 0f, -1f);
+            Vector3 normal      = new Vector3(0f, 0f, -1f);
+            int id = 0;
+            for (int y = 0; y <= nbVerticesV; y++) {
+                for (int x = 0; x <= nbVerticesH; x++, id++) {
+                    uvs[id] = new Vector2(1f *x / nbVerticesH, 1f * y / nbVerticesV);
+                    tangents[id] = tangent;
+                    normals[id] = normal;
                 }
-
-                var szT = triangles.Length;
-                var newTris = new int[szT * 2]; // double the triangles
-                for (var i = 0; i < szT; i += 3) {
-                    // copy the original triangle
-                    newTris[i] = triangles[i];
-                    newTris[i + 1] = triangles[i + 1];
-                    newTris[i + 2] = triangles[i + 2];
-                    // save the new reversed triangle
-                    var j = i + szT;
-                    newTris[j] = triangles[i] + szV;
-                    newTris[j + 2] = triangles[i + 1] + szV;
-                    newTris[j + 1] = triangles[i + 2] + szV;
-                }
-
-                mesh = new Mesh();
-                mesh.vertices = newVerts;
-                mesh.uv = newUv;
-                mesh.normals = newNorms;
-                mesh.tangents = newTang;
-                mesh.triangles = newTris; // assign triangles last!
-            } else {
-
-                mesh = new Mesh();
-                mesh.vertices = vertices;
-                mesh.uv = uvs;
-                mesh.normals = normals;
-                mesh.tangents = tangents;
-                mesh.triangles = triangles;
             }
 
+            for (int y = 0; y <= nbVerticesV; y++) {
+                for (int x = 0; x <= nbVerticesH; x++, id++) {
+                    uvs[id] = new Vector2(1f * x / nbVerticesH, 1f * y / nbVerticesV);
+                    tangents[id] = -tangent;
+                    normals[id] = -normal;
+                }
+            }
+
+            Mesh mesh = new Mesh();
+            mesh.vertices = vertices;
+            mesh.uv = uvs;
+            mesh.normals = normals;
+            mesh.tangents = tangents;
+            mesh.triangles = triangles;
+ 
             mesh.RecalculateNormals();
             mesh.RecalculateTangents();
             mesh.Optimize();
