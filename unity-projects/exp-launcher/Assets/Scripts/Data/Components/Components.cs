@@ -110,6 +110,7 @@ namespace Ex{
             // avatar
             ["Ex.HumanoidControllerComponent"]    = gen_info(Category.Avatar, Pritority.Low, Reserved.Closed),
             // interaction
+            ["Ex.FlagPoleComponent"]              = gen_info(Category.Interaction, Pritority.Medium, Reserved.Public),
             ["Ex.MarkToCleanComponent"]           = gen_info(Category.Interaction, Pritority.Medium, Reserved.Public),
             ["Ex.TargetToGrabComponent"]          = gen_info(Category.Interaction, Pritority.Medium, Reserved.Public),
             // environment

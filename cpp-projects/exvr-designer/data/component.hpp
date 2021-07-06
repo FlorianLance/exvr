@@ -83,7 +83,7 @@ struct Component {
         /** A */ AudioSource, Attach_object_to_hand,
         /** B */ Biopac, Blend_fade_viewer,
         /** C */ Camera, Camera_trajectory, Camera_trajectory_file, Cloud, CSharp_script, Cube, Cylinder,
-        /** F */ Falling_spheres, Fixation_cross_viewer, Flashing_dot, Fop_robot, Fov_simulator_viewer,
+        /** F */ Falling_spheres, Fixation_cross_viewer, Flag_pole, Flashing_dot, Fop_robot, Fov_simulator_viewer,
         /** H */ Humanoid_controller,
         /** I */ Image_resource, Image_viewer,
         /** J */ Joypad,
@@ -170,8 +170,9 @@ struct Component {
         {T::Keyboard,                 C::Input,       TO::U,     CO::I,   true,    R::OpenSource,   S::Sta, "Keyboard"sv, "Keyboard"sv, "Keyboard"sv, ":/icons/Keyboard"sv},
         {T::Mouse,                    C::Input,       TO::U,     CO::I,   true,    R::OpenSource,   S::Exp, "Mouse"sv, "Mouse"sv, "Mouse"sv, ":/icons/Mouse"sv},
         // Interaction
-        {T::Mark_to_clean,            C::Interaction, TO::B,     CO::B,   false,   R::LNCO,         S::Exp, "Mark_to_clean"sv, "Mark to clean"sv, "MarkToClean"sv, ":/icons/Mark_to_clean"sv},
-        {T::Target_to_grab,           C::Interaction, TO::B,     CO::B,   false,   R::LNCO,         S::Exp, "Target_to_grab"sv, "Target to grab"sv, "TargetToGrab"sv, ":/icons/Grab_target"sv},
+        {T::Flag_pole,                C::Interaction, TO::B,     CO::B,   false,   R::OpenSource,   S::Exp, "Flag_pole"sv, "Flag pole"sv, "FlagPole"sv, ":/icons/Mark_to_clean"sv},
+        {T::Mark_to_clean,            C::Interaction, TO::B,     CO::B,   false,   R::OpenSource,   S::Exp, "Mark_to_clean"sv, "Mark to clean"sv, "MarkToClean"sv, ":/icons/Mark_to_clean"sv},
+        {T::Target_to_grab,           C::Interaction, TO::B,     CO::B,   false,   R::OpenSource,   S::Exp, "Target_to_grab"sv, "Target to grab"sv, "TargetToGrab"sv, ":/icons/Grab_target"sv},
         // Model
         {T::Cube,                     C::Model,       TO::V,     CO::B,   false,   R::OpenSource,   S::Sta, "Cube"sv, "Cube"sv, "Cube"sv,":/icons/Cube"sv},
         {T::Cylinder,                 C::Model,       TO::V,     CO::B,   false,   R::OpenSource,   S::Sta, "Cylinder"sv, "Cylinder"sv, "Cylinder"sv,":/icons/Sphere"sv},
@@ -306,7 +307,7 @@ struct Component {
 
     using TComponentSlots = std::tuple<
         T,                             FunctionN,                      CNT,                    Doc>;
-    static constexpr TupleArray<81,TComponentSlots> componentsSlots = {{
+    static constexpr TupleArray<82,TComponentSlots> componentsSlots = {{
         TComponentSlots
         // Audio
         {T::AudioSource,               "play"sv,                       CNT::void_t,            "..."sv},
@@ -321,6 +322,7 @@ struct Component {
         {T::Camera_target,             "set factor"sv,                 CNT::float_t,           "..."sv},
         {T::Camera_target,             "set offset"sv,                 CNT::vector3_t,         "..."sv},
         // Interaction
+        {T::Flag_pole,                 "hoist"sv,                      CNT::float_t,           "Hoist the flag."sv},
         {T::Mark_to_clean,             "erase"sv,                      CNT::gameobject_list_t, "Erase the parts of the mark close to the objects position."sv},
         {T::Mark_to_clean,             "set position"sv,               CNT::void_t,            "Reset the mark"sv},
         // Model

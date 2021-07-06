@@ -15,17 +15,12 @@ using namespace tool::ex;
 
 
 void ExFlowView::paintEvent(QPaintEvent *event){
-    Bench::start("ExFlowView paint event"sv);
     QtNodes::FlowView::paintEvent(event);
-    Bench::stop();
 }
 
 void ExFlowView::resizeEvent(QResizeEvent *event){
-    Bench::start("ExFlowView resizeEvent"sv);
     QtNodes::FlowView::resizeEvent(event);
-    Bench::stop();
 }
-
 
 void ExFlowView::wheelEvent(QWheelEvent *event){
 

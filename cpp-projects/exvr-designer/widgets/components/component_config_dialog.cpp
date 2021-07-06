@@ -77,6 +77,7 @@
 #include "multi_ab_pw.hpp"
 #include "fop_robot_pw.hpp"
 #include "blend_fade_viewer_pw.hpp"
+#include "flag_pole_pw.hpp"
 
 // debug
 #include <QDebug>
@@ -495,6 +496,8 @@ ConfigParametersW *ComponentConfigDialog::generate_parameters(Component::Type ty
     case CT::Mouse:
         return initConfig ? gen_params_w<MouseInitConfigParametersW>() : gen_params_w<MouseConfigParametersW>();
     // ############################# Interaction
+    case CT::Flag_pole:
+        return initConfig ? gen_params_w<FlagPoleInitConfigParametersW>() : gen_params_w<FlagPoleConfigParametersW>();
     case CT::Mark_to_clean:
         return initConfig ? gen_params_w<MarkToCleanInitConfigParametersW>() : gen_params_w<MarkToCleanConfigParametersW>();
     case CT::Target_to_grab:

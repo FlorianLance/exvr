@@ -11,76 +11,226 @@ namespace Ex.PrimitivesMesh{
 
     class GridBuilder{
 
-        public static Mesh generate(int nbVerticesH, int nbVerticesV, bool bothSides) {
+        public static Mesh generate(int nbVerticesH, int nbVerticesV, float width, float height, float depth) {
 
-            if (nbVerticesH < 1 || nbVerticesV < 1) {
+            if (nbVerticesH <= 1 || nbVerticesV <= 1) {
                 Debug.LogError("Invalid parameters.");
                 return null;
             }
 
-            //Vector3[] vertices = new Vector3[ ((nbVerticesH + 1) * (nbVerticesV + 1))*2];
-            Vector3[] vertices = new Vector3[nbVerticesH * nbVerticesV * 2];
-            int ii = 0;
-            //for (int  y = 0; y <= nbVerticesV; y++) {
-            //    for (int x = 0; x <= nbVerticesH; x++, ii++) {
-            //        vertices[ii] = new Vector3(x, y, -0.001f);
-            //    }
-            //}
-            //for (int y = 0; y <= nbVerticesV; y++) {
-            //    for (int x = 0; x <= nbVerticesH; x++, ii++) {
-            //        vertices[ii] = new Vector3(x, y, 0.001f);
-            //    }
-            //}
+            int nbVerticesFace  = nbVerticesH * nbVerticesV;
+            int nbVerticesTotal = nbVerticesFace * 2;
+            Vector3[] vertices = new Vector3[nbVerticesTotal];
+            float dx = width  / nbVerticesH;
+            float dy = height / nbVerticesV;
+            float dz = depth  / 2f;
 
-            int[] triangles = new int[nbVerticesH * nbVerticesV * 6 * 2];
-            int ti = 0;
-            int vi = 0;
-            for (int y = 0; y < nbVerticesV; y++, vi++) {
-                for (int x = 0; x < nbVerticesH; x++, ti += 6, vi++) {
-
-                    triangles[ti] = vi;
-                    triangles[ti + 1] = vi + nbVerticesH + 1;
-                    triangles[ti + 2] = vi + 1;
-
-                    triangles[ti + 3] = vi + 1;
-                    triangles[ti + 4] = vi + nbVerticesH + 1;
-                    triangles[ti + 5] = vi + nbVerticesH + 2;
+            int idV = 0;
+            for (int ii = 0; ii < nbVerticesH; ii++) {
+                for (int jj = 0; jj < nbVerticesV; jj++, idV++) {
+                    vertices[idV] = new Vector3(dx * ii, dy * jj, -dz);
+                }
+            }
+            for (int ii = 0; ii < nbVerticesH; ii++) {
+                for (int jj = 0; jj < nbVerticesV; jj++, idV++) {
+                    vertices[idV] = new Vector3(dx * ii, dy * jj, +dz);
                 }
             }
 
-            vi += nbVerticesV* nbVerticesH;
-            for (int y = 0; y < nbVerticesV; y++, vi++) {
-                for (int x = 0; x < nbVerticesH; x++, ti += 6, vi++) {
+            int nbTrianglesFace = (nbVerticesH - 1) * (nbVerticesV - 1) * 2;
+            int nbTriangles = nbTrianglesFace * 2 + (nbVerticesV - 1)*4 + (nbVerticesH - 1) * 4;
+            int[] triangles = new int[nbTriangles * 6];
 
-                    triangles[ti] = vi;
-                    triangles[ti + 1] = vi + 1;
-                    triangles[ti + 2] = vi + nbVerticesH + 1;
+            int idT = 0;
+            for (int ii = 0; ii < nbVerticesH - 1; ii++) {
+                for (int jj = 0; jj < nbVerticesV - 1; jj++, idT += 6) {
 
-                    triangles[ti + 3] = vi + 1;
-                    triangles[ti + 4] = vi + nbVerticesH + 2;
-                    triangles[ti + 5] = vi + nbVerticesH + 1;
+                    int idTopLeft      = ii * nbVerticesV + jj;
+                    int idTopRight     = (ii) * nbVerticesV + (jj + 1);
+                    int idBottomLeft   = (ii + 1) * nbVerticesV + (jj);
+                    int idBottomRight  = (ii + 1) * nbVerticesV + (jj + 1);
+
+                    triangles[idT]     = idTopLeft;
+                    triangles[idT+1]   = idTopRight;
+                    triangles[idT+2]   = idBottomLeft;
+
+                    triangles[idT + 3] = idTopRight;
+                    triangles[idT + 4] = idBottomRight;
+                    triangles[idT + 5] = idBottomLeft;
                 }
             }
 
-            Vector3[] normals   = new Vector3[vertices.Length];
+
+            for (int ii = 0; ii < nbVerticesH - 1; ii++) {
+                for (int jj = 0; jj < nbVerticesV - 1; jj++, idT += 6) {
+
+                    int idTopLeft = nbVerticesFace + ii * nbVerticesV + jj;
+                    int idTopRight = nbVerticesFace + (ii) * nbVerticesV + (jj + 1);
+                    int idBottomLeft = nbVerticesFace + (ii + 1) * nbVerticesV + (jj);
+                    int idBottomRight = nbVerticesFace + (ii + 1) * nbVerticesV + (jj + 1);
+
+                    triangles[idT]     = idTopLeft;
+                    triangles[idT + 1] = idBottomLeft;
+                    triangles[idT + 2] = idTopRight; 
+
+                    triangles[idT + 3] = idTopRight;
+                    triangles[idT + 4] = idBottomLeft;
+                    triangles[idT + 5] = idBottomRight; 
+                }
+            }
+
+            // w = 4
+            // h = 3
+
+            // F1
+            // 0 3 6 9 
+            // 1 4 7 10
+            // 2 5 8 11
+            // F2
+            // 12 15 18 21 
+            // 13 16 19 22
+            // 14 17 20 23
+
+            // 0------3
+            // |\     |\             
+            // | \    | \    
+            // 4--\---7  \
+            //  \  1------2
+            //   \ |    \ |
+            //    \|     \|
+            //     5------6
+
+            int id0 = 0;
+            int id1 = (nbVerticesH - 1) * nbVerticesV;
+            int id2 = nbVerticesTotal - nbVerticesV;
+            int id3 = nbVerticesFace;
+
+            int id4 = nbVerticesV - 1;
+            int id5 = nbVerticesFace - 1;
+            int id6 = nbVerticesTotal - 1;
+            int id7 = nbVerticesFace + nbVerticesV - 1;
+
+            for (int ii = 0; ii < nbVerticesH - 1; ++ii, idT += 6) {
+
+                int idTopLeft = id0 + ii* nbVerticesV;
+                int idTopRight = id3 + ii* nbVerticesV;
+                int idBottomLeft = idTopLeft + nbVerticesV;
+                int idBottomRight = idTopRight + nbVerticesV;
+
+                triangles[idT] = idTopLeft;
+                triangles[idT + 1] = idBottomLeft;
+                triangles[idT + 2] = idTopRight;
+
+                triangles[idT + 3] = idTopRight;
+                triangles[idT + 4] = idBottomLeft;
+                triangles[idT + 5] = idBottomRight;
+            }
+
+            for (int ii = 0; ii < nbVerticesH - 1; ++ii, idT += 6) {
+
+                int idTopLeft = id4 + ii * nbVerticesV;
+                int idTopRight = id7 + ii * nbVerticesV;
+                int idBottomLeft = idTopLeft + nbVerticesV;
+                int idBottomRight = idTopRight + nbVerticesV;
+
+                triangles[idT] = idTopLeft;
+                triangles[idT + 1] = idTopRight;
+                triangles[idT + 2] = idBottomLeft;
+
+                triangles[idT + 3] = idTopRight;
+                triangles[idT + 4] = idBottomRight;
+                triangles[idT + 5] = idBottomLeft;
+            }
+
+            for (int ii = 0; ii < nbVerticesV - 1; ++ii, idT += 6) {
+
+                int idTopLeft     = id1 + ii;
+                int idTopRight    = id2 + ii;                
+                int idBottomLeft  = idTopLeft + 1;
+                int idBottomRight = idTopRight + 1;
+
+                triangles[idT]     = idTopLeft;
+                triangles[idT + 1] = idBottomLeft;
+                triangles[idT + 2] = idTopRight;
+
+                triangles[idT + 3] = idTopRight;
+                triangles[idT + 4] = idBottomLeft;
+                triangles[idT + 5] = idBottomRight;
+            }
+
+            for (int ii = 0; ii < nbVerticesV - 1; ++ii, idT += 6) {
+
+                int idTopLeft     = id0 + ii;
+                int idTopRight    = id3 + ii;
+                int idBottomLeft  = idTopLeft + 1;
+                int idBottomRight = idTopRight + 1;
+
+                triangles[idT]     = idTopLeft;
+                triangles[idT + 1] = idTopRight;
+                triangles[idT + 2] = idBottomLeft;
+
+                triangles[idT + 3] = idTopRight;
+                triangles[idT + 4] = idBottomRight;
+                triangles[idT + 5] = idBottomLeft;
+            }
+
+
+
+
+                //triangles[idT] = id0;
+                //triangles[idT + 1] = id1;
+                //triangles[idT + 2] = id2;
+
+                //triangles[idT + 3] = id0;
+                //triangles[idT + 4] = id2;
+                //triangles[idT + 5] = id3;
+
+                //triangles[idT + 6] = id4;
+                //triangles[idT + 7] = id6;
+                //triangles[idT + 8] = id5;
+
+                //triangles[idT + 9] = id4;
+                //triangles[idT + 10] = id7;
+                //triangles[idT + 11] = id6;
+
+                //triangles[idT + 12] = id1;
+                //triangles[idT + 13] = id5;
+                //triangles[idT + 14] = id6;
+
+                //triangles[idT + 15] = id1;
+                //triangles[idT + 16] = id6;
+                //triangles[idT + 17] = id2;
+
+                //triangles[idT + 18] = id3;
+                //triangles[idT + 19] = id7;
+                //triangles[idT + 20] = id4;
+
+                //triangles[idT + 21] = id3;
+                //triangles[idT + 22] = id4;
+                //triangles[idT + 23] = id0;
+
+
+
+                Vector3[] normals   = new Vector3[vertices.Length];
             Vector2[] uvs       = new Vector2[vertices.Length];
             Vector4[] tangents  = new Vector4[vertices.Length];
             Vector4 tangent     = new Vector4(1f, 0f, 0f, -1f);
             Vector3 normal      = new Vector3(0f, 0f, -1f);
-            int id = 0;
-            for (int y = 0; y <= nbVerticesV; y++) {
-                for (int x = 0; x <= nbVerticesH; x++, id++) {
-                    uvs[id] = new Vector2(1f *x / nbVerticesH, 1f * y / nbVerticesV);
-                    tangents[id] = tangent;
-                    normals[id] = normal;
+
+            idV = 0;
+            for (int ii = 0; ii < nbVerticesH; ii++) {
+                for (int jj = 0; jj < nbVerticesV; jj++, idV++) {
+                    uvs[idV]      = new Vector2(1f * ii / (nbVerticesH-1), 1f * jj / (nbVerticesV-1));
+                    tangents[idV] = tangent;
+                    normals[idV]  = normal;
                 }
             }
 
-            for (int y = 0; y <= nbVerticesV; y++) {
-                for (int x = 0; x <= nbVerticesH; x++, id++) {
-                    uvs[id] = new Vector2(1f * x / nbVerticesH, 1f * y / nbVerticesV);
-                    tangents[id] = -tangent;
-                    normals[id] = -normal;
+            for (int ii = 0; ii < nbVerticesH; ii++) {
+                for (int jj = 0; jj < nbVerticesV; jj++, idV++) {
+                    uvs[idV] = new Vector2(1f * ii / (nbVerticesH - 1), 1f * jj / (nbVerticesV - 1));
+                    tangents[idV] = -tangent;
+                    normals[idV] = -normal;
                 }
             }
 
@@ -90,10 +240,8 @@ namespace Ex.PrimitivesMesh{
             mesh.normals = normals;
             mesh.tangents = tangents;
             mesh.triangles = triangles;
- 
-            mesh.RecalculateNormals();
-            mesh.RecalculateTangents();
             mesh.Optimize();
+
             return mesh;
         }
     }

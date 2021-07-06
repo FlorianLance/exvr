@@ -173,6 +173,7 @@ HEADERS += \
     # controller
     # widgets    
     ## main                           
+    widgets/components/config_parameters/interaction/flag_pole_pw.hpp \
     widgets/components/config_parameters/scene/asset_bundle_pw.hpp \
     widgets/components/config_parameters/scene/multi_ab_pw.hpp \
     widgets/components/config_parameters/tracking/biopac_pw.hpp \

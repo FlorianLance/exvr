@@ -17,8 +17,11 @@ namespace Ex{
 
     public class EditorGeometryMenu : EditorWindow{
 
-        int sizeX = 10;
-        int sizeY = 10;
+        int nbVerticesH = 10;
+        int nbVerticesV = 10;
+        float width = 1f;
+        float height = 0.6f;
+        float depth = 0.001f;
         bool bothSides = true;
         string goName = "Grid";
 
@@ -32,20 +35,50 @@ namespace Ex{
         void OnGUI() {
 
             GUILayout.Label("Grid settings", EditorStyles.boldLabel);
-            sizeX     = EditorGUILayout.IntField("Size X", sizeX);
-            sizeY     = EditorGUILayout.IntField("Size Y", sizeY);
+            nbVerticesH = EditorGUILayout.IntField("Nb vertices H", nbVerticesH);
+            nbVerticesV = EditorGUILayout.IntField("Nb vertices V", nbVerticesV);
+            width = EditorGUILayout.FloatField("Width", width);
+            height = EditorGUILayout.FloatField("Height", height);
+            depth = EditorGUILayout.FloatField("Depth", depth);
             bothSides = EditorGUILayout.Toggle("Both sides", bothSides);
             goName    = EditorGUILayout.TextField("GO name", goName);
 
             if (GUILayout.Button("Generate")) {
                 GameObject grid = new GameObject(goName);
                 var mf = grid.AddComponent<MeshFilter>();
-                var mr = grid.AddComponent<MeshRenderer>();
-                mr.sharedMaterial = Resources.Load(string.Format("Materials/Procedural/Grid")) as Material;
-                mf.mesh = PrimitivesMesh.GridBuilder.generate(sizeX, sizeY, bothSides);
+                //var mr = grid.AddComponent<MeshRenderer>();
+                var smr = grid.AddComponent<SkinnedMeshRenderer>();
+                smr.sharedMaterial = Resources.Load(string.Format("Materials/Procedural/Grid")) as Material;
+                var mesh = PrimitivesMesh.GridBuilder.generate(nbVerticesH, nbVerticesV, width, height, depth);
+                mf.mesh = mesh;                
+                smr.sharedMesh = mesh;
+                var cloth = grid.AddComponent<Cloth>();                
+                var coeff = cloth.coefficients;
 
-                //var cloth = grid.AddComponent<Cloth>();
-                //cloth.
+                int idV = 0;
+                for(int ii = 0; ii < nbVerticesH; ii++) {
+                    for(int jj = 0; jj < nbVerticesV; jj++, idV++) {
+                        if(idV < nbVerticesH) {
+                            coeff[idV].maxDistance = (1.0f * idV) / nbVerticesH;
+                        } else {
+                            coeff[idV].maxDistance = 0.0f;
+                        }
+                        Debug.Log("coeff[idV] " + idV + " " + coeff[idV].maxDistance);
+                    }
+                }
+
+                for (int ii = 0; ii < nbVerticesH; ii++) {
+                    for (int jj = 0; jj < nbVerticesV; jj++, idV++) {
+                        coeff[idV].maxDistance = 0.0f;
+                        //if (ii == 0) {
+                        //    coeff[idV].maxDistance = 0.0f;
+                        //} else {
+                        //    coeff[idV].maxDistance = 0.5f;
+                        //}
+                    }
+                }
+
+                cloth.coefficients = coeff;
             }
         }
     }
