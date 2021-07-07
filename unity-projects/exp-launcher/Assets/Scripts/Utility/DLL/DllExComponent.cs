@@ -21,6 +21,8 @@ namespace Ex.DLL{
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
         delegate void LogCB(string message);
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+        delegate void LogWarningCB(string warningMessage);        
+        [UnmanagedFunctionPointer(CallingConvention.StdCall)]
         delegate void LogErrorCB(string errorMessage);
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
         delegate long EllapsedTimeExpMsCB();
@@ -61,6 +63,9 @@ namespace Ex.DLL{
             LogCB logCB = (message) => {
                 ExVR.Log().message(message);
             };
+            LogWarningCB logWarningCB = (warning) => {
+                ExVR.Log().warning(warning);
+            };            
             LogErrorCB logErrorCB = (error) => {
                 ExVR.Log().error(error);
             };
@@ -114,6 +119,7 @@ namespace Ex.DLL{
             init_callbacks_ex_component(
                 stackTraceCB,
                 logCB,
+                logWarningCB,
                 logErrorCB,
                 ellapsedTimeExpMsCB,
                 ellapsedTimeRoutineMsCB,
@@ -137,6 +143,7 @@ namespace Ex.DLL{
         static private extern void init_callbacks_ex_component(
             [MarshalAs(UnmanagedType.FunctionPtr)] StrackTraceCB strackTraceCB,
             [MarshalAs(UnmanagedType.FunctionPtr)] LogCB logCB,
+            [MarshalAs(UnmanagedType.FunctionPtr)] LogWarningCB logWarningCB,
             [MarshalAs(UnmanagedType.FunctionPtr)] LogErrorCB logErrorCB,
             [MarshalAs(UnmanagedType.FunctionPtr)] EllapsedTimeExpMsCB ellapsedTimeExpMsCB,
             [MarshalAs(UnmanagedType.FunctionPtr)] EllapsedTimeRoutineMsCB ellapsedTimeRoutineMsCB,

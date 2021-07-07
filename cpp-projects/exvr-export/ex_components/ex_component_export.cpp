@@ -105,6 +105,7 @@ int contains_ex_component(ExComponent *c, int containerId, const char *paramName
 void init_callbacks_ex_component(
     StrackTraceCB strackTraceCB,
     LogCB logCB,
+    LogWarningCB logWarningCB,
     LogErrorCB logErrorCB,
     EllapsedTimeExpMsCB ellapsedTimeExpMsCB,
     EllapsedTimeRoutineMsCB ellapsedTimeRoutineMsCB,
@@ -124,6 +125,7 @@ void init_callbacks_ex_component(
 
     ExComponent::strackTraceCB            = std::make_unique<StrackTraceCB>(strackTraceCB);
     ExComponent::logCB                    = std::make_unique<LogCB>(logCB);
+    ExComponent::logWarningCB             = std::make_unique<LogWarningCB>(logWarningCB);
     ExComponent::logErrorCB               = std::make_unique<LogErrorCB>(logErrorCB);
     ExComponent::ellapsedTimeExpMsCB      = std::make_unique<EllapsedTimeExpMsCB>(ellapsedTimeExpMsCB);
     ExComponent::ellapsedTimeRoutineMsCB  = std::make_unique<EllapsedTimeRoutineMsCB>(ellapsedTimeRoutineMsCB);
