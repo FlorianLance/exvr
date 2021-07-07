@@ -55,6 +55,7 @@ extern "C"{
     DECL_EXPORT void init_callbacks_ex_component(
         StrackTraceCB strackTraceCB,
         LogCB logCB,
+        LogWarningCB logWarningCB,
         LogErrorCB logErrorCB,
         EllapsedTimeExpMsCB ellapsedTimeExpMsCB,
         EllapsedTimeRoutineMsCB ellapsedTimeRoutineMsCB,
