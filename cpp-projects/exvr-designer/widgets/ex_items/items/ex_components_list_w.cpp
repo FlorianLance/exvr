@@ -54,6 +54,7 @@ ExComponentsListW *ExComponentsListW::init_widget(Component::Type componentType,
     return this;
 }
 
+
 void ExComponentsListW::init_connection(const QString &nameParam){
 
     connect(m_add, &QPushButton::clicked, this, [&]{

@@ -30,7 +30,6 @@ public:
     ExCameraTargetW();
     ExCameraTargetW *init_widget(bool enabled = true);
     void init_connection(const QString &nameParam) override;
-    std::optional<Arg> generate_init_arg_from_dialog(QStringList othersParameters) override;
     void update_from_arg(const Arg &arg) override;
     Arg convert_to_arg() const override;
     void set_generator(QString genName) override;

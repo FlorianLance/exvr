@@ -9,6 +9,7 @@
 
 // qt-utility
 #include "qt_logger.hpp"
+
 using namespace tool::ex;
 
 ConfigUP Config::copy_with_new_element_id(const Config &configToCopy, const QString &newName){

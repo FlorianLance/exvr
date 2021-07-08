@@ -65,10 +65,6 @@ void ExCameraTargetW::init_connection(const QString &nameParam){
     speed.init_connection(nameParam);
 }
 
-std::optional<Arg> ExCameraTargetW::generate_init_arg_from_dialog(QStringList othersParameters){
-    Q_UNUSED(othersParameters)
-    return {};
-}
 
 void ExCameraTargetW::update_from_arg(const Arg &arg){
 

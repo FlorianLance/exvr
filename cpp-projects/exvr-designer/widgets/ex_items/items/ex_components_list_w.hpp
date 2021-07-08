@@ -12,8 +12,7 @@
 #include <QComboBox>
 
 // local
-#include "ex_item_w.hpp"
-#include "component.hpp"
+#include "ex_component_w.hpp"
 #include "widgets/list_widget.hpp"
 
 

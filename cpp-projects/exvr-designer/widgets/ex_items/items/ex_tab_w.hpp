@@ -74,10 +74,6 @@ public:
         m_nameParam = nameParam;
     }
 
-    virtual std::optional<Arg> generate_init_arg_from_dialog(QStringList othersParameters) override{
-        Q_UNUSED(othersParameters)
-        return {};
-    }
 
     virtual void update_from_arg(const Arg &arg) override{
 

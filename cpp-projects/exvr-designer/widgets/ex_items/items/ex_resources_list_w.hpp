@@ -12,10 +12,8 @@
 #include <QComboBox>
 
 // local
-#include "ex_item_w.hpp"
-#include "resource.hpp"
 #include "widgets/list_widget.hpp"
-
+#include "ex_resource_w.hpp"
 
 namespace tool::ex{
 

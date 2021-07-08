@@ -14,7 +14,7 @@
 #include "qt_str.hpp"
 // # widgets
 #include "widgets/list_widget.hpp"
-#include "widgets/ex_items/base/ex_item_w.hpp"
+#include "ex_widgets/base/ex_item_w.hpp"
 
 // Qt
 #include <QScrollArea>
@@ -32,7 +32,7 @@ public :
     ExParametersGeneratorWidgetW();
     ~ExParametersGeneratorWidgetW() override;
     ExParametersGeneratorWidgetW *init_widget(std::map<QString, ExBaseW*> *inputUiElements, QString genName, bool enabled = true);
-    std::optional<Arg> generate_init_arg_from_dialog(QStringList othersParameters) override;
+
     void init_connection(const QString &nameParam) override;
     void update_from_arg(const Arg &arg) override;
     Arg convert_to_arg() const override;

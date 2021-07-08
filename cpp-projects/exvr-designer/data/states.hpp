@@ -10,6 +10,9 @@
 // base
 #include "utility/tuple_array.hpp"
 
+// qt-utility
+#include "data/unity_types.hpp"
+
 // local
 #include "element.hpp"
 
@@ -84,47 +87,6 @@ namespace tool::ex {
         Wrap = 0, Overflow = 1,
         SizeEnum};
 
-    enum class UnityType : int {
-        System_boolean,
-        System_sbyte, System_int16, System_int32, System_int64, System_decimal,
-        System_byte, System_uint16, System_uint32, System_uint64,
-        System_single, System_double,
-        System_char, System_string,
-        None, Mixed, Unknow, SizeEnum};
-
-    using UniT = UnityType;
-    using Name    = std::string_view;
-    using StrType = std::string_view;
-
-    using TUnityType = std::tuple<UnityType, Name, StrType>;
-    static constexpr TupleArray<UnityType::SizeEnum, TUnityType> unityTypes {{
-        TUnityType
-        {UnityType::System_boolean,    "bool"sv,       "System.Boolean"sv },
-        {UnityType::System_single,     "float"sv,      "System.Single"sv  },
-        {UnityType::System_double,     "double"sv,     "System.Double"sv  },
-        {UnityType::System_sbyte,      "sbyte"sv,      "System.Sbyte"sv   },
-        {UnityType::System_int16,      "short"sv,      "System.In16"sv    },
-        {UnityType::System_int32,      "int"sv,        "System.Int32"sv   },
-        {UnityType::System_int64,      "long"sv,       "System.Int64"sv   },
-        {UnityType::System_decimal,    "decimal"sv,    "System.Decimal"sv },
-        {UnityType::System_byte,       "byte"sv,       "System.Byte"sv    },
-        {UnityType::System_uint16,     "ushort"sv,     "System.UIn16"sv   },
-        {UnityType::System_uint32,     "uint"sv,       "System.UInt32"sv  },
-        {UnityType::System_uint64,     "ulong"sv,      "System.UInt64"sv  },
-        {UnityType::System_char,       "char"sv,       "System.Char"sv    },
-        {UnityType::System_string,     "string"sv,     "System.String"sv  },
-        {UnityType::None,              "none"sv,       "None"sv           },
-        {UnityType::Unknow,            "unknow"sv,     "Unknow"sv         },
-        {UnityType::Mixed,             "mixed types"sv,"None"sv           },
-    }};
-
-    constexpr StrType get_unity_type_string(UnityType t) {
-        return unityTypes.at<0,2>(t);
-    }
-
-    constexpr std::optional<UnityType> get_unity_type(StrType strType){
-        return unityTypes.optional_at<2,0>(strType);
-    }
 
     struct States{
 

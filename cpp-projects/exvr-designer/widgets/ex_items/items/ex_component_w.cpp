@@ -13,6 +13,8 @@
 
 using namespace tool::ex;
 
+
+
 ExComponentW::ExComponentW() : ExItemW<QFrame>(UiType::Component){
 
     w->setFrameShadow(QFrame::Raised);
@@ -41,6 +43,7 @@ ExComponentW *ExComponentW::init_widget(tool::ex::Component::Type componentType,
 
     return this;
 }
+
 
 void ExComponentW::init_connection(const QString &nameParam){
 

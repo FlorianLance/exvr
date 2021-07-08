@@ -30,8 +30,11 @@
 #include "items/ex_component_w.hpp"
 #include "items/ex_components_list_w.hpp"
 
+#include "generation/gen_ui_item_dialog.hpp"
+
 using namespace tool;
 using namespace tool::ex;
+
 
 ExParametersGeneratorWidgetW::ExParametersGeneratorWidgetW() : ExItemW<QWidget>(UiType::Generator){
 
@@ -146,10 +149,6 @@ ExParametersGeneratorWidgetW *ExParametersGeneratorWidgetW::init_widget(std::map
     return this;
 }
 
-std::optional<Arg> ExParametersGeneratorWidgetW::generate_init_arg_from_dialog(QStringList othersParameters){
-    Q_UNUSED(othersParameters)
-    return {};
-}
 
 void ExParametersGeneratorWidgetW::init_connection(const QString &nameParam){
     Q_UNUSED(nameParam)
@@ -250,7 +249,6 @@ void ExParametersGeneratorWidgetW::add_ui_element(UiType uiType, QString uiName,
     default:
         return;
     }
-
     exW->set_generator(generatorName);
 
     // init widget from dialog
@@ -261,14 +259,75 @@ void ExParametersGeneratorWidgetW::add_ui_element(UiType uiType, QString uiName,
             names << inputUiElement.first;
         }
 
-        auto optA = exW->generate_init_arg_from_dialog(std::move(names));
-        if(!optA.has_value()){
+        GenUIItemDialog genD(type);
+        genD.setMinimumWidth(500);
+        genD.setMaximumWidth(900);
+
+        switch (uiType) {
+        case UiType::Slider_integer :{
+            genD.add_gen_widget(new GenSpinboxW("Slider options"));
+        }break;
+        case UiType::Slider_double :{
+            genD.add_gen_widget(new SpinboxDoubleGenW("Slider options"));
+        }break;
+        case UiType::Spin_box:{
+             genD.add_gen_widget(new GenSpinboxW());
+        }break;
+        case UiType::Double_spin_box:{
+             genD.add_gen_widget(new SpinboxDoubleGenW());
+        }break;
+        case UiType::Float_spin_box :{
+            genD.add_gen_widget(new SpinboxFloatGenW());
+        }break;
+        case UiType::Vector2D:{
+            genD.add_gen_widget(new Vector2dGenW());
+        }break;
+        case UiType::Vector3D:{
+            genD.add_gen_widget(new Vector3dGenW());
+        }break;
+        case UiType::Resource:{
+            genD.add_gen_widget(new ResourceGenW());
+        }break;
+        case UiType::Component:{
+            genD.add_gen_widget(new ComponentGenW());
+        }break;
+        case UiType::Transformation:{
+            genD.add_gen_widget(new TransformGenW());
+        }break;
+        case UiType::ComponentsList:{
+            genD.add_gen_widget(new ComponentGenW());
+        }break;
+        case UiType::ResourcesList:{
+            genD.add_gen_widget(new ResourceGenW());
+        }break;
+        case UiType::Text_edit:{
+            genD.add_gen_widget(new TextGenW("Text:"));
+        }break;
+        case UiType::Line_edit:{
+            genD.add_gen_widget(new TextGenW("Value:"));
+        }break;
+        case UiType::Label:{
+            genD.add_gen_widget(new TextGenW("Title:"));
+        }break;
+        case UiType::Combo_box_text:{
+            genD.add_gen_widget(new ComboTextGen());
+        }break;
+        case UiType::Combo_box_index:{
+            genD.add_gen_widget(new ComboTextGen());
+        }break;
+        default:
+            break;
+        }
+
+
+        if(!genD.show_dialog(names)){
             delete exW;
             return;
         }
 
-        exW->update_from_arg(optA.value());
-        uiName = optA.value().name;
+        auto genUiArg = genD.generate_arg(UiElementKey{key()});
+        exW->update_from_arg(genUiArg);
+        uiName = genUiArg.name;
     }
 
     // add widget to input ui elements

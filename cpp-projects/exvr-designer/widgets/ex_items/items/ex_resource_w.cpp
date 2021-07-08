@@ -20,6 +20,8 @@
 using namespace tool::ex;
 
 
+
+
 ExResourceW::ExResourceW() : ExItemW<QFrame>(UiType::Resource){
 
     w->setFrameShadow(QFrame::Raised);
@@ -60,7 +62,6 @@ ExResourceW *ExResourceW::init_widget(Resource::Type resourceType, QString title
     return this;
 }
 
-
 void ExResourceW::init_connection(const QString &nameParam){
 
     connect(m_resources, &QPushButton::clicked, this, [&]{
@@ -82,13 +83,14 @@ void ExResourceW::init_connection(const QString &nameParam){
     });
 }
 
+
 void ExResourceW::update_from_arg(const Arg &arg){
 
     ExItemW::update_from_arg(arg);
 
     w->blockSignals(true);
 
-    if(generatorName.length() > 0){
+    if(generatorName.length() > 0 && arg.generator.info.has_value()){
         if(auto type = Resource::get_type(arg.generator.info.value().toStdString()); type.has_value()){
             m_resourceType = type.value();
             m_icon->setIcon(QIcon(from_view(Resource::get_icon_path(m_resourceType))));

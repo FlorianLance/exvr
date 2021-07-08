@@ -18,6 +18,7 @@
 namespace tool::ex{
 
 
+
 class ExResourceW : public ExItemW<QFrame>{
 
     Q_OBJECT
