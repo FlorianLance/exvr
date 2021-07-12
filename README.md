@@ -8,7 +8,9 @@
 * [How to install](https://github.com/FlorianLance/exvr#how-to-install)
 * [How to compile from code](https://github.com/FlorianLance/exvr#how-to-compile)
 * [Documentation](https://github.com/FlorianLance/exvr#documentation)
+* [Tutorials](https://github.com/FlorianLance/exvr#tutorials)
 * [Captures](https://github.com/FlorianLance/exvr#captures)
+* [Authors](https://github.com/FlorianLance/exvr#authors)
 
 ## Description
 
@@ -65,8 +67,38 @@ Clone project.
 
 ## Documentation
 
+* General
+* UI
+ * Flow creation
+ * Element selection
+ * Components list
+ * Routines conditions
+ * Resources manager
+ * Randomization
+ * Toobar
+ * Logs
+ * Settings
+* Content
+ * Components description
+ * Scripting
+ * Visual scripting
+ * Exp-launcher
+ * Samples
 ...
+(TODO)
+
+## Tutorials
+
+...
+(TODO)
 
 ## Captures
 
+...
+(TODO)
 
+
+## Authors
+
+...
+(TODO)
