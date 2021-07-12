@@ -2,11 +2,12 @@
 
 ## Summary
 
-* [Desciption](https://github.com/FlorianLance/exvr#description)
+* [Description](https://github.com/FlorianLance/exvr#description)
 * [Origin](https://github.com/FlorianLance/exvr#origin)
 * [Content](https://github.com/FlorianLance/exvr#content)
 * [How to install](https://github.com/FlorianLance/exvr#how-to-install)
 * [How to compile from code](https://github.com/FlorianLance/exvr#how-to-compile)
+* [Documentation](https://github.com/FlorianLance/exvr#documentation)
 
 ## Description
 
@@ -60,6 +61,9 @@ Install Qt 5.15.
 Clone project.
 ...
 (TODO)
+
+## Documentation
+
 
 
 
