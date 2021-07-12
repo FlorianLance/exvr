@@ -125,23 +125,24 @@ void DocumentationDialog::init_components_doc(){
     tabComponentsDocW->addTab(componentsCsharpScriptingW = new QTextBrowser(), QSL("CSharp scripting"));
 //    tabComponentsDocW->addTab(componentsPythonScriptingW = new QTextBrowser(), QSL("Python scripting"));
 
-    auto path = Paths::documentationDir % QSL("/") % from_view(markdown_file(DocSection::ContentComponentsDescription));
+    const QString path = Paths::documentationDir % QSL("/") % from_view(markdown_file(DocSection::ContentComponentsDescription));
+    qDebug() << path;
     componentsInfoW->setOpenExternalLinks(true);
     componentsInfoW->setStyleSheet("background-color: rgb(30,30,30); color: rgb(220,220,200);");
     componentsInfoW->zoomIn(2);
-    componentsInfoW->setSearchPaths({path});
+    componentsInfoW->setSearchPaths({path, ".", "./info_images"});
     componentsInfoW->setReadOnly(true);
 
     componentsConnectionsW->setOpenExternalLinks(true);
     componentsConnectionsW->setStyleSheet("background-color: rgb(30,30,30); color: rgb(220,220,200);");
     componentsConnectionsW->zoomIn(2);                   
-    componentsConnectionsW->setSearchPaths({path});
+    componentsConnectionsW->setSearchPaths({path, ".", "./connections_images"});
     componentsConnectionsW->setReadOnly(true);
 
     componentsCsharpScriptingW->setOpenExternalLinks(true);
     componentsCsharpScriptingW->setStyleSheet("background-color: rgb(30,30,30);");
     componentsCsharpScriptingW->zoomIn(3);
-    componentsCsharpScriptingW->setSearchPaths({path});
+    componentsCsharpScriptingW->setSearchPaths({path, ".", "./csharp_images"});
     componentsCsharpScriptingW->setReadOnly(true);
 
 //    componentsPythonScriptingW->setOpenExternalLinks(true);
@@ -202,7 +203,7 @@ void DocumentationDialog::init_connectors_doc(){
     tabConnectorsDocW->addTab(connectorsInfoW            = new QTextBrowser(), QSL("Infos"));
     tabConnectorsDocW->addTab(connectorsConnectionsW     = new QTextBrowser(), QSL("Connections"));
 
-    auto path = Paths::documentationDir % QSL("/") % from_view(markdown_file(DocSection::ContentConnectorsDescription));
+    const QString path = Paths::documentationDir % QSL("/") % from_view(markdown_file(DocSection::ContentConnectorsDescription));
     connectorsInfoW->setOpenExternalLinks(true);
     connectorsInfoW->setStyleSheet("background-color: rgb(30,30,30); color: rgb(220,220,200);");
     connectorsInfoW->zoomIn(2);

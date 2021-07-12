@@ -26,7 +26,6 @@ Projects hierarchy:
 
 ![Image](https://raw.githubusercontent.com/pbek/QOwnNotes/develop/screenshots/screenshot.png "icon")
 
-![Image](1.jpg "icon")
 ![Image](csharp_images/1.jpg "icon")
 
 
