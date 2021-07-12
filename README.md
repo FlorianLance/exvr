@@ -9,7 +9,7 @@ Communication between components can be done using scripting (C# or Python) or b
 
 ## Origin
 
-The project has been developped at [EPFL LNCO laboratory](https://www.epfl.ch/labs/lnco/) (Laboratory of Cognitive Neuroscience) and has been funded by the [EPFL Open Science Fund](https://www.epfl.ch/research/open-science/in-practice/open-science-fund/) from the 2019 cohort. It has been used for dozains of experiments and demos inside LNCO or duing collaborations since it creation in 2018.
+The project has been developped at [EPFL LNCO laboratory](https://www.epfl.ch/labs/lnco/) (Laboratory of Cognitive Neuroscience) and has been funded by the [EPFL Open Science Fund](https://www.epfl.ch/research/open-science/in-practice/open-science-fund/) from the 2019 cohort. It has been used for dozains of experiments and demos inside LNCO or during external collaborations since it creation in 2018.
 
 
 ## Content
@@ -39,10 +39,19 @@ The project has been developped at [EPFL LNCO laboratory](https://www.epfl.ch/la
     * experiment file -> for the content
     * instance file  -> for the randomization
   
-  
+
+## Installation
+
+Go to release... (TODO)
 
 
-They both communicate between themselves, the GUI controls the launcher and can update its parameters, and the launcher send information and feedback to the GUI.
+## Compilation
+
+Install Visual studio community 2019.
+Install Qt 5.15.
+Clone project.
+...
+(TODO)
 
 
 
