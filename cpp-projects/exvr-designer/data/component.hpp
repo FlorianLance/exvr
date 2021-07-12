@@ -35,7 +35,7 @@ struct Component {
 
     enum class Category : int {
         Audio, Avatar, Camera, Cloud, Environment,
-        Input, Interaction, Model, Network, Output, Resource, Scene, Script, Settings, Text, Tracking, UI, Video, Viewer,
+        Input, Interaction, Model, Network, Output, Resource, Scene, Script, Tracking, UI, Video, Viewer,
         SizeEnum};
     using C  = Category;
 
@@ -56,8 +56,6 @@ struct Component {
         {Category::Resource,    "Resource"sv      },
         {Category::Scene,       "Scene"sv         },
         {Category::Script,      "Script"sv        },
-        {Category::Settings,    "Settings"sv      },
-        {Category::Text,        "Text"sv          },
         {Category::Tracking,    "Tracking"sv      },
         {Category::UI,          "UI"sv            },
         {Category::Video,       "Video"sv         },

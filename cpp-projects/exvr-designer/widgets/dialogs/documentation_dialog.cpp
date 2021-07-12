@@ -126,7 +126,6 @@ void DocumentationDialog::init_components_doc(){
 //    tabComponentsDocW->addTab(componentsPythonScriptingW = new QTextBrowser(), QSL("Python scripting"));
 
     const QString path = Paths::documentationDir % QSL("/") % from_view(markdown_file(DocSection::ContentComponentsDescription));
-    qDebug() << path;
     componentsInfoW->setOpenExternalLinks(true);
     componentsInfoW->setStyleSheet("background-color: rgb(30,30,30); color: rgb(220,220,200);");
     componentsInfoW->zoomIn(2);
@@ -287,7 +286,7 @@ void DocumentationDialog::display_other_section(){
         browser->setMarkdown(in.readAll());
     }
 
-    setWindowTitle(from_view(window_title(currentSection)));
+    setWindowTitle(QSL("ExVR Doc: ") % from_view(window_title(currentSection)));
 }
 
 void DocumentationDialog::display_components_section(Component::Type type){
