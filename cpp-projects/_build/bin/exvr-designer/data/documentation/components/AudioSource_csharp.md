@@ -44,7 +44,7 @@ namespace Ex{
 
 ### Samples:
 
-```
+```csharp
 
 	// retrieve component 
 	var audioComponent = (AudioSourceComponent)get("audio_souce_component_name");
