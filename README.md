@@ -81,6 +81,7 @@ Clone project.
   * Settings
 * Content
   * Components description
+  * Connectors description
   * Scripting
   * Visual scripting
   * Exp-launcher
