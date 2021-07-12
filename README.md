@@ -1,5 +1,13 @@
 # ExVR - Open Virtual Psychology
 
+## Summary
+
+* [Desciption](https://github.com/FlorianLance/exvr#description)
+* [Origin](https://github.com/FlorianLance/exvr#origin)
+* [Content](https://github.com/FlorianLance/exvr#content)
+* [How to install](https://github.com/FlorianLance/exvr#how)
+* [How to compile from code](https://github.com/FlorianLance/exvr#description)
+
 ## Description
 
 ExVR is a software for creating and executing 3D/2D complexes experiments base on Unity3D using virtual reality or not. 
@@ -40,12 +48,12 @@ The project has been developped at [EPFL LNCO laboratory](https://www.epfl.ch/la
     * instance file  -> for the randomization
   
 
-## Installation
+## How to install
 
 Go to release... (TODO)
 
 
-## Compilation
+## How to compile from code
 
 Install Visual studio community 2019.
 Install Qt 5.15.
