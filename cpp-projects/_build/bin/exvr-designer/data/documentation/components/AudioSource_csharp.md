@@ -3,8 +3,8 @@
 ### Content:
 
 &nbsp;
-
-```
+  
+```csharp
 // system
 using System;
 using System.Collections.Generic;
@@ -19,23 +19,23 @@ namespace Ex{
         public GameObject audioSourceGO = null;
         public AudioSource audioSource = null;
 
-		// Update components with current config parameters 
-		// (Call it if you modify the component config using scripts)
+	// Update components with current config parameters 
+	// (Call it if you modify the component config using scripts)
         public override void update_from_current_config();
         
-		// Start the sound
+	// Start the sound
         public void start_sound();
 		
-		// Stop the sound
+	// Stop the sound
         public void stop_sound();
 
-		// Pause the sound
+	// Pause the sound
         public override void pause();
 		
-		// Unpause the sound
+	// Unpause the sound
         public override void play();
 
-		// Set current play time (seconds)
+	// Set current play time (seconds)
         public void set_time(float time);
     }
 }
