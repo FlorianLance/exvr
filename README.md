@@ -69,21 +69,21 @@ Clone project.
 
 * General
 * UI
- * Flow creation
- * Element selection
- * Components list
- * Routines conditions
- * Resources manager
- * Randomization
- * Toobar
- * Logs
- * Settings
+  * Flow creation
+  * Element selection
+  * Components list
+  * Routines conditions
+  * Resources manager
+  * Randomization
+  * Toobar
+  * Logs
+  * Settings
 * Content
- * Components description
- * Scripting
- * Visual scripting
- * Exp-launcher
- * Samples
+  * Components description
+  * Scripting
+  * Visual scripting
+  * Exp-launcher
+  * Samples
 ...
 (TODO)
 
