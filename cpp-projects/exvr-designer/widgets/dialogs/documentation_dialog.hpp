@@ -23,22 +23,94 @@
 #include "component.hpp"
 #include "connector.hpp"
 
-
 namespace tool::ex {
 
+using namespace std::literals::string_view_literals;
+
 enum class DocSection {
-    General=0,    // program general description
-    Experiment,   // describes the life of an experiment
-    Elements,     // routine, isi, loops
-    Randomization,// Loops, conditions, config
-    Components,   // components details
-    Connectors,   // connectors details
-    Interface,    // differents interface descriptions: panels, toolbar
-    ExpLauncher,  // how the exp launcher is managed
-    Logs,         // log behaviour
-    Settings,     //
+    General=0,
+    UiFlowCreation,
+    UiElementSelection,
+    UiComponentsList,
+    UiRoutinesConditions,
+    UiResourcesManager,
+    UiRandomization,
+    UiToobar,
+    UiLogs,
+    UiSettings,
+    ContentComponentsDescription,
+    ContentConnectorsDescription,
+    ContentScripting,
+    ContentVisualScripting,
+    ContentExpLauncher,
+    ContentSamples,
+    SizeEnum
 };
 
+enum class UiDocType  {
+    TextBrowser,
+    Widget
+};
+
+using Name = std::string_view;
+using MarkdownFile = Name;
+using SectionName = Name;
+using WindowTitle = Name;
+
+using Id = int;
+using TDocSection = std::tuple<
+    DocSection,                                 Id, UiDocType, MarkdownFile,                              SectionName, WindowTitle>;
+static constexpr TupleArray<DocSection::SizeEnum, TDocSection> sections = {{
+    TDocSection
+    {DocSection::General,                       0,  UiDocType::TextBrowser, "doc_general.md"sv,                        "General"sv,                             "GENERAL"sv},
+    {DocSection::UiFlowCreation,                1,  UiDocType::TextBrowser, "doc_ui_flow_creation.md"sv,               "[UI] Flow creation"sv,                  "UI FLOW CREATION"sv},
+    {DocSection::UiElementSelection,            2,  UiDocType::TextBrowser, "doc_ui_element_selection.md"sv,           "[UI] Element selection"sv,              "UI FLOW SELECTION"sv},
+    {DocSection::UiComponentsList,              3,  UiDocType::TextBrowser, "doc_ui_component_list.md"sv,              "[UI] Components list"sv,                "UI COMPONENTS LIST"sv},
+    {DocSection::UiRoutinesConditions,          4,  UiDocType::TextBrowser, "doc_ui_routines_conditions.md"sv,         "[UI] Routines conditions"sv,            "UI ROUTINES CONDITIONS"sv},
+    {DocSection::UiResourcesManager,            5,  UiDocType::TextBrowser, "doc_ui_resources_manager.md"sv,           "[UI] Resources manager"sv,              "UI RESOURCES MANAGER"sv},
+    {DocSection::UiRandomization,               6,  UiDocType::TextBrowser, "doc_ui_randomization.md"sv,               "[UI] Randomization"sv,                  "UI RANDOMIZATION"sv},
+    {DocSection::UiToobar,                      7,  UiDocType::TextBrowser, "doc_ui_toolboar.md"sv,                    "[UI] Toolbar"sv,                        "UI TOOLBAR"sv},
+    {DocSection::UiLogs,                        8,  UiDocType::TextBrowser, "doc_ui_logs.md"sv,                        "[UI] Logs"sv,                           "UI LOGS"sv},
+    {DocSection::UiSettings,                    9,  UiDocType::TextBrowser, "doc_ui_settings.md"sv,                    "[UI] Settings"sv,                       "UI SETTINGS"sv},
+    {DocSection::ContentComponentsDescription,  10, UiDocType::Widget,      "components"sv,                            "[Content] Components description"sv,    "CONTENT COMPONENTS DESCRIPTION"sv},
+    {DocSection::ContentConnectorsDescription,  11, UiDocType::Widget,      "connectors"sv,                            "[Content] Connectors description"sv,    "CONTENT CONNECTORS DESCRIPTION"sv},
+    {DocSection::ContentScripting,              12, UiDocType::TextBrowser, "doc_content_scripting.md"sv,              "[Content] Scripting"sv,                 "CONTENT SCRIPTING"sv},
+    {DocSection::ContentVisualScripting,        13, UiDocType::TextBrowser, "doc_content_visual_scripting.md"sv,       "[Content] Visual scripting"sv,          "CONTENT VISUAL SCRIPTING"sv},
+    {DocSection::ContentExpLauncher,            14, UiDocType::TextBrowser, "doc_content_exp_launcher.md"sv,           "[Content] Exp-launcher"sv,              "CONTENT EXP-LAUNCHER"sv},
+    {DocSection::ContentSamples,                15, UiDocType::TextBrowser, "doc_content_samples.md"sv,                "[Content] Samples"sv,                   "CONTENT SAMPLES"sv},
+}};
+
+static auto all_sections() {
+    return sections.tuple_column<0>();
+}
+
+static auto all_sections_names() {
+    return sections.tuple_column<4>();
+}
+
+[[maybe_unused]] static std::optional<DocSection> get_doc_section(Id id) {
+    return sections.optional_at<1,0>(id);
+}
+
+[[maybe_unused]] static Id section_id(DocSection ds) {
+    return sections.at<0,1>(ds);
+}
+
+[[maybe_unused]] static UiDocType ui_doc_type(DocSection ds) {
+    return sections.at<0,2>(ds);
+}
+
+[[maybe_unused]] static MarkdownFile markdown_file(DocSection ds) {
+    return sections.at<0,3>(ds);
+}
+
+[[maybe_unused]] static SectionName section_name(DocSection ds) {
+    return sections.at<0,4>(ds);
+}
+
+[[maybe_unused]] static WindowTitle window_title(DocSection ds) {
+    return sections.at<0,5>(ds);
+}
 
 // test
 class CSharpHighlighter : public QSyntaxHighlighter{
@@ -95,7 +167,7 @@ class DocumentationDialog : public QDialog{
 
 public :
 
-    DocumentationDialog(bool onlyPublicComponents, bool onlyStableComponents);
+    DocumentationDialog(bool lncoComponents);
 
     static QTextBrowser *generate_text_browser();
     void init_components_doc();
@@ -103,42 +175,34 @@ public :
 
 public slots:
 
-    void show_window();
-    void show_section(DocSection section, bool resetWindow);
+    void show_window();    
     void show_components_section(Component::Type type, bool resetWindow);
     void show_connectors_section(Connector::Type type, bool resetWindow);
+    void show_section(DocSection section, bool resetWindow);
 
 private slots:
 
-    void display_section(const QString &docCategory, DocSection section, QTextBrowser *browser, const QString &pathDocFile, const QString &windowsTitle);
     void display_components_section(Component::Type type);
     void display_connectors_section(Connector::Type type);
+    void display_other_section();
 
     void update_current_component_doc(Component::Type type);
     void update_current_connector_doc(Connector::Type type);
 
+    void update_current_category_components_list();
+
 private:
 
-    bool m_onlyPublicComponents = true;
-    bool m_onlyStableComponents = true;
+    bool m_lncoComponents = false;
 
     DocSection currentSection = DocSection::General;
 
     QHBoxLayout *mainLayout = nullptr;
-
     SectionW *documentationsCategoriesW = nullptr;
+    // sub categories
+    std::unordered_map<DocSection, QWidget*> sectionsWidgets;
 
-    QTextBrowser *generalDocW = nullptr;
-    QTextBrowser *experimentDocW = nullptr;
-    QTextBrowser *elementsDocW = nullptr;
-    QTextBrowser *randomizationDocW = nullptr;
-    QTextBrowser *interfaceDocW = nullptr;
-    QTextBrowser *expLauncherDocW = nullptr;
-    QTextBrowser *logsDocW = nullptr;
-    QTextBrowser *settingsDocW = nullptr;
-
-    // components
-    QWidget *componentsDocW = nullptr;
+    // components    
     SectionW *componentsCategoriesSectionW = nullptr;
     SectionW *componentsSectionW = nullptr;
     QTabWidget *tabComponentsDocW = nullptr;
@@ -151,8 +215,7 @@ private:
     QStringList componentsCategoriesStr;
     QStringList componentsFullStr;
 
-    // connectors
-    QWidget *connectorsDocW = nullptr;
+    // connectors    
     SectionW *connectorsCategoriesSectionW = nullptr;
     SectionW *connectorsSectionW = nullptr;
     QTabWidget *tabConnectorsDocW = nullptr;
@@ -163,9 +226,8 @@ private:
     QStringList connectorsCategoriesStr;
     QStringList connectorsFullStr;
 
-
-
+    // hightlighers
     CSharpHighlighter *csharpHighlighter = nullptr;
-    // PythonHighlighter *pythonHighlighter = nullptr;
+    // PythonHighlighter *pythonHighlighter = nullptr;    
 };
 }

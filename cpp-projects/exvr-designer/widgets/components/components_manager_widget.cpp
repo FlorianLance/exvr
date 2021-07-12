@@ -20,8 +20,8 @@
 
 using namespace tool::ex;
 
-ComponentsManagerW::ComponentsManagerW(bool onlyPublicComponents, bool onlyStableComponents) :
-      m_onlyPublicComponents(onlyPublicComponents), m_onlyStableComponents(onlyStableComponents){
+ComponentsManagerW::ComponentsManagerW(bool lncoComponents) :
+      m_lncoComponents(lncoComponents){
 
     setAcceptDrops(true);
 
@@ -247,33 +247,32 @@ void ComponentsManagerW::initialize_menues(){
         m_sortComponentsSubMenu.addAction(sortA);
     }
 
-    // new components sub menu
-    m_createNewComponentsSubMenu.clear();
-    m_createNewComponentsSubMenu.setTitle(QSL("Create new component"));
+    // fill types categories mapping
     std::unordered_map<Component::Category, std_v1<Component::Type>> componentsT;       
+    std::unordered_map<Component::Category, std_v1<Component::Type>> experimentalComponentsT;
     for(const auto &type : Component::all_components_types()){        
 
-        if(m_onlyPublicComponents){
-            if(Component::get_restricted(type) == Component::Restricted::LNCO){
-                continue;
-            }
-        }
-        if(m_onlyStableComponents){
-            if(Component::get_state(type) == Component::State::Exp){
-                continue;
-            }
+        if(Component::get_restricted(type) == Component::Restricted::LNCO && !m_lncoComponents){
+            continue;
         }
 
         const auto category = Component::get_category(type);
-        if(componentsT.count(category) == 0){
-            componentsT[category] = {};
+        if(Component::get_state(type) == Component::State::Exp){
+            if(experimentalComponentsT.count(category) == 0){
+                experimentalComponentsT[category] = {};
+            }
+            experimentalComponentsT[category].emplace_back(type);
+        }else{
+            if(componentsT.count(category) == 0){
+                componentsT[category] = {};
+            }
+            componentsT[category].emplace_back(type);
         }
-
-        componentsT[category].emplace_back(type);
     }
 
-
-    // generates menues
+    // new components sub menu
+    m_createNewComponentsSubMenu.clear();
+    m_createNewComponentsSubMenu.setTitle(QSL("Create component"));
     for(const auto &category : Component::all_categories()){
 
         if(category == Component::C::SizeEnum){
@@ -303,8 +302,42 @@ void ComponentsManagerW::initialize_menues(){
             });
         }
         m_createNewComponentsSubMenu.addMenu(typesMenu);
-
     }    
+
+    // new components experimental sub menu
+    m_createNewExperimentalComponentsSubMenu.clear();
+    m_createNewExperimentalComponentsSubMenu.setTitle(QSL("Create component (experimental)"));
+    for(const auto &category : Component::all_categories()){
+
+        if(category == Component::C::SizeEnum){
+            continue;
+        }
+
+        if(Component::components_nb_per_category(category) == 0){
+            continue;
+        }
+
+        if(experimentalComponentsT.count(category) == 0){
+            continue;
+        }
+
+        QMenu *typesMenu = new QMenu();
+        typesMenu->setTitle(std::string(Component::to_string(category)).c_str());
+
+        for(const auto &componentT : experimentalComponentsT[category]){
+
+            QAction *action = new QAction();
+            action->setIcon(QIcon(from_view(Component::get_icon_path(componentT))));
+            action->setText(from_view(Component::get_full_name(componentT)));
+            typesMenu->addAction(action);
+
+            connect(action, &QWidgetAction::triggered, this, [=](){
+                add_new_component(componentT, m_componentsListW.count());
+            });
+        }
+        m_createNewExperimentalComponentsSubMenu.addMenu(typesMenu);
+
+    }
 }
 
 void ComponentsManagerW::toggle_component_parameters_dialog(ComponentKey componentKey){
@@ -360,6 +393,7 @@ void ComponentsManagerW::show_howering_component_custom_menu(QPoint pos, Compone
 
     QMenu contextMenu(tr("Context menu"), this);
     contextMenu.addMenu(&m_createNewComponentsSubMenu);
+    contextMenu.addMenu(&m_createNewExperimentalComponentsSubMenu);
     contextMenu.addSeparator();
 
     QMenu addComponentSubMenu(tr("Add to..."));
@@ -456,6 +490,7 @@ void ComponentsManagerW::show_context_menu(const QPoint &pos) {
 
     QMenu contextMenu(tr("Context menu"), this);
     contextMenu.addMenu(&m_createNewComponentsSubMenu);
+    contextMenu.addMenu(&m_createNewExperimentalComponentsSubMenu);
     contextMenu.addSeparator();
 
     contextMenu.addMenu(&m_sortComponentsSubMenu);

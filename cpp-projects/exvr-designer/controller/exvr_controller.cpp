@@ -28,7 +28,7 @@ using ROU   = RoutinesManagerTW;
 using COM   = ComponentsManagerW;
 using ELW   = ElementViewerW;
 
-ExVrController::ExVrController(const QString &nVersion, bool onlyPublicComponents, bool onlyStableComponents){
+ExVrController::ExVrController(const QString &nVersion, bool lncoComponents){
 
     QThread::currentThread()->setObjectName("main");
 
@@ -69,7 +69,7 @@ ExVrController::ExVrController(const QString &nVersion, bool onlyPublicComponent
     m_xmlManager = std::make_unique<XmlIoManager>(exp());
 
     QtLogger::message("[CONTROLLER] Generate UI");
-    m_designerWindow = std::make_unique<DesignerWindow>(onlyPublicComponents, onlyStableComponents);
+    m_designerWindow = std::make_unique<DesignerWindow>(lncoComponents);
 
     // generate exp launcher
     QtLogger::message("[CONTROLLER] Generate Exp Launcher");
@@ -85,7 +85,7 @@ ExVrController::ExVrController(const QString &nVersion, bool onlyPublicComponent
     m_settingsD      = std::make_unique<SettingsDialog>();
     m_copyToCondD    = std::make_unique<CopyToConditionDialog>();
     m_resourcesD     = std::make_unique<ResourcesManagerDialog>();
-    m_documentationD = std::make_unique<DocumentationDialog>(onlyPublicComponents, onlyStableComponents);
+    m_documentationD = std::make_unique<DocumentationDialog>(lncoComponents);
     m_benchmarkD     = std::make_unique<BenchmarkDialog>();
 
     // connections

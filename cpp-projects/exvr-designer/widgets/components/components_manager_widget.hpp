@@ -38,7 +38,7 @@ class ComponentsManagerW : public QFrame{
 
 public :
 
-    ComponentsManagerW(bool onlyPublicComponents, bool onlyStableComponents);
+    ComponentsManagerW(bool lncoComponents);
 
     ComponentConfigDialog *component_dialog(ComponentKey componentKey);
     ComponentW *component_widget(ComponentKey componentKey);
@@ -91,13 +91,13 @@ signals:
 
 private :
 
-    bool m_onlyPublicComponents = true;
-    bool m_onlyStableComponents = true;
+    bool m_lncoComponents = false;
 
     QPoint m_lastPos;
 
     // menus
     QMenu m_createNewComponentsSubMenu;
+    QMenu m_createNewExperimentalComponentsSubMenu;
     QMenu m_sortComponentsSubMenu;
 
     ui::ListWidget m_componentsListW;

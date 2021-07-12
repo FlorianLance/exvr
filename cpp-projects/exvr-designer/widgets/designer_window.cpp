@@ -39,14 +39,14 @@
 
 using namespace tool::ex;
 
-DesignerWindow::DesignerWindow(bool onlyPublicComponents, bool onlyStableComponents, QWidget *parent) : QMainWindow(parent){
+DesignerWindow::DesignerWindow(bool lncoComponents, QWidget *parent) : QMainWindow(parent){
 
     // define designer ui
     m_ui.setupUi(this);        
     setAcceptDrops(true);
 
     create_flow_diagram();
-    create_components_manager(onlyPublicComponents, onlyStableComponents);
+    create_components_manager(lncoComponents);
     create_routines_manager();
     create_element_viewer();
 
@@ -760,9 +760,9 @@ void DesignerWindow::create_flow_diagram(){
     m_ui.hlFlows->insertWidget(0,m_flowDiagramW.get());
 }
 
-void DesignerWindow::create_components_manager(bool onlyPublicComponents, bool onlyStableComponents){
+void DesignerWindow::create_components_manager(bool lncoComponents){
 
-    m_componentsW = std::make_unique<ComponentsManagerW>(onlyPublicComponents, onlyStableComponents);
+    m_componentsW = std::make_unique<ComponentsManagerW>(lncoComponents);
     m_ui.vlComponents->addWidget(m_componentsW.get());
 }
 

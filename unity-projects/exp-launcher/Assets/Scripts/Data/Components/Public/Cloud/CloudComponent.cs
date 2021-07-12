@@ -92,12 +92,9 @@ namespace Ex{
 
         public override void update_from_current_config() {
             currentC.update_transform("transform", transform, true);
-            //gameObject.GetComponent<MeshRenderer>().material.color = currentC.get_color("color");
         }
 
         protected override void set_visibility(bool visibility) {
-            //gameObject.GetComponent<MeshRenderer>().enabled = visibility;
-            //events().invoke_signal("visibility_changed", visibility);
             cloudGO.SetActive(visibility);
         }
 

@@ -20,17 +20,16 @@
 //#include "qmarkdowntextedit.h"
 //#include "markdownhighlighter.h"
 
-
 using namespace tool::ex;
 
 
-DocumentationDialog::DocumentationDialog(bool onlyPublicComponents, bool onlyStableComponents) :
-      m_onlyPublicComponents(onlyPublicComponents), m_onlyStableComponents(onlyStableComponents){
+DocumentationDialog::DocumentationDialog(bool lncoComponents) :
+      m_lncoComponents(lncoComponents){
 
     setWindowFlag(Qt::Window);
     setModal(false);
     resize(1100,600);
-    setWindowTitle(QSL("DOC"));
+    setWindowTitle(QSL("ExVR Doc:"));
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
     // init main
@@ -38,32 +37,27 @@ DocumentationDialog::DocumentationDialog(bool onlyPublicComponents, bool onlySta
     mainLayout->setContentsMargins(0,0,0,0);
     mainLayout->addWidget(documentationsCategoriesW = new SectionW(QSL("<b>Sections:</b>")));
 
-    documentationsCategoriesW->lwContent->addItems({
-      /* 0 **/  QSL("General"),      // program general description
-      /* 1 **/  QSL("Experiment"),   // describes the life of an experiment
-      /* 2 **/  QSL("Elements"),     // routine, isi, loops
-      /* 3 **/  QSL("Randomization"),// Loops, conditions, config
-      /* 4 **/  QSL("Components"),   // components details
-      /* 5 **/  QSL("Connectors"),   // connectors details
-      /* 6 **/  QSL("Interface"),    // differents interface descriptions: panels, toolbar
-      /* 7 **/  QSL("Exp launcher"),     // how the exvr-exp is managed
-      /* 8 **/  QSL("Logs"),         // log behaviour
-      /* 9 **/  QSL("Settings"),     //
-    });
+    QStringList items;
+    // by id order
+    for(const auto &sectionName : all_sections_names()){
+        items << from_view(sectionName);
+    }
+    documentationsCategoriesW->lwContent->addItems(items);
+
     connect(documentationsCategoriesW->lwContent, &QListWidget::currentRowChanged, this, [&](int index){
-        show_section(currentSection = static_cast<DocSection>(index), false);
+        if(auto section = get_doc_section(index); section.has_value()){
+            show_section(section.value(), false);
+        }
     });
 
-    mainLayout->addWidget(generalDocW = generate_text_browser());
-    mainLayout->addWidget(experimentDocW = generate_text_browser());
-    mainLayout->addWidget(elementsDocW = generate_text_browser());
-    mainLayout->addWidget(randomizationDocW = generate_text_browser());
+    // by id order
+    for(const auto &section : all_sections()){
+        mainLayout->addWidget((sectionsWidgets[section] = (ui_doc_type(section) == UiDocType::TextBrowser ?  generate_text_browser() : new QWidget())));
+    }
+
     init_components_doc();
     init_connectors_doc();
-    mainLayout->addWidget(interfaceDocW = generate_text_browser());
-    mainLayout->addWidget(expLauncherDocW = generate_text_browser());
-    mainLayout->addWidget(logsDocW = generate_text_browser());
-    mainLayout->addWidget(settingsDocW = generate_text_browser());
+
 }
 
 QTextBrowser *DocumentationDialog::generate_text_browser(){
@@ -82,11 +76,8 @@ QTextBrowser *DocumentationDialog::generate_text_browser(){
 
 void DocumentationDialog::init_components_doc(){
 
-    // init components
-    mainLayout->addWidget(componentsDocW = new QWidget());
-
-    auto componentsDocL = new QHBoxLayout();
-    componentsDocW->setLayout(componentsDocL);
+    auto componentsDocL = new QHBoxLayout();    
+    sectionsWidgets[DocSection::ContentComponentsDescription]->setLayout(componentsDocL);
     componentsDocL->setContentsMargins(0,0,0,0);
     componentsDocL->addWidget(componentsCategoriesSectionW = new SectionW("Categories"));
     componentsDocL->addWidget(componentsSectionW = new SectionW("Components"));
@@ -114,37 +105,12 @@ void DocumentationDialog::init_components_doc(){
 
     // connections
     connect(componentsCategoriesSectionW->lwContent, &QListWidget::currentRowChanged, this, [&](int index){
-
-        componentsSectionW->lwContent->blockSignals(true);
-        componentsSectionW->lwContent->clear();
-        componentsFullStr.clear();
-
-        currentComponentCategory = Component::get_category(componentsCategoriesStr[index].toStdString()).value();
-
+        auto selectedCategory = Component::get_category(componentsCategoriesStr[index].toStdString()).value();
         for(const auto &type : Component::all_components_types()){
-
-            if(Component::get_category(type) != currentComponentCategory){
-                continue;
+            if(Component::get_category(type) == selectedCategory){
+                show_components_section(type, false);
+                break;
             }
-
-//            if(m_onlyPublicComponents){
-//                if(Component::get_restricted(type) == Component::Restricted::LNCO){
-//                    continue;
-//                }
-//            }
-//            if(m_onlyStableComponents){
-//                if(Component::get_state(type) == Component::State::Exp){
-//                    continue;
-//                }
-//            }
-            componentsFullStr <<  from_view(Component::get_full_name(type));
-        }
-
-        componentsSectionW->lwContent->addItems(componentsFullStr);
-        componentsSectionW->lwContent->blockSignals(false);
-
-        if(componentsFullStr.size() > 0){
-            update_current_component_doc(Component::get_type_from_name(componentsFullStr[0].toStdString()).value());
         }
     });
 
@@ -157,40 +123,38 @@ void DocumentationDialog::init_components_doc(){
     tabComponentsDocW->addTab(componentsInfoW            = new QTextBrowser(), QSL("Infos"));
     tabComponentsDocW->addTab(componentsConnectionsW     = new QTextBrowser(), QSL("Connections"));
     tabComponentsDocW->addTab(componentsCsharpScriptingW = new QTextBrowser(), QSL("CSharp scripting"));
-    tabComponentsDocW->addTab(componentsPythonScriptingW = new QTextBrowser(), QSL("Python scripting"));
+//    tabComponentsDocW->addTab(componentsPythonScriptingW = new QTextBrowser(), QSL("Python scripting"));
 
+    auto path = Paths::documentationDir % QSL("/") % from_view(markdown_file(DocSection::ContentComponentsDescription));
     componentsInfoW->setOpenExternalLinks(true);
     componentsInfoW->setStyleSheet("background-color: rgb(30,30,30); color: rgb(220,220,200);");
     componentsInfoW->zoomIn(2);
-    componentsInfoW->setSearchPaths({Paths::componentsDocDir});
+    componentsInfoW->setSearchPaths({path});
     componentsInfoW->setReadOnly(true);
 
     componentsConnectionsW->setOpenExternalLinks(true);
     componentsConnectionsW->setStyleSheet("background-color: rgb(30,30,30); color: rgb(220,220,200);");
-    componentsConnectionsW->zoomIn(2);
-    componentsConnectionsW->setSearchPaths({Paths::componentsDocDir});
+    componentsConnectionsW->zoomIn(2);                   
+    componentsConnectionsW->setSearchPaths({path});
     componentsConnectionsW->setReadOnly(true);
 
     componentsCsharpScriptingW->setOpenExternalLinks(true);
     componentsCsharpScriptingW->setStyleSheet("background-color: rgb(30,30,30);");
     componentsCsharpScriptingW->zoomIn(3);
-    componentsCsharpScriptingW->setSearchPaths({Paths::componentsDocDir});
+    componentsCsharpScriptingW->setSearchPaths({path});
     componentsCsharpScriptingW->setReadOnly(true);
 
-    componentsPythonScriptingW->setOpenExternalLinks(true);
-    componentsPythonScriptingW->setSearchPaths({Paths::componentsDocDir});
-    componentsPythonScriptingW->setReadOnly(true);
+//    componentsPythonScriptingW->setOpenExternalLinks(true);
+//    componentsPythonScriptingW->setSearchPaths({Paths::componentsDocDir});
+//    componentsPythonScriptingW->setReadOnly(true);
 
     csharpHighlighter = new CSharpHighlighter(componentsCsharpScriptingW->document());
 }
 
 void DocumentationDialog::init_connectors_doc(){
 
-    // init connectors
-    mainLayout->addWidget(connectorsDocW = new QWidget());
-
     auto connectorsDocL  = new QHBoxLayout();
-    connectorsDocW->setLayout(connectorsDocL);
+    sectionsWidgets[DocSection::ContentConnectorsDescription]->setLayout(connectorsDocL);
     connectorsDocL->setContentsMargins(0,0,0,0);
     connectorsDocL->addWidget(connectorsCategoriesSectionW = new SectionW("Categories"));
     connectorsDocL->addWidget(connectorsSectionW = new SectionW("Connectors"));
@@ -238,22 +202,35 @@ void DocumentationDialog::init_connectors_doc(){
     tabConnectorsDocW->addTab(connectorsInfoW            = new QTextBrowser(), QSL("Infos"));
     tabConnectorsDocW->addTab(connectorsConnectionsW     = new QTextBrowser(), QSL("Connections"));
 
+    auto path = Paths::documentationDir % QSL("/") % from_view(markdown_file(DocSection::ContentConnectorsDescription));
     connectorsInfoW->setOpenExternalLinks(true);
     connectorsInfoW->setStyleSheet("background-color: rgb(30,30,30); color: rgb(220,220,200);");
     connectorsInfoW->zoomIn(2);
-    connectorsInfoW->setSearchPaths({Paths::connectorsDocDir});
+    connectorsInfoW->setSearchPaths({path});
     connectorsInfoW->setReadOnly(true);
 
     connectorsConnectionsW->setOpenExternalLinks(true);
     connectorsConnectionsW->setStyleSheet("background-color: rgb(30,30,30); color: rgb(220,220,200);");
     connectorsConnectionsW->zoomIn(2);
-    connectorsConnectionsW->setSearchPaths({Paths::connectorsDocDir});
+    connectorsConnectionsW->setSearchPaths({path});
     connectorsConnectionsW->setReadOnly(true);
 }
 
 
 void DocumentationDialog::show_window(){
     show_section(currentSection, true);
+}
+
+void DocumentationDialog::show_components_section(Component::Type type, bool resetWindow){
+    currentComponent         = type;
+    currentComponentCategory = Component::get_category(currentComponent);
+    show_section(DocSection::ContentComponentsDescription, resetWindow);
+}
+
+void DocumentationDialog::show_connectors_section(Connector::Type type, bool resetWindow){
+    currentConnector = type;
+    currentConnectorCategory = Connector::get_category(currentConnector);
+    show_section(DocSection::ContentConnectorsDescription, resetWindow);
 }
 
 void DocumentationDialog::show_section(DocSection section, bool resetWindow){
@@ -264,109 +241,43 @@ void DocumentationDialog::show_section(DocSection section, bool resetWindow){
         }
     }
 
-    bool generalS = false;
-    bool experimentS = false;
-    bool elementsS = false;
-    bool randomizationS = false;
-    bool componentsS = false;
-    bool connectorsS = false;
-    bool interfaceS = false;
-    bool expLauncherS = false;
-    bool logsS = false;
-    bool settingsS = false;
-
-    switch (section) {
-        case DocSection::General:
-            display_section("General", DocSection::General, generalDocW, Paths::generalDocFile, QSL("DOC: GENERAL"));
-            generalS = true;
-            break;
-        case DocSection::Experiment:
-            display_section("Experiment", DocSection::Experiment, experimentDocW, Paths::experimentDocFile, QSL("DOC: EXPERIMENT"));
-            experimentS = true;
-            break;
-        case DocSection::Elements:
-            display_section("Elements", DocSection::Elements, elementsDocW, Paths::elementsDocFile, QSL("DOC: ELEMENTS"));
-            elementsS = true;
-            break;
-        case DocSection::Randomization:
-            display_section("Randomization", DocSection::Randomization, randomizationDocW, Paths::randomizationDocFile, QSL("DOC: RANDOMIZATION"));
-            randomizationS = true;
-            break;
-        case DocSection::Components:
-            display_components_section(currentComponent);
-            componentsS = true;
-            break;
-        case DocSection::Connectors:
-            display_connectors_section(currentConnector);
-            connectorsS = true;
-            break;
-        case DocSection::Interface:
-            display_section("Interface", DocSection::Interface, interfaceDocW, Paths::interfaceDocFile, QSL("DOC: INTERFACE"));
-            interfaceS = true;
-            break;
-        case DocSection::ExpLauncher:
-            display_section("Exp launcher,", DocSection::ExpLauncher, expLauncherDocW, Paths::expLauncherDocFile, QSL("DOC: EXP-LAUNCHER"));
-            expLauncherS = true;
-            break;
-        case DocSection::Logs:
-            display_section("Logs", DocSection::Logs, logsDocW, Paths::logsDocFile, QSL("DOC: LOGS"));
-            logsS = true;
-            break;
-        case DocSection::Settings:
-            display_section("Settings", DocSection::Settings, settingsDocW, Paths::settingsDocFile, QSL("DOC: SETTINGS"));
-            settingsS = true;
-            break;
-        default:
-            break;
+    currentSection   = section;
+    if(currentSection == DocSection::ContentComponentsDescription){
+        display_components_section(currentComponent);
+    }else if(currentSection == DocSection::ContentConnectorsDescription){
+        display_connectors_section(currentConnector);
+    }else{
+        display_other_section();
     }
 
-    // show widgets
-    generalDocW->setVisible(generalS);
-    experimentDocW->setVisible(experimentS);
-    elementsDocW->setVisible(elementsS);
-    randomizationDocW->setVisible(randomizationS);
-    componentsDocW->setVisible(componentsS);
-    connectorsDocW->setVisible(connectorsS);
-    interfaceDocW->setVisible(interfaceS);
-    expLauncherDocW->setVisible(expLauncherS);
-    logsDocW->setVisible(logsS);
-    settingsDocW->setVisible(settingsS);
+    // set stretch and visibility
+    mainLayout->setStretch(0,5);
+    for(int ii = 1; ii < 16; ++ii){
+        mainLayout->setStretch(ii,0);
+    }
 
-    // set strech
-    mainLayout->setStretch(0,1);  // section
-    mainLayout->setStretch(1,generalS ? 10 : 0);
-    mainLayout->setStretch(2,experimentS ? 10 : 0);
-    mainLayout->setStretch(3,elementsS ? 10 : 0);
-    mainLayout->setStretch(4,randomizationS ? 10 : 0);
-    mainLayout->setStretch(5,componentsS ? 10 : 0);
-    mainLayout->setStretch(6,connectorsS ? 10 : 0);
-    mainLayout->setStretch(7,interfaceS ? 10 : 0);
-    mainLayout->setStretch(8,expLauncherS ? 10 : 0);
-    mainLayout->setStretch(9,logsS ? 10 : 0);
-    mainLayout->setStretch(10,settingsS ? 10 : 0);
+    for(auto &sectionW : sectionsWidgets){
+        if(section == sectionW.first){
+            sectionW.second->setVisible(true);
+            mainLayout->setStretch(section_id(section)+1 ,20);
+        }else{
+            sectionW.second->setVisible(false);
+        }
+    }
+
 
     // show dialog
     show();
 }
 
-void DocumentationDialog::show_components_section(Component::Type type, bool resetWindow){
-    currentComponent = type;
-    currentComponentCategory = Component::get_category(currentComponent);
-    show_section(DocSection::Components, resetWindow);
-}
 
-void DocumentationDialog::show_connectors_section(Connector::Type type, bool resetWindow){
-    currentConnector = type;
-    currentConnectorCategory = Connector::get_category(currentConnector);
-    show_section(DocSection::Connectors, resetWindow);
-}
-
-void DocumentationDialog::display_section(const QString &docCategory, DocSection section, QTextBrowser *browser, const QString &pathDocFile, const QString &windowsTitle){
+void DocumentationDialog::display_other_section(){
 
     // update section
-    currentSection   = section;
-    documentationsCategoriesW->set_current_row(docCategory);
+    documentationsCategoriesW->set_current_row(from_view(section_name(currentSection)));
 
+    QTextBrowser *browser = dynamic_cast<QTextBrowser*>(sectionsWidgets[currentSection]);
+    const QString pathDocFile = Paths::documentationDir % QSL("/") % from_view(markdown_file(currentSection));
     QFile docFile(pathDocFile);
     if(!docFile.open(QIODevice::ReadOnly | QIODevice::Text)){
         browser->setText(QSL("No documentation file found: ") % pathDocFile);
@@ -375,37 +286,19 @@ void DocumentationDialog::display_section(const QString &docCategory, DocSection
         browser->setMarkdown(in.readAll());
     }
 
-    setWindowTitle(windowsTitle);
+    setWindowTitle(from_view(window_title(currentSection)));
 }
 
 void DocumentationDialog::display_components_section(Component::Type type){
 
     // update section
-    currentSection   = DocSection::Components;
-    documentationsCategoriesW->set_current_row(QSL("Components"));
+    documentationsCategoriesW->set_current_row(from_view(section_name(currentSection)));
 
     // update category row
     componentsCategoriesSectionW->set_current_row(from_view(Component::to_string(Component::get_category(type))));
 
     // update component row
-    if(componentsSectionW->lwContent->count() == 0 || currentComponentCategory != Component::get_category(type)){
-
-        componentsSectionW->lwContent->blockSignals(true);
-        componentsSectionW->lwContent->clear();
-        componentsFullStr.clear();
-        currentComponentCategory = Component::get_category(type);
-        for(const auto &component : Component::components.data){
-            if(std::get<1>(component) == currentComponentCategory){
-                componentsFullStr << from_view(Component::get_full_name(std::get<0>(component)));
-            }
-        }
-        componentsSectionW->lwContent->addItems(componentsFullStr);
-        componentsSectionW->lwContent->blockSignals(false);
-
-//        if(componentsFullStr.size() > 0){
-//            update_current_component_doc(Component::get_type_from_name(componentsFullStr[0].toStdString()).value());
-//        }
-    }
+    update_current_category_components_list();
     componentsSectionW->set_current_row(from_view(Component::get_full_name(type)));
 
     // update markdown from type
@@ -415,12 +308,10 @@ void DocumentationDialog::display_components_section(Component::Type type){
 void DocumentationDialog::display_connectors_section(Connector::Type type){
 
     // update section
-    currentSection   = DocSection::Connectors;
-    documentationsCategoriesW->set_current_row(QSL("Connectors"));
+    documentationsCategoriesW->set_current_row(from_view(section_name(currentSection)));
 
     // update category row
     connectorsCategoriesSectionW->set_current_row(from_view(Connector::get_name((Connector::get_category(type)))));
-
 
     // update connector row
     if(connectorsSectionW->lwContent->count() == 0 || currentConnectorCategory != Connector::get_category(type)){
@@ -454,11 +345,13 @@ void DocumentationDialog::update_current_component_doc(Component::Type type){
 
     // update window with component type
     const QString componentTypeName = from_view(Component::get_type_name(currentComponent));
-    setWindowTitle(QSL("DOC: COMPONENT: ") % from_view(Component::get_full_name(currentComponent)));
-    const QString infoPath        = Paths::componentsDocDir % QSL("/") % componentTypeName % QSL("_info.md");
-    const QString connectionsPath = Paths::componentsDocDir % QSL("/") % componentTypeName % QSL("_connections.md");
-    const QString csPath          = Paths::componentsDocDir % QSL("/") % componentTypeName % QSL("_csharp.md");
-    const QString pyPath          = Paths::componentsDocDir % QSL("/") % componentTypeName % QSL("_python.md");
+
+    setWindowTitle(QSL("ExVR Doc: ") % from_view(window_title(currentSection)) % QSL(" ") %from_view(Component::get_full_name(currentComponent)));
+    const QString basePath        = Paths::documentationDir % QSL("/") % from_view(markdown_file(currentSection));
+    const QString infoPath        = basePath % QSL("/") % componentTypeName % QSL("_info.md");
+    const QString connectionsPath = basePath % QSL("/") % componentTypeName % QSL("_connections.md");
+    const QString csPath          = basePath % QSL("/") % componentTypeName % QSL("_csharp.md");
+    const QString pyPath          = basePath % QSL("/") % componentTypeName % QSL("_python.md");
 
     QFile infoFile(infoPath);
     if(!infoFile.open(QIODevice::ReadOnly | QIODevice::Text)){
@@ -485,14 +378,14 @@ void DocumentationDialog::update_current_component_doc(Component::Type type){
 
     }
 
-    QFile pyFile(pyPath);
-    if(!pyFile.open(QIODevice::ReadOnly | QIODevice::Text)){
-        // componentsPythonScriptingW->setMarkdown(QSL("No documentation file found: ") % pyPath);
-        componentsPythonScriptingW->setMarkdown(QSL("No implemented yet.")); // [TODO_DOC]
-    }else {
-        QTextStream in(&pyFile);
-        componentsPythonScriptingW->setMarkdown(in.readAll());
-    }
+//    QFile pyFile(pyPath);
+//    if(!pyFile.open(QIODevice::ReadOnly | QIODevice::Text)){
+//        // componentsPythonScriptingW->setMarkdown(QSL("No documentation file found: ") % pyPath);
+//        componentsPythonScriptingW->setMarkdown(QSL("No implemented yet.")); // [TODO_DOC]
+//    }else {
+//        QTextStream in(&pyFile);
+//        componentsPythonScriptingW->setMarkdown(in.readAll());
+//    }
 }
 
 void DocumentationDialog::update_current_connector_doc(Connector::Type type){
@@ -501,9 +394,11 @@ void DocumentationDialog::update_current_connector_doc(Connector::Type type){
 
     // update window with component type
     const QString connectorTypeName = from_view(Connector::get_name(currentConnector));
-    setWindowTitle(QSL("DOC: CONNECTOR: ") % from_view(Connector::get_caption(currentConnector)));
-    const QString infoPath        = Paths::connectorsDocDir % QSL("/") % connectorTypeName % QSL("_info.md");
-    const QString connectionsPath = Paths::connectorsDocDir % QSL("/") % connectorTypeName % QSL("_connections.md");
+
+    setWindowTitle(QSL("ExVR Doc: ") % from_view(window_title(currentSection)) % QSL(" ") % from_view(Connector::get_caption(currentConnector)));
+    const QString basePath       = Paths::documentationDir % QSL("/") % from_view(markdown_file(currentSection));
+    const QString infoPath        = basePath % QSL("/") % connectorTypeName % QSL("_info.md");
+    const QString connectionsPath = basePath % QSL("/") % connectorTypeName % QSL("_connections.md");
 
     QFile infoFile(infoPath);
     if(!infoFile.open(QIODevice::ReadOnly | QIODevice::Text)){
@@ -520,6 +415,26 @@ void DocumentationDialog::update_current_connector_doc(Connector::Type type){
         QTextStream in(&connectionsFile);
         connectorsConnectionsW->setMarkdown(in.readAll());
     }
+}
+
+void DocumentationDialog::update_current_category_components_list(){
+
+    componentsSectionW->lwContent->blockSignals(true);
+    componentsSectionW->lwContent->clear();
+    componentsFullStr.clear();
+    for(const auto &type : Component::all_components_types()){
+
+        if(Component::get_category(type) != currentComponentCategory){
+            continue;
+        }
+
+        if(!m_lncoComponents && Component::get_restricted(type) == Component::Restricted::LNCO){
+            continue;
+        }
+        componentsFullStr <<  from_view(Component::get_full_name(type));
+    }
+    componentsSectionW->lwContent->addItems(componentsFullStr);
+    componentsSectionW->lwContent->blockSignals(false);
 }
 
 

@@ -47,7 +47,7 @@ class DesignerWindow : public QMainWindow{
 
 public:
 
-    explicit DesignerWindow(bool onlyPublicComponents, bool onlyStableComponents, QWidget *parent = nullptr);
+    explicit DesignerWindow(bool lncoComponents, QWidget *parent = nullptr);
     void set_window_settings();
     void close_program();
 
@@ -144,7 +144,7 @@ private:
     void create_logger();
 
     void create_flow_diagram();
-    void create_components_manager(bool onlyPublicComponents, bool onlyStableComponents);
+    void create_components_manager(bool lncoComponents);
     void create_routines_manager();
     void create_element_viewer();
 

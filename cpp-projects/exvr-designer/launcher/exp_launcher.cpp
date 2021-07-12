@@ -224,7 +224,7 @@ void ExpLauncher::start_program(Settings settings){
     close_program();
 
     m_expLauncherProcess = std::make_unique<ExpLauncherProcess>();
-    m_expLauncherProcess->start_program( Paths::expLauncherVR, settings, m_expLauncherCommunication->readingPort);
+    m_expLauncherProcess->start_program( Paths::expLauncherExe, settings, m_expLauncherCommunication->readingPort);
     connect(m_expLauncherProcess.get(), &ExpLauncherProcess::standard_output_signal, this, &ExpLauncher::message_from_exp_launcher);
     connect(m_expLauncherProcess.get(), &ExpLauncherProcess::error_output_signal, this, &ExpLauncher::error_message_from_exp_launcher);
     connect(m_expLauncherProcess.get(), QOverload<int, ExpLauncherProcess::ExitStatus>::of(&ExpLauncherProcess::finished),
