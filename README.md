@@ -5,8 +5,8 @@
 * [Desciption](https://github.com/FlorianLance/exvr#description)
 * [Origin](https://github.com/FlorianLance/exvr#origin)
 * [Content](https://github.com/FlorianLance/exvr#content)
-* [How to install](https://github.com/FlorianLance/exvr#how)
-* [How to compile from code](https://github.com/FlorianLance/exvr#description)
+* [How to install](https://github.com/FlorianLance/exvr#how-to-install)
+* [How to compile from code](https://github.com/FlorianLance/exvr#how-to-compile)
 
 ## Description
 
