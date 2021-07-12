@@ -54,15 +54,16 @@ The project has been developped at [EPFL LNCO laboratory](https://www.epfl.ch/la
 
 ## How to install
 
-Go to release... (TODO)
+Go to release
 
+(TODO)
 
 ## How to compile from code
 
 Install Visual studio community 2019.
 Install Qt 5.15.
 Clone project.
-...
+
 (TODO)
 
 ## Documentation
@@ -84,21 +85,18 @@ Clone project.
   * Visual scripting
   * Exp-launcher
   * Samples
-...
+
 (TODO)
 
 ## Tutorials
 
-...
 (TODO)
 
 ## Captures
 
-...
 (TODO)
 
 
 ## Authors
 
-...
 (TODO)
