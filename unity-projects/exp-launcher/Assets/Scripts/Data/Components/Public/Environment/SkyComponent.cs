@@ -87,7 +87,8 @@ namespace Ex {
             //defaultRightEye.reset_default();
             defaultLeftEyeStereo.reset_default();
             defaultRightEyeStereo.reset_default();
-            defaultDebug.reset_default();
+
+            //defaultDebug.reset_default();
 
             RenderSettings.skybox = defaultSkyboxMat;
             DynamicGI.UpdateEnvironment();
@@ -163,7 +164,7 @@ namespace Ex {
                     //defaultRightEye.set_background_color(color);
                     defaultLeftEyeStereo.set_background_color(color);
                     defaultRightEyeStereo.set_background_color(color);
-                    defaultDebug.set_background_color(color);
+                    //defaultDebug.set_background_color(color);
                     currentMat = null;
                     break;
                 case SkyboxMode.Skybox6:
@@ -208,7 +209,7 @@ namespace Ex {
                 //defaultRightEye.set_clear_flags(CameraClearFlags.Skybox);
                 defaultLeftEyeStereo.set_clear_flags(CameraClearFlags.Skybox);
                 defaultRightEyeStereo.set_clear_flags(CameraClearFlags.Skybox);
-                defaultDebug.set_clear_flags(CameraClearFlags.Skybox);
+                //defaultDebug.set_clear_flags(CameraClearFlags.Skybox);
             } else {
                 RenderSettings.skybox = defaultSkyboxMat;
                 defaultBothEyes.set_clear_flags(CameraClearFlags.Color);
@@ -216,7 +217,7 @@ namespace Ex {
                 //defaultRightEye.set_clear_flags(CameraClearFlags.Color);
                 defaultLeftEyeStereo.set_clear_flags(CameraClearFlags.Color);
                 defaultRightEyeStereo.set_clear_flags(CameraClearFlags.Color);
-                defaultDebug.set_clear_flags(CameraClearFlags.Color);
+                //defaultDebug.set_clear_flags(CameraClearFlags.Color);
             }
 
 

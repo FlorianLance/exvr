@@ -55,29 +55,28 @@ enum class UiDocType  {
 using Name = std::string_view;
 using MarkdownFile = Name;
 using SectionName = Name;
-using WindowTitle = Name;
 
 using Id = int;
 using TDocSection = std::tuple<
-    DocSection,                                 Id, UiDocType, MarkdownFile,                              SectionName, WindowTitle>;
+    DocSection,                                 Id, UiDocType,              MarkdownFile,                              SectionName>;
 static constexpr TupleArray<DocSection::SizeEnum, TDocSection> sections = {{
     TDocSection
-    {DocSection::General,                       0,  UiDocType::TextBrowser, "doc_general.md"sv,                        "General"sv,                             "GENERAL"sv},
-    {DocSection::UiFlowCreation,                1,  UiDocType::TextBrowser, "doc_ui_flow_creation.md"sv,               "[UI] Flow creation"sv,                  "UI FLOW CREATION"sv},
-    {DocSection::UiElementSelection,            2,  UiDocType::TextBrowser, "doc_ui_element_selection.md"sv,           "[UI] Element selection"sv,              "UI FLOW SELECTION"sv},
-    {DocSection::UiComponentsList,              3,  UiDocType::TextBrowser, "doc_ui_component_list.md"sv,              "[UI] Components list"sv,                "UI COMPONENTS LIST"sv},
-    {DocSection::UiRoutinesConditions,          4,  UiDocType::TextBrowser, "doc_ui_routines_conditions.md"sv,         "[UI] Routines conditions"sv,            "UI ROUTINES CONDITIONS"sv},
-    {DocSection::UiResourcesManager,            5,  UiDocType::TextBrowser, "doc_ui_resources_manager.md"sv,           "[UI] Resources manager"sv,              "UI RESOURCES MANAGER"sv},
-    {DocSection::UiRandomization,               6,  UiDocType::TextBrowser, "doc_ui_randomization.md"sv,               "[UI] Randomization"sv,                  "UI RANDOMIZATION"sv},
-    {DocSection::UiToobar,                      7,  UiDocType::TextBrowser, "doc_ui_toolboar.md"sv,                    "[UI] Toolbar"sv,                        "UI TOOLBAR"sv},
-    {DocSection::UiLogs,                        8,  UiDocType::TextBrowser, "doc_ui_logs.md"sv,                        "[UI] Logs"sv,                           "UI LOGS"sv},
-    {DocSection::UiSettings,                    9,  UiDocType::TextBrowser, "doc_ui_settings.md"sv,                    "[UI] Settings"sv,                       "UI SETTINGS"sv},
-    {DocSection::ContentComponentsDescription,  10, UiDocType::Widget,      "components"sv,                            "[Content] Components description"sv,    "CONTENT COMPONENTS DESCRIPTION"sv},
-    {DocSection::ContentConnectorsDescription,  11, UiDocType::Widget,      "connectors"sv,                            "[Content] Connectors description"sv,    "CONTENT CONNECTORS DESCRIPTION"sv},
-    {DocSection::ContentScripting,              12, UiDocType::TextBrowser, "doc_content_scripting.md"sv,              "[Content] Scripting"sv,                 "CONTENT SCRIPTING"sv},
-    {DocSection::ContentVisualScripting,        13, UiDocType::TextBrowser, "doc_content_visual_scripting.md"sv,       "[Content] Visual scripting"sv,          "CONTENT VISUAL SCRIPTING"sv},
-    {DocSection::ContentExpLauncher,            14, UiDocType::TextBrowser, "doc_content_exp_launcher.md"sv,           "[Content] Exp-launcher"sv,              "CONTENT EXP-LAUNCHER"sv},
-    {DocSection::ContentSamples,                15, UiDocType::TextBrowser, "doc_content_samples.md"sv,                "[Content] Samples"sv,                   "CONTENT SAMPLES"sv},
+    {DocSection::General,                       0,  UiDocType::TextBrowser, "doc_general.md"sv,                        "General"sv,                        },
+    {DocSection::UiFlowCreation,                1,  UiDocType::TextBrowser, "doc_ui_flow_creation.md"sv,               "[UI] Flow creation"sv,             },
+    {DocSection::UiElementSelection,            2,  UiDocType::TextBrowser, "doc_ui_element_selection.md"sv,           "[UI] Element selection"sv,         },
+    {DocSection::UiComponentsList,              3,  UiDocType::TextBrowser, "doc_ui_component_list.md"sv,              "[UI] Components list"sv,           },
+    {DocSection::UiRoutinesConditions,          4,  UiDocType::TextBrowser, "doc_ui_routines_conditions.md"sv,         "[UI] Routines conditions"sv,       },
+    {DocSection::UiResourcesManager,            5,  UiDocType::TextBrowser, "doc_ui_resources_manager.md"sv,           "[UI] Resources manager"sv,         },
+    {DocSection::UiRandomization,               6,  UiDocType::TextBrowser, "doc_ui_randomization.md"sv,               "[UI] Randomization"sv,             },
+    {DocSection::UiToobar,                      7,  UiDocType::TextBrowser, "doc_ui_toolboar.md"sv,                    "[UI] Toolbar"sv,                   },
+    {DocSection::UiLogs,                        8,  UiDocType::TextBrowser, "doc_ui_logs.md"sv,                        "[UI] Logs"sv,                      },
+    {DocSection::UiSettings,                    9,  UiDocType::TextBrowser, "doc_ui_settings.md"sv,                    "[UI] Settings"sv,                  },
+    {DocSection::ContentComponentsDescription,  10, UiDocType::Widget,      "components"sv,                            "[Content] Components description"sv},
+    {DocSection::ContentConnectorsDescription,  11, UiDocType::Widget,      "connectors"sv,                            "[Content] Connectors description"sv},
+    {DocSection::ContentScripting,              12, UiDocType::TextBrowser, "doc_content_scripting.md"sv,              "[Content] Scripting"sv,            },
+    {DocSection::ContentVisualScripting,        13, UiDocType::TextBrowser, "doc_content_visual_scripting.md"sv,       "[Content] Visual scripting"sv,     },
+    {DocSection::ContentExpLauncher,            14, UiDocType::TextBrowser, "doc_content_exp_launcher.md"sv,           "[Content] Exp-launcher"sv,         },
+    {DocSection::ContentSamples,                15, UiDocType::TextBrowser, "doc_content_samples.md"sv,                "[Content] Samples"sv,              },
 }};
 
 static auto all_sections() {
@@ -108,9 +107,6 @@ static auto all_sections_names() {
     return sections.at<0,4>(ds);
 }
 
-[[maybe_unused]] static WindowTitle window_title(DocSection ds) {
-    return sections.at<0,5>(ds);
-}
 
 // test
 class CSharpHighlighter : public QSyntaxHighlighter{

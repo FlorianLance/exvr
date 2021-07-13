@@ -688,17 +688,12 @@ namespace Ex.PrimitivesMesh{
 
     class TubeBuilder{
 
-        public static Mesh generate(int nbSides = 24, float height = 1f) {
+        public static Mesh generate(int nbSides = 24, float height = 1f, 
+            float bottomRadius = 0.5f, float bottomThickness = 0.15f, 
+            float topRadius = 0.5f, float topThickness = 0.15f) { 
 
-            // NOT GOOD
-
-            // Outter shell is at radius1 + radius2 / 2, inner shell at radius1 - radius2 / 2
-            float bottomRadius1 = .5f;
-            float bottomRadius2 = .15f;
-            float topRadius1 = .5f;
-            float topRadius2 = .15f;
-
-            int nbVerticesCap = nbSides * 2 + 2;
+            // Outter shell is at radius1 + radius2 / 2, inner shell at radius1 - radius2 / 2            
+            int nbVerticesCap   = nbSides * 2 + 2;
             int nbVerticesSides = nbSides * 2 + 2;
             #region Vertices
 
@@ -715,8 +710,8 @@ namespace Ex.PrimitivesMesh{
                 float r1 = (float)(sideCounter++) / nbSides * _2pi;
                 float cos = Mathf.Cos(r1);
                 float sin = Mathf.Sin(r1);
-                vertices[vert] = new Vector3(cos * (bottomRadius1 - bottomRadius2 * .5f), 0f, sin * (bottomRadius1 - bottomRadius2 * .5f));
-                vertices[vert + 1] = new Vector3(cos * (bottomRadius1 + bottomRadius2 * .5f), 0f, sin * (bottomRadius1 + bottomRadius2 * .5f));
+                vertices[vert] = new Vector3(cos * (bottomRadius - bottomThickness * .5f), 0f, sin * (bottomRadius - bottomThickness * .5f));
+                vertices[vert + 1] = new Vector3(cos * (bottomRadius + bottomThickness * .5f), 0f, sin * (bottomRadius + bottomThickness * .5f));
                 vert += 2;
             }
 
@@ -728,8 +723,8 @@ namespace Ex.PrimitivesMesh{
                 float r1 = (float)(sideCounter++) / nbSides * _2pi;
                 float cos = Mathf.Cos(r1);
                 float sin = Mathf.Sin(r1);
-                vertices[vert] = new Vector3(cos * (topRadius1 - topRadius2 * .5f), height, sin * (topRadius1 - topRadius2 * .5f));
-                vertices[vert + 1] = new Vector3(cos * (topRadius1 + topRadius2 * .5f), height, sin * (topRadius1 + topRadius2 * .5f));
+                vertices[vert] = new Vector3(cos * (topRadius - topThickness * .5f), height, sin * (topRadius - topThickness * .5f));
+                vertices[vert + 1] = new Vector3(cos * (topRadius + topThickness * .5f), height, sin * (topRadius + topThickness * .5f));
                 vert += 2;
             }
 
@@ -742,8 +737,8 @@ namespace Ex.PrimitivesMesh{
                 float cos = Mathf.Cos(r1);
                 float sin = Mathf.Sin(r1);
 
-                vertices[vert] = new Vector3(cos * (topRadius1 + topRadius2 * .5f), height, sin * (topRadius1 + topRadius2 * .5f));
-                vertices[vert + 1] = new Vector3(cos * (bottomRadius1 + bottomRadius2 * .5f), 0, sin * (bottomRadius1 + bottomRadius2 * .5f));
+                vertices[vert] = new Vector3(cos * (topRadius + topThickness * .5f), height, sin * (topRadius + topThickness * .5f));
+                vertices[vert + 1] = new Vector3(cos * (bottomRadius + bottomThickness * .5f), 0, sin * (bottomRadius + bottomThickness * .5f));
                 vert += 2;
             }
 
@@ -756,8 +751,8 @@ namespace Ex.PrimitivesMesh{
                 float cos = Mathf.Cos(r1);
                 float sin = Mathf.Sin(r1);
 
-                vertices[vert] = new Vector3(cos * (topRadius1 - topRadius2 * .5f), height, sin * (topRadius1 - topRadius2 * .5f));
-                vertices[vert + 1] = new Vector3(cos * (bottomRadius1 - bottomRadius2 * .5f), 0, sin * (bottomRadius1 - bottomRadius2 * .5f));
+                vertices[vert] = new Vector3(cos * (topRadius - topThickness * .5f), height, sin * (topRadius - topThickness * .5f));
+                vertices[vert + 1] = new Vector3(cos * (bottomRadius - bottomThickness * .5f), 0, sin * (bottomRadius - bottomThickness * .5f));
                 vert += 2;
             }
             #endregion

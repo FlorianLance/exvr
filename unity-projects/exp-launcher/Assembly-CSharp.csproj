@@ -239,7 +239,7 @@
     <Compile Include="Assets\Scripts\UI\InspectorUtility.cs" />
     <Compile Include="Assets\Scripts\UI\Menu\AssetBundleBuilder.cs" />
     <Compile Include="Assets\Scripts\UI\Menu\EditorExperimentMenu.cs" />
-    <Compile Include="Assets\Scripts\UI\Menu\EditorGeometryMenu.cs" />
+    <Compile Include="Assets\Scripts\UI\Menu\EditorGeometryGeneratorMenu.cs" />
     <Compile Include="Assets\Scripts\UI\Runtime\ButtonsActionsExp.cs" />
     <Compile Include="Assets\Scripts\UI\Runtime\DisplayExpInfo.cs" />
     <Compile Include="Assets\Scripts\Utility\Animation\AnimationController.cs" />

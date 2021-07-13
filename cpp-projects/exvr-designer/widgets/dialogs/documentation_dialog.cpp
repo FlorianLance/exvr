@@ -67,6 +67,9 @@ QTextBrowser *DocumentationDialog::generate_text_browser(){
     docW->zoomIn(2);
     docW->setReadOnly(true);
 
+    const QString path = Paths::documentationDir;
+    docW->setSearchPaths({path, ".", "./images"});
+
     auto layout = new QHBoxLayout();
     docW->setLayout(layout);
     layout->setContentsMargins(0,0,0,0);
@@ -286,7 +289,7 @@ void DocumentationDialog::display_other_section(){
         browser->setMarkdown(in.readAll());
     }
 
-    setWindowTitle(QSL("ExVR Doc: ") % from_view(window_title(currentSection)));
+    setWindowTitle(QSL("ExVR Doc: ") % from_view(section_name(currentSection)));
 }
 
 void DocumentationDialog::display_components_section(Component::Type type){
@@ -346,7 +349,7 @@ void DocumentationDialog::update_current_component_doc(Component::Type type){
     // update window with component type
     const QString componentTypeName = from_view(Component::get_type_name(currentComponent));
 
-    setWindowTitle(QSL("ExVR Doc: ") % from_view(window_title(currentSection)) % QSL(" ") %from_view(Component::get_full_name(currentComponent)));
+    setWindowTitle(QSL("ExVR Doc: ") % from_view(section_name(currentSection)) % QSL(" ") %from_view(Component::get_full_name(currentComponent)));
     const QString basePath        = Paths::documentationDir % QSL("/") % from_view(markdown_file(currentSection));
     const QString infoPath        = basePath % QSL("/") % componentTypeName % QSL("_info.md");
     const QString connectionsPath = basePath % QSL("/") % componentTypeName % QSL("_connections.md");
@@ -395,7 +398,7 @@ void DocumentationDialog::update_current_connector_doc(Connector::Type type){
     // update window with component type
     const QString connectorTypeName = from_view(Connector::get_name(currentConnector));
 
-    setWindowTitle(QSL("ExVR Doc: ") % from_view(window_title(currentSection)) % QSL(" ") % from_view(Connector::get_caption(currentConnector)));
+    setWindowTitle(QSL("ExVR Doc: ") % from_view(section_name(currentSection)) % QSL(" ") % from_view(Connector::get_caption(currentConnector)));
     const QString basePath       = Paths::documentationDir % QSL("/") % from_view(markdown_file(currentSection));
     const QString infoPath        = basePath % QSL("/") % connectorTypeName % QSL("_info.md");
     const QString connectionsPath = basePath % QSL("/") % connectorTypeName % QSL("_connections.md");
