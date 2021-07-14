@@ -124,8 +124,8 @@ namespace Ex{
 
                     // move
                     bool sphericalInterpolation = currentC.get<bool>("spherical_linear_interpolation");
+                    var originPosition = CameraUtility.start_neutral_camera_position();// + movementOffset;
                     var originRotation = CameraUtility.start_neutral_camera_rotation();
-                    var originPosition = CameraUtility.start_neutral_camera_position() + movementOffset;
                     for (int ii = 0; ii < nbInterpolations; ++ii) {
                         float factor = 1f * ii / (nbInterpolations - 1);
                         positions.Add(Interpolate.vector(originPosition, targetPosition, factor, sphericalInterpolation));
