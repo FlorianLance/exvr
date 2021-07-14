@@ -19,6 +19,12 @@ ExVR is a software for creating and executing 3D/2D complexes experiments base o
 Its philosophy is roughly based on [Psychopy](https://www.psychopy.org/) and can easily be extended by users, it allows to create a pipeline of different routines, ISI using loops for generating a randomization based on conditions. To each condition we can associate any number of components (theses ones can be anything, an image, a sound, a script, a 3D scene...) with timelines and specific configurations.
 Communication between components can be done using scripting (C# or Python) or by using visual scripting with nodes and connections.
 
+<p float="left">
+  <img src="https://github.com/FlorianLance/exvr/blob/main/captures/designer1.png" width="400" />
+  <img src="https://github.com/FlorianLance/exvr/blob/main/captures/designer2.png" width="400" /> 
+  <img src="https://github.com/FlorianLance/exvr/blob/main/captures/designer3.png" width="400" />
+</p>
+
 ## Origin
 
 The project has been developped at [EPFL LNCO laboratory](https://www.epfl.ch/labs/lnco/) (Laboratory of Cognitive Neuroscience) and has been funded by the [EPFL Open Science Fund](https://www.epfl.ch/research/open-science/in-practice/open-science-fund/) from the 2019 cohort. It has been used for dozains of experiments and demos inside LNCO or during external collaborations since its creation in 2018.
