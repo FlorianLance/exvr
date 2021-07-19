@@ -57,6 +57,10 @@ private:
     DefaultTransformSubPart transform;
     ExCheckBoxW displayTargets;
     ExCheckBoxW moveEyeCameraToHead;
+    ExCheckBoxW pitch;
+    ExCheckBoxW yaw;
+    ExCheckBoxW roll;
+
     ExCheckBoxW moveTransformsToTargets;
     ExRadioButtonW updateHeadWithEyeCamera;
     ExRadioButtonW updateHeadWithRelativeEyeCamera;

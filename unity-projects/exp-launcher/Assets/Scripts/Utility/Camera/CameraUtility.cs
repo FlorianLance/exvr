@@ -47,8 +47,8 @@ namespace Ex {
         public static void move_start_neutral_camera_vertically(float amount) {
             ExVR.Display().cameras().move_start_neutral_camera_vertically_by_modifying_camera_rig_transform(amount);
         }
-        public static void translate_start_neutral_camera(Vector3 vector) {
-            ExVR.Display().cameras().translate_start_neutral_camera_by_modifying_camera_rig_transform(vector);
+        public static void translate_start_neutral_camera_referential(Vector3 vector) {
+            ExVR.Display().cameras().translate_start_neutral_camera_referential_by_modifying_camera_rig_transform(vector);
         }
         // # rotate
         public static void rotate_start_neutral_camera(Quaternion rotation) {
@@ -107,8 +107,8 @@ namespace Ex {
         public static void move_eye_camera_vertically(float amount) {
             ExVR.Display().cameras().move_eye_camera_vertically_by_modifying_camera_rig_transform(amount);
         }
-        public static void translate_eye_camera(Vector3 vector) {
-            ExVR.Display().cameras().translate_eye_camera_by_modifying_camera_rig_transform(vector);
+        public static void translate_eye_camera_referential(Vector3 vector) {
+            ExVR.Display().cameras().translate_eye_camera_referential_by_modifying_camera_rig_transform(vector);
         }
         // # rotate
         public static void rotate_eye_camera(Quaternion rotation) {

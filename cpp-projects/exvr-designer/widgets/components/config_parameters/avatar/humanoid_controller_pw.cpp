@@ -70,6 +70,8 @@ void HumanoidControllerConfigParametersW::insert_widgets(){
     globalL->addWidget(transform.frame);
     globalL->addWidget(ui::F::gen(ui::L::HB(), {moveTransformsToTargets()}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
     globalL->addWidget(ui::F::gen(ui::L::HB(), {moveEyeCameraToHead()}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
+    globalL->addWidget(ui::F::gen(ui::L::HB(), {ui::W::txt("  use: "), pitch(), yaw(), roll()}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
+
     globalL->addWidget(ui::W::horizontal_line());
     globalL->addWidget(
         ui::F::gen(ui::L::VB(), {
@@ -332,6 +334,12 @@ void HumanoidControllerConfigParametersW::init_and_register_widgets(){
     m_inputUiElements["display_targets"]                       = displayTargets.init_widget("Display targets", false);
     m_inputUiElements["move_transforms_to_targets"]            = moveTransformsToTargets.init_widget("Move avatar to fit targets (called at routine start)", true);
     m_inputUiElements["move_eye_camera_to_head"]               = moveEyeCameraToHead.init_widget("Move eye camera to fit avatar head with neutral position (called at routine start)", false);
+
+    m_inputUiElements["pitch"] = pitch.init_widget("pitch", false);
+    m_inputUiElements["yaw"]   = yaw.init_widget("yaw", true);
+    m_inputUiElements["roll"]  = roll.init_widget("roll", false);
+
+
     m_inputUiElements["update_head_with_eye_camera"]           = updateHeadWithEyeCamera.init_widget("Update avatar head with eye camera (called every frame)", false);
     m_inputUiElements["update_head_with_relative_eye_camera"]  = updateHeadWithRelativeEyeCamera.init_widget("Update avatar head with relative eye camera (called every frame)", false);
     m_inputUiElements["update_eye_camera_with_head"]           = updateEyeCameraWithHead.init_widget("Update eye camera with avatar head (called every frame)", false);

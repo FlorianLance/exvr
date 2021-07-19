@@ -178,15 +178,15 @@ namespace Ex{
             }
 
             var builder = new StringBuilder();
-            builder.Append("[COMPONENT]\n");
+            builder.Append("[EX_COMPONENT ERROR]");
             if(fileName != null) {
-                builder.AppendFormat("  ->LOCATION: from class [{0}] in function [{1}] in file [{2}] at line ({3}) and column ({4})\n",
+                builder.AppendFormat("  [LOCATION] from class [{0}] in function [{1}] in file [{2}] at line ({3}) and column ({4})\n",
                     className, functionName, fileName, lineNb.ToString(), columnNb.ToString());
             } else {
-                builder.AppendFormat("  ->LOCATION: from class [{0}] in function [{1}]\n",
+                builder.AppendFormat("  [LOCATION] from class [{0}] in function [{1}]\n",
                     className, functionName);
             }
-            builder.AppendFormat("  ->EXCEPTION_MESSAGE: {0}", e.Message);
+            builder.AppendFormat("  [MESSAGE] {0}", e.Message);
             log_error(builder.ToString(), true);            
         }
 

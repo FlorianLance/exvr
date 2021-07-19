@@ -39,12 +39,18 @@ namespace Ex{
             // store neutral eye camera direction
             startExperimentNeutral.localPosition = bothEyesCamera.transform.localPosition;
 
+            Debug.LogError("ExVR.GuiSettings().useCameraXAxixAsNeutral " + ExVR.GuiSettings().useCameraXAxixAsNeutral);
+            Debug.LogError("ExVR.GuiSettings().useCameraYAxixAsNeutral " + ExVR.GuiSettings().useCameraYAxixAsNeutral);
+            Debug.LogError("ExVR.GuiSettings().useCameraZAxixAsNeutral " + ExVR.GuiSettings().useCameraZAxixAsNeutral);
+
             var angles = bothEyesCamera.transform.localEulerAngles;
             startExperimentNeutral.localEulerAngles = new Vector3(
                 ExVR.GuiSettings().useCameraXAxixAsNeutral ? angles.x : 0f,
                 ExVR.GuiSettings().useCameraYAxixAsNeutral ? angles.y : 0f,
                 ExVR.GuiSettings().useCameraZAxixAsNeutral ? angles.z : 0f
             );
+            Debug.LogError("angles " + angles);
+            Debug.LogError("startExperimentNeutral.localEulerAngles " + startExperimentNeutral.localEulerAngles);
 
             initStartExperimentNeutralPosition = startExperimentNeutral.localPosition;
             initStartExperimentNeutralRotation = startExperimentNeutral.localRotation;
@@ -129,13 +135,13 @@ namespace Ex{
 
         // # translate 
 
-        public void translate_start_neutral_camera_by_modifying_camera_rig_transform(Vector3 vector) {
+        public void translate_start_neutral_camera_referential_by_modifying_camera_rig_transform(Vector3 vector) {
             move_start_neutral_camera_forward_by_modifying_camera_rig_transform(vector.x);
             move_start_neutral_camera_vertically_by_modifying_camera_rig_transform(vector.y);
             move_start_neutral_camera_horizontally_by_modifying_camera_rig_transform(vector.z);
         }
 
-        public void translate_eye_camera_by_modifying_camera_rig_transform(Vector3 vector) {
+        public void translate_eye_camera_referential_by_modifying_camera_rig_transform(Vector3 vector) {
             move_eye_camera_forward_by_modifying_camera_rig_transform(vector.x);
             move_eye_camera_vertically_by_modifying_camera_rig_transform(vector.y);
             move_eye_camera_horizontally_by_modifying_camera_rig_transform(vector.z);
