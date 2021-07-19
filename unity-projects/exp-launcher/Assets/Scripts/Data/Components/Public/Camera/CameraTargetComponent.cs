@@ -45,7 +45,7 @@ namespace Ex{
             movementStarted = false;
             speedCurve      = currentC.get_curve("speed_curve");
             movementFactor = 0f;
-            movementOffset = Vector3.zero;
+            //movementOffset = Vector3.zero;
         }
 
         protected override void stop_routine() {
