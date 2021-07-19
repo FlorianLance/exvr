@@ -79,7 +79,7 @@ signals:
     void add_component_signal(Component::Type, RowId id);    
     void remove_component_signal(ComponentKey componentKey);
     void duplicate_component_signal(ComponentKey componentKey);
-    void identify_component_signal(ComponentKey componentKey);
+    void show_component_informations_signal(ComponentKey componentKey);
     // # sort
     void sort_components_by_category_signal();
     void sort_components_by_type_signal();

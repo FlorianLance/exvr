@@ -464,9 +464,9 @@ void ComponentsManagerW::show_howering_component_custom_menu(QPoint pos, Compone
 
     contextMenu.addMenu(&m_sortComponentsSubMenu);
 
-    QAction *identifyA = new QAction(QSL("Indentify in routines"));
+    QAction *identifyA = new QAction(QSL("Show informations"));
     connect(identifyA, &QAction::triggered, this, [=](){
-        emit identify_component_signal(componentKey);
+        emit show_component_informations_signal(componentKey);
     });
     contextMenu.addAction(identifyA);
 

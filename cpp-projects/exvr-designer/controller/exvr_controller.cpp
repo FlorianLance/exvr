@@ -231,9 +231,9 @@ void ExVrController::close_exvr(){
 
     // close dialogs
     QtLogger::message("[CONTROLLER] Clean dialogs.");
-    if(m_identifyD != nullptr){
-        m_identifyD->close();
-        m_identifyD = nullptr;
+    if(m_componentsInfoD != nullptr){
+        m_componentsInfoD->close();
+        m_componentsInfoD = nullptr;
     }
     if(m_goToD != nullptr){
         m_goToD->close();
@@ -526,76 +526,135 @@ void ExVrController::load_until_selected_routine_with_default_instance_to_unity(
     emit load_experiment_unity_signal(Paths::tempExp, Paths::tempInstance);
 }
 
-void ExVrController::identity_component(ComponentKey componentKey){
+void ExVrController::show_component_informations(ComponentKey componentKey){
 
     if(const auto component = exp()->get_component(componentKey); component != nullptr){
 
-        std_v1<std::tuple<Routine*,std_v1<Condition*>,std_v1<Condition*>>> containingComponent;
+        std_v1<std::tuple<Routine*,std_v1<std::tuple<Condition*, Action*>>>> containingComponent;
         std_v1<std::tuple<Routine*,std_v1<Condition*>>> notContainingComponent;
+        std::unordered_map<int, Config*> usedConfigs;
+        std::unordered_map<int, Config*> notUsedConfigs;
 
         auto routines = exp()->get_elements_from_type<Routine>();
         for(const auto &routine : routines){
 
-            std_v1<Condition*> conditionsContainingComponent;
+            std_v1<std::tuple<Condition*, Action*>> conditionsContainingComponent;
             std_v1<Condition*> conditionsNotContainingComponent;
             for(const auto& condition : routine->conditions){
-                if(condition->get_component_from_key(componentKey, false) != nullptr){
-                    conditionsContainingComponent.emplace_back(condition.get());
+                if(auto action = condition->get_action_from_component_key(componentKey, false); action != nullptr){
+                    conditionsContainingComponent.emplace_back(std::make_tuple(condition.get(), action));
+                    usedConfigs[action->config->key()] = action->config;
                 }else{
                     conditionsNotContainingComponent.emplace_back(condition.get());
                 }
             }
 
             if(conditionsContainingComponent.size() != 0){
-                containingComponent.emplace_back(std::make_tuple(routine, conditionsContainingComponent, conditionsNotContainingComponent));
+                containingComponent.emplace_back(std::make_tuple(routine, conditionsContainingComponent));
             }else{
                 notContainingComponent.emplace_back(std::make_tuple(routine, conditionsNotContainingComponent));
             }
         }
 
+        for(const auto &config : component->configs){
+            if(!usedConfigs.contains(config->key())){
+                notUsedConfigs[config->key()] = config.get();
+            }
+        }
+
+
         // dialog
-        m_identifyD = std::make_unique<QDialog>();
-        m_identifyD->setWindowTitle(QSL("Identify component"));
-        m_identifyD->setModal(false);
-        m_identifyD->setLayout(new QVBoxLayout());
+        m_componentsInfoD = std::make_unique<QDialog>();
+        m_componentsInfoD->setWindowTitle(QSL("Component informations"));
+        m_componentsInfoD->setModal(false);
+        m_componentsInfoD->setLayout(new QVBoxLayout());
 
         QString txt = QSL("Component <b>") % component->name() % QSL("</b> of type <b>") % from_view(Component::get_type_name(component->type)) % QSL("</b> identified in the experiment flow:<br>");
-        m_identifyD->layout()->addWidget(new QLabel(txt));
+        m_componentsInfoD->layout()->addWidget(new QLabel(txt));
 
-        QListWidget *lwInside = new QListWidget();
-        m_identifyD->layout()->addWidget(new QLabel(QSL("There is <b>") % QString::number(containingComponent.size()) % QSL("</b> routines referencing it.<br>")));
-        m_identifyD->layout()->addWidget(lwInside);
 
-        QListWidget *lwNotInside = new QListWidget();
-        m_identifyD->layout()->addWidget(new QLabel(QSL("There is <b>") % QString::number(notContainingComponent.size()) % QSL("</b> routines not referencing it.<br>")));
-        m_identifyD->layout()->addWidget(lwNotInside);
-
-        // condition->get_action_from_component_key();
+        QTextBrowser *tbInside = new QTextBrowser();
+        QString insideTxt;
         if(containingComponent.size() > 0){
-            for(const auto& [routine, conditions1, conditions2] : containingComponent){
-                lwInside->addItem(QSL("Routine: [") % routine->name() % QSL("]"));
-                if(conditions1.size() > 0){
-                    lwInside->addItem(QSL("\tConditions referencing it (") % QString::number(conditions1.size()) % QSL(")"));
-                    for(const auto &condition : conditions1){
-                        lwInside->addItem(QSL("\t\t[") % condition->name % QSL("]"));
+            for(const auto& [routine, conditionsActions] : containingComponent){
+                if(conditionsActions.size() == 1){
+                    insideTxt += QSL("Routine: **[") % routine->name() % QSL("]** with **") % QString::number(conditionsActions.size()) % QSL("** condition referencing it.<br />");
+                }else{
+                    insideTxt += QSL("Routine: **[") % routine->name() % QSL("]** with **") % QString::number(conditionsActions.size()) % QSL("** conditions referencing it.<br />");
+                }
+                if(conditionsActions.size() > 0){
+                    for(const auto &conditionAction : conditionsActions){
+                        auto condition = std::get<0>(conditionAction);
+                        auto action    = std::get<1>(conditionAction);
+                        insideTxt += QSL(" * Condition **[") % condition->name % QSL("]** with config **[") % action->config->name % QSL("]**<br />");
                     }
                 }
-                if(conditions2.size() > 0){
-                    lwInside->addItem(QSL("\tConditions not referencing it (") % QString::number(conditions2.size()) % QSL(")"));
-                    for(const auto &condition : conditions2){
-                        lwInside->addItem(QSL("\t\t[") % condition->name % QSL("]"));
-                    }
-                }
+                insideTxt += "<br />";
             }
         }
+        tbInside->setMarkdown(insideTxt);
 
+        QTextBrowser *tbNotInside = new QTextBrowser();
+        QString notInsideTxt;
         if(notContainingComponent.size() > 0){
             for(const auto& [routine, conditions] : notContainingComponent){
-                lwNotInside->addItem(QSL("Routine: [") % routine->name() % QSL("] with ") % QString::number(conditions.size()) % QSL(" conditions"));
+                if(conditions.size() == routine->conditions.size()){
+                    notInsideTxt += QSL("Routine: **[") % routine->name() % QSL("]** with no condition referencing it.<br />");
+                }else{
+                    notInsideTxt += QSL("Routine: **[") % routine->name() % QSL("]** with **") % QString::number(conditions.size()) % QSL("** conditions not referencing it.<br />");
+                }
+
+                for(const auto &condition : conditions){
+                    notInsideTxt += QSL(" * Condition **[") % condition->name % QSL("]**<br />");
+                }
+                notInsideTxt += "<br />";
+            }            
+        }
+        tbNotInside->setMarkdown(notInsideTxt);
+
+        QTextBrowser *tbConfigsUsed = new QTextBrowser();
+        QString configsUsedTxt;
+        if(usedConfigs.size() > 0){
+            for(const auto &config : usedConfigs){
+                configsUsedTxt += QSL("Config: **[") % config.second->name % QSL("]** used. <br />");
             }
         }
+        tbConfigsUsed->setMarkdown(configsUsedTxt);
 
-        m_identifyD->show();
+        QTextBrowser *tbConfigsNotUsed = new QTextBrowser();
+        QString confisNotUsedTxt;
+        if(notUsedConfigs.size() > 0){
+            for(const auto &config : notUsedConfigs){
+                confisNotUsedTxt += QSL("Config: **[") % config.second->name % QSL("]** not used. <br />");
+            }
+        }
+        tbConfigsNotUsed->setMarkdown(confisNotUsedTxt);
+
+        QTabWidget *tw = new QTabWidget();
+        m_componentsInfoD->layout()->addWidget(tw);
+
+        QString txtInside = containingComponent.size() > 1 ?
+                    (QSL("Inside ") % QString::number(containingComponent.size()) % QSL(" routines.")) :
+                    (QSL("Inside ") % QString::number(containingComponent.size()) % QSL(" routine."));
+
+        QString txtNotInside = containingComponent.size() > 1 ?
+                    (QSL("Not inside ") % QString::number(notContainingComponent.size()) % QSL(" routines.")) :
+                    (QSL("Not inside ") % QString::number(notContainingComponent.size()) % QSL(" routine."));
+
+        QString txtConfigsUsed = usedConfigs.size() > 1 ?
+                    (QSL("Has ") % QString::number(usedConfigs.size()) % QSL(" configs used.")) :
+                    (QSL("Has ") % QString::number(usedConfigs.size()) % QSL(" config used."));
+
+        QString txtConfigsNotUsed = notUsedConfigs.size() > 1 ?
+                    (QSL("Has ") % QString::number(notUsedConfigs.size()) % QSL(" configs not used.")) :
+                    (QSL("Has ") % QString::number(notUsedConfigs.size()) % QSL(" config not used."));
+
+        tw->addTab(tbInside,            txtInside);
+        tw->addTab(tbNotInside,         txtNotInside);
+        tw->addTab(tbConfigsUsed,       txtConfigsUsed);
+        tw->addTab(tbConfigsNotUsed,    txtConfigsNotUsed);
+
+        m_componentsInfoD->show();
     }
 }
 
@@ -831,7 +890,7 @@ void ExVrController::generate_components_manager_connections(){
 
     auto componentsM = ui()->components_manager();
     // -> controller
-    connect(componentsM, &COM::identify_component_signal,          this, &CON::identity_component);
+    connect(componentsM, &COM::show_component_informations_signal,  this, &CON::show_component_informations);
     // -> experiment
     connect(componentsM, &COM::sort_components_by_category_signal, exp(), &EXP::sort_components_by_category);
     connect(componentsM, &COM::sort_components_by_type_signal,     exp(), &EXP::sort_components_by_type);

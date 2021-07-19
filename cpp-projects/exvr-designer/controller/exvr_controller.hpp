@@ -105,7 +105,7 @@ private slots:
     void load_from_selected_routine_with_default_instance_to_unity();
     void load_until_selected_routine_with_default_instance_to_unity();
 
-    void identity_component(ComponentKey componentKey);
+    void show_component_informations(ComponentKey componentKey);
 
 signals:
 
@@ -148,7 +148,7 @@ private :
 
     // dialogs ui
     std::unique_ptr<CopyToConditionDialog> m_copyToCondD    = nullptr;
-    std::unique_ptr<QDialog> m_identifyD                    = nullptr;
+    std::unique_ptr<QDialog> m_componentsInfoD                    = nullptr;
     std::unique_ptr<QDialog> m_goToD                        = nullptr;
     std::unique_ptr<QDialog> m_playDelayD                   = nullptr;
     std::unique_ptr<BenchmarkDialog> m_benchmarkD           = nullptr;
