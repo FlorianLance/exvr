@@ -78,6 +78,8 @@
 #include "fop_robot_pw.hpp"
 #include "blend_fade_viewer_pw.hpp"
 #include "flag_pole_pw.hpp"
+#include "humanoid_avatar_pw.hpp"
+#include "fpp_avatar_camera_pw.hpp"
 
 // debug
 #include <QDebug>
@@ -464,6 +466,8 @@ ConfigParametersW *ComponentConfigDialog::generate_parameters(Component::Type ty
 
     switch (type) {
     // ############################# Avatar
+    case CT::Humanoid_avatar:
+        return initConfig ? gen_params_w<HumanoidAvatarInitConfigParametersW>() : gen_params_w<HumanoidAvatarConfigParametersW>();
     case CT::Humanoid_controller:
         return initConfig ? gen_params_w<HumanoidControllerInitConfigParametersW>() : gen_params_w<HumanoidControllerConfigParametersW>();
     // ############################# Audio
@@ -480,6 +484,8 @@ ConfigParametersW *ComponentConfigDialog::generate_parameters(Component::Type ty
         return initConfig ? gen_params_w<CameraTrajectoryFileInitConfigParametersW>() : gen_params_w<CameraTrajectoryFileConfigParametersW>();
     case CT::Camera_target:
         return initConfig ? gen_params_w<CameraTargetInitConfigParametersW>() : gen_params_w<CameraTargetConfigParametersW>();
+    case CT::FPP_avatar_camera:
+        return initConfig ? gen_params_w<FPPAvatarCameraInitConfigParametersW>() : gen_params_w<FPPAvatarCameraConfigParametersW>();
     // ############################# Cloud
     case CT::Cloud:
         return initConfig ? gen_params_w<CloudInitConfigParametersW>() : gen_params_w<CloudConfigParametersW>();

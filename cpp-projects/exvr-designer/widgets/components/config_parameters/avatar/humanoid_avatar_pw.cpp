@@ -6,12 +6,11 @@
 ** Copyright (c) [2018] [Florian Lance][EPFL-LNCO]                            **
 ********************************************************************************/
 
-#include "humanoid_controller_pw.hpp"
-
+#include "humanoid_avatar_pw.hpp"
 
 using namespace tool::ex;
 
-void HumanoidControllerInitConfigParametersW::insert_widgets(){
+void HumanoidAvatarInitConfigParametersW::insert_widgets(){
 
     auto bundle = ui::F::gen(ui::L::HB(), {humanoidAssetBundle()}, LStretch{false}, LMargins{true}, QFrame::NoFrame);
     auto skin = ui::F::gen(ui::L::HB(), {ui::W::txt("Skin:"), skinColor()}, LStretch{true}, LMargins{true}, QFrame::NoFrame);
@@ -24,14 +23,13 @@ void HumanoidControllerInitConfigParametersW::insert_widgets(){
             skin,
             colors,
             ui::W::horizontal_line(),
-            callStartRoutineOnce(),
             addHmdMesh(),
         },
-        LStretch{false}, LMargins{true}, QFrame::Box)
+       LStretch{false}, LMargins{true}, QFrame::Box)
     );
 }
 
-void HumanoidControllerInitConfigParametersW::init_and_register_widgets(){
+void HumanoidAvatarInitConfigParametersW::init_and_register_widgets(){
     m_inputUiElements["humanoid"] = humanoidAssetBundle.init_widget(Resource::Type::AssetBundle, "Humanoid asset bundle resource: ");
     QStringList items;
     items
@@ -82,15 +80,14 @@ void HumanoidControllerInitConfigParametersW::init_and_register_widgets(){
     m_inputUiElements["shirt_color"] = shirtColor.init_widget("Choose shirt color to apply on texture", QColor(255,255,255,255));
     m_inputUiElements["pants_color"] = pantsColor.init_widget("Choose Pants color to apply on texture", QColor(255,255,255,255));
     m_inputUiElements["add_hmd_mesh"]    = addHmdMesh.init_widget("Add VR HMD mesh on head:", false);
-    m_inputUiElements["only_call_start_routine_once"]    = callStartRoutineOnce.init_widget("Call start_routine only once", false);
 }
 
-void HumanoidControllerInitConfigParametersW::create_connections(){
+void HumanoidAvatarInitConfigParametersW::create_connections(){
 }
 
-void HumanoidControllerInitConfigParametersW::late_update_ui(){}
+void HumanoidAvatarInitConfigParametersW::late_update_ui(){}
 
-void HumanoidControllerConfigParametersW::insert_widgets(){
+void HumanoidAvatarConfigParametersW::insert_widgets(){
 
     // tab
     add_widget(tabPositionsW = new QTabWidget());
@@ -110,20 +107,20 @@ void HumanoidControllerConfigParametersW::insert_widgets(){
     globalL->addWidget(ui::W::horizontal_line());
     globalL->addWidget(transform.frame);
     globalL->addWidget(ui::F::gen(ui::L::HB(), {moveTransformsToTargets()}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
-    globalL->addWidget(ui::F::gen(ui::L::HB(), {moveEyeCameraToHead()}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
-    globalL->addWidget(ui::F::gen(ui::L::HB(), {ui::W::txt("  use: "), pitch(), yaw(), roll()}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
+//    globalL->addWidget(ui::F::gen(ui::L::HB(), {moveEyeCameraToHead()}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
+//    globalL->addWidget(ui::F::gen(ui::L::HB(), {ui::W::txt("  use: "), pitch(), yaw(), roll()}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
 
     globalL->addWidget(ui::W::horizontal_line());
-    globalL->addWidget(
-        ui::F::gen(ui::L::VB(), {
-            updateHeadWithEyeCamera(),
-            updateHeadWithRelativeEyeCamera(),
-            ui::F::gen(ui::L::HB(), {ui::W::txt("  "), useInputForMovingHeadCameraToRelativeEye()}, LStretch{true}, LMargins{false}, QFrame::NoFrame),
-            updateEyeCameraWithHead(),
-            doNotMove()
-        },
-        LStretch{true}, LMargins{false}, QFrame::NoFrame)
-    );
+//    globalL->addWidget(
+//        ui::F::gen(ui::L::VB(), {
+//                                    updateHeadWithEyeCamera(),
+//                                    updateHeadWithRelativeEyeCamera(),
+//                                    ui::F::gen(ui::L::HB(), {ui::W::txt("  "), useInputForMovingHeadCameraToRelativeEye()}, LStretch{true}, LMargins{false}, QFrame::NoFrame),
+//                                    updateEyeCameraWithHead(),
+//                                    doNotMove()
+//                                },
+//                   LStretch{true}, LMargins{false}, QFrame::NoFrame)
+//        );
 
     globalL->addWidget(ui::W::horizontal_line());
     globalL->addWidget(ui::F::gen(ui::L::HB(), {headTrackingOffsetPos()}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
@@ -150,21 +147,21 @@ void HumanoidControllerConfigParametersW::insert_widgets(){
     spineL->addWidget(m_head.frame);
     spineL->addWidget(
         ui::F::gen(ui::L::HB(), {
-            ui::W::txt("<b>Head weights</b>"),
-            ui::W::txt("position: "), m_headPositionWeight(),
-            ui::W::txt("rotation: "), m_headRotationWeight()
-        },
-        LStretch{true}, LMargins{true}, QFrame::Box)
-    );
+                                    ui::W::txt("<b>Head weights</b>"),
+                                    ui::W::txt("position: "), m_headPositionWeight(),
+                                    ui::W::txt("rotation: "), m_headRotationWeight()
+                                },
+                   LStretch{true}, LMargins{true}, QFrame::Box)
+        );
     spineL->addWidget(m_pelvis.frame);
     spineL->addWidget(
         ui::F::gen(ui::L::HB(), {
-            ui::W::txt("<b>Pelvis weights</b>"),
-            ui::W::txt("position: "), m_pelvisPositionWeight(),
-            ui::W::txt("rotation: "), m_pelvisRotationWeight()
-        },
-        LStretch{true}, LMargins{true}, QFrame::Box)
-    );
+                                    ui::W::txt("<b>Pelvis weights</b>"),
+                                    ui::W::txt("position: "), m_pelvisPositionWeight(),
+                                    ui::W::txt("rotation: "), m_pelvisRotationWeight()
+                                },
+                   LStretch{true}, LMargins{true}, QFrame::Box)
+        );
     spineL->addWidget(ui::F::gen(ui::L::HB(), {m_chestGoal(), ui::W::txt("weight: "), m_chestGoalWeight()}, LStretch{true}, LMargins{true}, QFrame::Box));
     spineL->addStretch();
 
@@ -174,52 +171,52 @@ void HumanoidControllerConfigParametersW::insert_widgets(){
     amrsL->addWidget(m_leftArm.frame);
     amrsL->addWidget(
         ui::F::gen(ui::L::HB(), {
-            ui::W::txt("<b>Left arm weights</b>"),
-            ui::W::txt("position: "), m_leftArmPositionWeight(),
-            ui::W::txt("rotation: "), m_leftArmRotationWeight()
-        },
-        LStretch{true}, LMargins{true}, QFrame::Box)
-    );
+                                    ui::W::txt("<b>Left arm weights</b>"),
+                                    ui::W::txt("position: "), m_leftArmPositionWeight(),
+                                    ui::W::txt("rotation: "), m_leftArmRotationWeight()
+                                },
+                   LStretch{true}, LMargins{true}, QFrame::Box)
+        );
     amrsL->addWidget(
         ui::F::gen(ui::L::HB(), {
-            ui::W::txt("Left shoulder rot weight: "), m_leftShoulderRotationWeight(),
-            ui::W::txt("Left swivel rot offset: "), m_leftSwivelRotationOffset()
-        },
-        LStretch{true}, LMargins{true}, QFrame::Box)
-    );
+                                    ui::W::txt("Left shoulder rot weight: "), m_leftShoulderRotationWeight(),
+                                    ui::W::txt("Left swivel rot offset: "), m_leftSwivelRotationOffset()
+                                },
+                   LStretch{true}, LMargins{true}, QFrame::Box)
+        );
 
     amrsL->addWidget(
         ui::F::gen(ui::L::HB(), {
-            m_leftArmBend(),
-            ui::W::txt("weight: "), m_leftArmBendWeight()
-        },
-        LStretch{true}, LMargins{true}, QFrame::Box)
-    );
+                                    m_leftArmBend(),
+                                    ui::W::txt("weight: "), m_leftArmBendWeight()
+                                },
+                   LStretch{true}, LMargins{true}, QFrame::Box)
+        );
 
     amrsL->addWidget(m_rightArm.frame);
     amrsL->addWidget(
         ui::F::gen(ui::L::HB(), {
-            ui::W::txt("<b>Right arm weights</b>"),
-            ui::W::txt("position: "), m_rightArmPositionWeight(),
-            ui::W::txt("rotation: "), m_rightArmRotationWeight()
-        },
-        LStretch{true}, LMargins{true}, QFrame::Box)
-    );
+                                    ui::W::txt("<b>Right arm weights</b>"),
+                                    ui::W::txt("position: "), m_rightArmPositionWeight(),
+                                    ui::W::txt("rotation: "), m_rightArmRotationWeight()
+                                },
+                   LStretch{true}, LMargins{true}, QFrame::Box)
+        );
     amrsL->addWidget(
         ui::F::gen(ui::L::HB(), {
-            ui::W::txt("Right shoulder rot weight: "), m_rightShoulderRotationWeight(),
-            ui::W::txt("Right swivel rot offset: "), m_rightSwivelRotationOffset()
-        },
-        LStretch{true}, LMargins{true}, QFrame::Box)
-    );
+                                    ui::W::txt("Right shoulder rot weight: "), m_rightShoulderRotationWeight(),
+                                    ui::W::txt("Right swivel rot offset: "), m_rightSwivelRotationOffset()
+                                },
+                   LStretch{true}, LMargins{true}, QFrame::Box)
+        );
 
     amrsL->addWidget(
         ui::F::gen(ui::L::HB(), {
-            m_rightArmBend(),
-            ui::W::txt("weight: "), m_rightArmBendWeight()
-        },
-        LStretch{true}, LMargins{true}, QFrame::Box)
-    );
+                                    m_rightArmBend(),
+                                    ui::W::txt("weight: "), m_rightArmBendWeight()
+                                },
+                   LStretch{true}, LMargins{true}, QFrame::Box)
+        );
     amrsL->addStretch();
 
     // legs
@@ -228,36 +225,36 @@ void HumanoidControllerConfigParametersW::insert_widgets(){
     legsL->addWidget(m_leftLeg.frame);
     legsL->addWidget(
         ui::F::gen(ui::L::HB(), {
-            ui::W::txt("<b>Left leg weights</b>"),
-            ui::W::txt("position: "), m_leftLegPositionWeight(),
-            ui::W::txt("rotation: "), m_leftLegRotationWeight()
-        },
-        LStretch{true}, LMargins{true}, QFrame::Box)
-    );
+                                    ui::W::txt("<b>Left leg weights</b>"),
+                                    ui::W::txt("position: "), m_leftLegPositionWeight(),
+                                    ui::W::txt("rotation: "), m_leftLegRotationWeight()
+                                },
+                   LStretch{true}, LMargins{true}, QFrame::Box)
+        );
     legsL->addWidget(
         ui::F::gen(ui::L::HB(), {
-            m_leftLegBend(),
-            ui::W::txt("weight: "), m_leftLegBendWeight()
-        },
-        LStretch{true}, LMargins{true}, QFrame::Box)
-    );
+                                    m_leftLegBend(),
+                                    ui::W::txt("weight: "), m_leftLegBendWeight()
+                                },
+                   LStretch{true}, LMargins{true}, QFrame::Box)
+        );
 
     legsL->addWidget(m_rightLeg.frame);
     legsL->addWidget(
         ui::F::gen(ui::L::HB(), {
-            ui::W::txt("<b>Right leg weights</b>"),
-            ui::W::txt("position: "), m_rightLegPositionWeight(),
-            ui::W::txt("rotation: "), m_rightLegRotationWeight()
-        },
-        LStretch{true}, LMargins{true}, QFrame::Box)
-    );
+                                    ui::W::txt("<b>Right leg weights</b>"),
+                                    ui::W::txt("position: "), m_rightLegPositionWeight(),
+                                    ui::W::txt("rotation: "), m_rightLegRotationWeight()
+                                },
+                   LStretch{true}, LMargins{true}, QFrame::Box)
+        );
     legsL->addWidget(
         ui::F::gen(ui::L::HB(), {
-            m_rightLegBend(),
-            ui::W::txt("weight: "), m_rightLegBendWeight()
-        },
-        LStretch{true}, LMargins{true}, QFrame::Box)
-    );
+                                    m_rightLegBend(),
+                                    ui::W::txt("weight: "), m_rightLegBendWeight()
+                                },
+                   LStretch{true}, LMargins{true}, QFrame::Box)
+        );
     legsL->addStretch();
 
     // left fingers
@@ -265,127 +262,127 @@ void HumanoidControllerConfigParametersW::insert_widgets(){
     leftFingersW->setLayout(leftFingersL = ui::L::VB());
 
     auto leftIndex = ui::F::gen(ui::L::VB(), {
-        m_leftIndexRot1(),
-        m_leftIndexRot2(),
-        m_leftIndexRot3()
-    }, LStretch{true}, LMargins{false}, QFrame::NoFrame);
+                                                 m_leftIndexRot1(),
+                                                 m_leftIndexRot2(),
+                                                 m_leftIndexRot3()
+                                             }, LStretch{true}, LMargins{false}, QFrame::NoFrame);
 
     auto leftMiddle = ui::F::gen(ui::L::VB(), {
-        m_leftMiddleRot1(),
-        m_leftMiddleRot2(),
-        m_leftMiddleRot3()
-    }, LStretch{true}, LMargins{false}, QFrame::NoFrame);
+                                                  m_leftMiddleRot1(),
+                                                  m_leftMiddleRot2(),
+                                                  m_leftMiddleRot3()
+                                              }, LStretch{true}, LMargins{false}, QFrame::NoFrame);
 
     auto leftRing = ui::F::gen(ui::L::VB(), {
-        m_leftRingRot1(),
-        m_leftRingRot2(),
-        m_leftRingRot3()
-    }, LStretch{true}, LMargins{false}, QFrame::NoFrame);
+                                                m_leftRingRot1(),
+                                                m_leftRingRot2(),
+                                                m_leftRingRot3()
+                                            }, LStretch{true}, LMargins{false}, QFrame::NoFrame);
 
     auto leftPinky = ui::F::gen(ui::L::VB(), {
-        m_leftPinkyRot1(),
-        m_leftPinkyRot2(),
-        m_leftPinkyRot3()
-    }, LStretch{true}, LMargins{false}, QFrame::NoFrame);
+                                                 m_leftPinkyRot1(),
+                                                 m_leftPinkyRot2(),
+                                                 m_leftPinkyRot3()
+                                             }, LStretch{true}, LMargins{false}, QFrame::NoFrame);
 
     auto leftThumb = ui::F::gen(ui::L::VB(), {
-        m_leftThumbRot1(),
-        m_leftThumbRot2(),
-        m_leftThumbRot3()
-    }, LStretch{true}, LMargins{false}, QFrame::NoFrame);
+                                                 m_leftThumbRot1(),
+                                                 m_leftThumbRot2(),
+                                                 m_leftThumbRot3()
+                                             }, LStretch{true}, LMargins{false}, QFrame::NoFrame);
 
     leftFingersL->addWidget(
         ui::F::gen(ui::L::VB(), {
-            ui::W::txt("<b>Left fingers rotations: </b>"),
-            leftIndex,
-            ui::W::horizontal_line(),
-            leftMiddle,
-            ui::W::horizontal_line(),
-            leftRing,
-            ui::W::horizontal_line(),
-            leftPinky,
-            ui::W::horizontal_line(),
-            leftThumb,
-            ui::F::gen(ui::L::HB(), {
-               ui::W::txt("<b>Weight: </b>"), m_leftFingersWeight()
-            },
-            LStretch{true}, LMargins{false}, QFrame::NoFrame)
-        },
-        LStretch{true}, LMargins{true}, QFrame::Box)
-    );
+                                    ui::W::txt("<b>Left fingers rotations: </b>"),
+                                    leftIndex,
+                                    ui::W::horizontal_line(),
+                                    leftMiddle,
+                                    ui::W::horizontal_line(),
+                                    leftRing,
+                                    ui::W::horizontal_line(),
+                                    leftPinky,
+                                    ui::W::horizontal_line(),
+                                    leftThumb,
+                                    ui::F::gen(ui::L::HB(), {
+                                                                ui::W::txt("<b>Weight: </b>"), m_leftFingersWeight()
+                                                            },
+                                               LStretch{true}, LMargins{false}, QFrame::NoFrame)
+                                },
+                   LStretch{true}, LMargins{true}, QFrame::Box)
+        );
 
     // right fingers
     QVBoxLayout *rightFingersL = nullptr;
     rightFingersW->setLayout(rightFingersL = ui::L::VB());
 
     auto rightIndex = ui::F::gen(ui::L::VB(), {
-        m_rightIndexRot1(),
-        m_rightIndexRot2(),
-        m_rightIndexRot3()
-    }, LStretch{true}, LMargins{false}, QFrame::NoFrame);
+                                                  m_rightIndexRot1(),
+                                                  m_rightIndexRot2(),
+                                                  m_rightIndexRot3()
+                                              }, LStretch{true}, LMargins{false}, QFrame::NoFrame);
 
     auto rightMiddle = ui::F::gen(ui::L::VB(), {
-        m_rightMiddleRot1(),
-        m_rightMiddleRot2(),
-        m_rightMiddleRot3()
-    }, LStretch{true}, LMargins{false}, QFrame::NoFrame);
+                                                   m_rightMiddleRot1(),
+                                                   m_rightMiddleRot2(),
+                                                   m_rightMiddleRot3()
+                                               }, LStretch{true}, LMargins{false}, QFrame::NoFrame);
 
     auto rightRing = ui::F::gen(ui::L::VB(), {
-        m_rightRingRot1(),
-        m_rightRingRot2(),
-        m_rightRingRot3()
-    }, LStretch{true}, LMargins{false}, QFrame::NoFrame);
+                                                 m_rightRingRot1(),
+                                                 m_rightRingRot2(),
+                                                 m_rightRingRot3()
+                                             }, LStretch{true}, LMargins{false}, QFrame::NoFrame);
 
     auto rightPinky = ui::F::gen(ui::L::VB(), {
-        m_rightPinkyRot1(),
-        m_rightPinkyRot2(),
-        m_rightPinkyRot3()
-    }, LStretch{true}, LMargins{false}, QFrame::NoFrame);
+                                                  m_rightPinkyRot1(),
+                                                  m_rightPinkyRot2(),
+                                                  m_rightPinkyRot3()
+                                              }, LStretch{true}, LMargins{false}, QFrame::NoFrame);
 
     auto rightThumb = ui::F::gen(ui::L::VB(), {
-        m_rightThumbRot1(),
-        m_rightThumbRot2(),
-        m_rightThumbRot3()
-    }, LStretch{true}, LMargins{false}, QFrame::NoFrame);
+                                                  m_rightThumbRot1(),
+                                                  m_rightThumbRot2(),
+                                                  m_rightThumbRot3()
+                                              }, LStretch{true}, LMargins{false}, QFrame::NoFrame);
 
     rightFingersL->addWidget(
         ui::F::gen(ui::L::VB(), {
-            ui::W::txt("<b>Right fingers rotations: </b>"),
-            rightIndex,
-            ui::W::horizontal_line(),
-            rightMiddle,
-            ui::W::horizontal_line(),
-            rightRing,
-            ui::W::horizontal_line(),
-            rightPinky,
-            ui::W::horizontal_line(),
-            rightThumb,
-            ui::F::gen(ui::L::HB(), {
-               ui::W::txt("<b>Weight: </b>"),m_rightFingersWeight()
-            },
-            LStretch{true}, LMargins{false}, QFrame::NoFrame)
-        },
-        LStretch{true}, LMargins{true}, QFrame::Box)
-    );
+                                    ui::W::txt("<b>Right fingers rotations: </b>"),
+                                    rightIndex,
+                                    ui::W::horizontal_line(),
+                                    rightMiddle,
+                                    ui::W::horizontal_line(),
+                                    rightRing,
+                                    ui::W::horizontal_line(),
+                                    rightPinky,
+                                    ui::W::horizontal_line(),
+                                    rightThumb,
+                                    ui::F::gen(ui::L::HB(), {
+                                                                ui::W::txt("<b>Weight: </b>"),m_rightFingersWeight()
+                                                            },
+                                               LStretch{true}, LMargins{false}, QFrame::NoFrame)
+                                },
+                   LStretch{true}, LMargins{true}, QFrame::Box)
+        );
 }
 
-void HumanoidControllerConfigParametersW::init_and_register_widgets(){
+void HumanoidAvatarConfigParametersW::init_and_register_widgets(){
 
     map_sub_part(transform.init_widget());
     m_inputUiElements["display_targets"]                       = displayTargets.init_widget("Display targets", false);
     m_inputUiElements["move_transforms_to_targets"]            = moveTransformsToTargets.init_widget("Move avatar to fit targets (called at routine start)", true);
-    m_inputUiElements["move_eye_camera_to_head"]               = moveEyeCameraToHead.init_widget("Move eye camera to fit avatar head with neutral position (called at routine start)", false);
+//    m_inputUiElements["move_eye_camera_to_head"]               = moveEyeCameraToHead.init_widget("Move eye camera to fit avatar head with neutral position (called at routine start)", false);
 
-    m_inputUiElements["pitch"] = pitch.init_widget("pitch", false);
-    m_inputUiElements["yaw"]   = yaw.init_widget("yaw", true);
-    m_inputUiElements["roll"]  = roll.init_widget("roll", false);
+//    m_inputUiElements["pitch"] = pitch.init_widget("pitch", false);
+//    m_inputUiElements["yaw"]   = yaw.init_widget("yaw", true);
+//    m_inputUiElements["roll"]  = roll.init_widget("roll", false);
 
 
-    m_inputUiElements["update_head_with_eye_camera"]           = updateHeadWithEyeCamera.init_widget("Update avatar head with eye camera (called every frame)", false);
-    m_inputUiElements["update_head_with_relative_eye_camera"]  = updateHeadWithRelativeEyeCamera.init_widget("Update avatar head with relative eye camera (called every frame)", false);
-    m_inputUiElements["update_eye_camera_with_head"]           = updateEyeCameraWithHead.init_widget("Update eye camera with avatar head (called every frame)", false);
-    m_inputUiElements["use_input_connection"]                  = useInputForMovingHeadCameraToRelativeEye.init_widget("Use input connections instead of eye camera", false);
-    m_inputUiElements["do_not_move"]                           = doNotMove.init_widget("Do not move head/eye camera", true);
+//    m_inputUiElements["update_head_with_eye_camera"]           = updateHeadWithEyeCamera.init_widget("Update avatar head with eye camera (called every frame)", false);
+//    m_inputUiElements["update_head_with_relative_eye_camera"]  = updateHeadWithRelativeEyeCamera.init_widget("Update avatar head with relative eye camera (called every frame)", false);
+//    m_inputUiElements["update_eye_camera_with_head"]           = updateEyeCameraWithHead.init_widget("Update eye camera with avatar head (called every frame)", false);
+//    m_inputUiElements["use_input_connection"]                  = useInputForMovingHeadCameraToRelativeEye.init_widget("Use input connections instead of eye camera", false);
+//    m_inputUiElements["do_not_move"]                           = doNotMove.init_widget("Do not move head/eye camera", true);
     m_inputUiElements["pitch_yaw_roll"]                        = pitchYawRollRot.init_widget("Use Pitch/Yaw/Roll axis order", true);
     m_inputUiElements["yaw_roll_pitch"]                        = yawRollPitchRot.init_widget("Use Yaw/Roll/Pitch axis order", false);
 
@@ -535,22 +532,22 @@ void HumanoidControllerConfigParametersW::init_and_register_widgets(){
     m_inputUiElements["right_fingers_w"]    = m_rightFingersWeight.init_widget(factorS);
 }
 
-void HumanoidControllerConfigParametersW::create_connections(){
+void HumanoidAvatarConfigParametersW::create_connections(){
 
-    connect(updateHeadWithEyeCamera.w.get(), &QRadioButton::clicked, this, [&]{
-        useInputForMovingHeadCameraToRelativeEye.w->setEnabled(updateHeadWithRelativeEyeCamera.w->isChecked());
+//    connect(updateHeadWithEyeCamera.w.get(), &QRadioButton::clicked, this, [&]{
+//        useInputForMovingHeadCameraToRelativeEye.w->setEnabled(updateHeadWithRelativeEyeCamera.w->isChecked());
 
-    });
-    connect(updateHeadWithRelativeEyeCamera.w.get(), &QRadioButton::clicked, this, [&]{
-        useInputForMovingHeadCameraToRelativeEye.w->setEnabled(updateHeadWithRelativeEyeCamera.w->isChecked());
+//    });
+//    connect(updateHeadWithRelativeEyeCamera.w.get(), &QRadioButton::clicked, this, [&]{
+//        useInputForMovingHeadCameraToRelativeEye.w->setEnabled(updateHeadWithRelativeEyeCamera.w->isChecked());
 
-    });
-    connect(doNotMove.w.get(), &QRadioButton::clicked, this, [&]{
-        useInputForMovingHeadCameraToRelativeEye.w->setEnabled(updateHeadWithRelativeEyeCamera.w->isChecked());
+//    });
+//    connect(doNotMove.w.get(), &QRadioButton::clicked, this, [&]{
+//        useInputForMovingHeadCameraToRelativeEye.w->setEnabled(updateHeadWithRelativeEyeCamera.w->isChecked());
 
-    });
+//    });
 }
 
-void HumanoidControllerConfigParametersW::late_update_ui(){
-    useInputForMovingHeadCameraToRelativeEye.w->setEnabled(updateHeadWithRelativeEyeCamera.w->isChecked());
+void HumanoidAvatarConfigParametersW::late_update_ui(){
+//    useInputForMovingHeadCameraToRelativeEye.w->setEnabled(updateHeadWithRelativeEyeCamera.w->isChecked());
 }

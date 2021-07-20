@@ -116,9 +116,13 @@ namespace Ex{
 
         // ExComponent functions
         // # main functions
-        public virtual bool initialize() { return true; }
+        public virtual bool initialize() { return true; }        
+        
         public virtual void start_experiment() { }
+
+        public virtual void pre_start_routine() { }
         public virtual void start_routine() { }
+        public virtual void post_start_routine() { }
         public virtual void update() { }
         public virtual void stop_routine() { }
         public virtual void stop_experiment() { }
@@ -182,7 +186,9 @@ namespace Ex{
             var flagPublic = System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public;
             functionsDefined[Function.initialize] = (runtimeType.GetMethod("initialize", flagPublic).DeclaringType == runtimeType);
             functionsDefined[Function.start_experiment] = (runtimeType.GetMethod("start_experiment", flagPublic).DeclaringType == runtimeType);
+            functionsDefined[Function.pre_start_routine] = (runtimeType.GetMethod("pre_start_routine", flagPublic).DeclaringType == runtimeType);
             functionsDefined[Function.start_routine] = (runtimeType.GetMethod("start_routine", flagPublic).DeclaringType == runtimeType);
+            functionsDefined[Function.post_start_routine] = (runtimeType.GetMethod("post_start_routine", flagPublic).DeclaringType == runtimeType);
             functionsDefined[Function.set_update_state] = (runtimeType.GetMethod("set_update_state", flagPublic).DeclaringType == runtimeType);
             functionsDefined[Function.set_visibility] = (runtimeType.GetMethod("set_visibility", flagPublic).DeclaringType == runtimeType);
             functionsDefined[Function.update_parameter_from_gui] = (runtimeType.GetMethod("update_parameter_from_gui", flagPublic).DeclaringType == runtimeType);
@@ -319,9 +325,21 @@ namespace Ex{
             }
         }
 
+        protected override void pre_start_routine() {
+            if (functionsDefined[Function.pre_start_routine]) {
+                compiledComponent.pre_start_routine();
+            }
+        }
+
         protected override void start_routine() {
             if (functionsDefined[Function.start_routine]) {
                 compiledComponent.start_routine();
+            }
+        }
+
+        protected override void post_start_routine() {
+            if (functionsDefined[Function.post_start_routine]) {
+                compiledComponent.post_start_routine();
             }
         }
 

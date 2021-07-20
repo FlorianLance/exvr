@@ -21,6 +21,10 @@ namespace Ex {
             return ExVR.Display().cameras().get_camera_rig().rotation;
         }
 
+        public static void translate_camera_rig(Vector3 vector) {
+            ExVR.Display().cameras().get_camera_rig().position += vector;
+        }
+
         // start neutral camera
         // # get
         public static Quaternion start_neutral_camera_rotation() {
@@ -74,7 +78,7 @@ namespace Ex {
 
         // eye camera
         // # get
-        public static Quaternion eye_camera_rotation() {
+        public static Quaternion eye_camera_rotation() {            
             return ExVR.Display().cameras().get_eye_camera_transform().rotation;
         }
 
@@ -110,12 +114,13 @@ namespace Ex {
         public static void translate_eye_camera_referential(Vector3 vector) {
             ExVR.Display().cameras().translate_eye_camera_referential_by_modifying_camera_rig_transform(vector);
         }
+
         // # rotate
         public static void rotate_eye_camera(Quaternion rotation) {
             ExVR.Display().cameras().rotate_eye_camera_by_modifying_camera_rig_transform(rotation);
         }
-        public static void rotate_eye_camera(Vector3 rotation) {
-            rotate_eye_camera(rotation);
+        public static void rotate_eye_camera(Vector3 rotation) {            
+            rotate_eye_camera(Quaternion.Euler(rotation));
         }
 
         // # set
@@ -133,12 +138,15 @@ namespace Ex {
         }
         // ## transform
         public static void set_eye_camera_transform(Vector3 worldPosition, Quaternion worldRotation) {
+            // OK
             ExVR.Display().cameras().set_eye_camera_transform_by_modifying_camera_rig_transform(worldPosition, worldRotation);
         }
         public static void set_eye_camera_transform(Vector3 worldPosition, Vector3 worldRotation) {
+            // OK
             set_eye_camera_transform(worldPosition, Quaternion.Euler(worldRotation));
         }
         public static void set_eye_camera_from_target(Transform target, Vector3 positionOffset, Quaternion rotationOffset) {
+            // ?
             set_eye_camera_transform(
                 target.position + (target.forward * positionOffset.z + target.up * positionOffset.y + target.right * positionOffset.x),
                 target.rotation * rotationOffset

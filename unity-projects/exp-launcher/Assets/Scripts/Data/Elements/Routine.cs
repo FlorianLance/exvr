@@ -130,7 +130,9 @@ namespace Ex{
                 // set connections between components and connectors
                 m_currentCondition.set_connections();
                 ExVR.Components().set_current_config(m_currentCondition);
+                ExVR.Components().pre_start_routine(m_currentCondition);
                 ExVR.Components().start_routine(m_currentCondition);
+                ExVR.Components().post_start_routine(m_currentCondition);
                 m_currentCondition.connectors_start_routine();
             }
             m_startTimer.Stop();

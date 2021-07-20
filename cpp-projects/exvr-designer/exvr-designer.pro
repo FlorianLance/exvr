@@ -175,6 +175,8 @@ HEADERS += \
     # controller
     # widgets    
     ## main                           
+    widgets/components/config_parameters/avatar/humanoid_avatar_pw.hpp \
+    widgets/components/config_parameters/camera/fpp_avatar_camera_pw.hpp \
     widgets/designer_window.hpp\
     ## elements
     widgets/dialogs/benchmark_dialog.hpp \
@@ -374,6 +376,8 @@ SOURCES += \
     # resources
     resources/resources_manager.cpp \
     ## components        
+    widgets/components/config_parameters/avatar/humanoid_avatar_pw.cpp \
+    widgets/components/config_parameters/camera/fpp_avatar_camera_pw.cpp \
     widgets/components/config_parameters/input/keyboard_pw.cpp \
     widgets/components/config_parameters/output/logger_pw.cpp \
     widgets/components/config_parameters/scene/asset_bundle_pw.cpp \

@@ -81,8 +81,8 @@ struct Component {
         /** A */ AudioSource, Attach_object_to_hand,
         /** B */ Biopac, Blend_fade_viewer,
         /** C */ Camera, Camera_trajectory, Camera_trajectory_file, Cloud, CSharp_script, Cube, Cylinder,
-        /** F */ Falling_spheres, Fixation_cross_viewer, Flag_pole, Flashing_dot, Fop_robot, Fov_simulator_viewer,
-        /** H */ Humanoid_controller,
+        /** F */ Falling_spheres, Fixation_cross_viewer, Flag_pole, Flashing_dot, Fop_robot, Fov_simulator_viewer, FPP_avatar_camera,
+        /** H */ Humanoid_avatar, Humanoid_controller,
         /** I */ Image_resource, Image_viewer,
         /** J */ Joypad,
         /** K */ Keyboard, Kinect_manager, Kinect_body_tracking,
@@ -152,12 +152,14 @@ struct Component {
         {T::AudioSource,              C::Audio,       TO::B,     CO::B,   false,   R::OpenSource,   S::Sta, "AudioSource"sv, "Audio source"sv, "AudioSource"sv, ":/icons/Sound"sv},
         {T::Microphone,               C::Audio,       TO::B,     CO::B,   false,   R::OpenSource,   S::Exp, "Microphone"sv, "Microphone"sv, "Microphone"sv, ":/icons/Micro"sv},
         // Avatar
+        {T::Humanoid_avatar,          C::Avatar,      TO::B,     CO::B,   false,   R::ClosedSource, S::Exp, "Humanoid_avatar"sv, "Humanoid avatar"sv, "HumanoidAvatar"sv, ":/icons/Avatar"sv},
         {T::Humanoid_controller,      C::Avatar,      TO::B,     CO::B,   false,   R::ClosedSource, S::Exp, "Humanoid_controller"sv, "Humanoid controller"sv, "HumanoidController"sv, ":/icons/Avatar"sv},
         // Camera
         {T::Camera,                   C::Camera,      TO::U,     CO::B,   true,    R::OpenSource,   S::Sta, "Camera"sv, "Camera"sv, "Camera"sv, ":/icons/Camera"sv},
         {T::Camera_target,            C::Camera,      TO::U,     CO::C,   false,   R::OpenSource,   S::Sta, "Camera_target"sv, "Camera target"sv, "CameraTarget"sv, ":/icons/Camera"sv},
         {T::Camera_trajectory,        C::Camera,      TO::B,     CO::C,   false,   R::OpenSource,   S::Exp, "Camera_trajectory"sv, "Camera trajectory"sv, "CameraTrajectory"sv, ":/icons/Camera"sv},
         {T::Camera_trajectory_file,   C::Camera,      TO::B,     CO::C,   false,   R::OpenSource,   S::Exp, "Camera_trajectory_file"sv, "Camera trajectory file"sv, "CameraTrajectoryFile"sv, ":/icons/Camera"sv},
+        {T::FPP_avatar_camera,        C::Camera,      TO::B,     CO::B,   false,   R::ClosedSource, S::Exp, "FPP_avatar_camera"sv, "FPP avatar camera"sv, "FPPAvatarCamera"sv, ":/icons/Camera"sv},
         // Cloud
         {T::Cloud,                    C::Cloud,       TO::V,     CO::B,   false,   R::OpenSource,   S::Sta, "Cloud"sv, "Cloud"sv, "Cloud"sv, ":/icons/Cloud"sv},
         {T::Scaner_video,             C::Cloud,       TO::B,     CO::B,   false,   R::LNCO,         S::Exp, "Scaner_video"sv, "Scaner video"sv, "ScanerVideo"sv, ":/icons/Video_cloud"sv},

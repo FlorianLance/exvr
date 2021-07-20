@@ -7,46 +7,45 @@
 
 #pragma once
 
-// Qt
-#include <QFileDialog>
-
 // local
 #include "config_pw.hpp"
-#include "path_utility.hpp"
-#include "ex_resource_w.hpp"
-#include "ex_line_edit_w.hpp"
-
-
-#include "ex_config_w.hpp"
+#include "ex_checkbox_w.hpp"
+#include "ex_component_w.hpp"
 
 namespace tool::ex {
 
-class AssetBundleInitConfigParametersW : public ConfigParametersW{
+class FPPAvatarCameraInitConfigParametersW : public ConfigParametersW{
 
 public :
-
-    ExResourceW m_assetBundle;
-    ExLineEditW m_leSubObjectName;
-    ExCheckBoxW m_displayHierarchy;
-    QTextEdit *m_hierarchy = nullptr;
 
     void insert_widgets() override;
     void init_and_register_widgets() override;
     void create_connections() override;
     void late_update_ui() override;
-    void update_with_info(QStringView id, QStringView value) override;
+
+    ExComponentW avatar;
 };
 
-class AssetBundleConfigParametersW : public ConfigParametersW{
+class FPPAvatarCameraConfigParametersW : public ConfigParametersW{
 
 public :
-
-    DefaultTransformSubPart m_transfo;
 
     void insert_widgets() override;
     void init_and_register_widgets() override;
     void create_connections() override;
     void late_update_ui() override;
+
+    ExCheckBoxW moveNeutralCameraToHead;
+    ExCheckBoxW neutralPitch;
+    ExCheckBoxW neutralYaw;
+    ExCheckBoxW neutralRoll;
+
+    ExRadioButtonW updateEyesCameraFromHead;
+    ExRadioButtonW updateHeadFromEyesCamera;
+    ExRadioButtonW doNotUpdate;
+
+    ExVector3dW headTrackingOffsetPos;
+    ExVector3dW headTrackingOffsetRot;
 };
 
 }

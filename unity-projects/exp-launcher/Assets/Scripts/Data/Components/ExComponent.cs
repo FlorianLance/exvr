@@ -19,7 +19,9 @@ namespace Ex{
         public enum Function{
             initialize,
             start_experiment,
+            pre_start_routine,
             start_routine,
+            post_start_routine,
             set_update_state,
             set_visibility,
             update_parameter_from_gui,
@@ -427,7 +429,9 @@ namespace Ex{
             var flagPrivate = System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic;
             functionsDefined[Function.initialize] = (derivedType.GetMethod("initialize", flagPrivate).DeclaringType == derivedType);
             functionsDefined[Function.start_experiment] = (derivedType.GetMethod("start_experiment", flagPrivate).DeclaringType == derivedType);
+            functionsDefined[Function.pre_start_routine] = (derivedType.GetMethod("pre_start_routine", flagPrivate).DeclaringType == derivedType);
             functionsDefined[Function.start_routine] = (derivedType.GetMethod("start_routine", flagPrivate).DeclaringType == derivedType);
+            functionsDefined[Function.post_start_routine] = (derivedType.GetMethod("post_start_routine", flagPrivate).DeclaringType == derivedType);
             functionsDefined[Function.set_update_state] = (derivedType.GetMethod("set_update_state", flagPrivate).DeclaringType == derivedType);
             functionsDefined[Function.set_visibility] = (derivedType.GetMethod("set_visibility", flagPrivate).DeclaringType == derivedType);
             functionsDefined[Function.update_parameter_from_gui] = (derivedType.GetMethod("update_parameter_from_gui", flagPrivate).DeclaringType == derivedType);
@@ -523,10 +527,25 @@ namespace Ex{
             m_closed = false;
         }
 
+        public void base_pre_start_routine() {
+
+            m_started = true;
+            currentFunction = Function.pre_start_routine;
+            if (catchExceptions) {
+                try {
+                    pre_start_routine();
+                } catch (Exception e) {
+                    display_exception(e);
+                }
+            } else {
+                pre_start_routine();
+            }
+        }
+
         // Start the component if inside current routine, called every time at the timeline beggining of an associated routine, will call child start      
         public void base_start_routine() {
 
-            m_started = true;
+            //m_started = true;
             currentFunction = Function.start_routine;
             if (catchExceptions) {
                 try {
@@ -537,6 +556,21 @@ namespace Ex{
             } else {
                 start_routine();
             }           
+        }
+
+        public void base_post_start_routine() {
+
+            //m_started = true;
+            currentFunction = Function.post_start_routine;
+            if (catchExceptions) {
+                try {
+                    post_start_routine();
+                } catch (Exception e) {
+                    display_exception(e);
+                }
+            } else {
+                post_start_routine();
+            }
         }
 
         // Stop the component, called every time at the timeline end of an associated routine, will call child stop
@@ -747,7 +781,12 @@ namespace Ex{
         }
         protected virtual void stop_experiment() {
         }
+
+        protected virtual void pre_start_routine() {
+        }
         protected virtual void start_routine() {
+        }
+        protected virtual void post_start_routine() {
         }
         protected virtual void stop_routine() {
         }

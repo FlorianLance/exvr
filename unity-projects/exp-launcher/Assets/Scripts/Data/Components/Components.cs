@@ -65,6 +65,7 @@ namespace Ex{
             ["Ex.CameraTrajectoryComponent"]      = gen_info(Category.Camera, Pritority.Low, Reserved.Public),
             ["Ex.CameraTrajectoryFileComponent"]  = gen_info(Category.Camera, Pritority.Low, Reserved.Public),
             ["Ex.CameraComponent"]                = gen_info(Category.Camera, Pritority.Low, Reserved.Public),
+            ["Ex.FPPAvatarCameraComponent"]       = gen_info(Category.Camera, Pritority.Low, Reserved.Closed),
             // scene
             ["Ex.AssetBundleComponent"]           = gen_info(Category.Scene, Pritority.Hight, Reserved.Public),
             ["Ex.MultiABComponent"]               = gen_info(Category.Scene, Pritority.Hight, Reserved.Public),            
@@ -108,7 +109,8 @@ namespace Ex{
             ["Ex.CloudComponent"]                 = gen_info(Category.Cloud, Pritority.Medium, Reserved.Public),
             ["Ex.ScanerVideoComponent"]           = gen_info(Category.Cloud, Pritority.Medium, Reserved.LNCO),
             // avatar
-            ["Ex.HumanoidControllerComponent"]    = gen_info(Category.Avatar, Pritority.Low, Reserved.Closed),
+            ["Ex.HumanoidAvatarComponent"]        = gen_info(Category.Avatar, Pritority.Medium, Reserved.Closed),
+            ["Ex.HumanoidControllerComponent"]    = gen_info(Category.Avatar, Pritority.Low,    Reserved.Closed),            
             // interaction
             ["Ex.FlagPoleComponent"]              = gen_info(Category.Interaction, Pritority.Medium, Reserved.Public),
             ["Ex.MarkToCleanComponent"]           = gen_info(Category.Interaction, Pritority.Medium, Reserved.Public),
@@ -370,6 +372,24 @@ namespace Ex{
             ExVR.ExpLog().component_manager(Function.start_experiment, false);
         }
 
+        public void pre_start_routine(Condition condition) {
+
+            ExVR.ExpLog().component_manager(Function.pre_start_routine, true);
+            foreach (var action in condition.actions) {
+
+                var component = action.component();
+                if (component.is_function_defined(Function.pre_start_routine)) {
+                    log_and_add_to_stacktrace(component, Function.pre_start_routine, true, true);
+                }
+
+                component.base_pre_start_routine();
+
+                if (component.is_function_defined(Function.pre_start_routine)) {
+                    log_and_add_to_stacktrace(component, Function.pre_start_routine, false, true);
+                }
+            }
+            ExVR.ExpLog().component_manager(Function.pre_start_routine, false);
+        }
         public void start_routine(Condition condition) {
 
             ExVR.ExpLog().component_manager(Function.start_routine, true);
@@ -387,6 +407,25 @@ namespace Ex{
                 }   
             }
             ExVR.ExpLog().component_manager(Function.start_routine, false);
+        }
+
+        public void post_start_routine(Condition condition) {
+
+            ExVR.ExpLog().component_manager(Function.post_start_routine, true);
+            foreach (var action in condition.actions) {
+
+                var component = action.component();
+                if (component.is_function_defined(Function.post_start_routine)) {
+                    log_and_add_to_stacktrace(component, Function.post_start_routine, true, true);
+                }
+
+                component.base_post_start_routine();
+
+                if (component.is_function_defined(Function.post_start_routine)) {
+                    log_and_add_to_stacktrace(component, Function.post_start_routine, false, true);
+                }
+            }
+            ExVR.ExpLog().component_manager(Function.post_start_routine, false);
         }
 
         public void stop_routine(Condition condition) {

@@ -7,6 +7,7 @@
 
 // system
 using System;
+using System.Text;
 using System.Collections.Generic;
 using System.Reflection;
 // unity
@@ -17,106 +18,29 @@ namespace Ex{
 
     public class AssetBundleComponent : ExComponent{
 
-        //private List<LineRenderer> colliderRenderer;
         public GameObject bundle = null;
         private List<string> assembliesNames = null;
 
-        //private Type get_type_from_str(string strType) {
-        //    Type vType = null;
-        //    foreach (var aName in assembliesNames) {
-        //        vType = Type.GetType(strType + aName);
-        //        if (vType != null) {
-        //            break;
-        //        }
-        //    }
+        int get_depth_level(Transform tr) {
+            int depth = 0;
+            while(tr.parent != null) {
+                tr = tr.parent;
+                depth++;
+            }
+            return depth;
+        }
 
-        //    // check from compiled assembly
-        //    if (vType == null) {
-        //        vType = Type.GetType(strType + ", " + CSharpScriptData.get_compiled_assembly().FullName);
-        //    }
+        string components_info(Transform tr) {
 
-        //    return vType;
-        //}
-
-        //private object deserialize(ParameterToSet parameter) {
-        //    return base_deserialize(parameter.to_sub());
-        //}
-
-        //private object deserialize(SubParameterToSet parameter) {
-        //    return base_deserialize(parameter);
-        //}
-
-        //private object base_deserialize(SubParameterToSet parameter) {
-
-
-        //    // add reference to a generated component
-        //    if (parameter.isDeletedComponent) {
-
-        //        var type = Type.GetType(parameter.deletedComponentTypeName + ", " + CSharpScriptData.get_compiled_assembly().FullName);
-        //        if (type == null) {
-        //            ExVR.Log().error("Type " + parameter.deletedComponentTypeName + " doesn't exists.");
-        //            return null;
-        //        }
-
-        //        var component = parameter.gameObject.GetComponent(type);
-        //        if (component == null) {
-        //            ExVR.Log().error("GameObject " + parameter.gameObject.name + " doesn't have a component of type " + parameter.deletedComponentTypeName);
-        //            return null;
-        //        }
-
-        //        return component;
-        //    }
-
-        //    // add rerence to a non-generated component
-        //    if (parameter.component != null) {
-        //        return parameter.component; // MonoBehaviour
-        //    }
-
-        //    Type vType = get_type_from_str(parameter.type);
-        //    if (vType == null) {
-        //        ExVR.Log().error("Type " + parameter.type + " doesn't exist.");
-        //        return null;
-        //    }
-
-        //    if (vType == typeof(GameObject)) {
-        //        return parameter.gameObject;
-        //    } else if (vType == typeof(Transform)) {
-        //        return parameter.transform;
-        //    }
-
-        //    // primitives
-        //    object value = null;
-        //    if (vType == typeof(bool)) {
-        //        value = Converter.to_bool(parameter.strValue);
-        //    } else if (vType == typeof(char)) {
-        //        value = Converter.to_char(parameter.strValue);
-        //    } else if (vType == typeof(byte)) {
-        //        //value = Converter.to_byte(parameter.strValue);
-        //    } else if (vType == typeof(int)) {
-        //        value = Converter.to_int(parameter.strValue);
-        //    } else if (vType == typeof(long)) {
-        //        //value = Converter.to_long(parameter.strValue);
-        //    } else if (vType == typeof(float)) {                
-        //        value = Converter.to_float(parameter.strValue);
-        //        Debug.Log("parameter.strValue to float: " + parameter.strValue + " " + value);
-        //    } else if (vType == typeof(double)) {
-        //        value = Converter.to_double(parameter.strValue);
-        //    } else if (vType == typeof(string)) {
-        //        value = parameter.strValue;
-        //    } else if (vType.IsEnum) {
-        //        value = Enum.Parse(vType, parameter.strValue, true);
-        //    } else {
-        //        value = Serializer.deserialize(parameter.strValue, vType);
-        //    }
-
-        //    if (value == null) {
-        //        ExVR.Log().error("Type " + vType.ToString() + " not managed.");
-        //    }
-
-        //    return value;
-        //}
-
-
+            StringBuilder sb = new StringBuilder();
+            foreach (var component in tr.GetComponents<Component>()) {
+                var type = component.GetType();
+                if (component != this && type != typeof(Transform)) {
+                    sb.AppendFormat("[{0}]", type.ToString().Replace("UnityEngine.", ""));
+                }
+            }
+            return sb.ToString();
+        }
 
         protected override bool initialize() {
 
@@ -142,14 +66,25 @@ namespace Ex{
                 return false;
             }
 
-            bundle = ExVR.Resources().instantiate_asset_bundle(aliasAssetBundle, nameSubObject, transform);
+            bundle = ExVR.Resources().instantiate_asset_bundle(aliasAssetBundle, nameSubObject, null);
             if(bundle == null) {
                 return false;
             }
 
+            if (initC.get<bool>("display_hierarchy")) {
+                StringBuilder sb = new StringBuilder();
+                foreach (var tr in bundle.GetComponentsInChildren<Transform>()) {
+                    int depth = get_depth_level(tr);
+                    sb.AppendFormat("{0}/{1} {2}\n", new String(' ', depth*5), tr.name, components_info(tr));
+                }
+                send_infos_to_gui_init_config("hierarchy", sb.ToString());
+            } else {
+                send_infos_to_gui_init_config("hierarchy", "");
+            }
+
+            bundle.transform.SetParent(transform);  
 
             instantiate_sub_components();
-
 
             return true;
         }
@@ -174,33 +109,34 @@ namespace Ex{
         }
 
         public void set_position(Vector3 position) {
-            bundle.transform.localPosition = position;
+            transform.localPosition = position;
         }
         public void set_rotation(Vector3 rotation) {
-            bundle.transform.localEulerAngles = rotation;
+            transform.localEulerAngles = rotation;
         }
         public void set_rotation(Quaternion rotation) {
-            bundle.transform.localRotation = rotation;
+            transform.localRotation = rotation;
         }
         public void set_scale(Vector3 scale) {
-            bundle.transform.localScale = scale;
+            transform.localScale = scale;
         }
 
         public Vector3 position() {
-            return bundle.transform.localPosition;
+            return transform.localPosition;
         }
         public Vector3 rotation() {
-            return bundle.transform.localEulerAngles;
+            return transform.localEulerAngles;
         }
         public Vector3 scale() {
-            return bundle.transform.localScale;
+            return transform.localScale;
         }
 
         public void reset_transform() {
-            currentC.update_transform("transform", bundle.transform, true);
+            currentC.update_transform("transform", transform, true);
         }
 
         private void instantiate_sub_components() {
+
             // keep deleted components references to be added after when every component would have been regenerated
             List<GameObject> gameObjectsToEnable = new List<GameObject>();
             List<Tuple<UnityEngine.Component, FieldInfo, GameObject, string>> deletedComponentsToAdd = new List<Tuple<UnityEngine.Component, FieldInfo, GameObject, string>>();
@@ -233,12 +169,12 @@ namespace Ex{
                         if (typeComponent == null) {
 
                             if (CSharpScriptResource.get_compiled_assembly() == null) {
-                                Debug.LogError("No compiled assembly.");
+                                ExVR.Log().error("No compiled assembly.");
                                 continue;
                             }
                             typeComponent = CSharpScriptResource.get_type_from_compiled_assembly(componentParameters.name);
                             if (typeComponent == null) {
-                                Debug.LogError("Cannot instantiate type " + componentParameters.name);
+                                ExVR.Log().error("Cannot instantiate type " + componentParameters.name);
                                 continue;
                             }
                         }
@@ -261,7 +197,7 @@ namespace Ex{
 
                     var varField = typeComponent.GetField(parameter.name);
                     if (varField == null) {
-                        Debug.LogError("Variable " + parameter.name + " doesn't exist in component " + generatedComponent.name + " from GameObject " + generatedComponent.gameObject.name);
+                        ExVR.Log().error("Variable " + parameter.name + " doesn't exist in component " + generatedComponent.name + " from GameObject " + generatedComponent.gameObject.name);
                         continue;
                     }
 
@@ -287,7 +223,7 @@ namespace Ex{
                             list.CopyTo(y, 0);
                             varField.SetValue(generatedComponent, y);
                         } else {
-                            Debug.LogError("INVALID TYPE: " + parameter.type + " " + parameter.fullAssemblyName);
+                            ExVR.Log().error("INVALID TYPE: " + parameter.type + " " + parameter.fullAssemblyName);
                         }
 
                     } else if (parameter.isList) {
@@ -314,7 +250,7 @@ namespace Ex{
                             }
                             varField.SetValue(generatedComponent, list);
                         } else {
-                            Debug.LogError("INVALID TYPE: " + parameter.type + " " + parameter.fullAssemblyName);
+                            ExVR.Log().error("INVALID TYPE: " + parameter.type + " " + parameter.fullAssemblyName);
                         }
 
                     } else {
@@ -322,7 +258,7 @@ namespace Ex{
                         if (value != null) {
                             varField.SetValue(generatedComponent, value);
                         } else {
-                            Debug.LogError("CANNOT SET");
+                            ExVR.Log().error("CANNOT SET");
                         }
                     }
                 }
@@ -337,3 +273,102 @@ namespace Ex{
     }
 
 }
+
+
+
+
+//private Type get_type_from_str(string strType) {
+//    Type vType = null;
+//    foreach (var aName in assembliesNames) {
+//        vType = Type.GetType(strType + aName);
+//        if (vType != null) {
+//            break;
+//        }
+//    }
+
+//    // check from compiled assembly
+//    if (vType == null) {
+//        vType = Type.GetType(strType + ", " + CSharpScriptData.get_compiled_assembly().FullName);
+//    }
+
+//    return vType;
+//}
+
+//private object deserialize(ParameterToSet parameter) {
+//    return base_deserialize(parameter.to_sub());
+//}
+
+//private object deserialize(SubParameterToSet parameter) {
+//    return base_deserialize(parameter);
+//}
+
+//private object base_deserialize(SubParameterToSet parameter) {
+
+
+//    // add reference to a generated component
+//    if (parameter.isDeletedComponent) {
+
+//        var type = Type.GetType(parameter.deletedComponentTypeName + ", " + CSharpScriptData.get_compiled_assembly().FullName);
+//        if (type == null) {
+//            ExVR.Log().error("Type " + parameter.deletedComponentTypeName + " doesn't exists.");
+//            return null;
+//        }
+
+//        var component = parameter.gameObject.GetComponent(type);
+//        if (component == null) {
+//            ExVR.Log().error("GameObject " + parameter.gameObject.name + " doesn't have a component of type " + parameter.deletedComponentTypeName);
+//            return null;
+//        }
+
+//        return component;
+//    }
+
+//    // add rerence to a non-generated component
+//    if (parameter.component != null) {
+//        return parameter.component; // MonoBehaviour
+//    }
+
+//    Type vType = get_type_from_str(parameter.type);
+//    if (vType == null) {
+//        ExVR.Log().error("Type " + parameter.type + " doesn't exist.");
+//        return null;
+//    }
+
+//    if (vType == typeof(GameObject)) {
+//        return parameter.gameObject;
+//    } else if (vType == typeof(Transform)) {
+//        return parameter.transform;
+//    }
+
+//    // primitives
+//    object value = null;
+//    if (vType == typeof(bool)) {
+//        value = Converter.to_bool(parameter.strValue);
+//    } else if (vType == typeof(char)) {
+//        value = Converter.to_char(parameter.strValue);
+//    } else if (vType == typeof(byte)) {
+//        //value = Converter.to_byte(parameter.strValue);
+//    } else if (vType == typeof(int)) {
+//        value = Converter.to_int(parameter.strValue);
+//    } else if (vType == typeof(long)) {
+//        //value = Converter.to_long(parameter.strValue);
+//    } else if (vType == typeof(float)) {                
+//        value = Converter.to_float(parameter.strValue);
+//        Debug.Log("parameter.strValue to float: " + parameter.strValue + " " + value);
+//    } else if (vType == typeof(double)) {
+//        value = Converter.to_double(parameter.strValue);
+//    } else if (vType == typeof(string)) {
+//        value = parameter.strValue;
+//    } else if (vType.IsEnum) {
+//        value = Enum.Parse(vType, parameter.strValue, true);
+//    } else {
+//        value = Serializer.deserialize(parameter.strValue, vType);
+//    }
+
+//    if (value == null) {
+//        ExVR.Log().error("Type " + vType.ToString() + " not managed.");
+//    }
+
+//    return value;
+//}
+
