@@ -776,7 +776,7 @@ namespace Ex{
 
                     Routine routine = routines.get(action.elementKey);
                     if (routine != null) {
-                        Condition condition = routine.get_condition(action.conditionKey);
+                        Condition condition = routine.get_condition_from_key(action.conditionKey);
                         if (condition != null) {
                             var connector = condition.get_connector(action.connectorKey);
                             if (connector != null) {

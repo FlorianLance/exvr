@@ -23,6 +23,10 @@ namespace Ex{
         public Routine current_routine()            { return p.currentRoutine; }
         public Condition current_condition()        { return p.currentCondition; }
 
+        public Routine get_routine(string routineName) {
+            return ExVR.Routines().get(routineName);
+        }
+
         public bool is_visible()        { return p.is_visible(); }
         public bool is_updating()       { return p.is_updating(); }
         public bool is_closed()         { return p.is_closed(); }

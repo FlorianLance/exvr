@@ -60,7 +60,7 @@ struct Resource{
         {Type::Cloud,        "(*.asc)"sv,      "Cloud"sv,            ":/icons/Sphere"sv,             "Clouds points"sv,        false,   false},
         {Type::ScanerVideo,  "(*.kvid)"sv,     "ScanerVideo"sv,      ":/icons/Video"sv,              "Scaner videos"sv,        false,   false},
         {Type::Plot,         "(*.csv)"sv,      "Plot"sv,             ":/icons/Plot"sv,               "Plots"sv,                true,    false},
-        {Type::Directory,    ""sv,             "Directory"sv,        ":/icons/Folder"sv,             "Directory"sv,            true,    false},
+        {Type::Directory,    ""sv,             "Directory"sv,        ":/icons/Folder"sv,             "Directories"sv,          true,    false},
     }};
 
     static auto get_types() {

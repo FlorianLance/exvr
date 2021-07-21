@@ -153,22 +153,36 @@ namespace Ex{
             ExVR.ExpLog().routine(name, current_condition().name, "Stopped in " + m_startTimer.ElapsedMilliseconds + "ms");
         }
 
-        public Condition get_condition(int conditionKey) {
+        public int conditions_count() {
+            return m_conditions.Count;
+        }
+
+        public Condition get_condition_from_id(int id) {
+            if(id < conditions_count() && id >= 0) {
+                return m_conditions[id];
+            }
+            ExVR.Log().error(string.Format("Condition with id [{0}] invalid.", Converter.to_string(id)));
+            return null;
+        }
+
+        public Condition get_condition_from_key(int conditionKey) {
             foreach (var condition in m_conditions) {
                 if (condition.key == conditionKey) {
                     return condition;
                 }
             }
+            ExVR.Log().error(string.Format("Condition with key [{0}] not found.", Converter.to_string(conditionKey)));
             return null;
         }
 
-        public Condition get_condition(string conditionName) {
+        public Condition get_condition_from_name(string conditionName) {
 
             foreach (var condition in m_conditions) {
                 if (condition.name == conditionName) {
                     return condition;
                 }
             }
+            ExVR.Log().error(string.Format("Condition with name [{0}] not found.", conditionName));
             return null;
         }
     }

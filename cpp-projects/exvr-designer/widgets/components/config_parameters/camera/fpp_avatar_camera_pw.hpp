@@ -39,13 +39,17 @@ public :
     ExCheckBoxW neutralPitch;
     ExCheckBoxW neutralYaw;
     ExCheckBoxW neutralRoll;
+    ExVector3dW neutralCameraToHeadOffsetPos;
+    ExVector3dW neutralCameraToHeadOffsetRot;
 
     ExRadioButtonW updateEyesCameraFromHead;
-    ExRadioButtonW updateHeadFromEyesCamera;
+
     ExRadioButtonW doNotUpdate;
 
-    ExVector3dW headTrackingOffsetPos;
-    ExVector3dW headTrackingOffsetRot;
+    ExRadioButtonW updateHeadFromEyesCamera;
+    ExVector3dW headFromEyesOffsetPos;
+    ExVector3dW headFromEyesOffsetRot;
+
 };
 
 }

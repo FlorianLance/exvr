@@ -155,7 +155,7 @@ void SkyConfigParametersW::init_and_register_widgets(){
     m_inputUiElements[QSL("cubemap")]    = m_cubemap.init_widget(Resource::Type::Image, QSL("Texture"));
     m_inputUiElements[QSL("cubemap_invert")] = m_cubeMapInvert.init_widget(QSL("invert"), false);
 
-    m_inputUiElements[QSL("X-")] = m_xMinus.init_widget(Resource::Type::Image, QSL("X- (Back)"));
+    m_inputUiElements[QSL("X-")] = m_xMinus.init_widget(Resource::Type::Image, QSL("X- (Right)"));
     m_inputUiElements[QSL("Y-")] = m_yMinus.init_widget(Resource::Type::Image, QSL("Y- (Down)"));
     m_inputUiElements[QSL("Z-")] = m_zMinus.init_widget(Resource::Type::Image, QSL("Z- (Back)"));
     m_inputUiElements[QSL("X+")] = m_xPlus.init_widget(Resource::Type::Image, QSL("X+ (Left)"));

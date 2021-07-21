@@ -24,6 +24,10 @@ namespace Ex {
         public static void translate_camera_rig(Vector3 vector) {
             ExVR.Display().cameras().get_camera_rig().position += vector;
         }
+        
+        public static void rotate_camera_rig_around(Vector3 pivot, Vector3 axis, float value) {
+            ExVR.Display().cameras().get_camera_rig().RotateAround(pivot, axis, value);
+        }
 
         // start neutral camera
         // # get

@@ -1064,16 +1064,23 @@ void Experiment::select_loop_set(ElementKey loopKey, QString setName){
     }
 }
 
-void Experiment::add_loop_set(ElementKey loopKey, QString setName, RowId id){
+void Experiment::add_loop_sets(ElementKey loopKey, QString sets, RowId id){
 
     if(auto loop = get_loop(loopKey); loop != nullptr){
         if(loop->is_file_mode()){
             QtLogger::error(QSL("[EXP] Cannot add new set when file mode is used."));
         }else{
-            if(loop->add_set(setName, id)){
-                update_conditions();
-            }else{
-                QtLogger::error(QSL("[EXP] Set ") % setName % QSL(" already exists."));
+            int startId = id.v;
+            int ii = 0;
+            for(const auto &setName : sets.split("\n")){
+                if(loop->add_set(setName, RowId{startId+ii})){
+                    ++ii;
+                }else{
+                    QtLogger::error(QSL("[EXP] Set ") % setName % QSL(" already exists."));
+                }
+                if(ii != 0){
+                    update_conditions();
+                }
             }
             add_to_update_flag(UpdateSelection | UpdateFlow | UpdateRoutines);
         }

@@ -62,7 +62,7 @@ signals:
     void modify_loop_type_signal(ElementKey loopKey, Loop::Mode mode);
     void modify_loop_set_name_signal(ElementKey loopKey, QString set, RowId idSet);
     void modify_loop_set_occurrencies_nb_signal(ElementKey loopKey, int occurenciesNb, RowId idSet);
-    void add_loop_set_signal(ElementKey loopKey, QString set, RowId idSet);
+    void add_loop_sets_signal(ElementKey loopKey, QString set, RowId idSet);
     void remove_set_signal(ElementKey loopKey, RowId idSet);
     void move_loop_set_up_signal(ElementKey loopKey, RowId idSet);
     void move_loop_set_down_signal(ElementKey loopKey, RowId idSet);

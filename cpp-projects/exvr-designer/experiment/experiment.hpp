@@ -175,7 +175,7 @@ public slots:
 
     // loop
     void select_loop_set(ElementKey loopKey, QString setName);
-    void add_loop_set(ElementKey loopKey, QString setName, RowId id);
+    void add_loop_sets(ElementKey loopKey, QString sets, RowId id);
     void modify_loop_set_name(ElementKey loopKey, QString setName, RowId id);
     void modify_loop_set_occurrencies_nb(ElementKey loopKey, int setOccuranciesNb, RowId id);
     void modify_loop_type(ElementKey loopKey, Loop::Mode type);

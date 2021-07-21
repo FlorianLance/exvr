@@ -186,10 +186,9 @@ void ElementViewerW::init_loop_ui(){
     });
 
     // sets
-    connect(ui->leAdd, &QLineEdit::textChanged, this, [=]{
-        ui->pbAdd->setEnabled(ui->leAdd->text().size() > 0);
+    connect(ui->teAdd, &QTextEdit::textChanged, this, [=]{
+        ui->pbAdd->setEnabled(ui->teAdd->toPlainText().size() > 0);
     });
-
 
     connect(tw, &QTableWidget::itemSelectionChanged, this, [=]{
         int row = tw->currentRow();
@@ -209,11 +208,11 @@ void ElementViewerW::init_loop_ui(){
     });
 
     connect(ui->pbAdd, &QPushButton::clicked, this, [=]{
-        QString txt = ui->leAdd->text().replace(' ', '_').replace('-', '_');
-        ui->leAdd->blockSignals(true);
-        ui->leAdd->setText(txt);
-        ui->leAdd->blockSignals(false);
-        emit add_loop_set_signal(m_currentElementId, txt, RowId{tw->currentRow()+1});
+        QString txt = ui->teAdd->toPlainText().replace(' ', '_').replace('-', '_');
+        ui->teAdd->blockSignals(true);
+        ui->teAdd->setText(txt);
+        ui->teAdd->blockSignals(false);
+        emit add_loop_sets_signal(m_currentElementId, txt, RowId{tw->currentRow()+1});
     });
     connect(ui->pbRemove, &QPushButton::clicked, this, [=]{
         int id = tw->currentRow();

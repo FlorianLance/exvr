@@ -382,7 +382,7 @@ namespace Ex {
                 Condition condition = null;
                 Routine routine = ExVR.Routines().get((string)split[2]);
                 if(routine != null) {
-                    condition = routine.get_condition((string)split[3]);
+                    condition = routine.get_condition_from_name((string)split[3]);
                 }
 
                 int componentKey = Converter.to_int((string)split[4]);

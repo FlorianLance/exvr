@@ -26,12 +26,21 @@ void tool::ex::FPPAvatarCameraInitConfigParametersW::late_update_ui(){
 }
 
 void tool::ex::FPPAvatarCameraConfigParametersW::insert_widgets(){
-    add_widget(ui::F::gen(ui::L::HB(), {moveNeutralCameraToHead()}, LStretch{false}, LMargins{true}, QFrame::NoFrame));
-    add_widget(ui::F::gen(ui::L::HB(), {neutralPitch(), neutralYaw(), neutralRoll()}, LStretch{false}, LMargins{true}, QFrame::NoFrame));
-    add_widget(ui::F::gen(ui::L::VB(), {updateEyesCameraFromHead(), updateHeadFromEyesCamera(), doNotUpdate()}, LStretch{false}, LMargins{true}, QFrame::NoFrame));
+
+    add_widget(ui::F::gen(ui::L::VB(),{
+        ui::F::gen(ui::L::HB(), {moveNeutralCameraToHead()}, LStretch{true}, LMargins{false}, QFrame::NoFrame),
+        ui::F::gen(ui::L::HB(), {ui::W::txt("Using axes:"), neutralPitch(), neutralYaw(), neutralRoll()}, LStretch{true}, LMargins{false}, QFrame::NoFrame),
+        ui::F::gen(ui::L::HB(), {ui::W::txt("With offset:")}, LStretch{true}, LMargins{false}, QFrame::NoFrame),
+        ui::F::gen(ui::L::HB(), {neutralCameraToHeadOffsetPos()}, LStretch{true}, LMargins{false}, QFrame::NoFrame),
+        ui::F::gen(ui::L::HB(), {neutralCameraToHeadOffsetRot()}, LStretch{true}, LMargins{false}, QFrame::NoFrame)
+    }, LStretch{true}, LMargins{true}, QFrame::Box));
+
+
     add_widget(ui::W::horizontal_line());
-    add_widget(ui::F::gen(ui::L::HB(), {headTrackingOffsetPos()}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
-    add_widget(ui::F::gen(ui::L::HB(), {headTrackingOffsetRot()}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
+
+    add_widget(ui::F::gen(ui::L::VB(), {updateEyesCameraFromHead(), updateHeadFromEyesCamera(), doNotUpdate()}, LStretch{false}, LMargins{true}, QFrame::NoFrame));    
+    add_widget(ui::F::gen(ui::L::HB(), {headFromEyesOffsetPos()}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
+    add_widget(ui::F::gen(ui::L::HB(), {headFromEyesOffsetRot()}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
 }
 
 void tool::ex::FPPAvatarCameraConfigParametersW::init_and_register_widgets(){
@@ -44,16 +53,20 @@ void tool::ex::FPPAvatarCameraConfigParametersW::init_and_register_widgets(){
     m_inputUiElements["update_head_from_eyes_camera"] = updateHeadFromEyesCamera.init_widget("Update avatar head from eyes camera", false);
     m_inputUiElements["no_not_update"]                = doNotUpdate.init_widget("Do nothing", true);
 
-    DsbSettings offsetS{MinV<qreal>{-2.},V<qreal>{0.},MaxV<qreal>{2.},StepV<qreal>{0.01}, 2};
-    m_inputUiElements["head_tracking_offset_pos"] = headTrackingOffsetPos.init_widget("Head offset position:", Vector3dSettings{offsetS,offsetS,offsetS});
-    headTrackingOffsetPos.x.w->setValue(0);
-    headTrackingOffsetPos.y.w->setValue(0.1);
-    headTrackingOffsetPos.z.w->setValue(0.1);
-
+    DsbSettings offsetS{MinV<qreal>{-2.},V<qreal>{0.1},MaxV<qreal>{2.},StepV<qreal>{0.01}, 2};
     DsbSettings offsetRot{MinV<qreal>{-180.},V<qreal>{0.},MaxV<qreal>{180.},StepV<qreal>{0.1}, 2};
+    Vector3dSettings offsetVecPos = {offsetS,offsetS,offsetS};
     Vector3dSettings offsetVecRot = {offsetRot,offsetRot,offsetRot};
-    m_inputUiElements["head_tracking_offset_rot"] = headTrackingOffsetRot.init_widget("Head offset rotation:", offsetVecRot);
 
+    m_inputUiElements["neutral_camera_to_head_offset_pos"] = neutralCameraToHeadOffsetPos.init_widget("Neutral offset position:", offsetVecPos);
+    neutralCameraToHeadOffsetPos.x.w->setValue(0);
+    m_inputUiElements["neutral_camera_to_head_offset_rot"] = neutralCameraToHeadOffsetRot.init_widget("Neutral offset rotation:", offsetVecRot);
+
+    m_inputUiElements["head_from_eyes_offset_pos"] = headFromEyesOffsetPos.init_widget("Head offset position:", offsetVecPos);
+    headFromEyesOffsetPos.x.w->setValue(0);
+    headFromEyesOffsetPos.y.w->setValue(0);
+    headFromEyesOffsetPos.z.w->setValue(0);
+    m_inputUiElements["head_from_eyes_offset_rot"] = headFromEyesOffsetRot.init_widget("Head offset rotation:", offsetVecRot);
 }
 
 void tool::ex::FPPAvatarCameraConfigParametersW::create_connections()

@@ -17,11 +17,14 @@ namespace Ex {
         private SkinnedMeshRenderer smr = null;
         private Cloth flagCloth = null;
 
-        private GameObject flag = null;
-        private GameObject pole = null;
+        private GameObject flagGO = null;
+        private GameObject poleGO = null;
+        private GameObject baseGO = null;
+        private GameObject ballGO = null;
 
         private ClothSkinningCoefficient[] coeffs = null;
-        private List<int> poleCoeff = new List<int>();
+        private List<int> poleCoeffs = new List<int>();
+        private Dictionary<int, float> topCoeffs = new Dictionary<int, float>();        
 
         protected override bool initialize() {
 
@@ -40,37 +43,78 @@ namespace Ex {
 
             // pole
             {
-                pole = new GameObject("Pole");
-                pole.transform.SetParent(transform);                
-                pole.AddComponent<MeshFilter>().mesh = PrimitivesMesh.CylinderBuilder.generate(10, 3, 0.025f, initC.get<float>("pole_height"));
-                pole.AddComponent<MeshRenderer>().material = ExVR.GlobalResources().instantiate_default_mat();
+                var mat = Instantiate(Resources.Load(string.Format("Materials/Procedural/Pole")) as Material);
+
+                poleGO = new GameObject("Pole");
+                poleGO.transform.SetParent(transform);                
+                poleGO.AddComponent<MeshFilter>().mesh = PrimitivesMesh.CylinderBuilder.generate(10, 3, 0.025f, initC.get<float>("pole_height"));
+                poleGO.AddComponent<MeshRenderer>().material = mat;
+
+                baseGO = new GameObject("Base");
+                baseGO.transform.SetParent(transform);
+                baseGO.AddComponent<MeshFilter>().mesh = PrimitivesMesh.CylinderBuilder.generate(30, 3, 0.25f, 0.015f);
+                baseGO.AddComponent<MeshRenderer>().material = mat;
+
+                ballGO = new GameObject("ball");
+                ballGO.transform.SetParent(transform);
+                ballGO.AddComponent<MeshFilter>().mesh = PrimitivesMesh.SphereBuilder.generate(0.06f);
+                ballGO.AddComponent<MeshRenderer>().material = mat;
+                ballGO.transform.position += new Vector3(0, initC.get<float>("pole_height") + 0.06f, 0);
             }
 
             // flag
             {
-                flag = new GameObject("Flag");
-                flag.transform.SetParent(transform);
+                flagGO = new GameObject("Flag");
+                flagGO.transform.SetParent(transform);
                 
                 var mesh = PrimitivesMesh.GridBuilder.generate(nbVerticesH, nbVerticesV, width, height, depth);
-                flag.AddComponent<MeshFilter>().mesh = mesh;
-                smr = flag.AddComponent<SkinnedMeshRenderer>();
+                flagGO.AddComponent<MeshFilter>().mesh = mesh;
+                smr = flagGO.AddComponent<SkinnedMeshRenderer>();
                 smr.material   = Instantiate(Resources.Load(string.Format("Materials/Procedural/Grid")) as Material);                   
                 smr.sharedMesh = mesh;
 
-                flagCloth = flag.AddComponent<Cloth>();
+                flagCloth = flagGO.AddComponent<Cloth>();
                 flagCloth.randomAcceleration = new Vector3(0.1f, 0.1f, 0.1f);
                 coeffs    = flagCloth.coefficients;
 
+                float maxY = -1f;
+                float minX = 10f;
+                float maxX = -10f;
                 for (int ii = 0; ii < coeffs.Length; ++ii) {
+
+                    if (minX > flagCloth.vertices[ii].x) {
+                        minX = flagCloth.vertices[ii].x;
+                    }
+
+                    if (maxX < flagCloth.vertices[ii].x) {
+                        maxX = flagCloth.vertices[ii].x;
+                    }
+
+                    if (maxY < flagCloth.vertices[ii].y) {
+                        maxY = flagCloth.vertices[ii].y;
+                    }
                     if (UnityEngine.Mathf.Approximately(flagCloth.vertices[ii].x, 0f)) {
-                        poleCoeff.Add(ii);
+                        poleCoeffs.Add(ii);
                     }
                 }
+
+                for (int ii = 0; ii < coeffs.Length; ++ii) {
+                    if (UnityEngine.Mathf.Approximately(flagCloth.vertices[ii].y, maxY)) {
+                        topCoeffs[ii] = (flagCloth.vertices[ii].x - minX) / maxX;
+                    }
+                }
+
+                flagCloth.capsuleColliders = new CapsuleCollider[] {
+                    poleGO.AddComponent<CapsuleCollider>()
+                };
+
                 udpate_flag_cloth_max_distance(0f);
             }
 
-            pole.SetActive(false);
-            flag.SetActive(false);
+            poleGO.SetActive(false);
+            flagGO.SetActive(false);
+            baseGO.SetActive(false);
+            ballGO.SetActive(false);
 
             return true;
         }
@@ -80,14 +124,19 @@ namespace Ex {
             for (int ii = 0; ii < coeffs.Length; ++ii) {
                 coeffs[ii].maxDistance = maxDistance;     
             }
-            foreach(var id in poleCoeff) {
+
+            foreach (var coeff in topCoeffs) {
+                coeffs[coeff.Key].maxDistance = coeff.Value * maxDistance;
+            }
+
+            foreach (var id in poleCoeffs) {
                 coeffs[id].maxDistance = 0f;
             }            
             flagCloth.coefficients = coeffs;
         }
 
         public void update_flag_height(float factor) {
-            flag.transform.localPosition = new Vector3(0.025f, factor * (initC.get<float>("pole_height") - initC.get<float>("flag_height")), 0);
+            flagGO.transform.localPosition = new Vector3(0.025f, factor * (initC.get<float>("pole_height") - initC.get<float>("flag_height")), 0);
         }
 
         protected override void start_routine() {
@@ -110,8 +159,10 @@ namespace Ex {
         }
 
         protected override void set_visibility(bool visibility) {
-            flag.SetActive(visibility);
-            pole.SetActive(visibility);
+            flagGO.SetActive(visibility);
+            poleGO.SetActive(visibility);
+            baseGO.SetActive(visibility);
+            ballGO.SetActive(visibility);
         }
 
     }

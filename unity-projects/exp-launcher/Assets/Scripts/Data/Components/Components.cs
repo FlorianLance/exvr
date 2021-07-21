@@ -502,7 +502,7 @@ namespace Ex{
             componentsPerCategory.Clear();
         }
 
-        public void set_components_states(Condition condition, double time) {
+        public void update_states_from_time(Condition condition, double time) {
 
             // component inside condition
             HashSet<int> componentInsideCondition = new HashSet<int>();
@@ -538,9 +538,10 @@ namespace Ex{
                 component.base_set_update_state(false);
                 component.base_set_visibility(false);
             }
-        }
+        }        
 
-        private void set_component_states(ExComponent component, bool doUpdate, bool visibility, bool log = true) {
+
+        public void set_component_states(ExComponent component, bool doUpdate, bool visibility, bool log = true) {
 
             if (component.is_closed()) {
                 return;

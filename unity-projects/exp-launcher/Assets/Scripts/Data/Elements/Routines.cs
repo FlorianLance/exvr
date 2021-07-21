@@ -49,17 +49,26 @@ namespace Ex{
     public class Routines : MonoBehaviour{
 
         private List<Routine> m_routines = new List<Routine>();
+        private Dictionary<string, Routine> m_routinesPerName = new Dictionary<string, Routine>();
+        private Dictionary<int, Routine> m_routinesPerKey = new Dictionary<int, Routine>();
+
         private Routine m_currentRoutine = null;
 
-        public Routine current() {
+        public Routine current() {            
             return m_currentRoutine;
         }
 
         public void generate_from_xml(XML.Routines xmlRoutines) {
+
+            m_routines.Clear();
+            m_routinesPerName.Clear();
+            m_routinesPerKey.Clear();
             foreach (XML.Routine xmlRoutine in xmlRoutines.Routine) {
                 var routine = GO.generate_empty_object(xmlRoutine.Name, ExVR.GO().Routines.transform).AddComponent<Routine>();
                 routine.initialize(xmlRoutine);
-                m_routines.Add(routine);                    
+                m_routines.Add(routine);
+                m_routinesPerName[routine.name] = routine;
+                m_routinesPerKey[routine.key()] = routine;
             }
         }
 
@@ -87,21 +96,18 @@ namespace Ex{
         }
 
         public Routine get(string routineName) {
-            foreach (var routine in m_routines) {
-                if (routine.name == routineName) {
-                    return routine;
-                }
+            if (m_routinesPerName.ContainsKey(routineName)) {
+                return m_routinesPerName[routineName];
             }
+            ExVR.Log().error(string.Format("Cannot find routine with name {0}.", routineName));
             return null;
         }
 
         public Routine get(int routineKey) {
-
-            foreach(var routine in m_routines) {
-                if(routine.key() == routineKey) {
-                    return routine;
-                }
+            if (m_routinesPerKey.ContainsKey(routineKey)) {
+                return m_routinesPerKey[routineKey];
             }
+            ExVR.Log().error(string.Format("Cannot find routine with key {0}.", Converter.to_string(routineKey)));
             return null;
         }
 
@@ -152,11 +158,13 @@ namespace Ex{
                 Destroy(routine.gameObject);
             }
             m_routines.Clear();
+            m_routinesPerName.Clear();
+            m_routinesPerKey.Clear();
         }
 
         public void update_components_states(RoutineInfo info) {
             //ExVR.ExpLog().push_to_strackTrace(new RoutinesManagerTrace(routine, "update_components_states", true));
-            ExVR.Components().set_components_states(info.condition, ExVR.Time().ellapsed_time_element_s());
+            ExVR.Components().update_states_from_time(info.condition, ExVR.Time().ellapsed_time_element_s());
             //ExVR.ExpLog().push_to_strackTrace(new RoutinesManagerTrace(routine, "update_components_states", false));
         }
 
@@ -177,7 +185,7 @@ namespace Ex{
                 return false;
             }
 
-            var condition = routine.get_condition(conditionName);
+            var condition = routine.get_condition_from_name(conditionName);
             if(condition == null) {
                 return false;
             }

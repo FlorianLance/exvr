@@ -941,7 +941,7 @@ void ExVrController::generate_element_viewer_connections(){
     connect(elementViewer, &ELW::move_loop_set_down_signal,          exp(), &EXP::move_loop_set_down);
     connect(elementViewer, &ELW::load_loop_sets_file_signal,         exp(), &EXP::load_loop_sets_file);
     connect(elementViewer, &ELW::reload_loop_sets_file_signal,       exp(), &EXP::reload_loop_sets_file);
-    connect(elementViewer, &ELW::add_loop_set_signal,                exp(), &EXP::add_loop_set);
+    connect(elementViewer, &ELW::add_loop_sets_signal,               exp(), &EXP::add_loop_sets);
     connect(elementViewer, &ELW::add_isi_interval_signal,            exp(), &EXP::add_isi_interval);
     connect(elementViewer, &ELW::modify_isi_interval_signal,         exp(), &EXP::modify_isi_interval);
     connect(elementViewer, &ELW::set_isi_randomize_signal,           exp(), &EXP::set_isi_randomize);
