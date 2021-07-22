@@ -186,7 +186,9 @@ namespace Ex{
             rightExtender.position = rotuleRight.position + vec * 0.5f;
 
             // apply transform
-            currentC.update_transform("transform", theraGO.transform, true);
+            if (!currentC.get<bool>("transform_do_not_apply")) {
+                currentC.update_transform("transform", theraGO.transform, true);
+            }
         }
 
         protected override void set_visibility(bool visible) { 

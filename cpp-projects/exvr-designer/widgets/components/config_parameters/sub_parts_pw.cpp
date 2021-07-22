@@ -11,7 +11,8 @@
 using namespace tool::ex;
 
 DefaultTransformSubPart::DefaultTransformSubPart(){
-    frame = ui::F::gen(ui::L::HB(),{tr()}, LStretch{false},LMargins{false});
+    frame = ui::F::gen(ui::L::VB(),{tr()}, LStretch{false},LMargins{false});
+    tr.w->layout()->addWidget(doNotApply());
 }
 
 DefaultTransformSubPart *DefaultTransformSubPart::init_widget(QString title, QString name){
@@ -25,8 +26,11 @@ DefaultTransformSubPart *DefaultTransformSubPart::init_widget(QString title, QSt
     Vector3dSettings scS    = {s3,s3,s3};
 
     inputUiElements.emplace_back(std::make_pair(name, tr.init_widget(title,trS,rotS,scS)));
+    inputUiElements.emplace_back(std::make_pair(name + "_do_not_apply", doNotApply.init_widget("Do not apply", false)));
+
     return this;
 }
+
 
 WordSpaceCameraCanvasSubPart::WordSpaceCameraCanvasSubPart(){
 

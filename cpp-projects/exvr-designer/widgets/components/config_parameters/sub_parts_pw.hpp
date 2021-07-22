@@ -46,6 +46,7 @@ public :
     DefaultTransformSubPart *init_widget(QString title = "Transform", QString name = "transform");
 
     ExTransformationW tr;
+    ExCheckBoxW doNotApply;
 };
 
 class WordSpaceCameraCanvasSubPart :  public ConfigParametersSubPart{

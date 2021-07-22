@@ -132,7 +132,9 @@ namespace Ex{
         }
 
         public void reset_transform() {
-            currentC.update_transform("transform", transform, true);
+            if (!currentC.get<bool>("transform_do_not_apply")) {
+                currentC.update_transform("transform", transform, true);
+            }
         }
 
         private void instantiate_sub_components() {

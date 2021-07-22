@@ -135,7 +135,9 @@ namespace Ex {
 
         public void reset_transform() {
             if (currentBundle != null) {
-                currentC.update_transform("transform", currentBundle.transform, true);
+                if (!currentC.get<bool>("transform_do_not_apply")) {
+                    currentC.update_transform("transform", currentBundle.transform, true);
+                }
             }
         }
 

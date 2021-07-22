@@ -125,7 +125,9 @@ namespace Ex{
         public override void update_from_current_config() {
 
             // apply transformation
-            currentC.update_transform("working_transform", m_workingZoneGO.transform);
+            if (!currentC.get<bool>("working_transform_do_not_apply")) {
+                currentC.update_transform("working_transform", m_workingZoneGO.transform);
+            }
 
             // reset working zone
             reset_working_transform();

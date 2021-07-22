@@ -100,7 +100,9 @@ namespace Ex{
         public void reset_working_transform() {
 
             // set transformation           
-            currentC.update_transform("working_transform", m_fullZoneGO.transform, true);
+            if (!currentC.get<bool>("working_transform_do_not_apply")) {
+                currentC.update_transform("working_transform", m_fullZoneGO.transform, true);
+            }
 
 
             // get zone vertices

@@ -34,7 +34,9 @@ namespace Ex{
 
         public override void update_from_current_config() {
 
-            currentC.update_transform("transform", m_mirrorGO.transform, true);
+            if (!currentC.get<bool>("transform_do_not_apply")) {
+                currentC.update_transform("transform", m_mirrorGO.transform, true);
+            }
             m_mirrorGO.transform.Find("MirrorFrame").gameObject.SetActive(currentC.get<bool>("show_frame"));            
         }
 

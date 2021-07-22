@@ -14,9 +14,10 @@ void AssetBundleInitConfigParametersW::insert_widgets(){
     add_widget(ui::F::gen(ui::L::HB(), {m_assetBundle()}, LStretch{false}, LMargins{true}, QFrame::Box));
     add_widget(ui::F::gen(ui::L::VB(),{
         ui::W::txt("Sub object to load in bundle (if empty, first object of the hierarchy will be load): "),
-        m_leSubObjectName(), m_displayHierarchy(), m_hierarchy = new QTextEdit()}, LStretch{false}, LMargins{true},QFrame::Box));
-//    m_hierarchy->setEnabled(false);
+        m_leSubObjectName(), m_displayHierarchy(), m_hierarchy = new QTextEdit()}, LStretch{false}, LMargins{true},QFrame::Box)
+    );
     m_hierarchy->setReadOnly(true);
+    no_end_stretch();
 }
 
 void AssetBundleInitConfigParametersW::init_and_register_widgets(){

@@ -44,7 +44,7 @@
 //        Vector3 initKneePosition = Vector3.zero;
 //        Vector3 currentKneePosition = Vector3.zero;
 
-        
+
 
 //        protected override bool initialize() {
 
@@ -414,7 +414,9 @@
 //        }
 
 //        public override void update_from_current_config() {
-//            currentC.update_transform("transform", m_mriGO.transform, true);
+//          if (!currentC.get<bool>("transform_do_not_apply")) {
+//           currentC.update_transform("transform", m_mriGO.transform, true);
+//          }
 //        }
 
 //        protected override void set_visibility(bool visibility) {

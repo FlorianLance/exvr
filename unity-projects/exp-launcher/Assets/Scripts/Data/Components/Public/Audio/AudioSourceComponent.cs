@@ -170,7 +170,9 @@ namespace Ex{
             stopEndBlock = currentC.get<bool>("stop_end_block");
             pauseEndBlock = currentC.get<bool>("pause_end_block");
 
-            currentC.update_transform("transform", transform);
+            if (!currentC.get<bool>("transform_do_not_apply")) {
+                currentC.update_transform("transform", transform);
+            }
         }
 
         protected override void start_routine() {
