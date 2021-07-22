@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Experiment name="reaction_time" version="0.99z49" mode="designer" designer-used="D:/EPFL/lnco-exvr/exvr/cpp-projects/_build/bin/exvr-designer/ExVR.exe">
+<Experiment name="button_press_reaction_time_using_connections" version="0.99z50" mode="designer" designer-used="D:/EPFL/lnco-exvr/exvr/cpp-projects/_build/bin/exvr-designer/ExVR.exe">
     <Settings debug="1" csharp_debug_info="0" catch_components_exceptions="0" positional_tracking="1" catch_external_keyboard_events="1">
         <Display mode="0" stereo_fov="60" fullscreen="0" monitor_id="1" resolution_id="2" custom_width="1920" custom_height="1080"/>
         <Camera neutral_x="0" neutral_y="1" neutral_z="0"/>
@@ -50,7 +50,7 @@
                         <Arg key="19" name="value" ui="Integer spin box" value="2" type="System.Int32" dim="0"/>
                     </Connector>
                     <Connector key="13" name="ConditionalTrigger" node_position="2104.4 72.4" node_size="-1 -1">
-                        <Arg key="22" name="value" ui="Label" value="" type="System.String" dim="0"/>
+                        <Arg key="20" name="value" ui="Label" value="" type="System.String" dim="0"/>
                     </Connector>
                     <Connector key="14" name="DecimalOperation" node_position="1734.6 213.4" node_size="-1 -1">
                         <Arg key="18" name="value" ui="Combo box text" value=" Equal? " type="System.String" dim="0"/>
