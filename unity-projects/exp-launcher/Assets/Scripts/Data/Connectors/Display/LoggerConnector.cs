@@ -15,7 +15,7 @@ namespace Ex{
         }
 
         protected override void slot1(object arg) {
-            ExVR.Functions().get_logger(arg.GetType()).Invoke(arg);
+            ConnectorsFunctions.get_logger(arg.GetType()).Invoke(arg);
         }
     }
 }

@@ -83,10 +83,6 @@ namespace Ex {
             return Experiment().experimentResourcesManager;
         }        
 
-        static public ConnectorsFunctions Functions() {
-            return Experiment().connectorsFunctions;
-        }
-
         static public Components Components() {
             return Experiment().components;
         }

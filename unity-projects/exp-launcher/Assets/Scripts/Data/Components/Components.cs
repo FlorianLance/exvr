@@ -13,9 +13,70 @@ using UnityEngine;
 
 using static Ex.ExComponent;
 
-namespace Ex{
 
+//#if UNITY_EDITOR
+//using UnityEditor;
+//namespace Ex{
 
+//    [CustomEditor(typeof(Components))]
+//    public class ComponentsEditor : Editor{
+
+//        public override bool RequiresConstantRepaint() {
+//            return true;
+//        }
+
+//        public override void OnInspectorGUI() {
+
+//            base.OnInspectorGUI();
+
+//            if (!Application.isPlaying) {
+//                return;
+//            }
+
+//            //EditorGUILayout.LabelField("Current element:");
+//            //var currentElementInfo = ExVR.Schreduler().current_element_info();
+//            //if (currentElementInfo != null) {
+//            //    if (currentElementInfo.type() == FlowElement.FlowElementType.Routine) {
+
+//            //        var routineInfo = (RoutineInfo)currentElementInfo;
+//            //        var routine = (Routine)routineInfo.element;
+//            //        if (routine != null) {
+//            //            EditorGUILayout.LabelField("[Routine] with id " + (currentElementInfo.key()).ToString());
+//            //            EditorGUILayout.ObjectField(routine, typeof(Routine), true);
+
+//            //            var condition = routine.current_condition();
+//            //            if (condition != null) {
+//            //                EditorGUILayout.LabelField("With condition:");
+//            //                EditorGUILayout.ObjectField(condition, typeof(Condition), true);
+//            //            } else {
+//            //                EditorGUILayout.LabelField("...");
+//            //            }
+
+//            //        } else {
+//            //            EditorGUILayout.LabelField("...");
+//            //        }
+//            //    } else {
+
+//            //        var isiInfo = (ISIInfo)currentElementInfo;
+//            //        var isi = (ISI)isiInfo.element;
+//            //        if (isi != null) {
+//            //            EditorGUILayout.LabelField("[ISI] with id " + (currentElementInfo.key()).ToString());
+//            //            EditorGUILayout.ObjectField(isi, typeof(ISI), true);
+//            //        } else {
+//            //            EditorGUILayout.LabelField("...");
+//            //        }
+//            //        //currentCondition = isi.current_condition();
+//            //    }
+//            //} else {
+//            //    EditorGUILayout.LabelField("...");
+//            //}
+//        }
+//    }
+//}
+//#endif
+
+namespace Ex
+{
     public class ComponentInfo{
         public ComponentInfo(Category category, Pritority priority, Reserved reserved) {
             this.category = category;
@@ -31,12 +92,35 @@ namespace Ex{
 
 
         public Dictionary<Category, List<ExComponent>> componentsPerCategory = new Dictionary<Category, List<ExComponent>>();
-        public Dictionary<Category, Transform> Category2Transform = null;
-        public Dictionary<Type, List<ExComponent>> componentsPerType = new Dictionary<Type, List<ExComponent>>();        
+        public static readonly Dictionary<Category, string> Category2Transform = new Dictionary<Category, string> {
+            [Category.Audio] = "[C:Audio]",
+            [Category.Resource] = "[C:Resource]",
+            [Category.Image] = "[C:Image]",
+            [Category.Input] = "[C:Input]",
+            [Category.Network] = "[C:Network]",
+            [Category.Output] = "[C:Output]",
+            [Category.Scene] = "[C:Scene]",
+            [Category.Script] = "[C:Script]",
+            [Category.Environment] = "[C:Environment]",
+            [Category.UI] = "[C:UI]",
+            [Category.Video] = "[C:Video]",
+            [Category.Tracking] = "[C:Tracking]",
+            [Category.Text] = "[C:Text]",
+            [Category.Model] = "[C:Model]",
+            [Category.Avatar] = "[C:Avatar]",
+            [Category.Interaction] = "[C:Interaction]",
+            [Category.Camera] = "[C:Camera]",
+            [Category.Settings] = "[C:Settings]",
+            [Category.Cloud] = "[C:Cloud]",
+            [Category.Viewer] = "[C:Viewer]"
+        };
+
+        public Dictionary<Type, List<ExComponent>> componentsPerType = new Dictionary<Type, List<ExComponent>>();
 
         // sort by priority
-        List<ExComponent> sortedComponents = new List<ExComponent>();
-        List<ExComponent> reverseSortedComponents = new List<ExComponent>();
+        [SerializeField]
+        private List<ExComponent> sortedComponents = new List<ExComponent>();
+        private List<ExComponent> reverseSortedComponents = new List<ExComponent>();
 
 
         private static ComponentInfo gen_info(Category category, Pritority pritority, Reserved reserved) {
@@ -145,6 +229,12 @@ namespace Ex{
 
             // create gameobjects and setup components
             List<ExComponent> components = new List<ExComponent>();
+
+            // remove every previous category
+            foreach (Transform child in transform) {
+                DestroyImmediate(child.gameObject);
+            }
+
             foreach (XML.Component xmlComponent in xmlComponents.Component) {
                 
                 Type typeComponent = Type.GetType(string.Format("Ex.{0}Component", xmlComponent.Type));
@@ -580,32 +670,6 @@ namespace Ex{
                     log_and_add_to_stacktrace(component, Function.set_visibility, false);
                 }
             }
-        }
-
-        public void initialize() {
-
-            Transform top = ExVR.GO().Components.transform;
-            Category2Transform = new Dictionary<Category, Transform>();
-            Category2Transform[Category.Audio]         = top.Find("[C:Audio]");
-            Category2Transform[Category.Resource]      = top.Find("[C:Resource]");
-            Category2Transform[Category.Image]         = top.Find("[C:Image]");
-            Category2Transform[Category.Input]         = top.Find("[C:Input]");
-            Category2Transform[Category.Network]       = top.Find("[C:Network]");
-            Category2Transform[Category.Output]        = top.Find("[C:Output]");
-            Category2Transform[Category.Scene]         = top.Find("[C:Scene]");
-            Category2Transform[Category.Script]        = top.Find("[C:Script]");
-            Category2Transform[Category.Environment]   = top.Find("[C:Environment]");
-            Category2Transform[Category.UI]            = top.Find("[C:UI]");
-            Category2Transform[Category.Video]         = top.Find("[C:Video]");
-            Category2Transform[Category.Tracking]      = top.Find("[C:Tracking]");
-            Category2Transform[Category.Text]          = top.Find("[C:Text]");
-            Category2Transform[Category.Model]         = top.Find("[C:Model]");
-            Category2Transform[Category.Avatar]        = top.Find("[C:Avatar]");
-            Category2Transform[Category.Interaction]   = top.Find("[C:Interaction]");
-            Category2Transform[Category.Camera]        = top.Find("[C:Camera]");
-            Category2Transform[Category.Settings]      = top.Find("[C:Settings]");
-            Category2Transform[Category.Cloud]         = top.Find("[C:Cloud]");
-            Category2Transform[Category.Viewer]        = top.Find("[C:Viewer]");
         }
 
         public ExComponent get(int componentKey) {

@@ -15,7 +15,7 @@ namespace Ex{
         protected override void initialize(XML.Connector connector) {
 
             base.initialize(connector);
-            binary = ExVR.Functions().get_binary_function(m_config.get<string>(valueStr));
+            binary = ConnectorsFunctions.get_binary_function(m_config.get<string>(valueStr));
 
             add_signals(1);
             add_slot(0, (arg) => { base_slot1(arg); });
@@ -32,7 +32,7 @@ namespace Ex{
         }
 
         protected override void update_from_gui() {
-            binary = ExVR.Functions().get_binary_function(m_config.get<string>(valueStr));
+            binary = ConnectorsFunctions.get_binary_function(m_config.get<string>(valueStr));
             send_output();
         }
 
@@ -40,13 +40,13 @@ namespace Ex{
 
             if(binary == ConnectorsFunctions.BinaryOperator.not) {
                 if (input0 != null) {
-                    var value = ExVR.Functions().get(binary).Invoke((bool)input0, false);
+                    var value = ConnectorsFunctions.get(binary).Invoke((bool)input0, false);
                     send_connector_infos_to_gui(Converter.to_string(value));
                     invoke_signal(0, value);
                 }
             } else {
                 if (input0 != null && input1 != null) {
-                    var value = ExVR.Functions().get(binary).Invoke((bool)input0, (bool)input1);
+                    var value = ConnectorsFunctions.get(binary).Invoke((bool)input0, (bool)input1);
                     send_connector_infos_to_gui(Converter.to_string(value));
                     invoke_signal(0, value);
                 }

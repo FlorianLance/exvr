@@ -20,7 +20,7 @@ namespace Ex{
             base.initialize(connector);
         
             functionStr = m_config.get<string>(valueStr);
-            ope = ExVR.Functions().get_decimal_operator(functionStr);
+            ope = ConnectorsFunctions.get_decimal_operator(functionStr);
 
             add_signals(1);
             add_slot(0, (arg) => { base_slot1(arg); });
@@ -40,7 +40,7 @@ namespace Ex{
         protected override void update_from_gui() {
 
             functionStr = m_config.get<string>(valueStr);
-            ope = ExVR.Functions().get_decimal_operator(functionStr);
+            ope = ConnectorsFunctions.get_decimal_operator(functionStr);
   
             send_output();
         }

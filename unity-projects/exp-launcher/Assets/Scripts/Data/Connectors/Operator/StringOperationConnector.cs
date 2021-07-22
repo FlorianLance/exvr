@@ -18,7 +18,7 @@ namespace Ex{
         protected override void initialize(XML.Connector connector) {
 
             base.initialize(connector);
-            stringO = ExVR.Functions().get_string_operator(m_config.get<string>(valueStr));
+            stringO = ConnectorsFunctions.get_string_operator(m_config.get<string>(valueStr));
 
             add_signals(1);
             add_slot(0, (arg) => { base_slot1(arg); });
@@ -36,14 +36,14 @@ namespace Ex{
         }
 
         protected override void update_from_gui() {
-            stringO = ExVR.Functions().get_string_operator(m_config.get<string>(valueStr));
+            stringO = ConnectorsFunctions.get_string_operator(m_config.get<string>(valueStr));
             send_output();
         }
 
         private void send_output() {
 
             if (input0 != null && input1 != null) {
-                var value = ExVR.Functions().get(stringO).Invoke((string)input0, (string)input1);
+                var value = ConnectorsFunctions.get(stringO).Invoke((string)input0, (string)input1);
                 invoke_signal(0, value);
                 if(value is string) {
                     send_connector_infos_to_gui((string)value);

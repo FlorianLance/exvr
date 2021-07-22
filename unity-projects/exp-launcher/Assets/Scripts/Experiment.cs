@@ -115,8 +115,6 @@ namespace Ex{
         public void initialize() {
 
             experimentResourcesManager.initialize();
-            components.initialize();
-            connectorsFunctions.initialize();
             connectionsConvertors.initialize();
 
             // add listeners

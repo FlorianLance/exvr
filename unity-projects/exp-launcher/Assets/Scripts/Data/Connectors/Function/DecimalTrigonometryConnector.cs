@@ -17,7 +17,7 @@ namespace Ex{
             base.initialize(connector);
 
             
-            trigonometry = ExVR.Functions().get_trigonometry_function(m_config.get<string>(valueStr));
+            trigonometry = ConnectorsFunctions.get_trigonometry_function(m_config.get<string>(valueStr));
 
             add_signals(1);
             add_slot(0, (arg) => { base_slot1(arg); });
@@ -29,7 +29,7 @@ namespace Ex{
         }
 
         protected override void update_from_gui() {
-            trigonometry = ExVR.Functions().get_trigonometry_function(m_config.get<string>(valueStr));
+            trigonometry = ConnectorsFunctions.get_trigonometry_function(m_config.get<string>(valueStr));
             send_output();
         }
 

@@ -208,7 +208,8 @@ namespace Ex{
 
             double value1   = d1.to_double();
             double value2   = d2.to_double();
-            var output      = ExVR.Functions().get(o).Invoke(value1, value2);
+            
+            var output      = ConnectorsFunctions.get(o).Invoke(value1, value2);
 
             if(output.GetType() == typeof(double)) { // double
                 outV.doubleValue    = output;
@@ -225,7 +226,7 @@ namespace Ex{
 
         public static void apply_function(DecimalValue d, DecimalValue outV, ConnectorsFunctions.TrigonometryFunction t) {
 
-            var output = ExVR.Functions().get(t).Invoke(d.to_double());
+            var output = ConnectorsFunctions.get(t).Invoke(d.to_double());
             outV.doubleValue    = output;
             outV.boolValue      = null;
             outV.intValue       = null;

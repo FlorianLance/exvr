@@ -59,7 +59,7 @@ constexpr int test(){
 int main(int argc, char *argv[]){
 
     // build parameters
-    const QString numVersion = "0.99z49";
+    const QString numVersion = "0.99z50";
     bool lncoComponents = true;
 
     // compiler check
