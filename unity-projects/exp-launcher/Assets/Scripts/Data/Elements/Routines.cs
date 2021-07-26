@@ -152,6 +152,12 @@ namespace Ex{
             m_currentRoutine = null;
         }
 
+        public void stop_experiment() {
+            foreach (var routine in m_routines) {
+                routine.stop_experiment();
+            }
+        }
+
         public void clean() {
             foreach (var routine in m_routines) {
                 routine.clean();

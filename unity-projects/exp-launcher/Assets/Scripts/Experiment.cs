@@ -464,7 +464,8 @@ namespace Ex{
             // display info of last current routine
             routines.display_last_info();
             // disable all routines
-            routines.disable();            
+            routines.disable();
+            routines.stop_experiment();
             // disable all ISIs
             ISIs.disable();
 

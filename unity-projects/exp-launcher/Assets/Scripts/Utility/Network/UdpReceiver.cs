@@ -30,12 +30,12 @@ namespace Ex {
 
         public ReaderWriterLock rwl = new ReaderWriterLock();
         public Queue queue = new Queue();
-        public bool messageReceived = false;
 
-        //private int m_readSizeBuffer = -1;
-        //public void set_buffer_size_to_read(int readSizeBuffer) {
-        //    m_readSizeBuffer = readSizeBuffer;
-        //}
+        private int m_readSizeBuffer = -1;
+        public void reset_buffer_size_to_read(int readSizeBuffer) {
+            m_readSizeBuffer = readSizeBuffer;
+            buffer = new byte[readSizeBuffer];
+        }
 
         public bool initialize(int port, IPAddress ipAddress, int timeoutMs = 10) {
 
@@ -58,23 +58,29 @@ namespace Ex {
                 return;
             }
 
-            rwl.AcquireWriterLock(1000);
-            if (readingEnabled) {
-                if (readingState) {
-                    // do nothing
+            try {
+                rwl.AcquireWriterLock(1000);
+                if (readingEnabled) {
+                    if (readingState) {
+                        // do nothing
+                    } else {
+                        stop(); // stop thread
+                        readingEnabled = false;
+                    }
                 } else {
-                    stop(); // stop thread
-                    readingEnabled = false;
+                    if (!readingState) {
+                        // do nothing
+                    } else {
+                        readingEnabled = true;
+                        start(); // start thread
+                    }
                 }
-            } else {
-                if (!readingState) {
-                    // do nothing
-                } else {
-                    readingEnabled = true;
-                    start(); // start thread
-                }
+            } catch (ApplicationException e) {
+                // timeout
+                UnityEngine.Debug.LogError(string.Format("Set reading state locker error: {0}", e.Message));
+            } finally {
+                rwl.ReleaseWriterLock();
             }
-            rwl.ReleaseWriterLock();
         }
 
         public string read_message() {
@@ -86,15 +92,13 @@ namespace Ex {
 
             try {
                 rwl.AcquireWriterLock(5);
-                try {
-                    if (queue.Count > 0) {
-                        message = (string)queue.Dequeue();
-                    }
-                } finally {
-                    rwl.ReleaseWriterLock();
+                if (queue.Count > 0) {
+                    message = (string)queue.Dequeue();
                 }
             } catch (ApplicationException) {
                 // timeout
+            } finally {
+                rwl.ReleaseWriterLock();
             }
 
             return message;
@@ -109,18 +113,18 @@ namespace Ex {
             List<string> messages = null;
             try {
                 rwl.AcquireWriterLock(5);
-                try {
-                    var queueA = queue.ToArray();
-                    messages = new List<string>(queueA.Length);
-                    foreach (var message in queueA) {
-                        messages.Add((string)message);
-                    }
-                    queue.Clear();
-                } finally {
-                    rwl.ReleaseWriterLock();
+
+                var queueA = queue.ToArray();
+                messages = new List<string>(queueA.Length);
+                foreach (var message in queueA) {
+                    messages.Add((string)message);
                 }
+                queue.Clear();
+
             } catch (ApplicationException) {
                 // timeout
+            } finally {
+                rwl.ReleaseWriterLock();
             }
 
             if (messages == null) {
@@ -135,103 +139,86 @@ namespace Ex {
             readingEnabled = false;
             stop();
 
-            rwl.AcquireWriterLock(300);
-            if (clientSocket != null) {
-                //try {
-                //    clientSocket.Shutdown(SocketShutdown.Both);
-                //} finally {
-                //    clientSocket.Close();
-                //}
-                clientSocket.Close();
-                clientSocket.Dispose();
-                clientSocket = null;
-                clientIpEndPoint = null;
-                initialized = false;
-                messageReceived = false;
-                queue.Clear();
+            try { 
+                rwl.AcquireWriterLock(300);
+
+                if (clientSocket != null) {
+                    clientSocket.Close();
+                    clientSocket.Dispose();
+                    clientSocket = null;
+                    clientIpEndPoint = null;
+                    initialized = false;
+                    queue.Clear();
+                }
+
+            } catch (ApplicationException e) {
+                // timeout
+                UnityEngine.Debug.LogError(string.Format("Clean locker error: {0}", e.Message));
+            } finally {
+                rwl.ReleaseWriterLock();
             }
-            rwl.ReleaseWriterLock();
         }
 
         protected override void OnFinished() { }
-
-
-        //private void read_specific_size_buffer_loop() {
-
-        //    while (readingEnabled) {
-
-        //        // Receive a message 
-        //        int count;
-        //        try {
-        //            count = clientSocket.Receive(buffer, 0, m_readSizeBuffer, SocketFlags.None);
-        //        } catch (SocketException e) {
-        //            if (e.SocketErrorCode != SocketError.TimedOut) {
-        //                UnityEngine.Debug.LogError(string.Format("Receive socket error: {0}", e.Message));
-        //            }
-        //            continue;
-        //        }
-
-        //        if (readingEnabled) {
-        //            try {
-        //                rwl.AcquireWriterLock(1000);
-        //                try {
-        //                    queue.Enqueue(Encoding.UTF8.GetString(buffer, 0, count));
-        //                    messageReceived = true;
-        //                } finally {
-        //                    rwl.ReleaseWriterLock();
-        //                }
-        //            } catch (ApplicationException) {
-        //                // timeout
-        //            }
-        //        }
-
-        //        // Sleep while we wait for a message
-        //        while (!messageReceived) {
-        //            Thread.Sleep(5);
-        //        }
-        //        messageReceived = false;
-        //    }
-        //}
 
         protected override void ThreadFunction() {
 
             byte[] endByte = Encoding.ASCII.GetBytes(new char[] { '\0' });
             while (readingEnabled) {
 
-                // Receive a message 
-                int count;
-                try {
-                    count = clientSocket.Receive(buffer);
+                // receive a message 
+                bool messageReceived = false;
+                int count = 0;
+                try {                    
+                    if (m_readSizeBuffer == -1) {
+                        count = clientSocket.Receive(buffer);
+                    } else {                        
+                        count = clientSocket.Receive(buffer, 0, m_readSizeBuffer, SocketFlags.None);
+                    }
+                    messageReceived = true;
+                } catch (SocketException e) {
+                    if (e.SocketErrorCode != SocketError.TimedOut) {
+                        UnityEngine.Debug.LogError(string.Format("Receive socket error: {0}", e.Message));
+                    } else {
+                        // timeout
+                    }
+                } catch (ArgumentNullException e) {
+                    UnityEngine.Debug.LogError(string.Format("Receive argument null error: {0}", e.Message));
+                } catch (ArgumentOutOfRangeException e) {
+                    UnityEngine.Debug.LogError(string.Format("Receive argument out of range error: {0}", e.Message));
+                } catch (ObjectDisposedException e) {
+                    UnityEngine.Debug.LogError(string.Format("Receive object disposed error: {0}", e.Message));
+                } catch (System.Security.SecurityException e) {
+                    UnityEngine.Debug.LogError(string.Format("Receive security error: {0}", e.Message));
+                } catch(Exception e) {
+                    UnityEngine.Debug.LogError(string.Format("Receive error: {0}", e.Message));
+                }
+
+                if (messageReceived) {
+
                     int endId = Array.IndexOf(buffer, endByte[0]);
                     if (endId < count) {
                         count = endId;
                     }
-                } catch (SocketException e) {
-                    if (e.SocketErrorCode != SocketError.TimedOut) {
-                        UnityEngine.Debug.LogError(string.Format("Receive socket error: {0}", e.Message));
-                    }
-                    continue;
-                }
 
-                if (readingEnabled) {
-                    try {
-                        rwl.AcquireWriterLock(1000);
+                    if (readingEnabled) {
                         try {
+                            rwl.AcquireWriterLock(10);
+                            UnityEngine.Debug.LogError("queue " + Encoding.UTF8.GetString(buffer, 0, count));
                             queue.Enqueue(Encoding.UTF8.GetString(buffer, 0, count));
-                            messageReceived = true;
+                        } catch (DecoderFallbackException e) {
+                            UnityEngine.Debug.LogError(string.Format("GetString decoder error: {0}", e.Message));
+                        } catch (ArgumentException e) {
+                            UnityEngine.Debug.LogError(string.Format("GetString argument error: {0}", e.Message));
+                        } catch (ApplicationException e) {
+                            UnityEngine.Debug.LogError(string.Format("Writer lock error: {0}", e.Message));
                         } finally {
                             rwl.ReleaseWriterLock();
                         }
-                    } catch (ApplicationException) {
-                        // timeout
                     }
+                } else {
+                    Thread.Sleep(5);
                 }
-
-                // Sleep while we wait for a message
-                //while (!messageReceived) {
-                //    Thread.Sleep(5);
-                //}
-                messageReceived = false;
             }
         }
     }

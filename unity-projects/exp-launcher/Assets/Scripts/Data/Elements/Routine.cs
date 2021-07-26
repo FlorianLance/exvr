@@ -52,6 +52,7 @@ namespace Ex{
         private Condition m_currentCondition = null;
         private Stopwatch m_startTimer = new Stopwatch();
         private Stopwatch m_stopTimer = new Stopwatch();
+        public int nbTimesCalled = 0;
 
         public List<Condition> get_conditions() {
             return m_conditions;
@@ -81,7 +82,7 @@ namespace Ex{
 
             m_key    = routine.Key;
             m_keyStr = Converter.to_string(routine.Key);
-            m_type  = FlowElementType.Routine;
+            m_type  = FlowElementType.Routine;            
 
             // generate conditions
             m_conditions = new List<Condition>(routine.Conditions.Count);
@@ -112,6 +113,10 @@ namespace Ex{
             start();            
         }
 
+        public void stop_experiment() {
+            nbTimesCalled = 0;
+        }
+
         public void disable() {
 
             if (!gameObject.activeSelf) { // already disabled, do nothing
@@ -134,9 +139,10 @@ namespace Ex{
                 ExVR.Components().start_routine(m_currentCondition);
                 ExVR.Components().post_start_routine(m_currentCondition);
                 m_currentCondition.connectors_start_routine();
+                nbTimesCalled++;
             }
             m_startTimer.Stop();
-            ExVR.ExpLog().routine(name, current_condition().name, "Associated components started in " + m_startTimer.ElapsedMilliseconds + "ms");
+            ExVR.ExpLog().routine(name, current_condition().name, "Associated components started in " + m_startTimer.ElapsedMilliseconds + "ms");            
         }
 
         private void stop() {
@@ -146,7 +152,7 @@ namespace Ex{
             {
                 m_currentCondition.connectors_stop_routine();
                 ExVR.Components().stop_routine(m_currentCondition);
-                m_currentCondition.remove_connections();
+                m_currentCondition.remove_connections();                
             }
 
             m_stopTimer.Stop();

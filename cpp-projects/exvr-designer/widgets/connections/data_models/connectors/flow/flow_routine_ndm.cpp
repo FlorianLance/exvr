@@ -20,8 +20,10 @@ QString StartRoutineNodeDataModel::portCaption(QtNodes::PortType t, QtNodes::Por
     auto c = ConnectorNodeDataModel::portCaption(t,i);
     if(i == 0){
         return QSL("routine (") % c % QSL(")");
-    }else{
+    }else if(i == 1){
         return QSL("condition (") % c % QSL(")");
+    }else{
+        return QSL("nb times called (") % c % QSL(")");
     }
 }
 
