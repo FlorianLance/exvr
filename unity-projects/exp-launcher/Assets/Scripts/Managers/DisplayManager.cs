@@ -97,7 +97,7 @@ namespace Ex{
 
             if (steamVR == null) {
                 steamVR = new GameObject("[SteamVR]");
-                steamVR.transform.parent = GetComponent<CamerasManager>().get_camera_rig();
+                steamVR.transform.parent = GetComponent<CamerasManager>().get_camera_rig_transform();
                 steamVR.SetActive(false);
                 render = steamVR.AddComponent<SteamVR_Render>();
                 behaviour = steamVR.AddComponent<SteamVR_Behaviour>();

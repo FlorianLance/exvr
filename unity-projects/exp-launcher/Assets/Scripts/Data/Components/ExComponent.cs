@@ -395,13 +395,10 @@ namespace Ex{
             tag = string.Format("{0}Component", category.ToString());
 
             // set parent
-            log_message("category " + category.ToString());
             if(Components.Category2Transform.ContainsKey(category)){
                 var name = Components.Category2Transform[category];
                 var categoryTr = Ex.ExVR.Components().transform.Find(name);
-                log_message("name " + name);
                 if (categoryTr == null) {
-                    log_message("add new go" + name);
                     GameObject categoryGO = new GameObject(name);
                     categoryGO.transform.SetParent(Ex.ExVR.Components().transform);
                     categoryTr = categoryGO.transform;
@@ -411,13 +408,6 @@ namespace Ex{
             } else {
                 log_error(string.Format("GameObject type {0} is not available in components hierarchy.", category.ToString()));
             }
-
-
-            //if (Ex.ExVR.Components().Category2Transform.ContainsKey(category)) {
-            //    transform.SetParent(Ex.ExVR.Components().Category2Transform[category]);
-            //} else {
-            //    log_error( string.Format("GameObject type {0} is not available in components hierarchy.", category.ToString()));
-            //}
 
             var parentConfigs = new GameObject("Configs");            
             parentConfigs.transform.SetParent(transform);

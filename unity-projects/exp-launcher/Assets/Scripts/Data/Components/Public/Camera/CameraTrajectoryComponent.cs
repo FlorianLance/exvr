@@ -170,8 +170,8 @@ namespace Ex{
             if (target.id != lastTarget) {
                 // new target
                 lastTarget = target.id;                
-                originPosition = ExVR.Display().cameras().get_camera_rig().position;
-                originRotation = ExVR.Display().cameras().get_camera_rig().rotation;
+                originPosition = ExVR.Display().cameras().get_camera_rig_transform().position;
+                originRotation = ExVR.Display().cameras().get_camera_rig_transform().rotation;
                 currentT = timeS;
             }
 
@@ -200,8 +200,8 @@ namespace Ex{
             var targetRotation = camGO.transform.rotation;// Quaternion.Euler(new Vector3(target.rotation.x, target.rotation.y, target.rotation.z));
 
             // compute origin position/rotation target interpolation
-            ExVR.Display().cameras().get_camera_rig().rotation = interpolate(originRotation, targetRotation * eyeToOriginRot, speedT, target.sphericInterpolation);
-            ExVR.Display().cameras().get_camera_rig().position = interpolate(originPosition, targetPosition - (ExVR.Display().cameras().get_camera_rig().rotation * eyeLocalPosition), speedT, target.sphericInterpolation);
+            ExVR.Display().cameras().get_camera_rig_transform().rotation = interpolate(originRotation, targetRotation * eyeToOriginRot, speedT, target.sphericInterpolation);
+            ExVR.Display().cameras().get_camera_rig_transform().position = interpolate(originPosition, targetPosition - (ExVR.Display().cameras().get_camera_rig_transform().rotation * eyeLocalPosition), speedT, target.sphericInterpolation);
         }
 
         protected override void stop_routine() {

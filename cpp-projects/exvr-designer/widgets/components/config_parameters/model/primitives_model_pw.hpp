@@ -277,13 +277,16 @@ class LandmarkConfigParametersW : public ConfigParametersW{
 public :
 
     DefaultTransformSubPart m_transfo;
+    ExSelectColorW m_color;
 
     void insert_widgets() override{
         add_sub_part_widget(m_transfo);
+        add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Color: "),m_color()}, LStretch{true}, LMargins{true}));
     }
 
     void init_and_register_widgets() override{
         map_sub_part(m_transfo.init_widget());
+        m_inputUiElements["color"] = m_color.init_widget("Color", Qt::gray);
     }
 
     void create_connections() override{}

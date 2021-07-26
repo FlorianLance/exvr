@@ -12,6 +12,7 @@ namespace Ex {
     public class LandmarkComponent : ExComponent {
 
         private GameObject landmarkGO = null;
+        private Material centerMaterial = null;
 
         protected override bool initialize() {
 
@@ -34,6 +35,8 @@ namespace Ex {
             landmarkGO.transform.SetParent(transform);
             landmarkGO.SetActive(false);
 
+            centerMaterial = landmarkGO.transform.Find("top").Find("center").GetComponent<MeshRenderer>().material;
+
             return true;
         }
 
@@ -49,6 +52,8 @@ namespace Ex {
             if (!currentC.get<bool>("transform_do_not_apply")) {
                 currentC.update_transform("transform", transform, true);
             }
+
+            centerMaterial.SetColor("_Color", currentC.get_color("color"));
         }
 
         protected override void set_visibility(bool visibility) {

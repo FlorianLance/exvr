@@ -140,12 +140,12 @@ namespace Ex{
             log_message(string.Format("time: {0} duration {1} speedFactor {2}", time, duration, speedFactor));
 
             // move camera
-            ExVR.Display().cameras().set_start_experiment_neutral_transform_by_modifying_camera_rig_transform(
+            ExVR.Display().cameras().set_calibration_transform_by_modifying_camera_rig(
                 targetPosition, targetRotation
             );
 
             // update lines 
-            var currTr = ExVR.Display().cameras().get_start_experiment_neutral_transform();
+            var currTr = ExVR.Display().cameras().get_calibration_transform();
             linePosRenderer.positionCount++;
             linePosRenderer.SetPosition(linePosRenderer.positionCount - 1, currTr.position);
 

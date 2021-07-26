@@ -105,13 +105,13 @@ namespace Ex{
             var subLandmark = generate_empty_object(name, landmark.transform, true);
             init_local_transform(subLandmark, new Vector3(0, 0, 0), new Vector3(0, 0, 0), new Vector3(0.3f, 0.3f, 0.3f));
             subLandmark.name = "top";
-            var sphere      = init_local_scaling(generate_scene_object("center", coTypes, subLandmark.transform, true), new Vector3(0.5f, 0.5f, 0.5f));
+            var center      = init_local_scaling(generate_scene_object("center", coTypes, subLandmark.transform, true), new Vector3(0.5f, 0.5f, 0.5f));
             var xAxis       = init_local_scaling(generate_scene_object("x", coTypes, subLandmark.transform, true), new Vector3(10f, 1f, 1f));
             var yAxis       = init_local_scaling(generate_scene_object("y", coTypes, subLandmark.transform, true), new Vector3(1f, 10f, 1f));
             var zAxis       = init_local_scaling(generate_scene_object("z", coTypes, subLandmark.transform, true), new Vector3(1f, 1f,  10f));
             
-            var sphereMat = ExVR.GlobalResources().instantiate_default_mat();
-            sphereMat.color = (color == null) ? Color.white : color.Value;
+            var centerMat = ExVR.GlobalResources().instantiate_default_mat();
+            centerMat.color = (color == null) ? Color.white : color.Value;
             var xMat = ExVR.GlobalResources().instantiate_default_mat();
             xMat.color = Color.red;
             var yMat = ExVR.GlobalResources().instantiate_default_mat();
@@ -119,12 +119,12 @@ namespace Ex{
             var zMat = ExVR.GlobalResources().instantiate_default_mat();
             zMat.color = Color.blue;
 
-            sphere.GetComponent<MeshRenderer>().material = sphereMat;
+            center.GetComponent<MeshRenderer>().material = centerMat;
             xAxis.GetComponent<MeshRenderer>().material = xMat;
             yAxis.GetComponent<MeshRenderer>().material = yMat;
             zAxis.GetComponent<MeshRenderer>().material = zMat;
 
-            sphere.GetComponent<MeshFilter>().mesh = PrimitivesMesh.SphereBuilder.generate(0.05f);
+            center.GetComponent<MeshFilter>().mesh = PrimitivesMesh.CubeBuilder.generate(0.1f);
 
             var cubeM = PrimitivesMesh.CubeBuilder.generate(0.025f);
             xAxis.GetComponent<MeshFilter>().mesh       = cubeM;

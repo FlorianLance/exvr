@@ -92,7 +92,7 @@ namespace Ex{
 
                         var rotOffset = currentC.get_vector3("target_rot");
                         targetEuler =
-                            (CameraUtility.start_neutral_camera_rotation() *
+                            (CameraUtility.calibration_rotation() *
                             Quaternion.AngleAxis(rotOffset.x, CameraUtility.eye_camera_right()) *
                             Quaternion.AngleAxis(rotOffset.y, CameraUtility.eye_camera_up()) *
                             Quaternion.AngleAxis(rotOffset.z, CameraUtility.eye_camera_forward())).eulerAngles;
@@ -108,7 +108,7 @@ namespace Ex{
                 }
 
                 // remove inused axies from rotation
-                var o = CameraUtility.start_neutral_camera_rotation().eulerAngles;
+                var o = CameraUtility.calibration_rotation().eulerAngles;
                 var targetRotation = Quaternion.Euler(new Vector3(
                     pitch ? targetEuler.x : o.x,
                     yaw   ? targetEuler.y : o.y,
@@ -124,8 +124,8 @@ namespace Ex{
 
                     // move
                     bool sphericalInterpolation = currentC.get<bool>("spherical_linear_interpolation");
-                    var originPosition = CameraUtility.start_neutral_camera_position();// + movementOffset;
-                    var originRotation = CameraUtility.start_neutral_camera_rotation();
+                    var originPosition = CameraUtility.calibration_position();// + movementOffset;
+                    var originRotation = CameraUtility.calibration_rotation();
                     for (int ii = 0; ii < nbInterpolations; ++ii) {
                         float factor = 1f * ii / (nbInterpolations - 1);
                         positions.Add(Interpolate.vector(originPosition, targetPosition, factor, sphericalInterpolation));
@@ -180,7 +180,7 @@ namespace Ex{
 
             if(doLoop == false) {
                 if (neutral) {
-                    CameraUtility.set_start_experiment_neutral_transform(targetPosition + movementOffset, targetRotation);
+                    CameraUtility.set_calibration_transform(targetPosition + movementOffset, targetRotation);
                 } else {
                     CameraUtility.set_eye_camera_transform(targetPosition + movementOffset, targetRotation);
                 }
@@ -202,7 +202,7 @@ namespace Ex{
                 }
 
                 if (neutral) {
-                    CameraUtility.set_start_experiment_neutral_transform(targetPosition + movementOffset, targetRotation);
+                    CameraUtility.set_calibration_transform(targetPosition + movementOffset, targetRotation);
                 } else {
                     CameraUtility.set_eye_camera_transform(targetPosition + movementOffset, targetRotation);
                 }
@@ -260,7 +260,7 @@ namespace Ex{
                 }
 
                 if (neutral) {
-                    CameraUtility.set_start_experiment_neutral_transform(pos + movementOffset, rot);
+                    CameraUtility.set_calibration_transform(pos + movementOffset, rot);
                 } else {
                     CameraUtility.set_eye_camera_transform(pos + movementOffset, rot);
                 }
@@ -305,7 +305,7 @@ namespace Ex{
                 var pos = previousTrajectory.get_position(1f-speedT);
                 var rot = previousTrajectory.get_rotation(1f-speedT);
                 if (neutral) {
-                    CameraUtility.set_start_experiment_neutral_transform(pos + movementOffset, rot);
+                    CameraUtility.set_calibration_transform(pos + movementOffset, rot);
                 } else {
                     CameraUtility.set_eye_camera_transform(pos + movementOffset, rot);
                 }

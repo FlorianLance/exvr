@@ -21,11 +21,11 @@ namespace Ex{
         public Camera leftEyeStereoCamera = null;
         public Camera rightEyeStereoCamera = null;
         // transforms
-        public Transform startExperimentNeutral = null;
+        public Transform calibration = null;
         public Transform eyeCameraRelative = null;
 
-        private Vector3 initStartExperimentNeutralPosition = Vector3.zero;
-        private Quaternion initStartExperimentNeutralRotation = Quaternion.identity;
+        private Vector3 startExperimentCalibrationPosition = Vector3.zero;
+        private Quaternion startExperimentCalibrationRotation = Quaternion.identity;
 
         public void reset() {
 
@@ -36,29 +36,20 @@ namespace Ex{
             // reset camera rig
             set_camera_rig_transform(Vector3.zero, Quaternion.identity);
 
-            // store neutral eye camera direction
-            startExperimentNeutral.localPosition = bothEyesCamera.transform.localPosition;
+            // reset calibration
+            reset_calibration_from_eye_camera();
 
-            //Debug.LogError("ExVR.GuiSettings().useCameraXAxixAsNeutral " + ExVR.GuiSettings().useCameraXAxixAsNeutral);
-            //Debug.LogError("ExVR.GuiSettings().useCameraYAxixAsNeutral " + ExVR.GuiSettings().useCameraYAxixAsNeutral);
-            //Debug.LogError("ExVR.GuiSettings().useCameraZAxixAsNeutral " + ExVR.GuiSettings().useCameraZAxixAsNeutral);
+            // store initial calibration
+            startExperimentCalibrationPosition = calibration.localPosition;
+            startExperimentCalibrationRotation = calibration.localRotation;
 
-            var angles = bothEyesCamera.transform.localEulerAngles;
-            startExperimentNeutral.localEulerAngles = new Vector3(
-                ExVR.GuiSettings().useCameraXAxixAsNeutral ? angles.x : 0f,
-                ExVR.GuiSettings().useCameraYAxixAsNeutral ? angles.y : 0f,
-                ExVR.GuiSettings().useCameraZAxixAsNeutral ? angles.z : 0f
-            );
-
-            initStartExperimentNeutralPosition = startExperimentNeutral.localPosition;
-            initStartExperimentNeutralRotation = startExperimentNeutral.localRotation;
-
+            // update relative
             update_eye_camera_relative();
         }
 
         // transform
-        public Transform get_start_experiment_neutral_transform() {
-            return startExperimentNeutral;
+        public Transform get_calibration_transform() {
+            return calibration;
         }
 
         public Transform get_eye_camera_transform() {
@@ -69,158 +60,144 @@ namespace Ex{
             return eyeCameraRelative;
         }
 
+        public Transform get_camera_rig_transform() {
+            return cameraRig;
+        }
 
+        // camera
         public Camera get_eye_camera() {
             return bothEyesCamera;
         }
 
-        public Transform get_camera_rig() {
-            return cameraRig;
-        }
-
-        // move camera rig
-        // # move  horizontally
-        public void move_target_horizontally_by_modifying_camera_rig_transform(Transform target, float amount) {
-            get_camera_rig().position += target.right.normalized * amount;
-        }
-
-        public void move_start_neutral_camera_horizontally_by_modifying_camera_rig_transform(float amount) {
-            move_target_horizontally_by_modifying_camera_rig_transform(get_start_experiment_neutral_transform(), amount);
-        }
-
-        public void move_eye_camera_horizontally_by_modifying_camera_rig_transform(float amount) {
-            move_target_horizontally_by_modifying_camera_rig_transform(get_eye_camera_transform(), amount);
-        }
-
-        // # move  vertically
-        public void move_target_vertically_by_modifying_camera_rig_transform(Transform target, float amount) {
-            get_camera_rig().position += target.up.normalized * amount;
-        }
-
-        public void move_start_neutral_camera_vertically_by_modifying_camera_rig_transform(float amount) {
-            move_target_vertically_by_modifying_camera_rig_transform(get_eye_camera_transform(), amount);
-        }
-
-        public void move_eye_camera_vertically_by_modifying_camera_rig_transform(float amount) {
-            move_target_vertically_by_modifying_camera_rig_transform(get_start_experiment_neutral_transform(), amount);
-        }
-
-        // # move  forward
-        public void move_target_forward_by_modifying_camera_rig_transform(Transform target, float amount) {
-            get_camera_rig().position += target.forward * amount;
-        }
-
-        public void move_start_neutral_camera_forward_by_modifying_camera_rig_transform(float amount) {
-            move_target_forward_by_modifying_camera_rig_transform(get_start_experiment_neutral_transform(), amount);
-        }
-
-        public void move_eye_camera_forward_by_modifying_camera_rig_transform(float amount) {
-            move_target_forward_by_modifying_camera_rig_transform(get_eye_camera_transform(), amount);
-        }
-
-        // # move backward
-        private void move_target_backward_by_modifying_camera_rig_transform(Transform target, float amount) {
-            get_camera_rig().position -= target.forward * amount;
-        }
-
-        public void move_start_neutral_camera_backward_by_modifying_camera_rig_transform(float amount) {
-            move_target_backward_by_modifying_camera_rig_transform(get_start_experiment_neutral_transform(), amount);
-        }
-
-        public void move_eye_camera_backward_by_modifying_camera_rig_transform(float amount) {
-            move_target_backward_by_modifying_camera_rig_transform(get_eye_camera_transform(), amount);
-        }
-
-        // # translate 
-
-        public void translate_start_neutral_camera_referential_by_modifying_camera_rig_transform(Vector3 vector) {
-            move_start_neutral_camera_forward_by_modifying_camera_rig_transform(vector.x);
-            move_start_neutral_camera_vertically_by_modifying_camera_rig_transform(vector.y);
-            move_start_neutral_camera_horizontally_by_modifying_camera_rig_transform(vector.z);
-        }
-
-        public void translate_eye_camera_referential_by_modifying_camera_rig_transform(Vector3 vector) {
-            move_eye_camera_forward_by_modifying_camera_rig_transform(vector.x);
-            move_eye_camera_vertically_by_modifying_camera_rig_transform(vector.y);
-            move_eye_camera_horizontally_by_modifying_camera_rig_transform(vector.z);
-        }
-
-
-
-        // # rotate
-        private void rotate_target_by_modifying_camera_rig_transform(Transform target, Quaternion rotation) {
-
-            // !!!  use only with targets from camera rig hierarchy !!!
-            var targetWorldPosition = target.position;
-            var rig = get_camera_rig();
-            rig.rotation = (target.rotation * rotation) * Quaternion.Inverse(target.localRotation);
-            rig.position += targetWorldPosition - target.position;
-        }
-
-        public void rotate_start_neutral_camera_by_modifying_camera_rig_transform(Quaternion rotation) {
-            rotate_target_by_modifying_camera_rig_transform(get_start_experiment_neutral_transform(), rotation);
-        }
-
-        public void rotate_eye_camera_by_modifying_camera_rig_transform(Quaternion rotation) {
-            rotate_target_by_modifying_camera_rig_transform(get_eye_camera_transform(), rotation);
-        }
-
-        // # move
+        // camera rig
         public void apply_vector_to_camera_rig_position(Vector3 vector) {
-            get_camera_rig().position += vector;
+            cameraRig.position += vector;
         }
 
-        // # set 
-
-        // ## position
-        public void set_start_neutral_camera_position_by_modifying_camera_rig_transform(Vector3 worldPosition) {
-            apply_vector_to_camera_rig_position(worldPosition - get_start_experiment_neutral_transform().position);
+        public void set_camera_rig_position(Vector3 position) {
+            cameraRig.position = position;
         }
-
-        public void set_eye_camera_position_by_modifying_camera_rig_transform(Vector3 worldPosition) {
-            apply_vector_to_camera_rig_position(worldPosition - get_eye_camera_transform().position);
+        public void set_camera_rig_rotation(Quaternion rotation) {
+            cameraRig.rotation = rotation;
         }
-
-        // ## rotation
-        private void set_target_rotation_by_modifying_camera_rig_transform(Transform target, Quaternion worldRotation) {
-
-            // !!!  use only with targets from camera rig hierarchy !!!
-            var targetWorldPosition = target.position;
-            var rig = get_camera_rig();
-            rig.rotation = worldRotation * Quaternion.Inverse(target.localRotation);
-            rig.position += targetWorldPosition - target.position;
-        }
-
-        public void set_start_neutral_camera_rotation_by_modifying_camera_rig_transform(Quaternion worldRotation) {
-            set_target_rotation_by_modifying_camera_rig_transform(get_start_experiment_neutral_transform(), worldRotation);
-        }
-
-        public void set_eye_camera_rotation_by_modifying_camera_rig_transform(Quaternion worldRotation) {
-            set_target_rotation_by_modifying_camera_rig_transform(get_eye_camera_transform(), worldRotation);
-        }
-
-        // ## transform
 
         public void set_camera_rig_transform(Vector3 worldPosition, Quaternion worldRotation) {
-            var rig = get_camera_rig();
+            var rig = get_camera_rig_transform();
             rig.rotation = worldRotation;
             rig.position = worldPosition;
         }
 
-        public void set_start_experiment_neutral_transform_by_modifying_camera_rig_transform(Vector3 worldPosition, Quaternion worldRotation) {
+        // calibration
+        public void reset_calibration_from_eye_camera() {
 
-            var target = get_start_experiment_neutral_transform();
-            var rig = get_camera_rig();
-            rig.rotation = worldRotation * Quaternion.Inverse(target.localRotation);
-            rig.position += worldPosition - target.position;
+            calibration.localPosition = bothEyesCamera.transform.localPosition;
+            var angles = bothEyesCamera.transform.localEulerAngles;
+            calibration.localEulerAngles = new Vector3(
+                ExVR.GuiSettings().useCameraXAxixAsNeutral ? angles.x : 0f,
+                ExVR.GuiSettings().useCameraYAxixAsNeutral ? angles.y : 0f,
+                ExVR.GuiSettings().useCameraZAxixAsNeutral ? angles.z : 0f
+            );
         }
 
+        public void restore_start_experiment_calibration() {
+            set_camera_rig_transform(Vector3.zero, Quaternion.identity);
+            calibration.localPosition = startExperimentCalibrationPosition;
+            calibration.localRotation = startExperimentCalibrationRotation;
+        }
 
-        public void set_eye_camera_transform_by_modifying_camera_rig_transform(Vector3 worldPosition, Quaternion worldRotation) {
+        // move/rotate/set target
+        public void move_target_horizontally_by_modifying_camera_rig(Transform target, float amount) {
+            apply_vector_to_camera_rig_position(target.right.normalized * amount);
+        }
+        public void move_target_vertically_by_modifying_camera_rig(Transform target, float amount) {
+            apply_vector_to_camera_rig_position(target.up.normalized * amount);
+        }
+        public void move_target_forward_by_modifying_camera_rig(Transform target, float amount) {
+            apply_vector_to_camera_rig_position(target.forward * amount);
+        }
+        private void move_target_backward_by_modifying_camera_rig(Transform target, float amount) {
+            apply_vector_to_camera_rig_position(-target.forward * amount);
+        }
+        private void rotate_target_by_modifying_camera_rig(Transform target, Quaternion rotation) {
+
+            // !!!  use only with targets from camera rig hierarchy !!!
+            var targetWorldPosition = target.position;
+            set_camera_rig_rotation((target.rotation * rotation) * Quaternion.Inverse(target.localRotation));
+            apply_vector_to_camera_rig_position(targetWorldPosition - target.position);
+        }
+        private void set_target_rotation_by_modifying_camera_rig(Transform target, Quaternion worldRotation) {
+
+            // !!!  use only with targets from camera rig hierarchy !!!
+            var targetWorldPosition = target.position;
+            set_camera_rig_rotation(worldRotation* Quaternion.Inverse(target.localRotation));
+            apply_vector_to_camera_rig_position(targetWorldPosition - target.position);
+        }
+
+        // move/rotate/set calibration
+        public void move_calibration_horizontally_by_modifying_camera_rig(float amount) {
+            move_target_horizontally_by_modifying_camera_rig(get_calibration_transform(), amount);
+        }
+        public void move_calibration_vertically_by_modifying_camera_rig(float amount) {
+            move_target_vertically_by_modifying_camera_rig(get_eye_camera_transform(), amount);
+        }
+        public void move_calibration_forward_by_modifying_camera_rig(float amount) {
+            move_target_forward_by_modifying_camera_rig(get_calibration_transform(), amount);
+        }
+        public void move_eye_camera_horizontally_by_modifying_camera_rig(float amount) {
+            move_target_horizontally_by_modifying_camera_rig(get_eye_camera_transform(), amount);
+        }
+        public void move_calibration_backward_by_modifying_camera_rig(float amount) {
+            move_target_backward_by_modifying_camera_rig(get_calibration_transform(), amount);
+        }
+        public void translate_calibration_referential_by_modifying_camera_rig(Vector3 vector) {
+            move_calibration_forward_by_modifying_camera_rig(vector.x);
+            move_calibration_vertically_by_modifying_camera_rig(vector.y);
+            move_calibration_horizontally_by_modifying_camera_rig(vector.z);
+        }
+        public void rotate_calibration_by_modifying_camera_rig(Quaternion rotation) {
+            rotate_target_by_modifying_camera_rig(get_calibration_transform(), rotation);
+        }
+        public void set_calibration_position_by_modifying_camera_rig(Vector3 worldPosition) {
+            apply_vector_to_camera_rig_position(worldPosition - get_calibration_transform().position);
+        }
+        public void set_calibration_rotation_by_modifying_camera_rig(Quaternion worldRotation) {
+            set_target_rotation_by_modifying_camera_rig(get_calibration_transform(), worldRotation);
+        }
+        public void set_calibration_transform_by_modifying_camera_rig(Vector3 worldPosition, Quaternion worldRotation) {
+
+            var target = get_calibration_transform();
+            set_camera_rig_rotation(worldRotation* Quaternion.Inverse(target.localRotation));
+            apply_vector_to_camera_rig_position(worldPosition - target.position);
+        }
+
+        // move/rotate/set eye camera
+        public void move_eye_camera_vertically_by_modifying_camera_rig(float amount) {
+            move_target_vertically_by_modifying_camera_rig(get_calibration_transform(), amount);
+        }
+        public void move_eye_camera_forward_by_modifying_camera_rig(float amount) {
+            move_target_forward_by_modifying_camera_rig(get_eye_camera_transform(), amount);
+        }
+        public void move_eye_camera_backward_by_modifying_camera_rig(float amount) {
+            move_target_backward_by_modifying_camera_rig(get_eye_camera_transform(), amount);
+        }
+        public void translate_eye_camera_referential_by_modifying_camera_rig(Vector3 vector) {
+            move_eye_camera_forward_by_modifying_camera_rig(vector.x);
+            move_eye_camera_vertically_by_modifying_camera_rig(vector.y);
+            move_eye_camera_horizontally_by_modifying_camera_rig(vector.z);
+        }
+        public void rotate_eye_camera_by_modifying_camera_rig(Quaternion rotation) {
+            rotate_target_by_modifying_camera_rig(get_eye_camera_transform(), rotation);
+        }
+        public void set_eye_camera_position_by_modifying_camera_rig(Vector3 worldPosition) {
+            apply_vector_to_camera_rig_position(worldPosition - get_eye_camera_transform().position);
+        }
+        public void set_eye_camera_rotation_by_modifying_camera_rig(Quaternion worldRotation) {
+            set_target_rotation_by_modifying_camera_rig(get_eye_camera_transform(), worldRotation);
+        }
+        public void set_eye_camera_transform_by_modifying_camera_rig(Vector3 worldPosition, Quaternion worldRotation) {
             var target = get_eye_camera_transform();
-            var rig = get_camera_rig();
-            rig.rotation = worldRotation * Quaternion.Inverse(target.localRotation);
-            rig.position += worldPosition - target.position;
+            set_camera_rig_rotation(worldRotation* Quaternion.Inverse(target.localRotation));
+            apply_vector_to_camera_rig_position(worldPosition - target.position);
         }
 
         // screen
@@ -232,8 +209,8 @@ namespace Ex{
         private void update_eye_camera_relative() {
             if (eyeCameraRelative != null) {
                 var tr = get_eye_camera_transform();
-                eyeCameraRelative.localPosition    = tr.localPosition - startExperimentNeutral.localPosition;
-                eyeCameraRelative.localEulerAngles = tr.localEulerAngles - startExperimentNeutral.localEulerAngles;
+                eyeCameraRelative.localPosition    = tr.localPosition - calibration.localPosition;
+                eyeCameraRelative.localEulerAngles = tr.localEulerAngles - calibration.localEulerAngles;
             }
         }
         public void Update() {
