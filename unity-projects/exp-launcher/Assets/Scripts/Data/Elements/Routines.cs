@@ -72,6 +72,30 @@ namespace Ex{
             }
         }
 
+        public void display_last_info() {
+
+            // display last routine info
+            StringBuilder builder = new StringBuilder();
+            builder.Append(" [DISABLE] -> ");
+            if (m_currentRoutine != null) {
+                builder.AppendFormat(" last routine [{0}]", m_currentRoutine.name);
+                var currentCond = m_currentRoutine.current_condition();
+                if (currentCond != null) {
+                    builder.AppendFormat(" with condition [{0}]", currentCond.name);
+                    if (currentCond.currentConnector != null) {
+                        builder.AppendFormat(" with last connector [{0}] and function [{1}]", currentCond.currentConnector.name, currentCond.currentConnector.currentFunction.ToString());
+                    } else {
+                        builder.Append(" and no last connector");
+                    }
+                } else {
+                    builder.Append(" with no condition");
+                }
+            } else {
+                builder.Append(" no last routine");
+            }
+            ExVR.ExpLog().routine_manager(builder.ToString());
+        }
+
         public void trigger_update_signals(RoutineInfo info) {
 
             Routine routine = get(info.key());
@@ -111,54 +135,83 @@ namespace Ex{
             return null;
         }
 
-        public void enable(RoutineInfo info) {
+        //public void start_experiment() {
+
+        //}
+
+
+
+        public void start_routine(RoutineInfo info) {
+
+            // set current routine
             m_currentRoutine = (Routine)info.element;
             ExVR.ExpLog().routine_manager(info);
-            ExVR.ExpLog().push_to_strackTrace(new RoutinesManagerTrace(m_currentRoutine, "enable", true));
-            m_currentRoutine.enable(info.condition);
-            ExVR.ExpLog().push_to_strackTrace(new RoutinesManagerTrace(m_currentRoutine, "enable", false));
+
+            // start it
+            ExVR.ExpLog().push_to_strackTrace(new RoutinesManagerTrace(m_currentRoutine, "Start", true));
+            m_currentRoutine.start(info.condition);
+            ExVR.ExpLog().push_to_strackTrace(new RoutinesManagerTrace(m_currentRoutine, "Started", false));
         }
 
-        public void display_last_info() {
-
-            // display last routine info
-            StringBuilder builder = new StringBuilder();
-            builder.Append(" [DISABLE] -> ");
+        public void on_gui() {
             if (m_currentRoutine != null) {
-                builder.AppendFormat(" last routine [{0}]", m_currentRoutine.name);
-                var currentCond = m_currentRoutine.current_condition();
-                if (currentCond != null) {
-                    builder.AppendFormat(" with condition [{0}]", currentCond.name);
-                    if (currentCond.currentConnector != null) {
-                        builder.AppendFormat(" with last connector [{0}] and function [{1}]", currentCond.currentConnector.name, currentCond.currentConnector.currentFunction.ToString());
-                    } else {
-                        builder.Append(" and no last connector");
-                    }
-                } else {
-                    builder.Append(" with no condition");
-                }
-            } else {
-                builder.Append(" no last routine");
+                m_currentRoutine.on_gui();
             }
-            ExVR.ExpLog().routine_manager(builder.ToString());
         }
 
-        public void disable() {
-
-            // disable routines            
-            foreach (var routine in m_routines) {
-                routine.disable();
+        public void update_current_routine() {
+            if (m_currentRoutine != null) {
+                m_currentRoutine.update();
             }
-            m_currentRoutine = null;
+        }
+
+        public void play() {
+            if (m_currentRoutine != null) {
+                m_currentRoutine.play();
+            }
+        }
+
+        public void pause() {
+            if (m_currentRoutine != null) {
+                m_currentRoutine.pause();
+            }
+        }
+
+        public void stop_current_routine() {
+            if(m_currentRoutine != null) {
+                ExVR.ExpLog().push_to_strackTrace(new RoutinesManagerTrace(m_currentRoutine, "Stop", true));
+                m_currentRoutine.stop();
+                ExVR.ExpLog().push_to_strackTrace(new RoutinesManagerTrace(m_currentRoutine, "Stopped", false));
+                m_currentRoutine = null;
+            }
+        }
+
+        public void start_experiment() {
+
+            ExVR.Components().start_experiment();
         }
 
         public void stop_experiment() {
+
+            ExVR.Components().disable();
+
+            // display info of last current routine
+            display_last_info();
+            stop_current_routine();
+
             foreach (var routine in m_routines) {
                 routine.stop_experiment();
             }
+
+            // call stop experiment function for all components
+            ExVR.Components().stop_experiment();
         }
 
         public void clean() {
+
+            // destroy components
+            ExVR.Components().clean();
+
             foreach (var routine in m_routines) {
                 routine.clean();
                 Destroy(routine.gameObject);

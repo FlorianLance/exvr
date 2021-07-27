@@ -169,7 +169,7 @@ void DesignerWindow::update_main_ui(Experiment *experiment){
 
     const auto expLauncherState = experiment->states.explauncherState;
     const auto expState = experiment->states.expState;
-    QString expStateDescription = from_view(get_description(experiment->states.expState));
+    QString expStateDescription = from_view(get_description(expState));
 
     bool canStartLauncher = false;
     bool canExitLauncher  = false;
@@ -224,15 +224,19 @@ void DesignerWindow::update_main_ui(Experiment *experiment){
 
             if(expState == ExpState::Paused || expState == ExpState::Running){
 
+                auto nbCallsSplit = experiment->states.nbCalls.split(";");
+
+                QString n = QSL("<b>") % experiment->states.currentElementName % QSL("</b> (T: ") % nbCallsSplit[0] % QSL(")");
+
                 if(experiment->states.currentElementType == Element::Type::Routine){
-                    elementName = QSL("Routine: ")      % experiment->states.currentElementName %
-                                  QSL(" - Condition: ") % experiment->states.currentTypeSpecificInfo %
-                                  QSL(" - ")            % experiment->states.currentOrder;
+                    elementName = QSL("Routine: ")      % n %
+                                  QSL(" - Condition: <b>") % experiment->states.currentTypeSpecificInfo % QSL("</b> (T: ") % nbCallsSplit[1] %
+                                  QSL(") - ")            % experiment->states.currentOrder;
                 }else{
 
-                    elementName = QSL("ISI: ")          % experiment->states.currentElementName %
-                                  QSL(" - Duration: ")  % experiment->states.currentTypeSpecificInfo %
-                                  QSL(" - ")            % experiment->states.currentOrder;
+                    elementName = QSL("ISI: ")          % n %
+                                  QSL(" - Duration: <b>")  % experiment->states.currentTypeSpecificInfo %
+                                  QSL("</b> - ")            % experiment->states.currentOrder;
                 }
 
                 currentTime = QSL("Time: ") % QString::number(experiment->states.currentElementTimeS) % QSL(" / ") % QString::number(experiment->states.currentIntervalEndTimeS) % QSL("(s)");
@@ -283,7 +287,7 @@ void DesignerWindow::update_main_ui(Experiment *experiment){
     }
 
     // update current element info
-    m_ui.laExpState->setText(from_view(get_description(expState)));
+    m_ui.laExpState->setText(expStateDescription);
     m_ui.laElementName->setText(elementName);
     m_ui.laElementCurrentTime->setVisible(displayElementCurrentTime);
     m_ui.pgbElementCurrentTIme->setVisible(diplayProgresssbar);

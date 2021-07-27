@@ -19,7 +19,7 @@ namespace Ex{
         protected override void start_routine() {
             invoke_signal(0, associatedRoutine.name);
             invoke_signal(1, associatedCondition.name);
-            invoke_signal(2, associatedRoutine.nbTimesCalled);
+            invoke_signal(2, associatedRoutine.calls_nb());
         }
     }
 }

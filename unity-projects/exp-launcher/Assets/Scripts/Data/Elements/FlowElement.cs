@@ -25,8 +25,13 @@ namespace Ex{
             return m_type;
         }
 
+        public int calls_nb() {
+            return m_callsNb;
+        }
+
         protected FlowElementType m_type;
         protected int m_key = -1;
         protected string m_keyStr;
+        protected int m_callsNb = 0;
     }
 }

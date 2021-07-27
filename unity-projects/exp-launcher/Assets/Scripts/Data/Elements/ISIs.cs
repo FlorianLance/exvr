@@ -80,12 +80,21 @@ namespace Ex
             return null;
         }
 
+        public void start_isi(ISIInfo info) {
 
-        public void disable() {
-            foreach (var isi in m_ISIs) {
-                isi.disable();
+            // set current isi
+            m_currentIsi = (ISI)info.element;
+            ExVR.ExpLog().isi_manager(info);
+
+            m_currentIsi.start(info);
+        }
+
+        public void stop_current_isi() {
+
+            if(m_currentIsi != null) {
+                m_currentIsi.stop();
+                m_currentIsi = null;
             }
-            m_currentIsi = null;
         }
 
         public void clean() {
@@ -96,11 +105,7 @@ namespace Ex
             m_ISIs.Clear();
         }
 
-        public void enable(ISIInfo info) {
-            m_currentIsi = (ISI)info.element;
-            ExVR.ExpLog().isi_manager(info);
-            m_currentIsi.enable(info);
-        }
+
     }
 }
 

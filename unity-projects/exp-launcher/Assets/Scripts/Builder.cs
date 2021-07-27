@@ -75,10 +75,6 @@ namespace Ex {
             return Experiment().schreduler;
         }
 
-        static public ConnectionsConvertors Convertors() {
-            return Experiment().connectionsConvertors;
-        }
-
         static public ResourcesManager Resources() {
             return Experiment().experimentResourcesManager;
         }        
@@ -149,7 +145,6 @@ namespace Ex{
 #if LNCO_COMPONENTS
             Debug.Log("LNCO components included.");
 #endif
-
             autoRef = this; // for static access
             go      = GetComponent<GoExplorer>();
 

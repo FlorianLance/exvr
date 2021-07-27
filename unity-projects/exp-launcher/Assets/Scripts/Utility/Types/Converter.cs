@@ -48,7 +48,7 @@ namespace Ex{
             PitchYawRoll, YawRollPitch
         };
 
-        private static void display_error(string error) {
+        private static void log_error(string error) {
             ExVR.Log().error(string.Format("[CONVERTER] {0}", error));
         }
 
@@ -236,7 +236,7 @@ namespace Ex{
                 return to_short((string)value);
             }
 
-            display_error("Conversion to \"short\" not supported with current input object value.");
+            log_error("Conversion to \"short\" not supported with current input object value.");
             return (byte)0;
         }
 
@@ -281,7 +281,7 @@ namespace Ex{
                 return to_byte((string)value);
             }
 
-            display_error("Conversion to \"byte\" not supported with current input object value.");
+            log_error("Conversion to \"byte\" not supported with current input object value.");
             return (byte)0;
         }
 
@@ -329,7 +329,7 @@ namespace Ex{
                 return to_char((string)value);
             }
 
-            display_error("Conversion to \"char\" not supported with current input object value.");
+            log_error("Conversion to \"char\" not supported with current input object value.");
             return (char)0;
         }
 
@@ -386,10 +386,10 @@ namespace Ex{
                 } else if (dv.has_bool()) {
                     return dv.to_bool();
                 }
-                display_error("Conversion to \"bool\" impossible, decimal value is empty.");
+                log_error("Conversion to \"bool\" impossible, decimal value is empty.");
                 return false;
             }
-            display_error("Conversion to \"bool\" not supported with current input object value.");
+            log_error("Conversion to \"bool\" not supported with current input object value.");
             return false;
         }
         public static bool to_bool(int value) {
@@ -411,7 +411,16 @@ namespace Ex{
             return Convert.ToBoolean(value);
         }
         public static bool to_bool(string strValue) {
-            Boolean.TryParse(strValue, out bool result);
+            if (strValue.Length == 1) {
+                if (strValue[0] == '0') {
+                    return false;
+                }
+                return true;
+            }
+            if(!Boolean.TryParse(strValue, out bool result)) {
+                log_error(string.Format("Cannot convert {0} to bool.", strValue));
+                return false;
+            }
             return result;
         }
 
@@ -436,7 +445,7 @@ namespace Ex{
                 return to_long((string)value);
             }
 
-            display_error("Conversion to \"int\" not supported with current input object value.");
+            log_error("Conversion to \"int\" not supported with current input object value.");
             return 0;
         }
 
@@ -454,7 +463,7 @@ namespace Ex{
             try {
                 return Convert.ToInt64(value);
             } catch (OverflowException e) {
-                display_error(e.Message);
+                log_error(e.Message);
             }
             return 0;
         }
@@ -462,7 +471,7 @@ namespace Ex{
             try {
                 return Convert.ToInt64(value);
             } catch (OverflowException e) {
-                display_error(e.Message);
+                log_error(e.Message);
             }
             return 0;
         }
@@ -471,7 +480,7 @@ namespace Ex{
             try {
                 return Convert.ToInt64(value);
             } catch (OverflowException e) {
-                display_error(e.Message);
+                log_error(e.Message);
             }
             return 0;
         }
@@ -502,7 +511,7 @@ namespace Ex{
                 return to_int((string)value);
             }
 
-            display_error("Conversion to \"int\" not supported with current input object value.");
+            log_error("Conversion to \"int\" not supported with current input object value.");
             return 0;
         }
         public static int to_int(bool value) {
@@ -518,7 +527,7 @@ namespace Ex{
             try {
                 return Convert.ToInt32(value);
             } catch (OverflowException e) {
-                display_error(e.Message);
+                log_error(e.Message);
             }
             return 0;
         }
@@ -526,7 +535,7 @@ namespace Ex{
             try {
                 return Convert.ToInt32(value);
             }catch(OverflowException e) {
-                display_error(e.Message);
+                log_error(e.Message);
             }
             return 0;
         }
@@ -535,7 +544,7 @@ namespace Ex{
             try {
                 return Convert.ToInt32(value);
             } catch (OverflowException e) {
-                display_error(e.Message);
+                log_error(e.Message);
             }
             return 0;
         }
@@ -569,7 +578,7 @@ namespace Ex{
                 return to_float((string)value);
             }
 
-            display_error("Conversion to \"float\" not supported with current input object value. " + value.GetType().ToString());
+            log_error("Conversion to \"float\" not supported with current input object value. " + value.GetType().ToString());
             return 0f;
         }
         public static float to_float(bool value) {
@@ -597,7 +606,7 @@ namespace Ex{
         public static float to_float(string strValue) {
             if(!Single.TryParse(strValue, out float result)) {                
                 if(!Single.TryParse(strValue.Replace(",","."), out result)) {
-                    display_error(string.Format("Float parse error: {0} -> {1}", strValue, result));
+                    log_error(string.Format("Float parse error: {0} -> {1}", strValue, result));
                 }
             }
             return result;
@@ -826,7 +835,7 @@ namespace Ex{
         public static List<object> to_list(List<Vector3> value) {
 
             if (value.Count != 3) {
-                display_error("Invalid list size.");
+                log_error("Invalid list size.");
                 return new List<object> { 0, 0, 0, 0, 0, 0, 1, 1, 1 };
             }
 
@@ -973,7 +982,7 @@ namespace Ex{
                     curve.AddKey(values[ii * 2], values[ii * 2 + 1]);
                 }
             } else {
-                display_error("Invalid values for curve.");
+                log_error("Invalid values for curve.");
             }
 
             return curve;

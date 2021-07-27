@@ -100,7 +100,7 @@ namespace Ex{
         protected void send_connector_infos_to_gui(object value) {
             ExVR.Network().gui_ipc().send_connector_infos_to_GUI(
                 associatedRoutine.key_str(),
-                associatedCondition.keyStr,
+                associatedCondition.key_str(),
                 keyStr,
                 uiId, 
                 Converter.to_string(value)
@@ -110,7 +110,7 @@ namespace Ex{
         protected void send_connector_infos_to_gui(string value) {
             ExVR.Network().gui_ipc().send_connector_infos_to_GUI(
                 associatedRoutine.key_str(),
-                associatedCondition.keyStr, 
+                associatedCondition.key_str(), 
                 keyStr,
                 uiId, 
                 value

@@ -96,6 +96,7 @@ namespace Ex{
 
         public static readonly Dictionary<string, DecimalOperator> strToDecimalOperator = new Dictionary<string, DecimalOperator> {
             ["  Add  "] = DecimalOperator.add,
+            ["Add"]     = DecimalOperator.add,
             ["Substract"] = DecimalOperator.sub,
             ["Multiply"] = DecimalOperator.multiply,
             ["Divide"] = DecimalOperator.divide,

@@ -51,8 +51,7 @@ namespace Ex{
         private List<Condition> m_conditions = null;
         private Condition m_currentCondition = null;
         private Stopwatch m_startTimer = new Stopwatch();
-        private Stopwatch m_stopTimer = new Stopwatch();
-        public int nbTimesCalled = 0;
+        private Stopwatch m_stopTimer = new Stopwatch();        
 
         public List<Condition> get_conditions() {
             return m_conditions;
@@ -105,58 +104,56 @@ namespace Ex{
             return null;
         }
 
-        public void enable(Condition condition) {
-
-            // retrieve current condition
-            m_currentCondition = condition;
-            gameObject.SetActive(true);                    
-            start();            
-        }
-
         public void stop_experiment() {
-            nbTimesCalled = 0;
+
+            m_callsNb = 0;
+            foreach(var condition in m_conditions) {
+                condition.stop_experiment();
+            }
         }
 
-        public void disable() {
+        public void start(Condition condition) {
 
-            if (!gameObject.activeSelf) { // already disabled, do nothing
-                return;
-            }
+            // update routine current condition
+            m_currentCondition = condition;
+            // enable it
+            gameObject.SetActive(true);
 
-            stop();
-            gameObject.SetActive(false);
-        }
-
-        private void start() {
-            
-            ExVR.ExpLog().routine(name, current_condition().name, "Start associated components");
-            m_startTimer.Restart();            
-            {
-                // set connections between components and connectors
-                m_currentCondition.set_connections();
-                ExVR.Components().set_current_config(m_currentCondition);
-                ExVR.Components().pre_start_routine(m_currentCondition);
-                ExVR.Components().start_routine(m_currentCondition);
-                ExVR.Components().post_start_routine(m_currentCondition);
-                m_currentCondition.connectors_start_routine();
-                nbTimesCalled++;
-            }
+            ExVR.ExpLog().routine(name, current_condition().name, "Start");
+            m_startTimer.Restart();
+            m_currentCondition.start_routine();
             m_startTimer.Stop();
-            ExVR.ExpLog().routine(name, current_condition().name, "Associated components started in " + m_startTimer.ElapsedMilliseconds + "ms");            
+            ExVR.ExpLog().routine(name, current_condition().name, string.Format("Started in {0} ms", m_startTimer.ElapsedMilliseconds));            
         }
 
-        private void stop() {
+        public void on_gui() {
+            m_currentCondition.on_gui();
+        }
+
+        public void update() {            
+            m_currentCondition.update();
+        }
+
+        public void play() {
+            m_currentCondition.play();
+        }
+        public void pause() {
+            m_currentCondition.pause();
+        }
+
+        public void stop() {  
 
             ExVR.ExpLog().routine(name, current_condition().name, "Stop");
             m_stopTimer.Restart();
-            {
-                m_currentCondition.connectors_stop_routine();
-                ExVR.Components().stop_routine(m_currentCondition);
-                m_currentCondition.remove_connections();                
-            }
-
+            m_currentCondition.stop_routine();
             m_stopTimer.Stop();
-            ExVR.ExpLog().routine(name, current_condition().name, "Stopped in " + m_startTimer.ElapsedMilliseconds + "ms");
+            ExVR.ExpLog().routine(name, current_condition().name, string.Format("Stopped in {0} ms", m_stopTimer.ElapsedMilliseconds));
+
+            // increment nb of calls
+            m_callsNb++;
+
+            // disable gameobject
+            gameObject.SetActive(false);
         }
 
         public int conditions_count() {
@@ -173,7 +170,7 @@ namespace Ex{
 
         public Condition get_condition_from_key(int conditionKey) {
             foreach (var condition in m_conditions) {
-                if (condition.key == conditionKey) {
+                if (condition.key() == conditionKey) {
                     return condition;
                 }
             }

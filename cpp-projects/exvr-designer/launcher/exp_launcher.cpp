@@ -154,7 +154,7 @@ void ExpLauncher::message_from_exp_launcher(QString m){
         int count = expState.count('|');
         if(count == 0){
             emit GSignals::get()->exp_state_updated_signal(static_cast<ExpState>(expState.toInt()), QSL(""));
-        }else if(count == 7){
+        }else if(count == 8){
             int idSep = expState.indexOf('|');
             auto state = static_cast<ExpState>(expState.left(idSep).toInt());
             QStringView infos = expState.mid(idSep+1);

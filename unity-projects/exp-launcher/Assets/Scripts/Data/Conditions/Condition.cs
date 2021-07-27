@@ -73,10 +73,10 @@ namespace Ex{
 
     public class Condition : MonoBehaviour{
 
-        public int key;
-        public string keyStr;
-        public double durationS = 0.0;
-
+        private int m_key;
+        private string keyStr;
+        private double m_durationS = 0.0;
+        private int m_callsNb = 0;
         private List<XML.Connection> m_connectionsXML = null;
 
         public List<Connection> connections = new List<Connection>();
@@ -86,6 +86,22 @@ namespace Ex{
         public List<ExConnector> connectors = null;
 
         public ExConnector currentConnector = null;
+
+        public int key() {
+            return m_key;
+        }
+
+        public string key_str() {
+            return keyStr;
+        }
+
+        public double duration() {
+            return m_durationS;
+        }
+
+        public int calls_nb() {
+            return m_callsNb;
+        }
 
         private void set_current(ExConnector connector) {
             currentConnector = connector;
@@ -127,7 +143,7 @@ namespace Ex{
         public void initialize(XML.Condition xmlCondition) {
 
             // save key
-            key = xmlCondition.Key;
+            m_key = xmlCondition.Key;
             keyStr = Converter.to_string(xmlCondition.Key);
 
             // save connections
@@ -164,7 +180,7 @@ namespace Ex{
             }
 
             // find duration of the condition
-            durationS = xmlCondition.Duration;
+            m_durationS = xmlCondition.Duration;
 
             // generate connectors
             connectors = new List<ExConnector>(xmlCondition.Connectors.Count);
@@ -196,7 +212,7 @@ namespace Ex{
 
                     var action = get_action_from_component_key(connectionXML.StartKey);
                     if (action == null) {
-                        ExVR.Log().error("Connection start key " + connectionXML.StartKey + " not found in components.");
+                        ExVR.Log().error(string.Format("Connection start key {0} not found in components.", connectionXML.StartKey));
                         continue;
                     }
                     outE = action.component().events();
@@ -206,7 +222,7 @@ namespace Ex{
 
                     var connector = get_connector(connectionXML.StartKey);
                     if (connector == null) {
-                        ExVR.Log().error("Connection start key " + connectionXML.StartKey + " not found in connectors.");
+                        ExVR.Log().error(string.Format("Connection start key {0} not found in connectors.", connectionXML.StartKey));
                         continue;
                     }
                     
@@ -220,7 +236,7 @@ namespace Ex{
 
                     var action = get_action_from_component_key(connectionXML.EndKey);
                     if (action == null) {
-                        ExVR.Log().error("Connection end key " + connectionXML.EndKey + " not found in components.");
+                        ExVR.Log().error(string.Format("Connection end key {0} not found in components.", connectionXML.EndKey));
                         continue;
                     }
                     inE = action.component().events();
@@ -230,7 +246,7 @@ namespace Ex{
 
                     var connector = get_connector(connectionXML.EndKey);
                     if (connector == null) {
-                        ExVR.Log().error("Connection end key " + connectionXML.EndKey + " not found in connectors.");
+                        ExVR.Log().error(string.Format("Connection end key {0} not found in connectors.", connectionXML.EndKey));
                         continue;
                     }
                     inE = connector.events();
@@ -270,18 +286,18 @@ namespace Ex{
                 if (connectionXML.StartDataType == connectionXML.EndDataType) {
                     if(!Events.Connections.connect(signal, slot)) {
                         //connectionXML.StartKey
-                        ExVR.Log().error("ERROR1: " + connectionXML.Signal + " " + connectionXML.Slot);
+                        ExVR.Log().error(string.Format("Connection error with signal {0} and slot {1}.", connectionXML.Signal, connectionXML.Slot));
                         continue;
                     }
                 } else {
                     // if start data and end data are differents, retrieve the corresponding data convertor
-                    string code = connectionXML.StartDataType + ":" + connectionXML.EndDataType;
-                    var convertor = ExVR.Convertors().get(code);
+                    string code = string.Format("{0}:{1}", connectionXML.StartDataType, connectionXML.EndDataType);
+                    var convertor = ConnectionsConvertors.get(code);
                     if(convertor == null) {
                         continue;
                     }
                     if(!Events.Connections.connect(signal, slot, convertor)) {
-                        ExVR.Log().error("ERROR2: " + connectionXML.Signal + " " + connectionXML.Slot);
+                        ExVR.Log().error(string.Format("Connection error with signal {0} and slot {1}.", connectionXML.Signal, connectionXML.Slot));
                         continue;
                     }                    
                 }
@@ -290,25 +306,127 @@ namespace Ex{
             }
         }
 
-        public void connectors_start_routine() {
+        public void start_routine() {
 
-            // depending priority
-            // ...
-            foreach (var connector in connectors) {
-                set_current(connector);
-                connector.base_start_routine();
+            // set connections between components and connectors
+            set_connections();
+
+            // actions
+            {
+                // set components config
+                foreach (var action in actions) {
+                    action.component().set_current_config(this, action.config(), action.timeline());
+                }
+
+                // pre start routine
+                ExVR.ExpLog().condition(ExComponent.Function.pre_start_routine, true);
+                foreach (var action in actions) {
+                    action.pre_start_routine();
+                }
+                ExVR.ExpLog().condition(ExComponent.Function.pre_start_routine, false);
+
+                // start routine
+                ExVR.ExpLog().condition(ExComponent.Function.start_routine, true);
+                foreach (var action in actions) {
+                    action.start_routine();
+                }
+                ExVR.ExpLog().condition(ExComponent.Function.start_routine, false);
+
+                // post start routine
+                ExVR.ExpLog().condition(ExComponent.Function.post_start_routine, true);
+                foreach (var action in actions) {
+                    action.post_start_routine();
+                }
+                ExVR.ExpLog().condition(ExComponent.Function.post_start_routine, false);
+            }
+
+            // connectors
+            {
+                ExVR.ExpLog().condition(ExConnector.Function.start_routine, true);
+                foreach (var connector in connectors) {
+                    set_current(connector);
+                    connector.base_start_routine();
+                }
+                ExVR.ExpLog().condition(ExConnector.Function.start_routine, false);
             }
         }
 
-        public void connectors_stop_routine() {
-            // depending priority
-            // ...
-            foreach (var connector in connectors) {
-                set_current(connector);
-                connector.base_stop_routine();
+        public void on_gui() {
+
+            UnityEngine.Profiling.Profiler.BeginSample("[ExVR][Condition] on_gui");
+            foreach (var action in actions) {
+                action.on_gui();
             }
+            UnityEngine.Profiling.Profiler.EndSample();
         }
 
+        public void update() {
+
+            UnityEngine.Profiling.Profiler.BeginSample("[ExVR][Condition] pre_update");
+            foreach (var action in actions) {
+                action.pre_update();
+            }
+            UnityEngine.Profiling.Profiler.EndSample();
+
+            UnityEngine.Profiling.Profiler.BeginSample("[ExVR][Condition] update");
+            foreach (var action in actions) {
+                action.update();
+            }
+            UnityEngine.Profiling.Profiler.EndSample();
+
+            UnityEngine.Profiling.Profiler.BeginSample("[ExVR][Condition] post_update");
+            foreach (var action in actions) {
+                action.post_update();
+            }
+            UnityEngine.Profiling.Profiler.EndSample();
+        }
+
+        public void play() {
+            ExVR.ExpLog().condition(ExComponent.Function.play, true);
+            foreach (var action in actions) {
+                action.play();
+            }
+            ExVR.ExpLog().condition(ExComponent.Function.play, false);
+        }
+
+        public void pause() {
+            ExVR.ExpLog().condition(ExComponent.Function.pause, true);
+            foreach (var action in actions) {
+                action.pause();
+            }
+            ExVR.ExpLog().condition(ExComponent.Function.pause, false);
+        }
+        public void stop_routine() {
+
+            // connectors
+            {
+                ExVR.ExpLog().condition(ExConnector.Function.stop_routine, true);
+                foreach (var connector in connectors) {
+                    set_current(connector);
+                    connector.base_stop_routine();
+                }
+                ExVR.ExpLog().condition(ExConnector.Function.stop_routine, false);
+            }
+
+            // actions
+            {
+                ExVR.ExpLog().condition(ExComponent.Function.stop_routine, true);
+                foreach (var action in reverseOrderActions) {
+                    action.stop_routine();
+                }
+                ExVR.ExpLog().condition(ExComponent.Function.stop_routine, false);
+            }
+            
+            // remove connections between components and connectors
+            remove_connections();
+
+            // increment nb of calls
+            m_callsNb++;
+        }
+
+        public void stop_experiment() {
+            m_callsNb = 0;
+        }
 
         public void trigger_update_connector_signals() {
 
@@ -337,7 +455,6 @@ namespace Ex{
                 connector.events().clean();
             }
         }
-
     }
 }
 

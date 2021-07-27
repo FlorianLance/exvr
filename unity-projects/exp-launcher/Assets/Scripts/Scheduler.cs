@@ -39,7 +39,7 @@ namespace Ex
                     var routineInfo = (RoutineInfo)currentElementInfo;
                     var routine = (Routine)routineInfo.element;
                     if (routine != null) {
-                        EditorGUILayout.LabelField("[Routine] with id " + (currentElementInfo.key()).ToString());
+                        EditorGUILayout.LabelField(string.Format("[Routine] with id {0}, called {1} times", currentElementInfo.key().ToString(), routine.calls_nb()));
                         EditorGUILayout.ObjectField(routine, typeof(Routine), true);
 
                         var condition = routine.current_condition();
@@ -58,7 +58,7 @@ namespace Ex
                     var isiInfo = (ISIInfo)currentElementInfo;
                     var isi = (ISI)isiInfo.element;
                     if (isi != null) {
-                        EditorGUILayout.LabelField("[ISI] with id " + (currentElementInfo.key()).ToString());
+                        EditorGUILayout.LabelField(string.Format("[ISI] with id {0}", currentElementInfo.key().ToString()));
                         EditorGUILayout.ObjectField(isi, typeof(ISI), true);
                     } else {
                         EditorGUILayout.LabelField("...");
@@ -185,7 +185,7 @@ namespace Ex{
                     }
 
                     // create element info
-                    elementInfo = new RoutineInfo(routine, currentCondition, new Interval(0, currentCondition.durationS));
+                    elementInfo = new RoutineInfo(routine, currentCondition, new Interval(0, currentCondition.duration()));
 
                 } else { // ISI
 
@@ -212,7 +212,7 @@ namespace Ex{
 
             if (m_currentElementId > 0) {  // enable previous element
                 --m_currentElementId;
-                enable_current_flow_element();
+                start_current_flow_element();
                 return true;
             }
 
@@ -224,7 +224,7 @@ namespace Ex{
 
             if (m_currentElementId < m_elementsOrder.Count - 1) { // enable next element
                 m_currentElementId++;
-                enable_current_flow_element();
+                start_current_flow_element();
                 return true;
             }            
             return false;
@@ -235,7 +235,7 @@ namespace Ex{
                 for (int ii = m_currentElementId + 1; ii < m_elementsOrder.Count; ++ii) {
                     if (m_elementsOrder[ii].name() == elementName) {
                         m_currentElementId = ii;
-                        enable_current_flow_element();
+                        start_current_flow_element();
                         return true;
                     }
                 }
@@ -248,7 +248,7 @@ namespace Ex{
                 for (int ii = m_currentElementId - 1; ii >= 0; --ii) {
                     if (m_elementsOrder[ii].name() == elementName) {
                         m_currentElementId = ii;
-                        enable_current_flow_element();
+                        start_current_flow_element();
                         return true;
                     }
                 }
@@ -263,7 +263,7 @@ namespace Ex{
                     if((m_elementsOrder[ii].type() == FlowElement.FlowElementType.Routine ?
                         ((RoutineInfo)m_elementsOrder[ii]).condition.name : ((ISIInfo)m_elementsOrder[ii]).durationStr) == conditionName) { 
                         m_currentElementId = ii;
-                        enable_current_flow_element();
+                        start_current_flow_element();
                         return true;
                     }
                 }
@@ -278,7 +278,7 @@ namespace Ex{
                     if ((m_elementsOrder[ii].type() == FlowElement.FlowElementType.Routine ?
                         ((RoutineInfo)m_elementsOrder[ii]).condition.name : ((ISIInfo)m_elementsOrder[ii]).durationStr) == conditionName) {
                         m_currentElementId = ii;
-                        enable_current_flow_element();
+                        start_current_flow_element();
                         return true;
                     }
                 }
@@ -290,7 +290,7 @@ namespace Ex{
 
             if (elementOrderId < m_elementsOrder.Count) {
                 m_currentElementId = elementOrderId;
-                enable_current_flow_element();
+                start_current_flow_element();
                 return true;
             }
             return false;
@@ -309,59 +309,55 @@ namespace Ex{
             return true;
         }
 
+        public void start_current_flow_element() {
+
+            // stop previous element
+            ExVR.Routines().stop_current_routine();
+            ExVR.ISIs().stop_current_isi();
+
+            // retrieve new info
+            m_currentElementInfo = m_elementsOrder[m_currentElementId];
+
+            // enable new current flow element
+            ExVR.Time().start_element();
+            if (m_currentElementInfo.type() == FlowElement.FlowElementType.Isi) {
+                // new element is an ISI
+                ExVR.ISIs().start_isi((ISIInfo)m_currentElementInfo);
+            } else if (m_currentElementInfo.type() == FlowElement.FlowElementType.Routine) {
+                // new element is a routine 
+                ExVR.Routines().start_routine((RoutineInfo)m_currentElementInfo);
+            }
+        }
+
+        public FlowElementInfo update_current_flow_element() {
+
+            if (m_elementsOrder.Count == 0) { // no flow element
+                return null;
+            }
+       
+            // check if still inside interval
+            if (!current_interval().is_in_interval(ExVR.Time().ellapsed_time_element_s())) {
+                // go  for next element
+                if(!next_element()) {
+                    // no elemen remaining, end of experiment
+                    return null; 
+                }
+            }
+
+            return m_currentElementInfo;
+        }
+
+
         public void stop_experiment() {
             // nullify current element
             m_currentElementInfo = null;
         }
-
-        public void enable_current_flow_element() {
-
-            m_currentElementInfo = m_elementsOrder[m_currentElementId];
-
-            // disable all routines
-            ExVR.Routines().disable();
-
-            // disable all ISIs
-            ExVR.ISIs().disable();
-
-            // enable new current flow element
-            ExVR.Time().start_element();
-            if (m_currentElementInfo.type() == FlowElement.FlowElementType.Isi) {              // new element is an ISI
-                ExVR.ISIs().enable((ISIInfo)m_currentElementInfo);
-            } else if (m_currentElementInfo.type() == FlowElement.FlowElementType.Routine) {   // new element is a routine 
-                ExVR.Routines().enable((RoutineInfo)m_currentElementInfo);
-            }
-        }
-
 
         public Interval current_interval() {
             if(m_currentElementId >= m_elementsOrder.Count ) {
                 return null;
             }
             return m_elementsOrder[m_currentElementId].interval;
-        }
-
-        private bool update_current_flow_element() {
-
-            // check if in interval, if not update current element            
-            if (!current_interval().is_in_interval(ExVR.Time().ellapsed_time_element_s())) {  // current timer not in any elements interval
-                return next_element();
-            }
-
-            return true;
-        }
-
-        public FlowElementInfo update_current_element() {
-
-            if (m_elementsOrder.Count == 0) { // no flow element
-                return null;
-            }
-
-            if (!update_current_flow_element()) {
-                return null; // end of experiment
-            }
-
-            return m_currentElementInfo;
         }
     }
 }

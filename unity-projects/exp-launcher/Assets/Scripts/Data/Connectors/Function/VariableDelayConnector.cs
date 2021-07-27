@@ -44,7 +44,7 @@ namespace Ex{
 
             // retrieve current delay from curve
             if (relativeValues) {
-                currentDelayMs = curve.Evaluate((float)(currTimeMs / (associatedCondition.durationS * 1000.0)));
+                currentDelayMs = curve.Evaluate((float)(currTimeMs / (associatedCondition.duration() * 1000.0)));
             } else {
                 currentDelayMs = curve.Evaluate((float)(currTimeMs * 0.001));
             }

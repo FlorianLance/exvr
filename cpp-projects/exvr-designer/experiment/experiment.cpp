@@ -1833,6 +1833,10 @@ void Experiment::update_exp_state(ExpState state, QStringView infos){
         infos = infos.mid(idSep+1);
 
         idSep = infos.indexOf('|');
+        states.nbCalls = infos.left(idSep).toString();
+        infos = infos.mid(idSep+1);
+
+        idSep = infos.indexOf('|');
         QChar elementType = infos.left(idSep)[0];
         infos = infos.mid(idSep+1);
 

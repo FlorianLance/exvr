@@ -62,10 +62,7 @@ namespace Ex{
 
         [Rename("Components")]
         public Components components = null;
-        [Rename("Connections functions")]
-        public ConnectorsFunctions connectorsFunctions = null;
-        [Rename("Connections convertors")]
-        public ConnectionsConvertors connectionsConvertors = null;
+
         [Rename("Resources")]
         public ResourcesManager experimentResourcesManager = null;
 
@@ -115,7 +112,6 @@ namespace Ex{
         public void initialize() {
 
             experimentResourcesManager.initialize();
-            connectionsConvertors.initialize();
 
             // add listeners
             ExVR.Events().command.NextElementEvent.AddListener(() => {
@@ -176,10 +172,10 @@ namespace Ex{
 
             ExVR.Time().start_new_frame();            
 
-            FlowElementInfo elementInfo = null;
+            FlowElementInfo elementInfo;
             {   // update current element
                 Profiler.BeginSample("[ExVR][Experiment] update_current_element");
-                elementInfo = schreduler.update_current_element();
+                elementInfo = schreduler.update_current_flow_element();
                 if (elementInfo == null) {                    
                     stop_experiment();
                     ExVR.Log().message("End of experiment");
@@ -200,8 +196,8 @@ namespace Ex{
             }
 
             {   // update all components
-                Profiler.BeginSample("[ExVR][Experiment] update");                
-                components.update();
+                Profiler.BeginSample("[ExVR][Experiment] update");
+                routines.update_current_routine();
                 Profiler.EndSample();
             }
 
@@ -230,7 +226,7 @@ namespace Ex{
                 return;
             }
 
-            components.on_gui();
+            routines.on_gui();
         }
 
 
@@ -263,16 +259,23 @@ namespace Ex{
                 string expTimeStr       = Converter.to_string(ExVR.Time().ellapsed_time_exp_ms());                
                 string interStr         = info.interval != null ? Converter.to_string(info.interval.tEndS * 1000) : "-";
                 string orderStr         = string.Format("{0}/{1}", info.order+1, schreduler.total_number_of_elements());
-                string elementKey       = Converter.to_string(info.key()); 
-                string typeStr          = (info.type() == FlowElement.FlowElementType.Routine) ? "R" : "I";
-                string typeSpecificInfo = (info.type() == FlowElement.FlowElementType.Routine) ? Converter.to_string(((RoutineInfo)info).condition.key) : ((ISIInfo)info).durationStr;
+                string elementKey       = Converter.to_string(info.key());
 
-                infoStr = string.Format("{0}|{1}|{2}|{3}|{4}|{5}|{6}",
+                string callsNb          = string.Format("{0};{1}", 
+                    Converter.to_string(info.element.calls_nb()),
+                    isRoutine ? Converter.to_string(((RoutineInfo)info).condition.calls_nb()) : "-"
+                );
+
+                string typeStr          = isRoutine ? "R" : "I";
+                string typeSpecificInfo = isRoutine ? ((RoutineInfo)info).condition.key_str() :  ((ISIInfo)info).durationStr;
+
+                infoStr = string.Format("{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}",
                     elementTimeStr,
                     expTimeStr,
                     interStr,
                     orderStr,
                     elementKey,
+                    callsNb,
                     typeStr,
                     typeSpecificInfo
                 );
@@ -351,7 +354,7 @@ namespace Ex{
             experimentResourcesManager.generate_from_xml(m_xmlExperiment.Resources);
 
             // generate components and flow elements
-            if (!components.generate(m_xmlExperiment.Components)) {
+            if (!ExVR.Components().generate(m_xmlExperiment.Components)) {
                 log_error("Experiment loading failed. Please solve errors and start loading again.");
                 return false;
             }
@@ -413,12 +416,13 @@ namespace Ex{
             if (!schreduler.start_experiment()) {
                 return;
             }
-            ExVR.Time().start_experiment();
 
+            ExVR.Time().start_experiment();
             ExVR.Display().reset_experiment_settings();
             ExVR.ExpLog().reset_strackTrace();
-            components.start_experiment();
-            schreduler.enable_current_flow_element();
+
+            routines.start_experiment();
+            schreduler.start_current_flow_element();
 
             m_experimentCleaned = false;
 
@@ -435,7 +439,7 @@ namespace Ex{
             ExVR.ExpLog().exp("Play", true, true, true);
 
             ExVR.Time().play_experiment();
-            components.play();
+            routines.play();
 
             // GUI update
             ExVR.Network().set_experiment_state_to_GUI(NetworkManager.ExpState.Running);
@@ -447,7 +451,7 @@ namespace Ex{
             ExVR.ExpLog().exp("Pause", true, true, true);
 
             ExVR.Time().pause_experiment();
-            components.pause();
+            routines.pause();
 
             // GUI update
             ExVR.Network().set_experiment_state_to_GUI(NetworkManager.ExpState.Paused);
@@ -458,20 +462,11 @@ namespace Ex{
             ExVR.ExpLog().display_strackTrace();
             ExVR.ExpLog().exp("Stop experiment", true, true, true);            
 
-            // disable all components
-            components.disable();
-
-            // display info of last current routine
-            routines.display_last_info();
-            // disable all routines
-            routines.disable();
             routines.stop_experiment();
-            // disable all ISIs
-            ISIs.disable();
 
-            // call stop experiment function for all components
-            components.stop_experiment();  
-            
+            // stop last current isi 
+            ISIs.stop_current_isi();
+
             // stop schreduler
             schreduler.stop_experiment();
             ExVR.Time().stop_experiment();
@@ -889,9 +884,6 @@ namespace Ex{
                 stop_experiment();
             }
 
-            // destroy components
-            components.clean();
-            
             // destroy elements
             routines.clean();
             ISIs.clean();

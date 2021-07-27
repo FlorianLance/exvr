@@ -61,10 +61,10 @@ namespace tool::ex {
     using TExpState = std::tuple<ExpState, Description>;
     static constexpr TupleArray<ExpState::SizeEnum, TExpState> expStates = {{
         TExpState
-        {ExpState::NotLoaded,    "[ExVR-exp] No experiment loaded."sv},
-        {ExpState::Loaded,       "[ExVR-exp] Experiment loaded"sv},
-        {ExpState::Running,      "[ExVR-exp] Experiment is running"sv},
-        {ExpState::Paused,       "[ExVR-exp] Experiment paused"sv},
+        {ExpState::NotLoaded,    "[ExVR-exp] <b>No experiment loaded.</b>"sv},
+        {ExpState::Loaded,       "[ExVR-exp] <b>Experiment loaded</b>"sv},
+        {ExpState::Running,      "[ExVR-exp] <b>Experiment is running</b>"sv},
+        {ExpState::Paused,       "[ExVR-exp] <b>Experiment paused</b>"sv},
     }};
 
     [[maybe_unused]] static Description get_description(ExpState s) {
@@ -123,6 +123,7 @@ namespace tool::ex {
         double currentElementTimeS = 0.0;
         double currentIntervalEndTimeS = 0.0;
         QString currentOrder = "";
+        QString nbCalls = "";
 
         unsigned int randomizationSeed = 0;
 

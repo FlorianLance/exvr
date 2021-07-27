@@ -191,7 +191,8 @@ namespace Ex {
                 } catch (System.Security.SecurityException e) {
                     UnityEngine.Debug.LogError(string.Format("Receive security error: {0}", e.Message));
                 } catch(Exception e) {
-                    UnityEngine.Debug.LogError(string.Format("Receive error: {0}", e.Message));
+                    // TODO: replace abort thread
+                    //UnityEngine.Debug.LogError(string.Format("Receive error: {0}", e.Message));
                 }
 
                 if (messageReceived) {
@@ -204,7 +205,6 @@ namespace Ex {
                     if (readingEnabled) {
                         try {
                             rwl.AcquireWriterLock(10);
-                            UnityEngine.Debug.LogError("queue " + Encoding.UTF8.GetString(buffer, 0, count));
                             queue.Enqueue(Encoding.UTF8.GetString(buffer, 0, count));
                         } catch (DecoderFallbackException e) {
                             UnityEngine.Debug.LogError(string.Format("GetString decoder error: {0}", e.Message));

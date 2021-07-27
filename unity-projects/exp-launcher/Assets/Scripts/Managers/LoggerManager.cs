@@ -240,6 +240,12 @@ namespace Ex {
         private static readonly string GuiStr = "[GUI] {0}";
         private static readonly string ExpStr = "[EXP] {0}";
         private static readonly string CmdStr = "[COMMAND] {0}";
+
+        private static readonly string StartCondCompStr = "\t[Condition] (Begin) Component function {0}";
+        private static readonly string EndCondCompStr = "\t[Condition] (End) Component function {0}";
+        private static readonly string StartCondConnStr = "\t[Condition] (Begin) Connector function {0}";
+        private static readonly string EndCondConnStr = "\t[Condition] (End) Connector function {0}";
+
         private static readonly string StartCompMaStr = "\t[Components_manager] (Begin) {0}";
         private static readonly string EndCompMaStr = "\t[Components_manager] (End) {0}";
         private static readonly string EnableRoutineManStr = "\t[Routines_manager] (Enable routine: {0})(Cond: {1})";
@@ -260,11 +266,18 @@ namespace Ex {
         private static readonly string DateNowF = "HH:mm:ss.fff";
 
         private Dictionary<ExComponent.Function, string> componentsFunctionsStr = new Dictionary<ExComponent.Function, string>();
+        private Dictionary<ExConnector.Function, string> connectorsFunctionsStr = new Dictionary<ExConnector.Function, string>();
+
+        
         private Trace[] swapTrace = null;
         public ExperimentLogger() {
 
             foreach(ExComponent.Function f in Enum.GetValues(typeof(ExComponent.Function))) {
                 componentsFunctionsStr[f] = f.ToString();
+            }
+
+            foreach (ExConnector.Function f in Enum.GetValues(typeof(ExConnector.Function))) {
+                connectorsFunctionsStr[f] = f.ToString();
             }
 
             filePath     = string.Format("{0}/exp_log.txt", ExVR.Paths().designerLogDir);
@@ -324,6 +337,29 @@ namespace Ex {
             }            
         }
 
+        public void condition(ExConnector.Function function, bool start) {
+            if (start) {
+                add(string.Format(StartCondConnStr, connectorsFunctionsStr[function]), false, true, true);
+            } else {
+                add(string.Format(EndCondConnStr, connectorsFunctionsStr[function]), false, true, true);
+            }
+        }
+
+        public void condition(ExComponent.Function function, bool start) {
+            if (start) {
+                add(string.Format(StartCondCompStr, componentsFunctionsStr[function]), false, true, true);
+            } else {
+                add(string.Format(EndCondCompStr, componentsFunctionsStr[function]), false, true, true);
+            }
+        }
+
+        public void log_and_add_to_stacktrace(ExComponent c, ExComponent.Function function, bool start, bool log = false, bool timeExp = false, bool timeElem = false) {
+
+            if (log) {
+                component(c, function, "", "", timeExp, timeElem);
+            }
+            push_to_strackTrace(new ComponentsManagerTrace(c, function, start));
+        }
 
         public void reset_strackTrace() {
             stackTrace = new System.Collections.Concurrent.ConcurrentStack<Trace>();

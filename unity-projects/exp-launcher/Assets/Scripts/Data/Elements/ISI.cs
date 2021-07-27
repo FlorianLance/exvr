@@ -9,14 +9,20 @@ using System.Collections.Generic;
 
 namespace Ex{
 
-    public class ISI : FlowElement{
+    public class Duration{
 
+        private int m_callsNb = 0;
+
+        public int calls_nb() {
+            return m_callsNb;
+        }
+    }
+
+    public class ISI : FlowElement{
         
         public List<double> m_durations = null;
 
         private bool m_randomized = false;
-
-
         public void initialize(XML.Isi isi) {
 
             m_key        = isi.Key;
@@ -31,25 +37,12 @@ namespace Ex{
             }
         }
 
-        public void enable(FlowElementInfo elementInfo) {
-
-
-            if (gameObject.activeSelf) {
-                return;
-            }
-            
+        public void start(FlowElementInfo elementInfo) {
             gameObject.SetActive(true);
         }
 
-        public void disable() {
-
-            if (!gameObject.activeSelf) {
-                return;
-            }
-
+        public void stop() {
             gameObject.SetActive(false);
         }
-
-
     }
 }
