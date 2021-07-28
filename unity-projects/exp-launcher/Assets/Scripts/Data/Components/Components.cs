@@ -89,9 +89,7 @@ namespace Ex
     }
 
     public class Components : MonoBehaviour{
-
-
-        public Dictionary<Category, List<ExComponent>> componentsPerCategory = new Dictionary<Category, List<ExComponent>>();
+        
         public static readonly Dictionary<Category, string> Category2Transform = new Dictionary<Category, string> {
             [Category.Audio] = "[C:Audio]",
             [Category.Resource] = "[C:Resource]",
@@ -214,6 +212,9 @@ namespace Ex
         private List<ExComponent> sortedComponents = new List<ExComponent>();
         private List<ExComponent> reverseSortedComponents = new List<ExComponent>();
         public Dictionary<Type, List<ExComponent>> componentsPerType = new Dictionary<Type, List<ExComponent>>();
+        public Dictionary<Category, List<ExComponent>> componentsPerCategory = new Dictionary<Category, List<ExComponent>>();
+        public Dictionary<int, ExComponent> componentPerKey = new Dictionary<int, ExComponent>();
+        public Dictionary<string, ExComponent> componentPerName = new Dictionary<string, ExComponent>();
 
         public bool generate(XML.Components xmlComponents) {
 
@@ -236,16 +237,6 @@ namespace Ex
                 var component = (ExComponent)GO.generate_empty_object(xmlComponent.Name, null, true).AddComponent(typeComponent);
                 component.setup_component_object(xmlComponent);
                 components.Add(component);
-                
-                if (!componentsPerType.ContainsKey(typeComponent)) {
-                    componentsPerType[typeComponent] = new List<ExComponent>();
-                }
-                componentsPerType[typeComponent].Add(component);
-
-                if (!componentsPerCategory.ContainsKey(component.category)) {
-                    componentsPerCategory[component.category] = new List<ExComponent>();
-                }
-                componentsPerCategory[component.category].Add(component);
             }
 
             // sort components by priority
@@ -273,6 +264,29 @@ namespace Ex
                 }
             }
 
+            // fill dictionnaries
+            componentsPerType.Clear();
+            componentsPerCategory.Clear();
+            componentPerKey.Clear();
+            componentPerName.Clear();
+            foreach (var component in sortedComponents) {
+
+                var typeComponent = component.GetType();
+                if (!componentsPerType.ContainsKey(typeComponent)) {
+                    componentsPerType[typeComponent] = new List<ExComponent>();
+                }
+                componentsPerType[typeComponent].Add(component);
+
+                if (!componentsPerCategory.ContainsKey(component.category)) {
+                    componentsPerCategory[component.category] = new List<ExComponent>();
+                }
+                componentsPerCategory[component.category].Add(component);
+
+                componentPerKey[component.key] = component;
+                componentPerName[component.name] = component;
+            }
+
+
             // initialize components
             ExVR.ExpLog().component_manager(Function.initialize, true);
             foreach (var component in sortedComponents) {
@@ -294,7 +308,7 @@ namespace Ex
 
         public void action_from_gui(int componentKey, int configKey, string actionName) {
 
-            ExComponent component = get(componentKey);
+            ExComponent component = get_from_key(componentKey);
             if (component == null) {
                 return;                
             }
@@ -308,7 +322,7 @@ namespace Ex
 
         public void update_parameter_from_gui(int componentKey, int configKey, XML.Arg arg) {
 
-            ExComponent component = get(componentKey);
+            ExComponent component = get_from_key(componentKey);
             if(component == null) {
                 return;
             }
@@ -499,30 +513,33 @@ namespace Ex
             }
         }
 
-        public ExComponent get(int componentKey) {
-
-            foreach (var component in sortedComponents) {
-                if (component.key == componentKey) {
-                    return component;
-                }
-            }
-            return null;
-        }
-
-        public ExComponent get(string componentName) {
-
-            foreach (var component in sortedComponents) {
-                if (component.name == componentName) {
-                    return component;
-                }
-            }
-            return null;
-        }
-
         public int count() {
             return sortedComponents.Count;
         }
 
+        // get
+        public ExComponent get_from_key(int componentKey) {
+            if (componentPerKey.ContainsKey(componentKey)) {
+                return componentPerKey[componentKey];
+            }
+            return null;
+        }
+        public T get_from_key<T>(int componentKey) where T : ExComponent {
+            return (T)get_from_key(componentKey);
+        }
+
+        public ExComponent get_from_name(string componentName) {
+
+            if (componentPerName.ContainsKey(componentName)) {
+                return componentPerName[componentName];
+            }
+            return null;
+        }
+        public T get_from_name<T>(string componentName) where T : ExComponent {
+            return (T)get_from_name(componentName);
+        }
+
+        // get all
         public List<ExComponent> get_all() {
 
             List<ExComponent> componentsList = new List<ExComponent>(count());
@@ -532,44 +549,52 @@ namespace Ex
             return componentsList;
         }
 
-        public List<ExComponent> get_all(ExComponent.Category type) {
-
-            List<ExComponent> componentsWithType = new List<ExComponent>();
-            foreach (var component in sortedComponents) {
-                if (component.category == type) {
-                    componentsWithType.Add(component);
-                }
+        public List<ExComponent> get_all_from_category(ExComponent.Category category) {
+            List<ExComponent> componentsWithCategory = new List<ExComponent>();
+            foreach (var component in componentsPerCategory[category]) {
+                componentsWithCategory.Add(component);
             }
+            return componentsWithCategory;
+        }
 
+        public List<ExComponent> get_all_from_category(string categoryStr) {
+            Category category;
+            if (System.Enum.TryParse(categoryStr, false, out category)) {
+                return get_all_from_category(category);
+            }
+            return new List<ExComponent>();
+        }
+
+
+        public List<ExComponent> get_all_from_type(Type type) {
+            List<ExComponent> componentsWithType = new List<ExComponent>();
+            foreach (var component in componentsPerType[type]) {
+                componentsWithType.Add(component);
+            }
             return componentsWithType;
         }
 
-        public T get<T>(string componentName) where T : ExComponent {
-            return (T)get(componentName);
+        public List<T> get_all_from_type<T>() where T : ExComponent {
+            List<T> components = new List<T>();
+            var type = typeof(T);
+            foreach (var component in componentsPerType[type]) {
+                components.Add((T)component);
+            }
+            return components;
         }
 
-        public ExComponent get(string componentName, string componentTypeStr) {
-            string fullTypeStr = string.Concat("Ex.",componentTypeStr);
-            foreach (var component in sortedComponents) {
-                if(component.GetType().ToString() == fullTypeStr) {
-                    if(component.name == componentName) {
-                        return component;
-                    }
+        // others
+        public T get_csharp_script<T>(string name) where T : BaseCompiledCSharpComponent { 
+            var component = get_from_name(name);
+            if (component != null) {
+                if (component.GetType().ToString() == "Ex.CSharpScriptComponent") {
+                    return (T) (((CSharpScriptComponent) component).compiled());
+                } else {
+                    ExVR.Log().error(string.Format("Component {0} is not a CSharp script.", name));
                 }
             }
             return null;
         }
 
-        public List<T> get_all<T>() where T : ExComponent {
-
-            List<T> components = new List<T>();
-            foreach (ExComponent component in get_all()) {
-                if (component.GetComponent<T>()) {
-                    components.Add((T)component);
-                }
-            }
-
-            return components;
-        }
     }
 }

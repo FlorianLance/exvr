@@ -25,6 +25,17 @@ RoutineUP Routine::copy_with_new_element_id(const Routine &routineToCopy, const 
     return routine;
 }
 
+void Routine::set_as_randomizer(bool randomizer){
+
+    isARandomizer = randomizer;
+    for(auto &condition : conditions){
+        condition->actions.clear();
+        condition->connections.clear();
+        condition->connectors.clear();
+    }
+    ghostsConditions.clear();
+}
+
 void Routine::select_condition(ConditionKey conditionKey){
     for(const auto &condition : conditions){
         condition->selected = (condition->key() == conditionKey.v);

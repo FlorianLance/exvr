@@ -124,11 +124,8 @@ private:
     void generate_global_signals_connections();
     void generate_main_window_connections();
     void generate_components_manager_connections();
-    void generate_exp_launcher_connections();
     void generate_flow_diagram_connections();
-    void generate_element_viewer_connections();
-    void generate_xml_manager_connections();
-    void generate_experiment_connections();
+
     void generate_controller_connections();
     void generate_resources_manager_connections();
     void generate_logger_connections();

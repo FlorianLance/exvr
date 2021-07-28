@@ -90,7 +90,8 @@ namespace Ex
 
 
 
-namespace Ex{
+namespace Ex {
+
 
     public class FlowElementInfo{
 
@@ -134,10 +135,16 @@ namespace Ex{
     public class Scheduler : MonoBehaviour{
 
         // flow elements
+        [SerializeField]
         private int m_currentElementId = 0;
-        private FlowElementInfo m_currentElementInfo = null;
-        private List<FlowElementInfo> m_elementsOrder = new List<FlowElementInfo>();
 
+        [SerializeField]
+        private FlowElementInfo m_currentElementInfo = null;
+
+        [SerializeField]
+        private List<FlowElementInfo> m_elementsOrder = new List<FlowElementInfo>();
+        [SerializeField]
+        private List<FlowElementInfo> m_randomizerElementsOrder = new List<FlowElementInfo>();
 
         public int current_element_order() {
             return m_currentElementId;
@@ -151,14 +158,55 @@ namespace Ex{
             return m_currentElementInfo;
         }
 
-        public List<FlowElementInfo> get_elements_info_order() {
-            return new List<FlowElementInfo>(m_elementsOrder);
+        public List<FlowElementInfo> get_elements_info_order(bool isARandomizer) {
+            if (isARandomizer) {
+                return new List<FlowElementInfo>(m_randomizerElementsOrder);
+            } else {
+                return new List<FlowElementInfo>(m_elementsOrder);
+            }
+        }
+
+        public List<RoutineInfo> get_routine_infos_order(int elementKey, bool isARandomizer) {
+
+            List<RoutineInfo> infos = new List<RoutineInfo>();
+            var elements = isARandomizer ? m_randomizerElementsOrder : m_elementsOrder;
+            foreach (var info in elements) {
+                if(info.key() == elementKey) {
+                    infos.Add((RoutineInfo)info);
+                }
+            }
+            return infos;
+        }
+
+        public List<Condition> get_routine_conditions_order(int elementKey, bool isARandomizer) {
+
+            List<Condition> conditions = new List<Condition>();
+            var elements = isARandomizer ? m_randomizerElementsOrder : m_elementsOrder;
+            foreach (var info in elements) {
+                if (info.key() == elementKey) {
+                    conditions.Add(((RoutineInfo)info).condition);
+                }
+            }
+            return conditions;
+        }
+
+        public List<string> get_routine_conditions_names_order(int elementKey, bool isARandomizer) {
+
+            List<string> conditionsName = new List<string>();
+            var elements = isARandomizer ? m_randomizerElementsOrder : m_elementsOrder;
+            foreach (var info in elements) {
+                if (info.key() == elementKey) {
+                    conditionsName.Add(((RoutineInfo)info).condition.name);
+                }
+            }
+            return conditionsName;
         }
 
         public bool generate(XML.ExperimentFlow experimentFlow) {
 
             // clean
             m_elementsOrder.Clear();
+            m_randomizerElementsOrder.Clear();
 
             var routinesManager = ExVR.Routines();
             var isisManager = ExVR.ISIs();
@@ -166,7 +214,7 @@ namespace Ex{
             // create flow experiment from instance xml
             foreach (XML.Element element in experimentFlow.Elements) {
 
-                FlowElementInfo elementInfo = null; 
+                FlowElementInfo elementInfo ; 
                 
                 if (element.Type == "routine") { // Routine
 
@@ -184,8 +232,16 @@ namespace Ex{
                         return false;
                     }
 
-                    // create element info
-                    elementInfo = new RoutineInfo(routine, currentCondition, new Interval(0, currentCondition.duration()));
+                    // create element info                                        
+                    if (routine.is_a_randomizer()) {
+                        elementInfo = new RoutineInfo(routine, currentCondition, new Interval(0, 0));
+                        elementInfo.order = m_randomizerElementsOrder.Count;
+                        m_randomizerElementsOrder.Add(elementInfo);
+                    } else {
+                        elementInfo = new RoutineInfo(routine, currentCondition, new Interval(0, currentCondition.duration()));
+                        elementInfo.order = m_elementsOrder.Count;
+                        m_elementsOrder.Add(elementInfo);
+                    }
 
                 } else { // ISI
 
@@ -198,12 +254,11 @@ namespace Ex{
 
                     // create element info
                     elementInfo = new ISIInfo(isi, element.Cond, new Interval(0, Converter.to_double(element.Cond)));
+                    elementInfo.order = m_elementsOrder.Count;
+                    m_elementsOrder.Add(elementInfo);
                 }
-                
-                elementInfo.order = m_elementsOrder.Count;
-
-                m_elementsOrder.Add(elementInfo);
             }
+
 
             return true;
         }
@@ -336,7 +391,7 @@ namespace Ex{
             }
        
             // check if still inside interval
-            if (!current_interval().is_in_interval(ExVR.Time().ellapsed_time_element_s())) {
+            if (!current_interval().is_in_interval(ExVR.Time().ellapsed_element_s())) {
                 // go  for next element
                 if(!next_element()) {
                     // no elemen remaining, end of experiment

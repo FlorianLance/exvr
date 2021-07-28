@@ -113,7 +113,7 @@ namespace Ex {
 
         protected override void update() {
             
-            var currTime = ellapsed_time_routine_ms();
+            var currTime = time().ellapsed_element_ms();
 
             // check if alive
             var maxDuration = currentC.get<int>("duration_time_sphere");

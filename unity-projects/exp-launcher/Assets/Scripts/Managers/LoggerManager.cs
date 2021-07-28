@@ -466,20 +466,20 @@ namespace Ex {
                     flow.Enqueue(string.Format(AddT0T1T2,
                         state,
                         DateTime.Now.ToString(DateNowF),
-                        ExVR.Time().ellapsed_time_exp_s().ToString(),
-                        ExVR.Time().ellapsed_time_element_s().ToString()
+                        ExVR.Time().ellapsed_exp_s().ToString(),
+                        ExVR.Time().ellapsed_element_s().ToString()
                     ));
                 } else if (timeExp) {
                     flow.Enqueue(string.Format(AddT0T1,
                         state,
                         DateTime.Now.ToString(DateNowF),
-                        ExVR.Time().ellapsed_time_exp_s().ToString()
+                        ExVR.Time().ellapsed_exp_s().ToString()
                     ));
                 } else if (timeCurrentElement) {
                     flow.Enqueue(string.Format(AddT0T2,
                         state,
                         DateTime.Now.ToString(DateNowF),
-                        ExVR.Time().ellapsed_time_element_s().ToString()
+                        ExVR.Time().ellapsed_element_s().ToString()
                     ));
                 } else {
                     flow.Enqueue(string.Format(AddT0,
@@ -492,18 +492,18 @@ namespace Ex {
                 if (timeExp && timeCurrentElement) {
                     flow.Enqueue(string.Format(AddT1T2,
                         state,
-                        ExVR.Time().ellapsed_time_exp_s().ToString(),
-                        ExVR.Time().ellapsed_time_element_s().ToString()
+                        ExVR.Time().ellapsed_exp_s().ToString(),
+                        ExVR.Time().ellapsed_element_s().ToString()
                     ));
                 } else if (timeExp) {
                     flow.Enqueue(string.Format(AddT1,
                         state,
-                        ExVR.Time().ellapsed_time_exp_s().ToString()
+                        ExVR.Time().ellapsed_exp_s().ToString()
                     ));
                 } else if (timeCurrentElement) {
                     flow.Enqueue(string.Format(AddT2,
                         state,
-                        ExVR.Time().ellapsed_time_element_s().ToString()
+                        ExVR.Time().ellapsed_element_s().ToString()
                     ));
                 } else {
                     flow.Enqueue(state);

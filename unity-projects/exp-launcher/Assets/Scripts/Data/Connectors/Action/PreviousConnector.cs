@@ -15,7 +15,7 @@ namespace Ex{
         }
 
         protected override void slot1(object arg) {
-            ExComponent.previous();
+            command().previous();
         }
     }
 }

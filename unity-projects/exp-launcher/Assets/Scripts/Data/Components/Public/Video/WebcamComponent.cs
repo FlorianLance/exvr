@@ -56,7 +56,7 @@ namespace Ex{
                 return;
             }
 
-            var currentTime = ellapsed_time_routine_ms();
+            var currentTime = time().ellapsed_element_ms();
             double deltaTime = 1000.0 / initC.get<int>("requested_fps");
             if (currentTime / deltaTime > updateCounter) {
                 ++updateCounter;

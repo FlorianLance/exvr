@@ -54,7 +54,7 @@ namespace Ex{
                 return;
             }
 
-            var currentTime  = ellapsed_time_exp_ms();
+            var currentTime  = time().ellapsed_exp_ms();
 
             // retrieve keys states
             int pressedKeysCount = 0;

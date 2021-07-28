@@ -364,7 +364,7 @@ namespace Ex {
                 if(key == -1) {
                     return null;
                 }
-                return (T)ExVR.Components().get(key);
+                return (T)ExVR.Components().get_from_key(key);
             }
             return null;
         }
@@ -391,7 +391,7 @@ namespace Ex {
                     log_error("Invalid component/config key.");
                     return null;
                 }
-                ExComponent component = ExVR.Components().get(componentKey);
+                ExComponent component = ExVR.Components().get_from_key(componentKey);
                 if(component != null) {
                     ComponentConfig config = component.get_config(configKey);
                     if (config != null) {
@@ -419,7 +419,7 @@ namespace Ex {
             var split = ((List<object>)args[argName].value);
             foreach(var keyStr in split) {
                 int key = Converter.to_int((string)keyStr);
-                var component = ExVR.Components().get(key);
+                var component = ExVR.Components().get_from_key(key);
                 if(component != null) {
                     components.Add((T)(component));
                 }

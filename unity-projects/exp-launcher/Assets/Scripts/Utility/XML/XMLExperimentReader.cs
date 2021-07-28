@@ -257,6 +257,9 @@ namespace Ex{
             [XmlAttribute(AttributeName = "name")]
             public string Name { get; set; }
 
+            [XmlAttribute(AttributeName = "randomizer")]
+            public bool Randomizer { get; set; }
+
             // elements
             [XmlElement(ElementName = "Condition")]
             public List<Condition> Conditions { get; set; }

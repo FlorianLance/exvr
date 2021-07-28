@@ -70,6 +70,17 @@ void RoutineTabW::close_all_windows(){
 
 void RoutineTabW::update_from_routine(GUI *gui, Routine *routine){
 
+    qDebug() << "routine->isARandomizer " << routine->isARandomizer;
+    if(routine->isARandomizer){
+
+        qDebug() << "reset " << count();
+        reset();
+        setEnabled(false);
+        return;
+    }else{
+        setEnabled(true);
+    }
+
     BlockSignalsGuard guard;
 
     bool display = false;

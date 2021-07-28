@@ -15,7 +15,7 @@ namespace Ex {
         }
 
         protected override void post_update() {
-            invoke_signal(0, ExVR.Time().ellapsed_time_element_ms());
+            invoke_signal(0, ExVR.Time().ellapsed_element_ms());
         }
     }
 }

@@ -18,6 +18,7 @@
 #include "connector.hpp"
 #include "connection.hpp"
 #include "resource.hpp"
+#include "loop.hpp"
 
 namespace tool::ex{
 
@@ -47,12 +48,37 @@ signals:
     void component_info_update_signal(ComponentKey componentKey, ConfigKey configKey, QStringView id, QStringView value);
     void connector_info_update_signal(ElementKey elementKey, ConditionKey conditionKey, ConnectorKey connectorKey, QStringView uiName, QStringView value);
 
-    // routine
+    // elements
+    void update_element_name_signal(ElementKey key, QString name);
+    // # loops
+    void select_loop_set_signal(ElementKey loopKey, QString set);
+    void modify_loop_nb_reps_signal(ElementKey loopKey, int nbReps);
+    void modify_loop_type_signal(ElementKey loopKey, Loop::Mode mode);
+    void modify_loop_set_name_signal(ElementKey loopKey, QString set, RowId idSet);
+    void modify_loop_set_occurrencies_nb_signal(ElementKey loopKey, int occurenciesNb, RowId idSet);
+    void add_loop_sets_signal(ElementKey loopKey, QString set, RowId idSet);
+    void remove_set_signal(ElementKey loopKey, RowId idSet);
+    void move_loop_set_up_signal(ElementKey loopKey, RowId idSet);
+    void move_loop_set_down_signal(ElementKey loopKey, RowId idSet);
+    void load_loop_sets_file_signal(ElementKey loopKey, QString filePath);
+    void reload_loop_sets_file_signal(ElementKey loopKey);
+    // # isi
+    void set_isi_randomize_signal(ElementKey isiKey, bool checked);
+    void add_isi_interval_signal(ElementKey isiKey, double interval, RowId idInterval);
+    void modify_isi_interval_signal(ElementKey isiKey, double interval, RowId idInterval);
+    void remove_isi_interval_signal(ElementKey isiKey, RowId idInterval);
+    void move_isi_interval_up_signal(ElementKey isiKey, RowId idInterval);
+    void move_isi_interval_down_signal(ElementKey isiKey, RowId idInterval);
+    // # routine
+    void set_routine_as_randomizer_signal(ElementKey routineKey, bool isARandomizer);
     void routine_selected_signal(ElementKey routineKey);
-    // # condition
+    void select_routine_condition_signal(ElementKey routineKey, RowId conditionTabId);
+    void move_routine_condition_down_signal(ElementKey routineKey, RowId conditionTabId);
+    void move_routine_condition_up_signal(ElementKey routineKey, RowId conditionTabId);
+    // ## condition
     void routine_condition_selected_signal(ElementKey routineKey, RowId  conditionTabId);
     void copy_condition_to_signal(ElementKey routineKey, ConditionKey conditionKey);
-    // ## actions
+    // ### actions
     void delete_actions_signal(ElementKey routineKey, ConditionKey conditionKey);
     void fill_actions_signal(ElementKey routineKey, ConditionKey conditionKey);
     void clean_actions_signal(ElementKey routineKey, ConditionKey conditionKey);
@@ -68,12 +94,12 @@ signals:
     void insert_action_to_all_routines_conditions_signal(ComponentKey componentKey);
     void remove_action_from_all_selected_routine_conditions_signal(ComponentKey componentKey);
     void remove_action_from_all_routines_conditions_signal(ComponentKey componentKey);
-    // ### timeline
+    // #### timeline
     void update_timeline_signal(ElementKey routineKey,ConditionKey conditionKey, double duration, double scale, double uiSize);
-    // #### interval
+    // ##### interval
     void add_interval_signal(ElementKey routineKey,ConditionKey conditionKey, ActionKey actionKey, bool updateTimeline, TimelineKey timelineKey, Interval interval);
     void remove_interval_signal(ElementKey routineKey,ConditionKey conditionKey, ActionKey actionKey, bool updateTimeline, TimelineKey timelineKey, Interval interval);
-    // ## connections / connectors / nodes
+    // ### connections / connectors / nodes
     void delete_connections_signal(ElementKey routineKey, ConditionKey conditionKey);
     void nodes_connection_created_signal(ElementKey routineKey,ConditionKey conditionKey, Connection *connection);
     void connector_input_connection_validity_signal(ElementKey routineKey,ConditionKey conditionKey, ConnectorKey connectorKey, bool state);

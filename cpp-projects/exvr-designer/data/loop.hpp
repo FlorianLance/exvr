@@ -77,7 +77,9 @@ struct Loop : public Element {
     void set_nb_reps(size_t nb) noexcept;
     void set_loop_type(Mode m) noexcept;
 
-    bool add_set(QString setName, RowId id) noexcept;
+    bool is_default() const;
+    bool set_sets(QStringList sets);
+    bool add_set(QString setName, RowId id);
     void remove_set(RowId id);
     bool modify_set_name(QString newSetName, RowId id);
     void modify_set_occurencies_nb(int occurrencies, RowId id);

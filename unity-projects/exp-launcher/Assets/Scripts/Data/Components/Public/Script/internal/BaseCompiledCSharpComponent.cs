@@ -1,0 +1,134 @@
+﻿
+/*******************************************************************************
+** exvr-exp                                                                   **
+** No license (to be defined)                                                 **
+** Copyright (c) [2018] [Florian Lance][EPFL-LNCO]                            **
+********************************************************************************/
+
+// system
+using System;
+using System.Collections.Generic;
+
+// unity
+using UnityEngine;
+
+namespace Ex {
+
+    public class BaseCompiledCSharpComponent : MonoBehaviour {
+
+        // internal
+        static private readonly string signal1Str = "signal1";
+        static private readonly string signal2Str = "signal2";
+        static private readonly string signal3Str = "signal3";
+        static private readonly string signal4Str = "signal4";
+
+        // associated component
+        public ExComponent p = null;
+
+        // routines 
+        public Routine current_routine() { return p.currentRoutine; }
+        public Routine get_routine(string routineName) {return ExVR.Routines().get(routineName);}
+        public List<string> get_routine_instance_conditions(string routineName) {return ExVR.Routines().get_instance_conditions(routineName); }
+
+
+        // conditions
+        public Condition current_condition() { return p.currentCondition; }
+
+        // configs
+        public ComponentConfig current_config() { return p.current_config(); }
+        public ComponentInitConfig init_config() { return p.init_config(); }
+
+        // states
+        public bool is_visible() { return p.is_visible(); }
+        public bool is_updating() { return p.is_updating(); }
+        public bool is_closed() { return p.is_closed(); }
+
+        // commands
+        public void next() { p.command().next(); }
+        public void previous() { p.command().previous(); }
+        public void close() { p.components().close(p); }
+        public void stop() { p.command().force_stop_experiment(); }
+
+        // times
+        public long frame_id() { return p.time().frame_id(); }
+        public double ellapsed_time_exp_ms() { return p.time().ellapsed_exp_ms();}
+        public double ellapsed_time_routine_ms() { return p.time().ellapsed_element_ms();}
+        public double ellapsed_time_frame_ms() {return p.time().ellapsed_frame_ms();}
+
+        // logs
+        public void log_message(string message, bool verbose = false) {p.log_message(message, verbose);}
+        public void log_warning(string warning, bool verbose = true) {p.log_warning(warning, verbose);}
+        public void log_error(string error, bool verbose = true) {p.log_error(error, verbose);}
+
+        // signals
+        public void invoke_signal1(object value) {p.invoke_signal(signal1Str, value);}
+        public void invoke_signal2(object value) {p.invoke_signal(signal2Str, value);}
+        public void invoke_signal3(object value) {p.invoke_signal(signal3Str, value);}
+        public void invoke_signal4(object value) {p.invoke_signal(signal4Str, value);}
+
+        // get
+        public ExComponent get(int key) {return ExVR.Components().get_from_key(key);}
+        public ExComponent get(string name) {return ExVR.Components().get_from_name(name);}
+        public T get<T>(string name) where T : ExComponent {return ExVR.Components().get_from_name<T>(name);}
+
+        // # alias
+        public ExComponent get_component(int key) {return get(key);}
+        public ExComponent get_component(string name) {return get(name);}
+        public T get_component<T>(string name) where T : ExComponent {return get<T>(name);}
+
+        // get all
+        public List<ExComponent> get_all(ExComponent.Category type) {return p.components().get_all_from_category(type);}
+        public List<T> get_all<T>() where T : ExComponent {return p.components().get_all_from_type<T>();}
+        public List<ExComponent> get_all_from_category(string categoryStr) {return p.components().get_all_from_category(categoryStr);}
+        public List<ExComponent> get_all_from_type(string typeStr) {return p.components().get_all_from_type(Type.GetType(typeStr));}
+
+        // # alias
+        public List<ExComponent> get_all_components(ExComponent.Category type) {return get_all(type);}
+        public List<T> get_all_components<T>() where T : ExComponent {return get_all<T>();}
+        public List<ExComponent> get_all_components_from_category(string categoryStr) {return get_all_from_category(categoryStr);}
+        public List<ExComponent> get_all_components_from_type(string typeStr) {return get_all_from_type(typeStr);}
+
+        // get from current condition
+        public List<ExComponent> get_all_from_current_condition() {return p.currentCondition.get_all_components();}
+        public List<T> get_all_from_current_condition<T>() where T : ExComponent {return p.currentCondition.get_all_components<T>();}
+
+        // # alias
+        public List<ExComponent> get_all_components_from_current_condition() {return get_all_from_current_condition();}
+        public List<T> get_all_components_from_current_condition<T>() where T : ExComponent {return get_all_from_current_condition<T>();}
+
+        // get other scripts
+        public T get_csharp_script<T>(string name) where T : BaseCompiledCSharpComponent { return p.components().get_csharp_script<T>(name); }        
+
+
+        // ExComponent functions
+        // # main functions
+        public virtual bool initialize() { return true; }
+        public virtual void start_experiment() { }
+        public virtual void pre_start_routine() { }
+        public virtual void start_routine() { }
+        public virtual void post_start_routine() { }
+        public virtual void update() { }
+        public virtual void stop_routine() { }
+        public virtual void stop_experiment() { }
+        public virtual void play() { }
+        public virtual void pause() { }
+        public virtual void set_update_state(bool doUpdate) { }
+        public virtual void set_visibility(bool visible) { }
+
+        // # for advanced users 
+        public virtual void clean() { }
+        public virtual void on_gui() { }
+        public virtual void pre_update() { }
+        public virtual void post_update() { }
+        public virtual void update_parameter_from_gui(XML.Arg arg) { }
+        public virtual void update_from_current_config() { }
+        public virtual void action_from_gui(bool initConfig, string action) { }
+
+        // # slots
+        public virtual void slot1(object value) { }
+        public virtual void slot2(object value) { }
+        public virtual void slot3(object value) { }
+        public virtual void slot4(object value) { }
+        public virtual void slot5(IdAny idValue) { }
+    }
+}

@@ -17,6 +17,7 @@ namespace Ex{
     public class ExConnector : MonoBehaviour{
 
         protected static readonly string valueStr = "value";
+        private static readonly string uiId = "v";
 
         protected static readonly List<string> slotsStr = new List<string>(new string[] {
             "input value 0",
@@ -75,27 +76,32 @@ namespace Ex{
 
         public int key = -1;
         public string keyStr;
+        public Category category = Category.Undefined;
+        public Pritority priority = Pritority.Medium;
+        public Function currentFunction = Function.undefined;
 
+        public Routine associatedRoutine = null;
+        public Condition associatedCondition = null;
+        protected Config m_config = null;
+
+        private Events.Connections m_connections = null;
         public List<GameObject> inputGO = new List<GameObject>();
         public List<GameObject> outputGO = new List<GameObject>();
         public List<Connection> inputConnections = new List<Connection>();
         public List<Connection> outputConnections = new List<Connection>();
+       
+        private bool catchExceptions = false;        
 
-        public Routine associatedRoutine = null;
-        public Condition associatedCondition = null;
+        // access        
+        public Components components() {return ExVR.Components();}
+        public Log log() {return ExVR.Log();}
+        public TimeManager time() {return ExVR.Time();}
+        public EventsManager events() {return ExVR.Events();}
+        public Events.Connections connections() { return m_connections; }
+        public Events.Command command() {return events().command;}
 
-        protected Config m_config = null;
 
-        public Category category = Category.Undefined;
-        public Pritority priority = Pritority.Medium;
-        public Function currentFunction = Function.undefined;
-        private bool catchExceptions = false;
-
-        // events
-        private Events.Connections m_events = null;
-        public Events.Connections events() { return m_events; }
-
-        private static readonly string uiId = "v";
+        
 
         protected void send_connector_infos_to_gui(object value) {
             ExVR.Network().gui_ipc().send_connector_infos_to_GUI(
@@ -126,7 +132,7 @@ namespace Ex{
                 return;
             }
 
-            m_events.add_slot(slotsStr[id], action);
+            m_connections.add_slot(slotsStr[id], action);
         }
 
         protected void add_signals(int count) {
@@ -137,12 +143,12 @@ namespace Ex{
             }
 
             for(int ii = 0; ii < count; ++ii) {
-                m_events.add_signal(signalsStr[ii]);
+                m_connections.add_signal(signalsStr[ii]);
             }            
         }
 
         protected void invoke_signal(int id, object arg = null) {
-            m_events.invoke_signal(signalsStr[id], arg);
+            m_connections.invoke_signal(signalsStr[id], arg);
         }
 
         protected string verbose_name() {
@@ -153,27 +159,29 @@ namespace Ex{
             );
         }
 
+
+
         public void log_message(string message, bool verbose = false) {
             if (verbose) {
-                ExVR.Log().message(string.Concat(message, verbose_name()));
+                log().message(string.Concat(message, verbose_name()));
             } else {
-                ExVR.Log().message(message);
+                log().message(message);
             }
         }
 
         public void log_warning(string warning, bool verbose = true) {
             if (verbose) {
-                ExVR.Log().warning(string.Concat(warning, verbose_name()));
+                log().warning(string.Concat(warning, verbose_name()));
             } else {
-                ExVR.Log().warning(warning);
+                log().warning(warning);
             }
         }
 
         public void log_error(string error, bool verbose = true) {
             if (verbose) {
-                ExVR.Log().error(string.Concat(error, verbose_name()));
+                log().error(string.Concat(error, verbose_name()));
             } else {
-                ExVR.Log().error(error);
+                log().error(error);
             }
         }
 
@@ -247,7 +255,7 @@ namespace Ex{
 
         protected virtual void initialize(XML.Connector connector) {
 
-            m_events = new Events.Connections(gameObject.name);
+            m_connections = new Events.Connections(gameObject.name);
 
             catchExceptions = ExVR.GuiSettings().catchComponentsExceptions;
             currentFunction = Function.initialize;

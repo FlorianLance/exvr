@@ -7,6 +7,9 @@
 
 #include "element_viewer_widget.hpp"
 
+// local
+#include "global_signals.hpp"
+
 // Qt
 #include <QFileDialog>
 #include <QSpinBox>
@@ -88,17 +91,43 @@ void ElementViewerW::init_routine_ui(){
 
         if(ok && !routineName.isEmpty()){
             ui->laName->setText(routineName);
-            emit update_element_name_signal(m_currentElementId, routineName);
+            emit GSignals::get()->update_element_name_signal(m_currentElementId, routineName);
         }
     });
     connect(lw, &QListWidget::itemSelectionChanged, this, [=]{
-        emit select_routine_condition_signal(m_currentElementId, RowId{lw->currentRow()});
+        emit GSignals::get()->select_routine_condition_signal(m_currentElementId, RowId{lw->currentRow()});
     });
     connect(ui->pbUp, &QPushButton::clicked, this, [=]{
-        emit move_routine_condition_up_signal(m_currentElementId, RowId{lw->currentRow()});
+        emit GSignals::get()->move_routine_condition_up_signal(m_currentElementId, RowId{lw->currentRow()});
     });
     connect(ui->pbDown, &QPushButton::clicked, this, [=]{
-        emit move_routine_condition_down_signal(m_currentElementId, RowId{lw->currentRow()});
+        emit GSignals::get()->move_routine_condition_down_signal(m_currentElementId, RowId{lw->currentRow()});
+    });
+
+    connect(ui->cbIsARandomizer, &QCheckBox::clicked, this, [=]{
+
+        bool isARandomizer = ui->cbIsARandomizer->isChecked();
+
+        if(isARandomizer){
+            QMessageBox validateBox;
+            validateBox.setText("Set selected routine as a randomizer.");
+            validateBox.setInformativeText("The content of the routine will be deleted, do you want to continue?");
+            validateBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+            validateBox.setDefaultButton(QMessageBox::Cancel);
+            switch (validateBox.exec()) {
+            case QMessageBox::Ok:
+                break;
+            case QMessageBox::Cancel:
+                ui->cbIsARandomizer->blockSignals(true);
+                ui->cbIsARandomizer->setChecked(false);
+                ui->cbIsARandomizer->blockSignals(false);
+                return;
+            default:
+                return;
+            }
+        }
+
+        emit GSignals::get()->set_routine_as_randomizer_signal(m_currentElementId, isARandomizer);
     });
 }
 
@@ -135,13 +164,13 @@ void ElementViewerW::init_loop_ui(){
             ui->laName->text(), &ok);
         if(ok && !loopName.isEmpty()){
             ui->laName->setText(loopName);
-            emit update_element_name_signal(m_currentElementId, loopName);
+            emit GSignals::get()->update_element_name_signal(m_currentElementId, loopName);
         }
     });
 
     // nb reps
     connect(ui->sbNbReps, QOverload<int>::of(&QSpinBox::valueChanged), this, [&](int value){
-        emit modify_loop_nb_reps_signal(m_currentElementId, value);
+        emit GSignals::get()->modify_loop_nb_reps_signal(m_currentElementId, value);
     });
 
     // style
@@ -182,7 +211,7 @@ void ElementViewerW::init_loop_ui(){
                 return;
             }
         }
-        emit modify_loop_type_signal(m_currentElementId, static_cast<Loop::Mode>(index));
+        emit GSignals::get()->modify_loop_type_signal(m_currentElementId, static_cast<Loop::Mode>(index));
     });
 
     // sets
@@ -192,7 +221,7 @@ void ElementViewerW::init_loop_ui(){
 
     connect(tw, &QTableWidget::itemSelectionChanged, this, [=]{
         int row = tw->currentRow();
-        emit select_loop_set_signal(m_currentElementId, tw->item(row,0)->text());
+        emit GSignals::get()->select_loop_set_signal(m_currentElementId, tw->item(row,0)->text());
     });
     connect(tw, &QTableWidget::itemChanged, this, [=](QTableWidgetItem *item){
         int row = item->row();
@@ -201,9 +230,9 @@ void ElementViewerW::init_loop_ui(){
             tw->blockSignals(true);
             tw->item(row,0)->setText(txt);
             tw->blockSignals(false);
-            emit modify_loop_set_name_signal(m_currentElementId, txt, RowId{row});
+            emit GSignals::get()->modify_loop_set_name_signal(m_currentElementId, txt, RowId{row});
         }else{
-            emit modify_loop_set_occurrencies_nb_signal(m_currentElementId, tw->item(row,1)->text().toInt(), RowId{row});
+            emit GSignals::get()->modify_loop_set_occurrencies_nb_signal(m_currentElementId, tw->item(row,1)->text().toInt(), RowId{row});
         }
     });
 
@@ -212,24 +241,24 @@ void ElementViewerW::init_loop_ui(){
         ui->teAdd->blockSignals(true);
         ui->teAdd->setText(txt);
         ui->teAdd->blockSignals(false);
-        emit add_loop_sets_signal(m_currentElementId, txt, RowId{tw->currentRow()+1});
+        emit GSignals::get()->add_loop_sets_signal(m_currentElementId, txt, RowId{tw->currentRow()+1});
     });
     connect(ui->pbRemove, &QPushButton::clicked, this, [=]{
         int id = tw->currentRow();
         if(id > -1){
-            emit remove_set_signal(m_currentElementId, RowId{id});
+            emit GSignals::get()->remove_set_signal(m_currentElementId, RowId{id});
         }
     });
     connect(ui->pbUp, &QPushButton::clicked, this, [=]{
         int id = tw->currentRow();
         if(id > -1){
-            emit move_loop_set_up_signal(m_currentElementId, RowId{id});
+            emit GSignals::get()->move_loop_set_up_signal(m_currentElementId, RowId{id});
         }
     });
     connect(ui->pbDown, &QPushButton::clicked, this, [=]{
         int id = tw->currentRow();
         if(id > -1){
-            emit move_loop_set_down_signal(m_currentElementId, RowId{id});
+            emit GSignals::get()->move_loop_set_down_signal(m_currentElementId, RowId{id});
         }
     });
     connect(ui->pbChooseFile, &QPushButton::clicked, this, [=]{
@@ -237,10 +266,10 @@ void ElementViewerW::init_loop_ui(){
         if(filePath.size() == 0){
             return;
         }
-        emit load_loop_sets_file_signal(m_currentElementId, filePath);
+        emit GSignals::get()->load_loop_sets_file_signal(m_currentElementId, filePath);
     });
     connect(ui->pbReload, &QPushButton::clicked, this, [=]{
-        emit reload_loop_sets_file_signal(m_currentElementId);
+        emit GSignals::get()->reload_loop_sets_file_signal(m_currentElementId);
     });
 
 }
@@ -259,13 +288,13 @@ void ElementViewerW::init_isi_ui(){
             ui->laName->text(), &ok);
         if(ok && !isiName.isEmpty()){
             ui->laName->setText(isiName);
-            emit update_element_name_signal(m_currentElementId, isiName);
+            emit GSignals::get()->update_element_name_signal(m_currentElementId, isiName);
         }
     });
 
     // checkbox
     connect(ui->cbRandomize, &QCheckBox::clicked, [=](bool checked){
-        emit set_isi_randomize_signal(m_currentElementId, checked);
+        emit GSignals::get()->set_isi_randomize_signal(m_currentElementId, checked);
     });
 
     // sets
@@ -275,24 +304,24 @@ void ElementViewerW::init_isi_ui(){
         ui->pbDown->setEnabled(lw->currentRow() < lw->count()-1 && lw->count() > 0);
     });
     connect(lw, &QListWidget::itemChanged, this, [=](QListWidgetItem * item){
-        emit modify_isi_interval_signal(m_currentElementId, item->text().toDouble(), RowId{lw->row(item)});
+        emit GSignals::get()->modify_isi_interval_signal(m_currentElementId, item->text().toDouble(), RowId{lw->row(item)});
     });
 
     connect(ui->pbAdd, &QPushButton::clicked, this, [=]{
         int id = lw->currentRow()+1;
-        emit add_isi_interval_signal(m_currentElementId, ui->dsbNewIsi->value(), RowId{id});
+        emit GSignals::get()->add_isi_interval_signal(m_currentElementId, ui->dsbNewIsi->value(), RowId{id});
     });
     connect(ui->pbRemove, &QPushButton::clicked, this, [=]{
         int id = lw->currentRow();
-        emit remove_isi_interval_signal(m_currentElementId, RowId{id});
+        emit GSignals::get()->remove_isi_interval_signal(m_currentElementId, RowId{id});
     });
     connect(ui->pbUp, &QPushButton::clicked, this, [=]{
         int id = lw->currentRow();
-        emit move_isi_interval_up_signal(m_currentElementId, RowId{id});
+        emit GSignals::get()->move_isi_interval_up_signal(m_currentElementId, RowId{id});
     });
     connect(ui->pbDown, &QPushButton::clicked, this, [=]{
         int id = lw->currentRow();
-        emit move_isi_interval_down_signal(m_currentElementId, RowId{id});
+        emit GSignals::get()->move_isi_interval_down_signal(m_currentElementId, RowId{id});
     });
 }
 
@@ -388,6 +417,10 @@ void ElementViewerW::update_routine_ui(Routine *routine){
 
     // name
     ui->laName->setText(routine->name());
+
+    ui->cbIsARandomizer->blockSignals(true);
+    ui->cbIsARandomizer->setChecked(routine->isARandomizer);
+    ui->cbIsARandomizer->blockSignals(false);
 
     // list
     lw->blockSignals(true);

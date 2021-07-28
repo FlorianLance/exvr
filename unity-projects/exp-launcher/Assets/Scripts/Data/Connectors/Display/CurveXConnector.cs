@@ -31,7 +31,7 @@ namespace Ex{
 
         protected override void update() {
 
-            double totalTime = ExVR.Time().ellapsed_time_element_ms();
+            double totalTime = ExVR.Time().ellapsed_element_ms();
             double deltaTime = 1000.0 / frequency;
             if (totalTime / deltaTime > count) {
                 if (stackValues.Count > 0) {

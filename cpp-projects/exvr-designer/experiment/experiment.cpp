@@ -530,6 +530,13 @@ void Experiment::move_routine_condition_up(ElementKey routineKey, RowId id){
     }
 }
 
+void Experiment::set_routine_as_randomizer(ElementKey routineKey, bool isARandomizer){
+    if(auto routine = get_routine(routineKey); routine != nullptr){
+        routine->set_as_randomizer(isARandomizer);
+        add_to_update_flag(UpdateRoutines | UpdateSelection | UpdateFlow);
+    }
+}
+
 void Experiment::update_condition_timeline(ElementKey routineKey, ConditionKey conditionKey, double duration, double scale, double uiFactorSize){
 
     if(auto condition = get_condition(routineKey, conditionKey); condition != nullptr){
@@ -1070,18 +1077,25 @@ void Experiment::add_loop_sets(ElementKey loopKey, QString sets, RowId id){
         if(loop->is_file_mode()){
             QtLogger::error(QSL("[EXP] Cannot add new set when file mode is used."));
         }else{
-            int startId = id.v;
-            int ii = 0;
-            for(const auto &setName : sets.split("\n")){
-                if(loop->add_set(setName, RowId{startId+ii})){
-                    ++ii;
-                }else{
-                    QtLogger::error(QSL("[EXP] Set ") % setName % QSL(" already exists."));
-                }
-                if(ii != 0){
-                    update_conditions();
+
+            if(loop->is_default()){
+                loop->set_sets(sets.split("\n"));
+            }else{
+                int startId = id.v;
+                int ii = 0;
+                for(const auto &setName : sets.split("\n")){
+
+                    if(setName.length() == 0){
+                        continue;
+                    }
+
+                    if(loop->add_set(setName, RowId{startId+ii})){
+                        ++ii;
+                    }
                 }
             }
+
+            update_conditions();
             add_to_update_flag(UpdateSelection | UpdateFlow | UpdateRoutines);
         }
     }
@@ -1089,17 +1103,11 @@ void Experiment::add_loop_sets(ElementKey loopKey, QString sets, RowId id){
 
 void Experiment::modify_loop_set_name(ElementKey loopKey, QString setName, RowId id){
 
-    if(auto loop = get_loop(loopKey); loop != nullptr){
-        if(loop->is_file_mode()){
-            QtLogger::error(QSL("[EXP] Cannot modify loop set when file mode is used."));
-        }else{
-            if(loop->modify_set_name(setName,id)){
-                update_conditions();                
-            }else{
-                QtLogger::error(QSL("[EXP] Set ") % setName % QSL(" already exists."));
-            }
-            add_to_update_flag(UpdateSelection | UpdateFlow | UpdateRoutines);
+    if(auto loop = get_loop(loopKey); loop != nullptr){        
+        if(loop->modify_set_name(setName,id)){
+            update_conditions();
         }
+        add_to_update_flag(UpdateSelection | UpdateFlow | UpdateRoutines);
     }
 }
 

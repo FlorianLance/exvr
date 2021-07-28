@@ -25,5 +25,9 @@ public:
     void adapt_size_from_name(QFontMetrics fontMetrics) override;
     void compute_position(QPointF topLeft, int loopMaxDeepLevel) override;
     void draw(QPainter &painter, qreal zoomLevel) override;
+    void update(Element *element) override;
+private:
+
+    bool isARandomizer;
 };
 }

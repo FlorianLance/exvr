@@ -65,7 +65,7 @@ namespace Ex{
             if (eventType != EventType.Repaint) {
                 return;
             }
-            var currentTime = ellapsed_time_exp_ms();
+            var currentTime = time().ellapsed_exp_ms();
 
             int pressedKeysCount = 0;
             foreach (var code in Input.JoypadButton.Codes) {

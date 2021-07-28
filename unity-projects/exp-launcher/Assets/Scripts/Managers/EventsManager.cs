@@ -32,6 +32,42 @@ namespace Ex{
             public Events.StringEvent PreviousElementWithConditionEvent = new Events.StringEvent();
             public Events.IntEvent GoToSpecificInstanceElementEvent     = new Events.IntEvent();
             public Events.String4Event ModifyRoutineActionConfigEvent   = new Events.String4Event();
+
+            public void next() {
+                NextElementEvent.Invoke();
+            }
+
+            public void previous() {
+                PreviousElementEvent.Invoke();
+            }
+
+            public void pause_experiment() {
+                PauseExperimentEvent.Invoke();
+            }
+
+            public void force_stop_experiment() {
+                StopExperimentEvent.Invoke();
+            }
+
+            public void next_element_with_name(string elementName) {
+                NextElementWithNameEvent.Invoke(elementName);
+            }
+
+            public void previous_element_with_name(string elementName) {
+                PreviousElementWithNameEvent.Invoke(elementName);
+            }
+
+            public void next_element_with_condition(string elementName) {
+                NextElementWithConditionEvent.Invoke(elementName);
+            }
+
+            public void previous_element_with_condition(string elementName) {
+                PreviousElementWithConditionEvent.Invoke(elementName);
+            }
+
+            public void modify_routine_action_config(string routineName, string conditionName, string componentName, string newConfigName) {
+                ModifyRoutineActionConfigEvent.Invoke(routineName, conditionName, componentName, newConfigName);
+            }
         }
 
         public class Gui {

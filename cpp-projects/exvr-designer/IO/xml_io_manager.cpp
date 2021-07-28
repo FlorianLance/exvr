@@ -1231,6 +1231,7 @@ void XmlIoManager::write_routine(const Routine *routine){
     w->writeStartElement(QSL("Routine"));
     w->writeAttribute(QSL("key"), QString::number(routine->key()));
     w->writeAttribute(QSL("name"), routine->name());
+    w->writeAttribute(QSL("randomizer"), routine->isARandomizer ? "1" : "0");
 
     for(const auto &cond : routine->conditions){
         write_condition(cond.get());
@@ -1499,12 +1500,17 @@ RoutineUP XmlIoManager::read_routine(){
 
     const auto key      = read_attribute<int>(QSL("key"), true);
     const auto name     = read_attribute<QString>(QSL("name"), true);
+    const auto randomizer = read_attribute<bool>(QSL("randomizer"), false);
     if(!key.has_value() || !name.has_value() ){
         QtLogger::error(QSL("[XML] Invalid routine at line: ") % QString::number(r->lineNumber()));
         return nullptr;
     }
 
     RoutineUP routine = std::make_unique<Routine>(name.value(), key.value());
+    if(randomizer.has_value()){
+        routine->isARandomizer = randomizer.value();
+    }
+
     if(!m_experiment->lastRoutineSelected){
         m_experiment->lastRoutineSelected = routine.get();
     }

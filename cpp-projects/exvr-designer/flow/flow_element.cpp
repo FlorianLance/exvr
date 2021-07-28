@@ -42,8 +42,10 @@ void FlowElement::draw(QPainter &painter, qreal zoomLevel){
 }
 
 
-FlowElement::FlowElement(Element *element) : key(ElementKey{element->key()}), m_name(element->name()), m_type(element->type),
+FlowElement::FlowElement(Element *element) :
+    key(ElementKey{element->key()}), m_name(element->name()), m_type(element->type),
     m_selected(element->is_selected()), m_insideLoopsID(element->insideLoopsID){
+
     colors = display::Colors::flowElements.at(m_type);
 }
 

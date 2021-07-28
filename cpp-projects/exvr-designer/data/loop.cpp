@@ -8,6 +8,9 @@
 
 #include "loop.hpp"
 
+// local
+#include "qt_logger.hpp"
+
 using namespace tool::ex;
 
 
@@ -60,18 +63,57 @@ void Loop::set_loop_type(Loop::Mode m) noexcept{
     mode = m;
 }
 
-bool Loop::add_set(QString setName, RowId id) noexcept{
+bool Loop::is_default() const{
 
     if(sets.size() == 1){
         if(sets[0].name == QSL("default")){
-            sets[0].name = setName;
-            currentSetName = setName;
             return true;
         }
     }
+    return false;
+}
 
+bool Loop::set_sets(QStringList setsName){
+
+    std::set<QString> validNames;
+    for(const auto &setName: setsName){
+
+        if(setName.length() == 0){
+            continue;
+        }
+
+        if(validNames.contains(setName)){
+            QtLogger::error(QSL("[LOOP] Name \"") % setName % QSL("\" is inserted more than once in the list."));
+            continue;
+        }
+        validNames.insert(setName);
+    }
+
+    sets.clear();
+    for(const auto &setName: validNames){
+        sets.emplace_back(Set{setName, SetKey{-1}});
+    }
+    return true;
+}
+
+bool Loop::add_set(QString setName, RowId id) {
+
+    // cannot add default as set name
+    if(setName == QSL("default")){
+        QtLogger::error(QSL("[LOOP] Cannot add \"default\" as set name"));
+        return false;
+    }
+
+    if(is_default()){
+        sets[0].name = setName;
+        currentSetName = setName;
+        return true;
+    }
+
+    // name already used
     for(const auto &set : sets){
         if(set.name == setName){
+            QtLogger::error(QSL("[LOOP] Loop already contains a set named \"") % setName % QSL("\""));
             return false;
         }
     }
@@ -79,15 +121,6 @@ bool Loop::add_set(QString setName, RowId id) noexcept{
     sets.insert(std::begin(sets) + id.v, Set{setName, SetKey{-1}});
     currentSetName = setName;
     return true;
-
-
-//    if(std::find(std::begin(sets), std::end(sets), setName) == std::end(sets)) {
-//        sets.insert(std::begin(sets) + id.v, Set{setName, SetKey{-1}});
-//        currentSetName = setName;
-//        return true;
-//    }
-
-//    return false;
 }
 
 bool Loop::is_file_mode() const noexcept{
@@ -108,22 +141,26 @@ void Loop::remove_set(RowId id){
 
 bool Loop::modify_set_name(QString newSetName, RowId id){
 
+    if(newSetName == QSL("default")){
+        QtLogger::error(QSL("[LOOP] Cannot rename as set to \"default\" name"));
+        return false;
+    }
+
+    if(is_file_mode()){
+        QtLogger::error(QSL("[LOOP] Cannot modify loop set when file mode is used."));
+        return false;
+    }
+
     // check if set doesn't already exist
     for(const auto &set : sets){
         if(set.name == newSetName){
+            QtLogger::error(QSL("[LOOP] Set ") % newSetName % QSL(" already exists."));
             return false;
         }
     }
 
     sets[id.v].name = newSetName;
     return true;
-
-//    if(std::find(std::begin(sets), std::end(sets), newSetName) == std::end(sets)) {
-//        sets[id.v].name = newSetName;
-//        return true;
-//    }
-
-//    return false;
 }
 
 void Loop::modify_set_occurencies_nb(int occurrencies, RowId id){

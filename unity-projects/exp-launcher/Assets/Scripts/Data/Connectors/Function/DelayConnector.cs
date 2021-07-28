@@ -26,7 +26,7 @@ namespace Ex{
         }
 
         protected override void slot1(object arg) {
-            elements.Enqueue(new Tuple<double, object>(ExComponent.ellapsed_time_routine_ms(), arg));
+            elements.Enqueue(new Tuple<double, object>(time().ellapsed_element_ms(), arg));
             if (elements.Count > maxNb) {
                 elements.Dequeue();
             }
@@ -38,7 +38,7 @@ namespace Ex{
 
         protected override void update() {
 
-            var currTime = ExComponent.ellapsed_time_routine_ms();
+            var currTime = time().ellapsed_element_ms();
 
             List<object> items = new List<object>();
             while (elements.Count > 0) {

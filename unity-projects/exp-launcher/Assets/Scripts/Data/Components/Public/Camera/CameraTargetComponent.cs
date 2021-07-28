@@ -98,7 +98,7 @@ namespace Ex{
                             Quaternion.AngleAxis(rotOffset.z, CameraUtility.eye_camera_forward())).eulerAngles;
                     }
                 } else {
-                    var go = get(targetComponent);
+                    var go = components().get_from_name(targetComponent);
                     if (go == null) {
                         log_error(string.Format("Component not found: {0}", targetComponent));
                         return;

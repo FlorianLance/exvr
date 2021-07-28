@@ -143,7 +143,7 @@ namespace Ex{
         public void start_recording_new_clip() {
             Debug.Log("######################### start_recording_new_clip");
 
-            var interval = currentTimeline.get_upate_time_interval(ellapsed_time_routine_ms() * 0.001);
+            var interval = currentTimeline.get_upate_time_interval(time().ellapsed_element_ms() * 0.001);
             if (interval != null) {
                 int minFreq = 0, maxFreq = 0;
                 int length = (int)(interval.tEndS - interval.tStartS);

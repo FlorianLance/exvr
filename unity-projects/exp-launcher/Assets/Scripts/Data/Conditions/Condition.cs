@@ -73,19 +73,26 @@ namespace Ex{
 
     public class Condition : MonoBehaviour{
 
+        // condition info
         private int m_key;
         private string keyStr;
         private double m_durationS = 0.0;
         private int m_callsNb = 0;
+
+        // connections
         private List<XML.Connection> m_connectionsXML = null;
-
         public List<Connection> connections = new List<Connection>();
+        public List<ExConnector> connectors = null;
+        public ExConnector currentConnector = null;
 
+        // actions
         public List<Action> actions = null;
         public List<Action> reverseOrderActions = null;
-        public List<ExConnector> connectors = null;
+        public Dictionary<ExComponent.Category, List<Action>> actionsPerComponentCategory = null;
+        public Dictionary<Type, List<Action>> actionsPerComponentType   = null;        
+        public Dictionary<string, Action> actionPerComponentName = null;
+        public Dictionary<int, Action> actionPerComponentKey = null; 
 
-        public ExConnector currentConnector = null;
 
         public int key() {
             return m_key;
@@ -118,23 +125,53 @@ namespace Ex{
 
         public Action get_action_from_component_key(int componentKey) {
 
-            foreach (Action action in actions) {
-                if (action.component().key == componentKey) {
-                    return action;
-                }
+            if (actionPerComponentKey.ContainsKey(componentKey)) {
+                return actionPerComponentKey[componentKey];
             }
             return null;
         }
 
         public Action get_action_from_component_name(string componentName) {
 
-            foreach(Action action in actions) {
-                if(action.component().name == componentName) {
-                    return action;
-                }
+            if (actionPerComponentName.ContainsKey(componentName)) {
+                return actionPerComponentName[componentName];
             }
             return null;
         }
+
+        public List<ExComponent> get_all_components() {
+            List<ExComponent> components = new List<ExComponent>();
+            foreach (var action in actions) {
+                components.Add(action.component());
+            }
+            return components;
+        }
+
+        public List<ExComponent> get_all_components(ExComponent.Category category) {
+            List<ExComponent> componentsWithCategory = new List<ExComponent>();
+            foreach (var action in actionsPerComponentCategory[category]) {
+                componentsWithCategory.Add(action.component());
+            }
+            return componentsWithCategory;
+        }
+
+        public List<ExComponent> get_all_components(Type type) {
+            List<ExComponent> componentsWithType = new List<ExComponent>();
+            foreach (var action in actionsPerComponentType[type]) {
+                componentsWithType.Add(action.component());
+            }
+            return componentsWithType;
+        }
+
+        public List<T> get_all_components<T>() where T : ExComponent {
+            List<T> components = new List<T>();
+            var type = typeof(T);
+            foreach (var action in actionsPerComponentType[type]) {
+                components.Add((T)action.component());
+            }
+            return components;
+        }
+
 
         public Routine parent_routine() {
             return transform.parent.GetComponent<Routine>();
@@ -154,6 +191,7 @@ namespace Ex{
             foreach (XML.Action actionXml in xmlCondition.Actions) {
                 unsortedActions.Add(new Action(actionXml));
             }
+
 
             // store actions by priority
             actions = new List<Action>(xmlCondition.Actions.Count);
@@ -178,6 +216,31 @@ namespace Ex{
                     reverseOrderActions.Add(action);
                 }
             }
+
+            // store actions in dictionnary
+            actionsPerComponentCategory = new Dictionary<ExComponent.Category, List<Action>>();
+            actionsPerComponentType = new Dictionary<Type, List<Action>>();
+            actionPerComponentName  = new Dictionary<string, Action>();
+            actionPerComponentKey   = new Dictionary<int, Action>();
+            foreach (var action in actions) {
+
+                var typeComponent = action.component().GetType();
+                if (!actionsPerComponentType.ContainsKey(typeComponent)) {
+                    actionsPerComponentType[typeComponent] = new List<Action>();
+                }
+                actionsPerComponentType[typeComponent].Add(action);
+
+                var category = action.component().category;
+                if (!actionsPerComponentCategory.ContainsKey(category)) {
+                    actionsPerComponentCategory[category] = new List<Action>();
+                }
+                actionsPerComponentCategory[category].Add(action);
+
+
+                actionPerComponentName[action.component().name] = action;
+                actionPerComponentKey[action.component().key] = action;
+            }
+
 
             // find duration of the condition
             m_durationS = xmlCondition.Duration;
@@ -215,7 +278,7 @@ namespace Ex{
                         ExVR.Log().error(string.Format("Connection start key {0} not found in components.", connectionXML.StartKey));
                         continue;
                     }
-                    outE = action.component().events();
+                    outE = action.component().connections();
                     connection.start = action.component().gameObject;
 
                 } else {
@@ -226,7 +289,7 @@ namespace Ex{
                         continue;
                     }
                     
-                    outE = connector.events();
+                    outE = connector.connections();
                     connection.start = connector.gameObject;
                 }
 
@@ -239,7 +302,7 @@ namespace Ex{
                         ExVR.Log().error(string.Format("Connection end key {0} not found in components.", connectionXML.EndKey));
                         continue;
                     }
-                    inE = action.component().events();
+                    inE = action.component().connections();
                     connection.end = action.component().gameObject;
 
                 } else {
@@ -249,7 +312,7 @@ namespace Ex{
                         ExVR.Log().error(string.Format("Connection end key {0} not found in connectors.", connectionXML.EndKey));
                         continue;
                     }
-                    inE = connector.events();
+                    inE = connector.connections();
                     connection.end = connector.gameObject;                    
                 }
 
@@ -449,10 +512,10 @@ namespace Ex{
         public void remove_connections() {
 
             foreach (var action in actions) {                
-                action.component().events().clean();
+                action.component().connections().clean();
             }
             foreach (var connector in connectors) {
-                connector.events().clean();
+                connector.connections().clean();
             }
         }
     }

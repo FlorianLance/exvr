@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>194</width>
-    <height>273</height>
+    <width>245</width>
+    <height>306</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -89,6 +89,13 @@
     <widget class="Line" name="line">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="cbIsARandomizer">
+     <property name="text">
+      <string>Set as a randomizer</string>
      </property>
     </widget>
    </item>

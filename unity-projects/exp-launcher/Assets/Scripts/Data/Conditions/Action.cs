@@ -38,7 +38,7 @@ namespace Ex{
             m_timeline = new TimeLine(actionXml.Timelines[0], actionXml.Timelines[1]);
 
             // retrieve component
-            m_component = ExVR.Components().get(actionXml.KeyComponent);
+            m_component = ExVR.Components().get_from_key(actionXml.KeyComponent);
 
             if (!m_component) {
                 ExVR.Log().error(string.Format("Cannot init action, component with key {0} not found. ", actionXml.KeyComponent));

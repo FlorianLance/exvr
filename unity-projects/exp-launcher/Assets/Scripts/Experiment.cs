@@ -255,8 +255,8 @@ namespace Ex{
 
                 bool isRoutine = (info.type() == FlowElement.FlowElementType.Routine);
 
-                string elementTimeStr   = Converter.to_string(ExVR.Time().ellapsed_time_element_ms());
-                string expTimeStr       = Converter.to_string(ExVR.Time().ellapsed_time_exp_ms());                
+                string elementTimeStr   = Converter.to_string(ExVR.Time().ellapsed_element_ms());
+                string expTimeStr       = Converter.to_string(ExVR.Time().ellapsed_exp_ms());                
                 string interStr         = info.interval != null ? Converter.to_string(info.interval.tEndS * 1000) : "-";
                 string orderStr         = string.Format("{0}/{1}", info.order+1, schreduler.total_number_of_elements());
                 string elementKey       = Converter.to_string(info.key());

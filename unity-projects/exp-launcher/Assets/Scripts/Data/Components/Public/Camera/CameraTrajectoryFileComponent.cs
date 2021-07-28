@@ -117,7 +117,7 @@ namespace Ex{
             }
 
             // compute time
-            float currentTimeS = (float)(ellapsed_time_routine_ms() * 0.001);
+            float currentTimeS = (float)(time().ellapsed_element_ms() * 0.001);
             bool addNewForwardLine = false;
             if (currentTimeS - lastForwardLineTimeS > 0.25) {
                 lastForwardLineTimeS = currentTimeS;
@@ -131,13 +131,13 @@ namespace Ex{
             }
 
             float speedFactor = speedCurve.Evaluate((float)(currentTimeS/ duration));
-            float time = speedFactor * duration;
+            float timeF = speedFactor * duration;
 
             // compute target
             bool sphericInterpolation = currentC.get<bool>("spherical_interpolation");
-            var targetPosition = currentTraj.compute_position(time, duration, sphericInterpolation);
-            var targetRotation = currentTraj.compute_rotation(time, duration, sphericInterpolation);
-            log_message(string.Format("time: {0} duration {1} speedFactor {2}", time, duration, speedFactor));
+            var targetPosition = currentTraj.compute_position(timeF, duration, sphericInterpolation);
+            var targetRotation = currentTraj.compute_rotation(timeF, duration, sphericInterpolation);
+            log_message(string.Format("time: {0} duration {1} speedFactor {2}", timeF, duration, speedFactor));
 
             // move camera
             ExVR.Display().cameras().set_calibration_transform_by_modifying_camera_rig(

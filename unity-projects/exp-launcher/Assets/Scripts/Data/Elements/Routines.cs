@@ -69,7 +69,7 @@ namespace Ex{
                 m_routines.Add(routine);
                 m_routinesPerName[routine.name] = routine;
                 m_routinesPerKey[routine.key()] = routine;
-            }
+            }            
         }
 
         public void display_last_info() {
@@ -135,10 +135,14 @@ namespace Ex{
             return null;
         }
 
-        //public void start_experiment() {
-
-        //}
-
+        public List<string> get_instance_conditions(string routineName) {
+            var routine = get(routineName);
+            if (routine != null) {
+                return routine.get_instance_conditions_names();
+            } else {
+                return new List<string>();
+            }
+        }
 
 
         public void start_routine(RoutineInfo info) {
@@ -187,7 +191,6 @@ namespace Ex{
         }
 
         public void start_experiment() {
-
             ExVR.Components().start_experiment();
         }
 
@@ -223,13 +226,13 @@ namespace Ex{
 
         public void update_components_states(RoutineInfo info) {
             //ExVR.ExpLog().push_to_strackTrace(new RoutinesManagerTrace(routine, "update_components_states", true));
-            ExVR.Components().update_states_from_time(info.condition, ExVR.Time().ellapsed_time_element_s());
+            ExVR.Components().update_states_from_time(info.condition, ExVR.Time().ellapsed_element_s());
             //ExVR.ExpLog().push_to_strackTrace(new RoutinesManagerTrace(routine, "update_components_states", false));
         }
 
         public bool modify_action_config(string routineName, string conditionName, string componentName, string newConfigName) {
 
-            var component = ExVR.Components().get(componentName);
+            var component = ExVR.Components().get_from_name(componentName);
             if (component == null) {
                 return false;
             }

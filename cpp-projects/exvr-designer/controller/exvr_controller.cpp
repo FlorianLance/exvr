@@ -93,11 +93,7 @@ ExVrController::ExVrController(const QString &nVersion, bool lncoComponents){
     generate_global_signals_connections();
     generate_main_window_connections();
     generate_components_manager_connections();
-    generate_exp_launcher_connections();
-    generate_xml_manager_connections();
     generate_flow_diagram_connections();
-    generate_element_viewer_connections();
-    generate_experiment_connections();
     generate_controller_connections();
     generate_resources_manager_connections();
     generate_logger_connections();
@@ -345,6 +341,11 @@ void ExVrController::go_to_current_specific_instance_element(){
                 emit go_to_specific_instance_element_signal(idOrder);
                 return;
             }
+            if(instanceElement.elem->is_routine()){
+                if(dynamic_cast<Routine*>(instanceElement.elem)->isARandomizer){
+                    continue;
+                }
+            }
             ++idOrder;
         }
     }else{
@@ -369,7 +370,18 @@ void ExVrController::got_to_specific_instance_element(){
     }
 
     QTableWidget *twInstanceElements = new QTableWidget();
-    twInstanceElements->setRowCount(to_signed(m_currentInstance->flow.size()));
+
+    size_t totalRows = 0;
+    for(const auto &element : m_currentInstance->flow){
+        if(element.elem->type == Element::Type::Routine){
+            if(dynamic_cast<Routine*>(element.elem)->isARandomizer){
+                continue;
+            }
+        }
+        ++totalRows;
+    }
+
+    twInstanceElements->setRowCount(to_signed(totalRows));
     twInstanceElements->setColumnCount(4);
     twInstanceElements->setSelectionBehavior(QAbstractItemView::SelectRows);
 
@@ -380,6 +392,10 @@ void ExVrController::got_to_specific_instance_element(){
     for(const auto &element : m_currentInstance->flow){
 
         if(element.elem->type == Element::Type::Routine){
+            if(dynamic_cast<Routine*>(element.elem)->isARandomizer){
+                continue;
+            }
+
             twInstanceElements->setItem(orderId, 0, new QTableWidgetItem("Routine "));
         }else{
             twInstanceElements->setItem(orderId, 0, new QTableWidgetItem("ISI "));
@@ -722,8 +738,30 @@ void ExVrController::generate_global_signals_connections(){
         }
     });
     // -> experiment
-    connect(s, &GSignals::toggle_mode_signal, exp(), &EXP::toggle_design_mode);
-    connect(s, &GSignals::routine_selected_signal, [&]{});
+    connect(s, &GSignals::select_routine_condition_signal,            exp(), &EXP::select_routine_condition);
+    connect(s, &GSignals::move_routine_condition_down_signal,         exp(), &EXP::move_routine_condition_down);
+    connect(s, &GSignals::move_routine_condition_up_signal,           exp(), &EXP::move_routine_condition_up);
+    connect(s, &GSignals::update_element_name_signal,                 exp(), &EXP::update_element_name);
+    connect(s, &GSignals::select_loop_set_signal,                     exp(), &EXP::select_loop_set);
+    connect(s, &GSignals::modify_loop_nb_reps_signal,                 exp(), &EXP::modify_loop_nb_reps);
+    connect(s, &GSignals::modify_loop_type_signal,                    exp(), &EXP::modify_loop_type);
+    connect(s, &GSignals::modify_loop_set_name_signal,                exp(), &EXP::modify_loop_set_name);
+    connect(s, &GSignals::modify_loop_set_occurrencies_nb_signal,     exp(), &EXP::modify_loop_set_occurrencies_nb);
+    connect(s, &GSignals::remove_set_signal,                          exp(), &EXP::remove_set);
+    connect(s, &GSignals::move_loop_set_up_signal,                    exp(), &EXP::move_loop_set_up);
+    connect(s, &GSignals::move_loop_set_down_signal,                  exp(), &EXP::move_loop_set_down);
+    connect(s, &GSignals::load_loop_sets_file_signal,                 exp(), &EXP::load_loop_sets_file);
+    connect(s, &GSignals::reload_loop_sets_file_signal,               exp(), &EXP::reload_loop_sets_file);
+    connect(s, &GSignals::add_loop_sets_signal,                       exp(), &EXP::add_loop_sets);
+    connect(s, &GSignals::add_isi_interval_signal,                    exp(), &EXP::add_isi_interval);
+    connect(s, &GSignals::modify_isi_interval_signal,                 exp(), &EXP::modify_isi_interval);
+    connect(s, &GSignals::set_isi_randomize_signal,                   exp(), &EXP::set_isi_randomize);
+    connect(s, &GSignals::remove_isi_interval_signal,                 exp(), &EXP::remove_isi_interval);
+    connect(s, &GSignals::move_isi_interval_up_signal,                exp(), &EXP::move_isi_interval_up);
+    connect(s, &GSignals::move_isi_interval_down_signal,              exp(), &EXP::move_isi_interval_down);
+    connect(s, &GSignals::set_routine_as_randomizer_signal,           exp(), &EXP::set_routine_as_randomizer);
+    connect(s, &GSignals::toggle_mode_signal,                         exp(), &EXP::toggle_design_mode);
+    connect(s, &GSignals::routine_selected_signal,                    [&]{});
     connect(s, &GSignals::delete_actions_signal,                      exp(), &EXP::delete_actions_from_condition);
     connect(s, &GSignals::fill_actions_signal,                        exp(), &EXP::fill_actions_from_condition);
     connect(s, &GSignals::clean_actions_signal,                       exp(), &EXP::clean_actions_from_condition);
@@ -901,11 +939,6 @@ void ExVrController::generate_components_manager_connections(){
     connect(componentsM, &COM::duplicate_component_signal,         exp(), &EXP::duplicate_component);
 }
 
-
-void ExVrController::generate_exp_launcher_connections(){
-
-}
-
 void ExVrController::generate_flow_diagram_connections(){
 
     auto flowDiagram = ui()->flow_diagram();
@@ -921,41 +954,6 @@ void ExVrController::generate_flow_diagram_connections(){
     connect(flowDiagram, &FlowDiagramW::clean_current_routine_condition_signal, exp(), &EXP::clean_current_routine_condition);
     connect(flowDiagram, &FlowDiagramW::clean_all_routine_conditions_signal,    exp(), &EXP::clean_all_routine_conditions);
     connect(flowDiagram, &FlowDiagramW::set_duration_for_all_routine_conditions_signal,    exp(), &EXP::set_duration_for_all_routine_conditions);
-}
-
-void ExVrController::generate_element_viewer_connections(){
-
-    auto elementViewer = ui()->element_viewer();
-    // -> experiment
-    connect(elementViewer, &ELW::select_routine_condition_signal,    exp(), &EXP::select_routine_condition);
-    connect(elementViewer, &ELW::move_routine_condition_down_signal, exp(), &EXP::move_routine_condition_down);
-    connect(elementViewer, &ELW::move_routine_condition_up_signal,   exp(), &EXP::move_routine_condition_up);
-    connect(elementViewer, &ELW::update_element_name_signal,         exp(), &EXP::update_element_name);
-    connect(elementViewer, &ELW::select_loop_set_signal,             exp(), &EXP::select_loop_set);
-    connect(elementViewer, &ELW::modify_loop_nb_reps_signal,         exp(), &EXP::modify_loop_nb_reps);
-    connect(elementViewer, &ELW::modify_loop_type_signal,            exp(), &EXP::modify_loop_type);
-    connect(elementViewer, &ELW::modify_loop_set_name_signal,        exp(), &EXP::modify_loop_set_name);
-    connect(elementViewer, &ELW::modify_loop_set_occurrencies_nb_signal, exp(), &EXP::modify_loop_set_occurrencies_nb);
-    connect(elementViewer, &ELW::remove_set_signal,                  exp(), &EXP::remove_set);
-    connect(elementViewer, &ELW::move_loop_set_up_signal,            exp(), &EXP::move_loop_set_up);
-    connect(elementViewer, &ELW::move_loop_set_down_signal,          exp(), &EXP::move_loop_set_down);
-    connect(elementViewer, &ELW::load_loop_sets_file_signal,         exp(), &EXP::load_loop_sets_file);
-    connect(elementViewer, &ELW::reload_loop_sets_file_signal,       exp(), &EXP::reload_loop_sets_file);
-    connect(elementViewer, &ELW::add_loop_sets_signal,               exp(), &EXP::add_loop_sets);
-    connect(elementViewer, &ELW::add_isi_interval_signal,            exp(), &EXP::add_isi_interval);
-    connect(elementViewer, &ELW::modify_isi_interval_signal,         exp(), &EXP::modify_isi_interval);
-    connect(elementViewer, &ELW::set_isi_randomize_signal,           exp(), &EXP::set_isi_randomize);
-    connect(elementViewer, &ELW::remove_isi_interval_signal,         exp(), &EXP::remove_isi_interval);
-    connect(elementViewer, &ELW::move_isi_interval_up_signal,        exp(), &EXP::move_isi_interval_up);
-    connect(elementViewer, &ELW::move_isi_interval_down_signal,      exp(), &EXP::move_isi_interval_down);
-}
-
-void ExVrController::generate_xml_manager_connections(){
-    // ...
-}
-
-void ExVrController::generate_experiment_connections(){
-
 }
 
 void ExVrController::generate_controller_connections(){

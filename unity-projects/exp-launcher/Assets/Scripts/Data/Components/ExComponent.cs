@@ -78,31 +78,32 @@ namespace Ex{
         public Pritority priority = Pritority.Medium;
         public Function currentFunction = Function.undefined;
         public Dictionary<Function, bool> functionsDefined = null;
+        
+        public Routine currentRoutine = null;
+        public Condition currentCondition = null;
+        public TimeLine currentTimeline = null;                
+        protected Events.Connections m_connections = null;
+
+        protected bool m_visibility = false; // is visible ?
+        protected bool m_updating = false;   // call update function ?
+        private bool m_started = false;      // has associated routine started ?
+        private bool m_closed = false;       // is closed ? (cannot be enabled anymore until next routine)
         protected bool catchExceptions = false;
 
-        public TimeLine currentTimeline = null;
-        public Condition currentCondition = null;
-        public Routine currentRoutine = null;
+        // access        
+        public Components components() { return ExVR.Components(); }
+        public Log log() { return ExVR.Log(); }
+        public TimeManager time() { return ExVR.Time(); }
+        public EventsManager events() { return ExVR.Events(); }
+        public Events.Connections connections() { return m_connections; }
+        public Events.Command command() { return events().command; }
 
-        // events
-        protected Events.Connections m_events = null;
-        public Events.Connections events() { return m_events; }
+        public bool is_function_defined(Function function) {return functionsDefined[function];}
 
-        public bool is_function_defined(Function function) {
-            return functionsDefined[function];
-        }
-
-        protected void add_signal(string name){
-            m_events.add_signal(name);
-        }
-
-        protected void add_slot(string name, System.Action<object> action) {
-            m_events.add_slot(name, action);
-        }
-
-        public void invoke_signal(string name, object arg = null) {
-            m_events.invoke_signal(name, arg);
-        }
+        // connections
+        protected void add_signal(string name){m_connections.add_signal(name);}
+        protected void add_slot(string name, System.Action<object> action) {m_connections.add_slot(name, action);}
+        public void invoke_signal(string name, object arg = null) {m_connections.invoke_signal(name, arg);}
 
         // configs
         public ComponentInitConfig initC = null;
@@ -110,39 +111,13 @@ namespace Ex{
         public List<ComponentConfig> configs = null;
 
         // states
-        protected bool m_visibility = false; // is visible ?
-        protected bool m_updating = false;   // call update function ?
-        private bool m_started = false;      // has associated routine started ?
-        private bool m_closed = false;       // is closed ? (cannot be enabled anymore until next routine)
-
-        public void set_closed_flag(bool closed) {
-            m_closed = closed;
-        }
-
-        public void close() {
-            ExVR.Components().close(this);
-        }
-
-        public bool is_started() {
-            return m_started;
-        }
-
-        public bool is_visible() {
-            return m_visibility;
-        }
-
-        public bool is_updating() {
-            return m_updating;
-        }
-
-        public bool is_closed() {
-            return m_closed;
-        }
-
-        // Name of the component
-        public string component_name() {
-            return name;
-        }
+        public bool is_started() {return m_started;}
+        public bool is_visible() {return m_visibility;}
+        public bool is_updating() {return m_updating;}
+        public bool is_closed() {return m_closed;}
+        public void set_closed_flag(bool closed) { m_closed = closed; }
+        public void close() { components().close(this); }
+        public string component_name() {return name;}
 
         public string verbose_name() {
 
@@ -151,7 +126,7 @@ namespace Ex{
             if(currentRoutine != null) {
                 builder.AppendFormat(", from routine: [{0}] with condition: [{1}]", currentRoutine.name, currentCondition.name);
             }
-            builder.AppendFormat(" at time {0}ms ({1}ms)]", ellapsed_time_routine_ms().ToString(), ellapsed_time_exp_ms().ToString());
+            builder.AppendFormat(" at time {0}ms ({1}ms)]", time().ellapsed_element_ms().ToString(), time().ellapsed_exp_ms().ToString());
             return builder.ToString();
         }
 
@@ -203,81 +178,83 @@ namespace Ex{
             ExVR.Events().stacktrace.ComponentTrace.Invoke(this, message);
         }
 
+
+        // logs
         public void log_message(string message, bool verbose = false) {
             if (verbose) {
-                ExVR.Log().message(string.Concat(message, verbose_name()), true);
+                log().message(string.Concat(message, verbose_name()), true);
             } else {
-                ExVR.Log().message(message, false);
+                log().message(message, false);
             }            
         }
 
         public void log_warning(string warning, bool verbose = true) {
             if (verbose) {
-                ExVR.Log().warning(string.Concat(warning, verbose_name()), true);
+                log().warning(string.Concat(warning, verbose_name()), true);
             } else {
-                ExVR.Log().warning(warning, false);
+                log().warning(warning, false);
             }
         }
 
         public void log_error(string error, bool verbose = true) {
             if (verbose) {
-                ExVR.Log().error(string.Concat(error, verbose_name()), true);
+                log().error(string.Concat(error, verbose_name()), true);
             } else {
-                ExVR.Log().error(error, false);
+                log().error(error, false);
             }
         }
 
-        static public double previous_frame_duration_ms() {
-            return ExVR.Time().previous_frame_duration_ms();
-        }
+        // configs
+        public ComponentInitConfig init_config() { return initC; }
 
-        static public double frame_start_time_since_experiment_ms() {
-            return ExVR.Time().frame_start_time_since_experiment_ms();
-        }
-
-        static public long frame_id() {
-            return ExVR.Time().frame_id();
-        }
-
-        static public double ellapsed_time_exp_ms() {
-            return ExVR.Time().ellapsed_time_exp_ms();
-        }
-
-        static public double ellapsed_time_routine_ms() {
-            return ExVR.Time().ellapsed_time_element_ms();
-        }
-
-        static public double ellapsed_time_frame_ms() {
-            return ExVR.Time().ellapsed_time_frame_ms();
-        }
-
-        static public List<ExComponent> get_all(string category) {
-            Category type;
-            if (System.Enum.TryParse(category, false, out type)) {
-                return get_all(type);
+        public ComponentConfig current_config() {
+            if (currentC == null) {
+                log_error("No current config set, check if component has been added to this condition.");
             }
-            return new List<ExComponent>();
+            return currentC;
+        }
+        public ComponentConfig get_config(string configName) {
+
+            foreach (ComponentConfig config in configs) {
+                if (config.name == configName) {
+                    return config;
+                }
+            }
+            return null;
         }
 
-        static public List<ExComponent> get_all(Category type) {
-            return ExVR.Components().get_all(type);
+        public ComponentConfig get_config(int configKey) {
+
+            foreach (ComponentConfig config in configs) {
+                if (config.key == configKey) {
+                    return config;
+                }
+            }
+            return null;
         }
 
-        static public ExComponent get(int key) {
-            return ExVR.Components().get(key);
-        }
+        public void set_current_config(Condition condition, ComponentConfig config, TimeLine timeline) {
 
-        static public ExComponent get(string name) {
-            return ExVR.Components().get(name);
-        }
+            currentCondition = condition;
+            currentRoutine = currentCondition.parent_routine();
+            currentTimeline = timeline;
+            currentC = config;
 
-        static public List<T> get<T>() where T : ExComponent {
-            return ExVR.Components().get_all<T>();
+            // select eye to render if parameter exists
+            int layer = Layers.Default;
+            if (currentC.has("eye_to_render")) {
+                string renderEyes = currentC.get<string>("eye_to_render");
+                if (renderEyes == "Left eye") {
+                    layer = Layers.LeftEye;
+                } else if (renderEyes == "Right eye") {
+                    layer = Layers.RightEye;
+                }
+            }
+            gameObject.layer = layer;
+            foreach (Transform tr in gameObject.GetComponentInChildren<Transform>(true)) {
+                tr.gameObject.layer = layer;
+            }
         }
-
-        static public T get<T>(string name) where T : ExComponent {
-            return ExVR.Components().get<T>(name);
-        }        
 
         // ######### TEST
 
@@ -308,72 +285,45 @@ namespace Ex{
         // ######### END TEST
 
         // Send an event for moving to the next flow element
-        public static void next() {
-            ExVR.Events().command.NextElementEvent.Invoke();
-        }
+        //public static void next() {
+        //    ExVR.Events().command.next();
+        //}
 
-        // Send an event for moving to the previous flow element
-        public static void previous() {
-            ExVR.Events().command.PreviousElementEvent.Invoke();
-        }
+        //// Send an event for moving to the previous flow element
+        //public static void previous() {
+        //    ExVR.Events().command.PreviousElementEvent.Invoke();
+        //}
 
-        public static void pause_experiment() {
-            ExVR.Events().command.PauseExperimentEvent.Invoke();
-        }
+        //public static void pause_experiment() {
+        //    ExVR.Events().command.PauseExperimentEvent.Invoke();
+        //}
 
-        public static void force_stop_experiment() {
-            ExVR.Events().command.StopExperimentEvent.Invoke();            
-        }        
+        //public static void force_stop_experiment() {
+        //    ExVR.Events().command.StopExperimentEvent.Invoke();            
+        //}        
 
-        public static void next_element_with_name(string elementName){
-            ExVR.Events().command.NextElementWithNameEvent.Invoke(elementName);
-        }
+        //public static void next_element_with_name(string elementName){
+        //    ExVR.Events().command.NextElementWithNameEvent.Invoke(elementName);
+        //}
 
-        public static void previous_element_with_name(string elementName) {
-            ExVR.Events().command.PreviousElementWithNameEvent.Invoke(elementName);
-        }
+        //public static void previous_element_with_name(string elementName) {
+        //    ExVR.Events().command.PreviousElementWithNameEvent.Invoke(elementName);
+        //}
 
-        public static void next_element_with_condition(string elementName) {
-            ExVR.Events().command.NextElementWithConditionEvent.Invoke(elementName);
-        }
+        //public static void next_element_with_condition(string elementName) {
+        //    ExVR.Events().command.NextElementWithConditionEvent.Invoke(elementName);
+        //}
 
-        public static void previous_element_with_condition(string elementName) {
-            ExVR.Events().command.PreviousElementWithConditionEvent.Invoke(elementName);
-        }
+        //public static void previous_element_with_condition(string elementName) {
+        //    ExVR.Events().command.PreviousElementWithConditionEvent.Invoke(elementName);
+        //}
 
-        public static void modify_routine_action_config(string routineName, string conditionName, string componentName, string newConfigName) {
-            ExVR.Events().command.ModifyRoutineActionConfigEvent.Invoke(routineName, conditionName, componentName, newConfigName);
-        }
+        //public static void modify_routine_action_config(string routineName, string conditionName, string componentName, string newConfigName) {
+        //    ExVR.Events().command.ModifyRoutineActionConfigEvent.Invoke(routineName, conditionName, componentName, newConfigName);
+        //}
 
-        public ComponentInitConfig init_config() {
-            return initC;
-        }
 
-        public ComponentConfig current_config() {
-            if(currentC == null) {
-                log_error("No current config set, check if component has been added to this condition.");
-            }
-            return currentC;
-        }
-        public ComponentConfig get_config(string configName) {
 
-            foreach (ComponentConfig config in configs) {
-                if (config.name == configName) {
-                    return config;
-                }
-            }
-            return null;
-        }
-
-        public ComponentConfig get_config(int configKey) {
-
-            foreach (ComponentConfig config in configs) {
-                if (config.key == configKey) {
-                    return config;
-                }
-            }
-            return null;
-        }
 
         // setup component, parent, layer, configurations...
         public void setup_component_object(XML.Component xmlComponent) {
@@ -458,31 +408,10 @@ namespace Ex{
             functionsDefined[Function.update_from_current_config] = (derivedType.GetMethod("update_from_current_config", flagPublic).DeclaringType == derivedType);
 
             // init events
-            m_events = new Events.Connections(name);
+            m_connections = new Events.Connections(name);
         }
 
-        public void set_current_config(Condition condition, ComponentConfig config, TimeLine timeline) {
 
-            currentCondition = condition;
-            currentRoutine = currentCondition.parent_routine();
-            currentTimeline = timeline;
-            currentC = config;
-
-            // select eye to render if parameter exists
-            int layer = Layers.Default;
-            if (currentC.has("eye_to_render")) {
-                string renderEyes = currentC.get<string>("eye_to_render");
-                if (renderEyes == "Left eye") {
-                    layer = Layers.LeftEye;
-                } else if (renderEyes == "Right eye") {
-                    layer = Layers.RightEye;
-                }
-            }
-            gameObject.layer = layer;
-            foreach (Transform tr in gameObject.GetComponentInChildren<Transform>(true)) {
-                tr.gameObject.layer = layer;
-            }
-        }
 
         // Initialize the component, called only once at the beginning of the experiment, will call child initialize
         public virtual bool base_initialize() {            

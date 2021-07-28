@@ -70,50 +70,50 @@ namespace Ex.DLL{
                 ExVR.Log().error(error);
             };
             EllapsedTimeExpMsCB ellapsedTimeExpMsCB = () => {
-                return (int)ExComponent.ellapsed_time_exp_ms();
+                return (int)ExVR.Time().ellapsed_exp_ms();
             };
             EllapsedTimeRoutineMsCB ellapsedTimeRoutineMsCB = () => {
-                return (int)ExComponent.ellapsed_time_routine_ms();
+                return (int)ExVR.Time().ellapsed_element_ms();
             };
             GetCB getCB = (string componentName) => {
-                return ExComponent.get(componentName).key;
+                return ExVR.Components().get_from_name(componentName).key;
             };
             IsInitializedCB isInitializedCB = (key) => {
                 return 1;
                 //return ExComponent.get(key).is_initialized() ? 1 : 0;
             };
             IsVisibleCB isVisibleCB = (key) => {
-                return ExComponent.get(key).is_visible() ? 1 : 0;
+                return ExVR.Components().get_from_key(key).is_visible() ? 1 : 0;
             };
             IsUpdatingCB isUpdatingCB = (key) => {
-                return ExComponent.get(key).is_updating() ? 1 : 0;
+                return ExVR.Components().get_from_key(key).is_updating() ? 1 : 0;
             };
             IsClosedCB isClosedCB = (key) => {
-                return ExComponent.get(key).is_closed() ? 1 : 0;
+                return ExVR.Components().get_from_key(key).is_closed() ? 1 : 0;
             };
             NextCB nextCB = () => {
-                ExComponent.next();
+                ExVR.Events().command.next();
             };
             PreviousCB previousCB = () => {
-                ExComponent.previous();
+                ExVR.Events().command.previous();
             };
             CloseCB closeCB = (key) => {
                 //ExComponent.get(key).close();
             };
             SignalBoolCB signalBoolCB = (key, index, value) => {
-                ExComponent.get(key).invoke_signal("signal" + (index + 1), (value==1));
+                ExVR.Components().get_from_key(key).invoke_signal("signal" + (index + 1), (value==1));
             };
             SignalIntCB signalIntCB = (key, index, value) => {
-                ExComponent.get(key).invoke_signal("signal" + (index+1), value);
+                ExVR.Components().get_from_key(key).invoke_signal("signal" + (index+1), value);
             };
             SignalFloatCB signalFloatCB = (key, index, value) => {
-                ExComponent.get(key).invoke_signal("signal" + (index + 1), value);
+                ExVR.Components().get_from_key(key).invoke_signal("signal" + (index + 1), value);
             };
             SignalDoubleCB signalDoubleCB = (key, index, value) => {
-                ExComponent.get(key).invoke_signal("signal" + (index + 1), value);
+                ExVR.Components().get_from_key(key).invoke_signal("signal" + (index + 1), value);
             };
             SignalStringCB signalStringCB = (key, index, value) => {
-                ExComponent.get(key).invoke_signal("signal" + (index + 1), value);
+                ExVR.Components().get_from_key(key).invoke_signal("signal" + (index + 1), value);
             };
 
             init_callbacks_ex_component(

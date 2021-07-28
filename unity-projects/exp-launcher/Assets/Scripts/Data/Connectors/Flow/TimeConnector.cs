@@ -29,13 +29,13 @@ namespace Ex{
 
         protected override void update() {
 
-            var currentTime = ExVR.Time().ellapsed_time_element_ms();
+            var currentTime = ExVR.Time().ellapsed_element_ms();
             double deltaTime = 1000.0 / frequency;
 
             if (currentTime / deltaTime > count) {
 
                 if (sinceExp) {
-                    currentTime = ExVR.Time().ellapsed_time_exp_ms();
+                    currentTime = ExVR.Time().ellapsed_exp_ms();
                 }
 
                 send_connector_infos_to_gui(Converter.to_string((int)currentTime));

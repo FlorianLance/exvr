@@ -37,7 +37,7 @@ namespace Ex{
         protected override bool initialize() {
 
             // get target transformation
-            if (get(initC.get<string>("shape_component")) == null) {
+            if (components().get_from_name(initC.get<string>("shape_component")) == null) {
                 log_error("Cannot find component " + initC.get<string>("shape_component") + ".");
                 return false;
             }
@@ -240,7 +240,7 @@ namespace Ex{
             var v = (position - midPoint1).normalized * m_maxDistance * distanceTarget * 0.01f;
             position = midPoint1 + v;
 
-            var targetTr = get(initC.get<string>("shape_component")).transform;
+            var targetTr = components().get_from_name(initC.get<string>("shape_component")).transform;
             targetTr.localPosition = position + new Vector3(0, currentC.get<float>("height_target"), 0);
 
             // update lines
@@ -275,7 +275,7 @@ namespace Ex{
         }
         
         public Vector3 target_position() {
-            return get(initC.get<string>("shape_component")).transform.position;
+            return components().get_from_name(initC.get<string>("shape_component")).transform.position;
         }
 
     }

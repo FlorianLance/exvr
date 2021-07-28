@@ -14,7 +14,7 @@ namespace Ex{
         }
 
         protected override void slot1(object arg) {
-            ExComponent.previous_element_with_name(m_config.get<string>(valueStr));
+            command().previous_element_with_name(m_config.get<string>(valueStr));
         }
     }
 }

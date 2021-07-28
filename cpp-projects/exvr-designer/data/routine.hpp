@@ -26,6 +26,8 @@ struct Routine : public Element {
 
     static RoutineUP copy_with_new_element_id(const Routine &routineToCopy, const QString &newName);
 
+    void set_as_randomizer(bool randomizer);
+
     void select_condition(ConditionKey conditionKey);
     void move_condition_down(RowId id);
     void move_condition_up(RowId id);
@@ -47,6 +49,7 @@ struct Routine : public Element {
 
     QString to_string() const;
 
+    bool isARandomizer = false;
     std_v1<ConditionUP> conditions;
     std_v1<ConditionUP> ghostsConditions; // condition that could be restored
 };

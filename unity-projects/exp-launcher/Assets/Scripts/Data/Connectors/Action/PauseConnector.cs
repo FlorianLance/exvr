@@ -14,7 +14,7 @@ namespace Ex{
         }
 
         protected override void slot1(object arg) {
-            ExComponent.pause_experiment();
+            command().pause_experiment();
         }
     }
 }

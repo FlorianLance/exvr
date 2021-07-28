@@ -51,28 +51,28 @@ namespace Ex{
             return m_experimentTimer.IsRunning;
         }
 
-        public double ellapsed_time_program_ms() {
+        public double ellapsed_program_ms() {
             return m_programTimer.Elapsed.TotalMilliseconds;
         }
 
-        public double ellapsed_time_exp_ms() {
+        public double ellapsed_exp_ms() {
             return m_experimentTimer.Elapsed.TotalMilliseconds;
         }
 
-        public double ellapsed_time_element_ms() {
+        public double ellapsed_element_ms() {
             return m_elementTimer.Elapsed.TotalMilliseconds;
         }
 
-        public double ellapsed_time_frame_ms() {
+        public double ellapsed_frame_ms() {
             return m_frameTimer.Elapsed.TotalMilliseconds;
         }
 
-        public double ellapsed_time_exp_s() {
-            return ellapsed_time_exp_ms() * 0.001;
+        public double ellapsed_exp_s() {
+            return ellapsed_exp_ms() * 0.001;
         }
 
-        public double ellapsed_time_element_s() {
-            return ellapsed_time_element_ms() * 0.001;
+        public double ellapsed_element_s() {
+            return ellapsed_element_ms() * 0.001;
         }
 
         public long frame_id() {
@@ -83,7 +83,7 @@ namespace Ex{
             return previousEndFrameTimeMs - previousStartFrameTimeMs;
         }
 
-        public double frame_start_time_since_experiment_ms() {
+        public double frame_start_since_experiment_ms() {
             return startFrameTimeMs;
         }
 
@@ -188,7 +188,7 @@ namespace Ex{
 
             // retrieve frame start time
             previousStartFrameTimeMs = startFrameTimeMs;
-            startFrameTimeMs = ellapsed_time_exp_ms();
+            startFrameTimeMs = ellapsed_exp_ms();
         }
 
         public void end_frame() {
@@ -198,7 +198,7 @@ namespace Ex{
 
             // retrieve frame end time
             previousEndFrameTimeMs = endFrameTimeMs;
-            endFrameTimeMs = ellapsed_time_exp_ms();
+            endFrameTimeMs = ellapsed_exp_ms();
 
             // increment id frame
             ++idFrame;

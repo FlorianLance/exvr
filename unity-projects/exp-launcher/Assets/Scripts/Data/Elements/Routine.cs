@@ -48,13 +48,38 @@ namespace Ex{
 
     public class Routine : FlowElement{
 
+        [SerializeField]
         private List<Condition> m_conditions = null;
-        private Condition m_currentCondition = null;
-        private Stopwatch m_startTimer = new Stopwatch();
-        private Stopwatch m_stopTimer = new Stopwatch();        
 
+        [SerializeField]
+        private Condition m_currentCondition = null;
+
+        [SerializeField]
+        private Stopwatch m_startTimer = new Stopwatch();
+
+        [SerializeField]
+        private Stopwatch m_stopTimer = new Stopwatch();
+
+        [SerializeField]
+        private bool m_isARandomizer = false;
+
+        public bool is_a_randomizer() {
+            return m_isARandomizer;
+        }
         public List<Condition> get_conditions() {
             return m_conditions;
+        }
+
+        public List<RoutineInfo> get_instance_infos() {
+            return ExVR.Schreduler().get_routine_infos_order(key(), is_a_randomizer());
+        }
+
+        public List<Condition> get_instance_conditions() {
+            return ExVR.Schreduler().get_routine_conditions_order(key(), is_a_randomizer());
+        }
+
+        public List<string> get_instance_conditions_names() {
+            return ExVR.Schreduler().get_routine_conditions_names_order(key(), is_a_randomizer());
         }
 
         public void clean() {
@@ -81,7 +106,8 @@ namespace Ex{
 
             m_key    = routine.Key;
             m_keyStr = Converter.to_string(routine.Key);
-            m_type  = FlowElementType.Routine;            
+            m_type  = FlowElementType.Routine;
+            m_isARandomizer = routine.Randomizer;
 
             // generate conditions
             m_conditions = new List<Condition>(routine.Conditions.Count);
@@ -130,7 +156,7 @@ namespace Ex{
             m_currentCondition.on_gui();
         }
 
-        public void update() {            
+        public void update() {
             m_currentCondition.update();
         }
 

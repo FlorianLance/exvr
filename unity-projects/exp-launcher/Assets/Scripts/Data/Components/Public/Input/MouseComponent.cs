@@ -50,7 +50,7 @@ namespace Ex{
             if (eventType != EventType.Repaint && eventType != EventType.MouseDown && eventType != EventType.MouseUp && eventType != EventType.MouseMove) {
                 return;
             }
-            var currentTime = ellapsed_time_exp_ms();
+            var currentTime = time().ellapsed_exp_ms();
 
     
             int pressedKeysCount = 0;

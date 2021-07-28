@@ -45,9 +45,9 @@ namespace Ex{
             var interval = schreduler.current_interval();
             if (interval != null) {
                 tTime.text = String.Format("( {0} / {1}s) {2}s )",
-                    Math.Round(ExVR.Time().ellapsed_time_element_s(), 2).ToString("#.00"),
+                    Math.Round(ExVR.Time().ellapsed_element_s(), 2).ToString("#.00"),
                     Math.Round(interval.tEndS, 2).ToString("#.00"),
-                    Math.Round(ExVR.Time().ellapsed_time_exp_s(), 2).ToString("#.00")
+                    Math.Round(ExVR.Time().ellapsed_exp_s(), 2).ToString("#.00")
                 );
             } else {
                 tTime.text = "(0/0s) 0s";

@@ -39,7 +39,7 @@ namespace Ex{
 
         protected override void slot2(object arg) {
 
-            double currTimeMs = ExComponent.ellapsed_time_routine_ms();
+            double currTimeMs = time().ellapsed_element_ms();
             double currentDelayMs = 0;
 
             // retrieve current delay from curve
@@ -88,7 +88,7 @@ namespace Ex{
 
         protected override void update() {
 
-            var currTime = ExComponent.ellapsed_time_routine_ms();
+            var currTime = time().ellapsed_element_ms();
             double elemTime=0;
             double elemDelay=0;
 

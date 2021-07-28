@@ -112,7 +112,7 @@ void FlowSequence::update_from_experiment(Experiment *exp){
     ISIsElements    = std::move(newISIsElements);
     loopsStart      = std::move(newLoopsStart);
     loopsEnd        = std::move(newLoopsEnd);
-    elements        = std::move(newElements);    
+    elements        = std::move(newElements);
 
     // associate loops
     for(auto &newLoop : exp->loops){
@@ -155,20 +155,6 @@ void FlowSequence::update_from_experiment(Experiment *exp){
     }
 
     loopsElements = std::move(newLoopsElements);
-
-
-//    // associate loops
-//    for(auto &loop : exp->loops){
-//        auto loopElement = std::make_unique<LoopFlowElement>(loop.get());
-//        auto loopElementPtr = loopElement.get();
-//        auto start = dynamic_cast<LoopNodeFlowElement*>(elements[exp->flow_position(loop->start)].get());
-//        auto end   = dynamic_cast<LoopNodeFlowElement*>(elements[exp->flow_position(loop->end)].get());
-//        loopElementPtr->startLoopNode = start;
-//        loopElementPtr->endLoopNode   = end;
-//        start->loopElement = loopElementPtr;
-//        end->loopElement   = loopElementPtr;
-//        loopsElements.emplace_back(std::move(loopElement));
-//    }
 
     // active move elements
     for(auto &element : elements){

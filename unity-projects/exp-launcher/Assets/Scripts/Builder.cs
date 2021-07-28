@@ -47,12 +47,16 @@ namespace Ex {
             return Builder.autoRef.networkManager;
         }
 
+        static public LoggerManager Logger() {
+            return Builder.autoRef.loggerManager;
+        }
+
         static public Log Log() {
-            return Builder.autoRef.loggerManager.log;
+            return Logger().log;
         }
 
         static public ExperimentLogger ExpLog() {
-            return Builder.autoRef.loggerManager.exp;
+            return Logger().exp;
         }
 
         static public PythonManager Python() {

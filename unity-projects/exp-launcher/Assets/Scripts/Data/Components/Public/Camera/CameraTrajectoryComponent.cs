@@ -159,7 +159,7 @@ namespace Ex{
 
         protected override void update() {
 
-            var timeS = ellapsed_time_routine_ms() * 0.001;
+            var timeS = time().ellapsed_element_ms() * 0.001;
             var target = current_target(timeS);
 
             if(target == null) { // no target remaining
