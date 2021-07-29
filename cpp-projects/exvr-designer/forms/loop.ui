@@ -98,12 +98,12 @@
        </item>
        <item>
         <property name="text">
-         <string>Random</string>
+         <string>Random [every instance]</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>Shuffle</string>
+         <string>Shuffle [every instance]</string>
         </property>
        </item>
        <item>
@@ -113,12 +113,32 @@
        </item>
        <item>
         <property name="text">
-         <string>Random start + fixed</string>
+         <string>Fixed [random start]</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>Shift start at each instance + fixed</string>
+         <string>Fixed [shift start at each instance]</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Random [one for all instances]</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Shuffle [one for all instances]</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Random [every N instances]</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Shuffle [every N instances]</string>
         </property>
        </item>
       </widget>
@@ -146,7 +166,7 @@
     </widget>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="1,1,0">
+    <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="1,1,0,0,0">
      <item>
       <widget class="QLabel" name="laNbReps">
        <property name="text">
@@ -161,6 +181,26 @@
        </property>
        <property name="maximum">
         <number>1000</number>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>N</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QSpinBox" name="sbN">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="minimum">
+        <number>1</number>
+       </property>
+       <property name="maximum">
+        <number>100</number>
        </property>
       </widget>
      </item>

@@ -188,6 +188,7 @@ public slots:
     void modify_loop_set_occurrencies_nb(ElementKey loopKey, int setOccuranciesNb, RowId id);
     void modify_loop_type(ElementKey loopKey, Loop::Mode type);
     void modify_loop_nb_reps(ElementKey loopKey, int nbReps);
+    void modify_loop_N(ElementKey loopKey, int N);
     void remove_set(ElementKey loopKey, RowId id);
     void move_loop_set_up(ElementKey loopKey, RowId id);
     void move_loop_set_down(ElementKey loopKey, RowId id);

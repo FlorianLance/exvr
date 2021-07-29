@@ -317,7 +317,7 @@ namespace Ex {
         }
 
         public void isi_manager(ISIInfo info) {
-            add(string.Format(EnableIsiManStr, info.name(), info.durationStr), false, true, false);
+            add(string.Format(EnableIsiManStr, info.name(), info.duration_str()), false, true, false);
         }
 
         public void routine_manager(string message) {
@@ -325,7 +325,7 @@ namespace Ex {
         }
 
         public void routine_manager(RoutineInfo info) {
-            add(string.Format(EnableRoutineManStr, info.name(), info.condition.name), false, true, false);
+            add(string.Format(EnableRoutineManStr, info.name(), info.condition().name), false, true, false);
         }
 
 

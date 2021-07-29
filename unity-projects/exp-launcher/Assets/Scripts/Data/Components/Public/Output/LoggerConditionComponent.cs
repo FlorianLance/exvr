@@ -70,9 +70,9 @@ namespace Ex {
             foreach (var elementInfo in ExVR.Schreduler().get_elements_info_order(false)) {
                 if (elementInfo.type() == FlowElement.FlowElementType.Routine) {
                     var routineInfo = (RoutineInfo)elementInfo;
-                    foreach (var action in routineInfo.condition.actions) {
+                    foreach (var action in routineInfo.condition().actions) {
                         if (action.component().key == key) {
-                            string filePath = get_file_path(routineInfo.name(), routineInfo.condition.name);
+                            string filePath = get_file_path(routineInfo.name(), routineInfo.condition().name);
                             if (!m_filesNames.Contains(filePath)) {
                                 m_filesNames.Add(filePath);
                                 m_filesLines[filePath] = new List<string>();

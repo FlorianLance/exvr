@@ -13,7 +13,7 @@ using namespace tool::ex;
 
 void StartRoutineNodeDataModel::compute(){
     set_valid_state();
-    propagate_default_runtime({std::make_shared<StringData>(""),std::make_shared<StringData>("")});
+    propagate_default_runtime({std::make_shared<StringData>(""),std::make_shared<StringData>(""), std::make_shared<IntData>(0), std::make_shared<IntData>(0)});
 }
 
 QString StartRoutineNodeDataModel::portCaption(QtNodes::PortType t, QtNodes::PortIndex i) const{
@@ -22,8 +22,10 @@ QString StartRoutineNodeDataModel::portCaption(QtNodes::PortType t, QtNodes::Por
         return QSL("routine (") % c % QSL(")");
     }else if(i == 1){
         return QSL("condition (") % c % QSL(")");
+    }else if(i == 2){
+        return QSL("routine iter (") % c % QSL(")");
     }else{
-        return QSL("nb times called (") % c % QSL(")");
+        return QSL("condition iter (") % c % QSL(")");
     }
 }
 

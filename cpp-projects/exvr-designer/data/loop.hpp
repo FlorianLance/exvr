@@ -40,19 +40,33 @@ using LoopNodeUP = std::unique_ptr<LoopNode>;
 
 struct Loop : public Element {
 
-    enum class Mode : int {Fixed=0, Random, Shuffle, File, RandomStartFixed, InstanceShiftStartFixed, SizeEnum};
+    enum class Mode : int {
+        Fixed=0,
+        Random,
+        Shuffle,
+        File,
+        FixedRandomStart,
+        FixedInstanceShiftStart,
+        RandomOneForAllInstances,
+        ShuffleOneForAllInstances,
+        RandomEveryNInstances,
+        ShuffleEveryNInstances,
+        SizeEnum
+    };
 
     using Name = std::string_view;
     using TLoopMode = std::tuple<
         Mode,                           Name>;
     static constexpr TupleArray<Mode::SizeEnum, TLoopMode> loopModes ={{
         TLoopMode
-        {Mode::Fixed,                   "fixed"sv},
-        {Mode::Random,                  "random"sv},
-        {Mode::Shuffle,                 "shuffle"sv},
-        {Mode::File,                    "file"sv},
-        {Mode::RandomStartFixed,        "random_start_fixed"sv},
-        {Mode::InstanceShiftStartFixed, "instance_shift_start_fixed"sv},
+        {Mode::Fixed,                       "fixed"sv},
+        {Mode::Random,                      "random"sv},
+        {Mode::Shuffle,                     "shuffle"sv},
+        {Mode::File,                        "file"sv},
+        {Mode::FixedRandomStart,            "random_start_fixed"sv},
+        {Mode::FixedInstanceShiftStart,     "instance_shift_start_fixed"sv},
+        {Mode::RandomOneForAllInstances,    "only_once_random"sv},
+        {Mode::ShuffleOneForAllInstances,   "only_once_shuffle"sv},
     }};
 
     [[maybe_unused]] static Name get_name(Mode m) {
@@ -68,13 +82,13 @@ struct Loop : public Element {
 
     inline QString to_string() const{return QSL("Loop(") % name() % QSL("|") % QString::number(key()) % QSL(")");}
 
-
     static LoopUP copy_with_new_element_id(const Loop &loopToCopy, const QString &newName);
 
     bool is_file_mode() const noexcept;
 
     void set_nodes(LoopNode *start, LoopNode *end);
     void set_nb_reps(size_t nb) noexcept;
+    void set_N(int N) noexcept;
     void set_loop_type(Mode m) noexcept;
 
     bool is_default() const;
@@ -97,6 +111,7 @@ struct Loop : public Element {
     size_t nbReps = 1;
     Mode mode = Mode::Fixed;
     QString filePath; /**< path for FILE loop mode */
+    int N = 1;
 
     // sets
     QString currentSetName;

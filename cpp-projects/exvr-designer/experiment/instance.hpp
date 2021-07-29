@@ -38,6 +38,11 @@ struct Instance {
     static std::unique_ptr<Instance> generate_from_element_to_the_end(const Randomizer *randomizer, const Experiment &experiment, size_t idInstance);
     static std::unique_ptr<Instance> generate_from_start_to_element(const Randomizer *randomizer, const Experiment &experiment, size_t idInstance);
 
+    static inline std::unordered_map<int, std_v1<QString>> onlyOnceShuffleLoopSets = {};
+    static inline std::unordered_map<int, std_v1<QString>> onlyOnceRandomLoopSets = {};
+    static inline std::unordered_map<int, std_v1<QString>> everyNShuffleLoopSets = {};
+    static inline std::unordered_map<int, std_v1<QString>> everyNRandomLoopSets = {};
+
     QString filePath = "";
     QString fileName = "debug-instance";
     std_v1<InstanceElement> flow;

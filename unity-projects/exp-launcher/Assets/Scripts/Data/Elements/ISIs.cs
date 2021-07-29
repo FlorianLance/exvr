@@ -83,7 +83,7 @@ namespace Ex
         public void start_isi(ISIInfo info) {
 
             // set current isi
-            m_currentIsi = (ISI)info.element;
+            m_currentIsi = (ISI)info.element();
             ExVR.ExpLog().isi_manager(info);
 
             m_currentIsi.start(info);

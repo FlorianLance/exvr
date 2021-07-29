@@ -37,7 +37,7 @@ namespace Ex
                 if (currentElementInfo.type() == FlowElement.FlowElementType.Routine) {
 
                     var routineInfo = (RoutineInfo)currentElementInfo;
-                    var routine = (Routine)routineInfo.element;
+                    var routine = (Routine)routineInfo.element();
                     if (routine != null) {
                         EditorGUILayout.LabelField(string.Format("[Routine] with id {0}, called {1} times", currentElementInfo.key().ToString(), routine.calls_nb()));
                         EditorGUILayout.ObjectField(routine, typeof(Routine), true);
@@ -56,7 +56,7 @@ namespace Ex
                 } else {
 
                     var isiInfo = (ISIInfo)currentElementInfo;
-                    var isi = (ISI)isiInfo.element;
+                    var isi = (ISI)isiInfo.element();
                     if (isi != null) {
                         EditorGUILayout.LabelField(string.Format("[ISI] with id {0}", currentElementInfo.key().ToString()));
                         EditorGUILayout.ObjectField(isi, typeof(ISI), true);
@@ -95,41 +95,81 @@ namespace Ex {
 
     public class FlowElementInfo{
 
-        public FlowElement element = null;
-        public Interval interval;
-        public int order;
+        protected FlowElement m_element = null;
+        protected Interval m_interval;
+        protected int m_order;
+        protected int m_elementIteration;
 
         public int key() {
-            return element.key();
+            return m_element.key();
+        }
+
+        public FlowElement element() {
+            return m_element;
+        }
+
+        public Interval interval() {
+            return m_interval;
         }
         public FlowElement.FlowElementType type() {
-            return element.type();
+            return m_element.type();
         }
 
         public string name() {
-            return element.name;
+            return m_element.name;
+        }
+
+        public int order() {
+            return m_order;
+        }
+
+        public int element_iteration() {
+            return m_elementIteration;
         }
     }
 
     public class RoutineInfo : FlowElementInfo {
 
-        public RoutineInfo(Routine routine, Condition condition, Interval interval) {
-            element = routine;
-            this.condition = condition;
-            this.interval = interval;
+        private Condition m_condition = null;
+        private int m_conditionIteration;
+
+        public RoutineInfo(Routine routine, Condition condition, Interval interval, int order, int elementIteration, int conditionIteration) {
+            m_element = routine;
+            m_condition = condition;
+            m_interval = interval;
+            m_order = order;
+            m_elementIteration = elementIteration;
+            m_conditionIteration = conditionIteration;
         }
 
-        public Condition condition = null;
+        public Condition condition() {
+            return m_condition;
+        }
+
+        public int condition_iteration() {
+            return m_conditionIteration;
+        }
     }
     public class ISIInfo : FlowElementInfo {
 
-        public ISIInfo(ISI isi, string durationStr, Interval interval) {
-            element = isi;
-            this.interval = interval;
-            this.durationStr = durationStr;
+        private string m_durationStr;
+        private int m_durationIteration;
+
+        public ISIInfo(ISI isi, string durationStr, Interval interval, int order, int elementIteration, int durationIteration) {
+            m_element = isi;
+            m_durationStr = durationStr;
+            m_interval = interval;            
+            m_order = order;
+            m_elementIteration = elementIteration;
+            m_durationIteration = durationIteration;
+        }
+        public string duration_str() {
+            return m_durationStr;
         }
 
-        public string durationStr;
+        public int duration_iteration() {
+            return m_durationIteration;
+        }
     }
 
     public class Scheduler : MonoBehaviour{
@@ -184,7 +224,7 @@ namespace Ex {
             var elements = isARandomizer ? m_randomizerElementsOrder : m_elementsOrder;
             foreach (var info in elements) {
                 if (info.key() == elementKey) {
-                    conditions.Add(((RoutineInfo)info).condition);
+                    conditions.Add(((RoutineInfo)info).condition());
                 }
             }
             return conditions;
@@ -196,7 +236,7 @@ namespace Ex {
             var elements = isARandomizer ? m_randomizerElementsOrder : m_elementsOrder;
             foreach (var info in elements) {
                 if (info.key() == elementKey) {
-                    conditionsName.Add(((RoutineInfo)info).condition.name);
+                    conditionsName.Add(((RoutineInfo)info).condition().name);
                 }
             }
             return conditionsName;
@@ -213,8 +253,6 @@ namespace Ex {
 
             // create flow experiment from instance xml
             foreach (XML.Element element in experimentFlow.Elements) {
-
-                FlowElementInfo elementInfo ; 
                 
                 if (element.Type == "routine") { // Routine
 
@@ -232,15 +270,26 @@ namespace Ex {
                         return false;
                     }
 
-                    // create element info                                        
+                    // add element info                                        
                     if (routine.is_a_randomizer()) {
-                        elementInfo = new RoutineInfo(routine, currentCondition, new Interval(0, 0));
-                        elementInfo.order = m_randomizerElementsOrder.Count;
-                        m_randomizerElementsOrder.Add(elementInfo);
+                        m_randomizerElementsOrder.Add(new RoutineInfo(
+                            routine, 
+                            currentCondition, 
+                            new Interval(0, 0),
+                            m_randomizerElementsOrder.Count,
+                            element.ElemIteration,
+                            element.ConditionIteration
+                        ));
+  
                     } else {
-                        elementInfo = new RoutineInfo(routine, currentCondition, new Interval(0, currentCondition.duration()));
-                        elementInfo.order = m_elementsOrder.Count;
-                        m_elementsOrder.Add(elementInfo);
+                        m_elementsOrder.Add(new RoutineInfo(
+                            routine, 
+                            currentCondition, 
+                            new Interval(0, currentCondition.duration()),
+                            m_elementsOrder.Count,
+                            element.ElemIteration,
+                            element.ConditionIteration
+                        ));
                     }
 
                 } else { // ISI
@@ -252,10 +301,15 @@ namespace Ex {
                         return false;
                     }
 
-                    // create element info
-                    elementInfo = new ISIInfo(isi, element.Cond, new Interval(0, Converter.to_double(element.Cond)));
-                    elementInfo.order = m_elementsOrder.Count;
-                    m_elementsOrder.Add(elementInfo);
+                    // add element info
+                    m_elementsOrder.Add(new ISIInfo(
+                        isi, 
+                        element.Cond, 
+                        new Interval(0, Converter.to_double(element.Cond)),
+                        m_elementsOrder.Count,
+                        element.ElemIteration,
+                        element.ConditionIteration
+                    ));
                 }
             }
 
@@ -316,7 +370,7 @@ namespace Ex {
                 for (int ii = m_currentElementId + 1; ii < m_elementsOrder.Count; ++ii) {
 
                     if((m_elementsOrder[ii].type() == FlowElement.FlowElementType.Routine ?
-                        ((RoutineInfo)m_elementsOrder[ii]).condition.name : ((ISIInfo)m_elementsOrder[ii]).durationStr) == conditionName) { 
+                        ((RoutineInfo)m_elementsOrder[ii]).condition().name : ((ISIInfo)m_elementsOrder[ii]).duration_str()) == conditionName) { 
                         m_currentElementId = ii;
                         start_current_flow_element();
                         return true;
@@ -331,7 +385,7 @@ namespace Ex {
                 for (int ii = m_currentElementId - 1; ii >= 0; --ii) {
 
                     if ((m_elementsOrder[ii].type() == FlowElement.FlowElementType.Routine ?
-                        ((RoutineInfo)m_elementsOrder[ii]).condition.name : ((ISIInfo)m_elementsOrder[ii]).durationStr) == conditionName) {
+                        ((RoutineInfo)m_elementsOrder[ii]).condition().name : ((ISIInfo)m_elementsOrder[ii]).duration_str()) == conditionName) {
                         m_currentElementId = ii;
                         start_current_flow_element();
                         return true;
@@ -412,7 +466,7 @@ namespace Ex {
             if(m_currentElementId >= m_elementsOrder.Count ) {
                 return null;
             }
-            return m_elementsOrder[m_currentElementId].interval;
+            return m_elementsOrder[m_currentElementId].interval();
         }
     }
 }

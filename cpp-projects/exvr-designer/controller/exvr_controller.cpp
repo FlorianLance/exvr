@@ -744,6 +744,7 @@ void ExVrController::generate_global_signals_connections(){
     connect(s, &GSignals::update_element_name_signal,                 exp(), &EXP::update_element_name);
     connect(s, &GSignals::select_loop_set_signal,                     exp(), &EXP::select_loop_set);
     connect(s, &GSignals::modify_loop_nb_reps_signal,                 exp(), &EXP::modify_loop_nb_reps);
+    connect(s, &GSignals::modify_loop_n_signal,                       exp(), &EXP::modify_loop_N);
     connect(s, &GSignals::modify_loop_type_signal,                    exp(), &EXP::modify_loop_type);
     connect(s, &GSignals::modify_loop_set_name_signal,                exp(), &EXP::modify_loop_set_name);
     connect(s, &GSignals::modify_loop_set_occurrencies_nb_signal,     exp(), &EXP::modify_loop_set_occurrencies_nb);

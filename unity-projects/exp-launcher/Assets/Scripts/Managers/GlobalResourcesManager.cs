@@ -73,6 +73,10 @@ namespace Ex
             return instantiate_mat("UnlitColor");
         }
 
+        public Material instantiate_unlit_transparent_color_mat() {
+            return instantiate_mat("UnlitTransparentColor");
+        }
+
         public Material instantiate_mat(string pathMat) {
 
             var material = get_material(pathMat);

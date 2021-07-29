@@ -32,15 +32,15 @@ Instance::Instance(const Randomizer *randomizer, const std_v1<Element*> &element
     std_v1<Loop *> loops;
     for(const auto elem : elements){
         if(elem->type == Element::Type::Isi){
-            ISIs.emplace_back(dynamic_cast<Isi*>(elem));
+            ISIs.push_back(dynamic_cast<Isi*>(elem));
             continue;
         }
         if(elem->type == Element::Type::Routine){
-            routines.emplace_back(dynamic_cast<Routine*>(elem));
+            routines.push_back(dynamic_cast<Routine*>(elem));
             continue;
         }
         if(elem->type == Element::Type::LoopStart){
-            loops.emplace_back(dynamic_cast<LoopNode*>(elem)->loop);
+            loops.push_back(dynamic_cast<LoopNode*>(elem)->loop);
             continue;
         }
     }
@@ -49,6 +49,7 @@ Instance::Instance(const Randomizer *randomizer, const std_v1<Element*> &element
     // generate randomization for each loop
     std::unordered_map<int, std_v1<QString>> loopsSetsNames;
     std::unordered_map<int, size_t> loopsCurentSetId;        
+
 
     for(const auto loop : loops){
 
@@ -67,13 +68,13 @@ Instance::Instance(const Randomizer *randomizer, const std_v1<Element*> &element
 
             for(const auto &set : loop->sets){
                 for(size_t ii = 0; ii < set.occurencies; ++ii){
-                    setsOccurenciesStr.emplace_back(set.name);
+                    setsOccurenciesStr.push_back(set.name);
                 }
             }
         }else{
             for(const auto &set : loop->fileSets){
                 for(size_t ii = 0; ii < set.occurencies; ++ii){
-                    setsOccurenciesStr.emplace_back(set.name);
+                    setsOccurenciesStr.push_back(set.name);
                 }
             }
         }
@@ -82,110 +83,106 @@ Instance::Instance(const Randomizer *randomizer, const std_v1<Element*> &element
         std_v1<QString> setsNames;
         setsNames.reserve(totalNbReps);
 
+//        const bool randomizeOnce = true;
+//        if(randomizeOnce){
 
-        const bool randomizeOnce = true;
-
-        if(randomizeOnce){
-
-            switch (loop->mode) {
-                case Loop::Mode::Fixed:{
-
-                    for(size_t ii = 0; ii < totalNbReps; ++ii){
-                        setsNames.emplace_back(setsOccurenciesStr[ii%setsOccurenciesStr.size()]);
-                    }
-
-                break;}case Loop::Mode::File:{
-
-                    for(size_t ii = 0; ii < totalNbReps; ++ii){
-                        setsNames.emplace_back(setsOccurenciesStr[ii%setsOccurenciesStr.size()]);
-                    }
-
-                break;}case Loop::Mode::Shuffle:{
-
-                    for(auto &set : randomizer->shuffle(setsOccurenciesStr, totalNbReps)){
-                        setsNames.emplace_back(std::move(set));
-                    }
-
-                break;}case Loop::Mode::Random:{
-
-                    for(auto &set : randomizer->randomize(setsOccurenciesStr, totalNbReps)){
-                        setsNames.emplace_back(std::move(set));
-                    }
-
-                break;}case Loop::Mode::RandomStartFixed:{
-
-                    const size_t start = randomizer->randomize_start(setsOccurenciesStr.size());
-                    for(size_t ii = 0; ii < totalNbReps; ++ii){
-                        setsNames.emplace_back(setsOccurenciesStr[(start+ii)%setsOccurenciesStr.size()]);
-                    }
-
-                    break;}case Loop::Mode::InstanceShiftStartFixed:{
-
-                    for(size_t ii = 0; ii < totalNbReps; ++ii){
-                        setsNames.emplace_back(setsOccurenciesStr[(ii+idInstance)%setsOccurenciesStr.size()]);
-                    }
-
-                    break;}
-                default:
-                break;
-            }
-        }else{
-
-            switch (loop->mode) {
+        switch (loop->mode) {
             case Loop::Mode::Fixed:{
 
-                for(size_t ii = 0; ii < multiplier; ++ii){
-                    for(size_t jj = 0; jj < loop->nbReps; ++jj){
-                        setsNames.emplace_back(setsOccurenciesStr[jj%setsOccurenciesStr.size()]);
-                    }
+                for(size_t ii = 0; ii < totalNbReps; ++ii){
+                    setsNames.push_back(setsOccurenciesStr[ii%setsOccurenciesStr.size()]);
                 }
 
-                break;}case Loop::Mode::File:{
+            break;}case Loop::Mode::File:{
 
-                for(size_t ii = 0; ii < multiplier; ++ii){
-                    for(size_t jj = 0; jj < loop->nbReps; ++jj){
-                        setsNames.emplace_back(setsOccurenciesStr[jj%setsOccurenciesStr.size()]);
-                    }
+                for(size_t ii = 0; ii < totalNbReps; ++ii){
+                    setsNames.push_back(setsOccurenciesStr[ii%setsOccurenciesStr.size()]);
                 }
 
-                break;}case Loop::Mode::Shuffle:{
+            break;}case Loop::Mode::Shuffle:{
 
-                for(size_t ii = 0; ii < multiplier; ++ii){
-                    for(auto &set : randomizer->shuffle(setsOccurenciesStr, loop->nbReps)){
-                        setsNames.emplace_back(std::move(set));
-                    }
+                for(auto &set : randomizer->shuffle(setsOccurenciesStr, totalNbReps)){
+                    setsNames.push_back(std::move(set));
                 }
 
-                break;}case Loop::Mode::Random:{
+            break;}case Loop::Mode::Random:{
 
-                for(size_t ii = 0; ii < multiplier; ++ii){
-                    for(auto &set : randomizer->randomize(setsOccurenciesStr, loop->nbReps)){
-                        setsNames.emplace_back(std::move(set));
-                    }
+                for(auto &set : randomizer->randomize(setsOccurenciesStr, totalNbReps)){
+                    setsNames.push_back(std::move(set));
                 }
 
-                break;}case Loop::Mode::RandomStartFixed:{
+            break;}case Loop::Mode::FixedRandomStart:{
 
-                for(size_t ii = 0; ii < multiplier; ++ii){
-
-                    const size_t start = randomizer->randomize_start(setsOccurenciesStr.size());
-                    for(size_t jj = 0; jj < loop->nbReps; ++jj){
-                        setsNames.emplace_back(setsOccurenciesStr[(start+jj)%setsOccurenciesStr.size()]);
-                    }
+                const size_t start = randomizer->randomize_start(setsOccurenciesStr.size());
+                for(size_t ii = 0; ii < totalNbReps; ++ii){
+                    setsNames.push_back(setsOccurenciesStr[(start+ii)%setsOccurenciesStr.size()]);
                 }
 
-                break;}case Loop::Mode::InstanceShiftStartFixed:{
+            break;}case Loop::Mode::FixedInstanceShiftStart:{
 
-                for(size_t ii = 0; ii < multiplier; ++ii){
-                    for(size_t jj = 0; jj < loop->nbReps; ++jj){
-                        setsNames.emplace_back(setsOccurenciesStr[(jj+idInstance)%setsOccurenciesStr.size()]);
-                    }
+                for(size_t ii = 0; ii < totalNbReps; ++ii){
+                    setsNames.push_back(setsOccurenciesStr[(ii+idInstance)%setsOccurenciesStr.size()]);
                 }
 
-                break;}
+            break;}case Loop::Mode::RandomOneForAllInstances:{
+
+                // generate
+                if(idInstance == 0){
+                    onlyOnceRandomLoopSets.clear();
+                    for(auto &set : randomizer->randomize(setsOccurenciesStr, totalNbReps)){
+                        onlyOnceRandomLoopSets[loop->key()].push_back(std::move(set));
+                    }
+                }
+                // retrieve
+                for(const auto &set : onlyOnceRandomLoopSets[loop->key()]){
+                    setsNames.push_back(set);
+                }
+
+            break;}case Loop::Mode::ShuffleOneForAllInstances:{
+
+                // generate
+                if(idInstance == 0) {
+                    onlyOnceShuffleLoopSets.clear();
+                    for(auto &set : randomizer->shuffle(setsOccurenciesStr, totalNbReps)){
+                        onlyOnceShuffleLoopSets[loop->key()].push_back(std::move(set));
+                    }
+                }
+                // retrieve
+                for(const auto &set : onlyOnceShuffleLoopSets[loop->key()]){
+                    setsNames.push_back(set);
+                }
+
+            break;}case Loop::Mode::RandomEveryNInstances:{
+
+                // generate
+                if(idInstance % loop->N == 0){
+                    everyNRandomLoopSets.clear();
+                    for(auto &set : randomizer->randomize(setsOccurenciesStr, totalNbReps)){
+                        everyNRandomLoopSets[loop->key()].push_back(std::move(set));
+                    }
+                }
+                // retrieve
+                for(const auto &set : everyNRandomLoopSets[loop->key()]){
+                    setsNames.push_back(set);
+                }
+
+            break;}case Loop::Mode::ShuffleEveryNInstances:{
+
+                // generate
+                 if(idInstance % loop->N == 0){
+                    everyNShuffleLoopSets.clear();
+                    for(auto &set : randomizer->shuffle(setsOccurenciesStr, totalNbReps)){
+                        everyNShuffleLoopSets[loop->key()].push_back(std::move(set));
+                    }
+                }
+                // retrieve
+                for(const auto &set : everyNShuffleLoopSets[loop->key()]){
+                    setsNames.push_back(set);
+                }
+
+            break;}
             default:
-                break;
-            }
+            break;
         }
 
         loopsSetsNames[loop->key()] = std::move(setsNames);

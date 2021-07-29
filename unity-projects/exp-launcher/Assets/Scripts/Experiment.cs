@@ -257,17 +257,17 @@ namespace Ex{
 
                 string elementTimeStr   = Converter.to_string(ExVR.Time().ellapsed_element_ms());
                 string expTimeStr       = Converter.to_string(ExVR.Time().ellapsed_exp_ms());                
-                string interStr         = info.interval != null ? Converter.to_string(info.interval.tEndS * 1000) : "-";
-                string orderStr         = string.Format("{0}/{1}", info.order+1, schreduler.total_number_of_elements());
+                string interStr         = info.interval() != null ? Converter.to_string(info.interval().tEndS * 1000) : "-";
+                string orderStr         = string.Format("{0}/{1}", info.order()+1, schreduler.total_number_of_elements());
                 string elementKey       = Converter.to_string(info.key());
 
                 string callsNb          = string.Format("{0};{1}", 
-                    Converter.to_string(info.element.calls_nb()),
-                    isRoutine ? Converter.to_string(((RoutineInfo)info).condition.calls_nb()) : "-"
+                    Converter.to_string(info.element().calls_nb()),
+                    isRoutine ? Converter.to_string(((RoutineInfo)info).condition().calls_nb()) : "-"
                 );
 
                 string typeStr          = isRoutine ? "R" : "I";
-                string typeSpecificInfo = isRoutine ? ((RoutineInfo)info).condition.key_str() :  ((ISIInfo)info).durationStr;
+                string typeSpecificInfo = isRoutine ? ((RoutineInfo)info).condition().key_str() :  ((ISIInfo)info).duration_str();
 
                 infoStr = string.Format("{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}",
                     elementTimeStr,

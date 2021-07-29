@@ -30,7 +30,8 @@ namespace Ex{
 
             // init gameObject
             m_textGO = ExVR.GlobalResources().instantiate_prebab("Components/TextRect", transform);
-            m_textGO.GetComponent<UnityEngine.UI.Image>().material = ExVR.GlobalResources().instantiate_unlit_color_mat();
+            m_textGO.name = "TextRect";
+            m_textGO.GetComponent<UnityEngine.UI.Image>().material = ExVR.GlobalResources().instantiate_unlit_transparent_color_mat();
             m_text    = m_textGO.transform.Find("Text (TMP)").GetComponent<TMPro.TextMeshProUGUI>();
 
             return m_textGO != null;

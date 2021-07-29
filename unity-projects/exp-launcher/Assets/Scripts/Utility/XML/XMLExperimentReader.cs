@@ -500,6 +500,12 @@ namespace Ex{
 
             [XmlAttribute(AttributeName = "cond")]
             public string Cond { get; set; }
+
+            [XmlAttribute(AttributeName = "elem_iter")]
+            public int ElemIteration { get; set; }
+
+            [XmlAttribute(AttributeName = "cond_iter")]
+            public int ConditionIteration { get; set; }
         }
 
         [XmlRoot(ElementName = "ExperimentFlow")]

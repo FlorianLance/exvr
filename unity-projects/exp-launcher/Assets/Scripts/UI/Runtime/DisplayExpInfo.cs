@@ -65,7 +65,7 @@ namespace Ex{
                     currentElemenStrBuilder.AppendFormat("<color=#00ff00ff>{0}</color> Id: <color=#00ff00ff>{1}</color> Cond: <color=#00ff00ff>{2}</color>",
                         routineInfo.name(),
                         routineInfo.key().ToString(),
-                        routineInfo.condition.name
+                        routineInfo.condition().name
                     );
                 } else {
                     var isiInfo = (ISIInfo)info;
@@ -73,7 +73,7 @@ namespace Ex{
                     currentElemenStrBuilder.AppendFormat("<color=#00ff00ff>{0}</color> Id: <color=#00ff00ff>{1}</color> Cond: <color=#00ff00ff>{2}</color>",
                         isiInfo.name(),
                         isiInfo.key().ToString(),
-                        isiInfo.durationStr
+                        isiInfo.duration_str()
                     );
                 }
 

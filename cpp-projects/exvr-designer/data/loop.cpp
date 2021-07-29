@@ -59,6 +59,10 @@ void Loop::set_nb_reps(size_t nb) noexcept{
     nbReps = nb;
 }
 
+void Loop::set_N(int N) noexcept{
+    this->N = N;
+}
+
 void Loop::set_loop_type(Loop::Mode m) noexcept{
     mode = m;
 }
@@ -236,3 +240,4 @@ Set *Loop::get_set(SetKey setKey) {
     }
     return nullptr;
 }
+

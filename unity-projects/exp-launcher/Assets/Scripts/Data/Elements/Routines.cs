@@ -103,7 +103,7 @@ namespace Ex{
                 foreach (Condition condition in routine.get_conditions()) {
 
                     // retrieve current condition
-                    if (condition.name == info.condition.name) {
+                    if (condition.name == info.condition().name) {
                         condition.trigger_update_connector_signals();
                         return;
                     }
@@ -148,12 +148,12 @@ namespace Ex{
         public void start_routine(RoutineInfo info) {
 
             // set current routine
-            m_currentRoutine = (Routine)info.element;
+            m_currentRoutine = (Routine)info.element();
             ExVR.ExpLog().routine_manager(info);
 
             // start it
             ExVR.ExpLog().push_to_strackTrace(new RoutinesManagerTrace(m_currentRoutine, "Start", true));
-            m_currentRoutine.start(info.condition);
+            m_currentRoutine.start(info);
             ExVR.ExpLog().push_to_strackTrace(new RoutinesManagerTrace(m_currentRoutine, "Started", false));
         }
 
@@ -226,7 +226,7 @@ namespace Ex{
 
         public void update_components_states(RoutineInfo info) {
             //ExVR.ExpLog().push_to_strackTrace(new RoutinesManagerTrace(routine, "update_components_states", true));
-            ExVR.Components().update_states_from_time(info.condition, ExVR.Time().ellapsed_element_s());
+            ExVR.Components().update_states_from_time(info.condition(), ExVR.Time().ellapsed_element_s());
             //ExVR.ExpLog().push_to_strackTrace(new RoutinesManagerTrace(routine, "update_components_states", false));
         }
 

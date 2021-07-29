@@ -1134,6 +1134,7 @@ void XmlIoManager::write_loop(const Loop *loop) {
     w->writeAttribute(QSL("name"), loop->name());
     w->writeAttribute(QSL("type"), from_view(Loop::get_name(loop->mode)));
     w->writeAttribute(QSL("nbReps"), QString::number(loop->nbReps));
+    w->writeAttribute(QSL("N"), QString::number(loop->N));
 
     if(loop->mode == Loop::Mode::File){
         w->writeAttribute(QSL("path"), loop->filePath);
@@ -1171,6 +1172,7 @@ std::tuple<LoopNodeUP, LoopUP, LoopNodeUP> XmlIoManager::read_loop(){
     }
 
     assign_attribute(loop->nbReps , QSL("nbReps"), true);
+    assign_attribute(loop->N , QSL("N"), false);
 
     // init loop start
     LoopNodeUP startLoop = std::make_unique<LoopNode>(loop.get(), true);
