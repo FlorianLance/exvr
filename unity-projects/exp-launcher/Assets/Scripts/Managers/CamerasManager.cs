@@ -37,7 +37,11 @@ namespace Ex{
             set_camera_rig_transform(Vector3.zero, Quaternion.identity);
 
             // reset calibration
-            reset_calibration_from_eye_camera();
+            reset_calibration_from_eye_camera(
+                ExVR.GuiSettings().useCameraXAxixAsNeutral, 
+                ExVR.GuiSettings().useCameraYAxixAsNeutral, 
+                ExVR.GuiSettings().useCameraZAxixAsNeutral
+            );
 
             // store initial calibration
             startExperimentCalibrationPosition = calibration.localPosition;
@@ -88,15 +92,20 @@ namespace Ex{
         }
 
         // calibration
-        public void reset_calibration_from_eye_camera() {
+        public void reset_calibration_from_eye_camera(bool useX, bool useY, bool useZ) {
 
             calibration.localPosition = bothEyesCamera.transform.localPosition;
             var angles = bothEyesCamera.transform.localEulerAngles;
             calibration.localEulerAngles = new Vector3(
-                ExVR.GuiSettings().useCameraXAxixAsNeutral ? angles.x : 0f,
-                ExVR.GuiSettings().useCameraYAxixAsNeutral ? angles.y : 0f,
-                ExVR.GuiSettings().useCameraZAxixAsNeutral ? angles.z : 0f
+                useX ? angles.x : 0f,
+                useY ? angles.y : 0f,
+                useZ ? angles.z : 0f
             );
+        }
+
+        public void set_calibration(Vector3 position, Quaternion rotation){
+            calibration.position = position;
+            calibration.rotation = rotation;
         }
 
         public void restore_start_experiment_calibration() {
