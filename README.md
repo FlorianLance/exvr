@@ -49,7 +49,7 @@ The project has been developped at [EPFL LNCO laboratory](https://www.epfl.ch/la
     * load current exp (or a subpart) to the launcher
     * load default or specific randomization (using instance files)
     * play/pause/stop/next/previous/goto
-    * feedback (exp stae, time, routine name, nodes states) from the exp-launcher
+    * feedback (exp state, time, routine name, nodes states) from the exp-launcher
     * logs (messages, errors) from the software and the scripts
     * realtime update of components parameters
 * **ExVR-exp**: an exp launcher for executing experiments
@@ -66,9 +66,12 @@ Go to release
 
 ## How to compile from code
 
-Install Visual studio community 2019.
-Install Qt 5.15.
-Clone project.
+ * Visual Studio 2019 Version 16.10 is requested for compiling, you can get it [here](
+https://visualstudio.microsoft.com/vs/community/). 
+
+ * The project is using QtCreator qmake files and the Qt library (Qt 5.15), you can get the opensource version [here](https://www.qt.io/download-thank-you).
+
+ * Clone the project.
 
 (TODO)
 
