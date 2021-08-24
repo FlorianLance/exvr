@@ -15,8 +15,8 @@ using namespace tool::ex;
 void PlotResourceConfigParametersW::insert_widgets(){
     layout()->setContentsMargins(0,0,0,0);
     add_widget(ui::F::gen(ui::L::HB(), {m_plot()}, LStretch{false}, LMargins{true}, QFrame::Box));
-
     add_widget(ui::F::gen(ui::L::VB(), {m_randomSelection(), m_plotsList()}, LStretch{false}, LMargins{true}, QFrame::Box));
+    no_end_stretch();
 }
 
 void PlotResourceConfigParametersW::init_and_register_widgets(){

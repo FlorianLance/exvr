@@ -34,6 +34,7 @@ struct AudioSourceInitConfigParametersW::Impl{
 };
 
 struct AudioSourceConfigParametersW::Impl{
+    ExCheckBoxW displaySoundOrigin;
     ExCheckBoxW playNewBlock;
     ExRadioButtonW pauseEndBlock;
     ExRadioButtonW stopEndBlock;
@@ -132,7 +133,7 @@ void AudioSourceConfigParametersW::insert_widgets(){
 
     add_widget(ui::F::gen(ui::L::VB(), {
         m_p->playNewBlock(), m_p->pauseEndBlock(), m_p->stopEndBlock(),
-        m_p->nothingEndBlock(), m_p->doLoop(), m_p->isSpatialized()},
+        m_p->nothingEndBlock(), m_p->doLoop(), m_p->isSpatialized(), m_p->displaySoundOrigin()},
         LStretch{false}, LMargins{true}, QFrame::Box)
     );
 
@@ -176,15 +177,15 @@ void AudioSourceConfigParametersW::init_and_register_widgets(){
     m_inputUiElements["pause_end_block"]    = m_p->pauseEndBlock.init_widget("Pause when update block ends", false);
     m_inputUiElements["stop_end_block"]     = m_p->stopEndBlock.init_widget("Stop when update block ends", true);
     m_inputUiElements["nothing_end_block"]  = m_p->nothingEndBlock.init_widget("Do nothing when update block ends", false);
-
-    m_inputUiElements["loop"]           = m_p->doLoop.init_widget("Loop", false);
-    m_inputUiElements["spatialized"]    = m_p->isSpatialized.init_widget("Spatialized", false);
-    m_inputUiElements["volume"]         = m_p->volume.init_widget("Volume", MinV<qreal>{0.}, V<qreal>{1.}, MaxV<qreal>{1.}, StepV<qreal>{0.01});
-    m_inputUiElements["stereo"]         = m_p->stereo.init_widget("Stereo", MinV<qreal>{-1.}, V<qreal>{0.0}, MaxV<qreal>{1.}, StepV<qreal>{0.01});
-    m_inputUiElements["spatial_blend"]  = m_p->spatialBlend.init_widget("Spatial blend", MinV<qreal>{0.}, V<qreal>{0.5}, MaxV<qreal>{1.}, StepV<qreal>{0.01});
-    m_inputUiElements["pitch"]          = m_p->pitch.init_widget("Pitch", MinV<qreal>{0.}, V<qreal>{1.}, MaxV<qreal>{5.}, StepV<qreal>{0.01});
-    m_inputUiElements["min_distance"]   = m_p->minDistance.init_widget("Min distance", MinV<qreal>{0.}, V<qreal>{0.01}, MaxV<qreal>{10.}, StepV<qreal>{0.01});
-    m_inputUiElements["max_distance"]   = m_p->maxDistance.init_widget("Max distance", MinV<qreal>{0.}, V<qreal>{5.}, MaxV<qreal>{10.}, StepV<qreal>{0.01});
+    m_inputUiElements["display"]            = m_p->displaySoundOrigin.init_widget("Display sound origin", false);
+    m_inputUiElements["loop"]               = m_p->doLoop.init_widget("Loop", false);
+    m_inputUiElements["spatialized"]        = m_p->isSpatialized.init_widget("Spatialized", false);
+    m_inputUiElements["volume"]             = m_p->volume.init_widget("Volume", MinV<qreal>{0.}, V<qreal>{1.}, MaxV<qreal>{1.}, StepV<qreal>{0.01});
+    m_inputUiElements["stereo"]             = m_p->stereo.init_widget("Stereo", MinV<qreal>{-1.}, V<qreal>{0.0}, MaxV<qreal>{1.}, StepV<qreal>{0.01});
+    m_inputUiElements["spatial_blend"]      = m_p->spatialBlend.init_widget("Spatial blend", MinV<qreal>{0.}, V<qreal>{0.5}, MaxV<qreal>{1.}, StepV<qreal>{0.01});
+    m_inputUiElements["pitch"]              = m_p->pitch.init_widget("Pitch", MinV<qreal>{0.}, V<qreal>{1.}, MaxV<qreal>{5.}, StepV<qreal>{0.01});
+    m_inputUiElements["min_distance"]       = m_p->minDistance.init_widget("Min distance", MinV<qreal>{0.}, V<qreal>{0.01}, MaxV<qreal>{10.}, StepV<qreal>{0.01});
+    m_inputUiElements["max_distance"]       = m_p->maxDistance.init_widget("Max distance", MinV<qreal>{0.}, V<qreal>{5.}, MaxV<qreal>{10.}, StepV<qreal>{0.01});
     map_sub_part(m_p->transfo.init_widget());
     m_p->transfo.tr.set_scale_values({0.3,0.3,0.3});
 }

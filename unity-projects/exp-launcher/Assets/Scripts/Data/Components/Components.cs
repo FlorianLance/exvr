@@ -148,6 +148,7 @@ namespace Ex
             ["Ex.FlashingDotComponent"] = gen_info(Category.Scene, Pritority.Medium, Reserved.Public),
             ["Ex.MRIComponent"] = gen_info(Category.Scene, Pritority.Medium, Reserved.Public),
             // script
+            ["Ex.CSharpFunctionComponent"] = gen_info(Category.Script, Pritority.Low, Reserved.Public),
             ["Ex.CSharpScriptComponent"] = gen_info(Category.Script, Pritority.Low, Reserved.Public),
             ["Ex.PythonScriptComponent"] = gen_info(Category.Script, Pritority.Medium, Reserved.Public),
             // UI

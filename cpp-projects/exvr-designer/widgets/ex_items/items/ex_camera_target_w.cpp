@@ -46,7 +46,6 @@ ExCameraTargetW *ExCameraTargetW::init_widget(bool enabled){
     color.init_widget("Pick camera object color", Qt::red);
     speed.init_widget("Time factor");
 
-
     return this;
 }
 
@@ -64,7 +63,6 @@ void ExCameraTargetW::init_connection(const QString &nameParam){
     color.init_connection(nameParam);
     speed.init_connection(nameParam);
 }
-
 
 void ExCameraTargetW::update_from_arg(const Arg &arg){
 
@@ -98,6 +96,7 @@ void ExCameraTargetW::update_from_arg(const Arg &arg){
 
     w->blockSignals(false);
 }
+
 
 Arg ExCameraTargetW::convert_to_arg() const{
 

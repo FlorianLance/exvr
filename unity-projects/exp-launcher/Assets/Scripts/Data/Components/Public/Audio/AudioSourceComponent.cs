@@ -49,6 +49,9 @@ namespace Ex{
 
         private AudioData audioData = null;
 
+        // signals
+        private static readonly string sampleValueChannelStr = "sample value channel";
+
         protected override bool initialize() {
 
             // slots
@@ -61,10 +64,12 @@ namespace Ex{
             add_slot("set time", (time) => {
                 set_time((float)time);
             });
+            add_slot("set volume", (volume) => {
+                set_volume((float)volume);
+            });
             // signals
-            for(int ii = 1; ii < 9; ++ii) {
-                add_signal("sample value channel" + ii);
-            }
+            add_signal("sample value channel");
+
             audioSourceGO = ExVR.GlobalResources().instantiate_prebab("Components/AudioSource", transform, "Audio source");
             if (audioSourceGO == null) {
                 log_error("Failed to load audio source GameObject");
@@ -156,19 +161,18 @@ namespace Ex{
         public override void update_from_current_config() {
 
             audioSource.spatialBlend = 0;
+            audioSource.loop         = currentC.get<bool>("loop");
+            audioSource.minDistance  = currentC.get<float>("min_distance");
+            audioSource.maxDistance  = currentC.get<float>("max_distance");
+            audioSource.spatialize   = currentC.get<bool>("spatialized");            
+            audioSource.pitch        = currentC.get<float>("pitch");
+            audioSource.panStereo    = currentC.get<float>("stereo");
+            audioSource.spatialBlend = currentC.get<float>("spatial_blend");
+            playNewBlock             = currentC.get<bool>("play_new_block");
+            stopEndBlock             = currentC.get<bool>("stop_end_block");
+            pauseEndBlock            = currentC.get<bool>("pause_end_block");
 
-            audioSource.loop        = currentC.get<bool>("loop");
-            audioSource.minDistance = currentC.get<float>("min_distance");
-            audioSource.maxDistance = currentC.get<float>("max_distance");
-            audioSource.spatialize  = currentC.get<bool>("spatialized");
-            audioSource.volume      = currentC.get<float>("volume");
-            audioSource.pitch       = currentC.get<float>("pitch");
-            audioSource.panStereo   = currentC.get<float>("stereo");
-            audioSource.spatialBlend= currentC.get<float>("spatial_blend");
-
-            playNewBlock = currentC.get<bool>("play_new_block");
-            stopEndBlock = currentC.get<bool>("stop_end_block");
-            pauseEndBlock = currentC.get<bool>("pause_end_block");
+            set_volume(currentC.get<float>("volume"));
 
             if (!currentC.get<bool>("transform_do_not_apply")) {
                 currentC.update_transform("transform", transform);
@@ -184,7 +188,7 @@ namespace Ex{
         }
 
         protected override void set_visibility(bool visibility) {
-            audioSourceGO.GetComponent<MeshFilter>().mesh = visibility ? audioMesh : null;
+            audioSourceGO.GetComponent<MeshFilter>().mesh = (visibility && currentC.get<bool>("display"))? audioMesh : null;
         }
 
         protected override void set_update_state(bool doUpdate) {
@@ -204,8 +208,8 @@ namespace Ex{
 
         protected override void update() {
 
-            for(int ii = 0; ii < audioSource.clip.channels; ++ii) {      
-                invoke_signal("sample value channel" + (ii+1),  audioData.channel_value(audioSource.timeSamples, ii));
+            for (int ii = 0; ii < audioSource.clip.channels; ++ii) {                      
+                invoke_signal(sampleValueChannelStr, new IdAny(ii + 1, audioData.channel_value(audioSource.timeSamples, ii)));
             }
         }
 
@@ -228,6 +232,10 @@ namespace Ex{
             if(time < audioSource.clip.length) {
                 audioSource.time = time;
             }            
+        }
+
+        public void set_volume(float volume) {
+            audioSource.volume = volume;
         }
     }
 }

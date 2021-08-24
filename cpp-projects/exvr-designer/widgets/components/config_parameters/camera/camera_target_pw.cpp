@@ -45,7 +45,6 @@ void CameraTargetConfigParametersW::insert_widgets(){
     add_widget(ui::F::gen(ui::L::HB(), {m_absolute(), m_relatetiveToEye()}, LStretch{true}, LMargins{false}));
     add_widget(&m_curves);
 
-    add_widget(ui::W::txt("<b>Speed</b>"));
     m_curves.addTab(m_speedCurve(), "Factor curve");
 }
 
@@ -92,4 +91,7 @@ void CameraTargetConfigParametersW::init_and_register_widgets(){
     m_speedCurve.firstY.w->setMaximum(1.);
     m_speedCurve.lastY.w->setMinimum(0.);
     m_speedCurve.lastY.w->setMaximum(1.);
+    m_speedCurve.currentCurveId.w->setEnabled(false);
+    m_speedCurve.currentCurveId.w->setValue(0);
+
 }

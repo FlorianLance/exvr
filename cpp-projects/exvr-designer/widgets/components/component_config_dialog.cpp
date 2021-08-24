@@ -558,6 +558,8 @@ ConfigParametersW *ComponentConfigDialog::generate_parameters(Component::Type ty
     case CT::Unity_asset_bundle:
         return initConfig ? gen_params_w<AssetBundleInitConfigParametersW>() : gen_params_w<AssetBundleConfigParametersW>();
     // ############################# Script
+    case CT::CSharp_function:
+        return initConfig ? gen_params_w<CSharpFunctionInitConfigParametersW>() : gen_params_w<CSharpFunctionConfigParametersW>();
     case CT::CSharp_script:
         return initConfig ? gen_params_w<CSharpScriptInitConfigParametersW>() : gen_params_w<CSharpScriptConfigParametersW>();
     case CT::Python_script:

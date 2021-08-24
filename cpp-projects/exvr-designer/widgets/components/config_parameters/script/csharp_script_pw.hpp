@@ -17,8 +17,46 @@
 #include "config_pw.hpp"
 #include "path_utility.hpp"
 #include "ex_line_edit_w.hpp"
+#include "ex_label_w.hpp"
+
+#include "widgets/dialogs/documentation_dialog.hpp"
 
 namespace tool::ex {
+
+class CSharpFunctionInitConfigParametersW : public ConfigParametersW{
+public:
+
+    ExLabelW start;
+    ExTextEditW code;
+    ExLabelW end;
+
+    CSharpHighlighter *csharpHighlighter = nullptr;
+
+    void insert_widgets() override{
+        m_layout->addWidget(start());
+        m_layout->addWidget(code());
+        m_layout->addWidget(end());
+        no_end_stretch();
+    }
+    void init_and_register_widgets() override{
+
+        CSharpHighlighter *csharpHighlighter = nullptr;
+        start.init_widget("namespace Ex{\n   public class TestCode{\n      public static object foo(object value){\n         object result = null;");
+        m_inputUiElements["code"] = code.init_widget("UnityEngine.Debug.Log(\"Test\");");
+        csharpHighlighter = new CSharpHighlighter(code.w->document());
+        end.init_widget("         return result;\n      }\n   }\n}");
+    }
+    void create_connections() override{}
+    void late_update_ui() override{}
+};
+
+class CSharpFunctionConfigParametersW : public ConfigParametersW{
+public:
+    void insert_widgets() override{}
+    void init_and_register_widgets() override{}
+    void create_connections() override{}
+    void late_update_ui() override{}
+};
 
 class CSharpScriptInitConfigParametersW : public ConfigParametersW{
 

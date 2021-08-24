@@ -80,7 +80,7 @@ struct Component {
     enum class Type : int {
         /** A */ AudioSource, Attach_object_to_hand,
         /** B */ Biopac, Blend_fade_viewer,
-        /** C */ Camera, Camera_trajectory, Camera_trajectory_file, Cloud, CSharp_script, Cube, Cylinder,
+        /** C */ Camera, Camera_trajectory, Camera_trajectory_file, Cloud, CSharp_function, CSharp_script, Cube, Cylinder,
         /** F */ Falling_spheres, Fixation_cross_viewer, Flag_pole, Flashing_dot, Fop_robot, Fov_simulator_viewer, FPP_avatar_camera,
         /** H */ Humanoid_avatar, Humanoid_controller,
         /** I */ Image_resource, Image_viewer,
@@ -201,6 +201,7 @@ struct Component {
         {T::Multi_AB,                 C::Scene,       TO::V,     CO::B,   false,   R::OpenSource,   S::Sta, "Multi_AB"sv, "Multi assets bundles"sv, "MultiAB"sv, ":/icons/Unity_scene_bundle"sv},
         {T::Unity_asset_bundle,       C::Scene,       TO::V,     CO::B,   false,   R::OpenSource,   S::Sta, "Unity_asset_bundle"sv, "Unity asset bundle"sv, "AssetBundle"sv, ":/icons/Unity_scene_bundle"sv},
         // Script
+        {T::CSharp_function,          C::Script,      TO::B,     CO::B,   false,   R::OpenSource,   S::Sta, "CSharp_function"sv, "CSharp function"sv, "CSharpFunction"sv, ":/icons/CSharp"sv},
         {T::CSharp_script,            C::Script,      TO::B,     CO::B,   false,   R::OpenSource,   S::Sta, "CSharp_script"sv, "CSharp script"sv, "CSharpScript"sv, ":/icons/CSharp"sv},
         {T::Python_script,            C::Script,      TO::B,     CO::B,   false,   R::OpenSource,   S::Exp, "Python_script"sv, "Python script"sv, "PythonScript"sv, ":/icons/Python_script"sv},
         // Tracking
@@ -307,12 +308,13 @@ struct Component {
 
     using TComponentSlots = std::tuple<
         T,                             FunctionN,                      CNT,                    Doc>;
-    static constexpr TupleArray<82,TComponentSlots> componentsSlots = {{
+    static constexpr TupleArray<83,TComponentSlots> componentsSlots = {{
         TComponentSlots
         // Audio
         {T::AudioSource,               "play"sv,                       CNT::void_t,            "..."sv},
         {T::AudioSource,               "pause"sv,                      CNT::void_t,            "..."sv},
         {T::AudioSource,               "set time"sv,                   CNT::float_t,           "..."sv},
+        {T::AudioSource,               "set volume"sv,                 CNT::float_t,           "..."sv},
         // Avatar
         {T::Humanoid_controller,       "init target"sv,                CNT::string_any_t,      "..."sv},
         {T::Humanoid_controller,       "update target"sv,              CNT::string_any_t,      "..."sv},
@@ -409,17 +411,10 @@ struct Component {
 
     using TComponentSignals = std::tuple<
         CT,                             FunctionN,                     CNT,                            Doc>;
-    static constexpr TupleArray<62, TComponentSignals> componentsSignals = {{
+    static constexpr TupleArray<55, TComponentSignals> componentsSignals = {{
         TComponentSignals
         // Audio
-        {T::AudioSource,               "sample value channel1"sv,      CNT::float_t,                   "..."sv},
-        {T::AudioSource,               "sample value channel2"sv,      CNT::float_t,                   "..."sv},
-        {T::AudioSource,               "sample value channel3"sv,      CNT::float_t,                   "..."sv},
-        {T::AudioSource,               "sample value channel4"sv,      CNT::float_t,                   "..."sv},
-        {T::AudioSource,               "sample value channel5"sv,      CNT::float_t,                   "..."sv},
-        {T::AudioSource,               "sample value channel6"sv,      CNT::float_t,                   "..."sv},
-        {T::AudioSource,               "sample value channel7"sv,      CNT::float_t,                   "..."sv},
-        {T::AudioSource,               "sample value channel8"sv,      CNT::float_t,                   "..."sv},
+        {T::AudioSource,               "sample value channel"sv,       CNT::id_any_t,                  "..."sv},
         // Avatar
         {T::Humanoid_controller,       "target transform"sv,           CNT::string_any_t,              "..."sv},
         // Camera

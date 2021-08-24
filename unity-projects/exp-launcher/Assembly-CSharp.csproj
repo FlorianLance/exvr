@@ -112,6 +112,7 @@
     <Compile Include="Assets\Scripts\Data\Components\Public\Scene\MRIComponent.cs" />
     <Compile Include="Assets\Scripts\Data\Components\Public\Scene\MirrorComponent.cs" />
     <Compile Include="Assets\Scripts\Data\Components\Public\Scene\MultiABComponent.cs" />
+    <Compile Include="Assets\Scripts\Data\Components\Public\Script\CSharpFunctionComponent.cs" />
     <Compile Include="Assets\Scripts\Data\Components\Public\Script\CSharpScriptComponent.cs" />
     <Compile Include="Assets\Scripts\Data\Components\Public\Script\PythonScriptComponent.cs" />
     <Compile Include="Assets\Scripts\Data\Components\Public\Script\internal\BaseCompiledCSharpComponent.cs" />
