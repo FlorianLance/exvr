@@ -162,6 +162,7 @@ namespace Ex
         // infos
         public int idCamera = 0;
         public bool doUpdate = true;
+        public bool doDisplay = true;
         public int idFrame = -1;
         public int sizePts = 0;
         public int sizeTris = 0;

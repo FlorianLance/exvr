@@ -13,49 +13,141 @@
 #include <QDir>
 #include <QListWidget>
 
+// qt-utility
+#include "widgets/text_widget_highlighter.hpp"
+
 // local
 #include "config_pw.hpp"
 #include "path_utility.hpp"
 #include "ex_line_edit_w.hpp"
+#include "ex_code_editor_w.hpp"
 #include "ex_label_w.hpp"
-
-#include "widgets/dialogs/documentation_dialog.hpp"
+#include "component.hpp"
 
 namespace tool::ex {
 
 class CSharpFunctionInitConfigParametersW : public ConfigParametersW{
 public:
-
-    ExLabelW start;
-    ExTextEditW code;
-    ExLabelW end;
-
-    CSharpHighlighter *csharpHighlighter = nullptr;
-
-    void insert_widgets() override{
-        m_layout->addWidget(start());
-        m_layout->addWidget(code());
-        m_layout->addWidget(end());
-        no_end_stretch();
-    }
-    void init_and_register_widgets() override{
-
-        CSharpHighlighter *csharpHighlighter = nullptr;
-        start.init_widget("namespace Ex{\n   public class TestCode{\n      public static object foo(object value){\n         object result = null;");
-        m_inputUiElements["code"] = code.init_widget("UnityEngine.Debug.Log(\"Test\");");
-        csharpHighlighter = new CSharpHighlighter(code.w->document());
-        end.init_widget("         return result;\n      }\n   }\n}");
-    }
+    void insert_widgets() override{}
+    void init_and_register_widgets() override{}
     void create_connections() override{}
     void late_update_ui() override{}
 };
 
 class CSharpFunctionConfigParametersW : public ConfigParametersW{
 public:
-    void insert_widgets() override{}
-    void init_and_register_widgets() override{}
-    void create_connections() override{}
-    void late_update_ui() override{}
+
+    QTabWidget *tab = nullptr;
+
+    ExTextEditW startFunction;
+    ExCodeEditorW contentFunction;
+    ExTextEditW endFunction;
+
+    ExCodeEditorW extraContent;
+
+    void insert_widgets() override{
+
+        tab = new QTabWidget();
+        add_widget(tab);
+
+        auto functionF = ui::F::gen(ui::L::VB(), {ui::W::txt("Define the content of the function below:"), startFunction(), contentFunction(), endFunction()},
+                LStretch{false},LMargins{true}, QFrame::NoFrame);
+        auto functionL = dynamic_cast<QVBoxLayout*>(functionF->layout());
+        functionL->setStretch(0,1);
+        functionL->setStretch(1,5);
+        functionL->setStretch(2,50);
+        functionL->setStretch(3,5);
+        tab->addTab(functionF, "Function");
+
+        auto extraF = ui::F::gen(ui::L::VB(), {ui::W::txt("Define extra static content accesible for the function (variables, functions...)"), extraContent()},
+            LStretch{false},LMargins{true}, QFrame::NoFrame);
+        auto extraL = dynamic_cast<QVBoxLayout*>(extraF->layout());
+        extraL->setStretch(0,1);
+        extraL->setStretch(1,50);
+        tab->addTab(extraF, "Extra");
+
+        no_end_stretch();
+    }
+
+    void init_and_register_widgets() override{
+
+        QFont font;
+        font.setFamily("Courier");
+        font.setStyleHint(QFont::Monospace);
+        font.setFixedPitch(true);
+        font.setPointSize(10);
+
+        // font
+        startFunction.w->setFont(font);
+        contentFunction.w->setFont(font);
+        endFunction.w->setFont(font);
+        extraContent.w->setFont(font);
+
+        // tab size
+        QFontMetrics metrics(font);
+        auto distance = metrics.horizontalAdvance("    ");
+        startFunction.w->setTabStopDistance(distance);
+        contentFunction.w->setTabStopDistance(distance);
+        endFunction.w->setTabStopDistance(distance);
+        extraContent.w->setTabStopDistance(distance);
+
+        // init widgets
+        startFunction.init_widget("public static object function(object input){\n   object output = null;");
+        m_inputUiElements["function"] = contentFunction.init_widget(" ");
+        endFunction.init_widget("   return output;\n}");
+        m_inputUiElements["extra"] = extraContent.init_widget("");
+
+        // hightlighing
+        ui::CSharpHighlighter *cshStartFunction = new ui::CSharpHighlighter(startFunction.w->document());
+        ui::CSharpHighlighter *cshContentFunction = new ui::CSharpHighlighter(contentFunction.w->document());
+        ui::CSharpHighlighter *cshEndFunction = new ui::CSharpHighlighter(endFunction.w->document());
+        ui::CSharpHighlighter *cshContentVariables = new ui::CSharpHighlighter(extraContent.w->document());
+
+        std::vector<QString> classNames;
+        for(const auto &unityStr : Component::components.tuple_column<Component::ColUnityStr>()){
+            classNames.emplace_back(QString(from_view(unityStr) % QSL("Component")));
+        }
+        cshStartFunction->add_classes(classNames);
+        cshContentFunction->add_classes(classNames);
+        cshEndFunction->add_classes(classNames);
+        cshContentVariables->add_classes(classNames);
+
+        startFunction.w->setStyleSheet("background-color: rgb(80,80,80);");
+        startFunction.w->zoomIn(2);
+        startFunction.w->setReadOnly(true);
+
+        contentFunction.w->setStyleSheet("background-color: rgb(30,30,30);");
+        contentFunction.w->zoomIn(2);
+        extraContent.w->setStyleSheet("background-color: rgb(30,30,30);");
+        extraContent.w->zoomIn(2);
+
+        endFunction.w->setStyleSheet("background-color: rgb(80,80,80);");
+        endFunction.w->zoomIn(2);
+        endFunction.w->setReadOnly(true);
+    }
+
+    void create_connections() override{
+
+        connect(&extraContent, &ExCodeEditorW::ui_change_signal, this, [&]{
+            auto content = extraContent.w->toPlainText();
+            if(content.length() == 0){
+                contentFunction.w->offsetLineCounter = 0;
+            }else{
+                int nbLines = content.count('\n');
+                contentFunction.w->offsetLineCounter = nbLines + 1;
+            }
+        });
+    }
+
+    void late_update_ui() override{
+        auto content = extraContent.w->toPlainText();
+        if(content.length() == 0){
+            contentFunction.w->offsetLineCounter = 0;
+        }else{
+            int nbLines = content.count('\n');
+            contentFunction.w->offsetLineCounter = nbLines + 1;
+        }
+    }
 };
 
 class CSharpScriptInitConfigParametersW : public ConfigParametersW{

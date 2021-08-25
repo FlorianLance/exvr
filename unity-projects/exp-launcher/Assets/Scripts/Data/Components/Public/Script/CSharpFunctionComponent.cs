@@ -7,20 +7,27 @@
 
 // system
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.CodeDom.Compiler;
 
 // unity
 using UnityEngine;
 
+namespace Ex{
 
 
-namespace Ex
-{
+    public class CSharpFunctionComponent : ExComponent {
 
 
-    public class CSharpFunctionComponent : ExComponent
-    {
+
+        private static readonly string startPart = "namespace Ex{public class CSharpFunction{";
+        private static readonly string startFunctionPart = "public static object function(object input){object output = null;";
+        private static readonly string endPart = "return output;}}}";
+
+        List<Assembly> assemblies = null;
+        Dictionary<string, MethodInfo> methods = null;
+        MethodInfo currentMethod = null;
 
         public static Assembly compile_assembly_from_text(string code) {
 
@@ -78,26 +85,37 @@ namespace Ex
 
         protected override bool initialize() {
 
-            string firstPart = "namespace Ex{public class TestCode{public static object foo(object value){object result = null;";
-            string codePart = initC.get<string>("code");// "UnityEngine.Debug.Log(\"OK!\");";
-            string lastPart = "return result;}}}";
-            var assembly = compile_assembly_from_text(firstPart + codePart + lastPart);
+            // connections
+            connections().add_slot("input", (input) => {
+                invoke_signal("output", currentMethod.Invoke(null, new object[1] { input }));
+            });
+            connections().add_signal("output");            
 
-
-            var runtimeType = assembly.GetType(string.Concat("Ex.TestCode"));
-            if (runtimeType == null) {
-                log_error(string.Concat("Cannot instantiate class Ex.TestCode"));
-                return false;
-            }
-
+            // generate assemblies
+            assemblies = new List<Assembly>();
+            methods = new Dictionary<string, MethodInfo>();
             var flagPublic = System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public;
-            var method = runtimeType.GetMethod("foo", flagPublic);
-            //var function = (runtimeType.GetMethod("foo", flagPublic).DeclaringType == runtimeType);
+            foreach (var config in configs) {
+                var assembly = compile_assembly_from_text(string.Concat(startPart, config.get<string>("extra"), startFunctionPart, config.get<string>("function"), endPart));
 
-            object[] parameters = new object[1] { 0f };
-            var a = method.Invoke(null, parameters);
+
+                var runtimeType = assembly.GetType("Ex.CSharpFunction");
+                if (runtimeType == null) {
+                    log_error(string.Format("Cannot instantiate class Ex.CSharpFunction for config {0}", config.name));
+                    return false;
+                }
+
+                var method = runtimeType.GetMethod("function", flagPublic);
+                methods[config.name] = method;
+
+                assemblies.Add(assembly);
+            }           
 
             return true;
+        }
+
+        protected override void start_routine() {
+            currentMethod = methods[currentC.name];
         }
     }
 }

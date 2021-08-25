@@ -201,7 +201,7 @@ struct Component {
         {T::Multi_AB,                 C::Scene,       TO::V,     CO::B,   false,   R::OpenSource,   S::Sta, "Multi_AB"sv, "Multi assets bundles"sv, "MultiAB"sv, ":/icons/Unity_scene_bundle"sv},
         {T::Unity_asset_bundle,       C::Scene,       TO::V,     CO::B,   false,   R::OpenSource,   S::Sta, "Unity_asset_bundle"sv, "Unity asset bundle"sv, "AssetBundle"sv, ":/icons/Unity_scene_bundle"sv},
         // Script
-        {T::CSharp_function,          C::Script,      TO::B,     CO::B,   false,   R::OpenSource,   S::Sta, "CSharp_function"sv, "CSharp function"sv, "CSharpFunction"sv, ":/icons/CSharp"sv},
+        {T::CSharp_function,          C::Script,      TO::N,     CO::C,   false,   R::OpenSource,   S::Sta, "CSharp_function"sv, "CSharp function"sv, "CSharpFunction"sv, ":/icons/CSharp"sv},
         {T::CSharp_script,            C::Script,      TO::B,     CO::B,   false,   R::OpenSource,   S::Sta, "CSharp_script"sv, "CSharp script"sv, "CSharpScript"sv, ":/icons/CSharp"sv},
         {T::Python_script,            C::Script,      TO::B,     CO::B,   false,   R::OpenSource,   S::Exp, "Python_script"sv, "Python script"sv, "PythonScript"sv, ":/icons/Python_script"sv},
         // Tracking
@@ -308,7 +308,7 @@ struct Component {
 
     using TComponentSlots = std::tuple<
         T,                             FunctionN,                      CNT,                    Doc>;
-    static constexpr TupleArray<83,TComponentSlots> componentsSlots = {{
+    static constexpr TupleArray<84,TComponentSlots> componentsSlots = {{
         TComponentSlots
         // Audio
         {T::AudioSource,               "play"sv,                       CNT::void_t,            "..."sv},
@@ -377,6 +377,7 @@ struct Component {
         {T::MRI,                       "init knee"sv,                  CNT::string_any_t,      "..."sv},
         {T::MRI,                       "update knee"sv,                CNT::string_any_t,      "..."sv},
         // Script
+        {T::CSharp_function,           "input"sv,                      CNT::any_t,             "..."sv},
         {T::CSharp_script,             "slot1"sv,                      CNT::any_t,             "..."sv},
         {T::CSharp_script,             "slot2"sv,                      CNT::any_t,             "..."sv},
         {T::CSharp_script,             "slot3"sv,                      CNT::any_t,             "..."sv},
@@ -411,7 +412,7 @@ struct Component {
 
     using TComponentSignals = std::tuple<
         CT,                             FunctionN,                     CNT,                            Doc>;
-    static constexpr TupleArray<55, TComponentSignals> componentsSignals = {{
+    static constexpr TupleArray<56, TComponentSignals> componentsSignals = {{
         TComponentSignals
         // Audio
         {T::AudioSource,               "sample value channel"sv,       CNT::id_any_t,                  "..."sv},
@@ -448,6 +449,7 @@ struct Component {
         // Scene
         {T::Unity_asset_bundle,        "visibility changed"sv,         CNT::boolean_t,                 "Is triggered if the visibility of the component changed"sv},
         // Script
+        {T::CSharp_function,           "output"sv,                     CNT::any_t,                     "..."sv},
         {T::CSharp_script,             "signal1"sv,                    CNT::any_t,                     "..."sv},
         {T::CSharp_script,             "signal2"sv,                    CNT::any_t,                     "..."sv},
         {T::CSharp_script,             "signal3"sv,                    CNT::any_t,                     "..."sv},

@@ -13,11 +13,11 @@
 #include <QListWidget>
 #include <QTextBrowser>
 #include <QTabWidget>
-#include <QSyntaxHighlighter>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
-#include <QRegularExpression>
 #include <QLabel>
+
+
 
 // local
 #include "component.hpp"
@@ -108,43 +108,6 @@ static auto all_sections_names() {
 }
 
 
-// test
-class CSharpHighlighter : public QSyntaxHighlighter{
-    Q_OBJECT
-
-public:
-    CSharpHighlighter(QTextDocument *parent = nullptr);
-
-protected:
-    void highlightBlock(const QString &text) override;
-
-private:
-    struct HighlightingRule
-    {
-        QRegularExpression pattern;
-        QTextCharFormat format;
-    };
-    QVector<HighlightingRule> highlightingRules;
-
-    QRegularExpression commentStartExpression;
-    QRegularExpression commentEndExpression;
-
-    QTextCharFormat digitFormat;
-    QTextCharFormat keywordFormat;
-    QTextCharFormat typeFormat;
-
-    QTextCharFormat structInstancesFormat;
-    QTextCharFormat classesInstancesFormat;
-
-    QTextCharFormat classFormat;
-    QTextCharFormat singleLineCommentFormat;
-    QTextCharFormat multiLineCommentFormat;
-    QTextCharFormat quotationFormat;
-    QTextCharFormat functionFormat;
-
-    QTextCharFormat defaultFormat;
-};
-
 class SectionW : public QWidget{
 
 public:
@@ -223,7 +186,6 @@ private:
     QStringList connectorsFullStr;
 
     // hightlighers
-    CSharpHighlighter *csharpHighlighter = nullptr;
     // PythonHighlighter *pythonHighlighter = nullptr;    
 };
 }
