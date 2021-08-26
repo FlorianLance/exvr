@@ -92,13 +92,16 @@ struct Loop : public Element {
     void set_loop_type(Mode m) noexcept;
 
     bool is_default() const;
-    bool set_sets(QStringList sets);
+    void set_sets(QStringList sets);
     bool add_set(QString setName, RowId id);
+    void add_sets(QStringList setsName, RowId id);
     void remove_set(RowId id);
     bool modify_set_name(QString newSetName, RowId id);
     void modify_set_occurencies_nb(int occurrencies, RowId id);
     void move_set_up(RowId id);
     void move_set_down(RowId id);
+    void sort_sets_lexico();
+    void sort_sets_num();
 
     bool load_file(QString path);
 

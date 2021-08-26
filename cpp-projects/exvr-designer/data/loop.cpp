@@ -77,27 +77,32 @@ bool Loop::is_default() const{
     return false;
 }
 
-bool Loop::set_sets(QStringList setsName){
+void Loop::set_sets(QStringList setsName){
 
     std::set<QString> validNames;
+    sets.clear();
+
     for(const auto &setName: setsName){
 
+        // is empty?
         if(setName.length() == 0){
             continue;
         }
-
+        // is using "default"?
+        if(setName == QSL("default")){
+            QtLogger::error(QSL("[LOOP] Cannot add \"default\" as set name"));
+            continue;
+        }
+        // is duplicate?
         if(validNames.contains(setName)){
             QtLogger::error(QSL("[LOOP] Name \"") % setName % QSL("\" is inserted more than once in the list."));
             continue;
         }
         validNames.insert(setName);
-    }
 
-    sets.clear();
-    for(const auto &setName: validNames){
+        // add valid set
         sets.emplace_back(Set{setName, SetKey{-1}});
     }
-    return true;
 }
 
 bool Loop::add_set(QString setName, RowId id) {
@@ -125,6 +130,38 @@ bool Loop::add_set(QString setName, RowId id) {
     sets.insert(std::begin(sets) + id.v, Set{setName, SetKey{-1}});
     currentSetName = setName;
     return true;
+}
+
+void Loop::add_sets(QStringList setsName, RowId id){
+
+    std::set<QString> validNames;
+    for(const auto &set : sets){
+        validNames.insert(set.name);
+    }
+
+    int v = 0;
+    for(const auto &setName : setsName){
+
+        // is empty?
+        if(setName.length() == 0){
+            continue;
+        }
+        // is using "default"?
+        if(setName == QSL("default")){
+            QtLogger::error(QSL("[LOOP] Cannot add \"default\" as set name"));
+            continue;
+        }
+        // is duplicate?
+        if(validNames.contains(setName)){
+            QtLogger::error(QSL("[LOOP] Name \"") % setName % QSL("\" is inserted more than once in the list."));
+            continue;
+        }
+        validNames.insert(setName);
+
+        // insert valid set
+        sets.insert(std::begin(sets) + id.v + (v++), Set{setName, SetKey{-1}});
+
+    }
 }
 
 bool Loop::is_file_mode() const noexcept{
@@ -177,6 +214,17 @@ void Loop::move_set_up(RowId id){
 
 void Loop::move_set_down(RowId id){
     std::swap(sets[id.v], sets[id.v+1]);
+}
+
+
+void Loop::sort_sets_lexico(){
+//    std::sort(std::begin(sets), std::end(sets));
+}
+
+void Loop::sort_sets_num(){
+//    std::sort(std::begin(sets), std::end(sets), [](const Set& lhs, const Set& rhs) {
+//        return lhs.name.toInt() < rhs.name.toInt();
+//    });
 }
 
 bool Loop::load_file(QString path){

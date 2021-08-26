@@ -282,49 +282,6 @@ namespace Ex{
             }                        
         }
 
-        // ######### END TEST
-
-        // Send an event for moving to the next flow element
-        //public static void next() {
-        //    ExVR.Events().command.next();
-        //}
-
-        //// Send an event for moving to the previous flow element
-        //public static void previous() {
-        //    ExVR.Events().command.PreviousElementEvent.Invoke();
-        //}
-
-        //public static void pause_experiment() {
-        //    ExVR.Events().command.PauseExperimentEvent.Invoke();
-        //}
-
-        //public static void force_stop_experiment() {
-        //    ExVR.Events().command.StopExperimentEvent.Invoke();            
-        //}        
-
-        //public static void next_element_with_name(string elementName){
-        //    ExVR.Events().command.NextElementWithNameEvent.Invoke(elementName);
-        //}
-
-        //public static void previous_element_with_name(string elementName) {
-        //    ExVR.Events().command.PreviousElementWithNameEvent.Invoke(elementName);
-        //}
-
-        //public static void next_element_with_condition(string elementName) {
-        //    ExVR.Events().command.NextElementWithConditionEvent.Invoke(elementName);
-        //}
-
-        //public static void previous_element_with_condition(string elementName) {
-        //    ExVR.Events().command.PreviousElementWithConditionEvent.Invoke(elementName);
-        //}
-
-        //public static void modify_routine_action_config(string routineName, string conditionName, string componentName, string newConfigName) {
-        //    ExVR.Events().command.ModifyRoutineActionConfigEvent.Invoke(routineName, conditionName, componentName, newConfigName);
-        //}
-
-
-
-
         // setup component, parent, layer, configurations...
         public void setup_component_object(XML.Component xmlComponent) {
 

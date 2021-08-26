@@ -330,11 +330,15 @@ namespace Ex {
             return ExVR.Resources().get_resource_file_data(type, alias).path;
         }
 
-        public Texture2D get_resource_image(string argName) {
+        public Texture2D get_resource_image(string argName, bool returnDefaultIfNull = true) {
 
             var data = get_resource_image_data(argName);
             if(data == null) {
-                return ExVR.Resources().get_image_file_data("default_texture").texture;
+                if (returnDefaultIfNull) {
+                    return ExVR.Resources().get_image_file_data("default_texture").texture;
+                } else {
+                    return null;
+                }
             }
             return data.texture;
         }
@@ -651,6 +655,23 @@ namespace Ex {
             }
             set(argName, elements);
         }
+
+        // # alias
+        //public void set_resource_alias(string argName, string resourceAlias) {
+
+
+            //if (!has(argName)) {
+            //    log_error(string.Format("Argument {0} doesn't exist.", argName));
+            //    return "";
+            //}
+
+            //var split = ((List<object>)args[argName].value);
+            //if (split.Count == 2) {
+            //    return (string)split[0];
+            //}
+            //return "";
+        //}
+
 
         // xml
         public bool update_from_xml(XML.Arg xmlArg) {

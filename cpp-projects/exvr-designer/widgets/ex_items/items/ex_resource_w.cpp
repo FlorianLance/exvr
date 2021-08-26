@@ -108,7 +108,7 @@ void ExResourceW::update_from_arg(const Arg &arg){
 Arg ExResourceW::convert_to_arg() const{
 
     Arg arg = ExItemW::convert_to_arg();
-    QString alias=  "";
+    QString alias = "";
     if(auto resource = ResourcesManager::get()->get_resource(m_resourceType, m_currentKey, false); resource != nullptr){
         alias = resource->alias;
     }

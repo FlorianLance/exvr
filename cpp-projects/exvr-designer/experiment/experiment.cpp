@@ -1081,18 +1081,19 @@ void Experiment::add_loop_sets(ElementKey loopKey, QString sets, RowId id){
             if(loop->is_default()){
                 loop->set_sets(sets.split("\n"));
             }else{
-                int startId = id.v;
-                int ii = 0;
-                for(const auto &setName : sets.split("\n")){
+                loop->add_sets(sets.split("\n"), id);
+//                int startId = id.v;
+//                int ii = 0;
+//                for(const auto &setName : sets.split("\n")){
 
-                    if(setName.length() == 0){
-                        continue;
-                    }
+//                    if(setName.length() == 0){
+//                        continue;
+//                    }
 
-                    if(loop->add_set(setName, RowId{startId+ii})){
-                        ++ii;
-                    }
-                }
+//                    if(loop->add_set(setName, RowId{startId+ii})){
+//                        ++ii;
+//                    }
+//                }
             }
 
             update_conditions();
@@ -1161,6 +1162,31 @@ void Experiment::remove_set(ElementKey loopKey, RowId id){
             update_conditions();
         }
         add_to_update_flag(UpdateRoutines | UpdateSelection | UpdateFlow);
+    }
+}
+
+void Experiment::sort_loop_sets_lexico(ElementKey loopKey){
+
+    if(auto loop = get_loop(loopKey); loop != nullptr){
+        if(loop->is_file_mode()){
+            QtLogger::error(QSL("[EXP] Cannot sort loop set when file mode is used."));
+        }else{
+            loop->sort_sets_lexico();
+            update_conditions();
+            add_to_update_flag(UpdateRoutines | UpdateSelection | UpdateFlow);
+        }
+    }
+}
+
+void Experiment::sort_loop_sets_num(ElementKey loopKey){
+    if(auto loop = get_loop(loopKey); loop != nullptr){
+        if(loop->is_file_mode()){
+            QtLogger::error(QSL("[EXP] Cannot sort loop set when file mode is used."));
+        }else{
+            loop->sort_sets_num();
+            update_conditions();
+            add_to_update_flag(UpdateRoutines | UpdateSelection | UpdateFlow);
+        }
     }
 }
 

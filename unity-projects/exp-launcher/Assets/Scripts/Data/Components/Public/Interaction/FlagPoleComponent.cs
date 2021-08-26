@@ -140,14 +140,27 @@ namespace Ex {
         }
 
         protected override void start_routine() {
-            smr.material.mainTexture = currentC.get_resource_image("flag_image");
+            var image = currentC.get_resource_image("flag_image", false);
+            if(image != null) {
+                smr.material.mainTexture = image;
+            }            
             update_from_current_config();
+        }
+
+        public void load_image_from_resource(string imageAlias) {
+
+            if (imageAlias.Length != 0) {
+                smr.material.mainTexture = ExVR.Resources().get_image_file_data(imageAlias).texture;
+            }
         }
 
         protected override void update_parameter_from_gui(XML.Arg arg) {
 
             if(arg.Name == "flag_image") {
-                smr.material.mainTexture = currentC.get_resource_image("flag_image");
+                var image = currentC.get_resource_image(arg.Name, false);
+                if (image != null) {
+                    smr.material.mainTexture = image;
+                }
             }
             update_from_current_config();
         }

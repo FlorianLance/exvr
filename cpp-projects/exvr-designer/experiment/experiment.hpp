@@ -190,6 +190,8 @@ public slots:
     void modify_loop_nb_reps(ElementKey loopKey, int nbReps);
     void modify_loop_N(ElementKey loopKey, int N);
     void remove_set(ElementKey loopKey, RowId id);
+    void sort_loop_sets_lexico(ElementKey loopKey);
+    void sort_loop_sets_num(ElementKey loopKey);
     void move_loop_set_up(ElementKey loopKey, RowId id);
     void move_loop_set_down(ElementKey loopKey, RowId id);
     void load_loop_sets_file(ElementKey loopKey, QString path);

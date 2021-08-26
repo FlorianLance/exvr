@@ -56,7 +56,7 @@ public :
 
     void insert_widgets() override{
         add_sub_part_widget(m_transfo);
-        add_widget(ui::F::gen(ui::L::HB(), {m_currentTexture()}, LStretch{true}, LMargins{true}));
+        add_widget(ui::F::gen(ui::L::HB(), {m_currentTexture()}, LStretch{false}, LMargins{true}));
         add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Flag position: "), m_currentHeight()}, LStretch{true}, LMargins{true}));
         add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Cloth max dist: "), m_currentClothMaxDistance()}, LStretch{false}, LMargins{true}));
     }
