@@ -246,6 +246,9 @@ void ExParametersGeneratorWidgetW::add_ui_element(UiType uiType, QString uiName,
     case UiType::ResourcesList:{
         wElem = dynamic_cast<ExResourcesListW*>(exW = new ExResourcesListW())->w.get();
     }break;
+    case UiType::Curve:{
+        wElem = dynamic_cast<ExCurveW*>(exW = new ExCurveW())->w.get();
+    }break;
     default:
         return;
     }
@@ -315,10 +318,12 @@ void ExParametersGeneratorWidgetW::add_ui_element(UiType uiType, QString uiName,
         case UiType::Combo_box_index:{
             genD.add_gen_widget(new ComboTextGen());
         }break;
+        case UiType::Curve:{
+            genD.add_gen_widget(new CurveGen());
+        }break;
         default:
             break;
         }
-
 
         if(!genD.show_dialog(names)){
             delete exW;

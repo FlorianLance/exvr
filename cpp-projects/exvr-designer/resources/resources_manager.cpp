@@ -78,7 +78,7 @@ Resource *ResourcesManager::get_resource(Resource::Type type, const QString &ali
     }
 
     if(errorIfNotFound){
-        QtLogger::error(QSL("Resource of type : ") % from_view(Resource::get_name(type)) % QSL(" with alais ") % alias % QSL(" not found."));
+        QtLogger::error(QSL("Resource of type : ") % from_view(Resource::get_name(type)) % QSL(" with alias ") % alias % QSL(" not found."));
     }
 
     return nullptr;

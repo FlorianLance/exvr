@@ -88,7 +88,8 @@ namespace Ex{
 
         // xml
         private XML.Experiment m_xmlExperiment = null;
-        
+        private XML.ExperimentFlow m_xmlFlow = null;
+
 
         #region unity
 
@@ -258,7 +259,7 @@ namespace Ex{
                 string elementTimeStr   = Converter.to_string(ExVR.Time().ellapsed_element_ms());
                 string expTimeStr       = Converter.to_string(ExVR.Time().ellapsed_exp_ms());                
                 string interStr         = info.interval() != null ? Converter.to_string(info.interval().tEndS * 1000) : "-";
-                string orderStr         = string.Format("{0}/{1}", info.order()+1, schreduler.total_number_of_elements());
+                string orderStr         = string.Format("{0}/{1}", info.order()+1, schreduler.instance.total_number_of_elements());
                 string elementKey       = Converter.to_string(info.key());
 
                 string callsNb          = string.Format("{0};{1}", 
@@ -380,11 +381,11 @@ namespace Ex{
             // xml instance
             var serializer = new XmlSerializer(typeof(XML.ExperimentFlow));
             var stream = new FileStream(xmlInstancePath, FileMode.Open);
-            XML.ExperimentFlow experimentFlow = serializer.Deserialize(stream) as XML.ExperimentFlow;
+            m_xmlFlow = serializer.Deserialize(stream) as XML.ExperimentFlow;
             stream.Close();
 
             // generate schreduling
-            if (!schreduler.generate(experimentFlow)) {
+            if (!schreduler.generate(m_xmlFlow)) {
                 log_error("Instance loading failed. Please select a valid instance file and start loading again.");
                 return false;
             }

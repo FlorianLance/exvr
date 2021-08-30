@@ -114,9 +114,9 @@ namespace Ex{
         }
 
         // instances
-        public List<RoutineInfo> get_instance_infos() { return ExVR.Schreduler().get_routine_infos_order(key(), is_a_randomizer()); }
-        public List<Condition> get_instance_conditions() { return ExVR.Schreduler().get_routine_conditions_order(key(), is_a_randomizer()); }
-        public List<string> get_instance_conditions_names() { return ExVR.Schreduler().get_routine_conditions_names_order(key(), is_a_randomizer()); }
+        public List<RoutineInfo> get_instance_infos() { return ExVR.Instance().get_routine_infos_order(key(), is_a_randomizer()); }
+        public List<Condition> get_instance_conditions() { return ExVR.Instance().get_routine_conditions_order(key(), is_a_randomizer()); }
+        public List<string> get_instance_conditions_names() { return ExVR.Instance().get_routine_conditions_names_order(key(), is_a_randomizer()); }
 
 
         // time

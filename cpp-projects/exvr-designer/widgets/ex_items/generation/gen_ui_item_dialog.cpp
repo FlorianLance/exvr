@@ -769,3 +769,76 @@ Arg GenUIItemDialog::generate_arg(UiElementKey key) const{
 QString GenUIItemDialog::name() const{
     return m_leName->text();
 }
+
+TextGenW::TextGenW(QString text){
+    auto l = new QVBoxLayout();
+    l->setContentsMargins(0,0,0,0);
+    l->addWidget(ui::F::gen(ui::L::HB(), {ui::W::txt(text), &textEdit}, LStretch{false}, LMargins{false}, QFrame::NoFrame));
+    l->addStretch();
+    setLayout(l);
+}
+
+void TextGenW::update_arg(Arg &arg) const{
+    arg.set_separator("");
+    arg.set_value(textEdit.toPlainText());
+}
+
+CurveGen::CurveGen(){
+    // ...
+}
+
+void CurveGen::update_arg(Arg &arg) const{
+    std::vector<double> x =  {0.,1.};
+    std::vector<double> y =  {0.,1.};
+    arg.init_from_curve(&x, &y, " ");
+
+    // ...
+}
+
+ComboTextGen::ComboTextGen(QString text){
+    auto l = new QVBoxLayout();
+    leText.setText(text);
+    l->setContentsMargins(0,0,0,0);
+    l->addWidget(ui::F::gen(ui::L::HB(), {ui::W::txt("Enter items (using \"|\" as separator)):"), &leText}, LStretch{false}, LMargins{false}, QFrame::NoFrame));
+    l->addStretch();
+    setLayout(l);
+
+    connect(&leText, &QLineEdit::textChanged, this, [&]{
+
+        if(leText.text().length() == 0){
+            isValid = false;
+            errorMessage = "No items";
+            emit updated_signal();
+            return;
+        }
+
+        auto split = leText.text().split("|");
+        if(split.count() == 0){
+            errorMessage = "Invalid items";
+            isValid = false;
+            emit updated_signal();
+            return;
+        }
+
+        isValid = true;
+
+        emit updated_signal();
+    });
+}
+
+void ComboTextGen::update_arg(Arg &arg) const{
+
+    if(leText.text().length() == 0){
+        return;
+    }
+
+    auto split = leText.text().split("|");
+    if(split.count() == 0){
+        return;
+    }
+
+    arg.set_value(split[0]);
+    arg.set_separator("");
+    arg.generator.info = leText.text();
+}
+

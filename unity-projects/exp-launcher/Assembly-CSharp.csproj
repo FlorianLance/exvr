@@ -228,6 +228,9 @@
     <Compile Include="Assets\Scripts\Managers\PythonManager.cs" />
     <Compile Include="Assets\Scripts\Managers\ResourcesManager.cs" />
     <Compile Include="Assets\Scripts\Managers\TimeManager.cs" />
+    <Compile Include="Assets\Scripts\Rand\FlowElementInfo.cs" />
+    <Compile Include="Assets\Scripts\Rand\Instance.cs" />
+    <Compile Include="Assets\Scripts\Rand\Scheduler.cs" />
     <Compile Include="Assets\Scripts\Resources\AssetBundleResource.cs" />
     <Compile Include="Assets\Scripts\Resources\AudioResource.cs" />
     <Compile Include="Assets\Scripts\Resources\CSharpScriptResource.cs" />
@@ -239,7 +242,6 @@
     <Compile Include="Assets\Scripts\Resources\ScanerVideoResource.cs" />
     <Compile Include="Assets\Scripts\Resources\TextResource.cs" />
     <Compile Include="Assets\Scripts\Resources\VideoResource.cs" />
-    <Compile Include="Assets\Scripts\Scheduler.cs" />
     <Compile Include="Assets\Scripts\UI\InspectorUtility.cs" />
     <Compile Include="Assets\Scripts\UI\Menu\AssetBundleBuilder.cs" />
     <Compile Include="Assets\Scripts\UI\Menu\EditorExperimentMenu.cs" />

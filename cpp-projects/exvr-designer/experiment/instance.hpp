@@ -45,6 +45,7 @@ struct Instance {
 
     QString filePath = "";
     QString fileName = "debug-instance";
+    size_t idInstance = 0;
     std_v1<InstanceElement> flow;
 };
 

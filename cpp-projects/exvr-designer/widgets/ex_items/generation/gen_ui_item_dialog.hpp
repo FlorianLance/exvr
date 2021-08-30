@@ -141,18 +141,9 @@ class TextGenW : public BaseGenW{
 public:
     QTextEdit textEdit;
 
-    TextGenW(QString text = "Text"){
-        auto l = new QVBoxLayout();
-        l->setContentsMargins(0,0,0,0);
-        l->addWidget(ui::F::gen(ui::L::HB(), {ui::W::txt(text), &textEdit}, LStretch{false}, LMargins{false}, QFrame::NoFrame));
-        l->addStretch();
-        setLayout(l);
-    }
+    TextGenW(QString text = "Text");
 
-    void update_arg(Arg &arg) const override{
-        arg.set_separator("");
-        arg.set_value(textEdit.toPlainText());
-    }
+    void update_arg(Arg &arg) const override;
 };
 
 
@@ -162,52 +153,8 @@ public:
 
     QLineEdit leText;
 
-    ComboTextGen(QString text = "A|B|C"){
-        auto l = new QVBoxLayout();
-        leText.setText(text);
-        l->setContentsMargins(0,0,0,0);
-        l->addWidget(ui::F::gen(ui::L::HB(), {ui::W::txt("Enter items (using \"|\" as separator)):"), &leText}, LStretch{false}, LMargins{false}, QFrame::NoFrame));
-        l->addStretch();
-        setLayout(l);
-
-        connect(&leText, &QLineEdit::textChanged, this, [&]{
-
-            if(leText.text().length() == 0){
-                isValid = false;
-                errorMessage = "No items";
-                emit updated_signal();
-                return;
-            }
-
-            auto split = leText.text().split("|");
-            if(split.count() == 0){
-                errorMessage = "Invalid items";
-                isValid = false;
-                emit updated_signal();
-                return;
-            }
-
-            isValid = true;
-
-            emit updated_signal();
-        });
-    }
-
-    void update_arg(Arg &arg) const override{
-
-        if(leText.text().length() == 0){
-            return;
-        }
-
-        auto split = leText.text().split("|");
-        if(split.count() == 0){
-            return;
-        }
-
-        arg.set_value(split[0]);
-        arg.set_separator("");
-        arg.generator.info = leText.text();
-    }
+    ComboTextGen(QString text = "A|B|C");
+    void update_arg(Arg &arg) const override;
 };
 
 class ResourceGenW : public BaseGenW{
@@ -224,6 +171,14 @@ public:
     QComboBox componentsTypes;
 
     ComponentGenW();
+    void update_arg(Arg &arg) const override;
+};
+
+class CurveGen : public BaseGenW{
+public:
+//    QComboBox componentsTypes;
+
+    CurveGen();
     void update_arg(Arg &arg) const override;
 };
 
@@ -253,4 +208,6 @@ private:
     QLineEdit *m_leName = nullptr;
     BaseGenW *m_genW = nullptr;
 };
+
+
 }

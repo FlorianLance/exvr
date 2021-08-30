@@ -15,6 +15,8 @@ using namespace tool::ex;
 
 Instance::Instance(const Randomizer *randomizer, const std_v1<Element*> &elements, size_t idInstance){
 
+    this->idInstance = idInstance;
+
     QVector<LoopInfo> infos;
     auto get_index_from_loop_node = [&](Element *elem){
         for(int ii = 0; ii < to_signed(elements.size()); ++ii){

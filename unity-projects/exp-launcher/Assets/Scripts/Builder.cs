@@ -79,6 +79,10 @@ namespace Ex {
             return Experiment().schreduler;
         }
 
+        static public Instance Instance() {
+            return Schreduler().instance;
+        }
+
         static public ResourcesManager Resources() {
             return Experiment().experimentResourcesManager;
         }        

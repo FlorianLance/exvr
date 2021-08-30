@@ -67,6 +67,8 @@ struct Loop : public Element {
         {Mode::FixedInstanceShiftStart,     "instance_shift_start_fixed"sv},
         {Mode::RandomOneForAllInstances,    "only_once_random"sv},
         {Mode::ShuffleOneForAllInstances,   "only_once_shuffle"sv},
+        {Mode::RandomEveryNInstances,       "every_n_instances_random"sv},
+        {Mode::ShuffleEveryNInstances,      "every_n_instances_shuffle"sv},
     }};
 
     [[maybe_unused]] static Name get_name(Mode m) {

@@ -1378,6 +1378,7 @@ bool XmlIoManager::save_instance_file(const Instance &instance, QString instance
     stream.setAutoFormatting(true);
     stream.writeStartDocument();
     stream.writeStartElement(QSL("ExperimentFlow"));
+    stream.writeAttribute(QSL("id_instance"), QString::number(instance.idInstance));
     for(auto &instElem : instance.flow){
 
         QString type = (instElem.elem->type == Element::Type::Routine) ? QSL("routine") : QSL("isi");

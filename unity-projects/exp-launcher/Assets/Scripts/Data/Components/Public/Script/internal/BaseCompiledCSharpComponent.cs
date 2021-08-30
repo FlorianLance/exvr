@@ -25,11 +25,13 @@ namespace Ex {
         // associated component
         public ExComponent p = null;
 
+        // instance
+        public int instance_id() { return ExVR.Instance().idInstance; }
+
         // routines 
         public Routine current_routine() { return p.currentRoutine; }
         public Routine get_routine(string routineName) {return ExVR.Routines().get(routineName);}
         public List<string> get_routine_instance_conditions(string routineName) {return ExVR.Routines().get_instance_conditions(routineName); }
-
 
         // conditions
         public Condition current_condition() { return p.currentCondition; }

@@ -511,6 +511,10 @@ namespace Ex{
         [XmlRoot(ElementName = "ExperimentFlow")]
         public class ExperimentFlow{
 
+            // attributes
+            [XmlAttribute(AttributeName = "id_instance")]
+            public int IdInstance { get; set; }
+
             // elements
             [XmlElement(ElementName = "Element")]
             public List<Element> Elements { get; set; }

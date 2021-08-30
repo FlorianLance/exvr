@@ -67,7 +67,7 @@ namespace Ex {
             m_filesNames = new HashSet<string>();
             m_filesLines = new Dictionary<string, List<string>>();
 
-            foreach (var elementInfo in ExVR.Schreduler().get_elements_info_order(false)) {
+            foreach (var elementInfo in ExVR.Instance().get_elements_info_order(false)) {
                 if (elementInfo.type() == FlowElement.FlowElementType.Routine) {
                     var routineInfo = (RoutineInfo)elementInfo;
                     foreach (var action in routineInfo.condition().actions) {
