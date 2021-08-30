@@ -405,7 +405,7 @@ namespace Ex
         public void close(ExComponent componentToClose) {
 
             if (!componentToClose.is_closed()) {
-                ExVR.Log().message(string.Format("Close component {0} with key {1}.", componentToClose.name, componentToClose.key));
+                //ExVR.Log().message(string.Format("Close component {0} with key {1}.", componentToClose.name, componentToClose.key));
                 set_component_states(componentToClose, false, false);
                 componentToClose.set_closed_flag(true);                
             } else {

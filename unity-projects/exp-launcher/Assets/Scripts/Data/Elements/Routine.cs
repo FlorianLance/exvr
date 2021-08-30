@@ -57,6 +57,9 @@ namespace Ex{
         // condition
         [SerializeField]
         private List<Condition> m_conditions = null;
+        private Dictionary<string, Condition> m_conditionsPerName = null;
+        private Dictionary<int, Condition> m_conditionsPerKey = null;
+
         [SerializeField]
         private Condition m_currentCondition = null;
 
@@ -74,15 +77,6 @@ namespace Ex{
         public Condition current_condition() {return m_currentCondition;}
         public List<Condition> get_conditions() { return m_conditions; }
         public int conditions_count() {return m_conditions.Count;}
-        public Condition condition_from_name(string conditionName) {
-
-            foreach (Condition condition in m_conditions) {
-                if (condition.name == conditionName) {
-                    return condition;
-                }
-            }
-            return null;
-        }
 
         public Condition get_condition_from_id(int id) {
             if (id < conditions_count() && id >= 0) {
@@ -93,31 +87,20 @@ namespace Ex{
         }
 
         public Condition get_condition_from_key(int conditionKey) {
-            foreach (var condition in m_conditions) {
-                if (condition.key() == conditionKey) {
-                    return condition;
-                }
+            if (m_conditionsPerKey.ContainsKey(conditionKey)) {
+                return m_conditionsPerKey[conditionKey];
             }
             ExVR.Log().error(string.Format("Condition with key [{0}] not found.", Converter.to_string(conditionKey)));
             return null;
         }
 
         public Condition get_condition_from_name(string conditionName) {
-
-            foreach (var condition in m_conditions) {
-                if (condition.name == conditionName) {
-                    return condition;
-                }
+            if (m_conditionsPerName.ContainsKey(conditionName)) {
+                return m_conditionsPerName[conditionName];
             }
             ExVR.Log().error(string.Format("Condition with name [{0}] not found.", conditionName));
             return null;
         }
-
-        // instances
-        public List<RoutineInfo> get_instance_infos() { return ExVR.Instance().get_routine_infos_order(key(), is_a_randomizer()); }
-        public List<Condition> get_instance_conditions() { return ExVR.Instance().get_routine_conditions_order(key(), is_a_randomizer()); }
-        public List<string> get_instance_conditions_names() { return ExVR.Instance().get_routine_conditions_names_order(key(), is_a_randomizer()); }
-
 
         // time
         public double start_timer_duration_ms() {return m_startTimer.Elapsed.TotalMilliseconds;}
@@ -133,12 +116,16 @@ namespace Ex{
 
             // generate conditions
             m_conditions = new List<Condition>(routine.Conditions.Count);
-            foreach (XML.Condition xmlCondition in routine.Conditions) {
-                
+            m_conditionsPerName = new Dictionary<string, Condition>(routine.Conditions.Count);
+            m_conditionsPerKey = new Dictionary<int, Condition>(routine.Conditions.Count);
+
+            foreach (XML.Condition xmlCondition in routine.Conditions) {                
                 var conditionGO = GO.generate_empty_object(xmlCondition.Name, transform, true);
                 var condition = conditionGO.AddComponent<Condition>();
                 condition.initialize(xmlCondition);
                 m_conditions.Add(condition);
+                m_conditionsPerName[condition.name] = condition;
+                m_conditionsPerKey[condition.key()] = condition;
             }
         }
 

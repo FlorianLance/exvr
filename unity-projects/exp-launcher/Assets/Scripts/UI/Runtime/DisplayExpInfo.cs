@@ -39,7 +39,7 @@ namespace Ex{
 
         void Update() {
 
-            Scheduler schreduler = ExVR.Schreduler();
+            Scheduler schreduler = ExVR.Scheduler();
 
             
             var interval = schreduler.current_interval();

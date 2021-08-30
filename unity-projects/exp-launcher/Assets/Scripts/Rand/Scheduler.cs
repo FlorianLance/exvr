@@ -27,7 +27,7 @@ namespace Ex{
             }
 
             EditorGUILayout.LabelField("Current element:");
-            var currentElementInfo = ExVR.Schreduler().current_element_info();
+            var currentElementInfo = ExVR.Scheduler().current_element_info();
             if (currentElementInfo != null) {
                 if (currentElementInfo.type() == FlowElement.FlowElementType.Routine) {
 
@@ -96,7 +96,7 @@ namespace Ex {
         private FlowElementInfo m_currentElementInfo = null;
         
         [SerializeField]
-        public Instance instance = null;
+        public Instance instance = new Instance();
 
         public int current_element_order() {
             return m_currentElementId;
@@ -106,8 +106,7 @@ namespace Ex {
             return m_currentElementInfo;
         }
 
-        public bool generate(XML.ExperimentFlow experimentFlow) {
-            instance = new Instance();
+        public bool generate_instance(XML.ExperimentFlow experimentFlow) {
             return instance.generate(experimentFlow);
         }
 
@@ -259,6 +258,7 @@ namespace Ex {
         }
 
         public Interval current_interval() {
+
             if(m_currentElementId >= instance.total_number_of_elements()) {
                 return null;
             }

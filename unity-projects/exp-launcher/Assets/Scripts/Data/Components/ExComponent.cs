@@ -261,25 +261,24 @@ namespace Ex{
         public static void set_component_config<T>(string routineName, string conditionName, string componentName, string configToUse) where T : ExComponent {
 
             // parse everything just in case there is routines/conditions/components/configs with the same names
-            foreach(var routine in ExVR.Routines().get_all()) {
-                if(routine.name == routineName) {
-                    foreach(var condition in routine.get_conditions()) {
-                        if(condition.name == conditionName) {
-                            foreach(var action in condition.actions) {
-                                if(action.component().name == componentName) {
-                                    //action.component().configs;
-                                    foreach(var config in action.component().configs) {
-                                        if(config.name == configToUse) {
 
-                                            return;
-                                        }
-                                    }
+            var routine = ExVR.Routines().get(routineName);
+            if(routine != null) {
+                var condition = routine.get_condition_from_name(conditionName);
+                if (condition != null) {
+                    foreach (var action in condition.actions) {
+                        if (action.component().name == componentName) {
+                            //action.component().configs;
+                            foreach (var config in action.component().configs) {
+                                if (config.name == configToUse) {
+
+                                    return;
                                 }
                             }
                         }
                     }
                 }
-            }                        
+            }                  
         }
 
         // setup component, parent, layer, configurations...
@@ -708,6 +707,16 @@ namespace Ex{
         }
         protected virtual void clean() {
         }
+
+        //// set visibility to true, will last until the next change in the visibility timeline
+        //public virtual void show() {
+        //    set_visibility(true);
+        //}
+
+        //// set visibility to false, will last until the next change in the visibility timeline
+        //public virtual void hide() {
+        //    set_visibility(false);
+        //}
     }
 
     public class CanvasWorldSpaceComponent : ExComponent{

@@ -79,12 +79,15 @@ namespace Ex{
         private double m_durationS = 0.0;
         private int m_callsNb = 0;
 
-        // connections
+        // visual scripting
         private List<XML.Connection> m_connectionsXML = null;
+        // # connections
         public List<Connection> connections = new List<Connection>();
+        // # connectors
         public List<ExConnector> connectors = null;
+        public Dictionary<int, ExConnector> connectorsPerKey = null;
         public ExConnector currentConnector = null;
-
+        
         // actions
         public List<Action> actions = null;
         public List<Action> reverseOrderActions = null;
@@ -115,10 +118,8 @@ namespace Ex{
         }
 
         public ExConnector get_connector(int connnectorKey) {
-            foreach (ExConnector connector in connectors) {
-                if (connector.key == connnectorKey) {
-                    return connector;
-                }
+            if (connectorsPerKey.ContainsKey(connnectorKey)) {
+                return connectorsPerKey[connnectorKey];
             }
             return null;
         }
@@ -247,12 +248,14 @@ namespace Ex{
 
             // generate connectors
             connectors = new List<ExConnector>(xmlCondition.Connectors.Count);
+            connectorsPerKey = new Dictionary<int, ExConnector>(xmlCondition.Connectors.Count);
             foreach (XML.Connector xmlConnector in xmlCondition.Connectors) {
                 var connector = ExConnector.generate(xmlConnector);
                 if (connector != null) {
                     connector.associatedCondition = this;
                     connector.associatedRoutine = parent_routine();
                     connectors.Add(connector);
+                    connectorsPerKey[connector.key] = connector;
                 } 
             }
         }

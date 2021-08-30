@@ -154,6 +154,10 @@ namespace Ex {
             }
         }
 
+        public Texture2D current_image() {
+            return (Texture2D)smr.material.mainTexture;
+        }
+
         protected override void update_parameter_from_gui(XML.Arg arg) {
 
             if(arg.Name == "flag_image") {
@@ -180,6 +184,5 @@ namespace Ex {
             baseGO.SetActive(visibility);
             ballGO.SetActive(visibility);
         }
-
     }
 }

@@ -25,13 +25,27 @@ namespace Ex {
         // associated component
         public ExComponent p = null;
 
-        // instance
-        public int instance_id() { return ExVR.Instance().idInstance; }
+        // randomization
+        public int instance_id() { return ExVR.Instance().idInstance;}
+        public Interval current_element_interval() { return ExVR.Scheduler().current_element_info().interval(); }
+        public int current_element_order() { return ExVR.Scheduler().current_element_info().order(); }
+        public int current_element_iteration() { return ExVR.Scheduler().current_element_info().element_iteration(); }
+        public List<RoutineInfo> get_current_routine_instance_infos() { return ExVR.Instance().get_routine_infos_order(current_routine());}
+        public List<Condition> get_current_routine_instance_conditions() { return ExVR.Instance().get_routine_conditions_order(current_routine());}
+        public List<string> get_current_routine_instance_conditions_names() { return ExVR.Instance().get_routine_conditions_names_order(current_routine());}
+        public List<string> get_routine_instance_conditions_names(string routineName) {
+            var routine = get_routine(routineName);
+            if (routine != null) {
+                return ExVR.Instance().get_routine_conditions_names_order(routine);
+            }
+            log_error(string.Format("Routine with name {0} doesn't exist.", routineName));
+            return new List<string>();
+        }            
+
 
         // routines 
         public Routine current_routine() { return p.currentRoutine; }
         public Routine get_routine(string routineName) {return ExVR.Routines().get(routineName);}
-        public List<string> get_routine_instance_conditions(string routineName) {return ExVR.Routines().get_instance_conditions(routineName); }
 
         // conditions
         public Condition current_condition() { return p.currentCondition; }

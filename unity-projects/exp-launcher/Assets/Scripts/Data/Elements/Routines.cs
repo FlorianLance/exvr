@@ -135,15 +135,6 @@ namespace Ex{
             return null;
         }
 
-        public List<string> get_instance_conditions(string routineName) {
-            var routine = get(routineName);
-            if (routine != null) {
-                return routine.get_instance_conditions_names();
-            } else {
-                return new List<string>();
-            }
-        }
-
 
         public void start_routine(RoutineInfo info) {
 

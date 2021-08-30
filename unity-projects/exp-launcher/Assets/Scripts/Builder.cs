@@ -75,12 +75,12 @@ namespace Ex {
             return Builder.autoRef.experiment;
         }
 
-        static public Scheduler Schreduler() {
+        static public Scheduler Scheduler() {
             return Experiment().schreduler;
         }
 
         static public Instance Instance() {
-            return Schreduler().instance;
+            return Scheduler().instance;
         }
 
         static public ResourcesManager Resources() {

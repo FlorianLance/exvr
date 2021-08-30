@@ -6,8 +6,7 @@
 
 namespace Ex{
 
-    public class Action
-    {
+    public class Action{
 
         private TimeLine m_timeline = null;
         private ComponentConfig m_config = null;

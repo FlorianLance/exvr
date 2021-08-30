@@ -47,7 +47,7 @@ namespace Ex{
                     }
 
                     // retrieve the end routine time
-                    Condition currentCondition = routine.condition_from_name(element.Cond);
+                    Condition currentCondition = routine.get_condition_from_name(element.Cond);
                     if (!currentCondition) {
                         ExVR.Log().error(string.Format("Condition {0} from instance not found in experiment.", element.Cond));
                         return false;
@@ -116,36 +116,36 @@ namespace Ex{
             }
         }
 
-        public List<RoutineInfo> get_routine_infos_order(int elementKey, bool isARandomizer) {
+        public List<RoutineInfo> get_routine_infos_order(Routine routine) {
 
             List<RoutineInfo> infos = new List<RoutineInfo>();
-            var elements = isARandomizer ? randomizerElementsOrder : elementsOrder;
+            var elements = routine.is_a_randomizer() ? randomizerElementsOrder : elementsOrder;
             foreach (var info in elements) {
-                if (info.key() == elementKey) {
+                if (info.key() == routine.key()) {
                     infos.Add((RoutineInfo)info);
                 }
             }
             return infos;
         }
 
-        public List<Condition> get_routine_conditions_order(int elementKey, bool isARandomizer) {
+        public List<Condition> get_routine_conditions_order(Routine routine) {
 
             List<Condition> conditions = new List<Condition>();
-            var elements = isARandomizer ? randomizerElementsOrder : elementsOrder;
+            var elements = routine.is_a_randomizer() ? randomizerElementsOrder : elementsOrder;
             foreach (var info in elements) {
-                if (info.key() == elementKey) {
+                if (info.key() == routine.key()) {
                     conditions.Add(((RoutineInfo)info).condition());
                 }
             }
             return conditions;
         }
 
-        public List<string> get_routine_conditions_names_order(int elementKey, bool isARandomizer) {
+        public List<string> get_routine_conditions_names_order(Routine routine) {
 
             List<string> conditionsName = new List<string>();
-            var elements = isARandomizer ? randomizerElementsOrder : elementsOrder;
+            var elements = routine.is_a_randomizer() ? randomizerElementsOrder : elementsOrder;
             foreach (var info in elements) {
-                if (info.key() == elementKey) {
+                if (info.key() == routine.key()) {
                     conditionsName.Add(((RoutineInfo)info).condition().name);
                 }
             }

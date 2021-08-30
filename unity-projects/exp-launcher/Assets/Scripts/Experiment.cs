@@ -385,7 +385,7 @@ namespace Ex{
             stream.Close();
 
             // generate schreduling
-            if (!schreduler.generate(m_xmlFlow)) {
+            if (!schreduler.generate_instance(m_xmlFlow)) {
                 log_error("Instance loading failed. Please select a valid instance file and start loading again.");
                 return false;
             }
