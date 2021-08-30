@@ -14,10 +14,14 @@
 
 ## Description
 
-ExVR is a software for creating and executing 3D/2D complexes experiments base on Unity3D using virtual reality or not. 
+ExVR is a solution for creating and executing 3D/2D experiments using VR or not. Its philosophy is roughly similar to [Psychopy](https://www.psychopy.org/) and can easily be extended by users using scripting (C#, Python) or visual scripting (with nodes).
 
-Its philosophy is roughly based on [Psychopy](https://www.psychopy.org/) and can easily be extended by users, it allows to create a pipeline of different routines, ISI using loops for generating a randomization based on conditions. To each condition we can associate any number of components (theses ones can be anything, an image, a sound, a script, a 3D scene...) with timelines and specific configurations.
-Communication between components can be done using scripting (C# or Python) or by using visual scripting with nodes and connections.
+It is subdivided in two software: 
+  *	the designer GUI for creating the experiment content and its randomization
+  *	the experiment launcher for that will generate and execute experiments at runtime using Unity3D
+
+They both communicate between themselves and makes easy to operate changes and see immediately the results.
+Once the design done, the user can then share the full experiment by exporting it, allowing accurate replications on others computers.
 
 <p float="left">
   <img src="https://github.com/FlorianLance/exvr/blob/main/captures/designer1.png" width="400" />
