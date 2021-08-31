@@ -23,10 +23,8 @@ It is subdivided in two software:
 They both communicate between themselves and makes easy to operate changes and see immediately the results.
 Once the design done, the user can then share the full experiment by exporting it, allowing accurate replications on others computers.
 
-<p float="left">
-  <img src="https://github.com/FlorianLance/exvr/blob/main/captures/designer1.png" width="400" />
-  <img src="https://github.com/FlorianLance/exvr/blob/main/captures/designer2.png" width="400" /> 
-  <img src="https://github.com/FlorianLance/exvr/blob/main/captures/designer3.png" width="400" />
+<p float="center">
+  <img src="https://github.com/FlorianLance/exvr/blob/main/captures/4-panel.png" width="800" />
 </p>
 
 ## Origin
