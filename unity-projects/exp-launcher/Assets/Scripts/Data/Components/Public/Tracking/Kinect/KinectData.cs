@@ -164,6 +164,8 @@ namespace Ex
         public bool doUpdate = true;
         public bool doDisplay = true;
         public int idFrame = -1;
+        public int prevIdFrame = -1;
+        public int sameFrameCounter = 0;
         public int sizePts = 0;
         public int sizeTris = 0;
 

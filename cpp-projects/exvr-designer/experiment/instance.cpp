@@ -27,7 +27,6 @@ Instance::Instance(const Randomizer *randomizer, const std_v1<Element*> &element
         return -1;
     };
 
-
     // retrieve cast elements
     std_v1<Routine *> routines;
     std_v1<Isi *> ISIs;
