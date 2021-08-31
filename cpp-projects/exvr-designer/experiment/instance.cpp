@@ -13,7 +13,7 @@
 using namespace tool;
 using namespace tool::ex;
 
-Instance::Instance(const Randomizer *randomizer, const std_v1<Element*> &elements, size_t idInstance){
+Instance::Instance(const Randomizer *randomizer, const std_v1<Element*> &elements, size_t idInstance){   
 
     this->idInstance = idInstance;
 
@@ -52,7 +52,6 @@ Instance::Instance(const Randomizer *randomizer, const std_v1<Element*> &element
     std::unordered_map<int, std_v1<QString>> loopsSetsNames;
     std::unordered_map<int, size_t> loopsCurentSetId;        
 
-
     for(const auto loop : loops){
 
         size_t multiplier = 1;
@@ -62,7 +61,6 @@ Instance::Instance(const Randomizer *randomizer, const std_v1<Element*> &element
         }
 
         const size_t totalNbReps = multiplier * to_unsigned(loop->nbReps);
-
 
         // fill list of sets
         std_v1<QString> setsOccurenciesStr;
@@ -130,7 +128,7 @@ Instance::Instance(const Randomizer *randomizer, const std_v1<Element*> &element
 
                 // generate
                 if(idInstance == 0){
-                    onlyOnceRandomLoopSets.clear();
+                    onlyOnceRandomLoopSets[loop->key()] = {};
                     for(auto &set : randomizer->randomize(setsOccurenciesStr, totalNbReps)){
                         onlyOnceRandomLoopSets[loop->key()].push_back(std::move(set));
                     }
@@ -144,7 +142,7 @@ Instance::Instance(const Randomizer *randomizer, const std_v1<Element*> &element
 
                 // generate
                 if(idInstance == 0) {
-                    onlyOnceShuffleLoopSets.clear();
+                    onlyOnceShuffleLoopSets[loop->key()] = {};
                     for(auto &set : randomizer->shuffle(setsOccurenciesStr, totalNbReps)){
                         onlyOnceShuffleLoopSets[loop->key()].push_back(std::move(set));
                     }
@@ -158,7 +156,11 @@ Instance::Instance(const Randomizer *randomizer, const std_v1<Element*> &element
 
                 // generate
                 if(idInstance % loop->N == 0){
-                    everyNRandomLoopSets.clear();
+
+                    if(everyNRandomLoopSets.count(loop->key()) != 0){
+                        everyNRandomLoopSets[loop->key()] = {};
+                    }
+
                     for(auto &set : randomizer->randomize(setsOccurenciesStr, totalNbReps)){
                         everyNRandomLoopSets[loop->key()].push_back(std::move(set));
                     }
@@ -172,11 +174,16 @@ Instance::Instance(const Randomizer *randomizer, const std_v1<Element*> &element
 
                 // generate
                  if(idInstance % loop->N == 0){
-                    everyNShuffleLoopSets.clear();
+
+                     if(everyNShuffleLoopSets.count(loop->key()) != 0){
+                         everyNShuffleLoopSets[loop->key()] = {};
+                     }
+
                     for(auto &set : randomizer->shuffle(setsOccurenciesStr, totalNbReps)){
                         everyNShuffleLoopSets[loop->key()].push_back(std::move(set));
                     }
                 }
+
                 // retrieve
                 for(const auto &set : everyNShuffleLoopSets[loop->key()]){
                     setsNames.push_back(set);
@@ -223,7 +230,6 @@ Instance::Instance(const Randomizer *randomizer, const std_v1<Element*> &element
         isisIntervals[isi->key()] = std::move(intervals);
         isisCurentIntervalId[isi->key()] = 0;
     }
-
 
     for(size_t ii = 0; ii < elements.size(); ++ii){
 
@@ -351,7 +357,6 @@ Instance::Instance(const Randomizer *randomizer, const std_v1<Element*> &element
             isisConditionsIterations[key][cond]++;
         }
     }
-
 }
 
 
