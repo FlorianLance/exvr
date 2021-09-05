@@ -11,19 +11,22 @@
 using namespace tool::ex;
 
 void AssetBundleInitConfigParametersW::insert_widgets(){
+
     add_widget(ui::F::gen(ui::L::HB(), {m_assetBundle()}, LStretch{false}, LMargins{true}, QFrame::Box));
     add_widget(ui::F::gen(ui::L::VB(),{
-        ui::W::txt("Sub object to load in bundle (if empty, first object of the hierarchy will be load): "),
+        ui::W::txt(QSL("Sub object to load in bundle (if empty, first object of the hierarchy will be load): ")),
         m_leSubObjectName(), m_displayHierarchy(), m_hierarchy = new QTextEdit()}, LStretch{false}, LMargins{true},QFrame::Box)
     );
+    add_sub_part_widget(m_transfo);
     m_hierarchy->setReadOnly(true);
     no_end_stretch();
 }
 
 void AssetBundleInitConfigParametersW::init_and_register_widgets(){
-    m_inputUiElements["asset_bundle"]       = m_assetBundle.init_widget(Resource::Type::AssetBundle, "Asset bundle resource: ");
-    m_inputUiElements["name_sub_object"]    = m_leSubObjectName.init_widget("");
-    m_inputUiElements["display_hierarchy"]  = m_displayHierarchy.init_widget("Display hierarchy", false);
+    map_sub_part(m_transfo.init_widget(QSL("Init transform</b> (applied when experiment starts)<b>"), QSL("init_transform")));
+    m_inputUiElements[QSL("asset_bundle")]       = m_assetBundle.init_widget(Resource::Type::AssetBundle, QSL("Asset bundle resource: "));
+    m_inputUiElements[QSL("name_sub_object")]    = m_leSubObjectName.init_widget("");
+    m_inputUiElements[QSL("display_hierarchy")]  = m_displayHierarchy.init_widget(QSL("Display asset bundle content hierarchy"), false);
 
 }
 
@@ -43,7 +46,7 @@ void AssetBundleConfigParametersW::insert_widgets(){
 }
 
 void AssetBundleConfigParametersW::init_and_register_widgets(){
-    map_sub_part(m_transfo.init_widget());
+    map_sub_part(m_transfo.init_widget(QSL("Config transform</b> (applied when routine starts)<b>"), QSL("transform")));
 }
 
 void AssetBundleConfigParametersW::create_connections(){}

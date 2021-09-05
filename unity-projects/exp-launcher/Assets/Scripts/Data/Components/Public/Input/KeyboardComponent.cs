@@ -18,28 +18,37 @@ namespace Ex{
         private bool sendInfos = false;
 
         // signals
-        private static readonly string buttonSignal = "button";
+        private static readonly string buttonOnGuiSignal  = "button";
         // infos
         private static readonly string infosSignal  = "buttons_state_info";
 
         // buttons
-        public Dictionary<KeyCode,  Input.KeyboardButtonEvent> buttonsState    = new Dictionary<KeyCode, Input.KeyboardButtonEvent>();
+        private Dictionary<KeyCode,  Input.KeyboardButtonEvent> buttonsEvent  = new Dictionary<KeyCode, Input.KeyboardButtonEvent>();
         // raw buttons
-        public Dictionary<RawKey, Input.KeyboardButtonEvent> rawButtonsState = new Dictionary<RawKey, Input.KeyboardButtonEvent>();
-        
+        private Dictionary<RawKey, Input.KeyboardButtonEvent> rawButtonsEvent = new Dictionary<RawKey, Input.KeyboardButtonEvent>();
+
+        // current 
+        public Dictionary<KeyCode, Input.KeyboardButtonState> buttonsStates = new Dictionary<KeyCode, Input.KeyboardButtonState>();
+
+
         protected override bool initialize() {
 
-            add_signal(buttonSignal);
+            add_signal(buttonOnGuiSignal);
 
             foreach (var code in Input.Keyboard.Codes) {
-                buttonsState[code] = new Input.KeyboardButtonEvent(code);
+                buttonsEvent[code]  = new Input.KeyboardButtonEvent(code);
+                buttonsStates[code] = new Input.KeyboardButtonState(code);
             }
 
             foreach (var button in Input.Keyboard.RawCodesCorrespondence) {                
-                rawButtonsState[button.Key] = new Input.KeyboardButtonEvent(button.Value);
+                rawButtonsEvent[button.Key] = new Input.KeyboardButtonEvent(button.Value);
             }
 
             return true;
+        }
+
+        protected override void pre_update() {
+
         }
 
         protected override void update() {
@@ -63,41 +72,25 @@ namespace Ex{
                 foreach (KeyCode keyCode in Input.Keyboard.Codes) {
 
                     bool pressed = UnityEngine.Input.GetKey(keyCode);
-                    var currentState = buttonsState[keyCode];
 
-                    if (currentState.state == Input.Button.State.None) {
-                        if (pressed) {
-                            currentState.state = Input.Button.State.Down;
-                        }
-                    } else if (currentState.state == Input.Button.State.Down) {
-                        if (pressed) {
-                            currentState.state = Input.Button.State.Pressed;
-                        } else {
-                            currentState.state = Input.Button.State.Up;
-                        }
+                    // update event
+                    var currentEvent = buttonsEvent[keyCode];
+                    currentEvent.update(pressed, currentTime);
 
-                    } else if (currentState.state == Input.Button.State.Pressed) {
-                        if (!pressed) {
-                            currentState.state = Input.Button.State.Up;
-                        }
-                    } else if (currentState.state == Input.Button.State.Up) {
-                        if (pressed) {
-                            currentState.state = Input.Button.State.Down;
-                        } else {
-                            currentState.state = Input.Button.State.None;
-                        }
-                    }
+                    // update state
+                    var currentState = buttonsStates[keyCode];
+                    currentState.update(pressed, currentTime);
+
 
                     if (pressed) {
                         ++pressedKeysCount;
                     }
 
-                    if (currentState.state != Input.Button.State.None) {
-                        currentState.triggeredExperimentTime = currentTime;
-                        invoke_signal(buttonSignal, currentState);
+                    if (currentEvent.state != Input.Button.State.None) {
+                        invoke_signal(buttonOnGuiSignal, currentEvent);
                     }
 
-                    buttonsState[keyCode] = currentState;
+                    buttonsEvent[keyCode] = currentEvent;
                 }
 
                 // send infos only once per frame
@@ -106,7 +99,7 @@ namespace Ex{
                     int currentKey = 0;
 
                     foreach (KeyCode button in Input.Keyboard.Codes) {
-                        var buttonState = buttonsState[button];
+                        var buttonState = buttonsEvent[button];
                         if (buttonState.state == Input.Button.State.Pressed || buttonState.state == Input.Button.State.Down) {
                             if (currentKey != pressedKeysCount - 1) {
                                 infos.AppendFormat("{0},", ((int)button).ToString());
@@ -126,41 +119,24 @@ namespace Ex{
                 foreach (var codePair in Input.Keyboard.RawCodesCorrespondence) {
 
                     bool pressed = RawKeyInput.IsKeyDown(codePair.Key);
-                    var currentState = rawButtonsState[codePair.Key];
 
-                    if (currentState.state == Input.Button.State.None) {
-                        if (pressed) {
-                            currentState.state = Input.Button.State.Down;
-                        }
-                    } else if (currentState.state == Input.Button.State.Down) {
-                        if (pressed) {
-                            currentState.state = Input.Button.State.Pressed;
-                        } else {
-                            currentState.state = Input.Button.State.Up;
-                        }
+                    // update state
+                    var currentEvent = rawButtonsEvent[codePair.Key];
+                    currentEvent.update(pressed, currentTime);
 
-                    } else if (currentState.state == Input.Button.State.Pressed) {
-                        if (!pressed) {
-                            currentState.state = Input.Button.State.Up;
-                        }
-                    } else if (currentState.state == Input.Button.State.Up) {
-                        if (pressed) {
-                            currentState.state = Input.Button.State.Down;
-                        } else {
-                            currentState.state = Input.Button.State.None;
-                        }
-                    }
+                    // update state
+                    var currentState = buttonsStates[codePair.Value];
+                    currentState.update(pressed, currentTime);
 
                     if (pressed) {
                         ++pressedKeysCount;
                     }
 
-                    if (currentState.state != Input.Button.State.None) {
-                        currentState.triggeredExperimentTime = currentTime;
-                        invoke_signal(buttonSignal, currentState);
+                    if (currentEvent.state != Input.Button.State.None) {
+                        invoke_signal(buttonOnGuiSignal, currentEvent);
                     }
 
-                    rawButtonsState[codePair.Key] = currentState;
+                    rawButtonsEvent[codePair.Key] = currentEvent;
                 }
 
                 // send infos only once per frame
@@ -169,7 +145,7 @@ namespace Ex{
                     int currentKey = 0;
 
                     foreach(var codePair in Input.Keyboard.RawCodesCorrespondence) {
-                        var buttonState = rawButtonsState[codePair.Key];
+                        var buttonState = rawButtonsEvent[codePair.Key];
                         if (buttonState.state == Input.Button.State.Pressed || buttonState.state == Input.Button.State.Down) {
                             if (currentKey != pressedKeysCount - 1) {
                                 infos.AppendFormat("{0},", ((int)codePair.Value).ToString());

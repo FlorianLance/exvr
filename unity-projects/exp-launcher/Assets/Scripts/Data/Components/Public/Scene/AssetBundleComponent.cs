@@ -16,7 +16,7 @@ using UnityEngine;
 
 namespace Ex{
 
-    public class AssetBundleComponent : ExComponent{
+    public class AssetBundleComponent : ExComponent {
 
         public GameObject bundle = null;
         private List<string> assembliesNames = null;
@@ -89,13 +89,10 @@ namespace Ex{
             return true;
         }
 
-
-        protected override void start_routine() {
-            update_from_current_config();
-        }
-
-        protected override void update_parameter_from_gui(XML.Arg arg) {
-            reset_transform();
+        protected override void start_experiment() {
+            if (!initC.get<bool>("init_transform_do_not_apply")) {
+                initC.update_transform("init_transform", transform, true);
+            }
         }
 
         protected override void set_visibility(bool visibility) {
@@ -105,37 +102,9 @@ namespace Ex{
 
         // public 
         public override void update_from_current_config() {
-            reset_transform();
+            reset_config_transform();
         }
 
-        public void set_position(Vector3 position) {
-            transform.localPosition = position;
-        }
-        public void set_rotation(Vector3 rotation) {
-            transform.localEulerAngles = rotation;
-        }
-        public void set_rotation(Quaternion rotation) {
-            transform.localRotation = rotation;
-        }
-        public void set_scale(Vector3 scale) {
-            transform.localScale = scale;
-        }
-
-        public Vector3 position() {
-            return transform.localPosition;
-        }
-        public Vector3 rotation() {
-            return transform.localEulerAngles;
-        }
-        public Vector3 scale() {
-            return transform.localScale;
-        }
-
-        public void reset_transform() {
-            if (!currentC.get<bool>("transform_do_not_apply")) {
-                currentC.update_transform("transform", transform, true);
-            }
-        }
 
         private void instantiate_sub_components() {
 

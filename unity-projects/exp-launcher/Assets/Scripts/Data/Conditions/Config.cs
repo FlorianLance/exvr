@@ -123,6 +123,13 @@ namespace Ex {
             return args.ContainsKey(argName);
         }
         
+        public string get_arg_name_from_key(int key) {
+            if (has(key)) {
+                return keyToName[key];
+            }
+            return "";
+        }
+
         public T get<T>(string argName){
 
             if (!has(argName)) {

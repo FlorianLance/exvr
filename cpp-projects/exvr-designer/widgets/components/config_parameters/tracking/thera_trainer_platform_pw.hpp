@@ -27,7 +27,7 @@ class TheraTrainerPlatformConfigParametersW : public ConfigParametersW{
 
 public :
 
-    DefaultTransformSubPart m_transfo;
+    TransformSubPart m_transfo;
     ExFloatSpinBoxW m_height;
 
     ExVector3dW m_offsetPelvisHandGripTr;

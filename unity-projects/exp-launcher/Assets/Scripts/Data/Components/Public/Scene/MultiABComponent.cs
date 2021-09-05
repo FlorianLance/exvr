@@ -46,7 +46,6 @@ namespace Ex {
                 var bundle = ExVR.Resources().instantiate_asset_bundle(resource.alias, "", transform);
                 if(bundle != null) {
                     instantiate_sub_components(bundle);
-                    Debug.Log("add " + resource.alias);
                     bundles[resource.alias] = bundle;
                 } else {
                     return false;
@@ -56,16 +55,10 @@ namespace Ex {
             return true;
         }
 
-        protected override void start_routine() {
-
-            update_from_current_config();
+        protected override void post_start_routine() {
             if(currentBundle == null) {
                 log_error("Current alias resource is not available in resource list.");
             }
-        }
-
-        protected override void update_parameter_from_gui(XML.Arg arg) {
-            reset_transform();
         }
 
         protected override void set_visibility(bool visibility) {
@@ -92,53 +85,7 @@ namespace Ex {
             }
             
             set_visibility(is_visible());
-            reset_transform();
-        }
-
-        public void set_position(Vector3 position) {
-            if (currentBundle != null) {
-                currentBundle.transform.localPosition = position;
-            }
-        }
-        public void set_rotation(Vector3 rotation) {
-            if (currentBundle != null) {
-                currentBundle.transform.localEulerAngles = rotation;
-            }
-        }
-        public void set_scale(Vector3 scale) {
-            if (currentBundle != null) {
-                currentBundle.transform.localScale = scale;
-            }
-        }
-
-        public Vector3 position() {
-            if (currentBundle != null) {
-                return currentBundle.transform.localPosition;
-            }
-            return Vector3.zero;
-        }
-
-        public Vector3 rotation() {
-            if (currentBundle != null) {
-                return currentBundle.transform.localEulerAngles;
-            }
-
-            return Vector3.zero;
-        }
-
-        public Vector3 scale() {
-            if (currentBundle != null) {
-                return currentBundle.transform.localScale;
-            }
-            return Vector3.one;
-        }
-
-        public void reset_transform() {
-            if (currentBundle != null) {
-                if (!currentC.get<bool>("transform_do_not_apply")) {
-                    currentC.update_transform("transform", currentBundle.transform, true);
-                }
-            }
+            reset_config_transform();
         }
 
         private void instantiate_sub_components(GameObject bundle) {

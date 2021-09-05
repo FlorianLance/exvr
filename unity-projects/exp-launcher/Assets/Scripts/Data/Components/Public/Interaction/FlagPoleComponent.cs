@@ -24,8 +24,10 @@ namespace Ex {
 
         private ClothSkinningCoefficient[] coeffs = null;
         private List<int> poleCoeffs = new List<int>();
-        private Dictionary<int, float> topCoeffs = new Dictionary<int, float>();        
+        private Dictionary<int, float> topCoeffs = new Dictionary<int, float>();
 
+
+#region ex_functions
         protected override bool initialize() {
 
             add_slot("hoist", (factor) => {
@@ -119,61 +121,25 @@ namespace Ex {
             return true;
         }
 
-        public void udpate_flag_cloth_max_distance(float maxDistance) {
 
-            for (int ii = 0; ii < coeffs.Length; ++ii) {
-                coeffs[ii].maxDistance = maxDistance;     
-            }
-
-            foreach (var coeff in topCoeffs) {
-                coeffs[coeff.Key].maxDistance = coeff.Value * maxDistance;
-            }
-
-            foreach (var id in poleCoeffs) {
-                coeffs[id].maxDistance = 0f;
-            }            
-            flagCloth.coefficients = coeffs;
+        protected override void start_experiment() {
+            reset_init_transform();
         }
 
-        public void update_flag_height(float factor) {
-            flagGO.transform.localPosition = new Vector3(0.025f, factor * (initC.get<float>("pole_height") - initC.get<float>("flag_height")), 0);
-        }
-
-        protected override void start_routine() {
-            var image = currentC.get_resource_image("flag_image", false);
-            if(image != null) {
-                smr.material.mainTexture = image;
-            }            
-            update_from_current_config();
-        }
-
-        public void load_image_from_resource(string imageAlias) {
-
-            if (imageAlias.Length != 0) {
-                smr.material.mainTexture = ExVR.Resources().get_image_file_data(imageAlias).texture;
-            }
-        }
-
-        public Texture2D current_image() {
-            return (Texture2D)smr.material.mainTexture;
+        protected override void pre_start_routine() {
+            update_image();
         }
 
         protected override void update_parameter_from_gui(XML.Arg arg) {
 
             if(arg.Name == "flag_image") {
-                var image = currentC.get_resource_image(arg.Name, false);
-                if (image != null) {
-                    smr.material.mainTexture = image;
-                }
+                update_image();
             }
             update_from_current_config();
         }
 
         public override void update_from_current_config() {
-
-            if (!currentC.get<bool>("transform_do_not_apply")) {
-                currentC.update_transform("transform", transform, true);
-            }
+            reset_config_transform();
             udpate_flag_cloth_max_distance(currentC.get<float>("cloth_max_dist"));
             update_flag_height(currentC.get<float>("height"));
         }
@@ -184,5 +150,49 @@ namespace Ex {
             baseGO.SetActive(visibility);
             ballGO.SetActive(visibility);
         }
+
+#endregion
+#region private_functions
+
+        private void update_image() {
+            var image = currentC.get_resource_image("flag_image", false);
+            if (image != null) {
+                smr.material.mainTexture = image;
+            }
+        }
+
+#endregion
+#region public_functions
+        public void udpate_flag_cloth_max_distance(float maxDistance) {
+
+            for (int ii = 0; ii < coeffs.Length; ++ii) {
+                coeffs[ii].maxDistance = maxDistance;
+            }
+
+            foreach (var coeff in topCoeffs) {
+                coeffs[coeff.Key].maxDistance = coeff.Value * maxDistance;
+            }
+
+            foreach (var id in poleCoeffs) {
+                coeffs[id].maxDistance = 0f;
+            }
+            flagCloth.coefficients = coeffs;
+        }
+
+        public void update_flag_height(float factor) {
+            flagGO.transform.localPosition = new Vector3(0.025f, factor * (initC.get<float>("pole_height") - initC.get<float>("flag_height")), 0);
+        }
+
+        public Texture2D current_image() {
+            return (Texture2D)smr.material.mainTexture;
+        }
+
+        public void load_image_from_resource(string imageAlias) {
+            if (imageAlias.Length != 0) {
+                smr.material.mainTexture = ExVR.Resources().get_image_file_data(imageAlias).texture;
+            }
+        }
+
+ #endregion
     }
 }

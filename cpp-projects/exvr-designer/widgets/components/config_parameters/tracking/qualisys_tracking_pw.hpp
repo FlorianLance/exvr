@@ -38,7 +38,7 @@ public :
     void create_connections() override;
     void late_update_ui() override;
 
-    DefaultTransformSubPart transform;
+    TransformSubPart transform;
     ExTextEditW objects;
 };
 

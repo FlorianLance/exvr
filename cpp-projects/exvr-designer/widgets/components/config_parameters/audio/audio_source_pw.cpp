@@ -47,7 +47,7 @@ struct AudioSourceConfigParametersW::Impl{
     ExSliderFloatW pitch;
     ExSliderFloatW maxDistance;
     ExSliderFloatW minDistance;
-    DefaultTransformSubPart transfo;
+    TransformSubPart transfo;
 };
 
 AudioSourceInitConfigParametersW::AudioSourceInitConfigParametersW() :  ConfigParametersW(), m_p(std::make_unique<Impl>()){

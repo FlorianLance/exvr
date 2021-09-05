@@ -87,6 +87,8 @@ namespace Ex {
         public ExComponent get(string name) {return ExVR.Components().get_from_name(name);}
         public T get<T>(string name) where T : ExComponent {return ExVR.Components().get_from_name<T>(name);}
 
+        public T get_first<T>() where T : ExComponent { return ExVR.Components().get_first<T>(); }
+
         // # alias
         public ExComponent get_component(int key) {return get(key);}
         public ExComponent get_component(string name) {return get(name);}
@@ -121,7 +123,9 @@ namespace Ex {
         public virtual bool initialize() { return true; }
         public virtual void start_experiment() { }
         public virtual void pre_start_routine() { }
-        public virtual void start_routine() { }
+        public virtual void start_routine() {
+            update_from_current_config();
+        }
         public virtual void post_start_routine() { }
         public virtual void update() { }
         public virtual void stop_routine() { }
@@ -136,9 +140,41 @@ namespace Ex {
         public virtual void on_gui() { }
         public virtual void pre_update() { }
         public virtual void post_update() { }
-        public virtual void update_parameter_from_gui(XML.Arg arg) { }
+        public virtual void update_parameter_from_gui(XML.Arg arg) {
+            log_message("cze " + arg.Value);
+            update_from_current_config();
+        }
         public virtual void update_from_current_config() { }
         public virtual void action_from_gui(bool initConfig, string action) { }
+
+        // # transform related
+
+        public virtual void set_position(Vector3 position) {
+            transform.position = position;
+        }
+        public virtual void set_rotation(Vector3 rotation) {
+            transform.eulerAngles = rotation;
+        }
+        public virtual void set_rotation(Quaternion rotation) {
+            transform.rotation = rotation;
+        }
+        public virtual void set_scale(Vector3 scale) {
+            transform.localScale = scale;
+        }
+
+        public virtual Vector3 position() {
+            return transform.position;
+        }
+        public virtual Quaternion rotation() {
+            return transform.rotation;
+        }
+        public virtual Vector3 euler_angles() {
+            return transform.eulerAngles;
+        }
+
+        public virtual Vector3 scale() {
+            return transform.localScale;
+        }
 
         // # slots
         public virtual void slot1(object value) { }

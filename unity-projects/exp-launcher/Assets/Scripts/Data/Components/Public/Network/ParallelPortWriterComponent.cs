@@ -111,10 +111,6 @@ namespace Ex{
 
             return true;
         }
-
-        protected override void start_routine() {
-            update_from_current_config();
-        }
    
         public IEnumerator send_pulse(int value) {
             write(value);

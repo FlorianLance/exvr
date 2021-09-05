@@ -24,6 +24,7 @@ class HumanoidAvatarInitConfigParametersW : public ConfigParametersW{
 
 private:
 
+    TransformSubPart m_transfo;
     ExResourceW humanoidAssetBundle;
     ExComboBoxIndexW skinColor;
     ExSelectColorW shirtColor;
@@ -53,7 +54,7 @@ private:
 
     // global
     ExCheckBoxW enableInverseKinematics;
-    DefaultTransformSubPart transform;
+    TransformSubPart transform;
     ExCheckBoxW displayTargets;
     ExCheckBoxW moveTransformsToTargets;
 
@@ -78,8 +79,8 @@ private:
     ExFloatSpinBoxW m_pelvisPositionWeight;
     ExFloatSpinBoxW m_chestGoalWeight;
     ExVector3dW m_chestGoal;
-    DefaultTransformSubPart m_head;
-    DefaultTransformSubPart m_pelvis;
+    TransformSubPart m_head;
+    TransformSubPart m_pelvis;
 
     ExFloatSpinBoxW m_bodyPosStiffness;         //  Range(0 1 0.55) Determines how much the body will follow the position of the head.
     ExFloatSpinBoxW m_bodyRotStiffness;         //  Range(0 1 0.1) Determines how much the body will follow the rotation of the head.
@@ -96,8 +97,8 @@ private:
     ExFloatSpinBoxW m_rightArmBendWeight;
     ExVector3dW m_leftArmBend;
     ExVector3dW m_rightArmBend;
-    DefaultTransformSubPart m_leftArm;
-    DefaultTransformSubPart m_rightArm;
+    TransformSubPart m_leftArm;
+    TransformSubPart m_rightArm;
 
     ExFloatSpinBoxW m_leftShoulderRotationWeight;
     ExFloatSpinBoxW m_rightShoulderRotationWeight;
@@ -113,8 +114,8 @@ private:
     ExFloatSpinBoxW m_rightLegBendWeight;
     ExVector3dW m_leftLegBend;
     ExVector3dW m_rightLegBend;
-    DefaultTransformSubPart m_leftLeg;
-    DefaultTransformSubPart m_rightLeg;
+    TransformSubPart m_leftLeg;
+    TransformSubPart m_rightLeg;
 
     // fingers
     ExFloatSpinBoxW m_leftFingersWeight;

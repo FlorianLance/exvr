@@ -27,9 +27,11 @@ void HumanoidAvatarInitConfigParametersW::insert_widgets(){
         },
        LStretch{false}, LMargins{true}, QFrame::Box)
     );
+    add_sub_part_widget(m_transfo);
 }
 
 void HumanoidAvatarInitConfigParametersW::init_and_register_widgets(){
+    map_sub_part(m_transfo.init_widget(QSL("Init transform</b> (applied when experiment starts)<b>"), QSL("init_transform")));
     m_inputUiElements["humanoid"] = humanoidAssetBundle.init_widget(Resource::Type::AssetBundle, "Humanoid asset bundle resource: ");
     QStringList items;
     items
@@ -368,7 +370,7 @@ void HumanoidAvatarConfigParametersW::insert_widgets(){
 
 void HumanoidAvatarConfigParametersW::init_and_register_widgets(){
 
-    map_sub_part(transform.init_widget());
+    map_sub_part(transform.init_widget(QSL("Config transform</b> (applied when routine starts)<b>"), QSL("transform")));
     m_inputUiElements["display_targets"]                       = displayTargets.init_widget("Display targets", false);
     m_inputUiElements["move_transforms_to_targets"]            = moveTransformsToTargets.init_widget("Move avatar to fit targets (called at routine start)", true);
 //    m_inputUiElements["move_eye_camera_to_head"]               = moveEyeCameraToHead.init_widget("Move eye camera to fit avatar head with neutral position (called at routine start)", false);

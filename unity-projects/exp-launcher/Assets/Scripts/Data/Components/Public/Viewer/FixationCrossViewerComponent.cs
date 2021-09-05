@@ -24,20 +24,17 @@ namespace Ex{
             return m_fixationCrossGO != null;
         }
 
-        protected override void start_routine() {
-            resize_image();
-        }
-
         protected override void set_visibility(bool visibility) {
             m_fixationCrossGO.SetActive(visibility);
         }
 
-        protected override void update_parameter_from_gui(XML.Arg arg) {
-            resize_image();
-        }
 
         // use_eye_camera
         protected override void pre_update() {
+            resize_image();
+        }
+
+        public override void update_from_current_config() {
             resize_image();
         }
 

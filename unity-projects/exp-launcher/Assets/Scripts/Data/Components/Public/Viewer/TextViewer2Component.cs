@@ -36,19 +36,15 @@ namespace Ex {
             return m_textViewerGO != null;
         }
 
-        protected override void start_routine() {
-            resize_container();
-            update_text();
-        }
-
         protected override void set_visibility(bool visibility) {
             m_textViewerGO.SetActive(visibility);
         }
 
-        protected override void update_parameter_from_gui(XML.Arg arg) {
+        public override void update_from_current_config() {
             resize_container();
             update_text();
         }
+
 
         // use_eye_camera
         protected override void pre_update() {

@@ -63,7 +63,7 @@ class ScanerVideoConfigParametersW : public ConfigParametersW{
 
 public :
 
-    DefaultTransformSubPart m_transfo;
+    TransformSubPart m_transfo;
     ExFloatSpinBoxW m_sizePoints;
     ExSpinBoxW m_fps;
     ExCheckBoxW m_loop;

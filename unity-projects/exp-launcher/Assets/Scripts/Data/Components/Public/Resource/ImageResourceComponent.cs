@@ -18,16 +18,10 @@ namespace Ex{
             return true;
         }
 
-        protected override void start_routine() {
-            load_image();
-            invoke_signal("image loaded", new ImageContainer(m_texture, false));
-        }
 
-        protected override void update_parameter_from_gui(XML.Arg arg) {
-            if (arg.Name == "image") {
-                load_image();
-            }
-        }    
+        public override void update_from_current_config() {
+            load_image();
+        }
 
         private void load_image() {
 
@@ -36,7 +30,8 @@ namespace Ex{
                 m_texture = imageData.texture;
             } else {
                 m_texture = ExVR.Resources().get_image_file_data("default_texture").texture;
-            }              
+            }
+            invoke_signal("image loaded", new ImageContainer(m_texture, false));
         }
     }
 }

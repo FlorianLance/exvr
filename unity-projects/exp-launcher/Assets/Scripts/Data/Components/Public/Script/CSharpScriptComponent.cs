@@ -9,11 +9,7 @@
 using System;
 using System.Collections.Generic;
 
-// unity
-using UnityEngine;
-
 namespace Ex{
-
     
     public class CSharpScriptComponent : ExComponent{
 
@@ -76,13 +72,13 @@ namespace Ex{
             functionsDefined[Function.slot4] = (runtimeType.GetMethod("slot4", flagPublic).DeclaringType == runtimeType);
             functionsDefined[Function.slot5] = (runtimeType.GetMethod("slot5", flagPublic).DeclaringType == runtimeType);
 
-            if (functionsDefined[Function.initialize]) {
+            //if (functionsDefined[Function.initialize]) {
                 // catchExceptions
                 if (!compiledComponent.initialize()) {
                     log_error("Error during CSharp script initialization, component will be disactivated.");
                     return false;
                 }
-            }
+            //}
 
             // slots
             add_slot("slot1", (value) => {
@@ -181,111 +177,112 @@ namespace Ex{
         }
 
         protected override void start_experiment() {
-            if (functionsDefined[Function.start_experiment]) {
+            //if (functionsDefined[Function.start_experiment]) {
                 compiledComponent.start_experiment();
-            }
+            //}
         }
 
         protected override void stop_experiment() {
-            if (functionsDefined[Function.stop_experiment]) {
+            //if (functionsDefined[Function.stop_experiment]) {
                 compiledComponent.stop_experiment();
-            }
+            //}
         }
 
         protected override void pre_start_routine() {
-            if (functionsDefined[Function.pre_start_routine]) {
+            //if (functionsDefined[Function.pre_start_routine]) {
                 compiledComponent.pre_start_routine();
-            }
+            //}
         }
 
         protected override void start_routine() {
-            if (functionsDefined[Function.start_routine]) {
+            //if (functionsDefined[Function.start_routine]) {
                 compiledComponent.start_routine();
-            }
+            //}
         }
 
         protected override void post_start_routine() {
-            if (functionsDefined[Function.post_start_routine]) {
+            //if (functionsDefined[Function.post_start_routine]) {
                 compiledComponent.post_start_routine();
-            }
+            //}
         }
 
         protected override void stop_routine() {
-            if (functionsDefined[Function.stop_routine]) {
+            //if (functionsDefined[Function.stop_routine]) {
                 compiledComponent.stop_routine();
-            }
+            //}
         }
 
         protected override void on_gui() {
-            if (functionsDefined[Function.on_gui]) {
+            //if (functionsDefined[Function.on_gui]) {
                 compiledComponent.on_gui();
-            }
+            //}
         }
 
         protected override void pre_update() {
-            if (functionsDefined[Function.pre_update]) {
+            //if (functionsDefined[Function.pre_update]) {
                 compiledComponent.pre_update();
-            }
+            //}
         }
 
         protected override void update() {
-            if (functionsDefined[Function.update]) {
+            //if (functionsDefined[Function.update]) {
                 compiledComponent.update();
-            }
+            //}
         }
 
         protected override void post_update() {
-            if (functionsDefined[Function.post_update]) {
+            //if (functionsDefined[Function.post_update]) {
                 compiledComponent.post_update();
-            }
+            //}
         }
 
         protected override void set_visibility(bool visibility) {
-            if (functionsDefined[Function.set_visibility]) {
+            //if (functionsDefined[Function.set_visibility]) {
                 compiledComponent.set_visibility(visibility);
-            }
+            //}
         }
 
         protected override void set_update_state(bool doUpdate) {
-            if (functionsDefined[Function.set_update_state]) {
+            //if (functionsDefined[Function.set_update_state]) {
                 compiledComponent.set_update_state(doUpdate);
-            }
+            //}
         }
 
         protected override void clean() {
-            if (functionsDefined[Function.clean]) {
+            //if (functionsDefined[Function.clean]) {
                 compiledComponent.clean();
-            }
+            //}
         }
 
         public override void play() {
-            if (functionsDefined[Function.play]) {
+            //if (functionsDefined[Function.play]) {
                 compiledComponent.play();
-            }
+            //}
         }
 
         public override void pause() {
-            if (functionsDefined[Function.pause]) {
+            //if (functionsDefined[Function.pause]) {
                 compiledComponent.pause();
-            }
+            //}
         }
 
         public override void update_from_current_config() {
-            if (functionsDefined[Function.update_from_current_config]) {
+            //if (functionsDefined[Function.update_from_current_config]) {
                 compiledComponent.update_from_current_config();
-            }
+            //}
         }
 
         protected override void action_from_gui(bool initConfig, string action) {
-            if (functionsDefined[Function.action_from_gui]) {
+            //if (functionsDefined[Function.action_from_gui]) {
                 compiledComponent.action_from_gui(initConfig, action);
-            }
+            //}
         }
 
         protected override void update_parameter_from_gui(XML.Arg arg) {
-            if (functionsDefined[Function.update_parameter_from_gui]) {
+            //if (functionsDefined[Function.update_parameter_from_gui]) {
+            log_message("zz " + arg.Value);
                 compiledComponent.update_parameter_from_gui(arg);
-            }
+            //}
         }
 
     }

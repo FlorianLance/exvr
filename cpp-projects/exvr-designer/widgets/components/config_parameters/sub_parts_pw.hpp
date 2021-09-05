@@ -38,12 +38,12 @@ public:
     std_v1<std::pair<QString, ExBaseW*>> inputUiElements;
 };
 
-class DefaultTransformSubPart : public ConfigParametersSubPart{
+class TransformSubPart : public ConfigParametersSubPart{
 public :
 
-    DefaultTransformSubPart();
+    TransformSubPart();
 
-    DefaultTransformSubPart *init_widget(QString title = "Transform", QString name = "transform");
+    TransformSubPart *init_widget(QString title = "Transform", QString name = "transform");
 
     ExTransformationW tr;
     ExCheckBoxW doNotApply;

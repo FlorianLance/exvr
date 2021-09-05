@@ -14,11 +14,5 @@ namespace Ex{
         protected override bool initialize() {
             return true;
         }
-
-        protected override void start_routine() {
-        }
-
-        protected override void update_parameter_from_gui(XML.Arg arg) {
-        }
     }
 }

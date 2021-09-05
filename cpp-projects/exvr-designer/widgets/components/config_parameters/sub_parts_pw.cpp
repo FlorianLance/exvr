@@ -10,12 +10,12 @@
 
 using namespace tool::ex;
 
-DefaultTransformSubPart::DefaultTransformSubPart(){
+TransformSubPart::TransformSubPart(){
     frame = ui::F::gen(ui::L::VB(),{tr()}, LStretch{false},LMargins{false});
     tr.w->layout()->addWidget(doNotApply());
 }
 
-DefaultTransformSubPart *DefaultTransformSubPart::init_widget(QString title, QString name){
+TransformSubPart *TransformSubPart::init_widget(QString title, QString name){
 
     DsbSettings s1 = {MinV<qreal>{-10000.}, V<qreal>{0}, MaxV<qreal>{10000.}, StepV<qreal>{0.01}, 3};
     DsbSettings s2 = {MinV<qreal>{-10000.}, V<qreal>{0}, MaxV<qreal>{10000.}, StepV<qreal>{0.1},  3};
@@ -26,7 +26,7 @@ DefaultTransformSubPart *DefaultTransformSubPart::init_widget(QString title, QSt
     Vector3dSettings scS    = {s3,s3,s3};
 
     inputUiElements.emplace_back(std::make_pair(name, tr.init_widget(title,trS,rotS,scS)));
-    inputUiElements.emplace_back(std::make_pair(name + "_do_not_apply", doNotApply.init_widget("Do not apply", false)));
+    inputUiElements.emplace_back(std::make_pair(name % QSL("_do_not_apply"), doNotApply.init_widget(QSL("Do not apply"), false)));
 
     return this;
 }

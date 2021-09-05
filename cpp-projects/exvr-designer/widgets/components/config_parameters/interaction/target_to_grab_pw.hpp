@@ -50,7 +50,7 @@ public :
     ExCheckBoxW m_cbDisplayStartLine;
 
     // working zone
-    DefaultTransformSubPart m_trWorkingZone;
+    TransformSubPart m_trWorkingZone;
 
     // target
     ExFloatSpinBoxW m_dsbDistancePercentageTarget;

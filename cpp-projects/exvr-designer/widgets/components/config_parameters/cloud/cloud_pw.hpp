@@ -38,7 +38,7 @@ class CloudConfigParametersW : public ConfigParametersW{
 
 public :
 
-    DefaultTransformSubPart m_transfo;
+    TransformSubPart m_transfo;
 //    ExSelectColorW m_color;
 
     void insert_widgets() override{

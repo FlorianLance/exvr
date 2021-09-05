@@ -41,7 +41,7 @@ class KinectBodyTrackingConfigParametersW : public ConfigParametersW{
 
 public :
 
-    DefaultTransformSubPart m_tr;
+    TransformSubPart m_tr;
 
 
     void insert_widgets() override{

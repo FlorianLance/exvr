@@ -14,7 +14,9 @@ using UnityEngine;
 using UnityEngine.UI;
 
 namespace Ex{
-    public class ExComponent : MonoBehaviour{
+
+
+    public class ExComponent : MonoBehaviour {
 
         public enum Function{
             initialize,
@@ -109,6 +111,8 @@ namespace Ex{
         public ComponentInitConfig initC = null;
         public ComponentConfig currentC = null; // current config
         public List<ComponentConfig> configs = null;
+        public Dictionary<int, ComponentConfig> configsPerKey = null;
+        public Dictionary<string, ComponentConfig> configsPerName = null;
 
         // states
         public bool is_started() {return m_started;}
@@ -214,21 +218,15 @@ namespace Ex{
             return currentC;
         }
         public ComponentConfig get_config(string configName) {
-
-            foreach (ComponentConfig config in configs) {
-                if (config.name == configName) {
-                    return config;
-                }
+            if (configsPerName.ContainsKey(configName)) {
+                return configsPerName[configName];
             }
             return null;
         }
 
         public ComponentConfig get_config(int configKey) {
-
-            foreach (ComponentConfig config in configs) {
-                if (config.key == configKey) {
-                    return config;
-                }
+            if (configsPerKey.ContainsKey(configKey)) {
+                return configsPerKey[configKey];
             }
             return null;
         }
@@ -256,29 +254,32 @@ namespace Ex{
             }
         }
 
-        // ######### TEST
 
+        // ######### UNTESTED
         public static void set_component_config<T>(string routineName, string conditionName, string componentName, string configToUse) where T : ExComponent {
 
             // parse everything just in case there is routines/conditions/components/configs with the same names
 
             var routine = ExVR.Routines().get(routineName);
-            if(routine != null) {
-                var condition = routine.get_condition_from_name(conditionName);
-                if (condition != null) {
-                    foreach (var action in condition.actions) {
-                        if (action.component().name == componentName) {
-                            //action.component().configs;
-                            foreach (var config in action.component().configs) {
-                                if (config.name == configToUse) {
+            if (routine == null) {
+                return;
+            }
 
-                                    return;
-                                }
-                            }
-                        }
-                    }
-                }
-            }                  
+            var condition = routine.get_condition_from_name(conditionName);
+            if (condition == null) {
+                return;
+            }
+
+            var action = condition.get_action_from_component_name(componentName);
+            if(action == null) {
+                return;
+            }
+
+            var config = action.component().configsPerName[configToUse];
+            if(config != null){
+                // update config of the action
+                action.set_config(config);
+            }             
         }
 
         // setup component, parent, layer, configurations...
@@ -326,6 +327,8 @@ namespace Ex{
 
             // conditions config
             configs = new List<ComponentConfig>(xmlComponent.Configs.Config.Count);
+            configsPerKey = new Dictionary<int, ComponentConfig>(xmlComponent.Configs.Config.Count);
+            configsPerName = new Dictionary<string, ComponentConfig>(xmlComponent.Configs.Config.Count); 
             foreach (XML.Config xmlConfig in xmlComponent.Configs.Config) {
 
                 var configGo = new GameObject();
@@ -334,6 +337,9 @@ namespace Ex{
                 var componentConfig = configGo.AddComponent<ComponentConfig>();
                 componentConfig.initialize(xmlConfig);
                 configs.Add(componentConfig);
+
+                configsPerKey[componentConfig.key] = componentConfig;
+                configsPerName[componentConfig.name] = componentConfig;
             }
 
             // look for defined functions in child class
@@ -588,16 +594,18 @@ namespace Ex{
         }
 
         // Update the parameters from GUI
-        public void base_update_parameter_from_gui(int configKey, XML.Arg arg) {
+        public void base_update_parameter_from_gui(XML.Arg arg) {
 
             currentFunction = Function.update_parameter_from_gui;
             if (catchExceptions) {
                 try {
+                    log_message("ex " + arg.Value);
                     update_parameter_from_gui(arg);
                 } catch (Exception e) {
                     display_exception(e);
                 }
             } else {
+                log_message("ex " + arg.Value);
                 update_parameter_from_gui(arg);
             }                
         }
@@ -678,6 +686,7 @@ namespace Ex{
         protected virtual void pre_start_routine() {
         }
         protected virtual void start_routine() {
+            update_from_current_config();
         }
         protected virtual void post_start_routine() {
         }
@@ -694,6 +703,7 @@ namespace Ex{
         public virtual void update_from_current_config() {
         }
         protected virtual void update_parameter_from_gui(XML.Arg arg) {
+            update_from_current_config();
         }
         protected virtual void action_from_gui(bool initConfig, string action) {
         }
@@ -717,6 +727,46 @@ namespace Ex{
         //public virtual void hide() {
         //    set_visibility(false);
         //}
+
+        // transform related function
+        public virtual void set_position(Vector3 position) {
+            transform.position = position;
+        }
+        public virtual void set_rotation(Vector3 rotation) {
+            transform.eulerAngles = rotation;
+        }
+        public virtual void set_rotation(Quaternion rotation) {
+            transform.rotation = rotation;
+        }
+        public virtual void set_scale(Vector3 scale) {
+            transform.localScale = scale;
+        }
+
+        public virtual Vector3 position() {
+            return transform.position;
+        }
+        public virtual Quaternion rotation() {
+            return transform.rotation;
+        }
+
+        public virtual Vector3 euler_angles() {
+            return transform.eulerAngles;
+        }
+
+        public virtual Vector3 scale() {
+            return transform.localScale;
+        }
+
+        public virtual void reset_init_transform() {
+            if (!initC.get<bool>("init_transform_do_not_apply")) {
+                initC.update_transform("init_transform", transform, true);
+            }
+        }
+        public virtual void reset_config_transform() {
+            if (!currentC.get<bool>("transform_do_not_apply")) {
+                currentC.update_transform("transform", transform, true);
+            }
+        }
     }
 
     public class CanvasWorldSpaceComponent : ExComponent{
@@ -731,4 +781,6 @@ namespace Ex{
             return base.base_initialize();
         }
     }
+
+    //public class 
 }

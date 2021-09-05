@@ -99,14 +99,6 @@ namespace Ex{
             return true;
         }
 
-        protected override void start_routine() {
-            update_from_current_config();
-        }
-
-        protected override void update_parameter_from_gui(XML.Arg arg) {
-            update_from_current_config();
-        }
-
         public override void update_from_current_config() {
 
             height = currentC.get<float>("height");

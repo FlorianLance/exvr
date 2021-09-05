@@ -97,7 +97,7 @@ namespace Ex {
             }
         }
 
-        protected override void start_routine() {
+        protected override void pre_start_routine() {
             m_fileFullPath = get_file_path(currentRoutine.name, currentCondition.name);
             m_lines = m_filesLines[m_fileFullPath];
         }

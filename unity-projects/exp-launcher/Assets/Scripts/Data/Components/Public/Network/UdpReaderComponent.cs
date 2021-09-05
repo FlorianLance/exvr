@@ -27,7 +27,7 @@ namespace Ex{
             return m_udpReceiver.initialize(initC.get<int>("reading_port"), ipAddresses[0]);
         }
 
-        protected override void start_routine() {
+        protected override void pre_start_routine() {
             m_udpReceiver.set_reading_state(true);
         }    
 

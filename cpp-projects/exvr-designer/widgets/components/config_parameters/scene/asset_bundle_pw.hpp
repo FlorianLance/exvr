@@ -25,6 +25,7 @@ class AssetBundleInitConfigParametersW : public ConfigParametersW{
 
 public :
 
+    TransformSubPart m_transfo;
     ExResourceW m_assetBundle;
     ExLineEditW m_leSubObjectName;
     ExCheckBoxW m_displayHierarchy;
@@ -41,7 +42,7 @@ class AssetBundleConfigParametersW : public ConfigParametersW{
 
 public :
 
-    DefaultTransformSubPart m_transfo;
+    TransformSubPart m_transfo;
 
     void insert_widgets() override;
     void init_and_register_widgets() override;

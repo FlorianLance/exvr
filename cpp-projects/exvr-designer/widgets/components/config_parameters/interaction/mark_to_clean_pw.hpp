@@ -47,7 +47,7 @@ public :
     ExCheckBoxW m_cbDebug;
 
     // working zone
-    DefaultTransformSubPart m_trWorkingZone;
+    TransformSubPart m_trWorkingZone;
 
     // mark
     ExFloatSpinBoxW m_distancePercentageMark;

@@ -535,6 +535,7 @@ namespace Ex{
                     arg.Sizes = cmd.Item2[6];
                     arg.Separator = cmd.Item2[7]; //  cmd.Item2.Count > 7 ? cmd.Item2[7] : "";
 
+                        log_message("UUP " + arg.Name);
                     schedule_update_component_parameter(ScheduledAction.Source.Gui, componentKey, configKey, arg);
                     return;
 

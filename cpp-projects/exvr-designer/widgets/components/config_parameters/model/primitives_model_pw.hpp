@@ -18,15 +18,18 @@ class CubeInitConfigParametersW : public ConfigParametersW{
 
 public :
 
+    TransformSubPart m_transfo;
     ExFloatSpinBoxW m_dsbSize;
     ExCheckBoxW m_transparent;
 
     void insert_widgets() override{
         add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Cube size: "),m_dsbSize()}, LStretch{true}, LMargins{true}));
         add_widget(ui::F::gen(ui::L::HB(), {m_transparent()}, LStretch{true}, LMargins{true}));
+        add_sub_part_widget(m_transfo);
     }
 
     void init_and_register_widgets() override{
+        map_sub_part(m_transfo.init_widget(QSL("Init transform</b> (applied when experiment starts)<b>"), QSL("init_transform")));
         m_inputUiElements["size"] = m_dsbSize.init_widget(MinV<qreal>{0.1}, V<qreal>{1.}, MaxV<qreal>{1000.}, StepV<qreal>{0.1},2);
         m_inputUiElements["transparent"] = m_transparent.init_widget("Is transparent?", false);
     }
@@ -40,7 +43,7 @@ class CubeConfigParametersW : public ConfigParametersW{
 
 public :
 
-    DefaultTransformSubPart m_transfo;
+    TransformSubPart m_transfo;
     ExSelectColorW m_color;    
     ExFloatSpinBoxW m_metallic;
     ExFloatSpinBoxW m_smoothness;
@@ -53,7 +56,7 @@ public :
     }
 
     void init_and_register_widgets() override{
-        map_sub_part(m_transfo.init_widget());
+        map_sub_part(m_transfo.init_widget(QSL("Config transform</b> (applied when routine starts)<b>"), QSL("transform")));
         m_inputUiElements["color"] = m_color.init_widget("Color", Qt::gray);
         m_inputUiElements["metallic"]   = m_metallic.init_widget(MinV<qreal>{0.0}, V<qreal>{0.0}, MaxV<qreal>{1.}, StepV<qreal>{0.01},2);
         m_inputUiElements["smoothness"] = m_smoothness.init_widget(MinV<qreal>{0.0}, V<qreal>{0.0}, MaxV<qreal>{1.}, StepV<qreal>{0.01},2);
@@ -68,6 +71,7 @@ class CylinderInitConfigParametersW : public ConfigParametersW{
 
 public :
 
+    TransformSubPart m_transfo;
     ExSpinBoxW m_nbSides;
     ExFloatSpinBoxW m_radius;
     ExFloatSpinBoxW m_length;
@@ -78,9 +82,11 @@ public :
         add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Radius: "),m_radius()}, LStretch{true}, LMargins{true}));
         add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Length: "),m_length()}, LStretch{true}, LMargins{true}));
         add_widget(ui::F::gen(ui::L::HB(), {m_transparent()}, LStretch{true}, LMargins{true}));
+        add_sub_part_widget(m_transfo);
     }
 
     void init_and_register_widgets() override{
+        map_sub_part(m_transfo.init_widget(QSL("Init transform</b> (applied when experiment starts)<b>"), QSL("init_transform")));
         m_inputUiElements["nb_sides"] = m_nbSides.init_widget(MinV<int>{8}, V<int>{18}, MaxV<int>{100}, StepV<int>{1});
         m_inputUiElements["radius"]   = m_radius.init_widget(MinV<qreal>{0.01}, V<qreal>{0.5}, MaxV<qreal>{1000.}, StepV<qreal>{0.1},2);
         m_inputUiElements["length"]   = m_length.init_widget(MinV<qreal>{0.01}, V<qreal>{1.0}, MaxV<qreal>{1000.}, StepV<qreal>{0.1},2);
@@ -96,7 +102,7 @@ class CylinderConfigParametersW : public ConfigParametersW{
 
 public :
 
-    DefaultTransformSubPart m_transfo;
+    TransformSubPart m_transfo;
     ExSelectColorW m_color;
     ExFloatSpinBoxW m_metallic;
     ExFloatSpinBoxW m_smoothness;
@@ -109,7 +115,7 @@ public :
     }
 
     void init_and_register_widgets() override{
-        map_sub_part(m_transfo.init_widget());
+        map_sub_part(m_transfo.init_widget(QSL("Config transform</b> (applied when routine starts)<b>"), QSL("transform")));
         m_inputUiElements["color"] = m_color.init_widget("Color", Qt::gray);
         m_inputUiElements["metallic"]   = m_metallic.init_widget(MinV<qreal>{0.0}, V<qreal>{0.0}, MaxV<qreal>{1.}, StepV<qreal>{0.01},2);
         m_inputUiElements["smoothness"] = m_smoothness.init_widget(MinV<qreal>{0.0}, V<qreal>{0.0}, MaxV<qreal>{1.}, StepV<qreal>{0.01},2);
@@ -125,6 +131,7 @@ class SphereInitConfigParametersW : public ConfigParametersW{
 
 public :
 
+    TransformSubPart m_transfo;
     ExFloatSpinBoxW m_dsbRadius;
     ExSpinBoxW m_sbLong;
     ExSpinBoxW m_sbLat;
@@ -135,9 +142,11 @@ public :
         add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Long nb triangles: "),m_sbLong()}, LStretch{true}, LMargins{true}));
         add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Lat nb triangles: "),m_sbLat()}, LStretch{true}, LMargins{true}));
         add_widget(ui::F::gen(ui::L::HB(), {m_transparent()}, LStretch{true}, LMargins{true}));
+        add_sub_part_widget(m_transfo);
     }
 
     void init_and_register_widgets() override{
+        map_sub_part(m_transfo.init_widget(QSL("Init transform</b> (applied when experiment starts)<b>"), QSL("init_transform")));
         m_inputUiElements["radius"] = m_dsbRadius.init_widget(MinV<qreal>{0.01}, V<qreal>{0.05}, MaxV<qreal>{1000.}, StepV<qreal>{0.01},2);
         m_inputUiElements["nb_log"] = m_sbLong.init_widget(MinV<int>{12}, V<int>{24}, MaxV<int>{100}, StepV<int>{1},1);
         m_inputUiElements["nb_lat"] = m_sbLat.init_widget(MinV<int>{8}, V<int>{16}, MaxV<int>{100}, StepV<int>{1},1);
@@ -153,7 +162,7 @@ class SphereConfigParametersW : public ConfigParametersW{
 
 public :
 
-    DefaultTransformSubPart m_transfo;
+    TransformSubPart m_transfo;
     ExSelectColorW m_color;    
     ExFloatSpinBoxW m_metallic;
     ExFloatSpinBoxW m_smoothness;
@@ -166,7 +175,7 @@ public :
     }
 
     void init_and_register_widgets() override{
-        map_sub_part(m_transfo.init_widget());
+        map_sub_part(m_transfo.init_widget(QSL("Config transform</b> (applied when routine starts)<b>"), QSL("transform")));
         m_inputUiElements["color"] = m_color.init_widget("Color", Qt::gray);        
         m_inputUiElements["metallic"]   = m_metallic.init_widget(MinV<qreal>{0.0}, V<qreal>{0.0}, MaxV<qreal>{1.}, StepV<qreal>{0.01},2);
         m_inputUiElements["smoothness"] = m_smoothness.init_widget(MinV<qreal>{0.0}, V<qreal>{0.0}, MaxV<qreal>{1.}, StepV<qreal>{0.01},2);
@@ -180,15 +189,24 @@ class TorusInitConfigParametersW : public ConfigParametersW{
 
 public :
 
-    void insert_widgets() override{
+    TransformSubPart m_transfo;
+    ExFloatSpinBoxW m_outerRadius;
+    ExFloatSpinBoxW m_innerRadius;
+    ExSpinBoxW m_sidesCount;
+    ExSpinBoxW m_ringsCount;
+    ExCheckBoxW m_transparent;
+
+    void insert_widgets() override{        
         add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Outer radius: "),m_outerRadius()}, LStretch{true}, LMargins{true}));
         add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Inner radius: "),m_innerRadius()}, LStretch{true}, LMargins{true}));
         add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Sides count: "),m_sidesCount()}, LStretch{true}, LMargins{true}));
         add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Rings count: "),m_ringsCount()}, LStretch{true}, LMargins{true}));
         add_widget(ui::F::gen(ui::L::HB(), {m_transparent()}, LStretch{true}, LMargins{true}));
+        add_sub_part_widget(m_transfo);
     }
 
     void init_and_register_widgets() override{
+        map_sub_part(m_transfo.init_widget(QSL("Init transform</b> (applied when experiment starts)<b>"), QSL("init_transform")));
         m_inputUiElements["outer_radius"] = m_outerRadius.init_widget(MinV<qreal>{0.01}, V<qreal>{0.3}, MaxV<qreal>{1000.}, StepV<qreal>{0.01},2);
         m_inputUiElements["inner_radius"] = m_innerRadius.init_widget(MinV<qreal>{0.01}, V<qreal>{0.15}, MaxV<qreal>{1000.}, StepV<qreal>{0.01},2);
         m_inputUiElements["sides_count"] = m_sidesCount.init_widget(MinV<int>{12}, V<int>{24}, MaxV<int>{1000}, StepV<int>{1},1);
@@ -199,12 +217,6 @@ public :
     void create_connections() override{}
     void late_update_ui() override{}
 
-private:
-    ExFloatSpinBoxW m_outerRadius;
-    ExFloatSpinBoxW m_innerRadius;
-    ExSpinBoxW m_sidesCount;
-    ExSpinBoxW m_ringsCount;
-    ExCheckBoxW m_transparent;
 };
 
 
@@ -212,7 +224,7 @@ class TorusConfigParametersW : public ConfigParametersW{
 
 public :
 
-    DefaultTransformSubPart m_transfo;
+    TransformSubPart m_transfo;
     ExSelectColorW m_color;    
     ExFloatSpinBoxW m_metallic;
     ExFloatSpinBoxW m_smoothness;
@@ -225,7 +237,7 @@ public :
     }
 
     void init_and_register_widgets() override{
-        map_sub_part(m_transfo.init_widget());
+        map_sub_part(m_transfo.init_widget(QSL("Config transform</b> (applied when routine starts)<b>"), QSL("transform")));
         m_inputUiElements["color"] = m_color.init_widget("Color", Qt::gray);
         m_inputUiElements["metallic"]   = m_metallic.init_widget(MinV<qreal>{0.0}, V<qreal>{0.0}, MaxV<qreal>{1.}, StepV<qreal>{0.01},2);
         m_inputUiElements["smoothness"] = m_smoothness.init_widget(MinV<qreal>{0.0}, V<qreal>{0.0}, MaxV<qreal>{1.}, StepV<qreal>{0.01},2);
@@ -238,8 +250,15 @@ public :
 
 class LinesInitConfigParametersW : public ConfigParametersW{
 public :
-    void insert_widgets() override{}
-    void init_and_register_widgets() override{}
+
+    TransformSubPart m_transfo;
+
+    void insert_widgets() override{
+        add_sub_part_widget(m_transfo);
+    }
+    void init_and_register_widgets() override{
+        map_sub_part(m_transfo.init_widget(QSL("Init transform</b> (applied when experiment starts)<b>"), QSL("init_transform")));
+    }
     void create_connections() override{}
     void late_update_ui() override{}
 };
@@ -249,14 +268,14 @@ class LinesConfigParametersW : public ConfigParametersW{
 
 public :
 
-    DefaultTransformSubPart m_transfo;
+    TransformSubPart m_transfo;
 
     void insert_widgets() override{
         add_sub_part_widget(m_transfo);
     }
 
     void init_and_register_widgets() override{
-        map_sub_part(m_transfo.init_widget());
+        map_sub_part(m_transfo.init_widget(QSL("Config transform</b> (applied when routine starts)<b>"), QSL("transform")));
     }
 
     void create_connections() override{}
@@ -266,8 +285,15 @@ public :
 
 class LandmarkInitConfigParametersW : public ConfigParametersW{
 public :
-    void insert_widgets() override{}
-    void init_and_register_widgets() override{}
+
+    TransformSubPart m_transfo;
+
+    void insert_widgets() override{
+        add_sub_part_widget(m_transfo);
+    }
+    void init_and_register_widgets() override{
+        map_sub_part(m_transfo.init_widget(QSL("Init transform</b> (applied when experiment starts)<b>"), QSL("init_transform")));
+    }
     void create_connections() override{}
     void late_update_ui() override{}
 };
@@ -276,7 +302,7 @@ class LandmarkConfigParametersW : public ConfigParametersW{
 
 public :
 
-    DefaultTransformSubPart m_transfo;
+    TransformSubPart m_transfo;
     ExSelectColorW m_color;
 
     void insert_widgets() override{
@@ -285,7 +311,7 @@ public :
     }
 
     void init_and_register_widgets() override{
-        map_sub_part(m_transfo.init_widget());
+        map_sub_part(m_transfo.init_widget(QSL("Config transform</b> (applied when routine starts)<b>"), QSL("transform")));
         m_inputUiElements["color"] = m_color.init_widget("Color", Qt::gray);
     }
 

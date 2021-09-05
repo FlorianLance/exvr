@@ -21,7 +21,7 @@ void MultiABInitConfigParametersW::init_and_register_widgets(){
 
 void MultiABConfigParametersW::insert_widgets(){
 
-    auto initPW = dynamic_cast<MultiABInitConfigParametersW*>(initParametersW);
+//    auto initPW = dynamic_cast<MultiABInitConfigParametersW*>(initParametersW);
 
 
     add_sub_part_widget(m_transfo);
@@ -29,7 +29,7 @@ void MultiABConfigParametersW::insert_widgets(){
 }
 
 void MultiABConfigParametersW::init_and_register_widgets(){
-    map_sub_part(m_transfo.init_widget());
+    map_sub_part(m_transfo.init_widget(QSL("Config transform</b> (applied when routine starts)<b>"), QSL("transform")));
     m_inputUiElements["ab_alias"] = m_currentAB.init_widget(Resource::Type::AssetBundle,QSL("Current asset bundle resource"));
 
 }

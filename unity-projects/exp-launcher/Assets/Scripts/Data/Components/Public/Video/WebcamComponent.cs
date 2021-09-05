@@ -46,7 +46,7 @@ namespace Ex{
             m_webcamTexture.Play();
         }
 
-        protected override void start_routine() {
+        protected override void pre_start_routine() {
             updateCounter = 0;
         }
 

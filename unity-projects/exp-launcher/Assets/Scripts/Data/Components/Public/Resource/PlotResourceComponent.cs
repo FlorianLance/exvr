@@ -24,19 +24,8 @@ namespace Ex{
             return true;
         }
 
-        protected override void start_routine() {
-            load_plot();            
-            if (data != null) {
-                invoke_signal("plot loaded", curves[0]);
-                invoke_signal("plot loaded alias", data.alias);
-                invoke_signal("plot loaded path", data.path);
-            }
-        }
-
-        protected override void update_parameter_from_gui(XML.Arg arg) {
-            if (arg.Name == "plot") {
-                load_plot();
-            }
+        public override void update_from_current_config() {
+            load_plot();
         }
 
         private void load_plot() {
@@ -60,6 +49,13 @@ namespace Ex{
                 curves.Add(new AnimationCurve());                
                 // ...
             }
+
+            if (data != null) {
+                invoke_signal("plot loaded", curves[0]);
+                invoke_signal("plot loaded alias", data.alias);
+                invoke_signal("plot loaded path", data.path);
+            }
+
         }
     }
 }

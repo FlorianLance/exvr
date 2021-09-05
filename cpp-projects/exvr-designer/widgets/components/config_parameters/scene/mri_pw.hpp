@@ -40,7 +40,7 @@ class MriConfigParametersW : public ConfigParametersW{
 
 public :
 
-    DefaultTransformSubPart transform;
+    TransformSubPart transform;
 
     ExCheckBoxW goNextWhenTrigger;
 

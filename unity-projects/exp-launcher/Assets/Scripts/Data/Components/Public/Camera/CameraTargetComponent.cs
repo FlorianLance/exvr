@@ -41,7 +41,7 @@ namespace Ex{
             return true;
         }
 
-        protected override void start_routine() {
+        protected override void pre_start_routine() {
             movementStarted = false;
             speedCurve      = currentC.get_curve("speed_curve");
             movementFactor = 0f;

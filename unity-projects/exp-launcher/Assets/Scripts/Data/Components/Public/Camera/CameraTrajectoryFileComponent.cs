@@ -76,20 +76,17 @@ namespace Ex{
             }
         }
 
-        protected override void start_routine() {
+        protected override void pre_start_routine() {
 
             // retrieve current trajectory
             currentTraj = trajectories[currentC.key];                        
-            // update speed curve
-            speedCurve = currentC.get_curve("speed");                    
-
+      
             // reset lines
             linePosRenderer.positionCount = 0;
             linePosRenderer.SetPositions(new Vector3[] { });
             lineDirRenderer.positionCount = 0;
             lineDirRenderer.SetPositions(new Vector3[] { });
-            // set lines color
-            set_gradient(currentC.get_color("start_color"), currentC.get_color("end_color"));            
+
             trajectoryGO.SetActive(is_visible());
         }
 
@@ -161,12 +158,13 @@ namespace Ex{
             lineDirRenderer.SetPosition(lineDirRenderer.positionCount-1, currTr.position + currTr.forward * 0.2f);
         }
 
+        public override void update_from_current_config() {
 
-        protected override void update_parameter_from_gui(Arg arg) {
+            // update speed curve
+            speedCurve = currentC.get_curve("speed");
 
-            if(arg.Name == "start_color" || arg.Name == "end_color") {
-                set_gradient(currentC.get_color("start_color"), currentC.get_color("end_color"));
-            }
+            // set lines color
+            set_gradient(currentC.get_color("start_color"), currentC.get_color("end_color"));
         }
 
         protected override void set_visibility(bool visible) {

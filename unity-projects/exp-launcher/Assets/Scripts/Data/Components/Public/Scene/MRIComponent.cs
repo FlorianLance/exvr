@@ -411,14 +411,8 @@ namespace Ex
             }
         }
 
-        protected override void update_parameter_from_gui(XML.Arg arg) {
-            update_from_current_config();
-        }
-
         public override void update_from_current_config() {
-            if (!currentC.get<bool>("transform_do_not_apply")) {
-                currentC.update_transform("transform", m_mriGO.transform, true);
-            }
+            reset_config_transform();
         }
 
         protected override void set_visibility(bool visibility) {

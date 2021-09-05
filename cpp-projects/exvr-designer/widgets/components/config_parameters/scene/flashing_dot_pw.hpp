@@ -26,7 +26,7 @@ class FlashingDotConfigParametersW : public ConfigParametersW{
 
 public :
 
-    DefaultTransformSubPart m_transfo;
+    TransformSubPart m_transfo;
     ExSelectColorW m_onColor;
     ExSelectColorW m_offColor;
     ExCheckBoxW m_on;

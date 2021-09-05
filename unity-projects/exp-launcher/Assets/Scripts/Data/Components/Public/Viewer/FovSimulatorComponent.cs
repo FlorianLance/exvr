@@ -111,14 +111,6 @@ namespace Ex{
             transform.rotation = eyeTr.rotation;
         }
 
-        protected override void start_routine() {
-            update_from_current_config();
-        }
-
-        protected override void update_parameter_from_gui(XML.Arg arg) {
-            update_from_current_config();
-        }
-
         public override void update_from_current_config() {
             var color = currentC.get_color("color");
             mr.material.color = color;

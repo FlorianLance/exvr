@@ -118,44 +118,32 @@ namespace Ex {
             }
         }
 
-        protected override void start_routine() {
-            load_all_textures();
-            update_from_current_config();
-        }
-
-        protected override void update_parameter_from_gui(XML.Arg arg) {
-
-            if (arg.Name == "mode") {
-                load_all_textures();
-            } else { // reload only current modified texture
-                var n = arg.Name.Substring(0, 2);
-                if (n == "Z+") {
-                    skybox6Sided.SetTexture("_FrontTex", copy(currentC.get_resource_image(n), textures6Sided[0], currentC.get<bool>(n + "_invert")));
-                } else if (n == "Z-") {
-                    skybox6Sided.SetTexture("_BackTex", copy(currentC.get_resource_image(n), textures6Sided[1], currentC.get<bool>(n + "_invert")));
-                } else if (n == "X+") {
-                    skybox6Sided.SetTexture("_LeftTex", copy(currentC.get_resource_image(n), textures6Sided[2], currentC.get<bool>(n + "_invert")));
-                } else if (n == "X-") {
-                    skybox6Sided.SetTexture("_RightTex", copy(currentC.get_resource_image(n), textures6Sided[3], currentC.get<bool>(n + "_invert")));
-                } else if (n == "Y+") {
-                    skybox6Sided.SetTexture("_UpTex", copy(currentC.get_resource_image(n), textures6Sided[4], currentC.get<bool>(n + "_invert")));
-                } else if (n == "Y-") {
-                    skybox6Sided.SetTexture("_DownTex", copy(currentC.get_resource_image(n), textures6Sided[5], currentC.get<bool>(n + "_invert")));
-                } else if (n == "pa") {
-                    skyboxPanoramic.SetTexture("_MainTex", copy(currentC.get_resource_image("panoramic"), texturePanoramic, currentC.get<bool>("panoramic_invert")));
-                } else if (n == "cu") {
-                    skyboxCubeMap.SetTexture("_Tex", copy_to_cubemap(currentC.get_resource_image("cubemap"), textureCubeMap, currentC.get<bool>("cubemap_invert")));
-                }
+        private void reload_current_texture(XML.Arg arg) {
+            var n = arg.Name.Substring(0, 2);
+            if (n == "Z+") {
+                skybox6Sided.SetTexture("_FrontTex", copy(currentC.get_resource_image(n), textures6Sided[0], currentC.get<bool>(n + "_invert")));
+            } else if (n == "Z-") {
+                skybox6Sided.SetTexture("_BackTex", copy(currentC.get_resource_image(n), textures6Sided[1], currentC.get<bool>(n + "_invert")));
+            } else if (n == "X+") {
+                skybox6Sided.SetTexture("_LeftTex", copy(currentC.get_resource_image(n), textures6Sided[2], currentC.get<bool>(n + "_invert")));
+            } else if (n == "X-") {
+                skybox6Sided.SetTexture("_RightTex", copy(currentC.get_resource_image(n), textures6Sided[3], currentC.get<bool>(n + "_invert")));
+            } else if (n == "Y+") {
+                skybox6Sided.SetTexture("_UpTex", copy(currentC.get_resource_image(n), textures6Sided[4], currentC.get<bool>(n + "_invert")));
+            } else if (n == "Y-") {
+                skybox6Sided.SetTexture("_DownTex", copy(currentC.get_resource_image(n), textures6Sided[5], currentC.get<bool>(n + "_invert")));
+            } else if (n == "pa") {
+                skyboxPanoramic.SetTexture("_MainTex", copy(currentC.get_resource_image("panoramic"), texturePanoramic, currentC.get<bool>("panoramic_invert")));
+            } else if (n == "cu") {
+                skyboxCubeMap.SetTexture("_Tex", copy_to_cubemap(currentC.get_resource_image("cubemap"), textureCubeMap, currentC.get<bool>("cubemap_invert")));
             }
-
-            update_from_current_config();
         }
 
-        public override void update_from_current_config() {
+        private void update_textures_parameters() {
 
             // textures parameters
             Material currentMat = null;
-            switch ((SkyboxMode)currentC.get<int>("mode")) {                
+            switch ((SkyboxMode)currentC.get<int>("mode")) {
                 case SkyboxMode.Color:
 
                     var color = currentC.get_color("background_color");
@@ -202,7 +190,7 @@ namespace Ex {
             }
 
             // set camera clear flags            
-            if(currentMat != null) {
+            if (currentMat != null) {
                 RenderSettings.skybox = currentMat;
                 defaultBothEyes.set_clear_flags(CameraClearFlags.Skybox);
                 //defaultLeftEye.set_clear_flags(CameraClearFlags.Skybox);
@@ -225,15 +213,15 @@ namespace Ex {
             DynamicGI.UpdateEnvironment();
 
             // ambient 
-            RenderSettings.ambientMode      = (UnityEngine.Rendering.AmbientMode)currentC.get<int>("ambient_mode");            
+            RenderSettings.ambientMode = (UnityEngine.Rendering.AmbientMode)currentC.get<int>("ambient_mode");
             // # skybox
             RenderSettings.ambientIntensity = currentC.get<float>("ambient_intensity");
             // # flat
             RenderSettings.ambientLight = currentC.get_color("ambient_color");
             // # gradient
-            RenderSettings.ambientGroundColor   = currentC.get_color("ground_color");
-            RenderSettings.ambientEquatorColor  = currentC.get_color("equator_color");
-            RenderSettings.ambientSkyColor      = currentC.get_color("sky_color");
+            RenderSettings.ambientGroundColor = currentC.get_color("ground_color");
+            RenderSettings.ambientEquatorColor = currentC.get_color("equator_color");
+            RenderSettings.ambientSkyColor = currentC.get_color("sky_color");
 
             // sun
             m_sun.transform.localEulerAngles = currentC.get_vector3("sun_rotation");
@@ -267,7 +255,26 @@ namespace Ex {
             // flare
             //  flareFadeSpeed The fade speed of all flares in the Scene.
             //  flareStrength The intensity of all flares in the Scene.
+        }
 
+
+        protected override void pre_start_routine() {
+            load_all_textures();
+        }
+
+        protected override void update_parameter_from_gui(XML.Arg arg) {
+
+            if (arg.Name == "mode") {
+                load_all_textures();
+            } else { // reload only current modified texture
+                reload_current_texture(arg);
+            }
+
+            update_from_current_config();
+        }
+        
+        public override void update_from_current_config() {
+            update_textures_parameters();
         }
 
         protected override void clean() {

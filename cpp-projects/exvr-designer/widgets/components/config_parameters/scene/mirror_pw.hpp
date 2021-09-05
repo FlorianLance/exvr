@@ -30,7 +30,7 @@ class MirrorConfigParametersW : public ConfigParametersW{
 
 public :
 
-    DefaultTransformSubPart m_transform;
+    TransformSubPart m_transform;
     ExCheckBoxW m_showFrame;
 
     void insert_widgets() override{

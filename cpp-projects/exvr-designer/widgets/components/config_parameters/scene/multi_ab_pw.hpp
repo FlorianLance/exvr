@@ -35,7 +35,7 @@ class MultiABConfigParametersW : public ConfigParametersW{
 
 public :
 
-    DefaultTransformSubPart m_transfo;
+    TransformSubPart m_transfo;
     ExResourceW m_currentAB;
     void insert_widgets() override;
     void init_and_register_widgets() override;

@@ -179,13 +179,6 @@ namespace Ex{
             }
         }
 
-        protected override void start_routine() {
-            update_from_current_config();            
-        }
-
-        protected override void update_parameter_from_gui(XML.Arg arg) {
-            update_from_current_config();
-        }
 
         protected override void set_visibility(bool visibility) {
             audioSourceGO.GetComponent<MeshFilter>().mesh = (visibility && currentC.get<bool>("display"))? audioMesh : null;

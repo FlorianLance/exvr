@@ -44,7 +44,7 @@ class LeapMotionArmsDisplayConfigParametersW : public ConfigParametersW{
 
 public :
 
-    DefaultTransformSubPart m_tr;    
+    TransformSubPart m_tr;    
     ExComboBoxIndexW m_cbtPartToDisplay;
     ExCheckBoxW m_cbDisplayColliders;
 

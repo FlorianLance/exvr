@@ -31,7 +31,7 @@ class SceneScanerConfigParametersW : public ConfigParametersW{
 
 public :
 
-    DefaultTransformSubPart m_tr;
+    TransformSubPart m_tr;
     ExFloatSpinBoxW m_sizePoints;
     ExCheckBoxW m_displayClouds;
     ExCheckBoxW m_displayColliders;

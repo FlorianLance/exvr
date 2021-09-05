@@ -316,39 +316,54 @@ namespace Ex
 
             if (component.is_function_defined(Function.action_from_gui)) {
                 ExVR.ExpLog().log_and_add_to_stacktrace(component, Function.action_from_gui, true);
-                component.base_action_from_gui(configKey, actionName);
+            }
+
+            component.base_action_from_gui(configKey, actionName);
+
+            if (component.is_function_defined(Function.action_from_gui)) {
                 ExVR.ExpLog().log_and_add_to_stacktrace(component, Function.action_from_gui, false);
             }
         }
 
         public void update_parameter_from_gui(int componentKey, int configKey, XML.Arg arg) {
 
+            ExVR.Log().message("arg -- " + arg.Value);
+
             ExComponent component = get_from_key(componentKey);
             if(component == null) {
+                ExVR.Log().error("invalid component");
+                return;
+            }
+
+            var config = component.get_config(configKey);
+            if(config == null) {
+                ExVR.Log().error("invalid config");
                 return;
             }
 
             // update config arg
-            foreach (ComponentConfig config in component.configs) {
-                if (config.key == configKey) {
-                    if (!config.update_from_xml(arg)) {
-                        ExVR.Log().error(string.Format("{0} Update argument {1} with value {2} from config {3} failed.", 
-                            component.verbose_name(), 
-                            arg.Name, 
-                            arg.Value,
-                            config.name
-                        ));
-                        return;
-                    }
-                }
+            if (!config.update_from_xml(arg)) {
+                ExVR.Log().error(string.Format("{0} Update argument {1} with value {2} from config {3} failed.",
+                    component.verbose_name(),
+                    arg.Name,
+                    arg.Value,
+                    config.name
+                ));
+                return;
             }
 
             // call function only if it's the current config
-            if(component.currentC != null) {
+            if (component.currentC != null) {
                 if(component.currentC.key == configKey) {
+
                     if (component.is_function_defined(Function.update_parameter_from_gui)) {
                         ExVR.ExpLog().log_and_add_to_stacktrace(component, Function.update_parameter_from_gui, true);
-                        component.base_update_parameter_from_gui(configKey, arg);
+                    }
+
+                    ExVR.Log().message("arg ++ " + arg.Value + " " + arg.Name + " " + config.args[arg.Name].value);
+                    component.base_update_parameter_from_gui(arg);
+
+                    if (component.is_function_defined(Function.update_parameter_from_gui)) {
                         ExVR.ExpLog().log_and_add_to_stacktrace(component, Function.update_parameter_from_gui, false);
                     }
                 }
@@ -370,7 +385,10 @@ namespace Ex
 
                 if (component.is_function_defined(Function.start_experiment)) {
                     ExVR.ExpLog().log_and_add_to_stacktrace(component, Function.start_experiment, true, true);
-                    component.base_start_experiment();
+                }
+                component.base_start_experiment();
+
+                if (component.is_function_defined(Function.start_experiment)) {
                     ExVR.ExpLog().log_and_add_to_stacktrace(component, Function.start_experiment, false, true);
                 }
             }
@@ -419,9 +437,9 @@ namespace Ex
             foreach (var component in reverseSortedComponents) {
 
                 if (component.is_function_defined(Function.clean)) {
-                    ExVR.ExpLog().component(component, Function.clean, "", "", false, false);
-                    component.base_clean();
+                    ExVR.ExpLog().component(component, Function.clean, "", "", false, false);                    
                 }
+                component.base_clean();
 
                 // destroy gameobject
                 Destroy(component.gameObject);
@@ -538,6 +556,13 @@ namespace Ex
         }
         public T get_from_name<T>(string componentName) where T : ExComponent {
             return (T)get_from_name(componentName);
+        }
+
+        public T get_first<T>() where T : ExComponent {
+            if(componentsPerType[typeof(T)].Count > 0) {
+                return (T)componentsPerType[typeof(T)][0];
+            }
+            return null;
         }
 
         // get all
