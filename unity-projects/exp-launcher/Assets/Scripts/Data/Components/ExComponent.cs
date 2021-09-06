@@ -21,6 +21,7 @@ namespace Ex{
         public enum Function{
             initialize,
             start_experiment,
+            set_current_config,
             pre_start_routine,
             start_routine,
             post_start_routine,
@@ -90,6 +91,7 @@ namespace Ex{
         protected bool m_updating = false;   // call update function ?
         private bool m_started = false;      // has associated routine started ?
         private bool m_closed = false;       // is closed ? (cannot be enabled anymore until next routine)
+        private bool m_initialized = false;  // has initialization failed ? 
         protected bool catchExceptions = false;
 
         // access        
@@ -121,6 +123,7 @@ namespace Ex{
         public bool is_closed() {return m_closed;}
         public void set_closed_flag(bool closed) { m_closed = closed; }
         public void close() { components().close(this); }
+
         public string component_name() {return name;}
 
         public string verbose_name() {
@@ -231,29 +234,6 @@ namespace Ex{
             return null;
         }
 
-        public void set_current_config(Condition condition, ComponentConfig config, TimeLine timeline) {
-
-            currentCondition = condition;
-            currentRoutine = currentCondition.parent_routine();
-            currentTimeline = timeline;
-            currentC = config;
-
-            // select eye to render if parameter exists
-            int layer = Layers.Default;
-            if (currentC.has("eye_to_render")) {
-                string renderEyes = currentC.get<string>("eye_to_render");
-                if (renderEyes == "Left eye") {
-                    layer = Layers.LeftEye;
-                } else if (renderEyes == "Right eye") {
-                    layer = Layers.RightEye;
-                }
-            }
-            gameObject.layer = layer;
-            foreach (Transform tr in gameObject.GetComponentInChildren<Transform>(true)) {
-                tr.gameObject.layer = layer;
-            }
-        }
-
 
         // ######### UNTESTED
         public static void set_component_config<T>(string routineName, string conditionName, string componentName, string configToUse) where T : ExComponent {
@@ -347,28 +327,35 @@ namespace Ex{
             functionsDefined = new Dictionary<Function, bool>();
             // # private
             var flagPrivate = System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic;
+            var flagPublic = System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public;
+
             functionsDefined[Function.initialize] = (derivedType.GetMethod("initialize", flagPrivate).DeclaringType == derivedType);
+            functionsDefined[Function.clean] = (derivedType.GetMethod("clean", flagPrivate).DeclaringType == derivedType);
+
             functionsDefined[Function.start_experiment] = (derivedType.GetMethod("start_experiment", flagPrivate).DeclaringType == derivedType);
+            functionsDefined[Function.stop_experiment] = (derivedType.GetMethod("stop_experiment", flagPrivate).DeclaringType == derivedType);
+
+            functionsDefined[Function.set_current_config] = (derivedType.GetMethod("set_current_config", flagPrivate).DeclaringType == derivedType);
+            functionsDefined[Function.update_from_current_config] = (derivedType.GetMethod("update_from_current_config", flagPublic).DeclaringType == derivedType);
             functionsDefined[Function.pre_start_routine] = (derivedType.GetMethod("pre_start_routine", flagPrivate).DeclaringType == derivedType);
             functionsDefined[Function.start_routine] = (derivedType.GetMethod("start_routine", flagPrivate).DeclaringType == derivedType);
             functionsDefined[Function.post_start_routine] = (derivedType.GetMethod("post_start_routine", flagPrivate).DeclaringType == derivedType);
-            functionsDefined[Function.set_update_state] = (derivedType.GetMethod("set_update_state", flagPrivate).DeclaringType == derivedType);
-            functionsDefined[Function.set_visibility] = (derivedType.GetMethod("set_visibility", flagPrivate).DeclaringType == derivedType);
-            functionsDefined[Function.update_parameter_from_gui] = (derivedType.GetMethod("update_parameter_from_gui", flagPrivate).DeclaringType == derivedType);
-            functionsDefined[Function.action_from_gui] = (derivedType.GetMethod("action_from_gui", flagPrivate).DeclaringType == derivedType);
+
+            functionsDefined[Function.on_gui] = (derivedType.GetMethod("on_gui", flagPrivate).DeclaringType == derivedType);
             functionsDefined[Function.pre_update] = (derivedType.GetMethod("pre_update", flagPrivate).DeclaringType == derivedType);
             functionsDefined[Function.update] = (derivedType.GetMethod("update", flagPrivate).DeclaringType == derivedType);
             functionsDefined[Function.post_update] = (derivedType.GetMethod("post_update", flagPrivate).DeclaringType == derivedType);
             functionsDefined[Function.stop_routine] = (derivedType.GetMethod("stop_routine", flagPrivate).DeclaringType == derivedType);
-            functionsDefined[Function.stop_experiment] = (derivedType.GetMethod("stop_experiment", flagPrivate).DeclaringType == derivedType);
-            functionsDefined[Function.clean] = (derivedType.GetMethod("clean", flagPrivate).DeclaringType == derivedType);
-            functionsDefined[Function.on_gui] = (derivedType.GetMethod("on_gui", flagPrivate).DeclaringType == derivedType);
-            // # public
-            var flagPublic = System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public;
+
+
+            functionsDefined[Function.set_update_state] = (derivedType.GetMethod("set_update_state", flagPrivate).DeclaringType == derivedType);
+            functionsDefined[Function.set_visibility] = (derivedType.GetMethod("set_visibility", flagPrivate).DeclaringType == derivedType);
             functionsDefined[Function.play] = (derivedType.GetMethod("play", flagPublic).DeclaringType == derivedType);
             functionsDefined[Function.pause] = (derivedType.GetMethod("pause", flagPublic).DeclaringType == derivedType);
-            functionsDefined[Function.update_from_current_config] = (derivedType.GetMethod("update_from_current_config", flagPublic).DeclaringType == derivedType);
 
+            functionsDefined[Function.update_parameter_from_gui] = (derivedType.GetMethod("update_parameter_from_gui", flagPrivate).DeclaringType == derivedType);
+            functionsDefined[Function.action_from_gui] = (derivedType.GetMethod("action_from_gui", flagPrivate).DeclaringType == derivedType);
+            
             // init events
             m_connections = new Events.Connections(name);
         }
@@ -379,18 +366,38 @@ namespace Ex{
         public virtual bool base_initialize() {            
 
             currentFunction = Function.initialize;
+            m_initialized = false;
             try {
                 if (!initialize()) {
-                    log_error("Initialization failed. ");
-                    return false;
+                    log_error("Initialization failed.");
+                    return m_initialized;
                 }
             } catch (Exception e) {
                 display_exception(e);
-                return false;
+                return m_initialized;
             }
 
-            return true; 
+            return m_initialized = true;
         }
+
+        public void base_clean() {
+
+            if (!m_initialized) {
+                return;
+            }
+
+            currentFunction = Function.clean;
+            if (catchExceptions) {
+                try {
+                    clean();
+                } catch (Exception e) {
+                    display_exception(e);
+                }
+            } else {
+                clean();
+            }
+        }
+
 
         // This function is called only once at the beggining of an experiment 
         public void base_start_experiment() {
@@ -426,6 +433,56 @@ namespace Ex{
             m_closed = false;
         }
 
+        public void base_set_current_config(Condition condition, ComponentConfig config, TimeLine timeline) {
+
+            // update infos
+            currentCondition = condition;
+            currentRoutine = currentCondition.parent_routine();
+            currentTimeline = timeline;
+            currentC = config;
+
+            // update layer if necessary
+            int layer = Layers.Default;
+            if (currentC.has("eye_to_render")) {
+                string renderEyes = currentC.get<string>("eye_to_render");
+                if (renderEyes == "Left eye") {
+                    layer = Layers.LeftEye;
+                } else if (renderEyes == "Right eye") {
+                    layer = Layers.RightEye;
+                }
+            }
+            gameObject.layer = layer;
+            foreach (Transform tr in gameObject.GetComponentInChildren<Transform>(true)) {
+                tr.gameObject.layer = layer;
+            }
+
+            // call virtual function
+            currentFunction = Function.set_current_config;
+            if (catchExceptions) {
+                try {
+                    set_current_config(config.name);
+                } catch (Exception e) {
+                    display_exception(e);
+                }
+            } else {
+                set_current_config(config.name);
+            }
+        }
+
+        public void base_update_from_current_config() {
+
+            currentFunction = Function.update_from_current_config;
+            if (catchExceptions) {
+                try {
+                    update_from_current_config();
+                } catch (Exception e) {
+                    display_exception(e);
+                }
+            } else {
+                update_from_current_config();
+            }
+        }
+
         public void base_pre_start_routine() {
 
             m_started = true;
@@ -441,10 +498,8 @@ namespace Ex{
             }
         }
 
-        // Start the component if inside current routine, called every time at the timeline beggining of an associated routine, will call child start      
         public void base_start_routine() {
 
-            //m_started = true;
             currentFunction = Function.start_routine;
             if (catchExceptions) {
                 try {
@@ -459,7 +514,6 @@ namespace Ex{
 
         public void base_post_start_routine() {
 
-            //m_started = true;
             currentFunction = Function.post_start_routine;
             if (catchExceptions) {
                 try {
@@ -472,7 +526,6 @@ namespace Ex{
             }
         }
 
-        // Stop the component, called every time at the timeline end of an associated routine, will call child stop
         public void base_stop_routine() {
 
             m_started = false;
@@ -549,20 +602,6 @@ namespace Ex{
             }
         }
 
-        public void base_clean() {
-
-            currentFunction = Function.clean;
-            if (catchExceptions) {
-                try {
-                    clean();
-                } catch (Exception e) {
-                    display_exception(e);
-                }
-            } else {
-                clean();
-            }
-        }
-
         // Play command from the GUI, will resumed if on pause, will call child play
         public void base_play() {
 
@@ -593,20 +632,50 @@ namespace Ex{
             }
         }
 
-        // Update the parameters from GUI
-        public void base_update_parameter_from_gui(XML.Arg arg) {
+        public void base_set_visibility(bool visibility) {
 
-            currentFunction = Function.update_parameter_from_gui;
+            m_visibility = visibility;
+            currentFunction = Function.set_visibility;
+
             if (catchExceptions) {
                 try {
-                    log_message("ex " + arg.Value);
-                    update_parameter_from_gui(arg);
+                    set_visibility(m_visibility);
                 } catch (Exception e) {
                     display_exception(e);
                 }
             } else {
-                log_message("ex " + arg.Value);
-                update_parameter_from_gui(arg);
+                set_visibility(m_visibility);
+            }
+        }
+
+        public void base_set_update_state(bool doUpdate) {
+
+            m_updating = doUpdate;
+
+            currentFunction = Function.set_update_state;
+            if (catchExceptions) {
+                try {
+                    set_update_state(m_updating);
+                } catch (Exception e) {
+                    display_exception(e);
+                }
+            } else {
+                set_update_state(m_updating);
+            }
+        }
+
+        // Update the parameters from GUI
+        public void base_update_parameter_from_gui(string updatedArgName) {
+            
+            currentFunction = Function.update_parameter_from_gui;
+            if (catchExceptions) {
+                try {
+                    update_parameter_from_gui(updatedArgName);
+                } catch (Exception e) {
+                    display_exception(e);
+                }
+            } else {
+                update_parameter_from_gui(updatedArgName);
             }                
         }
 
@@ -643,90 +712,42 @@ namespace Ex{
             }
         }
 
-        public void base_set_visibility(bool visibility) {
-            
-            m_visibility = visibility;
-            currentFunction = Function.set_visibility;
-
-            if (catchExceptions) {
-                try {
-                    set_visibility(m_visibility);
-                } catch (Exception e) {
-                    display_exception(e);
-                }
-            } else {
-                set_visibility(m_visibility);
-            }
-        }
-
-        public void base_set_update_state(bool doUpdate) {
-
-            m_updating = doUpdate;
-
-            currentFunction = Function.set_update_state;                   
-            if (catchExceptions) {
-                try {
-                    set_update_state(m_updating);
-                } catch (Exception e) {
-                    display_exception(e);
-                }
-            } else {
-                set_update_state(m_updating);
-            }
-        }       
+   
         
-        protected virtual bool initialize() {
-            return true; 
-        }
-        protected virtual void start_experiment() {
-        }
-        protected virtual void stop_experiment() {
-        }
+        // once per loading
+        protected virtual bool initialize() {return true; }
+        protected virtual void clean() { }
 
-        protected virtual void pre_start_routine() {
-        }
-        protected virtual void start_routine() {
-            update_from_current_config();
-        }
-        protected virtual void post_start_routine() {
-        }
-        protected virtual void stop_routine() {
-        }
-        protected virtual void on_gui() {
-        }
-        protected virtual void pre_update() {
-        }
-        protected virtual void update() {
-        }
-        protected virtual void post_update() {
-        }
-        public virtual void update_from_current_config() {
-        }
-        protected virtual void update_parameter_from_gui(XML.Arg arg) {
-            update_from_current_config();
-        }
-        protected virtual void action_from_gui(bool initConfig, string action) {
-        }
-        protected virtual void set_visibility(bool visible) {
-        }
-        protected virtual void set_update_state(bool doUpdate) {
-        }        
-        public virtual void play() {
-        }
-        public virtual void pause() {
-        }
-        protected virtual void clean() {
-        }
+        // once per experiment
+        protected virtual void start_experiment() { }
+        protected virtual void stop_experiment() { }
 
-        //// set visibility to true, will last until the next change in the visibility timeline
-        //public virtual void show() {
-        //    set_visibility(true);
-        //}
+        // once per routine
+        protected virtual void set_current_config(string configName) {}
+        public virtual void update_from_current_config() { }
+        protected virtual void pre_start_routine() {}
+        protected virtual void start_routine() {}        
+        protected virtual void post_start_routine() {}
+        protected virtual void stop_routine() {}
 
-        //// set visibility to false, will last until the next change in the visibility timeline
-        //public virtual void hide() {
-        //    set_visibility(false);
-        //}
+        // several times per routine
+        protected virtual void set_visibility(bool visible) { }
+        protected virtual void set_update_state(bool doUpdate) { }
+        public virtual void play() { }
+        public virtual void pause() { }
+
+
+        // every frame or more
+        protected virtual void on_gui() {}
+        protected virtual void pre_update() {}
+        protected virtual void update() {}
+        protected virtual void post_update() {}
+
+        // from gui
+        protected virtual void update_parameter_from_gui(string updatedArgName) {}
+        protected virtual void action_from_gui(bool initConfig, string action) {}
+
+
 
         // transform related function
         public virtual void set_position(Vector3 position) {

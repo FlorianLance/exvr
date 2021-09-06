@@ -75,12 +75,16 @@ namespace Ex {
         private static readonly string loggerWarningExtraInfoFormat = "[WARNING] {0} from [{1}] at line ({2}) in file [{3}]";
         private static readonly string loggerErrorExtraInfoFormat   = "[ERROR] {0} from [{1}] at line ({2}) in file [{3}]";
 
-        private static readonly string guiMessageFormat             = "<font color=\"green\">{0}</font>";
-        private static readonly string guiWarningFormat             = "<font color=\"orange\">{0}</font>";
-        private static readonly string guiErrorFormat               = "<font color=\"red\">{0}</font>";
-        private static readonly string guiMessageExtraInfoFormat    = "<font color=\"green\">{0}</font> from <b>{1}</b> at line <b>{2}</b> in file <i>{3}</i>";
-        private static readonly string guiWarningExtraInfoFormat    = "<font color=\"orange\">{0}</font> from <b>{1}</b> at line <b>{2}</b> in file <i>{3}</i>";
-        private static readonly string guiErrorExtraInfoFormat      = "<font color=\"red\">{0}</font> from <b>{1}</b> at line <b>{2}</b> in file <i>{3}</i>";
+        private static readonly string guiMessageFormat             = "<font color=#bdbdbd>{0}</font>";
+        private static readonly string guiWarningFormat             = "<font color=#f39e03>{0}</font>";
+        private static readonly string guiErrorFormat               = "<font color=#f40404>{0}</font>";
+        private static readonly string guiMessageExtraInfoFormat    = "<font color=#bdbdbd>{0}</font> from <b>{1}</b> at line <b>{2}</b> in file <i>{3}</i>";
+        private static readonly string guiWarningExtraInfoFormat    = "<font color=#f39e03>{0}</font> from <b>{1}</b> at line <b>{2}</b> in file <i>{3}</i>";
+        private static readonly string guiErrorExtraInfoFormat      = "<font color=#f40404>{0}</font> from <b>{1}</b> at line <b>{2}</b> in file <i>{3}</i>";
+
+    //    QtLogger::set_type_message_color(QtLogger::MessageType::normal, QColor(189,189,189));
+    //QtLogger::set_type_message_color(QtLogger::MessageType::warning, QColor(243, 158, 3));
+    //QtLogger::set_type_message_color(QtLogger::MessageType::error, QColor(244,4,4));
 
         private static readonly string editorMessageFormat          = "<color=green>{0}</color>";
         private static readonly string editorWarningFormat          = "<color=orange>{0}</color>";

@@ -58,6 +58,31 @@ namespace Ex{
             }
         }
 
+        public void set_current_config(Condition condition) {
+
+            if (m_component.is_function_defined(ExComponent.Function.set_current_config)) {
+                ExVR.ExpLog().log_and_add_to_stacktrace(m_component, ExComponent.Function.set_current_config, true, true);
+            }
+
+            m_component.base_set_current_config(condition, config(), timeline());
+
+            if (m_component.is_function_defined(ExComponent.Function.set_current_config)) {
+                ExVR.ExpLog().log_and_add_to_stacktrace(m_component, ExComponent.Function.set_current_config, false, true);
+            }
+        }
+
+        public void update_from_current_config() {
+
+            if (m_component.is_function_defined(ExComponent.Function.update_from_current_config)) {
+                ExVR.ExpLog().log_and_add_to_stacktrace(m_component, ExComponent.Function.update_from_current_config, true, true);
+            }
+
+            m_component.base_update_from_current_config();
+
+            if (m_component.is_function_defined(ExComponent.Function.update_from_current_config)) {
+                ExVR.ExpLog().log_and_add_to_stacktrace(m_component, ExComponent.Function.update_from_current_config, false, true);
+            }
+        }
 
         public void pre_start_routine() {
 

@@ -16,17 +16,33 @@
 extern "C"{
 
     DECL_EXPORT void delete_ex_component(tool::ex::ExComponent *c);
+
     DECL_EXPORT int initialize_ex_component(tool::ex::ExComponent*c);
-    DECL_EXPORT void start_experiment_ex_component(tool::ex::ExComponent*c);
+    DECL_EXPORT void clean_ex_component(tool::ex::ExComponent*c);
+
+    DECL_EXPORT void start_experiment_ex_component(tool::ex::ExComponent*c);    
     DECL_EXPORT void stop_experiment_ex_component(tool::ex::ExComponent*c);
+
+    DECL_EXPORT void set_current_config_ex_component(tool::ex::ExComponent*c, const char* configName);
+    DECL_EXPORT void update_from_current_config_ex_component(tool::ex::ExComponent*c);
+    DECL_EXPORT void pre_start_routine_ex_component(tool::ex::ExComponent*c);
     DECL_EXPORT void start_routine_ex_component(tool::ex::ExComponent*c);
+    DECL_EXPORT void post_start_routine_ex_component(tool::ex::ExComponent*c);
     DECL_EXPORT void stop_routine_ex_component(tool::ex::ExComponent*c);
+
+    DECL_EXPORT void on_gui_ex_component(tool::ex::ExComponent*c);
+    DECL_EXPORT void pre_update_ex_component(tool::ex::ExComponent*c);
     DECL_EXPORT void update_ex_component(tool::ex::ExComponent*c);
+    DECL_EXPORT void post_update_ex_component(tool::ex::ExComponent*c);
+
     DECL_EXPORT void set_visibility_ex_component(tool::ex::ExComponent*c,int visible);
     DECL_EXPORT void set_update_state_ex_component(tool::ex::ExComponent*c,int doUpdate);
     DECL_EXPORT void play_ex_component(tool::ex::ExComponent*c);
     DECL_EXPORT void pause_ex_component(tool::ex::ExComponent*c);
-    DECL_EXPORT void clean_ex_component(tool::ex::ExComponent*c);
+
+    DECL_EXPORT void update_parameter_from_gui_ex_component(tool::ex::ExComponent*c, const char* argToUpdate);
+    DECL_EXPORT void action_from_gui_ex_component(tool::ex::ExComponent*c, int initConfig, const char* action);
+
     DECL_EXPORT void call_slot_ex_component(tool::ex::ExComponent*c, int index);
 
     DECL_EXPORT int contains_ex_component(tool::ex::ExComponent*c, int containerId, const char* paramName);

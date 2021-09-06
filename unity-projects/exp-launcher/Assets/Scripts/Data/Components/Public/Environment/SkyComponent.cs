@@ -40,8 +40,9 @@ namespace Ex {
         // # textures
         private List<Texture2D> textures6Sided = new List<Texture2D>();
         private Texture2D texturePanoramic = null;
-        private Cubemap textureCubeMap = null;        
+        private Cubemap textureCubeMap = null;
 
+        #region ex_functions
         protected override bool initialize() {
 
             // init camera settings
@@ -94,6 +95,91 @@ namespace Ex {
             DynamicGI.UpdateEnvironment();
         }
 
+        public override void update_from_current_config() {
+            update_textures_parameters();
+        }
+
+        protected override void pre_start_routine() {
+            load_all_textures();
+        }
+
+        protected override void update_parameter_from_gui(string updatedArgName) {
+
+            if (updatedArgName == "mode") {
+                load_all_textures();
+            } else { // reload only current modified texture
+                reload_current_texture(updatedArgName);
+            }
+
+            update_from_current_config();
+        }
+        
+
+        protected override void clean() {
+
+            foreach (var text in textures6Sided) {
+                if (text != null) {
+                    Destroy(text);
+                }
+            }
+            if (texturePanoramic != null) {
+                Destroy(texturePanoramic);
+            }
+            if (textureCubeMap != null) {
+                Destroy(textureCubeMap);
+            }
+
+            Destroy(skybox6Sided);
+            Destroy(skyboxProcedural);
+            Destroy(skyboxPanoramic);
+            Destroy(skyboxCubeMap);
+        }
+
+        #endregion
+        #region private_functions
+        private Texture2D copy(Texture2D from, Texture2D to, bool invert) {
+
+            // load data
+            to.Resize(from.width, from.height);
+            to.SetPixels32(from.GetPixels32());
+            to.Apply();
+
+            // invert texture
+            if (invert) {
+                int width   = to.width;
+                int height  = to.height;
+                Color32[] pixels = to.GetPixels32();
+                Color32[] pixelsFlipped = new Color32[pixels.Length];
+                for (int ii = 0; ii < height; ii++) {
+                    Array.Copy(pixels, ii * width, pixelsFlipped, (height - ii - 1) * width, width);
+                }
+                to.SetPixels32(pixelsFlipped);
+                to.Apply();
+            }
+            return to;
+        }
+
+        private Cubemap copy_to_cubemap(Texture2D from, Cubemap to, bool invert) {
+
+            // TODO INVERT
+
+            int cubedim = from.width / 6;
+            if (to != null) {
+                Destroy(to);
+            }
+
+            // create cubemap
+            to = new Cubemap(cubedim, TextureFormat.ARGB32, false);
+            to.SetPixels(from.GetPixels(0, 0, cubedim, cubedim), CubemapFace.PositiveX);
+            to.SetPixels(from.GetPixels(cubedim, 0, cubedim, cubedim), CubemapFace.NegativeX);
+            to.SetPixels(from.GetPixels(2 * cubedim, 0, cubedim, cubedim), CubemapFace.PositiveY);
+            to.SetPixels(from.GetPixels(3 * cubedim, 0, cubedim, cubedim), CubemapFace.NegativeY);
+            to.SetPixels(from.GetPixels(4 * cubedim, 0, cubedim, cubedim), CubemapFace.PositiveZ);
+            to.SetPixels(from.GetPixels(5 * cubedim, 0, cubedim, cubedim), CubemapFace.NegativeZ);
+            to.Apply();
+            return to;
+        }
+
         private void load_all_textures() {
 
             switch ((SkyboxMode)currentC.get<int>("mode")) {
@@ -118,8 +204,8 @@ namespace Ex {
             }
         }
 
-        private void reload_current_texture(XML.Arg arg) {
-            var n = arg.Name.Substring(0, 2);
+        private void reload_current_texture(string updatedArgName) {
+            var n = updatedArgName.Substring(0, 2);
             if (n == "Z+") {
                 skybox6Sided.SetTexture("_FrontTex", copy(currentC.get_resource_image(n), textures6Sided[0], currentC.get<bool>(n + "_invert")));
             } else if (n == "Z-") {
@@ -257,88 +343,9 @@ namespace Ex {
             //  flareStrength The intensity of all flares in the Scene.
         }
 
+        #endregion
+        #region public_functions
 
-        protected override void pre_start_routine() {
-            load_all_textures();
-        }
-
-        protected override void update_parameter_from_gui(XML.Arg arg) {
-
-            if (arg.Name == "mode") {
-                load_all_textures();
-            } else { // reload only current modified texture
-                reload_current_texture(arg);
-            }
-
-            update_from_current_config();
-        }
-        
-        public override void update_from_current_config() {
-            update_textures_parameters();
-        }
-
-        protected override void clean() {
-
-            foreach (var text in textures6Sided) {
-                if (text != null) {
-                    Destroy(text);
-                }
-            }
-            if (texturePanoramic != null) {
-                Destroy(texturePanoramic);
-            }
-            if (textureCubeMap != null) {
-                Destroy(textureCubeMap);
-            }
-
-            Destroy(skybox6Sided);
-            Destroy(skyboxProcedural);
-            Destroy(skyboxPanoramic);
-            Destroy(skyboxCubeMap);
-        }
-
-
-        private Texture2D copy(Texture2D from, Texture2D to, bool invert) {
-
-            // load data
-            to.Resize(from.width, from.height);
-            to.SetPixels32(from.GetPixels32());
-            to.Apply();
-
-            // invert texture
-            if (invert) {
-                int width   = to.width;
-                int height  = to.height;
-                Color32[] pixels = to.GetPixels32();
-                Color32[] pixelsFlipped = new Color32[pixels.Length];
-                for (int ii = 0; ii < height; ii++) {
-                    Array.Copy(pixels, ii * width, pixelsFlipped, (height - ii - 1) * width, width);
-                }
-                to.SetPixels32(pixelsFlipped);
-                to.Apply();
-            }
-            return to;
-        }
-
-        private Cubemap copy_to_cubemap(Texture2D from, Cubemap to, bool invert) {
-
-            // TODO INVERT
-
-            int cubedim = from.width / 6;
-            if (to != null) {
-                Destroy(to);
-            }
-
-            // create cubemap
-            to = new Cubemap(cubedim, TextureFormat.ARGB32, false);
-            to.SetPixels(from.GetPixels(0, 0, cubedim, cubedim), CubemapFace.PositiveX);
-            to.SetPixels(from.GetPixels(cubedim, 0, cubedim, cubedim), CubemapFace.NegativeX);
-            to.SetPixels(from.GetPixels(2 * cubedim, 0, cubedim, cubedim), CubemapFace.PositiveY);
-            to.SetPixels(from.GetPixels(3 * cubedim, 0, cubedim, cubedim), CubemapFace.NegativeY);
-            to.SetPixels(from.GetPixels(4 * cubedim, 0, cubedim, cubedim), CubemapFace.PositiveZ);
-            to.SetPixels(from.GetPixels(5 * cubedim, 0, cubedim, cubedim), CubemapFace.NegativeZ);
-            to.Apply();
-            return to;
-        }
+        #endregion
     }
 }

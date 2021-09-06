@@ -71,8 +71,8 @@ namespace Ex{
             m_python.pause();
         }
 
-        protected override void update_parameter_from_gui(XML.Arg arg) {
-            m_python.update_parameter_from_gui(arg);
+        protected override void update_parameter_from_gui(string updatedArgName) {
+            m_python.update_parameter_from_gui(updatedArgName);
         }
 
         protected override void stop_routine() {

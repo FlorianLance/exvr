@@ -325,9 +325,7 @@ namespace Ex
             }
         }
 
-        public void update_parameter_from_gui(int componentKey, int configKey, XML.Arg arg) {
-
-            ExVR.Log().message("arg -- " + arg.Value);
+        public void update_parameter_from_gui_xml(int componentKey, int configKey, XML.Arg xmlArg) {
 
             ExComponent component = get_from_key(componentKey);
             if(component == null) {
@@ -342,31 +340,32 @@ namespace Ex
             }
 
             // update config arg
-            if (!config.update_from_xml(arg)) {
+            if (!config.update_from_xml(xmlArg)) {
                 ExVR.Log().error(string.Format("{0} Update argument {1} with value {2} from config {3} failed.",
                     component.verbose_name(),
-                    arg.Name,
-                    arg.Value,
+                    xmlArg.Name,
+                    xmlArg.Value,
                     config.name
                 ));
                 return;
             }
 
-            // call function only if it's the current config
-            if (component.currentC != null) {
-                if(component.currentC.key == configKey) {
+            // contiue only if updated parameter is from component current config
+            if (component.currentC == null) {
+                return;
+            }
+            if (component.currentC.key != configKey) {
+                return;
+            }
 
-                    if (component.is_function_defined(Function.update_parameter_from_gui)) {
-                        ExVR.ExpLog().log_and_add_to_stacktrace(component, Function.update_parameter_from_gui, true);
-                    }
+            if (component.is_function_defined(Function.update_parameter_from_gui)) {
+                ExVR.ExpLog().log_and_add_to_stacktrace(component, Function.update_parameter_from_gui, true);
+            }
+    
+            component.base_update_parameter_from_gui(xmlArg.Name);
 
-                    ExVR.Log().message("arg ++ " + arg.Value + " " + arg.Name + " " + config.args[arg.Name].value);
-                    component.base_update_parameter_from_gui(arg);
-
-                    if (component.is_function_defined(Function.update_parameter_from_gui)) {
-                        ExVR.ExpLog().log_and_add_to_stacktrace(component, Function.update_parameter_from_gui, false);
-                    }
-                }
+            if (component.is_function_defined(Function.update_parameter_from_gui)) {
+                ExVR.ExpLog().log_and_add_to_stacktrace(component, Function.update_parameter_from_gui, false);
             }
         }
 

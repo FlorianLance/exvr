@@ -94,7 +94,7 @@ namespace Ex{
             resize_container();
         }
 
-        protected override void update_parameter_from_gui(XML.Arg arg) {
+        protected override void update_parameter_from_gui(string updatedArgName) {
             resize_container();
         }
 

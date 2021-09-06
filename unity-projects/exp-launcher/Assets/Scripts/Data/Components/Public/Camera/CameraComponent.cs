@@ -33,23 +33,9 @@ namespace Ex{
         private Vector3 currentConfigPosition = Vector3.zero;
         private Vector3 currentConfigRotation = Vector3.zero;
 
-        public Vector3 init_config_position() {
-            return initConfigPosition;
-        }
 
-        public Vector3 init_config_rotation() {
-            return initConfigRotation;
-        }
+#region ex_functions
 
-        public Vector3 current_config_position() {
-            return currentConfigPosition;
-        }
-
-        public Vector3 current_config_rotation() {
-            return currentConfigRotation;
-        }
-
-        // exp
         protected override bool initialize() {
 
             add_slot("set eye cam", (tr) => {
@@ -69,6 +55,58 @@ namespace Ex{
             return true;
         }
 
+        protected override void start_experiment() {
+            if (initC.get<bool>("start_experiment")) {
+                apply_init_config_camera();
+            }
+        }
+
+        public override void update_from_current_config() {
+            currentConfigPosition = currentC.get_vector3("position");
+            currentConfigRotation = currentC.get_vector3("rotation");
+        }
+
+        protected override void start_routine() {
+
+            if (currentC.get<bool>("start_routine")) {
+                apply_current_config_camera();
+            }
+        }
+
+        protected override void update() {
+
+            // update debug camera
+            update_debug_camera_from_mouse_inputs();
+
+            // infos
+            send_infos_to_ui();
+
+            // signals
+            invoke_signal(eyeCamSignal, TransformValue.from_transform(ExVR.Display().cameras().get_eye_camera_transform()));
+            invoke_signal(neutralCamSignal, TransformValue.from_transform(ExVR.Display().cameras().get_calibration_transform()));
+        }
+
+        protected override void update_parameter_from_gui(string updatedArgName) {
+
+            update_from_current_config();
+
+            if (updatedArgName == "position" || updatedArgName == "rotation") {
+                apply_current_config_camera();
+            }
+        }
+
+        protected override void set_update_state(bool doUpdate) {
+
+            if (doUpdate) {
+                if (currentC.get<bool>("update_on")) {
+                    apply_current_config_camera();
+                }
+            }
+        }
+
+#endregion
+#region private_functions
+
         private void apply_init_config_camera() {
             if (initC.get<bool>(useNeutralP)) {
                 CameraUtility.set_calibration_transform(initConfigPosition, initConfigRotation);
@@ -83,59 +121,6 @@ namespace Ex{
             } else {
                 CameraUtility.set_eye_camera_transform(currentConfigPosition, currentConfigRotation);
             }
-        }
-
-        protected override void start_experiment() {
-            if (initC.get<bool>("start_experiment")) {
-                apply_init_config_camera();
-            }
-        }
-
-        protected override void start_routine() {
-
-            update_from_current_config();
-
-            if (currentC.get<bool>("start_routine")) {
-                apply_current_config_camera();
-            }
-        }
-
-        protected override void set_update_state(bool doUpdate) {
-
-            if (doUpdate) {
-                if (currentC.get<bool>("update_on")) {
-                    apply_current_config_camera();
-                }
-            }
-        }
-
-
-        protected override void update_parameter_from_gui(XML.Arg arg) {
-
-            update_from_current_config();
-
-            if (arg.Name == "position" || arg.Name == "rotation") {
-                apply_current_config_camera();
-            }
-        }
-
-        public override void update_from_current_config() {
-            currentConfigPosition = currentC.get_vector3("position");
-            currentConfigRotation = currentC.get_vector3("rotation");
-        }
-
-
-        protected override void update() {
-
-            // update debug camera
-            update_debug_camera_from_mouse_inputs();
-
-            // infos
-            send_infos_to_ui();
-
-            // signals
-            invoke_signal(eyeCamSignal, TransformValue.from_transform(ExVR.Display().cameras().get_eye_camera_transform()));
-            invoke_signal(neutralCamSignal, TransformValue.from_transform(ExVR.Display().cameras().get_calibration_transform()));
         }
 
         private void update_debug_camera_from_mouse_inputs() {
@@ -235,6 +220,24 @@ namespace Ex{
                 )
             );
         }
+#endregion
+#region public_functions
+        public Vector3 init_config_position() {
+            return initConfigPosition;
+        }
+
+        public Vector3 init_config_rotation() {
+            return initConfigRotation;
+        }
+
+        public Vector3 current_config_position() {
+            return currentConfigPosition;
+        }
+
+        public Vector3 current_config_rotation() {
+            return currentConfigRotation;
+        }
+#endregion
     }
 
 }

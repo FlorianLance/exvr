@@ -12,13 +12,10 @@ using System.Collections.Generic;
 
 // unity
 using UnityEngine;
-using QualisysRealTime.Unity;
 
-namespace Ex
-{
+namespace Ex{
 
-    public class MRIComponent : ExComponent
-    {
+    public class MRIComponent : ExComponent{
 
         public float currentDistance = 0f;
         public float currentFactor = 0f;
@@ -46,8 +43,7 @@ namespace Ex
         Vector3 initKneePosition = Vector3.zero;
         Vector3 currentKneePosition = Vector3.zero;
 
-
-
+        #region ex_functions
         protected override bool initialize() {
 
             triggerCode = (KeyCode)System.Enum.Parse(typeof(KeyCode), initC.get<string>("trigger_key"));
@@ -151,6 +147,139 @@ namespace Ex
 
             return true;
         }
+
+
+        protected override void start_experiment() {
+
+            // components
+            m_controller = initC.get_component<HumanoidControllerComponent>("humanoid_controller");
+            m_keyboard = initC.get_component<KeyboardComponent>("keyboard");
+            m_loggers = initC.get_components_list<LoggerComponent>("loggers");
+
+            foreach (var go in m_roomElementsGO) {
+                go.GetComponent<Renderer>().material.SetFloat("_SliceAmount", 0);
+                go.GetComponent<Renderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On;
+                go.GetComponent<Renderer>().receiveShadows = true;
+                go.SetActive(true);
+            }
+            foreach (var go in m_magnetElementsGO) {
+                go.GetComponent<Renderer>().material.SetFloat("_SliceAmount", 0);
+                go.GetComponent<Renderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On;
+                go.GetComponent<Renderer>().receiveShadows = true;
+                go.SetActive(true);
+            }
+
+            foreach (var light in m_lights) {
+                light.gameObject.SetActive(true);
+            }
+            foreach (var emissiveLight in m_emissiveLights) {
+                emissiveLight.SetActive(true);
+            }
+        }
+
+        public override void update_from_current_config() {
+            reset_config_transform();
+        }
+
+        protected override void start_routine() {
+
+            if (m_keyboard != null) {
+                // trigger event                
+                var slot = connections().get_slot("keyboard button");
+                var signal = connections().get_signal("button");
+                slot.connect(signal);
+            }
+
+            if (initAvatarTr == null) {
+                if (m_controller != null) {
+                    initAvatarTr = m_controller.current_config().get_transform("transform");
+                    initPos = initAvatarTr.position;
+                    initHeadOffsetPos = m_controller.current_config().get_vector3("head_tracking_offset_pos");
+                    initHeadOffsetRot = m_controller.current_config().get_vector3("head_tracking_offset_rot");
+                }
+            }
+
+            if (currentC.get<bool>("dissolve")) {
+
+                List<GameObject> objectsGO = new List<GameObject>();
+
+                if (currentC.get<bool>("process_room")) {
+                    foreach (var go in m_roomElementsGO) {
+                        objectsGO.Add(go);
+                    }
+                }
+                if (currentC.get<bool>("process_magnet")) {
+                    foreach (var go in m_magnetElementsGO) {
+                        objectsGO.Add(go);
+                    }
+                }
+
+                StartCoroutine(dissolve_process(objectsGO, (float)currentC.get<double>("duration")));
+
+            } else if (currentC.get<bool>("solve")) {
+
+                List<GameObject> objectsGO = new List<GameObject>();
+
+                if (currentC.get<bool>("process_room")) {
+                    foreach (var go in m_roomElementsGO) {
+                        objectsGO.Add(go);
+                    }
+                }
+                if (currentC.get<bool>("process_magnet")) {
+                    foreach (var go in m_magnetElementsGO) {
+                        objectsGO.Add(go);
+                    }
+                }
+
+                StartCoroutine(solve_process(objectsGO, (float)currentC.get<double>("duration")));
+
+            } else if (currentC.get<bool>("move_table_inside")) {
+                StartCoroutine(move_table_inside((float)currentC.get<double>("duration")));
+            } else if (currentC.get<bool>("move_table_outside")) {
+                StartCoroutine(move_table_outside((float)currentC.get<double>("duration")));
+            }
+        }
+
+        protected override void stop_routine() {
+            processSolving = false;
+            processMoving = false;
+        }
+
+        protected override void update() {
+
+            if (currentC.get<bool>("move_table_qualisys")) {
+
+                var maxDistance = (float)currentC.get<double>("distance");
+                var currentDistance = (currentKneePosition - initKneePosition).magnitude;
+                if (currentDistance > maxDistance) {
+                    currentDistance = maxDistance;
+                }
+                move_table(currentDistance / maxDistance);
+
+                //m_movingTableGO.transform.localPosition = new Vector3(0.382f, 0.982f, -0.88f + currentDistance);
+
+                //if (m_controller != null) {
+                //    initAvatarTr.position = initPos + new Vector3(0, 0, currentDistance);
+                //    m_controller.current_config().set_transform("transform", initAvatarTr);
+
+                //    float factor = currentDistance / maxDistance;
+
+                //    m_controller.current_config().set_vector3("head_tracking_offset_pos",
+                //        initHeadOffsetPos + factor * (currentC.get_vector3("target_head_tr_offset") - initHeadOffsetPos));
+                //    m_controller.current_config().set_vector3("head_tracking_offset_rot",
+                //        initHeadOffsetRot + factor * (currentC.get_vector3("target_head_rot_offset") - initHeadOffsetRot));
+                //    m_controller.update_from_current_config();
+                //}
+            }
+        }
+
+        protected override void set_visibility(bool visibility) {
+            m_mriGO.SetActive(visibility);
+        }
+
+
+        #endregion
+        #region private_functions
 
 
         private IEnumerator dissolve_process(List<GameObject> objectsGO, float duration) {
@@ -267,94 +396,9 @@ namespace Ex
             }
         }
 
-        protected override void start_experiment() {
 
-            // components
-            m_controller = initC.get_component<HumanoidControllerComponent>("humanoid_controller");
-            m_keyboard = initC.get_component<KeyboardComponent>("keyboard");
-            m_loggers = initC.get_components_list<LoggerComponent>("loggers");
-
-            foreach (var go in m_roomElementsGO) {
-                go.GetComponent<Renderer>().material.SetFloat("_SliceAmount", 0);
-                go.GetComponent<Renderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On;
-                go.GetComponent<Renderer>().receiveShadows = true;
-                go.SetActive(true);
-            }
-            foreach (var go in m_magnetElementsGO) {
-                go.GetComponent<Renderer>().material.SetFloat("_SliceAmount", 0);
-                go.GetComponent<Renderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On;
-                go.GetComponent<Renderer>().receiveShadows = true;
-                go.SetActive(true);
-            }
-
-            foreach (var light in m_lights) {
-                light.gameObject.SetActive(true);
-            }
-            foreach (var emissiveLight in m_emissiveLights) {
-                emissiveLight.SetActive(true);
-            }
-        }
-
-        protected override void start_routine() {
-
-            if (m_keyboard != null) {
-                // trigger event                
-                var slot   = connections().get_slot("keyboard button");
-                var signal = connections().get_signal("button");               
-                slot.connect(signal);
-            }
-
-            if (initAvatarTr == null) {
-                if (m_controller != null) {
-                    initAvatarTr = m_controller.current_config().get_transform("transform");
-                    initPos = initAvatarTr.position;
-                    initHeadOffsetPos = m_controller.current_config().get_vector3("head_tracking_offset_pos");
-                    initHeadOffsetRot = m_controller.current_config().get_vector3("head_tracking_offset_rot");
-                }
-            }
-
-            update_from_current_config();
-
-            if (currentC.get<bool>("dissolve")) {
-
-                List<GameObject> objectsGO = new List<GameObject>();
-
-                if (currentC.get<bool>("process_room")) {
-                    foreach (var go in m_roomElementsGO) {
-                        objectsGO.Add(go);
-                    }
-                }
-                if (currentC.get<bool>("process_magnet")) {
-                    foreach (var go in m_magnetElementsGO) {
-                        objectsGO.Add(go);
-                    }
-                }
-
-                StartCoroutine(dissolve_process(objectsGO, (float)currentC.get<double>("duration")));
-
-            } else if (currentC.get<bool>("solve")) {
-
-                List<GameObject> objectsGO = new List<GameObject>();
-
-                if (currentC.get<bool>("process_room")) {
-                    foreach (var go in m_roomElementsGO) {
-                        objectsGO.Add(go);
-                    }
-                }
-                if (currentC.get<bool>("process_magnet")) {
-                    foreach (var go in m_magnetElementsGO) {
-                        objectsGO.Add(go);
-                    }
-                }
-
-                StartCoroutine(solve_process(objectsGO, (float)currentC.get<double>("duration")));
-
-            } else if (currentC.get<bool>("move_table_inside")) {
-                StartCoroutine(move_table_inside((float)currentC.get<double>("duration")));
-            } else if (currentC.get<bool>("move_table_outside")) {
-                StartCoroutine(move_table_outside((float)currentC.get<double>("duration")));
-            }
-        }
+        #endregion
+        #region public_functions
 
         public void move_table(float factor) {
 
@@ -378,45 +422,8 @@ namespace Ex
             }
         }
 
-        protected override void stop_routine() {
-            processSolving = false;
-            processMoving = false;
-        }
+        #endregion
 
-        protected override void update() {
 
-            if (currentC.get<bool>("move_table_qualisys")) {
-
-                var maxDistance = (float)currentC.get<double>("distance");
-                var currentDistance = (currentKneePosition - initKneePosition).magnitude;
-                if (currentDistance > maxDistance) {
-                    currentDistance = maxDistance;
-                }
-                move_table(currentDistance / maxDistance);
-
-                //m_movingTableGO.transform.localPosition = new Vector3(0.382f, 0.982f, -0.88f + currentDistance);
-
-                //if (m_controller != null) {
-                //    initAvatarTr.position = initPos + new Vector3(0, 0, currentDistance);
-                //    m_controller.current_config().set_transform("transform", initAvatarTr);
-
-                //    float factor = currentDistance / maxDistance;
-
-                //    m_controller.current_config().set_vector3("head_tracking_offset_pos",
-                //        initHeadOffsetPos + factor * (currentC.get_vector3("target_head_tr_offset") - initHeadOffsetPos));
-                //    m_controller.current_config().set_vector3("head_tracking_offset_rot",
-                //        initHeadOffsetRot + factor * (currentC.get_vector3("target_head_rot_offset") - initHeadOffsetRot));
-                //    m_controller.update_from_current_config();
-                //}
-            }
-        }
-
-        public override void update_from_current_config() {
-            reset_config_transform();
-        }
-
-        protected override void set_visibility(bool visibility) {
-            m_mriGO.SetActive(visibility);
-        }
     }
 }

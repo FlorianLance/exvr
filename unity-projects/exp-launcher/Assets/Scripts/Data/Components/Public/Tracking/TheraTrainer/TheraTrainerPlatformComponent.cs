@@ -52,14 +52,16 @@ namespace Ex{
         Quaternion originMobileCenterPartRotation;
         Vector3 originMobileCenterPartPosition;
 
-        public Vector2 rotation = Vector2.zero;
+        public Vector2 rotationT = Vector2.zero;
         public float height = 1.0f;
 
+
+        #region ex_functions
         protected override bool initialize() {
 
             // init slots
             add_slot("update rotation", (rot) => {
-                rotation = (Vector2)rot;
+                rotationT = (Vector2)rot;
             });
 
             // init gameObject
@@ -155,13 +157,13 @@ namespace Ex{
             var rotuleLeftRight = mobilePartLeft.worldToLocalMatrix * rotuleLeft.localToWorldMatrix * rotuleLeft.right;
             var rotuleRightRight = mobilePartRight.worldToLocalMatrix * rotuleRight.localToWorldMatrix * rotuleRight.right;
 
-            mobilePartLeft.Rotate(rotuleLeftForward, rotation.x);
-            mobilePartLeft.Rotate(rotuleLeftRight, rotation.y);
+            mobilePartLeft.Rotate(rotuleLeftForward, rotationT.x);
+            mobilePartLeft.Rotate(rotuleLeftRight, rotationT.y);
 
-            mobilePartRight.Rotate(rotuleRightForward, rotation.x);
-            mobilePartRight.Rotate(rotuleRightRight, rotation.y);
+            mobilePartRight.Rotate(rotuleRightForward, rotationT.x);
+            mobilePartRight.Rotate(rotuleRightRight, rotationT.y);
 
-            mobilePartCenter.Rotate(rotuleCenterForward, rotation.x);
+            mobilePartCenter.Rotate(rotuleCenterForward, rotationT.x);
 
             mobilePartLeft.position = originMobileLeftPartPosition + originRotuleLeft.position - rotuleLeft.position;
             mobilePartRight.position = originMobileRightPartPosition + originRotuleRight.position - rotuleRight.position;
@@ -183,13 +185,19 @@ namespace Ex{
             }
         }
 
-        protected override void set_visibility(bool visible) { 
-            theraGO.SetActive(visible);
-        }
-
         protected override void update() {
             update_from_current_config();
         }
+
+        protected override void set_visibility(bool visible) {
+            theraGO.SetActive(visible);
+        }
+
+        #endregion
+        #region private_functions
+        #endregion
+        #region public_functions
+        #endregion
     }
 }
 

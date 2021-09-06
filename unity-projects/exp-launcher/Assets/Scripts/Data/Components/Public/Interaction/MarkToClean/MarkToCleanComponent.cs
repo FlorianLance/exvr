@@ -85,14 +85,14 @@ namespace Ex{
             reset_debug_state();
         }
 
-        protected override void update_parameter_from_gui(XML.Arg arg) {
+        protected override void update_parameter_from_gui(string updatedArgName) {
 
-            if (arg.Name == "working_transform") {
+            if (updatedArgName == "working_transform") {
                 reset_working_transform();
                 reset_mark();
-            } else  if(arg.Name == "distance_percentage_mark") {
+            } else  if(updatedArgName == "distance_percentage_mark") {
                 reset_mark();
-            } else if(arg.Name == "debug"){
+            } else if(updatedArgName == "debug"){
                 reset_debug_state();
             }
         }

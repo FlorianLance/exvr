@@ -135,9 +135,7 @@ namespace Ex{
             //Debug.Log("device " + device + " -> " + Microphone.GetPosition(device) + " " + Microphone.IsRecording(device));
         }
 
-        protected override void update_parameter_from_gui(XML.Arg arg) {
-
-
+        protected override void update_parameter_from_gui(string updatedArgName) {
         }
 
         public void start_recording_new_clip() {

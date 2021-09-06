@@ -27,7 +27,7 @@ namespace Ex {
         private Dictionary<int, float> topCoeffs = new Dictionary<int, float>();
 
 
-#region ex_functions
+        #region ex_functions
         protected override bool initialize() {
 
             add_slot("hoist", (factor) => {
@@ -121,27 +121,17 @@ namespace Ex {
             return true;
         }
 
-
         protected override void start_experiment() {
             reset_init_transform();
-        }
-
-        protected override void pre_start_routine() {
-            update_image();
-        }
-
-        protected override void update_parameter_from_gui(XML.Arg arg) {
-
-            if(arg.Name == "flag_image") {
-                update_image();
-            }
-            update_from_current_config();
         }
 
         public override void update_from_current_config() {
             reset_config_transform();
             udpate_flag_cloth_max_distance(currentC.get<float>("cloth_max_dist"));
             update_flag_height(currentC.get<float>("height"));
+        }
+        protected override void pre_start_routine() {
+            update_image();
         }
 
         protected override void set_visibility(bool visibility) {
@@ -151,8 +141,16 @@ namespace Ex {
             ballGO.SetActive(visibility);
         }
 
-#endregion
-#region private_functions
+        protected override void update_parameter_from_gui(string updatedArgName) {
+
+            if (updatedArgName == "flag_image") {
+                update_image();
+            }
+            update_from_current_config();
+        }
+
+        #endregion
+        #region private_functions
 
         private void update_image() {
             var image = currentC.get_resource_image("flag_image", false);
@@ -161,8 +159,8 @@ namespace Ex {
             }
         }
 
-#endregion
-#region public_functions
+        #endregion
+        #region public_functions
         public void udpate_flag_cloth_max_distance(float maxDistance) {
 
             for (int ii = 0; ii < coeffs.Length; ++ii) {
@@ -193,6 +191,6 @@ namespace Ex {
             }
         }
 
- #endregion
+        #endregion
     }
 }

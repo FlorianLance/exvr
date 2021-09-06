@@ -330,7 +330,7 @@ void ExParametersGeneratorWidgetW::add_ui_element(UiType uiType, QString uiName,
             return;
         }
 
-        auto genUiArg = genD.generate_arg(UiElementKey{key()});
+        auto genUiArg = genD.generate_arg(UiElementKey{exW->key()}); // key()
         exW->update_from_arg(genUiArg);
         uiName = genUiArg.name;
     }
@@ -349,7 +349,7 @@ void ExParametersGeneratorWidgetW::add_ui_element(UiType uiType, QString uiName,
 
     // generate widget line
     auto fl =  ui::L::HB();
-    auto f  = ui::F::gen(fl,{ui::W::txt("<b>" + exW->itemName + "</b>"), wElem}, LStretch{false}, LMargins{true});
+    auto f  = ui::F::gen(fl,{ui::W::txt(QSL("<b>") % exW->itemName % QSL("</b>")), wElem}, LStretch{false}, LMargins{true});
     fl->setStretch(0, 1);
     fl->setStretch(1, 30);
 

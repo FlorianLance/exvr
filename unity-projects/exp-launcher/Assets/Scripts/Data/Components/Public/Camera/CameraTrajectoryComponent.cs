@@ -208,12 +208,12 @@ namespace Ex{
             delete_cameras_go();
         }
 
-        protected override void update_parameter_from_gui(Arg arg) {
+        protected override void update_parameter_from_gui(string updatedArgName) {
             
-            if(arg.Name == "camera_trajectory") {
+            if(updatedArgName == "camera_trajectory") {
 
                 // reload targets
-                targets = get_camera_targets(arg.Name);
+                targets = get_camera_targets(updatedArgName);
 
                 // reset time
                 totalTime = 0;

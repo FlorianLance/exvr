@@ -381,8 +381,12 @@ namespace Ex{
             {
                 // set components config
                 foreach (var action in actions) {
-                    action.component().set_current_config(this, action.config(), action.timeline());
+                    action.set_current_config(this);                    
                 }
+
+                foreach (var action in actions) {
+                    action.update_from_current_config();
+                }                
 
                 // pre start routine
                 ExVR.ExpLog().condition(ExComponent.Function.pre_start_routine, true);

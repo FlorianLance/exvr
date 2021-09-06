@@ -36,7 +36,6 @@ static constexpr tool::TupleArray<4, TupleT> tt = {{
     {testE::B, "B2"sv},
 }};
 
-
 template<typename T>
 constexpr auto generate(int size, T value){
     T *a = new T[size];

@@ -115,40 +115,51 @@ namespace Ex {
         public List<T> get_all_components_from_current_condition<T>() where T : ExComponent {return get_all_from_current_condition<T>();}
 
         // get other scripts
-        public T get_csharp_script<T>(string name) where T : BaseCompiledCSharpComponent { return p.components().get_csharp_script<T>(name); }        
+        public T get_csharp_script<T>(string name) where T : BaseCompiledCSharpComponent { return p.components().get_csharp_script<T>(name); }
 
+        #region ex_functions
 
-        // ExComponent functions
-        // # main functions
+        // once per loading
         public virtual bool initialize() { return true; }
+        public virtual void clean() { }
+
+        // once per experiment
         public virtual void start_experiment() { }
-        public virtual void pre_start_routine() { }
-        public virtual void start_routine() {
-            update_from_current_config();
-        }
-        public virtual void post_start_routine() { }
-        public virtual void update() { }
-        public virtual void stop_routine() { }
         public virtual void stop_experiment() { }
-        public virtual void play() { }
-        public virtual void pause() { }
+
+        // once per routine
+        public virtual void set_current_config(string configName) { }
+        public virtual void update_from_current_config() { }
+        public virtual void pre_start_routine() { }
+        public virtual void start_routine() {}
+        public virtual void post_start_routine() { }
+        public virtual void stop_routine() { }
+
+
+        // several time per routine
         public virtual void set_update_state(bool doUpdate) { }
         public virtual void set_visibility(bool visible) { }
+        public virtual void play() { }
+        public virtual void pause() { }
 
-        // # for advanced users 
-        public virtual void clean() { }
+        // every frame or more
         public virtual void on_gui() { }
         public virtual void pre_update() { }
+        public virtual void update() { }
         public virtual void post_update() { }
-        public virtual void update_parameter_from_gui(XML.Arg arg) {
-            log_message("cze " + arg.Value);
-            update_from_current_config();
-        }
-        public virtual void update_from_current_config() { }
+
+        // from gui
         public virtual void action_from_gui(bool initConfig, string action) { }
+        public virtual void update_parameter_from_gui(string updatedArgName) { }
+
+        // # slots
+        public virtual void slot1(object value) { }
+        public virtual void slot2(object value) { }
+        public virtual void slot3(object value) { }
+        public virtual void slot4(object value) { }
+        public virtual void slot5(IdAny idValue) { }
 
         // # transform related
-
         public virtual void set_position(Vector3 position) {
             transform.position = position;
         }
@@ -176,11 +187,6 @@ namespace Ex {
             return transform.localScale;
         }
 
-        // # slots
-        public virtual void slot1(object value) { }
-        public virtual void slot2(object value) { }
-        public virtual void slot3(object value) { }
-        public virtual void slot4(object value) { }
-        public virtual void slot5(IdAny idValue) { }
+        #endregion
     }
 }

@@ -58,6 +58,10 @@ ExVrController::ExVrController(const QString &nVersion, bool lncoComponents){
 
     // init logging system
     QtLogger::init(QApplication::applicationDirPath() % QSL("/logs/"), QSL("designer_log.html"));
+    QtLogger::set_type_message_color(QtLogger::MessageType::normal,  QColor(189,189,189));
+    QtLogger::set_type_message_color(QtLogger::MessageType::warning, QColor(243, 158, 3));
+    QtLogger::set_type_message_color(QtLogger::MessageType::error,   QColor(244,4,4));
+    QtLogger::set_type_message_color(QtLogger::MessageType::unknow,  Qt::white);
 
     QtLogger::message("[CONTROLLER] Generate signals");
     GSignals::init();
@@ -89,7 +93,7 @@ ExVrController::ExVrController(const QString &nVersion, bool lncoComponents){
     m_benchmarkD     = std::make_unique<BenchmarkDialog>();
 
     // connections
-    QtLogger::message("[CONTROLLER] Generate connections");
+    QtLogger::message("[CONTROLLER] Generate connections", false, true);
     generate_global_signals_connections();
     generate_main_window_connections();
     generate_components_manager_connections();
@@ -100,7 +104,7 @@ ExVrController::ExVrController(const QString &nVersion, bool lncoComponents){
     generate_dialogs_connections();
 
     // update ui
-    QtLogger::message("[CONTROLLER] Update UI from default experiment");
+    QtLogger::message("[CONTROLLER] Update UI from default experiment", false, true);
     m_designerWindow->update_from_experiment(m_experiment.get(), UpdateAll);
     m_designerWindow->show();
 

@@ -176,7 +176,14 @@ public:
 
 class CurveGen : public BaseGenW{
 public:
-//    QComboBox componentsTypes;
+
+    QLineEdit curveTitle;
+    QLineEdit xTitle;
+    QLineEdit yTitle;
+    QDoubleSpinBox minX;
+    QDoubleSpinBox maxX;
+    QDoubleSpinBox minY;
+    QDoubleSpinBox maxY;
 
     CurveGen();
     void update_arg(Arg &arg) const override;

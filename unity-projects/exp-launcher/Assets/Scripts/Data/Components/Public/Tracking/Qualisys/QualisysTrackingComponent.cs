@@ -17,8 +17,6 @@ using QualisysRealTime.Unity;
 
 namespace Ex{
 
-
-
     public class QualisysTrackingComponent : ExComponent{
 
         private bool connected = false;
@@ -27,6 +25,8 @@ namespace Ex{
         private string hostName;
         private string ipAddress;
         private bool connectToFirst;
+
+        #region ex_functions
 
         protected override bool initialize() {
 
@@ -50,6 +50,61 @@ namespace Ex{
             }
         }
 
+        public override void update_from_current_config() {
+            reset_config_transform();
+            if (!currentC.get<bool>("transform_do_not_apply")) {
+                currentC.update_transform("transform", transform, true);
+            }
+        }
+        protected override void start_routine() {
+
+            // clean objects
+            foreach (var trackedObject in objects) {
+                Destroy(trackedObject.Value);
+            }
+            objects.Clear();
+
+            // recreate object list
+            foreach (var objectName in currentC.get<string>("objects").Split('\n')) {
+
+                if (objectName.Length == 0) {
+                    continue;
+                }
+
+                objects[objectName] = GO.generate_sphere(objectName, transform, 0.025f, new Color(1, 0, 0));
+                var rtObject = objects[objectName].AddComponent<QualisysTrackedBody>();
+                rtObject.name = objectName;
+            }
+
+            set_visibility(is_visible());
+        }
+
+        protected override void pre_update() {
+
+            foreach (var trackedObject in objects) {
+                var rtObject = trackedObject.Value.GetComponent<QualisysTrackedBody>();
+                if (rtObject.tracked) {
+
+                    TransformValue trV = new TransformValue();
+                    trV.position = rtObject.transform.position;
+                    trV.rotation = rtObject.transform.rotation;
+                    invoke_signal("tracked object", new StringAny(rtObject.name, trV));
+
+                    trackedObject.Value.GetComponent<MeshRenderer>().material.color = Color.green;
+                } else {
+                    trackedObject.Value.GetComponent<MeshRenderer>().material.color = Color.red;
+                }
+            }
+        }
+
+        protected override void set_visibility(bool visible) {
+            foreach (var trackedObject in objects) {
+                trackedObject.Value.GetComponent<MeshRenderer>().enabled = visible;
+            }
+        }
+
+        #endregion
+        #region public_functions
         private void connect() {
 
             connected = false;
@@ -88,47 +143,6 @@ namespace Ex{
             log_error("Cannot connect to to any Qualisys server.", false);
         }
 
-        protected override void start_routine() {
-
-            // clean objects
-            foreach (var trackedObject in objects) {
-                Destroy(trackedObject.Value);
-            }
-            objects.Clear();
-
-            // recreate object list
-            foreach (var objectName in currentC.get<string>("objects").Split('\n')) {
-
-                if (objectName.Length == 0) {
-                    continue;
-                }
-
-                objects[objectName] = GO.generate_sphere(objectName, transform, 0.025f, new Color(1, 0, 0));
-                var rtObject = objects[objectName].AddComponent<QualisysTrackedBody>();
-                rtObject.name = objectName;
-            }
-
-            update_from_current_config();
-            set_visibility(is_visible());
-        }
-
-        protected override void pre_update() {
-
-            foreach (var trackedObject in objects) {
-                var rtObject = trackedObject.Value.GetComponent<QualisysTrackedBody>();
-                if (rtObject.tracked) {                    
-
-                    TransformValue trV = new TransformValue();
-                    trV.position  = rtObject.transform.position;
-                    trV.rotation  = rtObject.transform.rotation;
-                    invoke_signal("tracked object", new StringAny(rtObject.name, trV));
-
-                    trackedObject.Value.GetComponent<MeshRenderer>().material.color = Color.green;
-                } else {
-                    trackedObject.Value.GetComponent<MeshRenderer>().material.color = Color.red;
-                }
-            }
-        }
 
         public bool is_connected() {
             return connected;
@@ -154,16 +168,8 @@ namespace Ex{
             return Quaternion.identity;
         }
 
-        protected override void set_visibility(bool visible) {
-            foreach (var trackedObject in objects) {
-                trackedObject.Value.GetComponent<MeshRenderer>().enabled = visible;                
-            }
-        }
-
-        public override void update_from_current_config() {
-            if (!currentC.get<bool>("transform_do_not_apply")) {
-                currentC.update_transform("transform", transform, true);
-            }
-        }
+        #endregion
+        #region public_functions
+        #endregion        
     }
 }

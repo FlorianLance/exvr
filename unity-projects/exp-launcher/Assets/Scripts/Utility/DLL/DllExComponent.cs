@@ -170,18 +170,17 @@ namespace Ex.DLL{
         private ComponentInitConfig m_initConfig = null;
         private ComponentConfig m_currentConfig = null;
 
+
+        // dll management
         abstract protected override void create_DLL_class();
+        protected override void delete_DLL_class() { delete_ex_component(_handle);}
 
-        protected override void delete_DLL_class() {
-            delete_ex_component(_handle);
-        }
-
+        // once per loading
         public virtual bool initialize(ComponentInitConfig initC, int componentKey) {
 
             m_initConfig = initC;            
-
             foreach (KeyValuePair<string, Argument> arg in m_initConfig.args) {
-                update_component_from_xml(ParametersContainer.InitConfig, arg.Value.xml, arg.Value.value);
+                update_component_from_arg(ParametersContainer.InitConfig, arg.Value);
             }
 
             update_parameter_int_ex_component(_handle, (int)ParametersContainer.Dynamic, "key", componentKey);
@@ -189,75 +188,71 @@ namespace Ex.DLL{
             return initialize_ex_component(_handle) == 1 ? true : false;
         }
 
-        public virtual void start_experiment() {
-            start_experiment_ex_component(_handle);
-        }
+        public virtual void clean() { clean_ex_component(_handle); }
 
-        public virtual void stop_experiment() {
-            stop_experiment_ex_component(_handle);
-        }
+        // once per experiment
+        public virtual void start_experiment() {start_experiment_ex_component(_handle);}
+        public virtual void stop_experiment() {stop_experiment_ex_component(_handle);}
 
+
+        // once per routine
+        public virtual void set_current_config(string configName) {set_current_config_ex_component(_handle, configName);}
+        public virtual void update_from_current_config() {update_from_current_config_ex_component(_handle);} 
+        public virtual void pre_start_routine() {pre_start_routine_ex_component(_handle);}
         public virtual void start_routine(ComponentConfig config) {
 
             m_currentConfig = config;
-            foreach (KeyValuePair<string, Argument> arg in m_initConfig.args) {
-                update_component_from_xml(ParametersContainer.CurrentConfig, arg.Value.xml, arg.Value.value);
+            foreach (KeyValuePair<string, Argument> arg in m_currentConfig.args) {
+                update_component_from_arg(ParametersContainer.CurrentConfig, arg.Value);
             }
             start_routine_ex_component(_handle);
         }
 
-        public virtual void stop_routine() {
-            stop_routine_ex_component(_handle);
-        }
+        public virtual void post_start_routine() {post_start_routine_ex_component(_handle);}
+        public virtual void stop_routine() {stop_routine_ex_component(_handle);}
 
-        public virtual void clean() {
-            clean_ex_component(_handle);
-        }
+        // every frame or more
+        public virtual void on_gui() { on_gui_ex_component(_handle); }
+        public virtual void pre_update() { pre_update_ex_component(_handle); }
+        public virtual void update() {update_ex_component(_handle);}
+        public virtual void post_update() { post_update_ex_component(_handle); }
 
-        public virtual void play() {
-            play_ex_component(_handle);
-        }
+        // several times per routine
+        public virtual void set_visibility(bool visible) { set_visibility_ex_component(_handle, visible ? 1 : 0); }
+        public virtual void set_update_state(bool doUpdate) { set_update_state_ex_component(_handle, doUpdate ? 1 : 0); }
+        public virtual void play() { play_ex_component(_handle); }
+        public virtual void pause() { pause_ex_component(_handle); }
 
-        public virtual void pause() {
-            pause_ex_component(_handle);
-        }
 
-        public virtual void update() {
-            update_ex_component(_handle);
+        // gui
+        public virtual void update_parameter_from_gui(string updatedArgName) {
+            update_component_from_arg(ParametersContainer.CurrentConfig, m_currentConfig.args[updatedArgName]);
+            update_parameter_from_gui_ex_component(_handle, updatedArgName);
         }
+        public virtual void action_from_gui(bool initConfig, string action) {action_from_gui_ex_component(_handle, initConfig ? 1 : 0, action);}
 
-        public virtual void update_parameter_from_gui(XML.Arg arg) {
-            update_component_from_xml(ParametersContainer.CurrentConfig, arg, m_currentConfig.args[arg.Name].value);
-        }
 
         public virtual void add_dynamic_parameter(string name, object value, TypeCode type) {
             update_parameter(ParametersContainer.Dynamic, name, value, type);
-        }
-
-        public virtual void set_visibility(bool visible) {
-            set_visibility_ex_component(_handle, visible ? 1 : 0);
-        }
-
-        public virtual void set_update_state(bool doUpdate) { 
-            set_update_state_ex_component(_handle, doUpdate ? 1 : 0);
         }
 
         public virtual void call_slot(int index, object value) {
 
             int idC = (int)ParametersContainer.Dynamic;
 
+            string idSlot = string.Concat("slot", index);
             if (value is bool) {
-                update_parameter_bool_ex_component(_handle, idC, "slot" + index, ((bool)value) ? 1 : 0);
+                update_parameter_bool_ex_component(_handle, idC, idSlot, ((bool)value) ? 1 : 0);
             } else if (value is int) {
-                update_parameter_int_ex_component(_handle, idC, "slot" + index, (int)value);
+                update_parameter_int_ex_component(_handle, idC, idSlot, (int)value);
             } else if (value is float) {
-                update_parameter_float_ex_component(_handle, idC, "slot" + index, (float)value);
+                update_parameter_float_ex_component(_handle, idC, idSlot, (float)value);
             } else if (value is double) {
-                update_parameter_double_ex_component(_handle, idC, "slot" + index, (double)value);
+                update_parameter_double_ex_component(_handle, idC, idSlot, (double)value);
             } else if (value is string) {
-                update_parameter_string_ex_component(_handle, idC, "slot" + index, (string)value);
+                update_parameter_string_ex_component(_handle, idC, idSlot, (string)value);
             } else if(value is List<double>) {
-                update_parameter_array_double_ex_component(_handle, idC, "slot" + index, ((List<double>)value).ToArray(), ((List<double>)value).Count);
+                update_parameter_array_double_ex_component(_handle, idC, idSlot, ((List<double>)value).ToArray(), ((List<double>)value).Count);
             } else {
                 ExVR.Log().error("Type not managed by component.");
                 return;
@@ -385,16 +380,17 @@ namespace Ex.DLL{
             }
         }
 
-        private void update_component_from_xml(ParametersContainer container, XML.Arg xmlArg, object value) {
+        private void update_component_from_arg(ParametersContainer container, Argument arg) {
 
-            var tCode = Type.GetTypeCode(Type.GetType(xmlArg.Type));
-            if (xmlArg.Dim == 0) {
-                update_parameter(container, xmlArg.Name, value, tCode);
-            } else if (xmlArg.Dim == 1) {
-                string[] sizes = xmlArg.Sizes.Split(' ');
+
+            var tCode = Type.GetTypeCode(arg.type);
+            if (arg.xml.Dim == 0) {
+                update_parameter(container, arg.xml.Name, arg.value, tCode);
+            } else if (arg.xml.Dim == 1) {
+                string[] sizes = arg.xml.Sizes.Split(' ');
                 int length = (int)TypeDescriptor.GetConverter(typeof(int)).ConvertFrom(sizes[0]);
-                update_parameter_1d(container, xmlArg.Name, (List<object>)value, length, tCode);
-            } else if (xmlArg.Dim == 2) {
+                update_parameter_1d(container, arg.xml.Name, (List<object>)arg.value, length, tCode);
+            } else if (arg.xml.Dim == 2) {
                 //string[] sizes = xmlArg.Sizes.Split(' ');
                 //int rows = (int)TypeDescriptor.GetConverter(typeof(int)).ConvertFrom(sizes[0]);
                 //int cols = (int)TypeDescriptor.GetConverter(typeof(int)).ConvertFrom(sizes[1]);
@@ -406,8 +402,13 @@ namespace Ex.DLL{
         [DllImport("exvr-export", EntryPoint = "delete_ex_component", CallingConvention = CallingConvention.Cdecl)]
         static public extern void delete_ex_component(HandleRef exComponent);
 
+
         [DllImport("exvr-export", EntryPoint = "initialize_ex_component", CallingConvention = CallingConvention.Cdecl)]
         static public extern int initialize_ex_component(HandleRef exComponent);
+
+        [DllImport("exvr-export", EntryPoint = "clean_ex_component", CallingConvention = CallingConvention.Cdecl)]
+        static public extern void clean_ex_component(HandleRef exComponent);
+
 
         [DllImport("exvr-export", EntryPoint = "start_experiment_ex_component", CallingConvention = CallingConvention.Cdecl)]
         static public extern void start_experiment_ex_component(HandleRef exComponent);
@@ -415,14 +416,42 @@ namespace Ex.DLL{
         [DllImport("exvr-export", EntryPoint = "stop_experiment_ex_component", CallingConvention = CallingConvention.Cdecl)]
         static public extern void stop_experiment_ex_component(HandleRef exComponent);
 
+
+        [DllImport("exvr-export", EntryPoint = "set_current_config_ex_component", CallingConvention = CallingConvention.Cdecl)]
+        static public extern void set_current_config_ex_component(HandleRef exComponent, string configName);
+        [DllImport("exvr-export", EntryPoint = "update_from_current_config_ex_component", CallingConvention = CallingConvention.Cdecl)]
+        static public extern void update_from_current_config_ex_component(HandleRef exComponent);
+
+        [DllImport("exvr-export", EntryPoint = "pre_start_routine_ex_component", CallingConvention = CallingConvention.Cdecl)]
+        static public extern void pre_start_routine_ex_component(HandleRef exComponent);
+
         [DllImport("exvr-export", EntryPoint = "start_routine_ex_component", CallingConvention = CallingConvention.Cdecl)]
         static public extern void start_routine_ex_component(HandleRef exComponent);
+
+        [DllImport("exvr-export", EntryPoint = "post_start_routine_ex_component", CallingConvention = CallingConvention.Cdecl)]
+        static public extern void post_start_routine_ex_component(HandleRef exComponent);
 
         [DllImport("exvr-export", EntryPoint = "stop_routine_ex_component", CallingConvention = CallingConvention.Cdecl)]
         static public extern void stop_routine_ex_component(HandleRef exComponent);
 
+
+        [DllImport("exvr-export", EntryPoint = "on_gui_ex_component", CallingConvention = CallingConvention.Cdecl)]
+        static public extern void on_gui_ex_component(HandleRef exComponent);
+        [DllImport("exvr-export", EntryPoint = "pre_update_ex_component", CallingConvention = CallingConvention.Cdecl)]
+        static public extern void pre_update_ex_component(HandleRef exComponent);
+
         [DllImport("exvr-export", EntryPoint = "update_ex_component", CallingConvention = CallingConvention.Cdecl)]
         static public extern void update_ex_component(HandleRef exComponent);
+        [DllImport("exvr-export", EntryPoint = "post_update_ex_component", CallingConvention = CallingConvention.Cdecl)]
+        static public extern void post_update_ex_component(HandleRef exComponent);
+
+
+        [DllImport("exvr-export", EntryPoint = "update_parameter_from_gui_ex_component", CallingConvention = CallingConvention.Cdecl)]
+        static public extern void update_parameter_from_gui_ex_component(HandleRef exComponent, string updatedArgName);
+
+        [DllImport("exvr-export", EntryPoint = "action_from_gui_ex_component", CallingConvention = CallingConvention.Cdecl)]
+        static public extern void action_from_gui_ex_component(HandleRef exComponent, int initConfig, string action);
+
 
         [DllImport("exvr-export", EntryPoint = "set_visibility_ex_component", CallingConvention = CallingConvention.Cdecl)]
         static public extern void set_visibility_ex_component(HandleRef exComponent, int visible);
@@ -436,8 +465,8 @@ namespace Ex.DLL{
         [DllImport("exvr-export", EntryPoint = "pause_ex_component", CallingConvention = CallingConvention.Cdecl)]
         static public extern void pause_ex_component(HandleRef exComponent);
 
-        [DllImport("exvr-export", EntryPoint = "clean_ex_component", CallingConvention = CallingConvention.Cdecl)]
-        static public extern void clean_ex_component(HandleRef exComponent);
+
+
 
         [DllImport("exvr-export", EntryPoint = "call_slot_ex_component", CallingConvention = CallingConvention.Cdecl)]
         static public extern void call_slot_ex_component(HandleRef exComponent, int index);

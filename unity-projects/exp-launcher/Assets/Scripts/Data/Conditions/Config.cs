@@ -130,15 +130,24 @@ namespace Ex {
             return "";
         }
 
-        public T get<T>(string argName){
+        public Argument get(string argName) {
 
             if (!has(argName)) {
-                log_error(string.Format("Argument {0} of type {1} doesn't exist.", argName, typeof(T).ToString()));
+                log_error(string.Format("Argument {0}  doesn't exist.", argName));
+                return null;
+            }
+            return args[argName];
+        }
+
+        public T get<T>(string argName){
+
+            Argument arg = get(argName);
+            if(arg == null) {
                 return default(T);
             }
 
             try {
-                return (T)args[argName].value;
+                return (T)arg.value;
             } catch (System.InvalidCastException) {
                 log_error(string.Format("Cannot cast argument {0} of type {1}:{2} of value {3}", argName, typeof(T).ToString(), args[argName].xml.Type, args[argName].xml.Value));
             }
@@ -691,8 +700,8 @@ namespace Ex {
 
             // convert xml to arg
             xmlArg.Name = keyToName[xmlArg.KeyUiElement];
-            if (!args[xmlArg.Name].init_from_xml(xmlArg)) {
-                log_error(string.Format("Cannot initialize argument {0} of key {1} with value {2}.", xmlArg.Name, xmlArg.KeyUiElement.ToString(), xmlArg.Value));
+            if (!args[xmlArg.Name].update_from_xml(xmlArg)) {
+                log_error(string.Format("Cannot update argument {0} of key {1} with value {2}.", xmlArg.Name, xmlArg.KeyUiElement.ToString(), xmlArg.Value));
                 return false;
             }
 
@@ -704,7 +713,7 @@ namespace Ex {
             keyToName = new Dictionary<int, string>(1);
 
             Argument arg = new Argument();
-            if (!arg.init_from_xml(xmlArg)) {
+            if (!arg.update_from_xml(xmlArg)) {
                 log_error(string.Format("Cannot initialize argument {0} of key {1} with value {2}.", xmlArg.Name, xmlArg.KeyUiElement.ToString(), xmlArg.Value));
             }
             args[xmlArg.Name] = arg;
@@ -717,7 +726,7 @@ namespace Ex {
             keyToName = new Dictionary<int, string>(xmlArgs.Count);
             foreach (XML.Arg xmlArg in xmlArgs) {
                 Argument arg = new Argument();
-                if (!arg.init_from_xml(xmlArg)) {
+                if (!arg.update_from_xml(xmlArg)) {
                     log_error(string.Format("Cannot initialize argument {0} of key {1} with value {2}.", xmlArg.Name, xmlArg.KeyUiElement.ToString(), xmlArg.Value));
                 }
                 args[xmlArg.Name] = arg;

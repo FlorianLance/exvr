@@ -528,14 +528,13 @@ namespace Ex{
 
                     XML.Arg arg = new XML.Arg();
                     arg.KeyUiElement = keyArg;
-                    arg.Name = "";
-                    arg.Value = cmd.Item2[3];
-                    arg.Type = cmd.Item2[4];
-                    arg.Dim = dim;
-                    arg.Sizes = cmd.Item2[6];
-                    arg.Separator = cmd.Item2[7]; //  cmd.Item2.Count > 7 ? cmd.Item2[7] : "";
+                    arg.Name         = "";
+                    arg.Value        = cmd.Item2[3];
+                    arg.Type         = cmd.Item2[4];
+                    arg.Dim          = dim;
+                    arg.Sizes        = cmd.Item2[6];
+                    arg.Separator    = cmd.Item2[7];
 
-                        log_message("UUP " + arg.Name);
                     schedule_update_component_parameter(ScheduledAction.Source.Gui, componentKey, configKey, arg);
                     return;
 
@@ -548,11 +547,11 @@ namespace Ex{
                     Int32.TryParse(cmd.Item2[6], out dim);
 
                     XML.Arg arg = new XML.Arg();
-                    arg.Name = cmd.Item2[3];
-                    arg.Value = cmd.Item2[4];
-                    arg.Type = cmd.Item2[5];
-                    arg.Dim = dim;
-                    arg.Sizes = cmd.Item2[7];
+                    arg.Name      = cmd.Item2[3];
+                    arg.Value     = cmd.Item2[4];
+                    arg.Type      = cmd.Item2[5];
+                    arg.Dim       = dim;
+                    arg.Sizes     = cmd.Item2[7];
                     arg.Separator = cmd.Item2[8]; //  cmd.Item2.Count > 7 ? cmd.Item2[7] : "";
 
                     schedule_update_connector_parameter(ScheduledAction.Source.Gui, routineKey, conditionKey, connectorKey, arg);
@@ -766,7 +765,7 @@ namespace Ex{
                     }
                 } else if (action.type == ScheduledAction.Type.UpdateComponentParameter) {
 
-                    ExVR.Components().update_parameter_from_gui(action.componentKey, action.configKey, action.arg);
+                    ExVR.Components().update_parameter_from_gui_xml(action.componentKey, action.configKey, action.arg);
 
                 } else if (action.type == ScheduledAction.Type.UpdateConnectorParameter) {
 

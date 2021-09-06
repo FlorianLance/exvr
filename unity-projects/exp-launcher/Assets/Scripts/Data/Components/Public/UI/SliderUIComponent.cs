@@ -114,11 +114,11 @@ namespace Ex{
             resize_container();
         }
 
-        protected override void update_parameter_from_gui(XML.Arg arg) {
+        protected override void update_parameter_from_gui(string updatedArgName) {
 
             // regenerate random value
             float currentValue = get_value();
-            if (arg.Name == "random_start") {                
+            if (updatedArgName == "random_start") {                
                 if (currentC.get<bool>("random_start")) {                    
                     if (currentC.get<bool>("whole")) {
                         currentValue = (float)Random.Range((int)currentC.get<float>("min"), (int)currentC.get<float>("max"));

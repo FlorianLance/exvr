@@ -784,14 +784,26 @@ void TextGenW::update_arg(Arg &arg) const{
 }
 
 CurveGen::CurveGen(){
-    // ...
+
+//    QLineEdit curveTitle;
+//    QLineEdit xTitle;
+//    QLineEdit yTitle;
+//    QDoubleSpinBox minX;
+//    QDoubleSpinBox maxX;
+//    QDoubleSpinBox minY;
+//    QDoubleSpinBox maxY;
+
+    auto l = new QVBoxLayout();
+    l->setContentsMargins(0,0,0,0);
+    l->addWidget(ui::F::gen(ui::L::HB(), {ui::W::txt("...")}, LStretch{false}, LMargins{false}, QFrame::NoFrame));
+    l->addStretch();
+    setLayout(l);
 }
 
 void CurveGen::update_arg(Arg &arg) const{
     std::vector<double> x =  {0.,1.};
     std::vector<double> y =  {0.,1.};
     arg.init_from_curve(&x, &y, " ");
-
     // ...
 }
 

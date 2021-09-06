@@ -723,6 +723,8 @@ void DesignerWindow::create_toolbar(){
 
 void DesignerWindow::create_logger(){
 
+    m_ui.tbLogs->zoomIn(2);
+    m_ui.tbLogs->setStyleSheet("background-color: rgb(45,45,45);");
     m_ui.tbLogs->setAcceptDrops(false);
     m_ui.tbLogs->setOpenLinks(false);
     m_ui.tbLogs->setUndoRedoEnabled(false);

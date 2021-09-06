@@ -53,9 +53,9 @@ namespace Ex{
             m_imageGO.SetActive(visibility);
         }
 
-        protected override void update_parameter_from_gui(XML.Arg arg) {
-            if(arg.Name == "image") {
-                load_image_from_resource(currentC.get_resource_alias("image"));
+        protected override void update_parameter_from_gui(string updatedArgName) {
+            if(updatedArgName == "image") {
+                load_image_from_resource(currentC.get_resource_alias(updatedArgName));
             }
             resize_image();
         }

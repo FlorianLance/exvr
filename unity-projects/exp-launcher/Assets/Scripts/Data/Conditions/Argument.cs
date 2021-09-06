@@ -15,7 +15,7 @@ namespace Ex{
     public class Argument{
 
         // add static converters        
-        public bool init_from_xml(XML.Arg xmlArg) {
+        public bool update_from_xml(XML.Arg xmlArg) {
 
             // get type
             xml  = xmlArg;

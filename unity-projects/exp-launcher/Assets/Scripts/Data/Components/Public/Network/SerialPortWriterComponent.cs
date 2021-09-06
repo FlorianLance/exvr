@@ -145,8 +145,8 @@ namespace Ex{
             }
         }
 
-        protected override void update_parameter_from_gui(XML.Arg arg) {
-            if(arg.Name == "message") {
+        protected override void update_parameter_from_gui(string updatedArgName) {
+            if(updatedArgName == "message") {
                 process_message();
             }
         }

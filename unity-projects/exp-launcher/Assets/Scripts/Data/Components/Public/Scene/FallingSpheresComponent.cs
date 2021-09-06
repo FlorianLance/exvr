@@ -156,19 +156,19 @@ namespace Ex {
             }
         }
 
-        protected override void update_parameter_from_gui(XML.Arg arg) {
+        protected override void update_parameter_from_gui(string updatedArgName) {
 
-            if (arg.Name == "position") {
+            if (updatedArgName == "position") {
                 innerC.transform.localPosition  = currentC.get_vector3("position");
                 externC.transform.localPosition = currentC.get_vector3("position") + new Vector3(0, 0.1f, 0);
-            } else if (arg.Name == "inner_circle_ray") {
+            } else if (updatedArgName == "inner_circle_ray") {
                 float rayMin = currentC.get<float>("inner_circle_ray");                
                 innerC.transform.localScale = new Vector3(2 * rayMin, 0.2f, 2 * rayMin);                
-            } else if (arg.Name == "extern_circle_ray") {
+            } else if (updatedArgName == "extern_circle_ray") {
                 float rayMax = currentC.get<float>("extern_circle_ray");
                 externC.transform.localScale = new Vector3(2 * rayMax, 0.1f, 2 * rayMax);
-            }else if(arg.Name == "display_spawner") {
-                bool display = currentC.get<bool>(arg.Name);
+            }else if(updatedArgName == "display_spawner") {
+                bool display = currentC.get<bool>(updatedArgName);
                 innerC.SetActive(display);
                 externC.SetActive(display);
             }

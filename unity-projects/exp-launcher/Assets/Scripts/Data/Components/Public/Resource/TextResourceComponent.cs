@@ -35,8 +35,8 @@ namespace Ex{
             load_text();            
         }
 
-        protected override void update_parameter_from_gui(XML.Arg arg) {
-            if (arg.Name == "text") {
+        protected override void update_parameter_from_gui(string updatedArgName) {
+            if (updatedArgName == "text") {
                 load_text();
             }
         }

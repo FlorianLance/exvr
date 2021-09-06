@@ -117,7 +117,7 @@ namespace Ex
             m_panelGO.transform.eulerAngles += currentC.get_vector3("rotation");
         }
 
-        protected override void update_parameter_from_gui(XML.Arg arg) {
+        protected override void update_parameter_from_gui(string updatedArgName) {
             resize_image();
         }
 
