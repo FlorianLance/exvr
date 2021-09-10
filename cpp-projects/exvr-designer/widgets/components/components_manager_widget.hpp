@@ -98,6 +98,7 @@ private :
     // menus
     QMenu m_createNewComponentsSubMenu;
     QMenu m_createNewExperimentalComponentsSubMenu;
+    QMenu m_createNewLegacyComponentsSubMenu;
     QMenu m_sortComponentsSubMenu;
 
     ui::ListWidget m_componentsListW;

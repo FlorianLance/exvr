@@ -14,7 +14,7 @@
 
 using namespace tool::ex;
 
-ExComponentsListW::ExComponentsListW() : ExItemW<QFrame>(UiType::ComponentsList){
+ExComponentsListW::ExComponentsListW(QString name) : ExItemW<QFrame>(UiType::ComponentsList, name){
 
     w->setFrameShadow(QFrame::Raised);
     w->setFrameShape(QFrame::Shape::NoFrame);
@@ -38,6 +38,31 @@ ExComponentsListW::ExComponentsListW() : ExItemW<QFrame>(UiType::ComponentsList)
 
     m_list->set_margins(2,2,2,2,1);
     m_list->set_widget_selection(true);
+
+    connect(m_add, &QPushButton::clicked, this, [&]{
+
+        if(m_componentNames->count() == 0){
+            return;
+        }
+
+        const auto currTxt = m_componentNames->currentText();
+        if(auto component = ComponentsManager::get()->get_component(m_componentType.value(), currTxt); component != nullptr){
+            m_componentsKeys.emplace_back(component->key());
+            m_list->add_widget(ui::W::txt(component->name()));
+            update_from_components();
+            trigger_ui_change();
+        }
+
+    });
+    connect(m_remove, &QPushButton::clicked, this, [&]{
+        const int id = m_list->current_selected_widget_id();
+        if(id != -1){
+            m_list->delete_at(id);
+            m_componentsKeys.erase(std::begin(m_componentsKeys) + id);
+            update_from_components();
+            trigger_ui_change();
+        }
+    });
 }
 
 ExComponentsListW *ExComponentsListW::init_widget(Component::Type componentType, QString title, bool enabled){
@@ -54,34 +79,6 @@ ExComponentsListW *ExComponentsListW::init_widget(Component::Type componentType,
     return this;
 }
 
-
-void ExComponentsListW::init_connection(const QString &nameParam){
-
-    connect(m_add, &QPushButton::clicked, this, [&]{
-
-        if(m_componentNames->count() == 0){
-            return;
-        }
-
-        const auto currTxt = m_componentNames->currentText();
-        if(auto component = ComponentsManager::get()->get_component(m_componentType.value(), currTxt); component != nullptr){
-            m_componentsKeys.emplace_back(component->key());
-            m_list->add_widget(ui::W::txt(component->name()));
-            update_from_components();
-            emit ui_change_signal(nameParam);
-        }
-
-    });
-    connect(m_remove, &QPushButton::clicked, this, [&]{
-        const int id = m_list->current_selected_widget_id();
-        if(id != -1){
-            m_list->delete_at(id);
-            m_componentsKeys.erase(std::begin(m_componentsKeys) + id);
-            update_from_components();
-            emit ui_change_signal(nameParam);
-        }
-    });
-}
 
 void ExComponentsListW::update_from_arg(const Arg &arg){
 
@@ -120,7 +117,7 @@ void ExComponentsListW::update_from_arg(const Arg &arg){
 
 Arg ExComponentsListW::convert_to_arg() const{
 
-    Arg arg = ExItemW::convert_to_arg();
+    Arg arg = ExBaseW::convert_to_arg();
 
     QStringList keysStr;
     keysStr.reserve(static_cast<int>(m_componentsKeys.size()));

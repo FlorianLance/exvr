@@ -19,17 +19,17 @@ public :
 
     QPushButton m_pbGenerateFile;
 
-    ExLineEditW m_leModulePath;
+    ExLineEditW m_leModulePath{"path_module"};
     QPushButton m_pbSetModulePath;
 
-    ExLineEditW m_lePythonLibPath;
+    ExLineEditW m_lePythonLibPath{"path_lib"};
     QPushButton m_pbSetPythonLibPath;
 
-    ExLineEditW m_leClassName;
+    ExLineEditW m_leClassName{"class_name"};
 
     QPushButton m_pbOpenScript;
 
-    ExParametersGeneratorWidgetW m_pgGenerator;
+    ExParametersGeneratorWidgetW m_pgGenerator{"generator"};
 
     QTabWidget *m_tab = nullptr;
     QWidget *m_pySettings = nullptr;
@@ -46,7 +46,7 @@ class PythonScriptConfigParametersW : public ConfigParametersW{
 
 public :
 
-    ExParametersGeneratorWidgetW m_pgGenerator;
+    ExParametersGeneratorWidgetW m_pgGenerator{"generator"};
 
     void insert_widgets() override;
     void init_and_register_widgets() override;

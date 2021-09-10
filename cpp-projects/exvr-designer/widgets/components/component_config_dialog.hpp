@@ -29,6 +29,8 @@ public:
 
     ComponentConfigDialog(QWidget *parent, Component *component);
 
+    void set_connections();
+
     void update_from_component(Component *component);
     void update_with_info(ConfigKey configKey, QStringView id, QStringView value);    
 
@@ -48,6 +50,7 @@ private :
 public:
 
     ComponentKey componentKey;
+    Component::Type componentType;
 
 private:
 
@@ -60,19 +63,7 @@ private:
     bool pinned = false;
     QWidget *m_parent = nullptr;
 
-template<typename T>
-static ConfigParametersW *gen_params_w(){
 
-        auto w = new T();
-
-        // sub widgets
-        w->insert_widgets();
-        w->init_and_register_widgets();
-        w->create_connections();
-        w->end_stretch();
-
-        return w;
-    }
 };
 
 

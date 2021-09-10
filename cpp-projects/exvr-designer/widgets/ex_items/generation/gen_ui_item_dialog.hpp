@@ -189,6 +189,21 @@ public:
     void update_arg(Arg &arg) const override;
 };
 
+class CodeEditorGen : public BaseGenW{
+public:
+
+    CodeEditorGen();
+    void update_arg(Arg &arg) const override;
+};
+
+class ColorPickGen : public BaseGenW{
+public:
+
+    ColorPickGen();
+    void update_arg(Arg &arg) const override;
+};
+
+
 class GenUIItemDialog : public QDialog{
 
 public:

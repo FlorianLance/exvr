@@ -20,7 +20,6 @@ void CheckJoypadButtonEmbeddedW::initialize(){
     w->init_widget(items);
 
     // set widget connections
-    w->init_connection("");
     connect(w.get(), &ExComboBoxTextW::ui_change_signal, this, [=]{
         auto button = input::Joypad::get_button(w->w->currentText().toStdString());
         if(button.has_value()){
@@ -131,7 +130,6 @@ void CheckJoypadAxisEmbeddedW::initialize(){
     w->init_widget(items);
 
     // set widget connections
-    w->init_connection("");
     connect(w.get(), &ExComboBoxTextW::ui_change_signal, this, [=]{
         auto axis = input::Joypad::get_axis(w->w->currentText().toStdString());
         if(axis.has_value()){

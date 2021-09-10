@@ -17,19 +17,18 @@ class UdpWriterInitConfigParametersW : public ConfigParametersW{
 
 public :
 
-    ExSpinBoxW m_sbWritingPort;
-    ExLineEditW m_leWritingIpAdress;
+    ExSpinBoxW m_sbWritingPort{"writing_port"};
+    ExLineEditW m_leWritingIpAdress{"writing_address"};
 
     void insert_widgets() override{
         add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Writing port:"), m_sbWritingPort()}, LStretch{true}, LMargins{false}));
         add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Writing IP adress (or hostname):"), m_leWritingIpAdress()}, LStretch{true}, LMargins{false}));
     }
 
-    void init_and_register_widgets() override{
-        m_inputUiElements["writing_port"]       = m_sbWritingPort.init_widget( MinV<int>{0}, V<int>{8060}, MaxV<int>{100000}, StepV<int>{1});
-        m_inputUiElements["writing_address"]  = m_leWritingIpAdress.init_widget("127.0.0.1");
+    void init_and_register_widgets() override{        
+        add_input_ui(m_sbWritingPort.init_widget( MinV<int>{0}, V<int>{8060}, MaxV<int>{100000}, StepV<int>{1}));
+        add_input_ui(m_leWritingIpAdress.init_widget("127.0.0.1"));
     }
-
 
     void create_connections() override{}
     void late_update_ui() override{}

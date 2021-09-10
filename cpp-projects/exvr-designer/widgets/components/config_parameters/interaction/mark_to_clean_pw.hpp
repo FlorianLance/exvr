@@ -16,10 +16,10 @@ class MarkToCleanInitConfigParametersW : public ConfigParametersW{
 
 public :
 
-    ExSpinBoxW m_sbWidthColliderResolution;
-    ExSpinBoxW m_sbHeightColliderResolution;
+    ExSpinBoxW m_sbWidthColliderResolution{"width_collider_resolution"};
+    ExSpinBoxW m_sbHeightColliderResolution{"height_collider_resolution"};
 
-    ExFloatSpinBoxW m_dsbMaxReachableDistance;
+    ExFloatSpinBoxW m_dsbMaxReachableDistance{"max_distance_reachable"};
 
     void insert_widgets() override{
 
@@ -29,9 +29,9 @@ public :
     }
 
     void init_and_register_widgets() override{
-        m_inputUiElements["width_collider_resolution"]  = m_sbWidthColliderResolution.init_widget(MinV<int>{10}, V<int>{250}, MaxV<int>{1000}, StepV<int>{1});
-        m_inputUiElements["height_collider_resolution"] = m_sbHeightColliderResolution.init_widget(MinV<int>{10}, V<int>{250}, MaxV<int>{1000}, StepV<int>{1});
-        m_inputUiElements["max_distance_reachable"]     = m_dsbMaxReachableDistance.init_widget(MinV<qreal>{0.1}, V<qreal>{0.5}, MaxV<qreal>{1.3}, StepV<qreal>{0.01}, 2);
+        add_input_ui(m_sbWidthColliderResolution.init_widget(MinV<int>{10}, V<int>{250}, MaxV<int>{1000}, StepV<int>{1}));
+        add_input_ui(m_sbHeightColliderResolution.init_widget(MinV<int>{10}, V<int>{250}, MaxV<int>{1000}, StepV<int>{1}));
+        add_input_ui(m_dsbMaxReachableDistance.init_widget(MinV<qreal>{0.1}, V<qreal>{0.5}, MaxV<qreal>{1.3}, StepV<qreal>{0.01}, 2));
     }
 
     void create_connections() override{}
@@ -44,15 +44,15 @@ class MarkToCleanConfigParametersW : public ConfigParametersW{
 public :
 
     // general
-    ExCheckBoxW m_cbDebug;
+    ExCheckBoxW m_cbDebug{"debug"};
 
     // working zone
-    TransformSubPart m_trWorkingZone;
+    TransformSubPart m_trWorkingZone{"working_transform"};
 
     // mark
-    ExFloatSpinBoxW m_distancePercentageMark;
-    ExFloatSpinBoxW m_distanceErase;
-    ExFloatSpinBoxW m_alphaDecrease;
+    ExFloatSpinBoxW m_distancePercentageMark{"distance_percentage_mark"};
+    ExFloatSpinBoxW m_distanceErase{"distance_erase"};
+    ExFloatSpinBoxW m_alphaDecrease{"alpha_decrease"};
 
     void insert_widgets() override{
 
@@ -72,19 +72,18 @@ public :
     void init_and_register_widgets() override{
 
         // general
-        m_inputUiElements["debug"] = m_cbDebug.init_widget("Debug", true);
+        add_input_ui(m_cbDebug.init_widget("Debug", true));
 
         // working zone
-        map_sub_part(m_trWorkingZone.init_widget("Working zone transform", "working_transform"));
+        map_sub_part(m_trWorkingZone.init_widget("Working zone transform"));
         m_trWorkingZone.tr.set_rotation_values({90.,0.,0.});
         m_trWorkingZone.tr.set_trans_decimals(3);
         m_trWorkingZone.tr.set_trans_steps({0.001,0.001,0.001});
 
         // mark
-        m_inputUiElements["distance_percentage_mark"]   = m_distancePercentageMark.init_widget(MinV<qreal>{10.}, V<qreal>{80.}, MaxV<qreal>{100.}, StepV<qreal>{0.1}, 1);
-        m_inputUiElements["distance_erase"]             = m_distanceErase.init_widget(MinV<qreal>{0.001}, V<qreal>{0.015}, MaxV<qreal>{0.1}, StepV<qreal>{0.001}, 3);
-        m_inputUiElements["alpha_decrease"]             = m_alphaDecrease.init_widget(MinV<qreal>{0.001}, V<qreal>{0.01}, MaxV<qreal>{1.0}, StepV<qreal>{0.001}, 3);
-
+        add_input_ui(m_distancePercentageMark.init_widget(MinV<qreal>{10.}, V<qreal>{80.}, MaxV<qreal>{100.}, StepV<qreal>{0.1}, 1));
+        add_input_ui(m_distanceErase.init_widget(MinV<qreal>{0.001}, V<qreal>{0.015}, MaxV<qreal>{0.1}, StepV<qreal>{0.001}, 3));
+        add_input_ui(m_alphaDecrease.init_widget(MinV<qreal>{0.001}, V<qreal>{0.01}, MaxV<qreal>{1.0}, StepV<qreal>{0.001}, 3));
     }
 
     void create_connections() override{

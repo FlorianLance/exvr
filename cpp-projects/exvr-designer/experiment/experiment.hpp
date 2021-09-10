@@ -159,11 +159,10 @@ public slots:
     void move_config_in_component(ComponentKey componentKey, RowId from, RowId to);
     void rename_config_in_component(ComponentKey componentKey, RowId id, QString configName);
     // ## arguments
-    void arg_updated(ComponentKey componentKey, ConfigKey configKey, QString name, Arg arg, bool initConfig);
-    void arg_removed(ComponentKey componentKey, ConfigKey configKey, QString name, bool initConfig);
-    void move_arg_up(ComponentKey componentKey, ConfigKey configKey, QString previousName, QString name, bool initConfig);
-    void move_arg_down(ComponentKey componentKey, ConfigKey configKey, QString nextName, QString name, bool initConfig);
-    void new_arg(ComponentKey componentKey, ConfigKey configKey, QString name, Arg arg, bool initConfig);
+    void new_arg(ComponentKey componentKey, ConfigKey configKey, Arg arg, bool initConfig);
+    void arg_updated(ComponentKey componentKey, ConfigKey configKey, Arg arg, bool initConfig);
+    void arg_removed(ComponentKey componentKey, ConfigKey configKey, UiElementKey argKey, bool initConfig);
+    void swap_arg(ComponentKey componentKey, ConfigKey configKey, UiElementKey argKey1, UiElementKey argKey2, bool initConfig);
 
     // elements
     size_t get_element_position(Element *element) const;

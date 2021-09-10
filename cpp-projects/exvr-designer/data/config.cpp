@@ -18,42 +18,44 @@ ConfigUP Config::copy_with_new_element_id(const Config &configToCopy, const QStr
     for(const auto &arg : configToCopy.args){ // create a new element id for each arg when we duplicate
         config->args[arg.first] = Arg::copy_with_new_element_id(arg.second);
     }
+
+    for(auto &arg : config->args){
+        config->argsByName[arg.second.name] = &arg.second;
+    }
+
     return config;
 }
 
-void Config::update_arg(QString name, Arg arg){
+void Config::swap_arg(UiElementKey arg1Key, UiElementKey arg2Key){
+    auto &item1 = args[arg1Key];
+    auto &item2 = args[arg2Key];
+    std::swap(item1.generator.order, item2.generator.order);
+}
 
-    if(args.count(name)!=0){
-        args[name] = std::move(arg);
+void Config::update_arg(Arg arg){
+
+    auto key = arg.uiElementKey;
+    if(args.count(key) != 0){
+        args[key] = std::move(arg);
         return;
     }
     QtLogger::error(QSL("Arg with name ") % name % QSL(" doesn't exists: ") % arg.name % QSL(" ") % arg.value() % QSL(" ") %
                   QString::number(arg.uiElementKey.v) % QSL(" ") % arg.separator());
 }
 
-void Config::add_arg(QString name, Arg arg){
+void Config::add_arg(Arg arg){
 
-    if(args.count(name)==0){
-        args[name] = std::move(arg);
-        return;
+    auto key = arg.uiElementKey;
+    if(args.count(key)==0){
+        args[key] = std::move(arg);
+        argsByName[args[key].name] = &args[key];
+    }else{
+        qWarning() << "Config::error: arg " << arg.name << " already added.";
     }
-//    qCritical() << "Arg with name " << name << " already exists " << arg.name << arg.value() << arg.uiElementKey << arg.separator();
 }
 
-void Config::remove_arg(QString name){
-    args.erase(name);
+void Config::remove_arg(UiElementKey argKey){
+    argsByName.erase(args[argKey].name);
+    args.erase(argKey);
 }
-
-void Config::move_arg_up(QString prevName, QString name){
-    auto &item1 = args[name];
-    auto &item2 = args[prevName];
-    std::swap(item1, item2);
-}
-
-void Config::move_arg_down(QString nextName, QString name){
-    auto &item1 = args[name];
-    auto &item2 = args[nextName];
-    std::swap(item1, item2);
-}
-
 

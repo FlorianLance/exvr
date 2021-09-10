@@ -12,17 +12,14 @@
 
 namespace tool::ex{
 
-//shape_component
-
-
 
 class TargetToGrabInitConfigParametersW : public ConfigParametersW{
 
 public :
 
-    ExLineEditW m_leTargetComponentName;
-    ExFloatSpinBoxW m_dsbMaxReachableDistance;
-    ExFloatSpinBoxW m_dsbStartLineDistance;
+    ExLineEditW m_leTargetComponentName{"shape_component"};
+    ExFloatSpinBoxW m_dsbMaxReachableDistance{"max_distance_reachable"};
+    ExFloatSpinBoxW m_dsbStartLineDistance{"start_distance"};
 
     void insert_widgets() override{
         add_widget(ui::F::gen(ui::L::HB(),{ui::W::txt("Target component name: "),       m_leTargetComponentName(), ui::W::txt("(target must be before in condition order)")}, LStretch{true}, LMargins{false},QFrame::NoFrame));
@@ -31,9 +28,9 @@ public :
     }
 
     void init_and_register_widgets() override{
-        m_inputUiElements["shape_component"]        = m_leTargetComponentName.init_widget("...");
-        m_inputUiElements["max_distance_reachable"] = m_dsbMaxReachableDistance.init_widget(MinV<qreal>{0.1}, V<qreal>{0.5}, MaxV<qreal>{1.3}, StepV<qreal>{0.01}, 2);
-        m_inputUiElements["start_distance"]         = m_dsbStartLineDistance.init_widget(MinV<qreal>{-1.0}, V<qreal>{0.1}, MaxV<qreal>{1.3}, StepV<qreal>{0.01}, 2);
+        add_input_ui(m_leTargetComponentName.init_widget("..."));
+        add_input_ui(m_dsbMaxReachableDistance.init_widget(MinV<qreal>{0.1}, V<qreal>{0.5}, MaxV<qreal>{1.3}, StepV<qreal>{0.01}, 2));
+        add_input_ui(m_dsbStartLineDistance.init_widget(MinV<qreal>{-1.0}, V<qreal>{0.1}, MaxV<qreal>{1.3}, StepV<qreal>{0.01}, 2));
     }
 
     void create_connections() override{}
@@ -46,16 +43,16 @@ class TargetToGrabConfigParametersW : public ConfigParametersW{
 public :
 
     // general
-    ExCheckBoxW m_cbDebug;
-    ExCheckBoxW m_cbDisplayStartLine;
+    ExCheckBoxW m_cbDebug{"debug"};
+    ExCheckBoxW m_cbDisplayStartLine{"display_start_line"};
 
     // working zone
-    TransformSubPart m_trWorkingZone;
+    TransformSubPart m_trWorkingZone{"working_transform"};
 
     // target
-    ExFloatSpinBoxW m_dsbDistancePercentageTarget;
-    ExFloatSpinBoxW m_dsbHeightTarget;
-    ExFloatSpinBoxW m_dsbAngleTarget;
+    ExFloatSpinBoxW m_dsbDistancePercentageTarget{"distance_percentage_target"};
+    ExFloatSpinBoxW m_dsbHeightTarget{"height_target"};
+    ExFloatSpinBoxW m_dsbAngleTarget{"angle_target"};
 
 
     void insert_widgets() override{
@@ -74,19 +71,19 @@ public :
     void init_and_register_widgets() override{
 
         // general
-        m_inputUiElements["debug"] = m_cbDebug.init_widget("Debug", false);
-        m_inputUiElements["display_start_line"] = m_cbDisplayStartLine.init_widget("Display start line", true);
+        add_input_ui(m_cbDebug.init_widget("Debug", false));
+        add_input_ui(m_cbDisplayStartLine.init_widget("Display start line", true));
 
         // working zone
-        map_sub_part(m_trWorkingZone.init_widget("Working zone transform", "working_transform"));
+        map_sub_part(m_trWorkingZone.init_widget("Working zone transform"));
         m_trWorkingZone.tr.set_rotation_values({0.,0.,0.});
         m_trWorkingZone.tr.set_trans_decimals(3);
         m_trWorkingZone.tr.set_trans_steps({0.001,0.001,0.001});
 
-        // target
-        m_inputUiElements["distance_percentage_target"]  = m_dsbDistancePercentageTarget.init_widget(MinV<qreal>{10.}, V<qreal>{80.}, MaxV<qreal>{100.}, StepV<qreal>{0.1}, 1);
-        m_inputUiElements["height_target"]               = m_dsbHeightTarget.init_widget(MinV<qreal>{-1.}, V<qreal>{0.}, MaxV<qreal>{1.}, StepV<qreal>{0.01}, 2.);
-        m_inputUiElements["angle_target"]                = m_dsbAngleTarget.init_widget(MinV<qreal>{-50.}, V<qreal>{0.0}, MaxV<qreal>{50.}, StepV<qreal>{1.}, 1);
+        // target        
+        add_input_ui(m_dsbDistancePercentageTarget.init_widget(MinV<qreal>{10.}, V<qreal>{80.}, MaxV<qreal>{100.}, StepV<qreal>{0.1}, 1));
+        add_input_ui(m_dsbHeightTarget.init_widget(MinV<qreal>{-1.}, V<qreal>{0.}, MaxV<qreal>{1.}, StepV<qreal>{0.01}, 2.));
+        add_input_ui(m_dsbAngleTarget.init_widget(MinV<qreal>{-50.}, V<qreal>{0.0}, MaxV<qreal>{50.}, StepV<qreal>{1.}, 1));
     }
 
     void create_connections() override{}

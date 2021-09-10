@@ -17,17 +17,14 @@
 
 namespace tool::ex{
 
-
-
 class ExResourceW : public ExItemW<QFrame>{
 
-    Q_OBJECT
+
 public:
 
-    ExResourceW();
+    ExResourceW(QString name ="");
     ExResourceW *init_widget(Resource::Type resourceType, QString title, bool enabled = true);
 
-    void init_connection(const QString &nameParam) override;
     void update_from_arg(const Arg &arg) override;
     Arg convert_to_arg() const override;
     void update_from_resources() override;

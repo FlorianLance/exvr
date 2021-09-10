@@ -29,7 +29,7 @@ class ImageResourceConfigParametersW : public ConfigParametersW{
 
 public :
 
-    ExResourceW m_image;
+    ExResourceW m_image{"image"};
 
     void insert_widgets() override;
     void init_and_register_widgets() override;

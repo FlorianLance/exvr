@@ -14,7 +14,6 @@ void TransformEmbeddedW::initialize(){
     w->init_widget(QSL("Default tr"));
 
     // set widget connections
-    w->init_connection("");
     connect(w.get(), &ExTransformationW::ui_change_signal, this, [=]{
 
         emit update_internal_data_signal(

@@ -26,28 +26,28 @@
 using namespace tool::ex;
 
 struct AudioSourceInitConfigParametersW::Impl{
-    ExResourceW sound;
-    ExCheckBoxW generateNewSound;
-    ExComboBoxIndexW newSoundChannels;
+    ExResourceW sound = {"sound"};
+    ExCheckBoxW generateNewSound = {"generate_new_sound"};
+    ExComboBoxIndexW newSoundChannels = {"new_sound_channel"};
     ExTextEditW infoText;
     std_v1<std::unique_ptr<ExLineEditW>> channelsToCopy;
 };
 
 struct AudioSourceConfigParametersW::Impl{
-    ExCheckBoxW displaySoundOrigin;
-    ExCheckBoxW playNewBlock;
-    ExRadioButtonW pauseEndBlock;
-    ExRadioButtonW stopEndBlock;
-    ExRadioButtonW nothingEndBlock;
-    ExCheckBoxW doLoop;
-    ExCheckBoxW isSpatialized;
-    ExSliderFloatW volume;
-    ExSliderFloatW stereo;
-    ExSliderFloatW spatialBlend;
-    ExSliderFloatW pitch;
-    ExSliderFloatW maxDistance;
-    ExSliderFloatW minDistance;
-    TransformSubPart transfo;
+    ExCheckBoxW displaySoundOrigin = {"display"};
+    ExCheckBoxW playNewBlock = {"play_new_block"};
+    ExRadioButtonW pauseEndBlock = {"pause_end_block"};
+    ExRadioButtonW stopEndBlock = {"stop_end_block"};
+    ExRadioButtonW nothingEndBlock = {"nothing_end_block"};
+    ExCheckBoxW doLoop = {"loop"};
+    ExCheckBoxW isSpatialized = {"spatialized"};
+    ExSliderFloatW volume = {"volume"};
+    ExSliderFloatW stereo = {"stereo"};
+    ExSliderFloatW spatialBlend = {"spatial_blend"};
+    ExSliderFloatW pitch = {"pitch"};
+    ExSliderFloatW minDistance = {"min_distance"};
+    ExSliderFloatW maxDistance = {"max_distance"};
+    TransformSubPart transfo = {"transform"};
 };
 
 AudioSourceInitConfigParametersW::AudioSourceInitConfigParametersW() :  ConfigParametersW(), m_p(std::make_unique<Impl>()){
@@ -61,7 +61,7 @@ void AudioSourceInitConfigParametersW::insert_widgets(){
     add_widget(ui::F::gen(ui::L::HB(), {m_p->sound()}, LStretch{false}, LMargins{true}, QFrame::Box));
 
     for(int ii = 0; ii < 8; ++ ii){
-        m_p->channelsToCopy.emplace_back(std::make_unique<ExLineEditW>());
+        m_p->channelsToCopy.emplace_back(std::make_unique<ExLineEditW>("channel_" + QString::number(ii) + "_copy_destination"));
     }
 
     // infos
@@ -92,12 +92,12 @@ void AudioSourceInitConfigParametersW::insert_widgets(){
 
 void AudioSourceInitConfigParametersW::init_and_register_widgets(){
 
-    m_inputUiElements["sound"] = m_p->sound.init_widget(Resource::Type::Audio, "Audio resource: ");
-    m_inputUiElements["generate_new_sound"]   = m_p->generateNewSound.init_widget("Generate new sound", false);
-    m_inputUiElements["new_sound_channel"] = m_p->newSoundChannels.init_widget({"1", "2", "3", "4", "5", "6", "7", "8"}, 0, true);
+    add_input_ui(m_p->sound.init_widget(Resource::Type::Audio, "Audio resource: "));
+    add_input_ui(m_p->generateNewSound.init_widget("Generate new sound", false));
+    add_input_ui(m_p->newSoundChannels.init_widget({"1", "2", "3", "4", "5", "6", "7", "8"}, 0, true));
 
     for(size_t ii = 0; ii < m_p->channelsToCopy.size(); ++ii){
-        m_inputUiElements["channel_" + QString::number(ii) + "_copy_destination"] = m_p->channelsToCopy[ii]->init_widget({}, true);
+        add_input_ui(m_p->channelsToCopy[ii]->init_widget({}, true));
     }
     m_p->channelsToCopy[0]->w->setText("1 2");
 }
@@ -173,19 +173,19 @@ void AudioSourceConfigParametersW::insert_widgets(){
 
 void AudioSourceConfigParametersW::init_and_register_widgets(){
 
-    m_inputUiElements["play_new_block"]     = m_p->playNewBlock.init_widget("Play when update block starts", true);
-    m_inputUiElements["pause_end_block"]    = m_p->pauseEndBlock.init_widget("Pause when update block ends", false);
-    m_inputUiElements["stop_end_block"]     = m_p->stopEndBlock.init_widget("Stop when update block ends", true);
-    m_inputUiElements["nothing_end_block"]  = m_p->nothingEndBlock.init_widget("Do nothing when update block ends", false);
-    m_inputUiElements["display"]            = m_p->displaySoundOrigin.init_widget("Display sound origin", false);
-    m_inputUiElements["loop"]               = m_p->doLoop.init_widget("Loop", false);
-    m_inputUiElements["spatialized"]        = m_p->isSpatialized.init_widget("Spatialized", false);
-    m_inputUiElements["volume"]             = m_p->volume.init_widget("Volume", MinV<qreal>{0.}, V<qreal>{1.}, MaxV<qreal>{1.}, StepV<qreal>{0.01});
-    m_inputUiElements["stereo"]             = m_p->stereo.init_widget("Stereo", MinV<qreal>{-1.}, V<qreal>{0.0}, MaxV<qreal>{1.}, StepV<qreal>{0.01});
-    m_inputUiElements["spatial_blend"]      = m_p->spatialBlend.init_widget("Spatial blend", MinV<qreal>{0.}, V<qreal>{0.5}, MaxV<qreal>{1.}, StepV<qreal>{0.01});
-    m_inputUiElements["pitch"]              = m_p->pitch.init_widget("Pitch", MinV<qreal>{0.}, V<qreal>{1.}, MaxV<qreal>{5.}, StepV<qreal>{0.01});
-    m_inputUiElements["min_distance"]       = m_p->minDistance.init_widget("Min distance", MinV<qreal>{0.}, V<qreal>{0.01}, MaxV<qreal>{10.}, StepV<qreal>{0.01});
-    m_inputUiElements["max_distance"]       = m_p->maxDistance.init_widget("Max distance", MinV<qreal>{0.}, V<qreal>{5.}, MaxV<qreal>{10.}, StepV<qreal>{0.01});
+    add_input_ui(m_p->playNewBlock.init_widget("Play when update block starts", true));
+    add_input_ui(m_p->pauseEndBlock.init_widget("Pause when update block ends", false));
+    add_input_ui(m_p->stopEndBlock.init_widget("Stop when update block ends", true));
+    add_input_ui(m_p->nothingEndBlock.init_widget("Do nothing when update block ends", false));
+    add_input_ui(m_p->displaySoundOrigin.init_widget("Display sound origin", false));
+    add_input_ui(m_p->doLoop.init_widget("Loop", false));
+    add_input_ui(m_p->isSpatialized.init_widget("Spatialized", false));
+    add_input_ui(m_p->volume.init_widget("Volume", MinV<qreal>{0.}, V<qreal>{1.}, MaxV<qreal>{1.}, StepV<qreal>{0.01}));
+    add_input_ui(m_p->stereo.init_widget("Stereo", MinV<qreal>{-1.}, V<qreal>{0.0}, MaxV<qreal>{1.}, StepV<qreal>{0.01}));
+    add_input_ui(m_p->spatialBlend.init_widget("Spatial blend", MinV<qreal>{0.}, V<qreal>{0.5}, MaxV<qreal>{1.}, StepV<qreal>{0.01}));
+    add_input_ui(m_p->pitch.init_widget("Pitch", MinV<qreal>{0.}, V<qreal>{1.}, MaxV<qreal>{5.}, StepV<qreal>{0.01}));
+    add_input_ui(m_p->minDistance.init_widget("Min distance", MinV<qreal>{0.}, V<qreal>{0.01}, MaxV<qreal>{10.}, StepV<qreal>{0.01}));
+    add_input_ui(m_p->maxDistance.init_widget("Max distance", MinV<qreal>{0.}, V<qreal>{5.}, MaxV<qreal>{10.}, StepV<qreal>{0.01}));
     map_sub_part(m_p->transfo.init_widget());
     m_p->transfo.tr.set_scale_values({0.3,0.3,0.3});
 }

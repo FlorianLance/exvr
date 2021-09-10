@@ -31,14 +31,14 @@ class BlendFadeViewerConfigParametersW : public ConfigParametersW{
 
 public:
 
-    ExRadioButtonW onlyBlend;
-    ExRadioButtonW blendAndFade;
+    ExRadioButtonW onlyBlend{"only_blend"};
+    ExRadioButtonW blendAndFade{"blend_and_fade"};
 
-    ExSelectColorW startColor;
-    ExSelectColorW endColor;
+    ExSelectColorW startColor{"start_color"};
+    ExSelectColorW endColor{"end_color"};
 
-    ExFloatSpinBoxW durationBlend;
-    ExFloatSpinBoxW durationFade;
+    ExFloatSpinBoxW durationBlend{"duration_blend"};
+    ExFloatSpinBoxW durationFade{"duration_fade"};
 
     void insert_widgets() override;
     void init_and_register_widgets() override;

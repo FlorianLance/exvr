@@ -31,8 +31,8 @@ void HumanoidAvatarInitConfigParametersW::insert_widgets(){
 }
 
 void HumanoidAvatarInitConfigParametersW::init_and_register_widgets(){
-    map_sub_part(m_transfo.init_widget(QSL("Init transform</b> (applied when experiment starts)<b>"), QSL("init_transform")));
-    m_inputUiElements["humanoid"] = humanoidAssetBundle.init_widget(Resource::Type::AssetBundle, "Humanoid asset bundle resource: ");
+    map_sub_part(m_transfo.init_widget(QSL("Init transform</b> (applied when experiment starts)<b>")));
+    add_input_ui(humanoidAssetBundle.init_widget(Resource::Type::AssetBundle, "Humanoid asset bundle resource: "));
     QStringList items;
     items
         << "253, 231, 173"
@@ -53,7 +53,7 @@ void HumanoidAvatarInitConfigParametersW::init_and_register_widgets(){
         << "41, 23, 9"
         << "original mesh";
 
-    m_inputUiElements["skin_color"] = skinColor.init_widget(items, 16);
+    add_input_ui(skinColor.init_widget(items, 16));
 
     std::vector<QColor> colors;
     colors.emplace_back(253, 231, 173, 255);
@@ -79,9 +79,9 @@ void HumanoidAvatarInitConfigParametersW::init_and_register_widgets(){
         skinColor.w->setItemIcon(ii, QIcon(p));
     }
 
-    m_inputUiElements["shirt_color"] = shirtColor.init_widget("Choose shirt color to apply on texture", QColor(255,255,255,255));
-    m_inputUiElements["pants_color"] = pantsColor.init_widget("Choose Pants color to apply on texture", QColor(255,255,255,255));
-    m_inputUiElements["add_hmd_mesh"]    = addHmdMesh.init_widget("Add VR HMD mesh on head:", false);
+    add_input_ui(shirtColor.init_widget("Choose shirt color to apply on texture", QColor(255,255,255,255)));
+    add_input_ui(pantsColor.init_widget("Choose Pants color to apply on texture", QColor(255,255,255,255)));
+    add_input_ui(addHmdMesh.init_widget("Add VR HMD mesh on head:", false));
 }
 
 void HumanoidAvatarInitConfigParametersW::create_connections(){
@@ -370,168 +370,155 @@ void HumanoidAvatarConfigParametersW::insert_widgets(){
 
 void HumanoidAvatarConfigParametersW::init_and_register_widgets(){
 
-    map_sub_part(transform.init_widget(QSL("Config transform</b> (applied when routine starts)<b>"), QSL("transform")));
-    m_inputUiElements["display_targets"]                       = displayTargets.init_widget("Display targets", false);
-    m_inputUiElements["move_transforms_to_targets"]            = moveTransformsToTargets.init_widget("Move avatar to fit targets (called at routine start)", true);
-//    m_inputUiElements["move_eye_camera_to_head"]               = moveEyeCameraToHead.init_widget("Move eye camera to fit avatar head with neutral position (called at routine start)", false);
-
-//    m_inputUiElements["pitch"] = pitch.init_widget("pitch", false);
-//    m_inputUiElements["yaw"]   = yaw.init_widget("yaw", true);
-//    m_inputUiElements["roll"]  = roll.init_widget("roll", false);
-
-
-//    m_inputUiElements["update_head_with_eye_camera"]           = updateHeadWithEyeCamera.init_widget("Update avatar head with eye camera (called every frame)", false);
-//    m_inputUiElements["update_head_with_relative_eye_camera"]  = updateHeadWithRelativeEyeCamera.init_widget("Update avatar head with relative eye camera (called every frame)", false);
-//    m_inputUiElements["update_eye_camera_with_head"]           = updateEyeCameraWithHead.init_widget("Update eye camera with avatar head (called every frame)", false);
-//    m_inputUiElements["use_input_connection"]                  = useInputForMovingHeadCameraToRelativeEye.init_widget("Use input connections instead of eye camera", false);
-//    m_inputUiElements["do_not_move"]                           = doNotMove.init_widget("Do not move head/eye camera", true);
-    m_inputUiElements["pitch_yaw_roll"]                        = pitchYawRollRot.init_widget("Use Pitch/Yaw/Roll axis order", true);
-    m_inputUiElements["yaw_roll_pitch"]                        = yawRollPitchRot.init_widget("Use Yaw/Roll/Pitch axis order", false);
+    map_sub_part(transform.init_widget(QSL("Config transform</b> (applied when routine starts)<b>")));
+    add_input_ui(displayTargets.init_widget("Display targets", false));
+    add_input_ui(moveTransformsToTargets.init_widget("Move avatar to fit targets (called at routine start)", true));
+    add_input_ui(pitchYawRollRot.init_widget("Use Pitch/Yaw/Roll axis order", true));
+    add_input_ui(yawRollPitchRot.init_widget("Use Yaw/Roll/Pitch axis order", false));
 
     DsbSettings offsetS{MinV<qreal>{-2.},V<qreal>{0.},MaxV<qreal>{2.},StepV<qreal>{0.01}, 2};
-    m_inputUiElements["head_tracking_offset_pos"] = headTrackingOffsetPos.init_widget("Head offset position:", Vector3dSettings{offsetS,offsetS,offsetS});
+    add_input_ui(headTrackingOffsetPos.init_widget("Head offset position:", Vector3dSettings{offsetS,offsetS,offsetS}));
     headTrackingOffsetPos.x.w->setValue(0);
     headTrackingOffsetPos.y.w->setValue(0.1);
     headTrackingOffsetPos.z.w->setValue(0.1);
 
     DsbSettings offsetRot{MinV<qreal>{-180.},V<qreal>{0.},MaxV<qreal>{180.},StepV<qreal>{0.1}, 2};
     Vector3dSettings offsetVecRot = {offsetRot,offsetRot,offsetRot};
-    m_inputUiElements["head_tracking_offset_rot"] = headTrackingOffsetRot.init_widget("Head offset rotation:", offsetVecRot);
+    add_input_ui(headTrackingOffsetRot.init_widget("Head offset rotation:", offsetVecRot));
 
-    map_sub_part(m_head.init_widget("Head target transform","head_transform"));
+    map_sub_part(m_head.init_widget("Head target transform"));
     m_head.tr.set_enable_state(true,true,false);
-    map_sub_part(m_pelvis.init_widget("Pelvis target transform","pelvis_transform"));
+    map_sub_part(m_pelvis.init_widget("Pelvis target transform"));
     m_pelvis.tr.set_enable_state(true,true,false);
-    map_sub_part(m_leftArm.init_widget("Left arm target transform","left_arm_transform"));
+    map_sub_part(m_leftArm.init_widget("Left arm target transform"));
     m_leftArm.tr.set_enable_state(true,true,false);
-    map_sub_part(m_rightArm.init_widget("Right arm target transform","right_arm_transform"));
+    map_sub_part(m_rightArm.init_widget("Right arm target transform"));
     m_rightArm.tr.set_enable_state(true,true,false);
-    map_sub_part(m_leftLeg.init_widget("Left leg target transform","left_leg_transform"));
+    map_sub_part(m_leftLeg.init_widget("Left leg target transform"));
     m_leftLeg.tr.set_enable_state(true,true,false);
-    map_sub_part(m_rightLeg.init_widget("Right leg target transform","right_leg_transform"));
+    map_sub_part(m_rightLeg.init_widget("Right leg target transform"));
     m_rightLeg.tr.set_enable_state(true,true,false);
 
-    m_inputUiElements["chest"]                  = m_chestGoal.init_widget("<b>Chest goal</b>"); // translation
-    m_inputUiElements["left_arm_bend_goal"]     = m_leftArmBend.init_widget("<b>Left arm bend goal</b>"); // translation
-    m_inputUiElements["right_arm_bend_goal"]    = m_rightArmBend.init_widget("<b>Right arm bend goal</b>"); // translation
-    m_inputUiElements["left_leg_bend_goal"]     = m_leftLegBend.init_widget("<b>Left leg bend goal</b>"); // translation
-    m_inputUiElements["right_leg_bend_goal"]    = m_rightLegBend.init_widget("<b>Right leg bend goal</b>"); // translation
+    add_input_ui(m_chestGoal.init_widget("<b>Chest goal</b>")); // translation
+    add_input_ui(m_leftArmBend.init_widget("<b>Left arm bend goal</b>")); // translation
+    add_input_ui(m_rightArmBend.init_widget("<b>Right arm bend goal</b>")); // translation
+    add_input_ui(m_leftLegBend.init_widget("<b>Left leg bend goal</b>")); // translation
+    add_input_ui(m_rightLegBend.init_widget("<b>Right leg bend goal</b>")); // translation
 
-    m_inputUiElements["left_swivel_rotation_offset"]   = m_leftSwivelRotationOffset.init_widget(offsetRot);
-    m_inputUiElements["right_swivel_rotation_offset"]  = m_rightSwivelRotationOffset.init_widget(offsetRot);
+    add_input_ui(m_leftSwivelRotationOffset.init_widget(offsetRot));
+    add_input_ui(m_rightSwivelRotationOffset.init_widget(offsetRot));
 
     DsbSettings factorS{MinV<qreal>{0.},V<qreal>{1.},MaxV<qreal>{1.},StepV<qreal>{0.05}, 2};
 
-    m_inputUiElements["left_shoulder_rotation_weight"]  = m_leftShoulderRotationWeight.init_widget(factorS);
-    m_inputUiElements["right_shoulder_rotation_weight"] = m_rightShoulderRotationWeight.init_widget(factorS);
+    add_input_ui(m_leftShoulderRotationWeight.init_widget(factorS));
+    add_input_ui(m_rightShoulderRotationWeight.init_widget(factorS));
 
-    m_inputUiElements["enable_ik"] = enableInverseKinematics.init_widget("Enable inverse kinematics", true);
-    m_inputUiElements["global_ik_w"] = globalIkWeight.init_widget(factorS);
+    add_input_ui(enableInverseKinematics.init_widget("Enable inverse kinematics", true));
+    add_input_ui(globalIkWeight.init_widget(factorS));
 
-    m_inputUiElements["head_rot_w"] = m_headRotationWeight.init_widget(factorS);
-    m_inputUiElements["head_pos_w"] = m_headPositionWeight.init_widget(factorS);
-    m_inputUiElements["pelvis_rot_w"] = m_pelvisRotationWeight.init_widget(factorS);
-    m_inputUiElements["pelvis_pos_w"] = m_pelvisPositionWeight.init_widget(factorS);
-    m_inputUiElements["chest_goal_w"] = m_chestGoalWeight.init_widget(factorS);
+    add_input_ui(m_headRotationWeight.init_widget(factorS));
+    add_input_ui(m_headPositionWeight.init_widget(factorS));
+    add_input_ui(m_pelvisRotationWeight.init_widget(factorS));
+    add_input_ui(m_pelvisPositionWeight.init_widget(factorS));
+    add_input_ui(m_chestGoalWeight.init_widget(factorS));
     m_chestGoalWeight.w->setValue(0.);
 
-    m_inputUiElements["body_pos_stiffness"]         = m_bodyPosStiffness.init_widget(DsbSettings{MinV<qreal>{0.},V<qreal>{0.55},MaxV<qreal>{1.},StepV<qreal>{0.01}, 2});
-    m_inputUiElements["body_rot_stiffness"]         = m_bodyRotStiffness.init_widget(DsbSettings{MinV<qreal>{0.},V<qreal>{0.1},MaxV<qreal>{1.},StepV<qreal>{0.01}, 2});
-    m_inputUiElements["neck_stiffness"]             = m_neckStiffness.init_widget(DsbSettings{MinV<qreal>{0.},V<qreal>{0.2},MaxV<qreal>{1.},StepV<qreal>{0.01}, 2});
-    m_inputUiElements["maintain_pelvis_position"]   = m_maintainPelvisPosition.init_widget(DsbSettings{MinV<qreal>{0.},V<qreal>{0.2},MaxV<qreal>{1.},StepV<qreal>{0.01}, 2});
-    m_inputUiElements["max_root_angle"]             = m_maxRootAngle.init_widget(DsbSettings{MinV<qreal>{0.},V<qreal>{25.},MaxV<qreal>{180.},StepV<qreal>{0.1}, 2});
+    add_input_ui(m_bodyPosStiffness.init_widget(DsbSettings{MinV<qreal>{0.},V<qreal>{0.55},MaxV<qreal>{1.},StepV<qreal>{0.01}, 2}));
+    add_input_ui(m_bodyRotStiffness.init_widget(DsbSettings{MinV<qreal>{0.},V<qreal>{0.1},MaxV<qreal>{1.},StepV<qreal>{0.01}, 2}));
+    add_input_ui(m_neckStiffness.init_widget(DsbSettings{MinV<qreal>{0.},V<qreal>{0.2},MaxV<qreal>{1.},StepV<qreal>{0.01}, 2}));
+    add_input_ui(m_maintainPelvisPosition.init_widget(DsbSettings{MinV<qreal>{0.},V<qreal>{0.2},MaxV<qreal>{1.},StepV<qreal>{0.01}, 2}));
+    add_input_ui(m_maxRootAngle.init_widget(DsbSettings{MinV<qreal>{0.},V<qreal>{25.},MaxV<qreal>{180.},StepV<qreal>{0.1}, 2}));
 
-    m_inputUiElements["left_leg_rot_w"] = m_leftLegRotationWeight.init_widget(factorS);
-    m_inputUiElements["left_leg_pos_w"] = m_leftLegPositionWeight.init_widget(factorS);
-    m_inputUiElements["left_leg_bend_w"] = m_leftLegBendWeight.init_widget(factorS);
+    add_input_ui(m_leftLegRotationWeight.init_widget(factorS));
+    add_input_ui(m_leftLegPositionWeight.init_widget(factorS));
+    add_input_ui(m_leftLegBendWeight.init_widget(factorS));
     m_leftLegBendWeight.w->setValue(0.);
-    m_inputUiElements["right_leg_rot_w"] = m_rightLegRotationWeight.init_widget(factorS);
-    m_inputUiElements["right_leg_pos_w"] = m_rightLegPositionWeight.init_widget(factorS);
-    m_inputUiElements["right_leg_bend_w"] = m_rightLegBendWeight.init_widget(factorS);
+    add_input_ui(m_rightLegRotationWeight.init_widget(factorS));
+    add_input_ui(m_rightLegPositionWeight.init_widget(factorS));
+    add_input_ui(m_rightLegBendWeight.init_widget(factorS));
     m_rightLegBendWeight.w->setValue(0.);
 
-    m_inputUiElements["left_arm_rot_w"] = m_leftArmRotationWeight.init_widget(factorS);
-    m_inputUiElements["left_arm_pos_w"] = m_leftArmPositionWeight.init_widget(factorS);
-    m_inputUiElements["left_arm_bend_w"] = m_leftArmBendWeight.init_widget(factorS);
+    add_input_ui(m_leftArmRotationWeight.init_widget(factorS));
+    add_input_ui(m_leftArmPositionWeight.init_widget(factorS));
+    add_input_ui(m_leftArmBendWeight.init_widget(factorS));
     m_leftArmBendWeight.w->setValue(0.);
-    m_inputUiElements["right_arm_rot_w"] = m_rightArmRotationWeight.init_widget(factorS);
-    m_inputUiElements["right_arm_pos_w"] = m_rightArmPositionWeight.init_widget(factorS);
-    m_inputUiElements["right_arm_bend_w"] = m_rightArmBendWeight.init_widget(factorS);
+    add_input_ui(m_rightArmRotationWeight.init_widget(factorS));
+    add_input_ui(m_rightArmPositionWeight.init_widget(factorS));
+    add_input_ui(m_rightArmBendWeight.init_widget(factorS));
     m_rightArmBendWeight.w->setValue(0.);
 
-    m_inputUiElements["left_hand_index_1"] = m_leftIndexRot1.init_widget("<b>Index</b> bone 1:", offsetVecRot);
-    m_inputUiElements["left_hand_index_2"] = m_leftIndexRot2.init_widget("<b>Index</b> bone 2:", offsetVecRot);
-    m_inputUiElements["left_hand_index_3"] = m_leftIndexRot3.init_widget("<b>Index</b> bone 3:", offsetVecRot);
+    add_input_ui(m_leftIndexRot1.init_widget("<b>Index</b> bone 1:", offsetVecRot));
+    add_input_ui(m_leftIndexRot2.init_widget("<b>Index</b> bone 2:", offsetVecRot));
+    add_input_ui(m_leftIndexRot3.init_widget("<b>Index</b> bone 3:", offsetVecRot));
     m_leftIndexRot1.set_enable_state({true,false,true});
     m_leftIndexRot2.set_enable_state({true,false,false});
     m_leftIndexRot3.set_enable_state({true,false,false});
 
-    m_inputUiElements["left_hand_middle_1"] = m_leftMiddleRot1.init_widget("<b>Middle</b> bone 1: ", offsetVecRot);
-    m_inputUiElements["left_hand_middle_2"] = m_leftMiddleRot2.init_widget("<b>Middle</b> bone 2: ", offsetVecRot);
-    m_inputUiElements["left_hand_middle_3"] = m_leftMiddleRot3.init_widget("<b>Middle</b> bone 3: ", offsetVecRot);
+    add_input_ui(m_leftMiddleRot1.init_widget("<b>Middle</b> bone 1: ", offsetVecRot));
+    add_input_ui(m_leftMiddleRot2.init_widget("<b>Middle</b> bone 2: ", offsetVecRot));
+    add_input_ui(m_leftMiddleRot3.init_widget("<b>Middle</b> bone 3: ", offsetVecRot));
     m_leftMiddleRot1.set_enable_state({true,false,true});
     m_leftMiddleRot2.set_enable_state({true,false,false});
     m_leftMiddleRot3.set_enable_state({true,false,false});
 
-    m_inputUiElements["left_hand_ring_1"] = m_leftRingRot1.init_widget("<b>Ring</b> bone 1: ", offsetVecRot);
-    m_inputUiElements["left_hand_ring_2"] = m_leftRingRot2.init_widget("<b>Ring</b> bone 2: ", offsetVecRot);
-    m_inputUiElements["left_hand_ring_3"] = m_leftRingRot3.init_widget("<b>Ring</b> bone 3: ", offsetVecRot);
+    add_input_ui(m_leftRingRot1.init_widget("<b>Ring</b> bone 1: ", offsetVecRot));
+    add_input_ui(m_leftRingRot2.init_widget("<b>Ring</b> bone 2: ", offsetVecRot));
+    add_input_ui(m_leftRingRot3.init_widget("<b>Ring</b> bone 3: ", offsetVecRot));
     m_leftRingRot1.set_enable_state({true,false,true});
     m_leftRingRot2.set_enable_state({true,false,false});
     m_leftRingRot3.set_enable_state({true,false,false});
 
-    m_inputUiElements["left_hand_pinky_1"] = m_leftPinkyRot1.init_widget("<b>Pinky</b> bone 1: ", offsetVecRot);
-    m_inputUiElements["left_hand_pinky_2"] = m_leftPinkyRot2.init_widget("<b>Pinky</b> bone 2: ", offsetVecRot);
-    m_inputUiElements["left_hand_pinky_3"] = m_leftPinkyRot3.init_widget("<b>Pinky</b> bone 3: ", offsetVecRot);
+    add_input_ui(m_leftPinkyRot1.init_widget("<b>Pinky</b> bone 1: ", offsetVecRot));
+    add_input_ui(m_leftPinkyRot2.init_widget("<b>Pinky</b> bone 2: ", offsetVecRot));
+    add_input_ui(m_leftPinkyRot3.init_widget("<b>Pinky</b> bone 3: ", offsetVecRot));
     m_leftPinkyRot1.set_enable_state({true,false,true});
     m_leftPinkyRot2.set_enable_state({true,false,false});
     m_leftPinkyRot3.set_enable_state({true,false,false});
 
-    m_inputUiElements["left_hand_thumb_1"] = m_leftThumbRot1.init_widget("<b>Thumb</b> bone 1: ", offsetVecRot);
-    m_inputUiElements["left_hand_thumb_2"] = m_leftThumbRot2.init_widget("<b>Thumb</b> bone 2: ", offsetVecRot);
-    m_inputUiElements["left_hand_thumb_3"] = m_leftThumbRot3.init_widget("<b>Thumb</b> bone 3: ", offsetVecRot);
+    add_input_ui(m_leftThumbRot1.init_widget("<b>Thumb</b> bone 1: ", offsetVecRot));
+    add_input_ui(m_leftThumbRot2.init_widget("<b>Thumb</b> bone 2: ", offsetVecRot));
+    add_input_ui(m_leftThumbRot3.init_widget("<b>Thumb</b> bone 3: ", offsetVecRot));
     m_leftThumbRot1.set_enable_state({true,false,true});
     m_leftThumbRot2.set_enable_state({true,false,false});
     m_leftThumbRot3.set_enable_state({true,false,false});
 
-    m_inputUiElements["right_hand_index_1"] = m_rightIndexRot1.init_widget("<b>Index</b> bone 1: ", offsetVecRot);
-    m_inputUiElements["right_hand_index_2"] = m_rightIndexRot2.init_widget("<b>Index</b> bone 2: ", offsetVecRot);
-    m_inputUiElements["right_hand_index_3"] = m_rightIndexRot3.init_widget("<b>Index</b> bone 3: ", offsetVecRot);
+    add_input_ui(m_rightIndexRot1.init_widget("<b>Index</b> bone 1: ", offsetVecRot));
+    add_input_ui(m_rightIndexRot2.init_widget("<b>Index</b> bone 2: ", offsetVecRot));
+    add_input_ui(m_rightIndexRot3.init_widget("<b>Index</b> bone 3: ", offsetVecRot));
     m_rightIndexRot1.set_enable_state({true,false,true});
     m_rightIndexRot2.set_enable_state({true,false,false});
     m_rightIndexRot3.set_enable_state({true,false,false});
 
-    m_inputUiElements["right_hand_middle_1"] = m_rightMiddleRot1.init_widget("<b>Middle</b> bone 1: ", offsetVecRot);
-    m_inputUiElements["right_hand_middle_2"] = m_rightMiddleRot2.init_widget("<b>Middle</b> bone 2: ", offsetVecRot);
-    m_inputUiElements["right_hand_middle_3"] = m_rightMiddleRot3.init_widget("<b>Middle</b> bone 3: ", offsetVecRot);
+    add_input_ui(m_rightMiddleRot1.init_widget("<b>Middle</b> bone 1: ", offsetVecRot));
+    add_input_ui(m_rightMiddleRot2.init_widget("<b>Middle</b> bone 2: ", offsetVecRot));
+    add_input_ui(m_rightMiddleRot3.init_widget("<b>Middle</b> bone 3: ", offsetVecRot));
     m_rightMiddleRot1.set_enable_state({true,false,true});
     m_rightMiddleRot2.set_enable_state({true,false,false});
     m_rightMiddleRot3.set_enable_state({true,false,false});
 
-    m_inputUiElements["right_hand_ring_1"] = m_rightRingRot1.init_widget("<b>Ring</b> bone 1: ", offsetVecRot);
-    m_inputUiElements["right_hand_ring_2"] = m_rightRingRot2.init_widget("<b>Ring</b> bone 2: ", offsetVecRot);
-    m_inputUiElements["right_hand_ring_3"] = m_rightRingRot3.init_widget("<b>Ring</b> bone 3: ", offsetVecRot);
+    add_input_ui(m_rightRingRot1.init_widget("<b>Ring</b> bone 1: ", offsetVecRot));
+    add_input_ui(m_rightRingRot2.init_widget("<b>Ring</b> bone 2: ", offsetVecRot));
+    add_input_ui(m_rightRingRot3.init_widget("<b>Ring</b> bone 3: ", offsetVecRot));
     m_rightRingRot1.set_enable_state({true,false,true});
     m_rightRingRot2.set_enable_state({true,false,false});
     m_rightRingRot3.set_enable_state({true,false,false});
 
-    m_inputUiElements["right_hand_pinky_1"] = m_rightPinkyRot1.init_widget("<b>Pinky</b> bone 1: ", offsetVecRot);
-    m_inputUiElements["right_hand_pinky_2"] = m_rightPinkyRot2.init_widget("<b>Pinky</b> bone 2: ", offsetVecRot);
-    m_inputUiElements["right_hand_pinky_3"] = m_rightPinkyRot3.init_widget("<b>Pinky</b> bone 3: ", offsetVecRot);
+    add_input_ui(m_rightPinkyRot1.init_widget("<b>Pinky</b> bone 1: ", offsetVecRot));
+    add_input_ui(m_rightPinkyRot2.init_widget("<b>Pinky</b> bone 2: ", offsetVecRot));
+    add_input_ui(m_rightPinkyRot3.init_widget("<b>Pinky</b> bone 3: ", offsetVecRot));
     m_rightPinkyRot1.set_enable_state({true,false,true});
     m_rightPinkyRot2.set_enable_state({true,false,false});
     m_rightPinkyRot3.set_enable_state({true,false,false});
 
-    m_inputUiElements["right_hand_thumb_1"] = m_rightThumbRot1.init_widget("<b>Thumb</b> bone 1: ", offsetVecRot);
-    m_inputUiElements["right_hand_thumb_2"] = m_rightThumbRot2.init_widget("<b>Thumb</b> bone 2: ", offsetVecRot);
-    m_inputUiElements["right_hand_thumb_3"] = m_rightThumbRot3.init_widget("<b>Thumb</b> bone 3: ", offsetVecRot);
+    add_input_ui(m_rightThumbRot1.init_widget("<b>Thumb</b> bone 1: ", offsetVecRot));
+    add_input_ui(m_rightThumbRot2.init_widget("<b>Thumb</b> bone 2: ", offsetVecRot));
+    add_input_ui(m_rightThumbRot3.init_widget("<b>Thumb</b> bone 3: ", offsetVecRot));
     m_rightThumbRot1.set_enable_state({true,false,true});
     m_rightThumbRot2.set_enable_state({true,false,false});
     m_rightThumbRot3.set_enable_state({true,false,false});
 
-
-    m_inputUiElements["left_fingers_w"]     = m_leftFingersWeight.init_widget(factorS);
-    m_inputUiElements["right_fingers_w"]    = m_rightFingersWeight.init_widget(factorS);
+    add_input_ui(m_leftFingersWeight.init_widget(factorS));
+    add_input_ui(m_rightFingersWeight.init_widget(factorS));
 }
 
 void HumanoidAvatarConfigParametersW::create_connections(){

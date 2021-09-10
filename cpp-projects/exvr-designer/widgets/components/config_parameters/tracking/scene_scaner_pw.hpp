@@ -18,7 +18,7 @@ class SceneScanerInitConfigParametersW : public ConfigParametersW{
 
 public :
 
-    ExComponentW m_kinectManager;
+    ExComponentW m_kinectManager{"kinect_manager"};
 
     void insert_widgets() override;
     void init_and_register_widgets() override;
@@ -31,11 +31,11 @@ class SceneScanerConfigParametersW : public ConfigParametersW{
 
 public :
 
-    TransformSubPart m_tr;
-    ExFloatSpinBoxW m_sizePoints;
-    ExCheckBoxW m_displayClouds;
-    ExCheckBoxW m_displayColliders;
-    ExPushButtonW m_moveEyeToHeadPosition;
+    TransformSubPart m_tr{"global_transform"};
+    ExFloatSpinBoxW m_sizePoints{"size_points"};
+    ExCheckBoxW m_displayClouds{"display_clouds"};
+    ExCheckBoxW m_displayColliders{"display_colliders"};
+    ExPushButtonW m_moveEyeToHeadPosition{"move_eye_to_head"};
 
     void insert_widgets() override;
     void init_and_register_widgets() override;

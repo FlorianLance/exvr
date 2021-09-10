@@ -19,8 +19,8 @@ class WebcamViewerInitConfigParametersW : public ConfigParametersW{
 public :
 
 
-    ExSpinBoxW m_sbDeviceId;
-    ExSpinBoxW m_sbFPS;
+    ExSpinBoxW m_sbDeviceId{"device_id"};
+    ExSpinBoxW m_sbFPS{"requested_fps"};
 
     void insert_widgets() override;
     void init_and_register_widgets() override;
@@ -35,10 +35,10 @@ public :
     EyeRendererSubPart m_eye;
 
     WordSpaceCanvasSubPart m_cameraSettings;
-    ExCheckBoxW m_followEyeCamera;
-    ExCheckBoxW m_cbUseVideoSize;
-    ExVector2dW m_pivot;
-    ExFloatSpinBoxW m_distance;
+    ExCheckBoxW m_followEyeCamera{"use_eye_camera"};
+    ExCheckBoxW m_cbUseVideoSize{"use_original_size"};
+    ExVector2dW m_pivot{"pivot"};
+    ExFloatSpinBoxW m_distance{"distance"};
 
     void insert_widgets() override;
     void init_and_register_widgets() override;

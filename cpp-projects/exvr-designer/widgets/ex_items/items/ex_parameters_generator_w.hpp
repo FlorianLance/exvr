@@ -29,41 +29,42 @@ class ExParametersGeneratorWidgetW : public ExItemW<QWidget>{
 
 public :
 
-    ExParametersGeneratorWidgetW();
+    ExParametersGeneratorWidgetW(QString name ="");
     ~ExParametersGeneratorWidgetW() override;
-    ExParametersGeneratorWidgetW *init_widget(std::map<QString, ExBaseW*> *inputUiElements, QString genName, bool enabled = true);
+    ExParametersGeneratorWidgetW *init_widget(std::unordered_map<UiElementKey, ExBaseW*> *inputUiElements, bool enabled = true);
 
-    void init_connection(const QString &nameParam) override;
     void update_from_arg(const Arg &arg) override;
     Arg convert_to_arg() const override;
     void update_from_resources() override;
     void update_from_components() override;
 
+private:
+
+    std::pair<QWidget*,ExBaseW*> gen_ui_element(UiType uiType);
+    void add_ui_element_from_dialog(UiType uiType);
+    void add_ui_element_from_arg(Arg arg);
+
+public:
 
     QComboBox m_cbTypeParam;
     QPushButton m_pbAddParam;
     QPushButton m_pbMoveUp;
     QPushButton m_pbMoveDown;
     QPushButton m_pbRemoveParam;
-
-    QStringList m_namesParameters;
     ui::ListWidget m_lwParameters;
-
-    std::map<QString, ExBaseW*> *m_inputUiElements = nullptr;
 
 private:
 
     int currentId = 0;
-
-    void add_ui_element_from_arg(const Arg &arg);
-    void add_ui_element(UiType uiType, QString uiName, int order, bool initFromDialog);
+    QVector<UiElementKey> elementsOrder;
+    std::unordered_map<UiElementKey, ExBaseW*> generatorElements;
+    std::unordered_map<UiElementKey, ExBaseW*> *m_inputUiElements = nullptr;
 
 signals:
 
-    void add_ui_signal(QString nameParam);
-    void move_up_ui_signal(QString prevNameParam, QString nameParam);
-    void move_down_ui_signal(QString nextNameParam, QString nameParam);
-    void remove_ui_signal(QString nameParam);
+    void add_ui_signal(Arg arg);
+    void remove_ui_signal(UiElementKey argKey);
+    void swap_ui_signal(UiElementKey arg1Key, UiElementKey arg2Key);
 };
 
 }

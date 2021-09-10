@@ -226,9 +226,9 @@ namespace Ex{
         static public ExConnector generate(XML.Connector xml){
 
             // generate type
-            Type typeConnector = Type.GetType(String.Format("Ex.{0}Connector", xml.Name));
+            Type typeConnector = Type.GetType(string.Format("Ex.{0}Connector", xml.Name));
             if (typeConnector == null) {
-                ExVR.Log().error(String.Format("Error when creating connector: {0}", xml.Name));
+                ExVR.Log().error(string.Format("Error when creating connector: {0}", xml.Name));
                 return null;
             }
 

@@ -18,6 +18,8 @@
 #include <QLabel>
 
 
+// qt-utility
+#include "ex_code_editor_w.hpp"
 
 // local
 #include "component.hpp"
@@ -167,7 +169,7 @@ private:
     QTabWidget *tabComponentsDocW = nullptr;
     QTextBrowser *componentsInfoW = nullptr;
     QTextBrowser *componentsConnectionsW = nullptr;
-    QTextBrowser *componentsCsharpScriptingW = nullptr;
+    ExCodeEditorW componentsCsharpScriptingW;
     QTextBrowser *componentsPythonScriptingW = nullptr;
     Component::Category currentComponentCategory = Component::Category::Output;
     Component::Type currentComponent = Component::T::Logger;

@@ -27,6 +27,8 @@ namespace Ex {
         private Dictionary<int, float> topCoeffs = new Dictionary<int, float>();
 
 
+        private Material flagPoleMaterial = null;
+
         #region ex_functions
         protected override bool initialize() {
 
@@ -45,22 +47,22 @@ namespace Ex {
 
             // pole
             {
-                var mat = Instantiate(Resources.Load(string.Format("Materials/Procedural/Pole")) as Material);
+                flagPoleMaterial = Instantiate(Resources.Load(string.Format("Materials/Procedural/Pole")) as Material);
 
                 poleGO = new GameObject("Pole");
                 poleGO.transform.SetParent(transform);                
                 poleGO.AddComponent<MeshFilter>().mesh = PrimitivesMesh.CylinderBuilder.generate(10, 3, 0.025f, initC.get<float>("pole_height"));
-                poleGO.AddComponent<MeshRenderer>().material = mat;
+                poleGO.AddComponent<MeshRenderer>().sharedMaterial = flagPoleMaterial;
 
                 baseGO = new GameObject("Base");
                 baseGO.transform.SetParent(transform);
                 baseGO.AddComponent<MeshFilter>().mesh = PrimitivesMesh.CylinderBuilder.generate(30, 3, 0.25f, 0.015f);
-                baseGO.AddComponent<MeshRenderer>().material = mat;
+                baseGO.AddComponent<MeshRenderer>().sharedMaterial = flagPoleMaterial;
 
                 ballGO = new GameObject("ball");
                 ballGO.transform.SetParent(transform);
                 ballGO.AddComponent<MeshFilter>().mesh = PrimitivesMesh.SphereBuilder.generate(0.06f);
-                ballGO.AddComponent<MeshRenderer>().material = mat;
+                ballGO.AddComponent<MeshRenderer>().sharedMaterial = flagPoleMaterial;
                 ballGO.transform.position += new Vector3(0, initC.get<float>("pole_height") + 0.06f, 0);
             }
 
@@ -189,6 +191,10 @@ namespace Ex {
             if (imageAlias.Length != 0) {
                 smr.material.mainTexture = ExVR.Resources().get_image_file_data(imageAlias).texture;
             }
+        }
+
+        public void set_pole_color(Color color) {
+            flagPoleMaterial.color = color;
         }
 
         #endregion

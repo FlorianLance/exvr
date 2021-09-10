@@ -12,14 +12,14 @@ void BlendFadeViewerConfigParametersW::insert_widgets(){
 
 void BlendFadeViewerConfigParametersW::init_and_register_widgets(){
 
-    m_inputUiElements["blend_and_fade"] = blendAndFade.init_widget("Blend and fade", true);
-    m_inputUiElements["only_blend"]     = onlyBlend.init_widget("Only blend", false);
+    add_input_ui(blendAndFade.init_widget("Blend and fade", true));
+    add_input_ui(onlyBlend.init_widget("Only blend", false));
 
     DsbSettings s = {MinV<qreal>{0.0}, V<qreal>{1.0}, MaxV<qreal>{1000.0}, StepV<qreal>{0.1}, 2};
-    m_inputUiElements["duration_blend"] = durationBlend.init_widget(s);
-    m_inputUiElements["duration_fade"]  = durationFade.init_widget(s);
-    m_inputUiElements["start_color"]    = startColor.init_widget("Select start color" , QColor(0,0,0,0));
-    m_inputUiElements["end_color"]      = endColor.init_widget("Select end color" , QColor(0,0,0,255));
+    add_input_ui(durationBlend.init_widget(s));
+    add_input_ui(durationFade.init_widget(s));
+    add_input_ui(startColor.init_widget("Select start color" , QColor(0,0,0,0)));
+    add_input_ui(endColor.init_widget("Select end color" , QColor(0,0,0,255)));
 }
 
 void BlendFadeViewerConfigParametersW::create_connections(){

@@ -336,11 +336,11 @@ Generator XmlIoManager::read_generator(){
     return g;
 }
 
-void XmlIoManager::write_argument(const QString &nameArg, const Arg &arg){
+void XmlIoManager::write_argument(const Arg &arg){
 
     w->writeStartElement(QSL("Arg"));
     w->writeAttribute(QSL("key"),   QString::number(arg.uiElementKey.v));
-    w->writeAttribute(QSL("name"),  nameArg);
+    w->writeAttribute(QSL("name"),  arg.name);
     w->writeAttribute(QSL("ui"),    from_view(get_name(arg.associated_ui_type())));
     w->writeAttribute(QSL("value"), arg.value());
     w->writeAttribute(QSL("type"),  from_view(get_unity_type_string(arg.unity_type())));
@@ -436,8 +436,7 @@ ConfigUP XmlIoManager::read_config(){
 
         if(check_start_node(QSL("Arg"))){
             if(auto arg = read_argument(); std::get<0>(arg).has_value()){
-                const QString name = std::get<0>(arg)->name;
-                config->add_arg(name, std::move(std::get<0>(arg).value()));
+                config->add_arg(std::move(std::get<0>(arg).value()));
             }else{
                 QtLogger::error(QSL("[XML] -> from config ") % name.value() % QSL(": ") % std::get<1>(arg));
             }
@@ -460,7 +459,7 @@ void XmlIoManager::write_config(const Config *config, bool initConfig){
     w->writeAttribute(QSL("name"), config->name);
 
     for(const auto &arg : config->args){
-        write_argument(arg.first, arg.second);
+        write_argument(arg.second);
     }
 
     w->writeEndElement(); // /InitConfig or /Config
@@ -776,7 +775,7 @@ void XmlIoManager::write_connector(const Connector *connector){
     w->writeAttribute(QSL("name"), connector->name);
     w->writeAttribute(QSL("node_position"), QString::number(connector->pos.x()) % QSL(" ") % QString::number(connector->pos.y()));
     w->writeAttribute(QSL("node_size"),     QString::number(connector->size.width()) % QSL(" ") % QString::number(connector->size.height()));
-    write_argument(QSL("value"), connector->arg);
+    write_argument(connector->arg);
     w->writeEndElement(); // /Connector
 }
 

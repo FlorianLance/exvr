@@ -13,7 +13,7 @@
 
 using namespace tool::ex;
 
-ExConfigW::ExConfigW() : ExItemW<QFrame>(UiType::Component_config){
+ExConfigW::ExConfigW(QString name) : ExItemW<QFrame>(UiType::Component_config, name){
 
     w->setFrameShadow(QFrame::Raised);
     w->setFrameShape(QFrame::Shape::NoFrame);
@@ -34,41 +34,33 @@ ExConfigW::ExConfigW() : ExItemW<QFrame>(UiType::Component_config){
     l->addWidget(m_configNames = new QComboBox());
     l->addStretch();
 
-}
 
-ExConfigW *ExConfigW::init_widget(bool enabled){
-    w->setEnabled(enabled);
-    return this;
-}
+    //    connect(m_routineNames, QOverload<int>::of(&QComboBox::currentIndexChanged), this, [&,nameParam]{
 
-void ExConfigW::init_connection(const QString &nameParam){
+    //        m_currentRoutineKey = -1;
+    //        if(m_routineNames->currentIndex() > 0){
+    //            const size_t id = to_unsigned(m_routineNames->currentIndex()-1);
+    ////            ComponentsManager *componentsM = ComponentsManager::get();
+    ////            m_currentComponentKey = componentsM->components[id]->key();
+    //        }
+    //        //        update_configs_list_widget();
+    //        //        emit ui_change_signal(nameParam);
+    //    });
 
-//    connect(m_routineNames, QOverload<int>::of(&QComboBox::currentIndexChanged), this, [&,nameParam]{
+    //    connect(m_conditionNames, QOverload<int>::of(&QComboBox::currentIndexChanged), this, [&,nameParam]{
 
-//        m_currentRoutineKey = -1;
-//        if(m_routineNames->currentIndex() > 0){
-//            const size_t id = to_unsigned(m_routineNames->currentIndex()-1);
-////            ComponentsManager *componentsM = ComponentsManager::get();
-////            m_currentComponentKey = componentsM->components[id]->key();
-//        }
-//        //        update_configs_list_widget();
-//        //        emit ui_change_signal(nameParam);
-//    });
-
-//    connect(m_conditionNames, QOverload<int>::of(&QComboBox::currentIndexChanged), this, [&,nameParam]{
-
-//        //        m_currentComponentKey = -1;
-//        //        if(m_componentNames->currentIndex() > 0){
-//        //            const size_t id = to_unsigned(m_componentNames->currentIndex()-1);
-//        //            ComponentsManager *componentsM = ComponentsManager::get();
-//        //            m_currentComponentKey = componentsM->components[id]->key();
-//        //        }
-//        //        update_configs_list_widget();
-//        //        emit ui_change_signal(nameParam);
-//    });
+    //        //        m_currentComponentKey = -1;
+    //        //        if(m_componentNames->currentIndex() > 0){
+    //        //            const size_t id = to_unsigned(m_componentNames->currentIndex()-1);
+    //        //            ComponentsManager *componentsM = ComponentsManager::get();
+    //        //            m_currentComponentKey = componentsM->components[id]->key();
+    //        //        }
+    //        //        update_configs_list_widget();
+    //        //        emit ui_change_signal(nameParam);
+    //    });
 
 
-    connect(m_componentNames, QOverload<int>::of(&QComboBox::currentIndexChanged), this, [&,nameParam]{
+    connect(m_componentNames, QOverload<int>::of(&QComboBox::currentIndexChanged), this, [&]{
 
         m_currentComponentKey.v = -1;
         if(m_componentNames->currentIndex() > 0){
@@ -77,10 +69,10 @@ void ExConfigW::init_connection(const QString &nameParam){
             m_currentComponentKey.v = componentsM->components[id]->key();
         }
         update_configs_list_widget();
-        emit ui_change_signal(nameParam);
+        trigger_ui_change();
     });
 
-    connect(m_configNames, QOverload<int>::of(&QComboBox::currentIndexChanged), this, [&, nameParam]{
+    connect(m_configNames, QOverload<int>::of(&QComboBox::currentIndexChanged), this, [&]{
 
         m_currentConfigKey.v = -1;
         if(m_currentComponentKey.v != -1){
@@ -92,18 +84,24 @@ void ExConfigW::init_connection(const QString &nameParam){
                 }
             }
         }
-        emit ui_change_signal(nameParam);
+        trigger_ui_change();
     });
 
-    connect(m_routineName, &QLineEdit::textEdited, this, [&, nameParam]{
+    connect(m_routineName, &QLineEdit::textEdited, this, [&]{
         m_currentRoutineName = m_routineName->text();
-        emit ui_change_signal(nameParam);
+        trigger_ui_change();
     });
-    connect(m_conditionName, &QLineEdit::textEdited, this, [&, nameParam]{
+    connect(m_conditionName, &QLineEdit::textEdited, this, [&]{
         m_currentConditionName = m_conditionName->text();
-        emit ui_change_signal(nameParam);
+        trigger_ui_change();
     });
 }
+
+ExConfigW *ExConfigW::init_widget(bool enabled){
+    w->setEnabled(enabled);
+    return this;
+}
+
 
 void ExConfigW::update_from_arg(const Arg &arg){
 
@@ -125,7 +123,7 @@ void ExConfigW::update_from_arg(const Arg &arg){
 
 Arg ExConfigW::convert_to_arg() const{
 
-    Arg arg = ExItemW::convert_to_arg();
+    Arg arg = ExBaseW::convert_to_arg();
     arg.init_from({
             m_componentNames->currentText(),
             m_configNames->currentText(),

@@ -854,3 +854,11 @@ void ComboTextGen::update_arg(Arg &arg) const{
     arg.generator.info = leText.text();
 }
 
+
+CodeEditorGen::CodeEditorGen(){}
+
+void CodeEditorGen::update_arg(Arg &arg) const{}
+
+ColorPickGen::ColorPickGen(){}
+
+void ColorPickGen::update_arg(Arg &arg) const{}

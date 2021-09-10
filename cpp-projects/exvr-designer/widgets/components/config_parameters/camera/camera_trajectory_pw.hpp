@@ -34,10 +34,10 @@ class CameraTrajectoryConfigParametersW : public ConfigParametersW{
 
 public :
 
-    ExCheckBoxW cbAddCameraPosition;
-    ExCheckBoxW cbComputeTimesWithDistances;
-    ExFloatSpinBoxW dsbGlobalTime;
-    ExTabW<ExCameraTargetW> cameraTrajectory;
+    ExCheckBoxW cbAddCameraPosition{"add_camera_position"};
+    ExCheckBoxW cbComputeTimesWithDistances{"compute_times"};
+    ExFloatSpinBoxW dsbGlobalTime{"global_time"};
+    ExTabW<ExCameraTargetW> cameraTrajectory{"camera_trajectory"};
 
 
     void insert_widgets() override{
@@ -57,10 +57,10 @@ public :
 
         std::vector<std::any> parameters;
         parameters.emplace_back(std::make_any<bool>(true));
-        m_inputUiElements["add_camera_position"]= cbAddCameraPosition.init_widget("Add camera current position", true);
-        m_inputUiElements["compute_times"]      = cbComputeTimesWithDistances.init_widget("Use global time and compute each sub time", true);
-        m_inputUiElements["global_time"]        = dsbGlobalTime.init_widget(MinV<qreal>{0.}, V<qreal>{3.},MaxV<qreal>{1000.}, StepV<qreal>{0.1}, 2);
-        m_inputUiElements["camera_trajectory"]  = cameraTrajectory.init_widget("P", parameters, QTabWidget::TabPosition::West, true);
+        add_input_ui(cbAddCameraPosition.init_widget("Add camera current position", true));
+        add_input_ui(cbComputeTimesWithDistances.init_widget("Use global time and compute each sub time", true));
+        add_input_ui(dsbGlobalTime.init_widget(MinV<qreal>{0.}, V<qreal>{3.},MaxV<qreal>{1000.}, StepV<qreal>{0.1}, 2));
+        add_input_ui(cameraTrajectory.init_widget("P", parameters, QTabWidget::TabPosition::West, true));
     }
 
     void create_connections() override{

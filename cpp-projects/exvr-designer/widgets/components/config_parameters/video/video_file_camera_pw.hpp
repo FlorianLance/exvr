@@ -18,7 +18,7 @@ class VideoFileCameraInitConfigParametersW : public ConfigParametersW{
 public :
 
     EyeRendererSubPart m_eye;
-    ExResourceW m_video;
+    ExResourceW m_video{"video"};
 
     void insert_widgets() override{
         add_sub_part_widget(m_eye);
@@ -27,7 +27,7 @@ public :
 
     void init_and_register_widgets() override{
         map_sub_part(m_eye.init_widget());
-        m_inputUiElements["video"] = m_video.init_widget(Resource::Type::Video, "Video resource: ");
+        add_input_ui(m_video.init_widget(Resource::Type::Video, "Video resource: "));
     }
 
     void create_connections() override{}    
@@ -40,7 +40,7 @@ class VideoFileCameraConfigParametersW : public ConfigParametersW{
 public :
 
     WordSpaceCameraCanvasSubPart m_cameraSettings;
-    ExCheckBoxW m_cbUseVideoSize;
+    ExCheckBoxW m_cbUseVideoSize{"use_original_size"};
 
     void insert_widgets() override{
         layout()->setContentsMargins(0,0,0,0);
@@ -50,7 +50,7 @@ public :
 
     void init_and_register_widgets() override{
         map_sub_part(m_cameraSettings.init_widget());
-        m_inputUiElements["use_original_size"]  = m_cbUseVideoSize.init_widget("Use video original size", true, true);
+        add_input_ui(m_cbUseVideoSize.init_widget("Use video original size", true, true));
     }
 
     void create_connections() override{

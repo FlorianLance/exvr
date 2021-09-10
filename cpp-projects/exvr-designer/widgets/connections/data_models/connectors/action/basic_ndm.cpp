@@ -49,7 +49,6 @@ void NextWithNameEmbeddedW::initialize(){
     w->init_widget("default routine");
 
     // set widget connections
-    w->init_connection("");
     connect(w.get(), &ExLineEditW::ui_change_signal, this, &NextWithNameEmbeddedW::compute_data_signal);
 
     // add widget to ui
@@ -71,7 +70,6 @@ void PreviousWithNameEmbeddedW::initialize(){
     w->init_widget("default routine");
 
     // set widget connections
-    w->init_connection("");
     connect(w.get(), &ExLineEditW::ui_change_signal, this, &PreviousWithNameEmbeddedW::compute_data_signal);
 
     // add widget to ui
@@ -92,7 +90,6 @@ void NextWithCondEmbeddedW::initialize(){
     w->init_widget("default condition");
 
     // set widget connections
-    w->init_connection("");
     connect(w.get(), &ExLineEditW::ui_change_signal, this, &NextWithCondEmbeddedW::compute_data_signal);
 
     // add widget to ui
@@ -114,7 +111,6 @@ void PreviousWithCondEmbeddedW::initialize(){
     w->init_widget("default condition");
 
     // set widget connections
-    w->init_connection("");
     connect(w.get(), &ExLineEditW::ui_change_signal, this, &PreviousWithCondEmbeddedW::compute_data_signal);
 
     // add widget to ui
@@ -137,8 +133,6 @@ void ForceComponentConfigW::initialize(){
     w->init_widget();
 
     // set widget connections
-    w->init_connection("");
-
     connect(w.get(), &ExConfigW::ui_change_signal,       this, &ForceComponentConfigW::compute_data_signal);
     connect(w.get(), &ExConfigW::update_from_components_signal, this, &ForceComponentConfigW::compute_data_signal);
 

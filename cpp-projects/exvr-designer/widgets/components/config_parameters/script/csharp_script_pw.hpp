@@ -39,11 +39,11 @@ public:
 
     QTabWidget *tab = nullptr;
 
-    ExTextEditW startFunction;
-    ExCodeEditorW contentFunction;
-    ExTextEditW endFunction;
+    ExTextEditW startFunction{"start"};
+    ExCodeEditorW contentFunction{"function"};
+    ExTextEditW endFunction{"end"};
 
-    ExCodeEditorW extraContent;
+    ExCodeEditorW extraContent{"extra"};
 
     void insert_widgets() override{
 
@@ -71,58 +71,18 @@ public:
 
     void init_and_register_widgets() override{
 
-        QFont font;
-        font.setFamily("Courier");
-        font.setStyleHint(QFont::Monospace);
-        font.setFixedPitch(true);
-        font.setPointSize(10);
-
-        // font
-        startFunction.w->setFont(font);
-        contentFunction.w->setFont(font);
-        endFunction.w->setFont(font);
-        extraContent.w->setFont(font);
-
-        // tab size
-        QFontMetrics metrics(font);
-        auto distance = metrics.horizontalAdvance("    ");
-        startFunction.w->setTabStopDistance(distance);
-        contentFunction.w->setTabStopDistance(distance);
-        endFunction.w->setTabStopDistance(distance);
-        extraContent.w->setTabStopDistance(distance);
+        QStringList classNames;
+        for(const auto &unityStr : Component::components.tuple_column<Component::ColUnityStr>()){
+            classNames << QString(from_view(unityStr) % QSL("Component"));
+        }
 
         // init widgets
-        startFunction.init_widget("public static object function(object input){\n   object output = null;");
-        m_inputUiElements["function"] = contentFunction.init_widget(" ");
-        endFunction.init_widget("   return output;\n}");
-        m_inputUiElements["extra"] = extraContent.init_widget("");
+        startFunction.init_widget_as_csharp_editor(classNames, QColor(80,80,80), "public static object function(object input){\n   object output = null;");
+        add_input_ui(contentFunction.init_widget_as_csharp_editor(classNames, QColor(30,30,30), " "));
+        endFunction.init_widget_as_csharp_editor(classNames, QColor(80,80,80), "   return output;\n}");
+        add_input_ui(extraContent.init_widget_as_csharp_editor(classNames, QColor(30,30,30), ""));
 
-        // hightlighing
-        ui::CSharpHighlighter *cshStartFunction = new ui::CSharpHighlighter(startFunction.w->document());
-        ui::CSharpHighlighter *cshContentFunction = new ui::CSharpHighlighter(contentFunction.w->document());
-        ui::CSharpHighlighter *cshEndFunction = new ui::CSharpHighlighter(endFunction.w->document());
-        ui::CSharpHighlighter *cshContentVariables = new ui::CSharpHighlighter(extraContent.w->document());
-
-        std::vector<QString> classNames;
-        for(const auto &unityStr : Component::components.tuple_column<Component::ColUnityStr>()){
-            classNames.emplace_back(QString(from_view(unityStr) % QSL("Component")));
-        }
-        cshStartFunction->add_classes(classNames);
-        cshContentFunction->add_classes(classNames);
-        cshEndFunction->add_classes(classNames);
-        cshContentVariables->add_classes(classNames);
-
-        startFunction.w->setStyleSheet("background-color: rgb(80,80,80);");
-        startFunction.w->zoomIn(2);
         startFunction.w->setReadOnly(true);
-
-        contentFunction.w->setStyleSheet("background-color: rgb(30,30,30);");
-        contentFunction.w->zoomIn(2);
-        extraContent.w->setStyleSheet("background-color: rgb(30,30,30);");
-        extraContent.w->zoomIn(2);
-
-        endFunction.w->setStyleSheet("background-color: rgb(80,80,80);");
-        endFunction.w->zoomIn(2);
         endFunction.w->setReadOnly(true);
     }
 
@@ -154,8 +114,8 @@ class CSharpScriptInitConfigParametersW : public ConfigParametersW{
 
 public :
 
-    ExLineEditW m_className;
-    ExParametersGeneratorWidgetW m_generator;
+    ExLineEditW m_className{"component_class_name"};
+    ExParametersGeneratorWidgetW m_generator{"generator"};
 
     void insert_widgets() override{
 
@@ -171,8 +131,8 @@ public :
     }
 
     void init_and_register_widgets() override{
-        m_generatorsUiElements["generator"]         = m_generator.init_widget(&m_inputUiElements, "generator");
-        m_inputUiElements["component_class_name"]   = m_className.init_widget("TemplateComponent");
+        add_generator_ui(m_generator.init_widget(input_ui_widgets()));
+        add_input_ui(m_className.init_widget("TemplateComponent"));
     }
 
     void create_connections() override{
@@ -185,8 +145,7 @@ class CSharpScriptConfigParametersW : public ConfigParametersW{
 
 public :
 
-    ExParametersGeneratorWidgetW m_generator;
-
+    ExParametersGeneratorWidgetW m_generator{"generator"};
 
     void insert_widgets() override{
         m_layout->addWidget(ui::F::gen(ui::L::HB(), {m_generator()},  LStretch{false},LMargins{false}, QFrame::Box));
@@ -194,7 +153,7 @@ public :
     }
 
     void init_and_register_widgets() override{
-        m_generatorsUiElements["generator"] = m_generator.init_widget(&m_inputUiElements, "generator");
+        add_generator_ui(m_generator.init_widget(input_ui_widgets()));
     }
 
 

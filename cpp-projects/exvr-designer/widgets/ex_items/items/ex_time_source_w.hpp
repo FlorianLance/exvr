@@ -17,14 +17,14 @@ class ExTimeW : public ExItemW<QWidget>{
 
 public:
 
-    ExTimeW() : ExItemW<QWidget>(UiType::Time){}
+    ExTimeW(QString name ="");
     ExTimeW *init_widget(bool enabled = true);
-    void init_connection(const QString &nameParam) override;
+
     void update_from_arg(const Arg &arg) override;
     Arg convert_to_arg() const override;
     void set_generator(QString genName) override;
 
-    ExComboBoxTextW typeT;
-    ExSpinBoxW frequency;
+    ExComboBoxTextW typeT = {"type"};
+    ExSpinBoxW frequency = {"frequency"};
 };
 }

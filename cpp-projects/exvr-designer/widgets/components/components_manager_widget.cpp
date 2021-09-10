@@ -248,8 +248,10 @@ void ComponentsManagerW::initialize_menues(){
     }
 
     // fill types categories mapping
-    std::unordered_map<Component::Category, std_v1<Component::Type>> componentsT;       
-    std::unordered_map<Component::Category, std_v1<Component::Type>> experimentalComponentsT;
+    using umComps = std::unordered_map<Component::Category, std_v1<Component::Type>>;
+    umComps stableComponentsT;
+    umComps experimentalComponentsT;
+    umComps legacyComponentsT;
     for(const auto &type : Component::all_components_types()){        
 
         if(Component::get_restricted(type) == Component::Restricted::LNCO && !m_lncoComponents){
@@ -257,87 +259,65 @@ void ComponentsManagerW::initialize_menues(){
         }
 
         const auto category = Component::get_category(type);
-        if(Component::get_state(type) == Component::State::Exp){
+
+        if(Component::get_state(type) == Component::State::Sta){ // stable
+            if(stableComponentsT.count(category) == 0){
+                stableComponentsT[category] = {};
+            }
+            stableComponentsT[category].emplace_back(type);
+        }else if(Component::get_state(type) == Component::State::Exp){ // experimental
             if(experimentalComponentsT.count(category) == 0){
                 experimentalComponentsT[category] = {};
             }
             experimentalComponentsT[category].emplace_back(type);
-        }else{
-            if(componentsT.count(category) == 0){
-                componentsT[category] = {};
+        }else if(Component::get_state(type) == Component::State::Leg){ // legacy
+            if(legacyComponentsT.count(category) == 0){
+                legacyComponentsT[category] = {};
             }
-            componentsT[category].emplace_back(type);
+            legacyComponentsT[category].emplace_back(type);
         }
     }
 
-    // new components sub menu
-    m_createNewComponentsSubMenu.clear();
-    m_createNewComponentsSubMenu.setTitle(QSL("Create component"));
-    for(const auto &category : Component::all_categories()){
+    auto createMenu = [&](const QString &title, umComps &componentsT, QMenu &menu){
+        // new sub menu
+        menu.clear();
+        menu.setTitle(title);
+        for(const auto &category : Component::all_categories()){
 
-        if(category == Component::C::SizeEnum){
-            continue;
+            if(category == Component::C::SizeEnum){
+                continue;
+            }
+
+            if(Component::components_nb_per_category(category) == 0){
+                continue;
+            }
+
+            if(componentsT.count(category) == 0){
+                continue;
+            }
+
+            QMenu *typesMenu = new QMenu();
+            typesMenu->setTitle(from_view(Component::to_string(category)));
+
+            for(const auto &componentT : componentsT[category]){
+
+                QAction *action = new QAction();
+                action->setIcon(QIcon(from_view(Component::get_icon_path(componentT))));
+                action->setText(from_view(Component::get_full_name(componentT)));
+                typesMenu->addAction(action);
+
+                connect(action, &QWidgetAction::triggered, this, [=](){
+                    add_new_component(componentT, m_componentsListW.count());
+                });
+            }
+            menu.addMenu(typesMenu);
         }
+    };
 
-        if(Component::components_nb_per_category(category) == 0){
-            continue;
-        }
-
-        if(componentsT.count(category) == 0){
-            continue;
-        }
-
-        QMenu *typesMenu = new QMenu();
-        typesMenu->setTitle(std::string(Component::to_string(category)).c_str());
-
-        for(const auto &componentT : componentsT[category]){
-
-            QAction *action = new QAction();
-            action->setIcon(QIcon(from_view(Component::get_icon_path(componentT))));
-            action->setText(from_view(Component::get_full_name(componentT)));
-            typesMenu->addAction(action);
-
-            connect(action, &QWidgetAction::triggered, this, [=](){
-                add_new_component(componentT, m_componentsListW.count());
-            });
-        }
-        m_createNewComponentsSubMenu.addMenu(typesMenu);
-    }    
-
-    // new components experimental sub menu
-    m_createNewExperimentalComponentsSubMenu.clear();
-    m_createNewExperimentalComponentsSubMenu.setTitle(QSL("Create component (experimental)"));
-    for(const auto &category : Component::all_categories()){
-
-        if(category == Component::C::SizeEnum){
-            continue;
-        }
-
-        if(Component::components_nb_per_category(category) == 0){
-            continue;
-        }
-
-        if(experimentalComponentsT.count(category) == 0){
-            continue;
-        }
-
-        QMenu *typesMenu = new QMenu();
-        typesMenu->setTitle(std::string(Component::to_string(category)).c_str());
-
-        for(const auto &componentT : experimentalComponentsT[category]){
-
-            QAction *action = new QAction();
-            action->setIcon(QIcon(from_view(Component::get_icon_path(componentT))));
-            action->setText(from_view(Component::get_full_name(componentT)));
-            typesMenu->addAction(action);
-
-            connect(action, &QWidgetAction::triggered, this, [=](){
-                add_new_component(componentT, m_componentsListW.count());
-            });
-        }
-        m_createNewExperimentalComponentsSubMenu.addMenu(typesMenu);
-
-    }
+    // new sub menues
+    createMenu(QSL("Create component"), stableComponentsT, m_createNewComponentsSubMenu);
+    createMenu(QSL("Create component (experimental)"), experimentalComponentsT, m_createNewExperimentalComponentsSubMenu);
+    createMenu(QSL("Create component (legacy)"), legacyComponentsT, m_createNewLegacyComponentsSubMenu);
 }
 
 void ComponentsManagerW::toggle_component_parameters_dialog(ComponentKey componentKey){
@@ -491,6 +471,7 @@ void ComponentsManagerW::show_context_menu(const QPoint &pos) {
     QMenu contextMenu(tr("Context menu"), this);
     contextMenu.addMenu(&m_createNewComponentsSubMenu);
     contextMenu.addMenu(&m_createNewExperimentalComponentsSubMenu);
+    contextMenu.addMenu(&m_createNewLegacyComponentsSubMenu);
     contextMenu.addSeparator();
 
     contextMenu.addMenu(&m_sortComponentsSubMenu);

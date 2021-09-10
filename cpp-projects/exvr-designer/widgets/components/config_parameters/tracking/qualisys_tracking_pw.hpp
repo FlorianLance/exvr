@@ -22,11 +22,10 @@ public :
     void create_connections() override;
     void late_update_ui() override;
 
-    ExRadioButtonW connectToFirstAvailable;
-    ExRadioButtonW specifyServer;
-    ExLineEditW hostName;
-    ExLineEditW ipAdress;
-//    ExSpinBoxW port;
+    ExRadioButtonW connectToFirstAvailable{"connect_to_first"};
+    ExRadioButtonW specifyServer{"connect_to_specific"};
+    ExLineEditW hostName{"host_name"};
+    ExLineEditW ipAdress{"ip_address"};
 };
 
 class QualisysTrackingConfigParametersW : public ConfigParametersW{
@@ -38,8 +37,8 @@ public :
     void create_connections() override;
     void late_update_ui() override;
 
-    TransformSubPart transform;
-    ExTextEditW objects;
+    TransformSubPart transform{"transform"};
+    ExTextEditW objects{"objects"};
 };
 
 }

@@ -21,13 +21,12 @@ class KinectManagerInitConfigParametersW : public ConfigParametersW{
 
 public :
 
-    ExResourceW m_config;
-    ExResourceW m_calib;
-    ExResourceW m_camera;
-    ExComboBoxIndexW m_mode;
-    ExLineEditW m_camarasToUse;
-
-    ExCheckBoxW m_debugBypassDevice;
+    ExResourceW m_config{"config"};
+    ExResourceW m_calib{"calib"};
+    ExResourceW m_camera{"camera"};
+    ExComboBoxIndexW m_mode{"mode"};
+    ExLineEditW m_camarasToUse{"cameras_to_use"};
+    ExCheckBoxW m_debugBypassDevice{"debug_bypass"};
 
     void insert_widgets() override;
     void init_and_register_widgets() override;
@@ -40,8 +39,8 @@ class KinectManagerConfigParametersW : public ConfigParametersW{
 
 public :
 
-    ExSpinBoxW m_fps;
-    ExCheckBoxW m_updateFromCameras;
+    ExSpinBoxW m_fps{"fps"};
+    ExCheckBoxW m_updateFromCameras{"update_cameras"};
 
     void insert_widgets() override;
     void init_and_register_widgets() override;

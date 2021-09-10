@@ -27,19 +27,19 @@ class TheraTrainerPlatformConfigParametersW : public ConfigParametersW{
 
 public :
 
-    TransformSubPart m_transfo;
-    ExFloatSpinBoxW m_height;
+    TransformSubPart m_transfo{"transform"};
+    ExFloatSpinBoxW m_height{"height"};
 
-    ExVector3dW m_offsetPelvisHandGripTr;
-    ExVector3dW m_offsetPelvisHandGripRot;
+    ExVector3dW m_offsetPelvisHandGripTr{"offset_pelvis_pos"};
+    ExVector3dW m_offsetPelvisHandGripRot{"offset_pelvis_rot"};
 
-    ExVector3dW m_offsetRightHandGripTr;
-    ExVector3dW m_offsetRightHandGripRot;
+    ExVector3dW m_offsetRightHandGripTr{"offset_right_grip_pos"};
+    ExVector3dW m_offsetRightHandGripRot{"offset_right_grip_rot"};
 
-    ExVector3dW m_offsetLeftHandGripTr;
-    ExVector3dW m_offsetLeftHandGripRot;
+    ExVector3dW m_offsetLeftHandGripTr{"offset_left_grip_pos"};
+    ExVector3dW m_offsetLeftHandGripRot{"offset_left_grip_rot"};
 
-    ExCheckBoxW m_displayGrips;
+    ExCheckBoxW m_displayGrips{"display_targets"};
 
     void insert_widgets() override;
     void init_and_register_widgets() override;

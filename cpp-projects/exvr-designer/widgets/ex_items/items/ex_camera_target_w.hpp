@@ -27,9 +27,9 @@ class ExCameraTargetW : public ExItemW<QFrame>{
 
 public:
 
-    ExCameraTargetW();
+    ExCameraTargetW(QString name ="");
     ExCameraTargetW *init_widget(bool enabled = true);
-    void init_connection(const QString &nameParam) override;
+
     void update_from_arg(const Arg &arg) override;
     Arg convert_to_arg() const override;
     void set_generator(QString genName) override;
@@ -38,13 +38,13 @@ public:
 
 public:
 
-    ExCheckBoxW displayCamera;
-    ExCheckBoxW sphericInterpolation;
-    ExFloatSpinBoxW time;
-    ExVector3dW translation;
-    ExVector3dW rotation;
-    ExSelectColorW color;
-    ExCurveW speed;
+    ExCheckBoxW displayCamera = {"display_camera"};
+    ExCheckBoxW sphericInterpolation = {"spheric_interpolation"};
+    ExFloatSpinBoxW time = {"time"};
+    ExVector3dW translation = {"translation"};
+    ExVector3dW rotation = {"rotation"};
+    ExSelectColorW color = {"color"};
+    ExCurveW speed      = {"speed"};
 };
 
 }

@@ -17,7 +17,6 @@ void VariableDelayFEmbeddedW::initialize(){
     w->init_widget(QSL("Delay curve"), QSL("Time(s)"), QSL("Delay(ms)"), {0,10}, {0,1000});
 
     // set widget connections
-    w->init_connection("");
     w->minX.w->setEnabled(false);
     connect(w.get(), &ExCurveW::ui_change_signal, this, &VariableDelayFEmbeddedW::compute_data_signal);
 

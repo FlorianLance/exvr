@@ -51,38 +51,38 @@ void CameraTargetConfigParametersW::insert_widgets(){
 void CameraTargetConfigParametersW::init_and_register_widgets(){
 
     // settings
-    m_inputUiElements["duration"]                       = m_duration.init_widget(MinV<qreal>{0}, V<qreal>{5.}, MaxV<qreal>{500.}, StepV<qreal>{0.1}, 2, true);
-    m_inputUiElements["spherical_linear_interpolation"] = m_sphericalInterpolation.init_widget("Use spherical linear interpolation ", true);
-    m_inputUiElements["nb_inter_pos"]                   = m_nbInterPositions.init_widget(MinV<int>{1}, V<int>{200}, MaxV<int>{5000}, StepV<int>{1}, true);
+    add_input_ui(m_duration.init_widget(MinV<qreal>{0}, V<qreal>{5.}, MaxV<qreal>{500.}, StepV<qreal>{0.1}, 2, true));
+    add_input_ui(m_sphericalInterpolation.init_widget("Use spherical linear interpolation ", true));
+    add_input_ui(m_nbInterPositions.init_widget(MinV<int>{1}, V<int>{200}, MaxV<int>{5000}, StepV<int>{1}, true));
 
     // axies
-    m_inputUiElements["pitch"]  = m_pitch.init_widget("Use pitch", false);
-    m_inputUiElements["yaw"]    = m_yaw.init_widget("Use yaw", true);
-    m_inputUiElements["roll"]   = m_roll.init_widget("use roll", false);
+    add_input_ui(m_pitch.init_widget("Use pitch", false));
+    add_input_ui(m_yaw.init_widget("Use yaw", true));
+    add_input_ui(m_roll.init_widget("use roll", false));
 
     // actions
-    m_inputUiElements["move_to_target"]  = m_moveToTarget.init_widget("Move to target", true);
-    m_inputUiElements["move_back"]       = m_moveBack.init_widget("Move back to previous target", false);
-    m_inputUiElements["do_nothing"]      = m_doNothing.init_widget("Do nothing", false);
-    m_inputUiElements["relative_to_eye"] = m_relatetiveToEye.init_widget("Relative to eye", false);
-    m_inputUiElements["absolute"]        = m_absolute.init_widget("Absolute", true);
+    add_input_ui(m_moveToTarget.init_widget("Move to target", true));
+    add_input_ui(m_moveBack.init_widget("Move back to previous target", false));
+    add_input_ui(m_doNothing.init_widget("Do nothing", false));
+    add_input_ui(m_relatetiveToEye.init_widget("Relative to eye", false));
+    add_input_ui(m_absolute.init_widget("Absolute", true));
 
     // cameras
-    m_inputUiElements["use_neutral"]    = m_useNeutralCamera.init_widget("Use start neutral camera", true);
-    m_inputUiElements["use_eye"]        = m_useEyeCamera.init_widget("Use eye camera", false);
+    add_input_ui(m_useNeutralCamera.init_widget("Use start neutral camera", true));
+    add_input_ui(m_useEyeCamera.init_widget("Use eye camera", false));
 
     // progress
-    m_inputUiElements["use_time"]    = m_usingTime.init_widget("Use elapsed time", true);
-    m_inputUiElements["use_factor"]  = m_usingFactor.init_widget("Use input factor [0-1]", false);
+    add_input_ui(m_usingTime.init_widget("Use elapsed time", true));
+    add_input_ui(m_usingFactor.init_widget("Use input factor [0-1]", false));
 
     // move to target
-    m_inputUiElements["target_component"] = m_componentName.init_widget("");
+    add_input_ui(m_componentName.init_widget(""));
     DsbSettings s1 = {MinV<qreal>{-10000.}, V<qreal>{0.},MaxV<qreal>{10000.}, StepV<qreal>{0.1}, 3};
-    m_inputUiElements["target_pos"]       = m_targetPos.init_widget("Position: ", Vector3dSettings{s1,s1,s1}, true);
-    m_inputUiElements["target_rot"]       = m_targetRot.init_widget("Rotation: ", Vector3dSettings{s1,s1,s1}, true);
+    add_input_ui(m_targetPos.init_widget("Position: ", Vector3dSettings{s1,s1,s1}, true));
+    add_input_ui(m_targetRot.init_widget("Rotation: ", Vector3dSettings{s1,s1,s1}, true));
 
     // curves
-    m_inputUiElements["speed_curve"] = m_speedCurve.init_widget("Factor speed curve");
+    add_input_ui(m_speedCurve.init_widget("Factor speed curve"));
     m_speedCurve.minX.w->setEnabled(false);
     m_speedCurve.maxX.w->setEnabled(false);
     m_speedCurve.minY.w->setEnabled(false);

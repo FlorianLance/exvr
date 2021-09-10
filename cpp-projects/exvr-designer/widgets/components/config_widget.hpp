@@ -25,13 +25,29 @@ class ConfigW : public QWidget{
 
 public:
 
-    ConfigW(Config *config, ConfigParametersW *parametersW);
-
+    ConfigW(Config *config, Component *component, bool initConfig, std::unordered_map<QStringView,Arg*> &argsByName);
     void update_from_config(Config *config);
 
-    ConfigParametersW *p = nullptr;
 
-    int key;
+    void update_with_info(QStringView id, QStringView value);
+    void reset_args();
+
+    ConfigKey configKey;
+    ComponentKey componentKey;
     QString name;
+
+private:
+
+    ConfigParametersW *p = nullptr;
+    ConfigParametersW *generate_parameters(Component::Type type, bool initConfig);
+
+    template<typename T1, typename T2>
+    ConfigParametersW *gen_params_w(bool initConfig){
+        if(initConfig){
+            return new T1();
+        }else{
+            return new T2();
+        }
+    }
 };
 }

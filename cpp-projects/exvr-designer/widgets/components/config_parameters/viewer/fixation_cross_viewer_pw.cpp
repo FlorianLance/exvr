@@ -26,16 +26,16 @@ void FixationCrossViewerConfigParametersW::insert_widgets(){
 
 void FixationCrossViewerConfigParametersW::init_and_register_widgets(){
 
-    m_inputUiElements["use_eye_camera"]     = m_followEyeCamera.init_widget("Cross always in front of the eyes camera", true);
-    m_inputUiElements["use_original_size"]  = m_useImageSize.init_widget("Use cross original size", true);
+    add_input_ui(m_followEyeCamera.init_widget("Cross always in front of the eyes camera", true));
+    add_input_ui(m_useImageSize.init_widget("Use cross original size", true));
 
     Vector2dSettings pivotSettings= {
         {MinV<qreal>{-0.5}, V<qreal>{0.5}, MaxV<qreal>{1.5}, StepV<qreal>{0.01}, 2},
         {MinV<qreal>{-0.5}, V<qreal>{0.5}, MaxV<qreal>{1.5}, StepV<qreal>{0.01}, 2}
     };
-    m_inputUiElements["pivot"]      = m_pivot.init_widget("Pivot", pivotSettings);
+    add_input_ui(m_pivot.init_widget("Pivot", pivotSettings));
     DsbSettings distanceSettings= {MinV<qreal>{0}, V<qreal>{1.}, MaxV<qreal>{1000.}, StepV<qreal>{0.1}, 2};
-    m_inputUiElements["distance"]   = m_distance.init_widget(distanceSettings);
+    add_input_ui(m_distance.init_widget(distanceSettings));
 
     map_sub_part(m_eye.init_widget());
     map_sub_part(m_cameraSettings.init_widget());

@@ -38,73 +38,73 @@ public :
     // sun light
     QWidget *m_sunLightW = nullptr;
     QTabWidget *m_sunLightTab = nullptr;
-    ExVector3dW m_sunRotation;
-    ExFloatSpinBoxW m_sunIntensity;
-    ExFloatSpinBoxW m_sunBounceIntensity;
-    ExSelectColorW m_sunColor;
-    ExComboBoxIndexW m_sunShadowMode;
-    ExFloatSpinBoxW m_sunShadowStrength;
-    ExFloatSpinBoxW m_sunShadowBias;
-    ExFloatSpinBoxW m_sunShadowNormalBias;
-    ExFloatSpinBoxW m_sunShadowNearPlane;
+    ExVector3dW m_sunRotation{"sun_rotation"};
+    ExFloatSpinBoxW m_sunIntensity{"sun_intensity"};
+    ExFloatSpinBoxW m_sunBounceIntensity{"sun_bounce_intensity"};
+    ExSelectColorW m_sunColor{"sun_color"};
+    ExComboBoxIndexW m_sunShadowMode{"sun_shadow_mode"};
+    ExFloatSpinBoxW m_sunShadowStrength{"sun_shadow_strength"};
+    ExFloatSpinBoxW m_sunShadowBias{"sun_shadow_bias"};
+    ExFloatSpinBoxW m_sunShadowNormalBias{"sun_shadow_normal_bias"};
+    ExFloatSpinBoxW m_sunShadowNearPlane{"sun_shadow_near_plane"};
 
     // ambient light
     QWidget *m_ambientLightW = nullptr;
     QTabWidget *m_ambientTab = nullptr;
-    ExComboBoxIndexW m_ambientMode;
-    ExFloatSpinBoxW m_ambientIntensity;
-    ExSelectColorW m_ambientFlatColor;
-    ExSelectColorW m_ambientGradientGroundColor;
-    ExSelectColorW m_ambientGradientEquatorColor;
-    ExSelectColorW m_ambientGradientSkyColor;
+    ExComboBoxIndexW m_ambientMode{"ambient_mode"};
+    ExFloatSpinBoxW m_ambientIntensity{"ambient_intensity"};
+    ExSelectColorW m_ambientFlatColor{"ambient_color"};
+    ExSelectColorW m_ambientGradientGroundColor{"ground_color"};
+    ExSelectColorW m_ambientGradientEquatorColor{"equator_color"};
+    ExSelectColorW m_ambientGradientSkyColor{"sky_color"};
 
     // skybox
     QWidget *m_skyboxW = nullptr;
     QTabWidget *m_skyboxTab = nullptr;
-    ExCheckBoxW m_zPlusInvert;
-    ExCheckBoxW m_zMinusInvert;
-    ExCheckBoxW m_xPlusInvert;
-    ExCheckBoxW m_xMinusInvert;
-    ExCheckBoxW m_yPlusInvert;
-    ExCheckBoxW m_yMinusInvert;
-    ExCheckBoxW m_panoramicInvert;
-    ExCheckBoxW m_cubeMapInvert;
+    ExCheckBoxW m_zPlusInvert{"Z+_invert"};
+    ExCheckBoxW m_zMinusInvert{"Z-_invert"};
+    ExCheckBoxW m_xPlusInvert{"X+_invert"};
+    ExCheckBoxW m_xMinusInvert{"X-_invert"};
+    ExCheckBoxW m_yPlusInvert{"Y+_invert"};
+    ExCheckBoxW m_yMinusInvert{"Y-_invert"};
+    ExCheckBoxW m_panoramicInvert{"panoramic_invert"};
+    ExCheckBoxW m_cubeMapInvert{"cubemap_invert"};
 
-    ExResourceW m_xMinus;
-    ExResourceW m_yMinus;
-    ExResourceW m_zMinus;
-    ExResourceW m_xPlus;
-    ExResourceW m_yPlus;
-    ExResourceW m_zPlus;
-    ExResourceW m_panoramic;
-    ExResourceW m_cubemap;
+    ExResourceW m_xMinus{"X-"};
+    ExResourceW m_yMinus{"Y-"};
+    ExResourceW m_zMinus{"Z-"};
+    ExResourceW m_xPlus{"X+"};
+    ExResourceW m_yPlus{"Y+"};
+    ExResourceW m_zPlus{"Z+"};
+    ExResourceW m_panoramic{"panoramic"};
+    ExResourceW m_cubemap{"cubemap"};
 
-    ExComboBoxIndexW m_mode;    
-    ExSelectColorW m_backgroundColor;
+    ExComboBoxIndexW m_mode{"mode"};
+    ExSelectColorW m_backgroundColor{"background_color"};
 
-    ExSelectColorW m_6SidedTintColor;
-    ExFloatSpinBoxW m_6sidedExposure;
-    ExFloatSpinBoxW m_6sidedRotation;
+    ExSelectColorW m_6SidedTintColor{"6sided-tint"};
+    ExFloatSpinBoxW m_6sidedExposure{"6sided-exposure"};
+    ExFloatSpinBoxW m_6sidedRotation{"6sided-rotation"};
 
-    ExSelectColorW m_cubeMapTintColor;
-    ExFloatSpinBoxW m_cubeMapExposure;
-    ExFloatSpinBoxW m_cubeMapRotation;
+    ExSelectColorW m_cubeMapTintColor{"cubemap-tint"};
+    ExFloatSpinBoxW m_cubeMapExposure{"cubemap-exposure"};
+    ExFloatSpinBoxW m_cubeMapRotation{"cubemap-rotation"};
 
-    ExSelectColorW m_panoramicTintColor;
-    ExFloatSpinBoxW m_panoramicExposure;
-    ExFloatSpinBoxW m_panoramicRotation;
-    ExComboBoxIndexW m_panoramicMapping;
-    ExCheckBoxW m_panoramicMirrorBack;
-    ExComboBoxIndexW m_panoramicType;
-    ExComboBoxIndexW m_panoramicLayout;
+    ExSelectColorW m_panoramicTintColor{"panoramic-tint"};
+    ExFloatSpinBoxW m_panoramicExposure{"panoramic-exposure"};
+    ExFloatSpinBoxW m_panoramicRotation{"panoramic-rotation"};
+    ExComboBoxIndexW m_panoramicMapping{"panoramic-mapping"};
+    ExCheckBoxW m_panoramicMirrorBack{"panoramic-mirror_back"};
+    ExComboBoxIndexW m_panoramicType{"panoramic-type"};
+    ExComboBoxIndexW m_panoramicLayout{"panoramic-layout"};
 
-    ExComboBoxIndexW m_proceduralSun;
-    ExFloatSpinBoxW m_proceduralSunSize;
-    ExFloatSpinBoxW m_proceduralConvergence;
-    ExFloatSpinBoxW m_proceduralAtmoshpereThickness;
-    ExSelectColorW m_proceduralSkyTint;
-    ExSelectColorW m_proceduralGroundColor;
-    ExFloatSpinBoxW m_proceduralExposure;
+    ExComboBoxIndexW m_proceduralSun{"sun"};
+    ExFloatSpinBoxW m_proceduralSunSize{"sun-size"};
+    ExFloatSpinBoxW m_proceduralConvergence{"convergence"};
+    ExFloatSpinBoxW m_proceduralAtmoshpereThickness{"atmosphere-thickness"};
+    ExSelectColorW m_proceduralSkyTint{"procedural-sky-tint"};
+    ExSelectColorW m_proceduralGroundColor{"procedural-ground-color"};
+    ExFloatSpinBoxW m_proceduralExposure{"procedural-exposure"};
 
     void insert_widgets() override;
     void init_and_register_widgets() override;

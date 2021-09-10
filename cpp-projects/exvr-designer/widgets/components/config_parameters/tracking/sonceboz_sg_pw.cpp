@@ -18,10 +18,10 @@ void SoncebozSgInitConfigParametersW::insert_widgets(){
 }
 
 void SoncebozSgInitConfigParametersW::init_and_register_widgets(){
-    m_inputUiElements["reading_address"] = m_readingAddress.init_widget("127.0.0.1");
-    m_inputUiElements["writing_address"] = m_writingAddress.init_widget("127.0.0.1");
-    m_inputUiElements["reading_port"]    = m_readingPort.init_widget(MinV<int>{6000},V<int>{6558}, MaxV<int>{44000}, StepV<int>{1});
-    m_inputUiElements["writing_port"]    = m_writingPort.init_widget(MinV<int>{6000},V<int>{6557}, MaxV<int>{44000}, StepV<int>{1});
+    add_input_ui(m_readingAddress.init_widget("127.0.0.1"));
+    add_input_ui(m_writingAddress.init_widget("127.0.0.1"));
+    add_input_ui(m_readingPort.init_widget(MinV<int>{6000},V<int>{6558}, MaxV<int>{44000}, StepV<int>{1}));
+    add_input_ui(m_writingPort.init_widget(MinV<int>{6000},V<int>{6557}, MaxV<int>{44000}, StepV<int>{1}));
 }
 
 void SoncebozSgConfigParametersW::insert_widgets(){    
@@ -29,7 +29,7 @@ void SoncebozSgConfigParametersW::insert_widgets(){
     add_horizontal_widgets({commandList()});
 }
 
-void SoncebozSgConfigParametersW::init_and_register_widgets(){
-    m_inputUiElements["apply_command_list"] = applyCommand.init_widget("Apply command list", false);
-    m_inputUiElements["command_list_file"] = commandList.init_widget(Resource::Type::Text, "Commands list txt file");
+void SoncebozSgConfigParametersW::init_and_register_widgets(){    
+    add_input_ui(applyCommand.init_widget("Apply command list", false));
+    add_input_ui(commandList.init_widget(Resource::Type::Text, "Commands list txt file"));
 }

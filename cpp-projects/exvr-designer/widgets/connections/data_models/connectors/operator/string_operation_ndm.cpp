@@ -15,7 +15,6 @@ void StringOperationEmbeddedW::initialize(){
                     QSL("Equals"), QSL("Do not equals"), QSL("Starts with"), QSL("Ends with"), QSL("Splits with")});
 
     // set widget connections
-    w->init_connection("");
     connect(w.get(), &ExComboBoxTextW::ui_change_signal, this, [=]{
         emit compute_data_signal();
     });

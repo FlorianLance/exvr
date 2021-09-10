@@ -35,11 +35,11 @@ void PythonScriptInitConfigParametersW::insert_widgets(){
 
 void PythonScriptInitConfigParametersW::init_and_register_widgets(){
 
-    m_inputUiElements["path_module"]        = m_leModulePath.init_widget("");
-    m_inputUiElements["class_name"]         = m_leClassName.init_widget("DefaultComponent");
-    m_inputUiElements["path_lib"]           = m_lePythonLibPath.init_widget("");
-    m_inputNonUiArguments["paths_python"]   = Arg::generate_non_ui_arg(Paths::scriptsPythonDir + "|" + Paths::scriptsPythonDir + "/lib", "|");
-    m_generatorsUiElements["generator"]     = m_pgGenerator.init_widget(&m_inputUiElements, "generator");
+    add_input_ui(m_leModulePath.init_widget(""));
+    add_input_ui(m_leClassName.init_widget("DefaultComponent"));
+    add_input_ui(m_lePythonLibPath.init_widget(""));
+    add_non_ui_arg(Arg::generate_non_ui_arg(Paths::scriptsPythonDir + "|" + Paths::scriptsPythonDir + "/lib", "|", "paths_python"));
+    add_generator_ui(m_pgGenerator.init_widget(input_ui_widgets()));
 
     ui::W::init(&m_pbSetModulePath, "Set");
     ui::W::init(&m_pbSetPythonLibPath, "Set");
@@ -82,8 +82,5 @@ void PythonScriptConfigParametersW::insert_widgets(){
 }
 
 void PythonScriptConfigParametersW::init_and_register_widgets(){
-    m_generatorsUiElements["generator"]             = m_pgGenerator.init_widget(&m_inputUiElements, "generator");
+    add_generator_ui(m_pgGenerator.init_widget(input_ui_widgets()));
 }
-
-
-//#include "moc_python_script_pw.cpp"

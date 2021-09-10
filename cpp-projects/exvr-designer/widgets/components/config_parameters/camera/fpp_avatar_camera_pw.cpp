@@ -14,7 +14,7 @@ void tool::ex::FPPAvatarCameraInitConfigParametersW::insert_widgets(){
 }
 
 void tool::ex::FPPAvatarCameraInitConfigParametersW::init_and_register_widgets(){
-    m_inputUiElements["avatar"] = avatar.init_widget(Component::T::Humanoid_avatar, "Avatar");
+    add_input_ui(avatar.init_widget(Component::T::Humanoid_avatar, "Avatar"));
 }
 
 void tool::ex::FPPAvatarCameraInitConfigParametersW::create_connections(){
@@ -45,28 +45,28 @@ void tool::ex::FPPAvatarCameraConfigParametersW::insert_widgets(){
 
 void tool::ex::FPPAvatarCameraConfigParametersW::init_and_register_widgets(){
 
-    m_inputUiElements["move_neutral_camera_to_head"]  = moveNeutralCameraToHead.init_widget("Move neutral camera to head", true);
-    m_inputUiElements["neutral_pitch"]                = neutralPitch.init_widget("Pitch", false);
-    m_inputUiElements["neutral_yaw"]                  = neutralYaw.init_widget("Yaw", true);
-    m_inputUiElements["neutral_roll"]                 = neutralRoll.init_widget("Roll", false);
-    m_inputUiElements["update_eyes_camera_from_head"] = updateEyesCameraFromHead.init_widget("Update eyes camera from avatar head", false);
-    m_inputUiElements["update_head_from_eyes_camera"] = updateHeadFromEyesCamera.init_widget("Update avatar head from eyes camera", false);
-    m_inputUiElements["no_not_update"]                = doNotUpdate.init_widget("Do nothing", true);
+    add_input_ui(moveNeutralCameraToHead.init_widget("Move neutral camera to head", true));
+    add_input_ui(neutralPitch.init_widget("Pitch", false));
+    add_input_ui(neutralYaw.init_widget("Yaw", true));
+    add_input_ui(neutralRoll.init_widget("Roll", false));
+    add_input_ui(updateEyesCameraFromHead.init_widget("Update eyes camera from avatar head", false));
+    add_input_ui(updateHeadFromEyesCamera.init_widget("Update avatar head from eyes camera", false));
+    add_input_ui(doNotUpdate.init_widget("Do nothing", true));
 
     DsbSettings offsetS{MinV<qreal>{-2.},V<qreal>{0.1},MaxV<qreal>{2.},StepV<qreal>{0.01}, 2};
     DsbSettings offsetRot{MinV<qreal>{-180.},V<qreal>{0.},MaxV<qreal>{180.},StepV<qreal>{0.1}, 2};
     Vector3dSettings offsetVecPos = {offsetS,offsetS,offsetS};
     Vector3dSettings offsetVecRot = {offsetRot,offsetRot,offsetRot};
 
-    m_inputUiElements["neutral_camera_to_head_offset_pos"] = neutralCameraToHeadOffsetPos.init_widget("Neutral offset position:", offsetVecPos);
+    add_input_ui(neutralCameraToHeadOffsetPos.init_widget("Neutral offset position:", offsetVecPos));
     neutralCameraToHeadOffsetPos.x.w->setValue(0);
-    m_inputUiElements["neutral_camera_to_head_offset_rot"] = neutralCameraToHeadOffsetRot.init_widget("Neutral offset rotation:", offsetVecRot);
+    add_input_ui(neutralCameraToHeadOffsetRot.init_widget("Neutral offset rotation:", offsetVecRot));
 
-    m_inputUiElements["head_from_eyes_offset_pos"] = headFromEyesOffsetPos.init_widget("Head offset position:", offsetVecPos);
+    add_input_ui(headFromEyesOffsetPos.init_widget("Head offset position:", offsetVecPos));
     headFromEyesOffsetPos.x.w->setValue(0);
     headFromEyesOffsetPos.y.w->setValue(0);
     headFromEyesOffsetPos.z.w->setValue(0);
-    m_inputUiElements["head_from_eyes_offset_rot"] = headFromEyesOffsetRot.init_widget("Head offset rotation:", offsetVecRot);
+    add_input_ui(headFromEyesOffsetRot.init_widget("Head offset rotation:", offsetVecRot));
 }
 
 void tool::ex::FPPAvatarCameraConfigParametersW::create_connections()

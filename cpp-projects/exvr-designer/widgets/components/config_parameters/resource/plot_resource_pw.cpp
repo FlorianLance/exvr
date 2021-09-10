@@ -20,10 +20,9 @@ void PlotResourceConfigParametersW::insert_widgets(){
 }
 
 void PlotResourceConfigParametersW::init_and_register_widgets(){
-    m_inputUiElements["plot"] = m_plot.init_widget(Resource::Type::Plot, "Selected plot resource: ");
-    m_inputUiElements["random"] = m_randomSelection.init_widget("Random resource selection from list: ", false);
-    m_inputUiElements["plots_list"] = m_plotsList.init_widget(Resource::Type::Plot, "Plots list");
-
+    add_input_ui(m_plot.init_widget(Resource::Type::Plot, "Selected plot resource: "));
+    add_input_ui(m_randomSelection.init_widget("Random resource selection from list: ", false));
+    add_input_ui(m_plotsList.init_widget(Resource::Type::Plot, "Plots list"));
 }
 
 void PlotResourceConfigParametersW::create_connections(){

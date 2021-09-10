@@ -22,7 +22,7 @@ using namespace tool::ex;
 
 
 
-ExResourceW::ExResourceW() : ExItemW<QFrame>(UiType::Resource){
+ExResourceW::ExResourceW(QString name) : ExItemW<QFrame>(UiType::Resource, name){
 
     w->setFrameShadow(QFrame::Raised);
     w->setFrameShape(QFrame::Shape::NoFrame);
@@ -39,6 +39,24 @@ ExResourceW::ExResourceW() : ExItemW<QFrame>(UiType::Resource){
     l->setStretch(3,1);
     l->setContentsMargins(2,2,2,2);
     l->setSpacing(5);
+
+    connect(m_resources, &QPushButton::clicked, this, [&]{
+        emit GSignals::get()->show_resources_manager_dialog_signal(m_resourceType);
+    });
+    connect(m_resourcesAlias, QOverload<int>::of(&QComboBox::currentIndexChanged), this, [&]{
+
+        m_currentKey = -1;
+        if(m_resourcesAlias->currentIndex() > 0){
+
+            const size_t id = to_unsigned(m_resourcesAlias->currentIndex()-1);
+            ResourcesManager *resourcesM = ResourcesManager::get();
+
+            if(auto resources = resourcesM->get_resources(m_resourceType); id < resources.size()){
+                m_currentKey =  resources[id]->key();
+            }
+        }
+        trigger_ui_change();
+    });
 }
 
 ExResourceW *ExResourceW::init_widget(Resource::Type resourceType, QString title, bool enabled){
@@ -61,28 +79,6 @@ ExResourceW *ExResourceW::init_widget(Resource::Type resourceType, QString title
 
     return this;
 }
-
-void ExResourceW::init_connection(const QString &nameParam){
-
-    connect(m_resources, &QPushButton::clicked, this, [&]{
-        emit GSignals::get()->show_resources_manager_dialog_signal(m_resourceType);
-    });
-    connect(m_resourcesAlias, QOverload<int>::of(&QComboBox::currentIndexChanged), this, [&]{
-
-        m_currentKey = -1;
-        if(m_resourcesAlias->currentIndex() > 0){
-
-            const size_t id = to_unsigned(m_resourcesAlias->currentIndex()-1);
-            ResourcesManager *resourcesM = ResourcesManager::get();
-
-            if(auto resources = resourcesM->get_resources(m_resourceType); id < resources.size()){
-                m_currentKey =  resources[id]->key();
-            }
-        }
-        emit ui_change_signal(nameParam);
-    });
-}
-
 
 void ExResourceW::update_from_arg(const Arg &arg){
 
@@ -107,7 +103,7 @@ void ExResourceW::update_from_arg(const Arg &arg){
 
 Arg ExResourceW::convert_to_arg() const{
 
-    Arg arg = ExItemW::convert_to_arg();
+    Arg arg = ExBaseW::convert_to_arg();
     QString alias = "";
     if(auto resource = ResourcesManager::get()->get_resource(m_resourceType, m_currentKey, false); resource != nullptr){
         alias = resource->alias;
@@ -188,7 +184,3 @@ void ExResourceW::update_from_resources(){
 
     blockSignals(false);
 }
-
-
-
-#include "moc_ex_resource_w.cpp"

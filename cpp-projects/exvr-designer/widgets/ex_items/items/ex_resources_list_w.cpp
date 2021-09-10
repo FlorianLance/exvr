@@ -14,7 +14,7 @@
 
 using namespace tool::ex;
 
-ExResourcesListW::ExResourcesListW() : ExItemW<QFrame>(UiType::ResourcesList){
+ExResourcesListW::ExResourcesListW(QString name) : ExItemW<QFrame>(UiType::ResourcesList, name){
 
     w->setFrameShadow(QFrame::Raised);
     w->setFrameShape(QFrame::Shape::NoFrame);
@@ -38,6 +38,32 @@ ExResourcesListW::ExResourcesListW() : ExItemW<QFrame>(UiType::ResourcesList){
 
     m_list->set_margins(2,2,2,2,1);
     m_list->set_widget_selection(true);
+
+
+    connect(m_add, &QPushButton::clicked, this, [&]{
+
+        if(m_resourcesAliases->count() == 0){
+            return;
+        }
+
+        const auto currTxt = m_resourcesAliases->currentText();
+        if(auto resource = ResourcesManager::get()->get_resource(m_resourceType.value(), currTxt); resource != nullptr){
+            m_resourcesKeys.emplace_back(resource->key());
+            m_list->add_widget(ui::W::txt(resource->alias));
+            update_from_resources();
+            trigger_ui_change();
+        }
+
+    });
+    connect(m_remove, &QPushButton::clicked, this, [&]{
+        const int id = m_list->current_selected_widget_id();
+        if(id != -1){
+            m_list->delete_at(id);
+            m_resourcesKeys.erase(std::begin(m_resourcesKeys) + id);
+            update_from_resources();
+            trigger_ui_change();
+        }
+    });
 }
 
 ExResourcesListW *ExResourcesListW::init_widget(Resource::Type resourceType, QString title, bool enabled){
@@ -54,33 +80,6 @@ ExResourcesListW *ExResourcesListW::init_widget(Resource::Type resourceType, QSt
     return this;
 }
 
-void ExResourcesListW::init_connection(const QString &nameParam){
-
-    connect(m_add, &QPushButton::clicked, this, [&]{
-
-        if(m_resourcesAliases->count() == 0){
-            return;
-        }
-
-        const auto currTxt = m_resourcesAliases->currentText();
-        if(auto resource = ResourcesManager::get()->get_resource(m_resourceType.value(), currTxt); resource != nullptr){
-            m_resourcesKeys.emplace_back(resource->key());
-            m_list->add_widget(ui::W::txt(resource->alias));
-            update_from_resources();
-            emit ui_change_signal(nameParam);
-        }
-
-    });
-    connect(m_remove, &QPushButton::clicked, this, [&]{
-        const int id = m_list->current_selected_widget_id();
-        if(id != -1){
-            m_list->delete_at(id);
-            m_resourcesKeys.erase(std::begin(m_resourcesKeys) + id);
-            update_from_resources();
-            emit ui_change_signal(nameParam);
-        }
-    });
-}
 
 void ExResourcesListW::update_from_arg(const Arg &arg){
 
@@ -124,7 +123,7 @@ void ExResourcesListW::update_from_arg(const Arg &arg){
 
 Arg ExResourcesListW::convert_to_arg() const{
 
-    Arg arg = ExItemW::convert_to_arg();
+    Arg arg = ExBaseW::convert_to_arg();
 
     QStringList keysStr;
     keysStr.reserve(static_cast<int>(m_resourcesKeys.size()));

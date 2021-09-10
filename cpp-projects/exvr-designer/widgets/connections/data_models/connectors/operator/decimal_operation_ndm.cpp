@@ -17,7 +17,6 @@ void DecimalOperationEmbeddedW::initialize(){
     w->init_widget(items);
 
     // set widget connections
-    w->init_connection("");
     connect(w.get(), &ExComboBoxTextW::ui_change_signal, this, [=]{
         emit compute_data_signal();
     });

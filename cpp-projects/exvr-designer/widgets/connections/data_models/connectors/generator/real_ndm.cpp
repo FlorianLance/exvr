@@ -18,7 +18,6 @@ void RealEmbeddedW::initialize(){
     w->init_widget(min, value, max, step, 3);
 
     // set widget connections
-    w->init_connection("");
     connect(w.get(), &ExDoubleSpinBoxW::ui_change_signal, this, [=]{
         emit update_internal_data_signal({0}, {std::make_shared<RealData>(w->w->value())});
         emit compute_data_signal();

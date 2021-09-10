@@ -18,9 +18,9 @@ class FovSimulatorInitConfigParametersW : public ConfigParametersW{
 
 public :
 
-    ExFloatSpinBoxW horizontalFov;
-    ExFloatSpinBoxW verticalFov;
-    ExFloatSpinBoxW distance;
+    ExFloatSpinBoxW horizontalFov{"horizontal_fov"};
+    ExFloatSpinBoxW verticalFov{"vertical_fov"};
+    ExFloatSpinBoxW distance{"distance"};
 
     void insert_widgets() override;
     void init_and_register_widgets() override;
@@ -33,7 +33,7 @@ class FovSimulatorConfigParametersW : public ConfigParametersW{
 public :
 
 
-    ExSelectColorW color;
+    ExSelectColorW color{"color"};
 
     void insert_widgets() override;
     void init_and_register_widgets() override;

@@ -291,9 +291,7 @@ void ExpLauncher::go_to_specific_instance_element(int elementOrderId){
     }
 }
 
-void ExpLauncher::update_component_config_argument(ComponentKey componentKey, ConfigKey configKey, QString name, Arg arg, bool initConfig){
-
-    Q_UNUSED(name)
+void ExpLauncher::update_component_config_argument(ComponentKey componentKey, ConfigKey configKey, Arg arg, bool initConfig){
 
     if((!m_expLauncherProcess && !editor) || initConfig ){
         return;
@@ -315,7 +313,7 @@ void ExpLauncher::update_component_config_argument(ComponentKey componentKey, Co
     m_expLauncherCommunication->send_udp_command(gen_command({to_command_id(ExpLauncherCommand::UpdateComponent), componentKeyStr, configKeyStr, uiElementKeyStr, arg.value(), unityTypeStr, dimStr, sizesStr, arg.separator()}));
 }
 
-void ExpLauncher::trigger_component_config_action(ComponentKey componentKey, ConfigKey configKey, QString name, bool initConfig){
+void ExpLauncher::trigger_component_config_action(ComponentKey componentKey, ConfigKey configKey, QString actionName, bool initConfig){
 
     Q_UNUSED(initConfig)
 
@@ -326,7 +324,7 @@ void ExpLauncher::trigger_component_config_action(ComponentKey componentKey, Con
     const QString componentKeyStr    = QString::number(componentKey.v);
     const QString configKeyStr       = QString::number(configKey.v);
 
-    m_expLauncherCommunication->send_udp_command(gen_command({to_command_id(ExpLauncherCommand::Action), componentKeyStr, configKeyStr, name}));
+    m_expLauncherCommunication->send_udp_command(gen_command({to_command_id(ExpLauncherCommand::Action), componentKeyStr, configKeyStr, actionName}));
 }
 
 void ExpLauncher::update_connector_node(ElementKey routineKey, ConditionKey conditionKey, ConnectorKey connectorKey, QString name, Arg arg){

@@ -18,12 +18,13 @@ void KinectManagerInitConfigParametersW::insert_widgets(){
 }
 
 void KinectManagerInitConfigParametersW::init_and_register_widgets(){
-    m_inputUiElements["config"] = m_config.init_widget(Resource::Type::Text, "Network file: ");
-    m_inputUiElements["calib"]  = m_calib.init_widget(Resource::Type::Text,  "Calibration file: ");
-    m_inputUiElements["camera"] = m_camera.init_widget(Resource::Type::Text, "Camera file: ");
-    m_inputUiElements["mode"]   = m_mode.init_widget({"Cloud", "Mesh"}, 0);
-    m_inputUiElements["cameras_to_use"] = m_camarasToUse.init_widget("0 1 2 3 4 5 6 7");
-    m_inputUiElements["debug_bypass"] = m_debugBypassDevice.init_widget("Enable it for testing the experiment without the device", false);
+
+    add_input_ui(m_config.init_widget(Resource::Type::Text, "Network file: "));
+    add_input_ui(m_calib.init_widget(Resource::Type::Text,  "Calibration file: "));
+    add_input_ui(m_camera.init_widget(Resource::Type::Text, "Camera file: "));
+    add_input_ui(m_mode.init_widget({"Cloud", "Mesh"}, 0));
+    add_input_ui(m_camarasToUse.init_widget("0 1 2 3 4 5 6 7"));
+    add_input_ui(m_debugBypassDevice.init_widget("Enable it for testing the experiment without the device", false));
 }
 
 void KinectManagerConfigParametersW::insert_widgets(){
@@ -31,6 +32,6 @@ void KinectManagerConfigParametersW::insert_widgets(){
 }
 
 void KinectManagerConfigParametersW::init_and_register_widgets(){
-    m_inputUiElements["update_cameras"]    = m_updateFromCameras.init_widget("Update cameras ", true);
-    m_inputUiElements["fps"]               = m_fps.init_widget(MinV<int>{1}, V<int>{45}, MaxV<int>{90}, StepV<int>{1});
+    add_input_ui(m_updateFromCameras.init_widget("Update cameras ", true));
+    add_input_ui(m_fps.init_widget(MinV<int>{1}, V<int>{45}, MaxV<int>{90}, StepV<int>{1}));
 }

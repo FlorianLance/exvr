@@ -17,10 +17,10 @@ class SoncebozSgInitConfigParametersW : public ConfigParametersW{
 
 public :
 
-    ExLineEditW m_readingAddress;
-    ExLineEditW m_writingAddress;
-    ExSpinBoxW m_readingPort;
-    ExSpinBoxW m_writingPort;
+    ExLineEditW m_readingAddress{"reading_address"};
+    ExLineEditW m_writingAddress{"writing_address"};
+    ExSpinBoxW m_readingPort{"reading_port"};
+    ExSpinBoxW m_writingPort{"writing_port"};
 
     void insert_widgets() override;
     void init_and_register_widgets() override;
@@ -33,8 +33,8 @@ class SoncebozSgConfigParametersW : public ConfigParametersW{
 
 public :
 
-    ExCheckBoxW applyCommand;
-    ExResourceW commandList;
+    ExCheckBoxW applyCommand{"apply_command_list"};
+    ExResourceW commandList{"command_list_file"};
 
     void insert_widgets() override;
     void init_and_register_widgets() override;

@@ -18,23 +18,23 @@ namespace tool::ex {
 
 class LoggerInitConfigParametersW : public ConfigParametersW{
 
-    ExResourceW m_resource;
+    ExResourceW m_resource{"directory"};
 
-    ExCheckBoxW m_streamToFile;
-    ExCheckBoxW m_addCurrentInstanceToFileName;
-    ExCheckBoxW m_addDateToFileName;
-    ExCheckBoxW m_dontWriteIfFileExists;
-    ExCheckBoxW m_insertNewRoutineInfo;
+    ExCheckBoxW m_streamToFile{"stream_to_file"};
+    ExCheckBoxW m_addCurrentInstanceToFileName{"add_current_instance_to_file_name"};
+    ExCheckBoxW m_addDateToFileName{"add_date_to_file_name"};
+    ExCheckBoxW m_dontWriteIfFileExists{"dont_write_if_file_exists"};
+    ExCheckBoxW m_insertNewRoutineInfo{"insert_new_routine_infos"};
 
-    ExRadioButtonW m_addToEndIfFileExists;
-    ExRadioButtonW m_replaceIfFileExists;
+    ExRadioButtonW m_addToEndIfFileExists{"add_to_end_if_file_exists"};
+    ExRadioButtonW m_replaceIfFileExists{"replace_if_file_exists"};
 
-    ExLineEditW m_baseFileName;
-    ExLineEditW m_dateTimeFormat;
-    ExLineEditW m_fileExtension;
+    ExLineEditW m_baseFileName{"base_file_name"};
+    ExLineEditW m_dateTimeFormat{"date_time_format"};
+    ExLineEditW m_fileExtension{"file_extension"};
 
-    ExCheckBoxW m_addHeaderLine;
-    ExLineEditW m_headerLine;
+    ExCheckBoxW m_addHeaderLine{"add_header_line"};
+    ExLineEditW m_headerLine{"header_line"};
 
 public :
 
@@ -57,25 +57,25 @@ public :
 
 class LoggerColumnsInitConfigParametersW : public ConfigParametersW{
 
-    ExResourceW m_resource;
+    ExResourceW m_resource{"directory"};
 
-    ExCheckBoxW m_streamToFile;
-    ExCheckBoxW m_addCurrentInstanceToFileName;
-    ExCheckBoxW m_addDateToFileName;
-    ExCheckBoxW m_dontWriteIfFileExists;
+    ExCheckBoxW m_streamToFile{"stream_to_file"};
+    ExCheckBoxW m_addCurrentInstanceToFileName{"add_current_instance_to_file_name"};
+    ExCheckBoxW m_addDateToFileName{"add_date_to_file_name"};
+    ExCheckBoxW m_dontWriteIfFileExists{"dont_write_if_file_exists"};
 
-    ExRadioButtonW m_addToEndIfFileExists;
-    ExRadioButtonW m_replaceIfFileExists;
+    ExRadioButtonW m_addToEndIfFileExists{"add_to_end_if_file_exists"};
+    ExRadioButtonW m_replaceIfFileExists{"replace_if_file_exists"};
 
-    ExLineEditW m_baseFileName;
-    ExLineEditW m_dateTimeFormat;
-    ExLineEditW m_fileExtension;
+    ExLineEditW m_baseFileName{"base_file_name"};
+    ExLineEditW m_dateTimeFormat{"date_time_format"};
+    ExLineEditW m_fileExtension{"file_extension"};
 
-    ExCheckBoxW m_addHeaderLine;
-    ExLineEditW m_headerLine;
+    ExCheckBoxW m_addHeaderLine{"add_header_line"};
+    ExLineEditW m_headerLine{"header_line"};
 
-    ExLineEditW m_separator;
-    ExCheckBoxW m_writeAtEnfOfEachFrame;
+    ExLineEditW m_separator{"separator"};
+    ExCheckBoxW m_writeAtEnfOfEachFrame{"write_each_frame"};
 
 public :
 
@@ -99,24 +99,24 @@ public :
 
 class LoggerConditionInitConfigParametersW : public ConfigParametersW{
 
-    ExResourceW m_resource;
+    ExResourceW m_resource{"directory"};
 
-    ExCheckBoxW m_streamToFile;
-    ExCheckBoxW m_dontWriteIfFileExists;
-    ExCheckBoxW m_addCurrentInstanceToFileName;
+    ExCheckBoxW m_streamToFile{"stream_to_file"};
+    ExCheckBoxW m_dontWriteIfFileExists{"dont_write_if_file_exists"};
+    ExCheckBoxW m_addCurrentInstanceToFileName{"add_current_instance_to_file_name"};
 
-    ExRadioButtonW m_addRoutineName;
-    ExRadioButtonW m_addConditionName;
-    ExRadioButtonW m_addBoth;
+    ExRadioButtonW m_addRoutineName{"add_routine"};
+    ExRadioButtonW m_addConditionName{"add_condition"};
+    ExRadioButtonW m_addBoth{"add_both"};
 
-    ExRadioButtonW m_addToEndIfFileExists;
-    ExRadioButtonW m_replaceIfFileExists;
+    ExRadioButtonW m_addToEndIfFileExists{"add_to_end_if_file_exists"};
+    ExRadioButtonW m_replaceIfFileExists{"replace_if_file_exists"};
 
-    ExLineEditW m_baseFileName;
-    ExLineEditW m_fileExtension;
+    ExLineEditW m_baseFileName{"base_file_name"};
+    ExLineEditW m_fileExtension{"file_extension"};
 
-    ExCheckBoxW m_addHeaderLine;
-    ExLineEditW m_headerLine;
+    ExCheckBoxW m_addHeaderLine{"add_header_line"};
+    ExLineEditW m_headerLine{"header_line"};
 
 public :
 

@@ -17,14 +17,14 @@ class VideoFileInitConfigParametersW : public ConfigParametersW{
 
 public :
 
-    ExResourceW m_video;
+    ExResourceW m_video{"video"};
 
     void insert_widgets() override{
         add_widget(ui::F::gen(ui::L::HB(), {m_video()}, LStretch{false}, LMargins{true}, QFrame::Box));
     }
 
-    void init_and_register_widgets() override{
-        m_inputUiElements["video"] = m_video.init_widget(Resource::Type::Video, "Video resource: ");
+    void init_and_register_widgets() override{        
+        add_input_ui(m_video.init_widget(Resource::Type::Video, "Video resource: "));
     }
     void create_connections() override{
 

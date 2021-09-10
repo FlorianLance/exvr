@@ -13,9 +13,7 @@
 
 using namespace tool::ex;
 
-
-
-ExComponentW::ExComponentW() : ExItemW<QFrame>(UiType::Component){
+ExComponentW::ExComponentW(QString name) : ExItemW<QFrame>(UiType::Component, name){
 
     w->setFrameShadow(QFrame::Raised);
     w->setFrameShape(QFrame::Shape::NoFrame);
@@ -28,6 +26,19 @@ ExComponentW::ExComponentW() : ExItemW<QFrame>(UiType::Component){
     l->setStretch(0,1);
     l->setStretch(1,1);
     l->setStretch(2,50);
+
+    connect(m_componentNames, QOverload<int>::of(&QComboBox::currentIndexChanged), this,[&](int index){
+
+        m_currentKey = -1;
+        if(index > 0){
+            const size_t id = to_unsigned(index-1);
+            ComponentsManager *componentsM = ComponentsManager::get();
+            if(auto components = componentsM->get_components(m_componentType.value()); id < components.size()){
+                m_currentKey =  components[id]->key();
+            }
+        }
+        trigger_ui_change();
+    });
 }
 
 ExComponentW *ExComponentW::init_widget(tool::ex::Component::Type componentType, QString title, bool enabled){
@@ -44,22 +55,6 @@ ExComponentW *ExComponentW::init_widget(tool::ex::Component::Type componentType,
     return this;
 }
 
-
-void ExComponentW::init_connection(const QString &nameParam){
-
-    connect(m_componentNames, QOverload<int>::of(&QComboBox::currentIndexChanged), this,[&,nameParam](int index){
-
-        m_currentKey = -1;
-        if(index > 0){
-            const size_t id = to_unsigned(index-1);
-            ComponentsManager *componentsM = ComponentsManager::get();
-            if(auto components = componentsM->get_components(m_componentType.value()); id < components.size()){
-                m_currentKey =  components[id]->key();
-            }
-        }
-        emit ui_change_signal(nameParam);
-    });
-}
 
 void ExComponentW::update_from_arg(const Arg &arg){
 
@@ -85,7 +80,7 @@ void ExComponentW::update_from_arg(const Arg &arg){
 
 Arg ExComponentW::convert_to_arg() const{
 
-    Arg arg = ExItemW::convert_to_arg();
+    Arg arg = ExBaseW::convert_to_arg();
     arg.init_from({m_componentNames->currentText(),QString::number(m_currentKey)}, "%%%");
 
     if(generatorName.length() > 0){
@@ -160,5 +155,3 @@ void ExComponentW::update_from_components(){
 QString ExComponentW::current_component_name_displayed() const{
     return m_componentNames->currentText();
 }
-
-#include "moc_ex_component_w.cpp"

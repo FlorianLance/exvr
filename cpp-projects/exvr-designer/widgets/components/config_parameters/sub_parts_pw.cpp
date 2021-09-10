@@ -10,12 +10,12 @@
 
 using namespace tool::ex;
 
-TransformSubPart::TransformSubPart(){
+TransformSubPart::TransformSubPart(QString name) : tr({name}), doNotApply({name + QSL("_do_not_apply")}){
     frame = ui::F::gen(ui::L::VB(),{tr()}, LStretch{false},LMargins{false});
     tr.w->layout()->addWidget(doNotApply());
 }
 
-TransformSubPart *TransformSubPart::init_widget(QString title, QString name){
+TransformSubPart *TransformSubPart::init_widget(QString title){
 
     DsbSettings s1 = {MinV<qreal>{-10000.}, V<qreal>{0}, MaxV<qreal>{10000.}, StepV<qreal>{0.01}, 3};
     DsbSettings s2 = {MinV<qreal>{-10000.}, V<qreal>{0}, MaxV<qreal>{10000.}, StepV<qreal>{0.1},  3};
@@ -25,12 +25,11 @@ TransformSubPart *TransformSubPart::init_widget(QString title, QString name){
     Vector3dSettings rotS   = {s2,s2,s2};
     Vector3dSettings scS    = {s3,s3,s3};
 
-    inputUiElements.emplace_back(std::make_pair(name, tr.init_widget(title,trS,rotS,scS)));
-    inputUiElements.emplace_back(std::make_pair(name % QSL("_do_not_apply"), doNotApply.init_widget(QSL("Do not apply"), false)));
+    inputUiElements.emplace_back(UiElementKey{tr.key()}, tr.init_widget(title,trS,rotS,scS));
+    inputUiElements.emplace_back(UiElementKey{doNotApply.key()}, doNotApply.init_widget(QSL("Do not apply"), false));
 
     return this;
 }
-
 
 WordSpaceCameraCanvasSubPart::WordSpaceCameraCanvasSubPart(){
 
@@ -43,13 +42,13 @@ WordSpaceCameraCanvasSubPart::WordSpaceCameraCanvasSubPart(){
 }
 
 WordSpaceCameraCanvasSubPart *WordSpaceCameraCanvasSubPart::init_widget(){
-    inputUiElements.emplace_back(std::make_pair("scale_factor", scaleFactor.init_widget({MinV<qreal>{-10000.}, V<qreal>{1}, MaxV<qreal>{10000.}, StepV<qreal>{0.01}, 2})));
-    inputUiElements.emplace_back(std::make_pair("distance", distance.init_widget({MinV<qreal>{-10000.}, V<qreal>{10}, MaxV<qreal>{10000.}, StepV<qreal>{0.1}, 1})));
-    inputUiElements.emplace_back(std::make_pair("width",    width.init_widget(MinV<int>{-10000}, V<int>{500}, MaxV<int>{10000}, StepV<int>{1})));
-    inputUiElements.emplace_back(std::make_pair("height",   height.init_widget(MinV<int>{-10000}, V<int>{500}, MaxV<int>{10000}, StepV<int>{1})));
-    inputUiElements.emplace_back(std::make_pair("pivot_x",  pivotX.init_widget({MinV<qreal>{-10.}, V<qreal>{0.5}, MaxV<qreal>{10.}, StepV<qreal>{0.01}, 2})));
-    inputUiElements.emplace_back(std::make_pair("pivot_y",  pivotY.init_widget({MinV<qreal>{-10.}, V<qreal>{0.5}, MaxV<qreal>{10.}, StepV<qreal>{0.01}, 2})));
-    inputUiElements.emplace_back(std::make_pair("rotation", rotation.init_widget("Rotation: ")));
+    inputUiElements.emplace_back(UiElementKey{scaleFactor.key()}, scaleFactor.init_widget({MinV<qreal>{-10000.}, V<qreal>{1}, MaxV<qreal>{10000.}, StepV<qreal>{0.01}, 2}));
+    inputUiElements.emplace_back(UiElementKey{distance.key()}, distance.init_widget({MinV<qreal>{-10000.}, V<qreal>{10}, MaxV<qreal>{10000.}, StepV<qreal>{0.1}, 1}));
+    inputUiElements.emplace_back(UiElementKey{width.key()},    width.init_widget(MinV<int>{-10000}, V<int>{500}, MaxV<int>{10000}, StepV<int>{1}));
+    inputUiElements.emplace_back(UiElementKey{height.key()},   height.init_widget(MinV<int>{-10000}, V<int>{500}, MaxV<int>{10000}, StepV<int>{1}));
+    inputUiElements.emplace_back(UiElementKey{pivotX.key()},  pivotX.init_widget({MinV<qreal>{-10.}, V<qreal>{0.5}, MaxV<qreal>{10.}, StepV<qreal>{0.01}, 2}));
+    inputUiElements.emplace_back(UiElementKey{pivotY.key()},  pivotY.init_widget({MinV<qreal>{-10.}, V<qreal>{0.5}, MaxV<qreal>{10.}, StepV<qreal>{0.01}, 2}));
+    inputUiElements.emplace_back(UiElementKey{rotation.key()}, rotation.init_widget("Rotation: "));
     rotation.set_steps({1.,1.,1.});
 
     return this;
@@ -86,11 +85,11 @@ WordSpaceCanvasSubPart::WordSpaceCanvasSubPart(){
 }
 
 WordSpaceCanvasSubPart *WordSpaceCanvasSubPart::init_widget(){
-    inputUiElements.emplace_back(std::make_pair("scale_factor", scaleFactor.init_widget({MinV<qreal>{-1000.}, V<qreal>{0.25}, MaxV<qreal>{1000.}, StepV<qreal>{0.01}, 2})));
-    inputUiElements.emplace_back(std::make_pair("width",        width.init_widget(MinV<int>{-10000}, V<int>{400}, MaxV<int>{10000}, StepV<int>{1})));
-    inputUiElements.emplace_back(std::make_pair("height",       height.init_widget(MinV<int>{-10000}, V<int>{400}, MaxV<int>{10000}, StepV<int>{1})));
-    inputUiElements.emplace_back(std::make_pair("position",     position.init_widget("<b>Position</b>")));
-    inputUiElements.emplace_back(std::make_pair("rotation",     rotation.init_widget("<b>Rotation</b>")));
+    inputUiElements.emplace_back(UiElementKey{scaleFactor.key()}, scaleFactor.init_widget({MinV<qreal>{-1000.}, V<qreal>{0.25}, MaxV<qreal>{1000.}, StepV<qreal>{0.01}, 2}));
+    inputUiElements.emplace_back(UiElementKey{width.key()}, width.init_widget(MinV<int>{-10000}, V<int>{400}, MaxV<int>{10000}, StepV<int>{1}));
+    inputUiElements.emplace_back(UiElementKey{height.key()}, height.init_widget(MinV<int>{-10000}, V<int>{400}, MaxV<int>{10000}, StepV<int>{1}));
+    inputUiElements.emplace_back(UiElementKey{position.key()}, position.init_widget("<b>Position</b>"));
+    inputUiElements.emplace_back(UiElementKey{rotation.key()}, rotation.init_widget("<b>Rotation</b>"));
     rotation.set_steps({1.,1.,1.});
     position.set_values({0.,0.,10.});
     return this;
@@ -102,7 +101,7 @@ EyeRendererSubPart::EyeRendererSubPart(){
 
 EyeRendererSubPart *EyeRendererSubPart::init_widget(){
     ui::W::init_label(&t, "Eyes to render: ", true);
-    inputUiElements.emplace_back(std::make_pair("eye_to_render", eye.init_widget({"Both eyes", "Left eye", "Right eye"}, Index{0}, true)));
+    inputUiElements.emplace_back(UiElementKey{eye.key()}, eye.init_widget({"Both eyes", "Left eye", "Right eye"}, Index{0}, true));
     return this;
 }
 
@@ -112,7 +111,41 @@ void ConfigParametersSubPart::block_signals(bool state){
     }
 }
 
-TextSubPart::TextSubPart(bool removeInputText) : noInputText(removeInputText){
+//if(!noInputText){
+//    inputUiElements.emplace_back(std::make_pair(baseName + "", richtext.init_widget("Use rich text", true)));
+//    inputUiElements.emplace_back(std::make_pair(baseName + "", text.init_widget(defaultText)));
+//    inputUiElements.emplace_back(std::make_pair(baseName + "_text_resource", resourceText.init_widget(Resource::Type::Text, "Text resource: ")));
+//}
+
+//inputUiElements.emplace_back(std::make_pair(baseName + "_wrap", wrapping.init_widget("Wrap text", true)));
+//inputUiElements.emplace_back(std::make_pair(baseName + "_auto_size", automaticFontSize.init_widget("Automatic", false)));
+//inputUiElements.emplace_back(std::make_pair(baseName + "_font_size", fontSize.init_widget(fontSizeSettings)));
+
+
+TextSubPart::TextSubPart(QString name, bool removeInputText) :
+    resourceText({name + "_text_resource"}),
+    text({name + "_text"}),
+    wrapping({name + "_wrap"}),
+    richtext({name + "_rich_text"}),
+    automaticFontSize({name + "_auto_size"}),
+    fontSize({name + "_font_size"}),
+    italic({name + "_italic"}),
+    bold({name + "_bold"}),
+    highlight({name + "_highlight"}),
+    underline({name + "_under_line"}),
+    none({name + "_normal"}),
+    lowerCase({name + "_lower_case"}),
+    upperCase({name + "_upper_case"}),
+    alignment({name + "_alignment"}),
+    paragraphSpacing({name + "_paragraph_spacing"}),
+    lineSpacing({name + "_line_spacing"}),
+    wordSpacing({name + "_word_spacing"}),
+    characterSpacing({name + "_character_spacing"}),
+    faceColor({name + "_face_color"}),
+    outlineColor({name + "_outline_color"}),
+    outlineWidth({name + "_outline_width"}),
+    noInputText(removeInputText)
+{
 
     // text
     textW = new QWidget();
@@ -151,42 +184,42 @@ TextSubPart::TextSubPart(bool removeInputText) : noInputText(removeInputText){
     settingsL->addStretch();
 }
 
-TextSubPart *TextSubPart::init_widget(QString baseName, QString defaultText){
+TextSubPart *TextSubPart::init_widget(QString defaultText){
 
     DsbSettings spacingSettings= {MinV<qreal>{-10.}, V<qreal>{0.}, MaxV<qreal>{10.}, StepV<qreal>{0.01}, 2};
     DsbSettings fontSizeSettings= {MinV<qreal>{0.5}, V<qreal>{25.}, MaxV<qreal>{150.}, StepV<qreal>{0.1}, 1};
     DsbSettings outlineSettings= {MinV<qreal>{0.}, V<qreal>{0.}, MaxV<qreal>{10.}, StepV<qreal>{0.01}, 2};
 
-    inputUiElements.emplace_back(std::make_pair(baseName + "_paragraph_spacing", paragraphSpacing.init_widget(spacingSettings)));
-    inputUiElements.emplace_back(std::make_pair(baseName + "_line_spacing", lineSpacing.init_widget(spacingSettings)));
-    inputUiElements.emplace_back(std::make_pair(baseName + "_word_spacing", wordSpacing.init_widget(spacingSettings)));
-    inputUiElements.emplace_back(std::make_pair(baseName + "_character_spacing", characterSpacing.init_widget(spacingSettings)));
-    inputUiElements.emplace_back(std::make_pair(baseName + "_face_color", faceColor.init_widget("Select face color", QColor(0,0,0,255))));
-    inputUiElements.emplace_back(std::make_pair(baseName + "_outline_color", outlineColor.init_widget("Select outline color", QColor(0,0,0,255))));
-    inputUiElements.emplace_back(std::make_pair(baseName + "_outline_width", outlineWidth.init_widget(outlineSettings)));
-    inputUiElements.emplace_back(std::make_pair(baseName + "_normal", none.init_widget("Normal", true)));
-    inputUiElements.emplace_back(std::make_pair(baseName + "_lower_case", lowerCase.init_widget("Lower case", false)));
-    inputUiElements.emplace_back(std::make_pair(baseName + "_upper_case", upperCase.init_widget("Upper case", false)));
-    inputUiElements.emplace_back(std::make_pair(baseName + "_italic", italic.init_widget("Italic", false)));
-    inputUiElements.emplace_back(std::make_pair(baseName + "_bold", bold.init_widget("Bold", false)));
-    inputUiElements.emplace_back(std::make_pair(baseName + "_highlight", highlight.init_widget("Highlight", false)));
-    inputUiElements.emplace_back(std::make_pair(baseName + "_under_line", underline.init_widget("Underline", false)));
-    inputUiElements.emplace_back(std::make_pair(baseName + "_alignment", alignment.init_widget({
+    inputUiElements.emplace_back(UiElementKey{paragraphSpacing.key()}, paragraphSpacing.init_widget(spacingSettings));
+    inputUiElements.emplace_back(UiElementKey{lineSpacing.key()}, lineSpacing.init_widget(spacingSettings));
+    inputUiElements.emplace_back(UiElementKey{wordSpacing.key()}, wordSpacing.init_widget(spacingSettings));
+    inputUiElements.emplace_back(UiElementKey{characterSpacing.key()}, characterSpacing.init_widget(spacingSettings));
+    inputUiElements.emplace_back(UiElementKey{faceColor.key()}, faceColor.init_widget("Select face color", QColor(0,0,0,255)));
+    inputUiElements.emplace_back(UiElementKey{outlineColor.key()}, outlineColor.init_widget("Select outline color", QColor(0,0,0,255)));
+    inputUiElements.emplace_back(UiElementKey{outlineWidth.key()}, outlineWidth.init_widget(outlineSettings));
+    inputUiElements.emplace_back(UiElementKey{none.key()},none.init_widget("Normal", true));
+    inputUiElements.emplace_back(UiElementKey{lowerCase.key()}, lowerCase.init_widget("Lower case", false));
+    inputUiElements.emplace_back(UiElementKey{upperCase.key()}, upperCase.init_widget("Upper case", false));
+    inputUiElements.emplace_back(UiElementKey{italic.key()}, italic.init_widget("Italic", false));
+    inputUiElements.emplace_back(UiElementKey{bold.key()}, bold.init_widget("Bold", false));
+    inputUiElements.emplace_back(UiElementKey{highlight.key()}, highlight.init_widget("Highlight", false));
+    inputUiElements.emplace_back(UiElementKey{underline.key()}, underline.init_widget("Underline", false));
+    inputUiElements.emplace_back(UiElementKey{alignment.key()}, alignment.init_widget({
         "Middle left","Middle right", "Middle justified", "Middle centered",
         "Bottom left","Bottom right", "Bottom justified", "Bottom centered",
         "Top left","Top right", "Top justified", "Top centered"},
         Index({3})
-    )));
+    ));
 
     if(!noInputText){
-        inputUiElements.emplace_back(std::make_pair(baseName + "_rich_text", richtext.init_widget("Use rich text", true)));
-        inputUiElements.emplace_back(std::make_pair(baseName + "_text", text.init_widget(defaultText)));
-        inputUiElements.emplace_back(std::make_pair(baseName + "_text_resource", resourceText.init_widget(Resource::Type::Text, "Text resource: ")));
+        inputUiElements.emplace_back(UiElementKey{richtext.key()}, richtext.init_widget("Use rich text", true));
+        inputUiElements.emplace_back(UiElementKey{text.key()}, text.init_widget(defaultText));
+        inputUiElements.emplace_back(UiElementKey{resourceText.key()}, resourceText.init_widget(Resource::Type::Text, "Text resource: "));
     }
 
-    inputUiElements.emplace_back(std::make_pair(baseName + "_wrap", wrapping.init_widget("Wrap text", true)));
-    inputUiElements.emplace_back(std::make_pair(baseName + "_auto_size", automaticFontSize.init_widget("Automatic", false)));
-    inputUiElements.emplace_back(std::make_pair(baseName + "_font_size", fontSize.init_widget(fontSizeSettings)));
+    inputUiElements.emplace_back(UiElementKey{wrapping.key()}, wrapping.init_widget("Wrap text", true));
+    inputUiElements.emplace_back(UiElementKey{automaticFontSize.key()}, automaticFontSize.init_widget("Automatic", false));
+    inputUiElements.emplace_back(UiElementKey{fontSize.key()}, fontSize.init_widget(fontSizeSettings));
 
     return this;
 }

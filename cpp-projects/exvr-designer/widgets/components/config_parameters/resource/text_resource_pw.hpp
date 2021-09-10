@@ -33,7 +33,7 @@ class TextResourceConfigParametersW : public ConfigParametersW{
 
 public :
 
-    ExResourceW m_text;
+    ExResourceW m_text{"text"};
 
     void insert_widgets() override{
         layout()->setContentsMargins(0,0,0,0);
@@ -41,7 +41,7 @@ public :
     }
 
     void init_and_register_widgets() override{
-        m_inputUiElements["text"] = m_text.init_widget(Resource::Type::Text, "Text resource: ");
+        add_input_ui(m_text.init_widget(Resource::Type::Text, "Text resource: "));
     }
 
     void create_connections() override{

@@ -10,12 +10,11 @@
 using namespace tool::ex;
 
 void SliderUiInitConfigParametersW::insert_widgets(){
-
     add_widget(ui::F::gen(ui::L::HB(), {m_cbHorizontalSlider()}));
 }
 
 void SliderUiInitConfigParametersW::init_and_register_widgets(){
-    m_inputUiElements["horizontal_slider"] = m_cbHorizontalSlider.init_widget("Horizontal slider", true);
+    add_input_ui(m_cbHorizontalSlider.init_widget("Horizontal slider", true));
 }
 
 void SliderUiInitConfigParametersW::create_connections(){}
@@ -110,37 +109,37 @@ void SliderUiConfigParametersW::init_and_register_widgets(){
         {MinV<qreal>{-0.5}, V<qreal>{0.5}, MaxV<qreal>{1.5}, StepV<qreal>{0.01}, 2}
     };
     DsbSettings distanceSettings= {MinV<qreal>{0}, V<qreal>{1.}, MaxV<qreal>{1000.}, StepV<qreal>{0.1}, 2};
-    m_inputUiElements["pivot"]      = m_pivot.init_widget("Pivot", pivotSettings);
-    m_inputUiElements["distance"]   = m_distance.init_widget(distanceSettings);
-    m_inputUiElements["use_eye_camera"]     = m_followEyeCamera.init_widget("Slider always in front of the eyes camera", true);
+    add_input_ui(m_pivot.init_widget("Pivot", pivotSettings));
+    add_input_ui(m_distance.init_widget(distanceSettings));
+    add_input_ui(m_followEyeCamera.init_widget("Slider always in front of the eyes camera", true));
     map_sub_part(m_cameraSettings.init_widget());
 
-    map_sub_part(m_text1.init_widget("t1", "Description txt1"));
-    map_sub_part(m_text2.init_widget("t2", "Description txt2"));
-    map_sub_part(m_minTxt.init_widget("tmin"));
-    map_sub_part(m_maxTxt.init_widget("tmax"));
-    map_sub_part(m_valueTxt.init_widget("tvalue"));
+    map_sub_part(m_text1.init_widget("Description txt1"));
+    map_sub_part(m_text2.init_widget("Description txt2"));
+    map_sub_part(m_minTxt.init_widget());
+    map_sub_part(m_maxTxt.init_widget());
+    map_sub_part(m_valueTxt.init_widget());
 
-    m_inputUiElements["min"]                = m_minValue.init_widget(  MinV<qreal>{-10000}, V<qreal>{0.}, MaxV<qreal>{10000}, StepV<qreal>{0.01},2);
-    m_inputUiElements["max"]                = m_maxValue.init_widget( MinV<qreal>{-10000}, V<qreal>{1.}, MaxV<qreal>{10000}, StepV<qreal>{0.01},2);
-    m_inputUiElements["value"]              = m_initialValue.init_widget( MinV<qreal>{-10000}, V<qreal>{0.5}, MaxV<qreal>{10000}, StepV<qreal>{0.01},2);
-    m_inputUiElements["step"]               = m_stepValue.init_widget( MinV<qreal>{0.01}, V<qreal>{0.1}, MaxV<qreal>{10000}, StepV<qreal>{0.01},2);
-    m_inputUiElements["whole"]              = m_wholeValue.init_widget( "Use whole values", false);
-    m_inputUiElements["random_start"]       = m_randomStart.init_widget( "Random start", false);
+    add_input_ui(m_minValue.init_widget(  MinV<qreal>{-10000}, V<qreal>{0.}, MaxV<qreal>{10000}, StepV<qreal>{0.01},2));
+    add_input_ui(m_maxValue.init_widget( MinV<qreal>{-10000}, V<qreal>{1.}, MaxV<qreal>{10000}, StepV<qreal>{0.01},2));
+    add_input_ui(m_initialValue.init_widget( MinV<qreal>{-10000}, V<qreal>{0.5}, MaxV<qreal>{10000}, StepV<qreal>{0.01},2));
+    add_input_ui(m_stepValue.init_widget( MinV<qreal>{0.01}, V<qreal>{0.1}, MaxV<qreal>{10000}, StepV<qreal>{0.01},2));
+    add_input_ui(m_wholeValue.init_widget( "Use whole values", false));
+    add_input_ui(m_randomStart.init_widget( "Random start", false));
 
-    m_inputUiElements["display_min_max"]            = m_displayMinMax.init_widget("Display min/max", false);
-    m_inputUiElements["display_min_max_value"]      = m_displayMinMaxValue.init_widget("Display min/max/value", true);
-    m_inputUiElements["display_slider_textes_text"] = m_displaySliderTextes.init_widget("Display slider descriptions", false);
-    m_inputUiElements["display_nothing"]            = m_displayNothing.init_widget("Display nothing", false);
-    m_inputUiElements["display_steps"]              = m_displaySteps.init_widget("Display steps", false);
+    add_input_ui(m_displayMinMax.init_widget("Display min/max", false));
+    add_input_ui(m_displayMinMaxValue.init_widget("Display min/max/value", true));
+    add_input_ui(m_displaySliderTextes.init_widget("Display slider descriptions", false));
+    add_input_ui(m_displayNothing.init_widget("Display nothing", false));
+    add_input_ui(m_displaySteps.init_widget("Display steps", false));
 
-    m_inputUiElements["slider_text1"]            = m_sliderText1.init_widget("Slider txt1");
-    m_inputUiElements["slider_text2"]            = m_sliderText2.init_widget("Slider txt2");
+    add_input_ui(m_sliderText1.init_widget("Slider txt1"));
+    add_input_ui(m_sliderText2.init_widget("Slider txt2"));
 
-    m_inputUiElements["background_color"]   = m_colBackgound.init_widget("Select background color", Qt::white);
-    m_inputUiElements["handle_color"]       = m_colHandle.init_widget("Select handle color",        Qt::gray);
-    m_inputUiElements["fill_area_color"]    = m_colFillArea.init_widget("Select fill area color",   Qt::gray);
-    m_inputUiElements["rest_area_color"]    = m_colRestArea.init_widget("Select rest area color",   Qt::gray);
+    add_input_ui(m_colBackgound.init_widget("Select background color", Qt::white));
+    add_input_ui(m_colHandle.init_widget("Select handle color",        Qt::gray));
+    add_input_ui(m_colFillArea.init_widget("Select fill area color",   Qt::gray));
+    add_input_ui(m_colRestArea.init_widget("Select rest area color",   Qt::gray));
 }
 
 void SliderUiConfigParametersW::create_connections(){

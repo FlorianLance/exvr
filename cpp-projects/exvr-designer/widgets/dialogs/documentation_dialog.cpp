@@ -125,7 +125,7 @@ void DocumentationDialog::init_components_doc(){
     // fill tabs
     tabComponentsDocW->addTab(componentsInfoW            = new QTextBrowser(), QSL("Infos"));
     tabComponentsDocW->addTab(componentsConnectionsW     = new QTextBrowser(), QSL("Connections"));
-    tabComponentsDocW->addTab(componentsCsharpScriptingW = new QTextBrowser(), QSL("CSharp scripting"));
+    tabComponentsDocW->addTab(componentsCsharpScriptingW(), QSL("CSharp scripting"));
 //    tabComponentsDocW->addTab(componentsPythonScriptingW = new QTextBrowser(), QSL("Python scripting"));
 
     const QString path = Paths::documentationDir % QSL("/") % from_view(markdown_file(DocSection::ContentComponentsDescription));
@@ -141,22 +141,30 @@ void DocumentationDialog::init_components_doc(){
     componentsConnectionsW->setSearchPaths({path, ".", "./connections_images"});
     componentsConnectionsW->setReadOnly(true);
 
-    componentsCsharpScriptingW->setOpenExternalLinks(true);
-    componentsCsharpScriptingW->setStyleSheet("background-color: rgb(30,30,30);");
-    componentsCsharpScriptingW->zoomIn(3);
-    componentsCsharpScriptingW->setSearchPaths({path, ".", "./csharp_images"});
-    componentsCsharpScriptingW->setReadOnly(true);
+
+
+//    componentsCsharpScriptingW->setOpenExternalLinks(true);
+//    componentsCsharpScriptingW->setStyleSheet("background-color: rgb(30,30,30);");
+//    componentsCsharpScriptingW->zoomIn(3);
+//    componentsCsharpScriptingW->setSearchPaths({path, ".", "./csharp_images"});
+//    componentsCsharpScriptingW->setReadOnly(true);
 
 //    componentsPythonScriptingW->setOpenExternalLinks(true);
 //    componentsPythonScriptingW->setSearchPaths({Paths::componentsDocDir});
 //    componentsPythonScriptingW->setReadOnly(true);
 
-    auto csharpHighlighter = new tool::ui::CSharpHighlighter(componentsCsharpScriptingW->document());
-    std::vector<QString> classNames;
+//    auto csharpHighlighter = new tool::ui::CSharpHighlighter(componentsCsharpScriptingW->document());
+    QStringList classNames;
     for(const auto &unityStr : Component::components.tuple_column<Component::ColUnityStr>()){
-        classNames.emplace_back(QString(from_view(unityStr) % QSL("Component")));
+        classNames << QString(from_view(unityStr) % QSL("Component"));
     }
-    csharpHighlighter->add_classes(classNames);
+//    csharpHighlighter->add_classes(classNames);
+
+    componentsCsharpScriptingW.init_widget_as_csharp_editor(classNames, QColor(30,30,30), "");
+    componentsCsharpScriptingW.w->setReadOnly(true);
+//    componentsCsharpScriptingW.w->setOpenExternalLinks(true);
+//    componentsCsharpScriptingW.w->setSearchPaths({path, ".", "./csharp_images"});
+
 }
 
 void DocumentationDialog::init_connectors_doc(){
@@ -379,10 +387,10 @@ void DocumentationDialog::update_current_component_doc(Component::Type type){
 
     QFile csFile(csPath);
     if(!csFile.open(QIODevice::ReadOnly | QIODevice::Text)){
-        componentsCsharpScriptingW->setMarkdown(QSL("No documentation file found: ") % csPath);
+        componentsCsharpScriptingW.w->setPlainText(QSL("No documentation file found: ") % csPath);
     }else {
         QTextStream in(&csFile);
-        componentsCsharpScriptingW->setMarkdown(in.readAll());
+        componentsCsharpScriptingW.w->setPlainText(in.readAll());
 
     }
 

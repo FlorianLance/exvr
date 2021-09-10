@@ -16,7 +16,6 @@ void CheckStrEmbeddedW::initialize(){
     w->init_widget(QSL("default"));
 
     // set widget connections
-    w->init_connection("");
     connect(w.get(), &ExLineEditW::ui_change_signal, this, [=]{
         emit update_internal_data_signal({0}, {std::make_shared<StringData>(w->w->text())});
         emit compute_data_signal();

@@ -38,12 +38,12 @@ public :
     QTabWidget m_textTw;
 
     WordSpaceCanvasSubPart m_cameraSettings;
-    ExCheckBoxW m_followEyeCamera;
-    ExVector2dW m_pivot;
-    ExFloatSpinBoxW m_distance;
-    ExSelectColorW m_backgroundColor;
+    ExCheckBoxW m_followEyeCamera{"use_eye_camera"};
+    ExVector2dW m_pivot{"pivot"};
+    ExFloatSpinBoxW m_distance{"distance"};
+    ExSelectColorW m_backgroundColor{"background_color"};
 
-    TextSubPart m_text;
+    TextSubPart m_text {"t"};
 
     void insert_widgets() override;
     void init_and_register_widgets() override;

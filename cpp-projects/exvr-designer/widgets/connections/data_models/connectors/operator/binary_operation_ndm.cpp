@@ -14,7 +14,6 @@ void BinaryOperationEmbeddedW::initialize(){
     w->init_widget({QSL("AND"), QSL("OR"), QSL("XOR"), QSL("NOT")});
 
     // set widget connections
-    w->init_connection("");
     connect(w.get(), &ExComboBoxTextW::ui_change_signal, this, [=]{
         emit compute_data_signal();
     });

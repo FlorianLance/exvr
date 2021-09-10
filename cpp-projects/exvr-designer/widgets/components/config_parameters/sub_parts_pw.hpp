@@ -35,15 +35,14 @@ public:
     void block_signals(bool state);
 
     QFrame *frame = nullptr;
-    std_v1<std::pair<QString, ExBaseW*>> inputUiElements;
+    std_v1<std::pair<UiElementKey, ExBaseW*>> inputUiElements;
 };
 
 class TransformSubPart : public ConfigParametersSubPart{
 public :
 
-    TransformSubPart();
-
-    TransformSubPart *init_widget(QString title = "Transform", QString name = "transform");
+    TransformSubPart(QString name = "transform");
+    TransformSubPart *init_widget(QString title = "Transform");
 
     ExTransformationW tr;
     ExCheckBoxW doNotApply;
@@ -53,27 +52,28 @@ class WordSpaceCameraCanvasSubPart :  public ConfigParametersSubPart{
 
 public:
 
-    ExFloatSpinBoxW distance;
-    ExFloatSpinBoxW scaleFactor;
-    ExSpinBoxW width;
-    ExSpinBoxW height;
-    ExFloatSpinBoxW pivotX;
-    ExFloatSpinBoxW pivotY;
-    ExVector3dW rotation;
+    // todo : wscc_
+    ExFloatSpinBoxW distance {"distance"};
+    ExFloatSpinBoxW scaleFactor {"scale_factor"};
+    ExSpinBoxW width {"width"};
+    ExSpinBoxW height {"height"};
+    ExFloatSpinBoxW pivotX {"pivot_x"};
+    ExFloatSpinBoxW pivotY {"pivot_y"};
+    ExVector3dW rotation {"rotation"};
 
     WordSpaceCameraCanvasSubPart();
-
     WordSpaceCameraCanvasSubPart *init_widget();
 };
 
 class WordSpaceCanvasSubPart :  public ConfigParametersSubPart{
 public:
 
-    ExSpinBoxW width;
-    ExSpinBoxW height;
-    ExFloatSpinBoxW scaleFactor;
-    ExVector3dW position;
-    ExVector3dW rotation;
+    // todo : wsc_
+    ExSpinBoxW width {"width"};
+    ExSpinBoxW height {"height"};
+    ExFloatSpinBoxW scaleFactor {"scale_factor"};
+    ExVector3dW position {"position"};
+    ExVector3dW rotation {"rotation"};
 
     WordSpaceCanvasSubPart();
 
@@ -88,15 +88,15 @@ public:
     EyeRendererSubPart *init_widget();
 
     QLabel t;
-    ExComboBoxTextW eye;
+    ExComboBoxTextW eye {"eye_to_render"};
 };
 
 class TextSubPart : public ConfigParametersSubPart{
 public:
 
-    TextSubPart(bool removeInputText = false);
+    TextSubPart(QString name, bool removeInputText = false);
 
-    TextSubPart *init_widget(QString baseName, QString defaultText = "Text...");
+    TextSubPart *init_widget(QString defaultText = "Text...");
 
     QWidget *textW = nullptr;
     QWidget *settingsW = nullptr;

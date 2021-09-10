@@ -25,7 +25,7 @@ class MultiABInitConfigParametersW : public ConfigParametersW{
 
 public :
 
-    ExResourcesListW abList;
+    ExResourcesListW abList{"ab_list"};
 
     void insert_widgets() override;
     void init_and_register_widgets() override;
@@ -35,8 +35,8 @@ class MultiABConfigParametersW : public ConfigParametersW{
 
 public :
 
-    TransformSubPart m_transfo;
-    ExResourceW m_currentAB;
+    TransformSubPart m_transfo{"transform"};
+    ExResourceW m_currentAB{"ab_alias"};
     void insert_widgets() override;
     void init_and_register_widgets() override;
 };

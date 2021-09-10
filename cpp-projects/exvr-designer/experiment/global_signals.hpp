@@ -129,14 +129,11 @@ signals:
     void move_config_signal(ComponentKey componentKey, RowId from, RowId to);
     void rename_config_signal(ComponentKey componentKey, RowId id, QString name);
     // ### args
-    void arg_updated_signal(ComponentKey componentKey, ConfigKey configKey, QString name, Arg arg, bool initConfig);
-    void move_arg_up_signal(ComponentKey componentKey, ConfigKey configKey, QString previousName, QString name, bool initConfig);
-    void move_arg_down_signal(ComponentKey componentKey, ConfigKey configKey, QString nextName, QString name, bool initConfig);
-    void arg_removed_signal(ComponentKey componentKey, ConfigKey configKey, QString name, bool initConfig);
-    void new_arg_signal(ComponentKey componentKey, ConfigKey configKey, QString name, Arg arg, bool initConfig);
-    void action_signal(ComponentKey componentKey, ConfigKey configKey, QString name, bool initConfig);
-
-
+    void new_arg_signal(ComponentKey componentKey, ConfigKey configKey, Arg arg, bool initConfig);
+    void arg_updated_signal(ComponentKey componentKey, ConfigKey configKey, Arg arg, bool initConfig);
+    void arg_removed_signal(ComponentKey componentKey, ConfigKey configKey, UiElementKey argKey, bool initConfig);
+    void swap_arg_signal(ComponentKey componentKey, ConfigKey configKey, UiElementKey argKey1, UiElementKey argKey2, bool initConfig);
+    void action_signal(ComponentKey componentKey, ConfigKey configKey, QString actionName, bool initConfig);
 
 private:
     static inline std::unique_ptr<GSignals> m_signals = nullptr;

@@ -23,10 +23,9 @@ class ExResourcesListW : public ExItemW<QFrame>{
     Q_OBJECT
 public:
 
-    ExResourcesListW();
+    ExResourcesListW(QString name ="");
     ExResourcesListW *init_widget(Resource::Type resourceType, QString title, bool enabled = true);
 
-    void init_connection(const QString &nameParam) override;
     void update_from_arg(const Arg &arg) override;
     Arg convert_to_arg() const override;
     void update_from_resources() override;

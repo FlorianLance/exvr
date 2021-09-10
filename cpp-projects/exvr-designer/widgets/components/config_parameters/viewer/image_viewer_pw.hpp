@@ -33,12 +33,12 @@ class ImageViewerConfigParametersW : public ConfigParametersW{
 public :
 
     EyeRendererSubPart m_eye;
-    ExResourceW m_image;
+    ExResourceW m_image{"image"};
     WordSpaceCanvasSubPart m_cameraSettings;
-    ExCheckBoxW m_followEyeCamera;
-    ExCheckBoxW m_useImageSize;
-    ExVector2dW m_pivot;
-    ExFloatSpinBoxW m_distance;
+    ExCheckBoxW m_followEyeCamera{"use_eye_camera"};
+    ExCheckBoxW m_useImageSize{"use_original_size"};
+    ExVector2dW m_pivot{"pivot"};
+    ExFloatSpinBoxW m_distance{"distance"};
 
     void insert_widgets() override;
     void init_and_register_widgets() override;

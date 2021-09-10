@@ -17,14 +17,14 @@ class ScanerVideoInitConfigParametersW : public ConfigParametersW{
 
 public :
 
-    ExResourceW m_scanerVideo;
+    ExResourceW m_scanerVideo{"scaner_video"};
 
     void insert_widgets() override{
         add_widget(ui::F::gen(ui::L::HB(), {m_scanerVideo()}, LStretch{false}, LMargins{true}, QFrame::Box));
     }
 
     void init_and_register_widgets() override{
-        m_inputUiElements["scaner_video"] = m_scanerVideo.init_widget(Resource::Type::ScanerVideo, "Scaner video resource: ");
+        add_input_ui(m_scanerVideo.init_widget(Resource::Type::ScanerVideo, "Scaner video resource: "));
     }
 
     void create_connections() override{}
@@ -63,14 +63,13 @@ class ScanerVideoConfigParametersW : public ConfigParametersW{
 
 public :
 
-    TransformSubPart m_transfo;
-    ExFloatSpinBoxW m_sizePoints;
-    ExSpinBoxW m_fps;
-    ExCheckBoxW m_loop;
-    ExCheckBoxW m_displayClouds;
-    ExCheckBoxW m_displayColliders;
-    ExSpinBoxW m_maxDiffTimeMs;
-
+    TransformSubPart m_transfo{"global_transform"};
+    ExFloatSpinBoxW m_sizePoints{"size_points"};
+    ExSpinBoxW m_fps{"fps"};
+    ExCheckBoxW m_loop{"loop"};
+    ExCheckBoxW m_displayClouds{"display_clouds"};
+    ExCheckBoxW m_displayColliders{"display_colliders"};
+    ExSpinBoxW m_maxDiffTimeMs{"max_diff_time_ms"};
 
     void insert_widgets() override{
         add_sub_part_widget(m_transfo);
@@ -83,14 +82,13 @@ public :
     }
 
     void init_and_register_widgets() override{
-        map_sub_part(m_transfo.init_widget("Global model transform", "global_transform"));
-
-        m_inputUiElements["size_points"]       = m_sizePoints.init_widget(MinV<qreal>{0.0001}, V<qreal>{0.0030}, MaxV<qreal>{0.05}, StepV<qreal>{0.0001},4);
-        m_inputUiElements["fps"]               = m_fps.init_widget(MinV<int>{1}, V<int>{30}, MaxV<int>{40}, StepV<int>{1});
-        m_inputUiElements["max_diff_time_ms"]  = m_maxDiffTimeMs.init_widget(MinV<int>{1}, V<int>{100}, MaxV<int>{600}, StepV<int>{10});
-        m_inputUiElements["loop"]              = m_loop.init_widget("Loop ", true);
-        m_inputUiElements["display_clouds"]    = m_displayClouds.init_widget("Display clouds ", true);
-        m_inputUiElements["display_colliders"] = m_displayColliders.init_widget("Display colliders ", false);
+        map_sub_part(m_transfo.init_widget("Global model transform"));
+        add_input_ui(m_sizePoints.init_widget(MinV<qreal>{0.0001}, V<qreal>{0.0030}, MaxV<qreal>{0.05}, StepV<qreal>{0.0001},4));
+        add_input_ui(m_fps.init_widget(MinV<int>{1}, V<int>{30}, MaxV<int>{40}, StepV<int>{1}));
+        add_input_ui(m_maxDiffTimeMs.init_widget(MinV<int>{1}, V<int>{100}, MaxV<int>{600}, StepV<int>{10}));
+        add_input_ui(m_loop.init_widget("Loop ", true));
+        add_input_ui(m_displayClouds.init_widget("Display clouds ", true));
+        add_input_ui(m_displayColliders.init_widget("Display colliders ", false));
     }
 
     void create_connections() override{}

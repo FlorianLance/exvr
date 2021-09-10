@@ -10,7 +10,7 @@
 using namespace tool;
 using namespace tool::ex;
 
-ExCameraTargetW::ExCameraTargetW() : ExItemW<QFrame>(UiType::Camera_position){
+ExCameraTargetW::ExCameraTargetW(QString name) : ExItemW<QFrame>(UiType::Camera_position, name){
 
     w->setFrameShadow(QFrame::Raised);
     w->setFrameShape(QFrame::Shape::NoFrame);
@@ -54,15 +54,7 @@ ExBaseW *ExCameraTargetW::init_widget2(std_v1<std::any> parameters){
     return this;
 }
 
-void ExCameraTargetW::init_connection(const QString &nameParam){
-    time.init_connection(nameParam);
-    displayCamera.init_connection(nameParam);
-    sphericInterpolation.init_connection(nameParam);
-    translation.init_connection(nameParam);
-    rotation.init_connection(nameParam);
-    color.init_connection(nameParam);
-    speed.init_connection(nameParam);
-}
+
 
 void ExCameraTargetW::update_from_arg(const Arg &arg){
 
@@ -100,7 +92,7 @@ void ExCameraTargetW::update_from_arg(const Arg &arg){
 
 Arg ExCameraTargetW::convert_to_arg() const{
 
-    Arg arg = ExItemW::convert_to_arg();
+    Arg arg = ExBaseW::convert_to_arg();
     std::vector<Arg> args = {
         time.convert_to_arg(),
         displayCamera.convert_to_arg(),

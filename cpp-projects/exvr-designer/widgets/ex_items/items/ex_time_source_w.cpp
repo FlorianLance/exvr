@@ -9,6 +9,11 @@
 
 using namespace tool::ex;
 
+ExTimeW::ExTimeW(QString name) : ExItemW<QWidget>(UiType::Time, name){
+    connect(&typeT, &ExComboBoxTextW::ui_change_signal, this, &ExTimeW::ui_change_signal);
+    connect(&frequency, &ExSpinBoxW::ui_change_signal, this, &ExTimeW::ui_change_signal);
+}
+
 ExTimeW *ExTimeW::init_widget(bool enabled){
 
     QStringList items = {"Time since exp", "Time since routine"};
@@ -37,14 +42,6 @@ ExTimeW *ExTimeW::init_widget(bool enabled){
     l->addWidget(w2);
 
     return this;
-}
-
-void ExTimeW::init_connection(const QString &nameParam){
-    Q_UNUSED(nameParam)
-    typeT.init_connection("type");
-    frequency.init_connection("frequency");
-    connect(&typeT, &ExComboBoxTextW::ui_change_signal, this, &ExTimeW::ui_change_signal);
-    connect(&frequency, &ExSpinBoxW::ui_change_signal, this, &ExTimeW::ui_change_signal);
 }
 
 void ExTimeW::update_from_arg(const Arg &arg){

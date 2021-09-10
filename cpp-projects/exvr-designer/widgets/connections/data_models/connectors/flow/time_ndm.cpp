@@ -14,8 +14,6 @@ void TimeEmbeddedW::initialize(){
     w->init_widget();
 
     // set widget connections
-    w->init_connection("");
-
     connect(w.get(), &ExTimeW::ui_change_signal, this, [=]{
         emit update_internal_data_signal({0}, {std::make_shared<IntData>(0)});
         emit compute_data_signal();

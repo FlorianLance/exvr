@@ -32,14 +32,14 @@ void CameraInitConfigParametersW::insert_widgets(){
 
 void CameraInitConfigParametersW::init_and_register_widgets(){
 
-    m_inputUiElements["use_neutral"] = useNeutral.init_widget("start neutral camera", true);
-    m_inputUiElements["use_eye"]     = useEye.init_widget("eye camera", false);
-    m_inputUiElements["start_experiment"]   = cbStartExperiment.init_widget("Start experiment (init cam)", true, true);
+    add_input_ui(useNeutral.init_widget("start neutral camera", true));
+    add_input_ui(useEye.init_widget("eye camera", false));
+    add_input_ui(cbStartExperiment.init_widget("Start experiment (init cam)", true, true));
 
     DsbSettings offsetPos{MinV<qreal>{-1000.},V<qreal>{0.},MaxV<qreal>{1000.},StepV<qreal>{0.01}, 3};
     DsbSettings offsetRot{MinV<qreal>{-360.},V<qreal>{0.},MaxV<qreal>{360.},StepV<qreal>{0.1}, 3};
-    m_inputUiElements["position"]    = position.init_widget("position: ", {offsetPos,offsetPos,offsetPos});
-    m_inputUiElements["rotation"]    = rotation.init_widget("rotation: ", {offsetRot,offsetRot,offsetRot});
+    add_input_ui(position.init_widget("position: ", {offsetPos,offsetPos,offsetPos}));
+    add_input_ui(rotation.init_widget("rotation: ", {offsetRot,offsetRot,offsetRot}));
 }
 
 void CameraInitConfigParametersW::create_connections(){}
@@ -97,13 +97,13 @@ void CameraConfigParametersW::init_and_register_widgets(){
     DsbSettings offsetRot{MinV<qreal>{-360.},V<qreal>{0.},MaxV<qreal>{360.},StepV<qreal>{0.1}, 3};
     Vector3dSettings offsetVecRot = {offsetRot,offsetRot,offsetRot};
 
-    m_inputUiElements["use_neutral"] = useNeutral.init_widget("start neutral camera", true);
-    m_inputUiElements["use_eye"]     = useEye.init_widget("eye camera", false);
-    m_inputUiElements["position"]    = position.init_widget("position: ", offsetVecPos);
-    m_inputUiElements["rotation"]    = rotation.init_widget("rotation: ", offsetVecRot);
+    add_input_ui(useNeutral.init_widget("start neutral camera", true));
+    add_input_ui(useEye.init_widget("eye camera", false));
+    add_input_ui(position.init_widget("position: ", offsetVecPos));
+    add_input_ui(rotation.init_widget("rotation: ", offsetVecRot));
 
-    m_inputUiElements["start_routine"]      = cbStartRoutine.init_widget("Start routine (config cam)", false, true);
-    m_inputUiElements["update_on"]          = cbUpdateOn.init_widget("Start timeline update block (config cam)", false, true);
+    add_input_ui(cbStartRoutine.init_widget("Start routine (config cam)", false, true));
+    add_input_ui(cbUpdateOn.init_widget("Start timeline update block (config cam)", false, true));
 
     position.init_widget("position: ", offsetVecPos);
     rotation.init_widget("rotation: ", offsetVecRot);
@@ -112,7 +112,7 @@ void CameraConfigParametersW::init_and_register_widgets(){
     currentEyePosition.init_widget("position: ", offsetVecPos, false);
     currentEyeRotation.init_widget("rotation: ", offsetVecRot, false);
 
-    m_inputUiElements["debug_camera"] = enableDebugMouseCameraMovements.init_widget("Enable debug camera movement (move with mouse middle click, rotate with right click)", false);
+    add_input_ui(enableDebugMouseCameraMovements.init_widget("Enable debug camera movement (move with mouse middle click, rotate with right click)", false));
 }
 
 void CameraConfigParametersW::update_with_info(QStringView id, QStringView value){
@@ -155,15 +155,15 @@ void CameraConfigParametersW::create_connections(){
     connect(copyNeutralToCurrentConfig, &QPushButton::clicked, this, [&]{
         position.set_values(currentNeutralPosition.values());
         rotation.set_values(currentNeutralRotation.values());
-        emit position.ui_change_signal("position");
-        emit rotation.ui_change_signal("rotation");
+        position.trigger_ui_change();
+        rotation.trigger_ui_change();
     });
 
     connect(copyEyeToCurrentConfig, &QPushButton::clicked, this, [&]{
         position.set_values(currentEyePosition.values());
         rotation.set_values(currentEyeRotation.values());
-        emit position.ui_change_signal("position");
-        emit rotation.ui_change_signal("rotation");
+        position.trigger_ui_change();
+        rotation.trigger_ui_change();
     });
 }
 

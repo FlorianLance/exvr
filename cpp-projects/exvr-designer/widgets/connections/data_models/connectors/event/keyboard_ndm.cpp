@@ -22,7 +22,6 @@ void KeyboardButtonEmbeddedW::initialize(){
     w->init_widget(items);
 
     // set widget connections
-    w->init_connection("");
     connect(w.get(), &ExComboBoxTextW::ui_change_signal, this, [=]{
         auto button = input::Keyboard::get_button(w->w->currentText().toStdString());
         if(button.has_value()){

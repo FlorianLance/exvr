@@ -23,7 +23,6 @@ struct KeyboardInitConfigParametersW::Impl{
 KeyboardInitConfigParametersW::KeyboardInitConfigParametersW() :  ConfigParametersW(), m_p(std::make_unique<Impl>()){
 }
 
-
 void KeyboardInitConfigParametersW::insert_widgets(){
 
     QStringList keysList;

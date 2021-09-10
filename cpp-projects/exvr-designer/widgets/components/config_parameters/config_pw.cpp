@@ -7,6 +7,8 @@
 
 #include "config_pw.hpp"
 
+// local
+#include "global_signals.hpp"
 #include "resources_manager.hpp"
 #include "ex_resource_w.hpp"
 #include "ex_component_w.hpp"
@@ -14,10 +16,6 @@
 using namespace tool::ex;
 
 ConfigParametersW::ConfigParametersW() {
-
-    // main widget
-//    setContentsMargins(0,0,0,0);
-//    setLayout(m_layout = new QVBoxLayout());
 
     setContentsMargins(0,0,0,0);
     setLayout(m_layout = new QVBoxLayout());
@@ -32,6 +30,16 @@ ConfigParametersW::ConfigParametersW() {
     area->setWidget(w);
     layout()->addWidget(area);
     m_layout = scrollL;
+}
+
+void ConfigParametersW::set_infos(ComponentKey componentKey, ConfigKey configKey, bool initConfig){
+    this->componentKey  = componentKey;
+    this->configKey     = configKey;
+    this->initConfig    = initConfig;
+}
+
+void ConfigParametersW::no_end_stretch(){
+    endStretch = false;
 }
 
 void ConfigParametersW::end_stretch(){
@@ -70,91 +78,88 @@ void ConfigParametersW::add_sub_part_widget(ConfigParametersSubPart &subPart){
 
 void ConfigParametersW::map_sub_part(ConfigParametersSubPart *subPart){
     for(auto &w : subPart->inputUiElements){
-        m_inputUiElements[w.first] = w.second;
+        add_input_ui(w.second);
     }
 }
 
-void ConfigParametersW::update_from_args(std::map<QString,Arg> &args){
+void ConfigParametersW::init_from_args(std::unordered_map<QStringView,Arg*> &argsByName){
 
-    // read and write ui    
+    // input ui
     for(const auto &inputUiElem : m_inputUiElements){
 
-        const QString &nameParam = inputUiElem.first;
-        ExBaseW *exW = inputUiElem.second;
+        ExBaseW *exW         = inputUiElem.second;
+        // const auto uiKey     = UiElementKey{exW->key()};
+        QStringView itemName = exW->itemName;
 
         // event filter
         exW->installEventFilter(this);
 
-        if(args.count(nameParam) != 0){
-            // if argument exist, update ui from it
-            args.at(nameParam).uiElementKey = UiElementKey{exW->key()}; // update argument key with ui element key
-            exW->update_from_arg(args.at(nameParam));
+        if(argsByName.count(itemName) != 0){
+            // if argument exists, update ui from it
+            exW->update_from_arg(*argsByName.at(itemName));
         }else{
-            // else update argument from ui
-            emit new_arg_signal(nameParam, exW->convert_to_arg());
+            // else updates argument from ui
+            emit GSignals::get()->new_arg_signal(componentKey, configKey, exW->convert_to_arg(), initConfig);
         }
 
         // init connections
-        exW->init_connection(nameParam);
-        connect(exW, &ExBaseW::ui_change_signal, this, [=](QString nameParam){
-            emit arg_updated_signal(nameParam, exW->convert_to_arg());
+        connect(exW, &ExBaseW::ui_change_signal, this, [=](UiElementKey uiKey){
+            static_cast<void>(uiKey);
+            emit GSignals::get()->arg_updated_signal(componentKey, configKey, exW->convert_to_arg(), initConfig);
         });
 
         // set tooltip
-        exW->init_default_tooltip(nameParam);
+        exW->init_default_tooltip(exW->itemName);
     }
 
-    // actions only
+    // actions ui
     for(const auto &actionUiElem : m_actionUiElements){
 
-        const QString &action = actionUiElem.first;
-        ExBaseW *exW = actionUiElem.second;
+//        const auto uiKey = actionUiElem.first;
+        ExBaseW *exW     = actionUiElem.second;
 
         // event filter
         exW->installEventFilter(this);
 
         // init connections
-        exW->init_connection(action);
-        connect(exW, &ExBaseW::action_signal, this, &ConfigParametersW::action_signal);
-
-        // set tooltip
-//        exW->init_default_tooltip(nameParam);
+        connect(exW, &ExBaseW::action_signal, this, [&](UiElementKey uiKey){
+            static_cast<void>(uiKey);
+            emit GSignals::get()->action_signal(componentKey, configKey, exW->itemName, initConfig);
+        });
     }
 
     // arg only
     for(const auto &inputNonUiArg : m_inputNonUiArguments){
-        if(args.count(inputNonUiArg.first) == 0){
-            emit new_arg_signal(inputNonUiArg.first, inputNonUiArg.second);
+        QStringView name = inputNonUiArg.second.name;
+        if(argsByName.count(name) == 0){
+            emit GSignals::get()->new_arg_signal(componentKey, configKey, inputNonUiArg.second, initConfig);
         }
     }
 
     // update generators
     for(const auto &generatorUiElem : m_generatorsUiElements){
 
-        const QString &nameParam = generatorUiElem.first;
         ExParametersGeneratorWidgetW* generator = generatorUiElem.second;
-
-        generator->init_connection(nameParam);
-        connect(generator, &ExParametersGeneratorWidgetW::add_ui_signal, this, [this](QString nameParam){
-            emit new_arg_signal(nameParam, m_inputUiElements[nameParam]->convert_to_arg());
+        connect(generator, &ExParametersGeneratorWidgetW::add_ui_signal, this, [this](Arg arg){
+            emit GSignals::get()->new_arg_signal(componentKey, configKey, std::move(arg), initConfig);
+        });
+        connect(generator, &ExParametersGeneratorWidgetW::swap_ui_signal, this, [this](UiElementKey arg1Key, UiElementKey arg2Key){
+            emit GSignals::get()->swap_arg_signal(componentKey, configKey, arg1Key, arg2Key, initConfig);
+        });
+        connect(generator, &ExParametersGeneratorWidgetW::remove_ui_signal, this, [this](UiElementKey argKey){
+            emit GSignals::get()->arg_removed_signal(componentKey, configKey, argKey, initConfig);
+        });
+        connect(generator, &ExParametersGeneratorWidgetW::ui_change_signal, this, [this](UiElementKey uiKey){
+            if(m_inputUiElements.count(uiKey) != 0){
+                emit GSignals::get()->arg_updated_signal(componentKey, configKey, m_inputUiElements[uiKey]->convert_to_arg(), initConfig);
+            }else{
+                qWarning() << "ExParametersGeneratorWidgetW::ui_change_signal invalid key " << uiKey.v;
+            }
         });
 
-        connect(generator, &ExParametersGeneratorWidgetW::move_up_ui_signal, this, [this](QString prevNameParam, QString nameParam){
-            emit move_arg_up_signal(prevNameParam, nameParam);
-        });
-        connect(generator, &ExParametersGeneratorWidgetW::move_down_ui_signal, this, [this](QString nextNameParam, QString nameParam){
-            emit move_arg_down_signal(nextNameParam, nameParam);
-        });
-        connect(generator, &ExParametersGeneratorWidgetW::remove_ui_signal, this, [this](QString nameParam){
-            emit arg_removed_signal(nameParam);
-        });
-        connect(generator, &ExParametersGeneratorWidgetW::ui_change_signal, this, [this](QString nameParam){
-            emit arg_updated_signal(nameParam, m_inputUiElements[nameParam]->convert_to_arg());
-        });
-
-        for(const auto &arg : args){
-            if(arg.second.generator.name == generator->generatorName){
-                generator->update_from_arg(arg.second);
+        for(const auto &arg : argsByName){
+            if(arg.second->generator.name == generator->generatorName){
+                generator->update_from_arg(*arg.second);
             }
         }
     }
@@ -176,7 +181,46 @@ void ConfigParametersW::reset_args(){
 
     init_and_register_widgets();
     for(auto &ui : m_inputUiElements){
-        emit arg_updated_signal(ui.first, ui.second->convert_to_arg());
+        emit GSignals::get()->arg_updated_signal(componentKey, configKey, ui.second->convert_to_arg(), initConfig);
+    }
+}
+
+void ConfigParametersW::add_input_ui(ExBaseW *w){
+
+    const auto uiKey = UiElementKey{w->key()};
+    if(m_inputUiElements.count(uiKey) == 0){
+        m_inputUiElements[uiKey] = w;
+        m_inputUiElementsNames[w->itemName] = w;
+    }else{
+        qWarning() << "ConfigParametersW input ui with key " << uiKey.v << " and name " << w->itemName << " already exists.";
+    }
+}
+
+void ConfigParametersW::add_action_ui(ExBaseW *w){
+    const auto uiKey = UiElementKey{w->key()};
+    if(m_actionUiElements.count(uiKey) == 0){
+        m_actionUiElements[uiKey] = w;
+    }else{
+        qWarning() << "ConfigParametersW action ui with key " << uiKey.v << " and name " << w->itemName << " already exists.";
+    }
+}
+
+void ConfigParametersW::add_non_ui_arg(Arg arg){
+
+    const auto uiKey = arg.uiElementKey;
+    if(m_inputNonUiArguments.count(uiKey) == 0){
+        m_inputNonUiArguments[uiKey] = std::move(arg);
+    }else{
+        qWarning() << "ConfigParametersW non ui arg with key " << uiKey.v << " and name " << arg.name << " already exists.";
+    }
+}
+
+void ConfigParametersW::add_generator_ui(ExParametersGeneratorWidgetW *g){
+    const auto uiKey = UiElementKey{g->key()};
+    if(m_generatorsUiElements.count(uiKey) == 0){
+        m_generatorsUiElements[uiKey] = g;
+    }else{
+        qWarning() << "ConfigParametersW generator ui with key " << uiKey.v << " and name " << g->itemName << " already exists.";
     }
 }
 

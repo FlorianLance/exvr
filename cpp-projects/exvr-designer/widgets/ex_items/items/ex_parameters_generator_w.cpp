@@ -29,6 +29,7 @@
 #include "items/ex_resources_list_w.hpp"
 #include "items/ex_component_w.hpp"
 #include "items/ex_components_list_w.hpp"
+#include "items/ex_code_editor_w.hpp"
 
 #include "generation/gen_ui_item_dialog.hpp"
 
@@ -36,7 +37,7 @@ using namespace tool;
 using namespace tool::ex;
 
 
-ExParametersGeneratorWidgetW::ExParametersGeneratorWidgetW() : ExItemW<QWidget>(UiType::Generator){
+ExParametersGeneratorWidgetW::ExParametersGeneratorWidgetW(QString name) : ExItemW<QWidget>(UiType::Generator, name){
 
     ui::W::init(&m_pbAddParam, "Add");
     ui::W::init(&m_pbMoveUp, "Move up");
@@ -63,126 +64,268 @@ ExParametersGeneratorWidgetW::ExParametersGeneratorWidgetW() : ExItemW<QWidget>(
 
     connect(&m_pbAddParam, &QPushButton::clicked, this, [&]{
         auto txt = m_cbTypeParam.currentText().toStdString();
-        add_ui_element(get_ui_type(txt).value(), "", -1, true);
+        add_ui_element_from_dialog(get_ui_type(txt).value());
+//        add_ui_element(get_ui_type(txt).value(), "", -1, true);
     });
 
     connect(&m_pbMoveUp, &QPushButton::clicked, this, [&]{
 
         int id = m_lwParameters.current_selected_widget_id();
-        if(id <= 0 || id >= m_namesParameters.count()){
+        if(id <= 0 || id >= elementsOrder.count()){
             return;
         }
 
-        QString prevName = m_namesParameters.at(id-1);
-        QString name  = m_namesParameters.at(id);
-
-        auto item1 = (*m_inputUiElements)[prevName];
-        auto item2 = (*m_inputUiElements)[name];
-        (*m_inputUiElements)[name]     = item1;
-        (*m_inputUiElements)[prevName] = item2;
-
         m_lwParameters.move_from_to(id-1, id);
         m_lwParameters.set_selected_widget(id -1);
-
-        m_namesParameters.swapItemsAt(id-1, id);
-
-        emit move_up_ui_signal(prevName, name);
+        elementsOrder.swapItemsAt(id-1, id);
+        emit swap_ui_signal(elementsOrder.at(id-1), elementsOrder.at(id));
     });
 
     connect(&m_pbMoveDown, &QPushButton::clicked, this, [&]{
 
         int id = m_lwParameters.current_selected_widget_id();
-        if(id < 0 || id >= m_namesParameters.count()-1){
+        if(id < 0 || id >= elementsOrder.count()-1){
             return;
         }
 
-        QString name  = m_namesParameters.at(id);
-        QString nextName = m_namesParameters.at(id+1);
-
-        auto item1 = (*m_inputUiElements)[name];
-        auto item2 = (*m_inputUiElements)[nextName];
-        (*m_inputUiElements)[nextName] = item1;
-        (*m_inputUiElements)[name]     = item2;
-
         m_lwParameters.move_from_to(id, id+1);
         m_lwParameters.set_selected_widget(id +1);
-
-        m_namesParameters.swapItemsAt(id, id+1);
-
-        emit move_down_ui_signal(nextName, name);
+        elementsOrder.swapItemsAt(id, id+1);
+        emit swap_ui_signal(elementsOrder.at(id), elementsOrder.at(id+1));
     });
 
     connect(&m_pbRemoveParam, &QPushButton::clicked, this, [&]{
 
         int id = m_lwParameters.current_selected_widget_id();
-        if(id < 0 || id >= m_namesParameters.count()){
+        if(id < 0 || id >= elementsOrder.count()){
             return;
         }
 
-        QString name = m_namesParameters.at(id);
-        m_inputUiElements->erase(name);
+        UiElementKey keyToRemove = elementsOrder.at(id);
         m_lwParameters.delete_at(id);
-        m_namesParameters.removeAt(id);
+        elementsOrder.removeAt(id);
 
-        emit remove_ui_signal(name);
+        m_inputUiElements->erase(keyToRemove);
+        generatorElements.erase(keyToRemove);
+
+        emit remove_ui_signal(keyToRemove);
     });
 }
 
 ExParametersGeneratorWidgetW::~ExParametersGeneratorWidgetW(){
-
-    if(m_inputUiElements != nullptr){
-
-        for(auto &inputUiElement : *m_inputUiElements){
-            if(inputUiElement.second->generatorName == generatorName){
-                delete inputUiElement.second;
-                inputUiElement.second = nullptr;
-            }
-        }
+    // delete generator associated elements
+    for(auto &elem : generatorElements){
+        delete elem.second;
+        elem.second = nullptr;
     }
 }
 
-ExParametersGeneratorWidgetW *ExParametersGeneratorWidgetW::init_widget(std::map<QString, ExBaseW *> *inputUiElements, QString genName, bool enabled){
+ExParametersGeneratorWidgetW *ExParametersGeneratorWidgetW::init_widget(
+    std::unordered_map<UiElementKey, ExBaseW *> *inputUiElements, bool enabled){
 
     m_inputUiElements = inputUiElements;
-    generatorName = genName;
+    generatorName = itemName;
     w->setEnabled(enabled);
     return this;
 }
 
 
-void ExParametersGeneratorWidgetW::init_connection(const QString &nameParam){
-    Q_UNUSED(nameParam)
-}
-
 void ExParametersGeneratorWidgetW::update_from_arg(const Arg &arg){
 
-    if(!m_inputUiElements->count(arg.name)){
+    if(generatorElements.count(arg.uiElementKey) == 0){
         add_ui_element_from_arg(arg);
+    }else {
+        generatorElements[arg.uiElementKey]->update_from_arg(arg);
     }
-    (*m_inputUiElements)[arg.name]->update_from_arg(arg);
 }
 
 void ExParametersGeneratorWidgetW::update_from_resources(){
-    for(const auto &name : qAsConst(m_namesParameters)){
-        (*m_inputUiElements)[name]->update_from_resources();
+    for(const auto &elem : generatorElements){
+        elem.second->update_from_resources();
     }
 }
 
 void ExParametersGeneratorWidgetW::update_from_components(){
-    for(const auto &name : qAsConst(m_namesParameters)){
-        (*m_inputUiElements)[name]->update_from_components();
+    for(const auto &elem : generatorElements){
+        elem.second->update_from_components();
     }
 }
 
 Arg ExParametersGeneratorWidgetW::convert_to_arg() const{
-    return ExItemW::convert_to_arg();
+    return ExBaseW::convert_to_arg();
 }
 
-void ExParametersGeneratorWidgetW::add_ui_element_from_arg(const Arg &arg){
-    add_ui_element(arg.associated_ui_type(), arg.name, arg.generator.order, false);
+void ExParametersGeneratorWidgetW::add_ui_element_from_dialog(UiType uiType){
+
+    auto [wElem, exW] =  gen_ui_element(uiType);
+    exW->set_generator(generatorName);
+
+    QStringList names;
+    for(auto &inputUiElement : *m_inputUiElements){
+        names << inputUiElement.second->itemName;
+    }
+
+    GenUIItemDialog genD(type);
+    genD.setMinimumWidth(500);
+    genD.setMaximumWidth(900);
+    switch (uiType) {
+    case UiType::Slider_integer :{
+        genD.add_gen_widget(new GenSpinboxW("Slider options"));
+    }break;
+    case UiType::Slider_double :{
+        genD.add_gen_widget(new SpinboxDoubleGenW("Slider options"));
+    }break;
+    case UiType::Spin_box:{
+        genD.add_gen_widget(new GenSpinboxW());
+    }break;
+    case UiType::Double_spin_box:{
+        genD.add_gen_widget(new SpinboxDoubleGenW());
+    }break;
+    case UiType::Float_spin_box :{
+        genD.add_gen_widget(new SpinboxFloatGenW());
+    }break;
+    case UiType::Vector2D:{
+        genD.add_gen_widget(new Vector2dGenW());
+    }break;
+    case UiType::Vector3D:{
+        genD.add_gen_widget(new Vector3dGenW());
+    }break;
+    case UiType::Resource:{
+        genD.add_gen_widget(new ResourceGenW());
+    }break;
+    case UiType::Component:{
+        genD.add_gen_widget(new ComponentGenW());
+    }break;
+    case UiType::Transformation:{
+        genD.add_gen_widget(new TransformGenW());
+    }break;
+    case UiType::ComponentsList:{
+        genD.add_gen_widget(new ComponentGenW());
+    }break;
+    case UiType::ResourcesList:{
+        genD.add_gen_widget(new ResourceGenW());
+    }break;
+    case UiType::Text_edit:{
+        genD.add_gen_widget(new TextGenW("Text:"));
+    }break;
+    case UiType::Line_edit:{
+        genD.add_gen_widget(new TextGenW("Value:"));
+    }break;
+    case UiType::Label:{
+        genD.add_gen_widget(new TextGenW("Title:"));
+    }break;
+    case UiType::Combo_box_text:{
+        genD.add_gen_widget(new ComboTextGen());
+    }break;
+    case UiType::Combo_box_index:{
+        genD.add_gen_widget(new ComboTextGen());
+    }break;
+    case UiType::Curve:{
+        genD.add_gen_widget(new CurveGen());
+    }break;
+    case UiType::Code_editor:{
+        genD.add_gen_widget(new CodeEditorGen());
+    }break;
+    case UiType::Color_pick:{
+        genD.add_gen_widget(new ColorPickGen());
+    }break;
+    default:
+        break;
+    }
+
+    if(!genD.show_dialog(names)){
+        delete exW;
+        return;
+    }
+    exW->update_from_arg(genD.generate_arg(UiElementKey{exW->key()}));
+
+    // set order
+    currentId++;
+    exW->generatorOrder = currentId;
+
+    // add widget to input ui elements
+    (*m_inputUiElements)[UiElementKey{exW->key()}] = exW;
+    generatorElements[UiElementKey{exW->key()}] = exW;
+
+    // generate widget line
+    auto fl =  ui::L::HB();
+    auto f  = ui::F::gen(fl,{ui::W::txt(QSL("<b>") % exW->itemName % QSL("</b>")), wElem}, LStretch{false}, LMargins{true});
+    fl->setStretch(0, 1);
+    fl->setStretch(1, 30);
+
+    // add item name to generator list
+    bool added = false;
+    for(int ii = 0; ii < elementsOrder.size(); ++ii){
+        if(currentId < generatorElements[elementsOrder[ii]]->generatorOrder){
+            elementsOrder.insert(ii, UiElementKey{exW->key()});
+            m_lwParameters.insert_widget(ii, f);
+            added = true;
+            break;
+        }
+    }
+
+    if(!added){
+        elementsOrder << UiElementKey{exW->key()};
+        m_lwParameters.add_widget(f);
+    }
+
+    // setup widget connections
+    connect(exW, &ExBaseW::ui_change_signal, this, &ExParametersGeneratorWidgetW::ui_change_signal);
+
+    // send new ui to config
+    auto arg = exW->convert_to_arg();
+    emit add_ui_signal(std::move(arg));
+
 }
 
-void ExParametersGeneratorWidgetW::add_ui_element(UiType uiType, QString uiName, int order, bool initFromDialog){
+void ExParametersGeneratorWidgetW::add_ui_element_from_arg(Arg arg){
+
+    auto [wElem, exW] =  gen_ui_element(arg.associated_ui_type());
+    exW->set_generator(generatorName);
+    exW->itemName = arg.name;
+
+    // set order
+    if(arg.generator.order >= 0 ){
+        currentId = arg.generator.order;
+    }else{
+        currentId++;
+    }
+    exW->generatorOrder = currentId;
+
+    // add widget to input ui elements
+    (*m_inputUiElements)[UiElementKey{exW->key()}] = exW;
+    generatorElements[UiElementKey{exW->key()}] = exW;
+
+    // generate widget line
+    auto fl =  ui::L::HB();
+    auto f  = ui::F::gen(fl,{ui::W::txt(QSL("<b>") % exW->itemName % QSL("</b>")), wElem}, LStretch{false}, LMargins{true});
+    fl->setStretch(0, 1);
+    fl->setStretch(1, 30);
+
+    // add item name to generator list
+    bool added = false;
+    for(int ii = 0; ii < elementsOrder.size(); ++ii){
+        if(currentId < generatorElements[elementsOrder[ii]]->generatorOrder){
+            elementsOrder.insert(ii, UiElementKey{exW->key()});
+            m_lwParameters.insert_widget(ii, f);
+            added = true;
+            break;
+        }
+    }
+
+    if(!added){
+        elementsOrder << UiElementKey{exW->key()};
+        m_lwParameters.add_widget(f);
+    }
+
+    // setup widget connections
+    connect(exW, &ExBaseW::ui_change_signal, this, &ExParametersGeneratorWidgetW::ui_change_signal);
+
+    exW->update_from_arg(arg);
+}
+
+
+std::pair<QWidget*,ExBaseW*> ExParametersGeneratorWidgetW::gen_ui_element(UiType uiType){
 
     // generate widget
     ExBaseW *exW = nullptr;
@@ -249,131 +392,17 @@ void ExParametersGeneratorWidgetW::add_ui_element(UiType uiType, QString uiName,
     case UiType::Curve:{
         wElem = dynamic_cast<ExCurveW*>(exW = new ExCurveW())->w.get();
     }break;
+    case UiType::Code_editor:{
+        wElem = dynamic_cast<ExCodeEditorW*>(exW = new ExCodeEditorW())->w.get();
+    }break;
     default:
-        return;
+        return {nullptr,nullptr};
     }
-    exW->set_generator(generatorName);
-
-    // init widget from dialog
-    if(initFromDialog){
-
-        QStringList names;
-        for(auto &inputUiElement : *m_inputUiElements){
-            names << inputUiElement.first;
-        }
-
-        GenUIItemDialog genD(type);
-        genD.setMinimumWidth(500);
-        genD.setMaximumWidth(900);
-
-        switch (uiType) {
-        case UiType::Slider_integer :{
-            genD.add_gen_widget(new GenSpinboxW("Slider options"));
-        }break;
-        case UiType::Slider_double :{
-            genD.add_gen_widget(new SpinboxDoubleGenW("Slider options"));
-        }break;
-        case UiType::Spin_box:{
-             genD.add_gen_widget(new GenSpinboxW());
-        }break;
-        case UiType::Double_spin_box:{
-             genD.add_gen_widget(new SpinboxDoubleGenW());
-        }break;
-        case UiType::Float_spin_box :{
-            genD.add_gen_widget(new SpinboxFloatGenW());
-        }break;
-        case UiType::Vector2D:{
-            genD.add_gen_widget(new Vector2dGenW());
-        }break;
-        case UiType::Vector3D:{
-            genD.add_gen_widget(new Vector3dGenW());
-        }break;
-        case UiType::Resource:{
-            genD.add_gen_widget(new ResourceGenW());
-        }break;
-        case UiType::Component:{
-            genD.add_gen_widget(new ComponentGenW());
-        }break;
-        case UiType::Transformation:{
-            genD.add_gen_widget(new TransformGenW());
-        }break;
-        case UiType::ComponentsList:{
-            genD.add_gen_widget(new ComponentGenW());
-        }break;
-        case UiType::ResourcesList:{
-            genD.add_gen_widget(new ResourceGenW());
-        }break;
-        case UiType::Text_edit:{
-            genD.add_gen_widget(new TextGenW("Text:"));
-        }break;
-        case UiType::Line_edit:{
-            genD.add_gen_widget(new TextGenW("Value:"));
-        }break;
-        case UiType::Label:{
-            genD.add_gen_widget(new TextGenW("Title:"));
-        }break;
-        case UiType::Combo_box_text:{
-            genD.add_gen_widget(new ComboTextGen());
-        }break;
-        case UiType::Combo_box_index:{
-            genD.add_gen_widget(new ComboTextGen());
-        }break;
-        case UiType::Curve:{
-            genD.add_gen_widget(new CurveGen());
-        }break;
-        default:
-            break;
-        }
-
-        if(!genD.show_dialog(names)){
-            delete exW;
-            return;
-        }
-
-        auto genUiArg = genD.generate_arg(UiElementKey{exW->key()}); // key()
-        exW->update_from_arg(genUiArg);
-        uiName = genUiArg.name;
-    }
-
-    // add widget to input ui elements
-    exW->itemName = uiName;
-    (*m_inputUiElements)[exW->itemName] = exW;
-
-    // set order
-    if(order >= 0 ){
-        currentId = order;
-    }else{
-        currentId++;
-    }
-    exW->generatorOrder = currentId;
-
-    // generate widget line
-    auto fl =  ui::L::HB();
-    auto f  = ui::F::gen(fl,{ui::W::txt(QSL("<b>") % exW->itemName % QSL("</b>")), wElem}, LStretch{false}, LMargins{true});
-    fl->setStretch(0, 1);
-    fl->setStretch(1, 30);
-
-    // add item name to generator list
-    bool added = false;
-    for(int ii = 0; ii < m_namesParameters.size(); ++ii){
-        if(currentId < (*m_inputUiElements)[m_namesParameters[ii]]->generatorOrder){
-            m_namesParameters.insert(ii, exW->itemName);
-            m_lwParameters.insert_widget(ii, f);
-            added = true;
-            break;
-        }
-    }
-
-    if(!added){
-        m_namesParameters << exW->itemName;
-        m_lwParameters.add_widget(f);
-    }
-
-    // setup widget connections
-    exW->init_connection(exW->itemName);
-    connect(exW, &ExBaseW::ui_change_signal, this, &ExParametersGeneratorWidgetW::ui_change_signal);
-
-    emit add_ui_signal(exW->itemName);
+    return {wElem,exW};
 }
+
+
+
+
 
 #include "moc_ex_parameters_generator_w.cpp"

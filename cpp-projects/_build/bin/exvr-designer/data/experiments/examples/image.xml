@@ -12,17 +12,17 @@
             <InitConfig key="0" name="standard"/>
             <Configs>
                 <Config key="1" name="standard">
-                    <Arg key="17" name="distance" ui="Float spin box" value="10" type="System.Single" dim="0"/>
-                    <Arg key="0" name="eye_to_render" ui="Combo box text" value="Both eyes" type="System.String" dim="0"/>
+                    <Arg key="0" name="distance" ui="Float spin box" value="10" type="System.Single" dim="0"/>
+                    <Arg key="1" name="eye_to_render" ui="Combo box text" value="Both eyes" type="System.String" dim="0"/>
                     <Arg key="2" name="height" ui="Integer spin box" value="500" type="System.Int32" dim="0"/>
-                    <Arg key="0" name="image" ui="Resource" value="sample%%%0" type="System.String" dim="1" sep="%%%" sizes="2"/>
-                    <Arg key="14" name="pivot" ui="Vector 2D" value="0.5 0.5" type="System.Single" dim="1" sep=" " sizes="2"/>
-                    <Arg key="4" name="position" ui="Vector 3D" value="0 0 10" type="System.Single" dim="1" sep=" " sizes="3"/>
-                    <Arg key="8" name="rotation" ui="Vector 3D" value="0 0 0" type="System.Single" dim="1" sep=" " sizes="3"/>
-                    <Arg key="3" name="scale_factor" ui="Float spin box" value="0.49" type="System.Single" dim="0"/>
-                    <Arg key="12" name="use_eye_camera" ui="Check box" value="true" type="System.Boolean" dim="0"/>
-                    <Arg key="12" name="use_original_size" ui="Check box" value="True" type="System.Boolean" dim="0"/>
-                    <Arg key="1" name="width" ui="Integer spin box" value="500" type="System.Int32" dim="0"/>
+                    <Arg key="3" name="image" ui="Resource" value="sample%%%0" type="System.String" dim="1" sep="%%%" sizes="2"/>
+                    <Arg key="4" name="pivot" ui="Vector 2D" value="0.5 0.5" type="System.Single" dim="1" sep=" " sizes="2"/>
+                    <Arg key="5" name="position" ui="Vector 3D" value="0 0 10" type="System.Single" dim="1" sep=" " sizes="3"/>
+                    <Arg key="6" name="rotation" ui="Vector 3D" value="0 0 0" type="System.Single" dim="1" sep=" " sizes="3"/>
+                    <Arg key="7" name="scale_factor" ui="Float spin box" value="0.49" type="System.Single" dim="0"/>
+                    <Arg key="8" name="use_eye_camera" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                    <Arg key="9" name="use_original_size" ui="Check box" value="True" type="System.Boolean" dim="0"/>
+                    <Arg key="10" name="width" ui="Integer spin box" value="500" type="System.Int32" dim="0"/>
                 </Config>
             </Configs>
         </Component>

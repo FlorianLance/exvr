@@ -131,70 +131,70 @@ void SkyConfigParametersW::insert_widgets(){
 void SkyConfigParametersW::init_and_register_widgets(){
 
     // sun light
-    m_inputUiElements[QSL("sun_rotation")]           = m_sunRotation.init_widget("Rotation:", Vector3dSettings{{MinV<qreal>{-360.}, V<qreal>{0.}, MaxV<qreal>{360.}, StepV<qreal>{0.1}, 2}});
-    m_inputUiElements[QSL("sun_intensity")]          = m_sunIntensity.init_widget(MinV<qreal>{0.}, V<qreal>{0.5}, MaxV<qreal>{100.}, StepV<qreal>{0.05}, 2);
-    m_inputUiElements[QSL("sun_bounce_intensity")]   = m_sunBounceIntensity.init_widget(MinV<qreal>{0.}, V<qreal>{1.}, MaxV<qreal>{100.}, StepV<qreal>{0.05}, 2);
-    m_inputUiElements[QSL("sun_color")]              = m_sunColor.init_widget("Choose color", QColor(255,255,255,255));
-    m_inputUiElements[QSL("sun_shadow_mode")]        = m_sunShadowMode.init_widget({"None","Hard","Soft"}, 2);
-    m_inputUiElements[QSL("sun_shadow_strength")]    = m_sunShadowStrength.init_widget(MinV<qreal>{0.}, V<qreal>{1.}, MaxV<qreal>{1.}, StepV<qreal>{0.05}, 2);
-    m_inputUiElements[QSL("sun_shadow_bias")]        = m_sunShadowBias.init_widget(MinV<qreal>{0.}, V<qreal>{0.05}, MaxV<qreal>{2.}, StepV<qreal>{0.05}, 2);
-    m_inputUiElements[QSL("sun_shadow_normal_bias")] = m_sunShadowNormalBias.init_widget(MinV<qreal>{0.}, V<qreal>{0.4}, MaxV<qreal>{3.}, StepV<qreal>{0.05}, 2);
-    m_inputUiElements[QSL("sun_shadow_near_plane")]  = m_sunShadowNearPlane.init_widget(MinV<qreal>{0.}, V<qreal>{0.2}, MaxV<qreal>{10.}, StepV<qreal>{0.05}, 2);
+    add_input_ui(m_sunRotation.init_widget("Rotation:", Vector3dSettings{{MinV<qreal>{-360.}, V<qreal>{0.}, MaxV<qreal>{360.}, StepV<qreal>{0.1}, 2}}));
+    add_input_ui(m_sunIntensity.init_widget(MinV<qreal>{0.}, V<qreal>{0.5}, MaxV<qreal>{100.}, StepV<qreal>{0.05}, 2));
+    add_input_ui(m_sunBounceIntensity.init_widget(MinV<qreal>{0.}, V<qreal>{1.}, MaxV<qreal>{100.}, StepV<qreal>{0.05}, 2));
+    add_input_ui(m_sunColor.init_widget("Choose color", QColor(255,255,255,255)));
+    add_input_ui(m_sunShadowMode.init_widget({"None","Hard","Soft"}, 2));
+    add_input_ui(m_sunShadowStrength.init_widget(MinV<qreal>{0.}, V<qreal>{1.}, MaxV<qreal>{1.}, StepV<qreal>{0.05}, 2));
+    add_input_ui(m_sunShadowBias.init_widget(MinV<qreal>{0.}, V<qreal>{0.05}, MaxV<qreal>{2.}, StepV<qreal>{0.05}, 2));
+    add_input_ui(m_sunShadowNormalBias.init_widget(MinV<qreal>{0.}, V<qreal>{0.4}, MaxV<qreal>{3.}, StepV<qreal>{0.05}, 2));
+    add_input_ui(m_sunShadowNearPlane.init_widget(MinV<qreal>{0.}, V<qreal>{0.2}, MaxV<qreal>{10.}, StepV<qreal>{0.05}, 2));
 
     // ambient light
-    m_inputUiElements[QSL("ambient_intensity")]      = m_ambientIntensity.init_widget(MinV<qreal>{0.}, V<qreal>{1.0}, MaxV<qreal>{100.}, StepV<qreal>{0.05}, 2);
-    m_inputUiElements[QSL("ambient_mode")]           = m_ambientMode.init_widget({"Skybox","Gradient","Flat"}, 0);
-    m_inputUiElements[QSL("ambient_color")]          = m_ambientFlatColor.init_widget("Choose flat light color", QColor(54,58,66,255));
-    m_inputUiElements[QSL("ground_color")]           = m_ambientGradientGroundColor.init_widget("Choose gradient ground light color", QColor(11,12,9,255));
-    m_inputUiElements[QSL("equator_color")]          = m_ambientGradientEquatorColor.init_widget("Choose gradient equator light color", QColor(29,32,34,255));
-    m_inputUiElements[QSL("sky_color")]              = m_ambientGradientSkyColor.init_widget("Choose gradient sky light color", QColor(54,58,66,255));
+    add_input_ui(m_ambientIntensity.init_widget(MinV<qreal>{0.}, V<qreal>{1.0}, MaxV<qreal>{100.}, StepV<qreal>{0.05}, 2));
+    add_input_ui(m_ambientMode.init_widget({"Skybox","Gradient","Flat"}, 0));
+    add_input_ui(m_ambientFlatColor.init_widget("Choose flat light color", QColor(54,58,66,255)));
+    add_input_ui(m_ambientGradientGroundColor.init_widget("Choose gradient ground light color", QColor(11,12,9,255)));
+    add_input_ui(m_ambientGradientEquatorColor.init_widget("Choose gradient equator light color", QColor(29,32,34,255)));
+    add_input_ui(m_ambientGradientSkyColor.init_widget("Choose gradient sky light color", QColor(54,58,66,255)));
 
     // skybox
-    m_inputUiElements[QSL("panoramic")]  = m_panoramic.init_widget(Resource::Type::Image, QSL("Texture"));
-    m_inputUiElements[QSL("panoramic_invert")] = m_panoramicInvert.init_widget(QSL("invert"), false);
-    m_inputUiElements[QSL("cubemap")]    = m_cubemap.init_widget(Resource::Type::Image, QSL("Texture"));
-    m_inputUiElements[QSL("cubemap_invert")] = m_cubeMapInvert.init_widget(QSL("invert"), false);
+    add_input_ui(m_panoramic.init_widget(Resource::Type::Image, QSL("Texture")));
+    add_input_ui(m_panoramicInvert.init_widget(QSL("invert"), false));
+    add_input_ui(m_cubemap.init_widget(Resource::Type::Image, QSL("Texture")));
+    add_input_ui(m_cubeMapInvert.init_widget(QSL("invert"), false));
 
-    m_inputUiElements[QSL("X-")] = m_xMinus.init_widget(Resource::Type::Image, QSL("X- (Right)"));
-    m_inputUiElements[QSL("Y-")] = m_yMinus.init_widget(Resource::Type::Image, QSL("Y- (Down)"));
-    m_inputUiElements[QSL("Z-")] = m_zMinus.init_widget(Resource::Type::Image, QSL("Z- (Back)"));
-    m_inputUiElements[QSL("X+")] = m_xPlus.init_widget(Resource::Type::Image, QSL("X+ (Left)"));
-    m_inputUiElements[QSL("Y+")] = m_yPlus.init_widget(Resource::Type::Image, QSL("Y+ (Up)"));
-    m_inputUiElements[QSL("Z+")] = m_zPlus.init_widget(Resource::Type::Image, QSL("Z+ (Front)"));
-    m_inputUiElements[QSL("X-_invert")] = m_xMinusInvert.init_widget(QSL("invert"), false);
-    m_inputUiElements[QSL("Y-_invert")] = m_yMinusInvert.init_widget(QSL("invert"), false);
-    m_inputUiElements[QSL("Z-_invert")] = m_zMinusInvert.init_widget(QSL("invert"), false);
-    m_inputUiElements[QSL("X+_invert")] = m_xPlusInvert.init_widget(QSL("invert"), false);
-    m_inputUiElements[QSL("Y+_invert")] = m_yPlusInvert.init_widget(QSL("invert"), false);
-    m_inputUiElements[QSL("Z+_invert")] = m_zPlusInvert.init_widget(QSL("invert"), false);
+    add_input_ui(m_xMinus.init_widget(Resource::Type::Image, QSL("X- (Right)")));
+    add_input_ui(m_yMinus.init_widget(Resource::Type::Image, QSL("Y- (Down)")));
+    add_input_ui(m_zMinus.init_widget(Resource::Type::Image, QSL("Z- (Back)")));
+    add_input_ui(m_xPlus.init_widget(Resource::Type::Image, QSL("X+ (Left)")));
+    add_input_ui(m_yPlus.init_widget(Resource::Type::Image, QSL("Y+ (Up)")));
+    add_input_ui(m_zPlus.init_widget(Resource::Type::Image, QSL("Z+ (Front)")));
+    add_input_ui(m_xMinusInvert.init_widget(QSL("invert"), false));
+    add_input_ui(m_yMinusInvert.init_widget(QSL("invert"), false));
+    add_input_ui(m_zMinusInvert.init_widget(QSL("invert"), false));
+    add_input_ui(m_xPlusInvert.init_widget(QSL("invert"), false));
+    add_input_ui(m_yPlusInvert.init_widget(QSL("invert"), false));
+    add_input_ui(m_zPlusInvert.init_widget(QSL("invert"), false));
 
-    m_inputUiElements[QSL("mode")]                   = m_mode.init_widget({"Color background", "6 sided skybox", "cubemap skybox", "panoramic skybox", "procedural skybox"});
+    add_input_ui(m_mode.init_widget({"Color background", "6 sided skybox", "cubemap skybox", "panoramic skybox", "procedural skybox"}));
 
-    m_inputUiElements[QSL("background_color")]       = m_backgroundColor.init_widget("Choose background color", QColor(53,48,48));
+    add_input_ui(m_backgroundColor.init_widget("Choose background color", QColor(53,48,48)));
 
-    m_inputUiElements[QSL("6sided-tint")]            = m_6SidedTintColor.init_widget("Choose tint", QColor(127,127,127,127));
-    m_inputUiElements[QSL("6sided-exposure")]        = m_6sidedExposure.init_widget(MinV<qreal>{0.}, V<qreal>{1.}, MaxV<qreal>{8.}, StepV<qreal>{0.05}, 2);
-    m_inputUiElements[QSL("6sided-rotation")]        = m_6sidedRotation.init_widget(MinV<qreal>{0.}, V<qreal>{0.}, MaxV<qreal>{360.}, StepV<qreal>{0.05}, 2);
+    add_input_ui(m_6SidedTintColor.init_widget("Choose tint", QColor(127,127,127,127)));
+    add_input_ui(m_6sidedExposure.init_widget(MinV<qreal>{0.}, V<qreal>{1.}, MaxV<qreal>{8.}, StepV<qreal>{0.05}, 2));
+    add_input_ui(m_6sidedRotation.init_widget(MinV<qreal>{0.}, V<qreal>{0.}, MaxV<qreal>{360.}, StepV<qreal>{0.05}, 2));
 
-    m_inputUiElements[QSL("cubemap-tint")]           = m_cubeMapTintColor.init_widget("Choose tint", QColor(127,127,127,127));
-    m_inputUiElements[QSL("cubemap-exposure")]       = m_cubeMapExposure.init_widget(MinV<qreal>{0.}, V<qreal>{1.}, MaxV<qreal>{8.}, StepV<qreal>{0.05}, 2);
-    m_inputUiElements[QSL("cubemap-rotation")]       = m_cubeMapRotation.init_widget(MinV<qreal>{0.}, V<qreal>{0.}, MaxV<qreal>{360.}, StepV<qreal>{0.05}, 2);
+    add_input_ui(m_cubeMapTintColor.init_widget("Choose tint", QColor(127,127,127,127)));
+    add_input_ui(m_cubeMapExposure.init_widget(MinV<qreal>{0.}, V<qreal>{1.}, MaxV<qreal>{8.}, StepV<qreal>{0.05}, 2));
+    add_input_ui(m_cubeMapRotation.init_widget(MinV<qreal>{0.}, V<qreal>{0.}, MaxV<qreal>{360.}, StepV<qreal>{0.05}, 2));
 
-    m_inputUiElements[QSL("panoramic-tint")]         = m_panoramicTintColor.init_widget("Choose tint", QColor(127,127,127,127));
-    m_inputUiElements[QSL("panoramic-exposure")]     = m_panoramicExposure.init_widget(MinV<qreal>{0.}, V<qreal>{1.}, MaxV<qreal>{8.}, StepV<qreal>{0.05}, 2);
-    m_inputUiElements[QSL("panoramic-rotation")]     = m_panoramicRotation.init_widget(MinV<qreal>{0.}, V<qreal>{0.}, MaxV<qreal>{360.}, StepV<qreal>{0.05}, 2);
-    m_inputUiElements[QSL("panoramic-mapping")]      = m_panoramicMapping.init_widget({"6 frames layout", "Latitude longitude layout"});
-    m_inputUiElements[QSL("panoramic-mirror_back")]  = m_panoramicMirrorBack.init_widget("Mirror back", false);
-    m_inputUiElements[QSL("panoramic-type")]         = m_panoramicType.init_widget({"360°", "180°"});
-    m_inputUiElements[QSL("panoramic-layout")]       = m_panoramicLayout.init_widget({"None", "Side by side", "Over under"});
+    add_input_ui(m_panoramicTintColor.init_widget("Choose tint", QColor(127,127,127,127)));
+    add_input_ui(m_panoramicExposure.init_widget(MinV<qreal>{0.}, V<qreal>{1.}, MaxV<qreal>{8.}, StepV<qreal>{0.05}, 2));
+    add_input_ui(m_panoramicRotation.init_widget(MinV<qreal>{0.}, V<qreal>{0.}, MaxV<qreal>{360.}, StepV<qreal>{0.05}, 2));
+    add_input_ui(m_panoramicMapping.init_widget({"6 frames layout", "Latitude longitude layout"}));
+    add_input_ui(m_panoramicMirrorBack.init_widget("Mirror back", false));
+    add_input_ui(m_panoramicType.init_widget({"360°", "180°"}));
+    add_input_ui(m_panoramicLayout.init_widget({"None", "Side by side", "Over under"}));
 
-    m_inputUiElements[QSL("sun")]                    = m_proceduralSun.init_widget({"None", "Simple", "High quality"}, 2);
-    m_inputUiElements[QSL("sun-size")]               = m_proceduralSunSize.init_widget(MinV<qreal>{0.}, V<qreal>{0.04}, MaxV<qreal>{1.}, StepV<qreal>{0.01}, 2);
-    m_inputUiElements[QSL("convergence")]            = m_proceduralConvergence.init_widget(MinV<qreal>{1.}, V<qreal>{5.}, MaxV<qreal>{10.}, StepV<qreal>{0.05}, 2);
-    m_inputUiElements[QSL("atmosphere-thickness")]   = m_proceduralAtmoshpereThickness.init_widget(MinV<qreal>{0.}, V<qreal>{1.}, MaxV<qreal>{5.}, StepV<qreal>{0.05}, 2);
-    m_inputUiElements[QSL("procedural-sky-tint")]    = m_proceduralSkyTint.init_widget("Choose sky tint", QColor(127,127,127,255));
-    m_inputUiElements[QSL("procedural-ground-color")]= m_proceduralGroundColor.init_widget("Choose ground color", QColor(95,95,95,255));
-    m_inputUiElements[QSL("procedural-exposure")]    = m_proceduralExposure.init_widget(MinV<qreal>{0.}, V<qreal>{1.3}, MaxV<qreal>{8.}, StepV<qreal>{0.05}, 2);
+    add_input_ui(m_proceduralSun.init_widget({"None", "Simple", "High quality"}, 2));
+    add_input_ui(m_proceduralSunSize.init_widget(MinV<qreal>{0.}, V<qreal>{0.04}, MaxV<qreal>{1.}, StepV<qreal>{0.01}, 2));
+    add_input_ui(m_proceduralConvergence.init_widget(MinV<qreal>{1.}, V<qreal>{5.}, MaxV<qreal>{10.}, StepV<qreal>{0.05}, 2));
+    add_input_ui(m_proceduralAtmoshpereThickness.init_widget(MinV<qreal>{0.}, V<qreal>{1.}, MaxV<qreal>{5.}, StepV<qreal>{0.05}, 2));
+    add_input_ui(m_proceduralSkyTint.init_widget("Choose sky tint", QColor(127,127,127,255)));
+    add_input_ui(m_proceduralGroundColor.init_widget("Choose ground color", QColor(95,95,95,255)));
+    add_input_ui(m_proceduralExposure.init_widget(MinV<qreal>{0.}, V<qreal>{1.3}, MaxV<qreal>{8.}, StepV<qreal>{0.05}, 2));
 }
 
 void SkyConfigParametersW::create_connections(){

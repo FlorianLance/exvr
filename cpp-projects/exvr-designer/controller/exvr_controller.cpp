@@ -794,8 +794,7 @@ void ExVrController::generate_global_signals_connections(){
     connect(s, &GSignals::select_nodes_and_connections_signal,        exp(), &EXP::select_nodes_and_connections);
     connect(s, &GSignals::toggle_follow_condition_mode_signal,        exp(), &EXP::toggle_follow_condition_mode);
     connect(s, &GSignals::arg_removed_signal,                         exp(), &EXP::arg_removed);
-    connect(s, &GSignals::move_arg_up_signal,                         exp(), &EXP::move_arg_up);
-    connect(s, &GSignals::move_arg_down_signal,                       exp(), &EXP::move_arg_down);
+    connect(s, &GSignals::swap_arg_signal,                            exp(), &EXP::swap_arg);
     connect(s, &GSignals::new_arg_signal,                             exp(), &EXP::new_arg);
     connect(s, &GSignals::arg_updated_signal,                         exp(), &EXP::arg_updated);
     connect(s, &GSignals::component_name_changed_signal,              exp(), &EXP::update_component_name);

@@ -26,7 +26,7 @@ void ImageResourceConfigParametersW::insert_widgets(){
 }
 
 void ImageResourceConfigParametersW::init_and_register_widgets(){
-    m_inputUiElements["image"] = m_image.init_widget(Resource::Type::Image, "Image resource: ");
+    add_input_ui(m_image.init_widget(Resource::Type::Image, "Image resource: "));
 }
 
 void ImageResourceConfigParametersW::create_connections(){

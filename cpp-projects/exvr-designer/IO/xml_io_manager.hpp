@@ -185,7 +185,7 @@ namespace tool::ex{
         QString invalid_bracket_error_message(int id, IdKey::Type type);
 
         // ### write
-        void write_argument(const QString &nameArg, const Arg &arg);
+        void write_argument(const Arg &arg);
         void write_set(const Set &set);
         void write_generator(const Generator &generator);
         void write_config(const Config *config, bool initConfig = false);

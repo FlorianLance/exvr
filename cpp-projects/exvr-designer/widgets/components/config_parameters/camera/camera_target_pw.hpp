@@ -36,39 +36,39 @@ class CameraTargetConfigParametersW : public ConfigParametersW{
 public :
 
     // settings
-    ExFloatSpinBoxW m_duration;
-    ExCheckBoxW m_sphericalInterpolation;    
-    ExSpinBoxW m_nbInterPositions;
+    ExFloatSpinBoxW m_duration{"duration"};
+    ExCheckBoxW m_sphericalInterpolation{"spherical_linear_interpolation"};
+    ExSpinBoxW m_nbInterPositions{"nb_inter_pos"};
 
-    ExCheckBoxW m_pitch;
-    ExCheckBoxW m_yaw;
-    ExCheckBoxW m_roll;
+    ExCheckBoxW m_pitch{"pitch"};
+    ExCheckBoxW m_yaw{"yaw"};
+    ExCheckBoxW m_roll{"roll"};
 
     // # choice
     QButtonGroup   m_buttonGroup1;
-    ExRadioButtonW m_moveToTarget;
-    ExRadioButtonW m_moveBack;
-    ExRadioButtonW m_doNothing;
+    ExRadioButtonW m_moveToTarget{"move_to_target"};
+    ExRadioButtonW m_moveBack{"move_back"};
+    ExRadioButtonW m_doNothing{"do_nothing"};
 
     QButtonGroup   m_buttonGroup2;
-    ExRadioButtonW m_useNeutralCamera;
-    ExRadioButtonW m_useEyeCamera;
+    ExRadioButtonW m_useNeutralCamera {"use_neutral"};
+    ExRadioButtonW m_useEyeCamera{"use_eye"};
 
     // # move to target
-    ExLineEditW m_componentName;
+    ExLineEditW m_componentName{"target_component"};
     QButtonGroup   m_buttonGroup3;
-    ExRadioButtonW m_relatetiveToEye;
-    ExRadioButtonW m_absolute;
-    ExVector3dW m_targetPos;
-    ExVector3dW m_targetRot;
+    ExRadioButtonW m_relatetiveToEye{"relative_to_eye"};
+    ExRadioButtonW m_absolute{"absolute"};
+    ExVector3dW m_targetPos{"target_pos"};
+    ExVector3dW m_targetRot{"target_rot"};
 
     QButtonGroup   m_buttonGroup4;
-    ExRadioButtonW m_usingTime;
-    ExRadioButtonW m_usingFactor;
+    ExRadioButtonW m_usingTime{"use_time"};
+    ExRadioButtonW m_usingFactor{"use_factor"};
 
     // curves
     QTabWidget m_curves;
-    ExCurveW m_speedCurve;
+    ExCurveW m_speedCurve{"speed_curve"};
 
     void insert_widgets() override;
     void init_and_register_widgets() override;

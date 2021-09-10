@@ -17,12 +17,12 @@ class FlagPoleInitConfigParametersW : public ConfigParametersW{
 
 public :
 
-    TransformSubPart m_transfo;
-    ExFloatSpinBoxW m_flagWidth;
-    ExFloatSpinBoxW m_flagHeight;
-    ExFloatSpinBoxW m_poleHeight;
-    ExSpinBoxW m_flagNbVerticesH;
-    ExSpinBoxW m_flagNbVerticesV;
+    TransformSubPart m_transfo{"init_transform"};
+    ExFloatSpinBoxW m_flagWidth{"flag_width"};
+    ExFloatSpinBoxW m_flagHeight{"flag_height"};
+    ExFloatSpinBoxW m_poleHeight{"pole_height"};
+    ExSpinBoxW m_flagNbVerticesH{"flag_nb_vertices_horiz"};
+    ExSpinBoxW m_flagNbVerticesV{"flag_nb_vertices_verti"};
 
     void insert_widgets() override{
 
@@ -35,12 +35,12 @@ public :
     }
 
     void init_and_register_widgets() override{
-        map_sub_part(m_transfo.init_widget(QSL("Init transform</b> (applied when experiment starts)<b>"), QSL("init_transform")));
-        m_inputUiElements["pole_height"]            = m_poleHeight.init_widget(MinV<qreal>{0.0}, V<qreal>{4.0}, MaxV<qreal>{10.}, StepV<qreal>{0.01},2);
-        m_inputUiElements["flag_width"]             = m_flagWidth.init_widget(MinV<qreal>{0.0}, V<qreal>{0.62}, MaxV<qreal>{10.}, StepV<qreal>{0.01},2);
-        m_inputUiElements["flag_height"]            = m_flagHeight.init_widget(MinV<qreal>{0.0}, V<qreal>{0.925}, MaxV<qreal>{10.}, StepV<qreal>{0.01},2);
-        m_inputUiElements["flag_nb_vertices_horiz"] = m_flagNbVerticesH.init_widget(MinV<int>{4}, V<int>{13}, MaxV<int>{50}, StepV<int>{1});
-        m_inputUiElements["flag_nb_vertices_verti"] = m_flagNbVerticesV.init_widget(MinV<int>{4}, V<int>{20}, MaxV<int>{50}, StepV<int>{1});
+        map_sub_part(m_transfo.init_widget(QSL("Init transform</b> (applied when experiment starts)<b>")));
+        add_input_ui(m_poleHeight.init_widget(MinV<qreal>{0.0}, V<qreal>{4.0}, MaxV<qreal>{10.}, StepV<qreal>{0.01},2));
+        add_input_ui(m_flagWidth.init_widget(MinV<qreal>{0.0}, V<qreal>{0.62}, MaxV<qreal>{10.}, StepV<qreal>{0.01},2));
+        add_input_ui(m_flagHeight.init_widget(MinV<qreal>{0.0}, V<qreal>{0.925}, MaxV<qreal>{10.}, StepV<qreal>{0.01},2));
+        add_input_ui(m_flagNbVerticesH.init_widget(MinV<int>{4}, V<int>{13}, MaxV<int>{50}, StepV<int>{1}));
+        add_input_ui(m_flagNbVerticesV.init_widget(MinV<int>{4}, V<int>{20}, MaxV<int>{50}, StepV<int>{1}));
     }
 
     void create_connections() override{}
@@ -52,10 +52,10 @@ class FlagPoleConfigParametersW : public ConfigParametersW{
 
 public :
 
-    TransformSubPart m_transfo;
-    ExResourceW m_currentTexture;
-    ExFloatSpinBoxW m_currentHeight;
-    ExFloatSpinBoxW m_currentClothMaxDistance;
+    TransformSubPart m_transfo{"transform"};
+    ExResourceW m_currentTexture{"flag_image"};
+    ExFloatSpinBoxW m_currentHeight{"height"};
+    ExFloatSpinBoxW m_currentClothMaxDistance{"cloth_max_dist"};
 
     void insert_widgets() override{
         add_sub_part_widget(m_transfo);
@@ -65,10 +65,10 @@ public :
     }
 
     void init_and_register_widgets() override{
-        map_sub_part(m_transfo.init_widget(QSL("Config transform</b> (applied when routine starts)<b>"), QSL("transform")));
-        m_inputUiElements["flag_image"]     = m_currentTexture.init_widget(Resource::Type::Image, "Flag texture");
-        m_inputUiElements["height"]         = m_currentHeight.init_widget(MinV<qreal>{0.0}, V<qreal>{0.0}, MaxV<qreal>{1.}, StepV<qreal>{0.01},2);
-        m_inputUiElements["cloth_max_dist"] = m_currentClothMaxDistance.init_widget(MinV<qreal>{0.0}, V<qreal>{0.3}, MaxV<qreal>{1.}, StepV<qreal>{0.01},2);
+        map_sub_part(m_transfo.init_widget(QSL("Config transform</b> (applied when routine starts)<b>")));
+        add_input_ui(m_currentTexture.init_widget(Resource::Type::Image, "Flag texture"));
+        add_input_ui(m_currentHeight.init_widget(MinV<qreal>{0.0}, V<qreal>{0.0}, MaxV<qreal>{1.}, StepV<qreal>{0.01},2));
+        add_input_ui(m_currentClothMaxDistance.init_widget(MinV<qreal>{0.0}, V<qreal>{0.3}, MaxV<qreal>{1.}, StepV<qreal>{0.01},2));
     }
 
     void create_connections() override{

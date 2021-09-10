@@ -16,7 +16,6 @@ void CheckIdEmbeddedW::initialize(){
     w->init_widget(MinV<int>{0},V<int>{0},MaxV<int>{1000}, StepV<int>{1});
 
     // set widget connections
-    w->init_connection("");
     connect(w.get(), &ExSpinBoxW::ui_change_signal, this, [=]{
         emit update_internal_data_signal({0}, {std::make_shared<IntData>(w->w->value())});
         emit compute_data_signal();

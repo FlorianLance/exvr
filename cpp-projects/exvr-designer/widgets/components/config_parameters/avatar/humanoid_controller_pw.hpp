@@ -24,12 +24,12 @@ class HumanoidControllerInitConfigParametersW : public ConfigParametersW{
 
 private:
 
-    ExResourceW humanoidAssetBundle;
-    ExComboBoxIndexW skinColor;
-    ExSelectColorW shirtColor;
-    ExSelectColorW pantsColor;
-    ExCheckBoxW addHmdMesh;
-    ExCheckBoxW callStartRoutineOnce;
+    ExResourceW humanoidAssetBundle{"humanoid"};
+    ExComboBoxIndexW skinColor{"skin_color"};
+    ExSelectColorW shirtColor{"shirt_color"};
+    ExSelectColorW pantsColor{"pants_color"};
+    ExCheckBoxW addHmdMesh{"add_hmd_mesh"};
+    ExCheckBoxW callStartRoutineOnce{"only_call_start_routine_once"};
 
 public:
 
@@ -53,105 +53,106 @@ private:
     QWidget *rightFingersW = nullptr;
 
     // global
-    ExCheckBoxW enableInverseKinematics;
-    TransformSubPart transform;
-    ExCheckBoxW displayTargets;
-    ExCheckBoxW moveEyeCameraToHead;
-    ExCheckBoxW pitch;
-    ExCheckBoxW yaw;
-    ExCheckBoxW roll;
+    ExCheckBoxW enableInverseKinematics {"enable_ik"};
+    TransformSubPart transform {"transform"};
+    ExCheckBoxW displayTargets  {"display_targets"};
+    ExCheckBoxW moveEyeCameraToHead {"move_eye_camera_to_head"};
+    ExCheckBoxW pitch {"pitch"};
+    ExCheckBoxW yaw {"yaw"};
+    ExCheckBoxW roll  {"roll"};
 
-    ExCheckBoxW moveTransformsToTargets;
-    ExRadioButtonW updateHeadWithEyeCamera;
-    ExRadioButtonW updateHeadWithRelativeEyeCamera;
-    ExRadioButtonW updateEyeCameraWithHead;
-    ExCheckBoxW useInputForMovingHeadCameraToRelativeEye;
-    ExRadioButtonW doNotMove;
-    ExFloatSpinBoxW globalIkWeight;
-    ExVector3dW headTrackingOffsetPos;
-    ExVector3dW headTrackingOffsetRot;
+    ExCheckBoxW moveTransformsToTargets  {"move_transforms_to_targets"};
+    ExRadioButtonW updateHeadWithEyeCamera  {"update_head_with_eye_camera"};
+    ExRadioButtonW updateHeadWithRelativeEyeCamera {"update_head_with_relative_eye_camera"};
+    ExRadioButtonW updateEyeCameraWithHead {"update_eye_camera_with_head"};
+    ExCheckBoxW useInputForMovingHeadCameraToRelativeEye {"use_input_connection"};
+    ExRadioButtonW doNotMove {"do_not_move"};
 
-    ExRadioButtonW pitchYawRollRot;
-    ExRadioButtonW yawRollPitchRot;
+    ExFloatSpinBoxW globalIkWeight {"global_ik_w"};
+    ExVector3dW headTrackingOffsetPos = {"head_tracking_offset_pos"};
+    ExVector3dW headTrackingOffsetRot = {"head_tracking_offset_rot"};
+
+    ExRadioButtonW pitchYawRollRot = {"pitch_yaw_roll"};
+    ExRadioButtonW yawRollPitchRot = {"yaw_roll_pitch"};
 
     // spine
-    ExFloatSpinBoxW m_headRotationWeight;
-    ExFloatSpinBoxW m_headPositionWeight;
-    ExFloatSpinBoxW m_pelvisRotationWeight;
-    ExFloatSpinBoxW m_pelvisPositionWeight;
-    ExFloatSpinBoxW m_chestGoalWeight;
-    ExVector3dW m_chestGoal;
-    TransformSubPart m_head;
-    TransformSubPart m_pelvis;
+    ExFloatSpinBoxW m_headRotationWeight {"head_rot_w"};
+    ExFloatSpinBoxW m_headPositionWeight {"head_pos_w"};
+    ExFloatSpinBoxW m_pelvisRotationWeight {"pelvis_rot_w"};
+    ExFloatSpinBoxW m_pelvisPositionWeight {"pelvis_pos_w"};
+    ExFloatSpinBoxW m_chestGoalWeight {"chest_goal_w"};
+    ExVector3dW m_chestGoal = {"chest"};
+    TransformSubPart m_head = {"head_transform"};
+    TransformSubPart m_pelvis = {"pelvis_transform"};
 
-    ExFloatSpinBoxW m_bodyPosStiffness;         //  Range(0 1 0.55) Determines how much the body will follow the position of the head.
-    ExFloatSpinBoxW m_bodyRotStiffness;         //  Range(0 1 0.1) Determines how much the body will follow the rotation of the head.
-    ExFloatSpinBoxW m_neckStiffness;            // Range(0 1 0.2)  Determines how much the chest will rotate to the rotation of the head.
-    ExFloatSpinBoxW m_maintainPelvisPosition;   // Range(0 1 0.2)  How much will the pelvis maintain it's animated position?
-    ExFloatSpinBoxW m_maxRootAngle;             // Range(0 180 25) Will automatically rotate the root of the character if the head target has turned past this angle.
+    ExFloatSpinBoxW m_bodyPosStiffness {"body_pos_stiffness"};         //  Range(0 1 0.55) Determines how much the body will follow the position of the head.
+    ExFloatSpinBoxW m_bodyRotStiffness {"body_rot_stiffness"};         //  Range(0 1 0.1) Determines how much the body will follow the rotation of the head.
+    ExFloatSpinBoxW m_neckStiffness {"neck_stiffness"};            // Range(0 1 0.2)  Determines how much the chest will rotate to the rotation of the head.
+    ExFloatSpinBoxW m_maintainPelvisPosition {"maintain_pelvis_position"};   // Range(0 1 0.2)  How much will the pelvis maintain it's animated position?
+    ExFloatSpinBoxW m_maxRootAngle {"max_root_angle"};
 
     // arms
-    ExFloatSpinBoxW m_leftArmRotationWeight;
-    ExFloatSpinBoxW m_leftArmPositionWeight;
-    ExFloatSpinBoxW m_rightArmRotationWeight;
-    ExFloatSpinBoxW m_rightArmPositionWeight;
-    ExFloatSpinBoxW m_leftArmBendWeight;
-    ExFloatSpinBoxW m_rightArmBendWeight;
-    ExVector3dW m_leftArmBend;
-    ExVector3dW m_rightArmBend;
-    TransformSubPart m_leftArm;
-    TransformSubPart m_rightArm;
+    ExFloatSpinBoxW m_leftArmRotationWeight {"left_arm_rot_w"};
+    ExFloatSpinBoxW m_leftArmPositionWeight {"left_arm_pos_w"};
+    ExFloatSpinBoxW m_rightArmRotationWeight {"right_arm_rot_w"};
+    ExFloatSpinBoxW m_rightArmPositionWeight {"right_arm_pos_w"};
+    ExFloatSpinBoxW m_leftArmBendWeight {"left_arm_bend_w"};
+    ExFloatSpinBoxW m_rightArmBendWeight {"right_arm_bend_w"};
+    ExVector3dW m_leftArmBend = {"left_arm_bend_goal"};
+    ExVector3dW m_rightArmBend = {"right_arm_bend_goal"};
+    TransformSubPart m_leftArm = {"left_arm_transform"};
+    TransformSubPart m_rightArm = {"right_arm_transform"};
 
-    ExFloatSpinBoxW m_leftShoulderRotationWeight;
-    ExFloatSpinBoxW m_rightShoulderRotationWeight;
-    ExFloatSpinBoxW m_leftSwivelRotationOffset;
-    ExFloatSpinBoxW m_rightSwivelRotationOffset;
+    ExFloatSpinBoxW m_leftShoulderRotationWeight {"left_shoulder_rotation_weight"};
+    ExFloatSpinBoxW m_rightShoulderRotationWeight {"right_shoulder_rotation_weight"};
+    ExFloatSpinBoxW m_leftSwivelRotationOffset = {"left_swivel_rotation_offset"};
+    ExFloatSpinBoxW m_rightSwivelRotationOffset = {"right_swivel_rotation_offset"};
 
     // legs
-    ExFloatSpinBoxW m_leftLegRotationWeight;
-    ExFloatSpinBoxW m_leftLegPositionWeight;
-    ExFloatSpinBoxW m_rightLegRotationWeight;
-    ExFloatSpinBoxW m_rightLegPositionWeight;
-    ExFloatSpinBoxW m_leftLegBendWeight;
-    ExFloatSpinBoxW m_rightLegBendWeight;
-    ExVector3dW m_leftLegBend;
-    ExVector3dW m_rightLegBend;
-    TransformSubPart m_leftLeg;
-    TransformSubPart m_rightLeg;
+    ExFloatSpinBoxW m_leftLegRotationWeight {"left_leg_rot_w"};
+    ExFloatSpinBoxW m_leftLegPositionWeight {"left_leg_pos_w"};
+    ExFloatSpinBoxW m_rightLegRotationWeight {"right_leg_rot_w"};
+    ExFloatSpinBoxW m_rightLegPositionWeight {"right_leg_pos_w"};
+    ExFloatSpinBoxW m_leftLegBendWeight {"left_leg_bend_w"};
+    ExFloatSpinBoxW m_rightLegBendWeight {"right_leg_bend_w"};
+    ExVector3dW m_leftLegBend = {"left_leg_bend_goal"};
+    ExVector3dW m_rightLegBend = {"right_leg_bend_goal"};
+    TransformSubPart m_leftLeg = {"left_leg_transform"};
+    TransformSubPart m_rightLeg = {"right_leg_transform"};
 
     // fingers
-    ExFloatSpinBoxW m_leftFingersWeight;
-    ExVector3dW m_leftIndexRot1;
-    ExVector3dW m_leftIndexRot2;
-    ExVector3dW m_leftIndexRot3;
-    ExVector3dW m_leftMiddleRot1;
-    ExVector3dW m_leftMiddleRot2;
-    ExVector3dW m_leftMiddleRot3;
-    ExVector3dW m_leftRingRot1;
-    ExVector3dW m_leftRingRot2;
-    ExVector3dW m_leftRingRot3;
-    ExVector3dW m_leftPinkyRot1;
-    ExVector3dW m_leftPinkyRot2;
-    ExVector3dW m_leftPinkyRot3;
-    ExVector3dW m_leftThumbRot1;
-    ExVector3dW m_leftThumbRot2;
-    ExVector3dW m_leftThumbRot3;
-    ExFloatSpinBoxW m_rightFingersWeight;
-    ExVector3dW m_rightIndexRot1;
-    ExVector3dW m_rightIndexRot2;
-    ExVector3dW m_rightIndexRot3;
-    ExVector3dW m_rightMiddleRot1;
-    ExVector3dW m_rightMiddleRot2;
-    ExVector3dW m_rightMiddleRot3;
-    ExVector3dW m_rightRingRot1;
-    ExVector3dW m_rightRingRot2;
-    ExVector3dW m_rightRingRot3;
-    ExVector3dW m_rightPinkyRot1;
-    ExVector3dW m_rightPinkyRot2;
-    ExVector3dW m_rightPinkyRot3;
-    ExVector3dW m_rightThumbRot1;
-    ExVector3dW m_rightThumbRot2;
-    ExVector3dW m_rightThumbRot3;
+    ExFloatSpinBoxW m_leftFingersWeight {"left_fingers_w"};
+    ExVector3dW m_leftIndexRot1 {"left_hand_index_1"};
+    ExVector3dW m_leftIndexRot2 {"left_hand_index_2"};
+    ExVector3dW m_leftIndexRot3 {"left_hand_index_3"};
+    ExVector3dW m_leftMiddleRot1 {"left_hand_middle_1"};
+    ExVector3dW m_leftMiddleRot2 {"left_hand_middle_2"};
+    ExVector3dW m_leftMiddleRot3 {"left_hand_middle_3"};
+    ExVector3dW m_leftRingRot1 {"left_hand_ring_1"};
+    ExVector3dW m_leftRingRot2 {"left_hand_ring_2"};
+    ExVector3dW m_leftRingRot3 {"left_hand_ring_3"};
+    ExVector3dW m_leftPinkyRot1 {"left_hand_pinky_1"};
+    ExVector3dW m_leftPinkyRot2 {"left_hand_pinky_2"};
+    ExVector3dW m_leftPinkyRot3 {"left_hand_pinky_3"};
+    ExVector3dW m_leftThumbRot1 {"left_hand_thumb_1"};
+    ExVector3dW m_leftThumbRot2 {"left_hand_thumb_2"};
+    ExVector3dW m_leftThumbRot3 {"left_hand_thumb_3"};
+    ExFloatSpinBoxW m_rightFingersWeight {"right_fingers_w"};
+    ExVector3dW m_rightIndexRot1 {"right_hand_index_1"};
+    ExVector3dW m_rightIndexRot2 {"right_hand_index_2"};
+    ExVector3dW m_rightIndexRot3 {"right_hand_index_3"};
+    ExVector3dW m_rightMiddleRot1 {"right_hand_middle_1"};
+    ExVector3dW m_rightMiddleRot2 {"right_hand_middle_2"};
+    ExVector3dW m_rightMiddleRot3 {"right_hand_middle_3"};
+    ExVector3dW m_rightRingRot1 {"right_hand_ring_1"};
+    ExVector3dW m_rightRingRot2 {"right_hand_ring_2"};
+    ExVector3dW m_rightRingRot3 {"right_hand_ring_3"};
+    ExVector3dW m_rightPinkyRot1 {"right_hand_pinky_1"};
+    ExVector3dW m_rightPinkyRot2 {"right_hand_pinky_2"};
+    ExVector3dW m_rightPinkyRot3 {"right_hand_pinky_3"};
+    ExVector3dW m_rightThumbRot1 {"right_hand_thumb_1"};
+    ExVector3dW m_rightThumbRot2 {"right_hand_thumb_2"};
+    ExVector3dW m_rightThumbRot3 {"right_hand_thumb_3"};
 
 
 public :

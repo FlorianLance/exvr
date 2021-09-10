@@ -17,7 +17,6 @@ void DecimalTrigoEmbeddedW::initialize(){
                     QSL("Asin"), QSL("Atan"), QSL("Cosh"), QSL("Sinh"), QSL("Tanh")});
 
     // set widget connections
-    w->init_connection("");
     connect(w.get(), &ExComboBoxTextW::ui_change_signal, this, [=]{
         emit compute_data_signal();
     });

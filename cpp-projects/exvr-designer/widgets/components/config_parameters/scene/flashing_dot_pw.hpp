@@ -26,10 +26,10 @@ class FlashingDotConfigParametersW : public ConfigParametersW{
 
 public :
 
-    TransformSubPart m_transfo;
-    ExSelectColorW m_onColor;
-    ExSelectColorW m_offColor;
-    ExCheckBoxW m_on;
+    TransformSubPart m_transfo {"transform"};
+    ExSelectColorW m_onColor{"on_color"};
+    ExSelectColorW m_offColor{"off_color"};
+    ExCheckBoxW m_on{"on"};
 
     void insert_widgets() override{
         add_sub_part_widget(m_transfo);
@@ -38,10 +38,10 @@ public :
     }
 
     void init_and_register_widgets() override{
-        map_sub_part(m_transfo.init_widget("Dot transform","transform"));
-        m_inputUiElements["on"]         = m_on.init_widget("On ", false);
-        m_inputUiElements["on_color"]   = m_onColor.init_widget("Select ON color", Qt::white);
-        m_inputUiElements["off_color"]  = m_offColor.init_widget("Select OFF color", Qt::black);
+        map_sub_part(m_transfo.init_widget("Dot transform"));        
+        add_input_ui(m_on.init_widget("On ", false));
+        add_input_ui(m_onColor.init_widget("Select ON color", Qt::white));
+        add_input_ui(m_offColor.init_widget("Select OFF color", Qt::black));
         m_transfo.tr.set_scale_values({0.1,0.1,0.1});
     }
 

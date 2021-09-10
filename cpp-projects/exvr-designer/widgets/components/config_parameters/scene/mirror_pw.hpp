@@ -30,8 +30,8 @@ class MirrorConfigParametersW : public ConfigParametersW{
 
 public :
 
-    TransformSubPart m_transform;
-    ExCheckBoxW m_showFrame;
+    TransformSubPart m_transform{"transform"};
+    ExCheckBoxW m_showFrame{"show_frame"};
 
     void insert_widgets() override{
         add_sub_part_widget(m_transform);
@@ -40,7 +40,7 @@ public :
 
     void init_and_register_widgets() override{
         map_sub_part(m_transform.init_widget());
-        m_inputUiElements["show_frame"] = m_showFrame.init_widget("Show frame", true);
+        add_input_ui(m_showFrame.init_widget("Show frame", true));
     }
 
     void create_connections() override{}

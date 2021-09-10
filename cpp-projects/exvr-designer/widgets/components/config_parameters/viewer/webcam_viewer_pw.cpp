@@ -11,8 +11,8 @@ void WebcamViewerInitConfigParametersW::insert_widgets(){
 
 void WebcamViewerInitConfigParametersW::init_and_register_widgets(){
 
-    m_inputUiElements["device_id"]          = m_sbDeviceId.init_widget(MinV<int>{0}, V<int>{0}, MaxV<int>{32}, StepV<int>{1},  true);
-    m_inputUiElements["requested_fps"]      = m_sbFPS.init_widget(MinV<int>{1}, V<int>{30}, MaxV<int>{120}, StepV<int>{1},  true);
+    add_input_ui(m_sbDeviceId.init_widget(MinV<int>{0}, V<int>{0}, MaxV<int>{32}, StepV<int>{1},  true));
+    add_input_ui(m_sbFPS.init_widget(MinV<int>{1}, V<int>{30}, MaxV<int>{120}, StepV<int>{1},  true));
 }
 
 
@@ -33,16 +33,16 @@ void WebcamViewerConfigParametersW::insert_widgets(){
 void WebcamViewerConfigParametersW::init_and_register_widgets(){
 
     map_sub_part(m_eye.init_widget());
-    m_inputUiElements["use_eye_camera"]     = m_followEyeCamera.init_widget("Video always in front of the eyes camera", false);
-    m_inputUiElements["use_original_size"]  = m_cbUseVideoSize.init_widget("Use video original size", true);
+    add_input_ui(m_followEyeCamera.init_widget("Video always in front of the eyes camera", false));
+    add_input_ui(m_cbUseVideoSize.init_widget("Use video original size", true));
 
     Vector2dSettings pivotSettings= {
         {MinV<qreal>{-0.5}, V<qreal>{0.5}, MaxV<qreal>{1.5}, StepV<qreal>{0.01}, 2},
         {MinV<qreal>{-0.5}, V<qreal>{0.5}, MaxV<qreal>{1.5}, StepV<qreal>{0.01}, 2}
     };
-    m_inputUiElements["pivot"]      = m_pivot.init_widget("Pivot", pivotSettings);
+    add_input_ui(m_pivot.init_widget("Pivot", pivotSettings));
     DsbSettings distanceSettings= {MinV<qreal>{0}, V<qreal>{10.}, MaxV<qreal>{1000.}, StepV<qreal>{0.1}, 2};
-    m_inputUiElements["distance"]   = m_distance.init_widget(distanceSettings);
+    add_input_ui(m_distance.init_widget(distanceSettings));
 
     map_sub_part(m_cameraSettings.init_widget());
 }

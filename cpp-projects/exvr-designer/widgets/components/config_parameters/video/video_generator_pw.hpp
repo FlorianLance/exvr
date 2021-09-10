@@ -17,11 +17,11 @@ class VideoGeneratorInitConfigParametersW : public ConfigParametersW{
 
 public :
 
-    ExLineEditW m_lePath;
+    ExLineEditW m_lePath{"path_video"};
     QPushButton m_pbSetPath;
-    ExSpinBoxW m_sbFPS;
-    ExSpinBoxW m_sbWidth;
-    ExSpinBoxW m_sbHeight;
+    ExSpinBoxW m_sbFPS{"fps"};
+    ExSpinBoxW m_sbWidth{"width"};
+    ExSpinBoxW m_sbHeight{"height"};
 
     void insert_widgets() override{
         add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Path video to save: "),m_lePath(), &m_pbSetPath}, LStretch{false}, LMargins{true}, QFrame::Box));
@@ -30,11 +30,11 @@ public :
 
     }
     void init_and_register_widgets() override{
-        ui::W::init(&m_pbSetPath, "Set");
-        m_inputUiElements["path_video"]     = m_lePath.init_widget("...");
-        m_inputUiElements["fps"]            = m_sbFPS.init_widget(MinV<int>{1}, V<int>{30}, MaxV<int>{120}, StepV<int>{1},  true);
-        m_inputUiElements["width"]          = m_sbWidth.init_widget(MinV<int>{100}, V<int>{1024}, MaxV<int>{1920}, StepV<int>{1},  true);
-        m_inputUiElements["height"]         = m_sbHeight.init_widget(MinV<int>{100}, V<int>{768}, MaxV<int>{1080}, StepV<int>{1},  true);
+        ui::W::init(&m_pbSetPath, "Set");        
+        add_input_ui(m_lePath.init_widget("..."));
+        add_input_ui(m_sbFPS.init_widget(MinV<int>{1}, V<int>{30}, MaxV<int>{120}, StepV<int>{1},  true));
+        add_input_ui(m_sbWidth.init_widget(MinV<int>{100}, V<int>{1024}, MaxV<int>{1920}, StepV<int>{1},  true));
+        add_input_ui(m_sbHeight.init_widget(MinV<int>{100}, V<int>{768}, MaxV<int>{1080}, StepV<int>{1},  true));
     }
     void create_connections() override{
         connect(&m_pbSetPath, &QPushButton::clicked, this, [&]{

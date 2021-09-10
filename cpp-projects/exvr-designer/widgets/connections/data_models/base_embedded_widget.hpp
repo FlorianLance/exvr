@@ -112,7 +112,7 @@ public:
     }
 
     void trigger_signals() override{
-        emit w->ui_change_signal("");
+        emit w->trigger_ui_change();
     }
 
     std::unique_ptr<W> w = nullptr;
@@ -130,7 +130,6 @@ public:
         w->init_widget("");
 
         // set widget connections
-        w->init_connection("");
         connect(w.get(), &ExLabelW::ui_change_signal, this, [=]{
             emit compute_data_signal();
         });

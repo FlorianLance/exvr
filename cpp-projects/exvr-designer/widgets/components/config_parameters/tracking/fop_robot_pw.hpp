@@ -17,11 +17,11 @@ class FopRobotInitConfigParametersW : public ConfigParametersW{
 
 public :
 
-    ExSpinBoxW  m_readingPort;
-    ExLineEditW m_readingAddress;
+    ExSpinBoxW  m_readingPort{"read_port"};
+    ExLineEditW m_readingAddress{"read_address"};
 
-    ExSpinBoxW  m_writingPort;
-    ExLineEditW m_writingAddress;
+    ExSpinBoxW  m_writingPort{"write_port"};
+    ExLineEditW m_writingAddress{"write_address"};
 
     void insert_widgets() override{
         add_widget(ui::F::gen(ui::L::HB(),{ui::W::txt("Reading address:"), m_readingAddress()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
@@ -31,10 +31,11 @@ public :
     }
 
     void init_and_register_widgets() override{
-        m_inputUiElements["read_address"]       = m_readingAddress.init_widget("127.0.0.1");
-        m_inputUiElements["read_port"]          = m_readingPort.init_widget(MinV<int>{0},V<int>{5554}, MaxV<int>{44000}, StepV<int>{1});
-        m_inputUiElements["write_address"]      = m_writingAddress.init_widget("127.0.0.1");
-        m_inputUiElements["write_port"]         = m_writingPort.init_widget(MinV<int>{0},V<int>{5555}, MaxV<int>{44000}, StepV<int>{1});
+
+        add_input_ui(m_readingAddress.init_widget("127.0.0.1"));
+        add_input_ui(m_readingPort.init_widget(MinV<int>{0},V<int>{5554}, MaxV<int>{44000}, StepV<int>{1}));
+        add_input_ui(m_writingAddress.init_widget("127.0.0.1"));
+        add_input_ui(m_writingPort.init_widget(MinV<int>{0},V<int>{5555}, MaxV<int>{44000}, StepV<int>{1}));
     }
 
     void create_connections() override{}
@@ -46,14 +47,14 @@ class FopRobotConfigParametersW : public ConfigParametersW{
 
 public :
 
-    ExRadioButtonW m_delayControl;
-    ExRadioButtonW m_forceControl;
-    ExRadioButtonW m_testTouch;
-    ExRadioButtonW m_positionControl;
-    ExRadioButtonW m_none;
+    ExRadioButtonW m_delayControl{"delay_control"};
+    ExRadioButtonW m_forceControl{"force_control"};
+    ExRadioButtonW m_testTouch{"test_touch"};
+    ExRadioButtonW m_positionControl{"position_control"};
+    ExRadioButtonW m_none{"none"};
 
-    ExSpinBoxW m_delay;
-    ExFloatSpinBoxW m_forceRatio;
+    ExSpinBoxW m_delay{"delay"};
+    ExFloatSpinBoxW m_forceRatio{"force_ratio"};
 
     void insert_widgets() override{
 
@@ -73,14 +74,14 @@ public :
 
     void init_and_register_widgets() override{
 
-        m_inputUiElements["delay_control"]      = m_delayControl.init_widget("Delay control", true);
-        m_inputUiElements["force_control"]      = m_forceControl.init_widget("Force control", false);
-        m_inputUiElements["test_touch"]         = m_testTouch.init_widget("Test touch", false);
-        m_inputUiElements["position_control"]   = m_positionControl.init_widget("Position control", false);
-        m_inputUiElements["none"]               = m_none.init_widget("None", false);
+        add_input_ui(m_delayControl.init_widget("Delay control", true));
+        add_input_ui(m_forceControl.init_widget("Force control", false));
+        add_input_ui(m_testTouch.init_widget("Test touch", false));
+        add_input_ui(m_positionControl.init_widget("Position control", false));
+        add_input_ui(m_none.init_widget("None", false));
 
-        m_inputUiElements["delay"]              = m_delay.init_widget(MinV<int>{0}, V<int>{500}, MaxV<int>{5000}, StepV<int>{1});
-        m_inputUiElements["force_ratio"]        = m_forceRatio.init_widget(MinV<qreal>{0.f}, V<qreal>{1.f}, MaxV<qreal>{10000.f}, StepV<qreal>{0.01f}, 2);
+        add_input_ui(m_delay.init_widget(MinV<int>{0}, V<int>{500}, MaxV<int>{5000}, StepV<int>{1}));
+        add_input_ui(m_forceRatio.init_widget(MinV<qreal>{0.f}, V<qreal>{1.f}, MaxV<qreal>{10000.f}, StepV<qreal>{0.01f}, 2));
 
     }
 

@@ -16,10 +16,10 @@ class WebcamInitConfigParametersW : public ConfigParametersW{
 
 public :
 
-    ExSpinBoxW m_sbDeviceId;
-    ExSpinBoxW m_sbFPS;
-    ExSpinBoxW m_sbWidth;
-    ExSpinBoxW m_sbHeight;
+    ExSpinBoxW m_sbDeviceId{"device_id"};
+    ExSpinBoxW m_sbFPS{"requested_fps"};
+    ExSpinBoxW m_sbWidth{"requested_width"};
+    ExSpinBoxW m_sbHeight{"requested_height"};
 
 
     void insert_widgets() override{
@@ -30,10 +30,11 @@ public :
     }
 
     void init_and_register_widgets() override{
-        m_inputUiElements["device_id"]          = m_sbDeviceId.init_widget(MinV<int>{0}, V<int>{0}, MaxV<int>{32}, StepV<int>{1},  true);
-        m_inputUiElements["requested_fps"]      = m_sbFPS.init_widget(MinV<int>{1}, V<int>{30}, MaxV<int>{120}, StepV<int>{1},  true);
-        m_inputUiElements["requested_width"]    = m_sbWidth.init_widget(MinV<int>{1}, V<int>{1024}, MaxV<int>{6000}, StepV<int>{1},  true);
-        m_inputUiElements["requested_height"]   = m_sbHeight.init_widget(MinV<int>{1}, V<int>{768}, MaxV<int>{6000}, StepV<int>{1},  true);
+
+        add_input_ui(m_sbDeviceId.init_widget(MinV<int>{0}, V<int>{0}, MaxV<int>{32}, StepV<int>{1},  true));
+        add_input_ui(m_sbFPS.init_widget(MinV<int>{1}, V<int>{30}, MaxV<int>{120}, StepV<int>{1},  true));
+        add_input_ui(m_sbWidth.init_widget(MinV<int>{1}, V<int>{1024}, MaxV<int>{6000}, StepV<int>{1},  true));
+        add_input_ui(m_sbHeight.init_widget(MinV<int>{1}, V<int>{768}, MaxV<int>{6000}, StepV<int>{1},  true));
     }
 
     void create_connections() override{}

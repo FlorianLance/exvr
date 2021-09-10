@@ -19,7 +19,7 @@ class KinectBodyTrackingInitConfigParametersW : public ConfigParametersW{
 public :
 
 
-    ExComponentW m_kinectManager;
+    ExComponentW m_kinectManager{"kinect_manager"};
 
     void insert_widgets() override{
 
@@ -27,7 +27,7 @@ public :
     }
 
     void init_and_register_widgets() override{
-        m_inputUiElements["kinect_manager"] = m_kinectManager.init_widget(Component::Type::Kinect_manager, "Kinect manager component: ");
+        add_input_ui(m_kinectManager.init_widget(Component::Type::Kinect_manager, "Kinect manager component: "));
     }
 
     void create_connections() override{
@@ -41,15 +41,14 @@ class KinectBodyTrackingConfigParametersW : public ConfigParametersW{
 
 public :
 
-    TransformSubPart m_tr;
-
+    TransformSubPart m_tr {"global_transform"};
 
     void insert_widgets() override{
         add_sub_part_widget(m_tr);
     }
 
     void init_and_register_widgets() override{
-        map_sub_part(m_tr.init_widget("Global model transform", "global_transform"));
+        map_sub_part(m_tr.init_widget("Global model transform"));
     }
 
     void create_connections() override{

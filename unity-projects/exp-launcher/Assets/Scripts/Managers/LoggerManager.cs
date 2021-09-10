@@ -98,7 +98,7 @@ namespace Ex {
             [CallerMemberName]  string memberName = "",
             [CallerFilePath]    string sourceFilePath = "",
             [CallerLineNumber]  int sourceLineNumber = 0) {
-
+            
             var messageStr = Converter.to_string(message);
             var lineStr = Converter.to_string(sourceLineNumber);
             if (addExtraInfo) {

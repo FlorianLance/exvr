@@ -14,7 +14,6 @@ void Vector3EmbeddedW::initialize(){
     w->init_widget("");
 
     // set widget connections
-    w->init_connection("");
     connect(w.get(), &ExVector3dW::ui_change_signal, this, [=]{
         const auto x = static_cast<float>(w->x.w->value());
         const auto y = static_cast<float>(w->y.w->value());

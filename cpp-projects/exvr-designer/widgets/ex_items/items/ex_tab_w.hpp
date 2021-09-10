@@ -26,7 +26,7 @@ class ExTabW : public ExItemW<QTabWidget>{
 
 public:
 
-    ExTabW() : ExItemW<QTabWidget>(UiType::Tab){
+    ExTabW(QString name ="") : ExItemW<QTabWidget>(UiType::Tab, name){
 
         w->setMovable(true);
 
@@ -35,18 +35,18 @@ public:
             add_tab();
             pbRemoveTab.setEnabled(w->count() > 0);
             update_tab_names();
-            emit ui_change_signal(m_nameParam);
+            trigger_ui_change();
         });
         connect(&pbRemoveTab, &QPushButton::clicked, [&]{
             remove_tab();
             pbRemoveTab.setEnabled(w->count() > 0);
             update_tab_names();
-            emit ui_change_signal(m_nameParam);
+            trigger_ui_change();
         });
         connect(w->tabBar(), &QTabBar::tabMoved, this, [&](int from, int to){
             std::swap(widgets[from], widgets[to]);
             update_tab_names();
-            emit ui_change_signal(m_nameParam);
+            trigger_ui_change();
         });
     }
 
@@ -69,11 +69,6 @@ public:
         w->setEnabled(enabled);
         return this;
     }
-
-    virtual void init_connection(const QString &nameParam) override{
-        m_nameParam = nameParam;
-    }
-
 
     virtual void update_from_arg(const Arg &arg) override{
 
@@ -98,7 +93,7 @@ public:
 
     virtual Arg convert_to_arg() const override{
 
-        Arg arg = ExItemW::convert_to_arg();
+        Arg arg = ExBaseW::convert_to_arg();
 
         std::vector<Arg> args;
         for(const auto& w : widgets){
@@ -123,14 +118,13 @@ private:
     ExBaseW *add_tab(){
 
         // create item
-        auto widget = std::make_unique<T>();
+        auto widget = std::make_unique<T>(QSL("tab") % QString::number(widgets.size()));
 
         // init sub connections
         auto baseW = dynamic_cast<ExBaseW*>(widget.get());
         connect(baseW, &ExBaseW::ui_change_signal, this, [&]{
-            emit ui_change_signal(m_nameParam);
+            trigger_ui_change();
         });
-        baseW->init_connection(m_nameParam);
 
         // init widget
         widget->init_widget2(m_parameters);

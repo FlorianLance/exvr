@@ -23,7 +23,7 @@ public :
     void create_connections() override;
     void late_update_ui() override;
 
-    ExComponentW avatar;
+    ExComponentW avatar{"avatar"};
 };
 
 class FPPAvatarCameraConfigParametersW : public ConfigParametersW{
@@ -35,20 +35,20 @@ public :
     void create_connections() override;
     void late_update_ui() override;
 
-    ExCheckBoxW moveNeutralCameraToHead;
-    ExCheckBoxW neutralPitch;
-    ExCheckBoxW neutralYaw;
-    ExCheckBoxW neutralRoll;
-    ExVector3dW neutralCameraToHeadOffsetPos;
-    ExVector3dW neutralCameraToHeadOffsetRot;
+    ExCheckBoxW moveNeutralCameraToHead{"move_neutral_camera_to_head"};
+    ExCheckBoxW neutralPitch{"neutral_pitch"};
+    ExCheckBoxW neutralYaw{"neutral_yaw"};
+    ExCheckBoxW neutralRoll{"neutral_roll"};
+    ExVector3dW neutralCameraToHeadOffsetPos{"neutral_camera_to_head_offset_pos"};
+    ExVector3dW neutralCameraToHeadOffsetRot{"neutral_camera_to_head_offset_rot"};
 
-    ExRadioButtonW updateEyesCameraFromHead;
+    ExRadioButtonW updateEyesCameraFromHead{"update_eyes_camera_from_head"};
 
-    ExRadioButtonW doNotUpdate;
+    ExRadioButtonW doNotUpdate{"no_not_update"};
 
-    ExRadioButtonW updateHeadFromEyesCamera;
-    ExVector3dW headFromEyesOffsetPos;
-    ExVector3dW headFromEyesOffsetRot;
+    ExRadioButtonW updateHeadFromEyesCamera{"update_head_from_eyes_camera"};
+    ExVector3dW headFromEyesOffsetPos{"head_from_eyes_offset_pos"};
+    ExVector3dW headFromEyesOffsetRot{"head_from_eyes_offset_rot"};
 
 };
 

@@ -119,7 +119,7 @@ struct Component {
     using R = Restricted;
 
     enum class State : int {
-        Sta, Exp
+        Sta, Exp, Leg
     };    
     using S = State;
 
@@ -153,12 +153,12 @@ struct Component {
         {T::Microphone,               C::Audio,       TO::B,     CO::B,   false,   R::OpenSource,   S::Exp, "Microphone"sv, "Microphone"sv, "Microphone"sv, ":/icons/Micro"sv},
         // Avatar
         {T::Humanoid_avatar,          C::Avatar,      TO::B,     CO::B,   false,   R::ClosedSource, S::Exp, "Humanoid_avatar"sv, "Humanoid avatar"sv, "HumanoidAvatar"sv, ":/icons/Avatar"sv},
-        {T::Humanoid_controller,      C::Avatar,      TO::B,     CO::B,   false,   R::ClosedSource, S::Exp, "Humanoid_controller"sv, "Humanoid controller"sv, "HumanoidController"sv, ":/icons/Avatar"sv},
+        {T::Humanoid_controller,      C::Avatar,      TO::B,     CO::B,   false,   R::ClosedSource, S::Leg, "Humanoid_controller"sv, "Humanoid controller"sv, "HumanoidController"sv, ":/icons/Avatar"sv},
         // Camera
         {T::Camera,                   C::Camera,      TO::U,     CO::B,   true,    R::OpenSource,   S::Sta, "Camera"sv, "Camera"sv, "Camera"sv, ":/icons/Camera"sv},
         {T::Camera_target,            C::Camera,      TO::U,     CO::C,   false,   R::OpenSource,   S::Sta, "Camera_target"sv, "Camera target"sv, "CameraTarget"sv, ":/icons/Camera"sv},
-        {T::Camera_trajectory,        C::Camera,      TO::B,     CO::C,   false,   R::OpenSource,   S::Exp, "Camera_trajectory"sv, "Camera trajectory"sv, "CameraTrajectory"sv, ":/icons/Camera"sv},
-        {T::Camera_trajectory_file,   C::Camera,      TO::B,     CO::C,   false,   R::OpenSource,   S::Exp, "Camera_trajectory_file"sv, "Camera trajectory file"sv, "CameraTrajectoryFile"sv, ":/icons/Camera"sv},
+        {T::Camera_trajectory,        C::Camera,      TO::B,     CO::C,   false,   R::OpenSource,   S::Leg, "Camera_trajectory"sv, "Camera trajectory"sv, "CameraTrajectory"sv, ":/icons/Camera"sv},
+        {T::Camera_trajectory_file,   C::Camera,      TO::B,     CO::C,   false,   R::OpenSource,   S::Leg, "Camera_trajectory_file"sv, "Camera trajectory file"sv, "CameraTrajectoryFile"sv, ":/icons/Camera"sv},
         {T::FPP_avatar_camera,        C::Camera,      TO::B,     CO::B,   false,   R::ClosedSource, S::Exp, "FPP_avatar_camera"sv, "FPP avatar camera"sv, "FPPAvatarCamera"sv, ":/icons/Camera"sv},
         // Cloud
         {T::Cloud,                    C::Cloud,       TO::V,     CO::B,   false,   R::OpenSource,   S::Sta, "Cloud"sv, "Cloud"sv, "Cloud"sv, ":/icons/Cloud"sv},
@@ -196,7 +196,7 @@ struct Component {
         // Scene
         {T::Falling_spheres,          C::Scene,       TO::B,     CO::B,   false,   R::OpenSource,   S::Exp, "Falling_spheres"sv, "Falling spheres"sv, "FallingSpheres"sv, ":/icons/Falling_spheres"sv},
         {T::Flashing_dot,             C::Scene,       TO::B,     CO::B,   false,   R::OpenSource,   S::Exp, "Flashing_dot"sv, "Flashing dot"sv, "FlashingDot"sv,":/icons/Dot"sv},
-        {T::Mirror,                   C::Scene,       TO::V,     CO::C,   false,   R::OpenSource,   S::Exp, "Mirror"sv, "Mirror"sv, "Mirror"sv, ":/icons/Mirror"sv},
+        {T::Mirror,                   C::Scene,       TO::V,     CO::C,   false,   R::OpenSource,   S::Leg, "Mirror"sv, "Mirror"sv, "Mirror"sv, ":/icons/Mirror"sv},
         {T::MRI,                      C::Scene,       TO::B,     CO::B,   false,   R::OpenSource,   S::Exp, "MRI"sv, "MRI"sv, "MRI"sv, ":/icons/MRI"sv},
         {T::Multi_AB,                 C::Scene,       TO::V,     CO::B,   false,   R::OpenSource,   S::Sta, "Multi_AB"sv, "Multi assets bundles"sv, "MultiAB"sv, ":/icons/Unity_scene_bundle"sv},
         {T::Unity_asset_bundle,       C::Scene,       TO::V,     CO::B,   false,   R::OpenSource,   S::Sta, "Unity_asset_bundle"sv, "Unity asset bundle"sv, "AssetBundle"sv, ":/icons/Unity_scene_bundle"sv},

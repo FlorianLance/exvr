@@ -29,10 +29,9 @@ class PlotResourceConfigParametersW : public ConfigParametersW{
 
 public :
 
-    ExResourceW m_plot;
-    ExCheckBoxW m_randomSelection;
-    ExResourcesListW m_plotsList;
-
+    ExResourceW m_plot{"plot"};
+    ExCheckBoxW m_randomSelection{"random"};
+    ExResourcesListW m_plotsList{"plots_list"};
 
     void insert_widgets() override;
     void init_and_register_widgets() override;

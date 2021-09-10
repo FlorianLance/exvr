@@ -25,10 +25,10 @@ class AssetBundleInitConfigParametersW : public ConfigParametersW{
 
 public :
 
-    TransformSubPart m_transfo;
-    ExResourceW m_assetBundle;
-    ExLineEditW m_leSubObjectName;
-    ExCheckBoxW m_displayHierarchy;
+    TransformSubPart m_transfo{"init_transform"};
+    ExResourceW m_assetBundle {"asset_bundle"};
+    ExLineEditW m_leSubObjectName{"name_sub_object"};
+    ExCheckBoxW m_displayHierarchy{"display_hierarchy"};
     QTextEdit *m_hierarchy = nullptr;
 
     void insert_widgets() override;
@@ -42,7 +42,7 @@ class AssetBundleConfigParametersW : public ConfigParametersW{
 
 public :
 
-    TransformSubPart m_transfo;
+    TransformSubPart m_transfo{"transform"};
 
     void insert_widgets() override;
     void init_and_register_widgets() override;

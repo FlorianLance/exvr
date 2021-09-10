@@ -14,9 +14,6 @@
 
 namespace tool::ex {
 
-
-
-
 class TransformEmbeddedW : public NodeContainerW<ExTransformationW>{
     Q_OBJECT
 public:

@@ -15,7 +15,7 @@ void SceneScanerInitConfigParametersW::insert_widgets(){
 }
 
 void SceneScanerInitConfigParametersW::init_and_register_widgets(){
-    m_inputUiElements["kinect_manager"] = m_kinectManager.init_widget(Component::Type::Kinect_manager, "Kinect manager component: ");
+    add_input_ui(m_kinectManager.init_widget(Component::Type::Kinect_manager, "Kinect manager component: "));
 }
 
 void SceneScanerConfigParametersW::insert_widgets(){
@@ -28,11 +28,10 @@ void SceneScanerConfigParametersW::insert_widgets(){
 
 void SceneScanerConfigParametersW::init_and_register_widgets(){
 
-    map_sub_part(m_tr.init_widget("Global model transform", "global_transform"));
+    map_sub_part(m_tr.init_widget("Global model transform"));
+    add_input_ui(m_sizePoints.init_widget(MinV<qreal>{0.0001}, V<qreal>{0.0030}, MaxV<qreal>{0.05}, StepV<qreal>{0.0001},4));
+    add_input_ui(m_displayClouds.init_widget("Display clouds ", true));
+    add_input_ui(m_displayColliders.init_widget("Display colliders ", false));
+    add_action_ui(m_moveEyeToHeadPosition.init_widget("Move eye camera to fit tracked head"));
 
-    m_inputUiElements["size_points"]       = m_sizePoints.init_widget(MinV<qreal>{0.0001}, V<qreal>{0.0030}, MaxV<qreal>{0.05}, StepV<qreal>{0.0001},4);
-    m_inputUiElements["display_clouds"]    = m_displayClouds.init_widget("Display clouds ", true);
-    m_inputUiElements["display_colliders"] = m_displayColliders.init_widget("Display colliders ", false);
-
-    m_actionUiElements["move_eye_to_head"] = m_moveEyeToHeadPosition.init_widget("Move eye camera to fit tracked head");
 }

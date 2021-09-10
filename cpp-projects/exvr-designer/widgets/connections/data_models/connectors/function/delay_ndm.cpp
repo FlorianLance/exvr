@@ -16,7 +16,6 @@ void DelayEmbeddedW::initialize(){
     w->init_widget(MinV<int>{0}, V<int>{500}, MaxV<int>{100000}, StepV<int>{1});
 
     // set widget connections
-    w->init_connection("");
     connect(w.get(), &ExSpinBoxW::ui_change_signal, this, [=]{
         emit compute_data_signal();
     });

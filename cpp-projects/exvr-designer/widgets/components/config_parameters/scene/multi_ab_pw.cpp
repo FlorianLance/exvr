@@ -16,21 +16,17 @@ void MultiABInitConfigParametersW::insert_widgets(){
 }
 
 void MultiABInitConfigParametersW::init_and_register_widgets(){
-    m_inputUiElements["ab_list"] = abList.init_widget(Resource::Type::AssetBundle, "Assets bundles:");
+    add_input_ui(abList.init_widget(Resource::Type::AssetBundle, "Assets bundles:"));
 }
 
 void MultiABConfigParametersW::insert_widgets(){
-
-//    auto initPW = dynamic_cast<MultiABInitConfigParametersW*>(initParametersW);
-
-
     add_sub_part_widget(m_transfo);
     add_widget(ui::F::gen(ui::L::HB(), {m_currentAB()}, LStretch{false}, LMargins{true}, QFrame::Box));
 }
 
 void MultiABConfigParametersW::init_and_register_widgets(){
-    map_sub_part(m_transfo.init_widget(QSL("Config transform</b> (applied when routine starts)<b>"), QSL("transform")));
-    m_inputUiElements["ab_alias"] = m_currentAB.init_widget(Resource::Type::AssetBundle,QSL("Current asset bundle resource"));
+    map_sub_part(m_transfo.init_widget(QSL("Config transform</b> (applied when routine starts)<b>")));
+    add_input_ui(m_currentAB.init_widget(Resource::Type::AssetBundle,QSL("Current asset bundle resource")));
 
 }
 

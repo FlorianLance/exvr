@@ -24,10 +24,9 @@ class ExComponentsListW : public ExItemW<QFrame>{
     Q_OBJECT
 public:
 
-    ExComponentsListW();
+    ExComponentsListW(QString name ="");
     ExComponentsListW *init_widget(Component::Type componentType, QString title, bool enabled = true);
 
-    void init_connection(const QString &nameParam) override;
     void update_from_arg(const Arg &arg) override;
     Arg convert_to_arg() const override;
     void update_from_components() override;

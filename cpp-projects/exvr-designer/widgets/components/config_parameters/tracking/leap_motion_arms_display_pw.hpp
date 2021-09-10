@@ -9,6 +9,7 @@
 
 // local
 #include "config_pw.hpp"
+#include "ex_combo_box_index_w.hpp"
 
 namespace tool::ex {
 
@@ -16,8 +17,8 @@ class LeapMotionArmsDisplayInitConfigParametersW : public ConfigParametersW{
 
 public :
 
-    ExComboBoxTextW m_cbtModel;
-    ExCheckBoxW m_cbTrackFingers;
+    ExComboBoxTextW m_cbtModel{"model"};
+    ExCheckBoxW m_cbTrackFingers{"track_fingers"};
 
     void insert_widgets() override{
         add_widget(ui::F::gen(ui::L::HB(),{new QLabel("Model: "), m_cbtModel()}, LStretch{false}, LMargins{true}));
@@ -25,10 +26,9 @@ public :
     }
 
     void init_and_register_widgets() override{
-
-        m_inputUiElements["model"] = m_cbtModel.init_widget(
-            {"Man black hand", "Man black arm", "Man white hand", "Man white arm"}); // , "Low poly"
-        m_inputUiElements["track_fingers"] = m_cbTrackFingers.init_widget("Track fingers", true);
+        add_input_ui(m_cbtModel.init_widget(
+            {"Man black hand", "Man black arm", "Man white hand", "Man white arm"})); // , "Low poly"
+        add_input_ui(m_cbTrackFingers.init_widget("Track fingers", true));
     }
 
     void create_connections() override{
@@ -44,9 +44,9 @@ class LeapMotionArmsDisplayConfigParametersW : public ConfigParametersW{
 
 public :
 
-    TransformSubPart m_tr;    
-    ExComboBoxIndexW m_cbtPartToDisplay;
-    ExCheckBoxW m_cbDisplayColliders;
+    TransformSubPart m_tr{"model_transform"};
+    ExComboBoxIndexW m_cbtPartToDisplay{"part_to_display"};
+    ExCheckBoxW m_cbDisplayColliders{"display_colliders"};
 
     void insert_widgets() override{
 
@@ -57,10 +57,9 @@ public :
     }
 
     void init_and_register_widgets() override{
-
-        m_inputUiElements["part_to_display"] = m_cbtPartToDisplay.init_widget({"Both", "Left", "Right", "None"});
-        m_inputUiElements["display_colliders"] = m_cbDisplayColliders.init_widget("Display colliders", false);
-        map_sub_part(m_tr.init_widget("Model transform", "model_transform"));
+        add_input_ui(m_cbtPartToDisplay.init_widget({"Both", "Left", "Right", "None"}));
+        add_input_ui(m_cbDisplayColliders.init_widget("Display colliders", false));
+        map_sub_part(m_tr.init_widget("Model transform"));
     }
 
     void create_connections() override{

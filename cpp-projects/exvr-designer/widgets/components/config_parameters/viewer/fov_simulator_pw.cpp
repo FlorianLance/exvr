@@ -15,12 +15,12 @@ void FovSimulatorInitConfigParametersW::insert_widgets(){
 void FovSimulatorInitConfigParametersW::init_and_register_widgets(){
 
     DsbSettings distanceSettings= {MinV<qreal>{0}, V<qreal>{0.15}, MaxV<qreal>{15.}, StepV<qreal>{0.01}, 2};
-    m_inputUiElements["distance"] = distance.init_widget(distanceSettings);
+    add_input_ui(distance.init_widget(distanceSettings));
 
     DsbSettings horiFovSettings= {MinV<qreal>{0}, V<qreal>{52.1}, MaxV<qreal>{200.}, StepV<qreal>{0.1}, 2};
     DsbSettings vertiFovSettings= {MinV<qreal>{0}, V<qreal>{34}, MaxV<qreal>{200.}, StepV<qreal>{0.1}, 2};
-    m_inputUiElements["horizontal_fov"] = horizontalFov.init_widget(horiFovSettings);
-    m_inputUiElements["vertical_fov"]   = verticalFov.init_widget(vertiFovSettings);
+    add_input_ui(horizontalFov.init_widget(horiFovSettings));
+    add_input_ui(verticalFov.init_widget(vertiFovSettings));
 }
 
 
@@ -30,7 +30,7 @@ void FovSimulatorConfigParametersW::insert_widgets(){
 }
 
 void FovSimulatorConfigParametersW::init_and_register_widgets(){
-    m_inputUiElements["color"]          = color.init_widget("Screen color", QColor(0,0,0,255));
+    add_input_ui(color.init_widget("Screen color", QColor(0,0,0,255)));
 }
 
 void FovSimulatorConfigParametersW::create_connections(){}

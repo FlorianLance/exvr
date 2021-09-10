@@ -25,10 +25,10 @@ void MriInitConfigParametersW::init_and_register_widgets(){
         items << from_view(keyName);
     }
 
-    m_inputUiElements["humanoid_controller"] = humanoidController.init_widget(Component::Type::Humanoid_controller, "Humanoid controller:");
-    m_inputUiElements["keyboard"]            = keyboard.init_widget(Component::Type::Keyboard, "Keyboard");
-    m_inputUiElements["trigger_key"]         = triggerKey.init_widget(items);    
-    m_inputUiElements["loggers"]             = loggersList.init_widget(Component::Type::Logger, "Loggers");
+    add_input_ui(humanoidController.init_widget(Component::Type::Humanoid_controller, "Humanoid controller:"));
+    add_input_ui(keyboard.init_widget(Component::Type::Keyboard, "Keyboard"));
+    add_input_ui(triggerKey.init_widget(items));
+    add_input_ui(loggersList.init_widget(Component::Type::Logger, "Loggers"));
 }
 
 void MriInitConfigParametersW::create_connections(){
@@ -55,28 +55,28 @@ void MriConfigParametersW::insert_widgets(){
 
 void MriConfigParametersW::init_and_register_widgets(){
 
-    map_sub_part(transform.init_widget());
-    m_inputUiElements["solve"]                  = solve.init_widget("solve", false);
-    m_inputUiElements["dissolve"]               = dissolve.init_widget("dissolve", false);
-    m_inputUiElements["move_table_inside"]      = move_table_inside.init_widget("move table inside", false);
-    m_inputUiElements["move_table_outside"]     = move_table_outside.init_widget("move table outside", false);
-    m_inputUiElements["move_table_qualisys"]    = move_table_qualisys.init_widget("move table using qualisys", false);
-    m_inputUiElements["nothing"]                = nothing.init_widget("nothing", true);
-    m_inputUiElements["duration"]               = duration.init_widget(MinV<qreal>{0.01},V<qreal>{5.},MaxV<qreal>{25.},StepV<qreal>{0.01}, 2);
-    m_inputUiElements["distance"]               = distance.init_widget(MinV<qreal>{0.00},V<qreal>{1.0},MaxV<qreal>{2.5},StepV<qreal>{0.01}, 2);
-    m_inputUiElements["process_room"]           = room.init_widget("room", true);
-    m_inputUiElements["process_magnet"]         = magnet.init_widget("magnet", true);
-    m_inputUiElements["init_qualisys"]          = initQualisysPositions.init_widget("Init Qualisys positions", false);
-    m_inputUiElements["qualisys_arms_tracking"] = enableQualisysArmsTracking.init_widget("Enable Qualisys arms tracking", false);
-    m_inputUiElements["trigger_go_next"]        = goNextWhenTrigger.init_widget("Go next when receive trigger", false);
+    map_sub_part(transform.init_widget());    
+    add_input_ui(solve.init_widget("solve", false));
+    add_input_ui(dissolve.init_widget("dissolve", false));
+    add_input_ui(move_table_inside.init_widget("move table inside", false));
+    add_input_ui(move_table_outside.init_widget("move table outside", false));
+    add_input_ui(move_table_qualisys.init_widget("move table using qualisys", false));
+    add_input_ui(nothing.init_widget("nothing", true));
+    add_input_ui(duration.init_widget(MinV<qreal>{0.01},V<qreal>{5.},MaxV<qreal>{25.},StepV<qreal>{0.01}, 2));
+    add_input_ui(distance.init_widget(MinV<qreal>{0.00},V<qreal>{1.0},MaxV<qreal>{2.5},StepV<qreal>{0.01}, 2));
+    add_input_ui(room.init_widget("room", true));
+    add_input_ui(magnet.init_widget("magnet", true));
+    add_input_ui(initQualisysPositions.init_widget("Init Qualisys positions", false));
+    add_input_ui(enableQualisysArmsTracking.init_widget("Enable Qualisys arms tracking", false));
+    add_input_ui(goNextWhenTrigger.init_widget("Go next when receive trigger", false));
 
     DsbSettings offsetTr{MinV<qreal>{-2.},V<qreal>{0.},MaxV<qreal>{2.},StepV<qreal>{0.01}, 2};
     auto offsetVecTr = Vector3dSettings{offsetTr,offsetTr,offsetTr};
-    m_inputUiElements["target_head_tr_offset"] = targetHeadTrOffset.init_widget("Target head translation offset", offsetVecTr);
+    add_input_ui(targetHeadTrOffset.init_widget("Target head translation offset", offsetVecTr));
 
     DsbSettings offsetRot{MinV<qreal>{-180.},V<qreal>{0.},MaxV<qreal>{180.},StepV<qreal>{0.1}, 2};
     Vector3dSettings offsetVecRot = {offsetRot,offsetRot,offsetRot};
-    m_inputUiElements["target_head_rot_offset"] = targetHeadRotOffset.init_widget("Target head rotation offset", offsetVecRot);
+    add_input_ui(targetHeadRotOffset.init_widget("Target head rotation offset", offsetVecRot));
 }
 
 void MriConfigParametersW::create_connections(){}

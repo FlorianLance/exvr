@@ -17,11 +17,11 @@ class CameraInitConfigParametersW : public ConfigParametersW{
 
 public :
 
-    ExRadioButtonW useEye;
-    ExRadioButtonW useNeutral;
-    ExCheckBoxW cbStartExperiment;
-    ExVector3dW position;
-    ExVector3dW rotation;
+    ExRadioButtonW useEye {"use_eye"};
+    ExRadioButtonW useNeutral {"use_neutral"};
+    ExCheckBoxW cbStartExperiment {"start_experiment"};
+    ExVector3dW position {"position"};
+    ExVector3dW rotation {"rotation"};
 
     void insert_widgets() override;
     void init_and_register_widgets() override;
@@ -33,22 +33,23 @@ class CameraConfigParametersW : public ConfigParametersW{
 
 public :
 
-    ExCheckBoxW enableDebugMouseCameraMovements;
+    ExCheckBoxW enableDebugMouseCameraMovements {"debug_camera"};
 
-    ExRadioButtonW useEye;
-    ExRadioButtonW useNeutral;
-    ExCheckBoxW cbStartRoutine;
-    ExCheckBoxW cbUpdateOn;
-    ExVector3dW position;
-    ExVector3dW rotation;
+    ExRadioButtonW useEye {"use_eye"};
+    ExRadioButtonW useNeutral {"use_neutral"};
+    ExCheckBoxW cbStartRoutine {"start_routine"};
+    ExCheckBoxW cbUpdateOn {"update_on"};
 
-    ExVector3dW currentNeutralPosition;
-    ExVector3dW currentNeutralRotation;
+
     QPushButton *copyNeutralToCurrentConfig  = nullptr;
-
-    ExVector3dW currentEyePosition;
-    ExVector3dW currentEyeRotation;
     QPushButton *copyEyeToCurrentConfig = nullptr;
+    ExVector3dW position {"position"};
+    ExVector3dW rotation {"rotation"};
+    ExVector3dW currentNeutralPosition {"neutral_position"};
+    ExVector3dW currentNeutralRotation {"neutral_rotaiton"};
+    ExVector3dW currentEyePosition {"eye_rotaiton"};
+    ExVector3dW currentEyeRotation {"eye_rotaiton"};
+
 
     void insert_widgets() override;
     void init_and_register_widgets() override;

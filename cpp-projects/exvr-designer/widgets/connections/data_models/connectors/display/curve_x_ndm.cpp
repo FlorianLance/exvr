@@ -19,7 +19,6 @@ void CurveXEmbeddedW::initialize(){
     set_text_value(curveTitle);
 
     // set widget connections
-    w->init_connection("");
     connect(w.get(), &ExCurveXW::ui_change_signal, this, &CurveXEmbeddedW::compute_data_signal);
     connect(w.get(), &ExCurveXW::name_changed_signal, this, [&](QString name){
         curveTitle = name;

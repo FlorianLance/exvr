@@ -17,17 +17,17 @@ class UdpReaderInitConfigParametersW : public ConfigParametersW{
 
 public :
 
-    ExSpinBoxW m_sbReadingPort;
-    ExLineEditW m_leReadingIpAdress;
+    ExSpinBoxW m_sbReadingPort{"reading_port"};
+    ExLineEditW m_leReadingIpAdress{"reading_address"};
 
     void insert_widgets() override{
         add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Reading port:"), m_sbReadingPort()}, LStretch{true}, LMargins{false}));
         add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Reading IP adress (or hostname):"), m_leReadingIpAdress()}, LStretch{true}, LMargins{false}));
     }
 
-    void init_and_register_widgets() override{
-        m_inputUiElements["reading_port"]       = m_sbReadingPort.init_widget( MinV<int>{0}, V<int>{8060}, MaxV<int>{100000}, StepV<int>{1});
-        m_inputUiElements["reading_address"]  = m_leReadingIpAdress.init_widget("127.0.0.1");
+    void init_and_register_widgets() override{        
+        add_input_ui(m_sbReadingPort.init_widget( MinV<int>{0}, V<int>{8060}, MaxV<int>{100000}, StepV<int>{1}));
+        add_input_ui(m_leReadingIpAdress.init_widget("127.0.0.1"));
     }
 
 
