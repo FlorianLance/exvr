@@ -52,7 +52,7 @@ ComponentConfigDialog::ComponentConfigDialog(QWidget *parent, Component *compone
 
     Bench::start("[ComponentsConfigDialog generate init config w]"sv, false);
         // add init config widget
-        m_initConfigW = new ConfigW(component->initConfig.get(), component, true, component->initConfig->argsByName);
+        m_initConfigW = new ConfigW(component->initConfig.get(), component, true, component->initConfig->args);
         m_ui.vlInitConfig->addWidget(m_initConfigW);
     Bench::stop();
 
@@ -310,7 +310,7 @@ void ComponentConfigDialog::update_from_component(Component *component){
 
         if(!found){ // insert tab for the new config
             Config *config = component->configs[ii].get();
-            m_ui.tabConfigs->insertTab(to_signed(ii), new ConfigW(config, component, false, config->argsByName), config->name);
+            m_ui.tabConfigs->insertTab(to_signed(ii), new ConfigW(config, component, false, config->args), config->name);
         }
     }
 

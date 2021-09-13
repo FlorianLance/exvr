@@ -40,8 +40,18 @@ void LoggerInitConfigParametersW::init_and_register_widgets(){
     add_input_ui(m_addDateToFileName.init_widget("Add current date to name", true));
     add_input_ui(m_dontWriteIfFileExists.init_widget("Dont write if file already exists", false));
     add_input_ui(m_insertNewRoutineInfo.init_widget("Insert info at each new routine", false));
-    add_input_ui(m_replaceIfFileExists.init_widget("Replace file if exists", true));
-    add_input_ui(m_addToEndIfFileExists.init_widget("Add to end of file if exists", false));
+
+    add_inputs_ui(
+        ExRadioButtonW::init_group_widgets(group1,
+            {&m_replaceIfFileExists, &m_addToEndIfFileExists},
+            {
+                "Replace file if exists",
+                "Add to end of file if exists",
+            },
+            {true, false}
+        )
+    );
+
     add_input_ui(m_baseFileName.init_widget("log"));
     add_input_ui(m_dateTimeFormat.init_widget("yyyy-MM-dd_H-mm-ss"));
     add_input_ui(m_fileExtension.init_widget("txt"));
@@ -96,8 +106,18 @@ void LoggerColumnsInitConfigParametersW::init_and_register_widgets(){
     add_input_ui(m_addDateToFileName.init_widget("Add current date to name", true));
     add_input_ui(m_dontWriteIfFileExists.init_widget("Dont write if file already exists", false));
 
-    add_input_ui(m_replaceIfFileExists.init_widget("Replace file if exists", true));
-    add_input_ui(m_addToEndIfFileExists.init_widget("Add to end of file if exists", false));
+    add_inputs_ui(
+        ExRadioButtonW::init_group_widgets(group1,
+            {&m_replaceIfFileExists, &m_addToEndIfFileExists},
+            {
+                "Replace file if exists",
+                "Add to end of file if exists",
+            },
+            {true, false}
+        )
+    );
+
+
     add_input_ui(m_baseFileName.init_widget("log"));
     add_input_ui(m_dateTimeFormat.init_widget("yyyy-MM-dd_H-mm-ss"));
     add_input_ui(m_fileExtension.init_widget("csv"));
@@ -146,9 +166,17 @@ void LoggerConditionInitConfigParametersW::insert_widgets(){
 
 void LoggerConditionInitConfigParametersW::init_and_register_widgets(){
 
-    add_input_ui(m_addRoutineName.init_widget("Add routine to file name", false));
-    add_input_ui(m_addConditionName.init_widget("Add condition to file name", false));
-    add_input_ui(m_addBoth.init_widget("Add both", true));
+    add_inputs_ui(
+        ExRadioButtonW::init_group_widgets(group1,
+            {&m_addRoutineName, &m_addConditionName, &m_addBoth},
+            {
+                "Add routine to file name",
+                "Add condition to file name",
+                "Add both",
+            },
+            {false, false, true}
+        )
+    );
 
     add_input_ui(m_addCurrentInstanceToFileName.init_widget("Add current instance to name", true));
     add_input_ui(m_resource.init_widget(Resource::Type::Directory, "Directory to use:"));
@@ -156,8 +184,16 @@ void LoggerConditionInitConfigParametersW::init_and_register_widgets(){
 
     add_input_ui(m_dontWriteIfFileExists.init_widget("Dont write if file already exists", false));
 
-    add_input_ui(m_replaceIfFileExists.init_widget("Replace file if exists", true));
-    add_input_ui(m_addToEndIfFileExists.init_widget("Add to end of file if exists", false));
+    add_inputs_ui(
+        ExRadioButtonW::init_group_widgets(group2,
+            {&m_replaceIfFileExists, &m_addToEndIfFileExists},
+            {
+                "Replace file if exists",
+                "Add to end of file if exists",
+            },
+            {true, false}
+        )
+    );
     add_input_ui(m_baseFileName.init_widget("log"));
 
     add_input_ui(m_fileExtension.init_widget("txt"));

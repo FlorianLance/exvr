@@ -47,6 +47,7 @@ class FopRobotConfigParametersW : public ConfigParametersW{
 
 public :
 
+    QButtonGroup group1;
     ExRadioButtonW m_delayControl{"delay_control"};
     ExRadioButtonW m_forceControl{"force_control"};
     ExRadioButtonW m_testTouch{"test_touch"};
@@ -74,11 +75,19 @@ public :
 
     void init_and_register_widgets() override{
 
-        add_input_ui(m_delayControl.init_widget("Delay control", true));
-        add_input_ui(m_forceControl.init_widget("Force control", false));
-        add_input_ui(m_testTouch.init_widget("Test touch", false));
-        add_input_ui(m_positionControl.init_widget("Position control", false));
-        add_input_ui(m_none.init_widget("None", false));
+        add_inputs_ui(
+            ExRadioButtonW::init_group_widgets(group1,
+                {&m_delayControl, &m_forceControl, &m_testTouch, &m_positionControl, &m_none},
+                {
+                    "Delay control",
+                    "Force control",
+                    "Test touch",
+                    "Position control",
+                    "None",
+                },
+                {true, false, false, false, false}
+            )
+        );
 
         add_input_ui(m_delay.init_widget(MinV<int>{0}, V<int>{500}, MaxV<int>{5000}, StepV<int>{1}));
         add_input_ui(m_forceRatio.init_widget(MinV<qreal>{0.f}, V<qreal>{1.f}, MaxV<qreal>{10000.f}, StepV<qreal>{0.01f}, 2));

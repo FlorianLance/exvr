@@ -339,7 +339,7 @@ Generator XmlIoManager::read_generator(){
 void XmlIoManager::write_argument(const Arg &arg){
 
     w->writeStartElement(QSL("Arg"));
-    w->writeAttribute(QSL("key"),   QString::number(arg.uiElementKey.v));
+//    w->writeAttribute(QSL("key"),   QString::number(arg.uiElementKey.v));
     w->writeAttribute(QSL("name"),  arg.name);
     w->writeAttribute(QSL("ui"),    from_view(get_name(arg.associated_ui_type())));
     w->writeAttribute(QSL("value"), arg.value());
@@ -376,15 +376,14 @@ void XmlIoManager::write_set(const Set &set){
 
 std::tuple<std::optional<Arg>, QString> XmlIoManager::read_argument(){
 
-    const auto key        = read_attribute<int>({QSL("key"), QSL("key_ui"), QSL("key_ui_element")}, true);
+//    const auto key        = read_attribute<int>({QSL("key"), QSL("key_ui"), QSL("key_ui_element")}, true);
     const auto name       = read_attribute<QString>(QSL("name"), true);
     const auto dim        = read_attribute<int>(QSL("dim"), true);
     const auto type       = read_attribute<QString>(QSL("type"), true);
     const auto value      = read_attribute<QString>(QSL("value"), true);
     const auto ui         = read_attribute<QString>({QSL("ui"), QSL("gen_type"), QSL("uiGeneratorType")}, true);
 
-    if(!key.has_value()     ||
-       !name.has_value()    ||
+    if(!name.has_value()    ||
        !dim.has_value()     ||
        !type.has_value()    ||
        !value.has_value()   ||
@@ -413,7 +412,7 @@ std::tuple<std::optional<Arg>, QString> XmlIoManager::read_argument(){
         return {std::nullopt,QSL("Invalid unity type type at line: ") % QString::number(r->lineNumber())};
     }
 
-    Arg arg = Arg::generate_from_loaded_xml_values(UiElementKey{key.value()}, uiGType.value(), name.value(), value.value(), separator, sizes, uType.value());
+    Arg arg = Arg::generate_from_loaded_xml_values(uiGType.value(), name.value(), value.value(), separator, sizes, uType.value());
     if( has_attribute({QSL("gen"), QSL("generator")})){
         arg.generator = read_generator();
     }

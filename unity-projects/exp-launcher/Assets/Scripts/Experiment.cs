@@ -520,15 +520,13 @@ namespace Ex{
                     return;
                 }case NetworkManager.Command.UpdateComponent: {
 
-                    int componentKey, configKey, keyArg, dim;
+                    int componentKey, configKey, dim;
                     Int32.TryParse(cmd.Item2[0], out componentKey);
                     Int32.TryParse(cmd.Item2[1], out configKey);
-                    Int32.TryParse(cmd.Item2[2], out keyArg);
                     Int32.TryParse(cmd.Item2[5], out dim);
 
                     XML.Arg arg = new XML.Arg();
-                    arg.KeyUiElement = keyArg;
-                    arg.Name         = "";
+                    arg.Name         = cmd.Item2[2];
                     arg.Value        = cmd.Item2[3];
                     arg.Type         = cmd.Item2[4];
                     arg.Dim          = dim;

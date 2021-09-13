@@ -26,6 +26,7 @@ class LoggerInitConfigParametersW : public ConfigParametersW{
     ExCheckBoxW m_dontWriteIfFileExists{"dont_write_if_file_exists"};
     ExCheckBoxW m_insertNewRoutineInfo{"insert_new_routine_infos"};
 
+    QButtonGroup group1;
     ExRadioButtonW m_addToEndIfFileExists{"add_to_end_if_file_exists"};
     ExRadioButtonW m_replaceIfFileExists{"replace_if_file_exists"};
 
@@ -64,6 +65,7 @@ class LoggerColumnsInitConfigParametersW : public ConfigParametersW{
     ExCheckBoxW m_addDateToFileName{"add_date_to_file_name"};
     ExCheckBoxW m_dontWriteIfFileExists{"dont_write_if_file_exists"};
 
+    QButtonGroup group1;
     ExRadioButtonW m_addToEndIfFileExists{"add_to_end_if_file_exists"};
     ExRadioButtonW m_replaceIfFileExists{"replace_if_file_exists"};
 
@@ -105,10 +107,12 @@ class LoggerConditionInitConfigParametersW : public ConfigParametersW{
     ExCheckBoxW m_dontWriteIfFileExists{"dont_write_if_file_exists"};
     ExCheckBoxW m_addCurrentInstanceToFileName{"add_current_instance_to_file_name"};
 
+    QButtonGroup group1;
     ExRadioButtonW m_addRoutineName{"add_routine"};
     ExRadioButtonW m_addConditionName{"add_condition"};
     ExRadioButtonW m_addBoth{"add_both"};
 
+    QButtonGroup group2;
     ExRadioButtonW m_addToEndIfFileExists{"add_to_end_if_file_exists"};
     ExRadioButtonW m_replaceIfFileExists{"replace_if_file_exists"};
 

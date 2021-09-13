@@ -25,8 +25,8 @@ TransformSubPart *TransformSubPart::init_widget(QString title){
     Vector3dSettings rotS   = {s2,s2,s2};
     Vector3dSettings scS    = {s3,s3,s3};
 
-    inputUiElements.emplace_back(UiElementKey{tr.key()}, tr.init_widget(title,trS,rotS,scS));
-    inputUiElements.emplace_back(UiElementKey{doNotApply.key()}, doNotApply.init_widget(QSL("Do not apply"), false));
+    add_input_ui(tr.init_widget(title,trS,rotS,scS));
+    add_input_ui(doNotApply.init_widget(QSL("Do not apply"), false));
 
     return this;
 }
@@ -42,13 +42,13 @@ WordSpaceCameraCanvasSubPart::WordSpaceCameraCanvasSubPart(){
 }
 
 WordSpaceCameraCanvasSubPart *WordSpaceCameraCanvasSubPart::init_widget(){
-    inputUiElements.emplace_back(UiElementKey{scaleFactor.key()}, scaleFactor.init_widget({MinV<qreal>{-10000.}, V<qreal>{1}, MaxV<qreal>{10000.}, StepV<qreal>{0.01}, 2}));
-    inputUiElements.emplace_back(UiElementKey{distance.key()}, distance.init_widget({MinV<qreal>{-10000.}, V<qreal>{10}, MaxV<qreal>{10000.}, StepV<qreal>{0.1}, 1}));
-    inputUiElements.emplace_back(UiElementKey{width.key()},    width.init_widget(MinV<int>{-10000}, V<int>{500}, MaxV<int>{10000}, StepV<int>{1}));
-    inputUiElements.emplace_back(UiElementKey{height.key()},   height.init_widget(MinV<int>{-10000}, V<int>{500}, MaxV<int>{10000}, StepV<int>{1}));
-    inputUiElements.emplace_back(UiElementKey{pivotX.key()},  pivotX.init_widget({MinV<qreal>{-10.}, V<qreal>{0.5}, MaxV<qreal>{10.}, StepV<qreal>{0.01}, 2}));
-    inputUiElements.emplace_back(UiElementKey{pivotY.key()},  pivotY.init_widget({MinV<qreal>{-10.}, V<qreal>{0.5}, MaxV<qreal>{10.}, StepV<qreal>{0.01}, 2}));
-    inputUiElements.emplace_back(UiElementKey{rotation.key()}, rotation.init_widget("Rotation: "));
+    add_input_ui(scaleFactor.init_widget({MinV<qreal>{-10000.}, V<qreal>{1}, MaxV<qreal>{10000.}, StepV<qreal>{0.01}, 2}));
+    add_input_ui(distance.init_widget({MinV<qreal>{-10000.}, V<qreal>{10}, MaxV<qreal>{10000.}, StepV<qreal>{0.1}, 1}));
+    add_input_ui(width.init_widget(MinV<int>{-10000}, V<int>{500}, MaxV<int>{10000}, StepV<int>{1}));
+    add_input_ui(height.init_widget(MinV<int>{-10000}, V<int>{500}, MaxV<int>{10000}, StepV<int>{1}));
+    add_input_ui(pivotX.init_widget({MinV<qreal>{-10.}, V<qreal>{0.5}, MaxV<qreal>{10.}, StepV<qreal>{0.01}, 2}));
+    add_input_ui(pivotY.init_widget({MinV<qreal>{-10.}, V<qreal>{0.5}, MaxV<qreal>{10.}, StepV<qreal>{0.01}, 2}));
+    add_input_ui(rotation.init_widget("Rotation: "));
     rotation.set_steps({1.,1.,1.});
 
     return this;
@@ -85,11 +85,11 @@ WordSpaceCanvasSubPart::WordSpaceCanvasSubPart(){
 }
 
 WordSpaceCanvasSubPart *WordSpaceCanvasSubPart::init_widget(){
-    inputUiElements.emplace_back(UiElementKey{scaleFactor.key()}, scaleFactor.init_widget({MinV<qreal>{-1000.}, V<qreal>{0.25}, MaxV<qreal>{1000.}, StepV<qreal>{0.01}, 2}));
-    inputUiElements.emplace_back(UiElementKey{width.key()}, width.init_widget(MinV<int>{-10000}, V<int>{400}, MaxV<int>{10000}, StepV<int>{1}));
-    inputUiElements.emplace_back(UiElementKey{height.key()}, height.init_widget(MinV<int>{-10000}, V<int>{400}, MaxV<int>{10000}, StepV<int>{1}));
-    inputUiElements.emplace_back(UiElementKey{position.key()}, position.init_widget("<b>Position</b>"));
-    inputUiElements.emplace_back(UiElementKey{rotation.key()}, rotation.init_widget("<b>Rotation</b>"));
+    add_input_ui(scaleFactor.init_widget({MinV<qreal>{-1000.}, V<qreal>{0.25}, MaxV<qreal>{1000.}, StepV<qreal>{0.01}, 2}));
+    add_input_ui(width.init_widget(MinV<int>{-10000}, V<int>{400}, MaxV<int>{10000}, StepV<int>{1}));
+    add_input_ui(height.init_widget(MinV<int>{-10000}, V<int>{400}, MaxV<int>{10000}, StepV<int>{1}));
+    add_input_ui(position.init_widget("<b>Position</b>"));
+    add_input_ui(rotation.init_widget("<b>Rotation</b>"));
     rotation.set_steps({1.,1.,1.});
     position.set_values({0.,0.,10.});
     return this;
@@ -101,7 +101,7 @@ EyeRendererSubPart::EyeRendererSubPart(){
 
 EyeRendererSubPart *EyeRendererSubPart::init_widget(){
     ui::W::init_label(&t, "Eyes to render: ", true);
-    inputUiElements.emplace_back(UiElementKey{eye.key()}, eye.init_widget({"Both eyes", "Left eye", "Right eye"}, Index{0}, true));
+    add_input_ui(eye.init_widget({"Both eyes", "Left eye", "Right eye"}, Index{0}, true));
     return this;
 }
 
@@ -111,15 +111,16 @@ void ConfigParametersSubPart::block_signals(bool state){
     }
 }
 
-//if(!noInputText){
-//    inputUiElements.emplace_back(std::make_pair(baseName + "", richtext.init_widget("Use rich text", true)));
-//    inputUiElements.emplace_back(std::make_pair(baseName + "", text.init_widget(defaultText)));
-//    inputUiElements.emplace_back(std::make_pair(baseName + "_text_resource", resourceText.init_widget(Resource::Type::Text, "Text resource: ")));
-//}
+void ConfigParametersSubPart::add_input_ui(ExBaseW *w){
+    QStringView uiName = w->itemName;
+    inputUiElements.emplace_back(uiName, w);
+}
 
-//inputUiElements.emplace_back(std::make_pair(baseName + "_wrap", wrapping.init_widget("Wrap text", true)));
-//inputUiElements.emplace_back(std::make_pair(baseName + "_auto_size", automaticFontSize.init_widget("Automatic", false)));
-//inputUiElements.emplace_back(std::make_pair(baseName + "_font_size", fontSize.init_widget(fontSizeSettings)));
+void ConfigParametersSubPart::add_inputs_ui(std::vector<ExBaseW *> widgets){
+    for(const auto &w : widgets){
+        add_input_ui(w);
+    }
+}
 
 
 TextSubPart::TextSubPart(QString name, bool removeInputText) :
@@ -190,21 +191,32 @@ TextSubPart *TextSubPart::init_widget(QString defaultText){
     DsbSettings fontSizeSettings= {MinV<qreal>{0.5}, V<qreal>{25.}, MaxV<qreal>{150.}, StepV<qreal>{0.1}, 1};
     DsbSettings outlineSettings= {MinV<qreal>{0.}, V<qreal>{0.}, MaxV<qreal>{10.}, StepV<qreal>{0.01}, 2};
 
-    inputUiElements.emplace_back(UiElementKey{paragraphSpacing.key()}, paragraphSpacing.init_widget(spacingSettings));
-    inputUiElements.emplace_back(UiElementKey{lineSpacing.key()}, lineSpacing.init_widget(spacingSettings));
-    inputUiElements.emplace_back(UiElementKey{wordSpacing.key()}, wordSpacing.init_widget(spacingSettings));
-    inputUiElements.emplace_back(UiElementKey{characterSpacing.key()}, characterSpacing.init_widget(spacingSettings));
-    inputUiElements.emplace_back(UiElementKey{faceColor.key()}, faceColor.init_widget("Select face color", QColor(0,0,0,255)));
-    inputUiElements.emplace_back(UiElementKey{outlineColor.key()}, outlineColor.init_widget("Select outline color", QColor(0,0,0,255)));
-    inputUiElements.emplace_back(UiElementKey{outlineWidth.key()}, outlineWidth.init_widget(outlineSettings));
-    inputUiElements.emplace_back(UiElementKey{none.key()},none.init_widget("Normal", true));
-    inputUiElements.emplace_back(UiElementKey{lowerCase.key()}, lowerCase.init_widget("Lower case", false));
-    inputUiElements.emplace_back(UiElementKey{upperCase.key()}, upperCase.init_widget("Upper case", false));
-    inputUiElements.emplace_back(UiElementKey{italic.key()}, italic.init_widget("Italic", false));
-    inputUiElements.emplace_back(UiElementKey{bold.key()}, bold.init_widget("Bold", false));
-    inputUiElements.emplace_back(UiElementKey{highlight.key()}, highlight.init_widget("Highlight", false));
-    inputUiElements.emplace_back(UiElementKey{underline.key()}, underline.init_widget("Underline", false));
-    inputUiElements.emplace_back(UiElementKey{alignment.key()}, alignment.init_widget({
+
+    add_inputs_ui(
+        ExRadioButtonW::init_group_widgets(group1,
+            {&none, &lowerCase, &upperCase},
+            {
+                "Normal",
+                "Lower case",
+                "Upper case"
+            },
+            {true, false, false}
+        )
+    );
+
+    add_input_ui(paragraphSpacing.init_widget(spacingSettings));
+    add_input_ui(lineSpacing.init_widget(spacingSettings));
+    add_input_ui(wordSpacing.init_widget(spacingSettings));
+    add_input_ui(characterSpacing.init_widget(spacingSettings));
+    add_input_ui(faceColor.init_widget("Select face color", QColor(0,0,0,255)));
+    add_input_ui(outlineColor.init_widget("Select outline color", QColor(0,0,0,255)));
+    add_input_ui(outlineWidth.init_widget(outlineSettings));
+
+    add_input_ui(italic.init_widget("Italic", false));
+    add_input_ui(bold.init_widget("Bold", false));
+    add_input_ui(highlight.init_widget("Highlight", false));
+    add_input_ui(underline.init_widget("Underline", false));
+    add_input_ui(alignment.init_widget({
         "Middle left","Middle right", "Middle justified", "Middle centered",
         "Bottom left","Bottom right", "Bottom justified", "Bottom centered",
         "Top left","Top right", "Top justified", "Top centered"},
@@ -212,14 +224,14 @@ TextSubPart *TextSubPart::init_widget(QString defaultText){
     ));
 
     if(!noInputText){
-        inputUiElements.emplace_back(UiElementKey{richtext.key()}, richtext.init_widget("Use rich text", true));
-        inputUiElements.emplace_back(UiElementKey{text.key()}, text.init_widget(defaultText));
-        inputUiElements.emplace_back(UiElementKey{resourceText.key()}, resourceText.init_widget(Resource::Type::Text, "Text resource: "));
+        add_input_ui(richtext.init_widget("Use rich text", true));
+        add_input_ui(text.init_widget(defaultText));
+        add_input_ui(resourceText.init_widget(Resource::Type::Text, "Text resource: "));
     }
 
-    inputUiElements.emplace_back(UiElementKey{wrapping.key()}, wrapping.init_widget("Wrap text", true));
-    inputUiElements.emplace_back(UiElementKey{automaticFontSize.key()}, automaticFontSize.init_widget("Automatic", false));
-    inputUiElements.emplace_back(UiElementKey{fontSize.key()}, fontSize.init_widget(fontSizeSettings));
+    add_input_ui(wrapping.init_widget("Wrap text", true));
+    add_input_ui(automaticFontSize.init_widget("Automatic", false));
+    add_input_ui(fontSize.init_widget(fontSizeSettings));
 
     return this;
 }

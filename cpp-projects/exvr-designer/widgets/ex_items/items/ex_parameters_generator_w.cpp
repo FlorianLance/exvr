@@ -101,14 +101,15 @@ ExParametersGeneratorWidgetW::ExParametersGeneratorWidgetW(QString name) : ExIte
             return;
         }
 
-        UiElementKey keyToRemove = elementsOrder.at(id);
+//        UiElementKey keyToRemove = elementsOrder.at(id);
+        QStringView nameToRemove = elementsOrder.at(id);
         m_lwParameters.delete_at(id);
         elementsOrder.removeAt(id);
 
-        m_inputUiElements->erase(keyToRemove);
-        generatorElements.erase(keyToRemove);
+        m_inputUiElements->erase(nameToRemove);
+        generatorElements.erase(nameToRemove);
 
-        emit remove_ui_signal(keyToRemove);
+        emit remove_ui_signal(nameToRemove);
     });
 }
 
@@ -121,7 +122,8 @@ ExParametersGeneratorWidgetW::~ExParametersGeneratorWidgetW(){
 }
 
 ExParametersGeneratorWidgetW *ExParametersGeneratorWidgetW::init_widget(
-    std::unordered_map<UiElementKey, ExBaseW *> *inputUiElements, bool enabled){
+//    std::unordered_map<UiElementKey, ExBaseW *> *inputUiElements, bool enabled){
+    std::unordered_map<QStringView, ExBaseW *> *inputUiElements, bool enabled){
 
     m_inputUiElements = inputUiElements;
     generatorName = itemName;
@@ -132,10 +134,10 @@ ExParametersGeneratorWidgetW *ExParametersGeneratorWidgetW::init_widget(
 
 void ExParametersGeneratorWidgetW::update_from_arg(const Arg &arg){
 
-    if(generatorElements.count(arg.uiElementKey) == 0){
+    if(generatorElements.count(arg.name) == 0){
         add_ui_element_from_arg(arg);
     }else {
-        generatorElements[arg.uiElementKey]->update_from_arg(arg);
+        generatorElements[arg.name]->update_from_arg(arg);
     }
 }
 
@@ -237,15 +239,18 @@ void ExParametersGeneratorWidgetW::add_ui_element_from_dialog(UiType uiType){
         delete exW;
         return;
     }
-    exW->update_from_arg(genD.generate_arg(UiElementKey{exW->key()}));
+//    exW->update_from_arg(genD.generate_arg(UiElementKey{exW->key()}));
+    exW->update_from_arg(genD.generate_arg());
 
     // set order
     currentId++;
     exW->generatorOrder = currentId;
 
     // add widget to input ui elements
-    (*m_inputUiElements)[UiElementKey{exW->key()}] = exW;
-    generatorElements[UiElementKey{exW->key()}] = exW;
+//    (*m_inputUiElements)[UiElementKey{exW->key()}] = exW;
+//    generatorElements[UiElementKey{exW->key()}] = exW;
+    (*m_inputUiElements)[exW->itemName] = exW;
+    generatorElements[exW->itemName] = exW;
 
     // generate widget line
     auto fl =  ui::L::HB();
@@ -257,7 +262,8 @@ void ExParametersGeneratorWidgetW::add_ui_element_from_dialog(UiType uiType){
     bool added = false;
     for(int ii = 0; ii < elementsOrder.size(); ++ii){
         if(currentId < generatorElements[elementsOrder[ii]]->generatorOrder){
-            elementsOrder.insert(ii, UiElementKey{exW->key()});
+//            elementsOrder.insert(ii, UiElementKey{exW->key()});
+            elementsOrder.insert(ii, exW->itemName);
             m_lwParameters.insert_widget(ii, f);
             added = true;
             break;
@@ -265,7 +271,8 @@ void ExParametersGeneratorWidgetW::add_ui_element_from_dialog(UiType uiType){
     }
 
     if(!added){
-        elementsOrder << UiElementKey{exW->key()};
+//        elementsOrder << UiElementKey{exW->key()};
+        elementsOrder << exW->itemName;
         m_lwParameters.add_widget(f);
     }
 
@@ -293,8 +300,10 @@ void ExParametersGeneratorWidgetW::add_ui_element_from_arg(Arg arg){
     exW->generatorOrder = currentId;
 
     // add widget to input ui elements
-    (*m_inputUiElements)[UiElementKey{exW->key()}] = exW;
-    generatorElements[UiElementKey{exW->key()}] = exW;
+//    (*m_inputUiElements)[UiElementKey{exW->key()}] = exW;
+//    generatorElements[UiElementKey{exW->key()}] = exW;
+    (*m_inputUiElements)[exW->itemName] = exW;
+    generatorElements[exW->itemName] = exW;
 
     // generate widget line
     auto fl =  ui::L::HB();
@@ -306,7 +315,9 @@ void ExParametersGeneratorWidgetW::add_ui_element_from_arg(Arg arg){
     bool added = false;
     for(int ii = 0; ii < elementsOrder.size(); ++ii){
         if(currentId < generatorElements[elementsOrder[ii]]->generatorOrder){
-            elementsOrder.insert(ii, UiElementKey{exW->key()});
+//            elementsOrder.insert(ii, UiElementKey{exW->key()});
+            elementsOrder.insert(ii, exW->itemName);
+
             m_lwParameters.insert_widget(ii, f);
             added = true;
             break;
@@ -314,7 +325,8 @@ void ExParametersGeneratorWidgetW::add_ui_element_from_arg(Arg arg){
     }
 
     if(!added){
-        elementsOrder << UiElementKey{exW->key()};
+//        elementsOrder << UiElementKey{exW->key()};
+        elementsOrder << exW->itemName;
         m_lwParameters.add_widget(f);
     }
 

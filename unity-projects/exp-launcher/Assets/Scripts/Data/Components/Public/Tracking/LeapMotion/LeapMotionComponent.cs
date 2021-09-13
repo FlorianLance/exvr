@@ -210,6 +210,8 @@ namespace Ex{
             // init leap provider
             m_leap = ExVR.Display().cameras().get_eye_camera_transform().gameObject.AddComponent<Leap.Unity.LeapXRServiceProvider>();
 
+            log_message("LeapMotion connection state: " + m_leap.IsConnected());
+
             return true;
         }
 

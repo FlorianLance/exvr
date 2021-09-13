@@ -22,6 +22,7 @@ public :
     void create_connections() override;
     void late_update_ui() override;
 
+    QButtonGroup group1;
     ExRadioButtonW connectToFirstAvailable{"connect_to_first"};
     ExRadioButtonW specifyServer{"connect_to_specific"};
     ExLineEditW hostName{"host_name"};

@@ -329,19 +329,19 @@ namespace Ex
 
             ExComponent component = get_from_key(componentKey);
             if(component == null) {
-                ExVR.Log().error("invalid component");
+                ExVR.Log().error(string.Format("Invalid component for updating parameter [{0}] with value [{1}]", xmlArg.Name, xmlArg.Value));
                 return;
             }
 
             var config = component.get_config(configKey);
             if(config == null) {
-                ExVR.Log().error("invalid config");
+                ExVR.Log().error(string.Format("Invalid Config for updating parameter [{0}] with value [{1}]", xmlArg.Name, xmlArg.Value));
                 return;
             }
 
             // update config arg
             if (!config.update_from_xml(xmlArg)) {
-                ExVR.Log().error(string.Format("{0} Update argument {1} with value {2} from config {3} failed.",
+                ExVR.Log().error(string.Format("{0} updating parameter [{1}] with value [{2}] from config [{3}] failed.",
                     component.verbose_name(),
                     xmlArg.Name,
                     xmlArg.Value,

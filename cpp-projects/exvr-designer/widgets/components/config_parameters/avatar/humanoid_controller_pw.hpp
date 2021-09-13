@@ -62,6 +62,7 @@ private:
     ExCheckBoxW roll  {"roll"};
 
     ExCheckBoxW moveTransformsToTargets  {"move_transforms_to_targets"};
+    QButtonGroup group1;
     ExRadioButtonW updateHeadWithEyeCamera  {"update_head_with_eye_camera"};
     ExRadioButtonW updateHeadWithRelativeEyeCamera {"update_head_with_relative_eye_camera"};
     ExRadioButtonW updateEyeCameraWithHead {"update_eye_camera_with_head"};
@@ -72,6 +73,7 @@ private:
     ExVector3dW headTrackingOffsetPos = {"head_tracking_offset_pos"};
     ExVector3dW headTrackingOffsetRot = {"head_tracking_offset_rot"};
 
+    QButtonGroup group2;
     ExRadioButtonW pitchYawRollRot = {"pitch_yaw_roll"};
     ExRadioButtonW yawRollPitchRot = {"yaw_roll_pitch"};
 

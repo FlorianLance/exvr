@@ -131,9 +131,9 @@ signals:
     // ### args
     void new_arg_signal(ComponentKey componentKey, ConfigKey configKey, Arg arg, bool initConfig);
     void arg_updated_signal(ComponentKey componentKey, ConfigKey configKey, Arg arg, bool initConfig);
-    void arg_removed_signal(ComponentKey componentKey, ConfigKey configKey, UiElementKey argKey, bool initConfig);
-    void swap_arg_signal(ComponentKey componentKey, ConfigKey configKey, UiElementKey argKey1, UiElementKey argKey2, bool initConfig);
-    void action_signal(ComponentKey componentKey, ConfigKey configKey, QString actionName, bool initConfig);
+    void arg_removed_signal(ComponentKey componentKey, ConfigKey configKey, QStringView argName, bool initConfig);
+    void swap_arg_signal(ComponentKey componentKey, ConfigKey configKey, QStringView argName1, QStringView argName2, bool initConfig);
+    void action_signal(ComponentKey componentKey, ConfigKey configKey, QStringView actionName, bool initConfig);
 
 private:
     static inline std::unique_ptr<GSignals> m_signals = nullptr;

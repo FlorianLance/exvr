@@ -11,19 +11,6 @@ using namespace tool::ex;
 
 void CameraTargetConfigParametersW::insert_widgets(){
 
-    m_buttonGroup1.addButton(m_moveToTarget());
-    m_buttonGroup1.addButton(m_moveBack());
-    m_buttonGroup1.addButton(m_doNothing());
-
-    m_buttonGroup2.addButton(m_useNeutralCamera());
-    m_buttonGroup2.addButton(m_useEyeCamera());
-
-    m_buttonGroup3.addButton(m_relatetiveToEye());
-    m_buttonGroup3.addButton(m_absolute());
-
-    m_buttonGroup4.addButton(m_usingTime());
-    m_buttonGroup4.addButton(m_usingFactor());
-
     add_widget(ui::W::txt("<b>Action</b>"));
     add_widget(ui::F::gen(ui::L::HB(), {m_moveToTarget(), m_moveBack(), m_doNothing()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
 
@@ -48,6 +35,7 @@ void CameraTargetConfigParametersW::insert_widgets(){
     m_curves.addTab(m_speedCurve(), "Factor curve");
 }
 
+
 void CameraTargetConfigParametersW::init_and_register_widgets(){
 
     // settings
@@ -61,19 +49,52 @@ void CameraTargetConfigParametersW::init_and_register_widgets(){
     add_input_ui(m_roll.init_widget("use roll", false));
 
     // actions
-    add_input_ui(m_moveToTarget.init_widget("Move to target", true));
-    add_input_ui(m_moveBack.init_widget("Move back to previous target", false));
-    add_input_ui(m_doNothing.init_widget("Do nothing", false));
-    add_input_ui(m_relatetiveToEye.init_widget("Relative to eye", false));
-    add_input_ui(m_absolute.init_widget("Absolute", true));
+    add_inputs_ui(
+        ExRadioButtonW::init_group_widgets(m_buttonGroup1,
+            {&m_moveToTarget, &m_moveBack, &m_doNothing},
+            {
+                "Move to target",
+                "Move back to previous target",
+                "Do nothing"
+            },
+            {true, false, false}
+        )
+    );
+
+    add_inputs_ui(
+        ExRadioButtonW::init_group_widgets(m_buttonGroup3,
+            {&m_relatetiveToEye, &m_absolute},
+            {
+                "Relative to eye",
+                "Absolute"
+            },
+            {false, true}
+        )
+    );
 
     // cameras
-    add_input_ui(m_useNeutralCamera.init_widget("Use start neutral camera", true));
-    add_input_ui(m_useEyeCamera.init_widget("Use eye camera", false));
+    add_inputs_ui(
+        ExRadioButtonW::init_group_widgets(m_buttonGroup2,
+            {&m_useNeutralCamera, &m_useEyeCamera},
+            {
+                "Use start neutral camera",
+                "Use eye camera"
+            },
+            {true, false}
+        )
+    );
 
     // progress
-    add_input_ui(m_usingTime.init_widget("Use elapsed time", true));
-    add_input_ui(m_usingFactor.init_widget("Use input factor [0-1]", false));
+    add_inputs_ui(
+        ExRadioButtonW::init_group_widgets(m_buttonGroup4,
+            {&m_usingTime, &m_usingFactor},
+            {
+                "Use elapsed time",
+                "Use input factor [0-1]"
+            },
+            {true, false}
+        )
+    );
 
     // move to target
     add_input_ui(m_componentName.init_widget(""));
@@ -93,5 +114,4 @@ void CameraTargetConfigParametersW::init_and_register_widgets(){
     m_speedCurve.lastY.w->setMaximum(1.);
     m_speedCurve.currentCurveId.w->setEnabled(false);
     m_speedCurve.currentCurveId.w->setValue(0);
-
 }

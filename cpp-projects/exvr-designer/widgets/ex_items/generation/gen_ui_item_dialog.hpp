@@ -215,7 +215,8 @@ public:
     void add_row(QString name, QWidget *w);
     void add_gen_widget(BaseGenW *w);
 
-    Arg generate_arg(UiElementKey key) const;
+//    Arg generate_arg(UiElementKey key) const;
+    Arg generate_arg() const;
     QString name() const;
 
 private:

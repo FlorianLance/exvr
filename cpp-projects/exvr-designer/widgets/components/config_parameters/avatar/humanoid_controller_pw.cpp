@@ -380,13 +380,32 @@ void HumanoidControllerConfigParametersW::init_and_register_widgets(){
     add_input_ui(yaw.init_widget("yaw", true));
     add_input_ui(roll.init_widget("roll", false));
 
-    add_input_ui(updateHeadWithEyeCamera.init_widget("Update avatar head with eye camera (called every frame)", false));
-    add_input_ui(updateHeadWithRelativeEyeCamera.init_widget("Update avatar head with relative eye camera (called every frame)", false));
-    add_input_ui(updateEyeCameraWithHead.init_widget("Update eye camera with avatar head (called every frame)", false));
+
+    add_inputs_ui(
+        ExRadioButtonW::init_group_widgets(group1,
+            {&updateHeadWithEyeCamera, &updateHeadWithRelativeEyeCamera, &updateEyeCameraWithHead, &doNotMove},
+            {
+                "Update avatar head with eye camera (called every frame)",
+                "Update avatar head with relative eye camera (called every frame)",
+                "Update eye camera with avatar head (called every frame)",
+                "Do not move head/eye camera"
+            },
+            {false, false, false, true}
+        )
+    );
+
     add_input_ui(useInputForMovingHeadCameraToRelativeEye.init_widget("Use input connections instead of eye camera", false));
-    add_input_ui(doNotMove.init_widget("Do not move head/eye camera", true));
-    add_input_ui(pitchYawRollRot.init_widget("Use Pitch/Yaw/Roll axis order", true));
-    add_input_ui(yawRollPitchRot.init_widget("Use Yaw/Roll/Pitch axis order", false));
+
+    add_inputs_ui(
+        ExRadioButtonW::init_group_widgets(group2,
+            {&pitchYawRollRot, &yawRollPitchRot},
+            {
+                "Use Pitch/Yaw/Roll axis order",
+                "Use Yaw/Roll/Pitch axis order",
+            },
+            {true, false}
+        )
+    );
 
     DsbSettings offsetS{MinV<qreal>{-2.},V<qreal>{0.},MaxV<qreal>{2.},StepV<qreal>{0.01}, 2};
     add_input_ui(headTrackingOffsetPos.init_widget("Head offset position:", Vector3dSettings{offsetS,offsetS,offsetS}));

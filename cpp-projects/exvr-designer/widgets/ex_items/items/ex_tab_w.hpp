@@ -81,7 +81,8 @@ public:
             for(auto &value : values){
                 ExBaseW *w = add_tab();
                 Arg arg;
-                arg.init_from_unknow(arg.uiElementKey, std::move(value));
+                arg.init_from_unknow(std::move(value));
+//                arg.init_from_unknow(arg.uiElementKey, std::move(value));
                 w->update_from_arg(arg);
             }
         }

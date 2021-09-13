@@ -17,6 +17,7 @@ class CameraInitConfigParametersW : public ConfigParametersW{
 
 public :
 
+    QButtonGroup group1;
     ExRadioButtonW useEye {"use_eye"};
     ExRadioButtonW useNeutral {"use_neutral"};
     ExCheckBoxW cbStartExperiment {"start_experiment"};
@@ -35,6 +36,7 @@ public :
 
     ExCheckBoxW enableDebugMouseCameraMovements {"debug_camera"};
 
+    QButtonGroup group1;
     ExRadioButtonW useEye {"use_eye"};
     ExRadioButtonW useNeutral {"use_neutral"};
     ExCheckBoxW cbStartRoutine {"start_routine"};

@@ -25,7 +25,7 @@ class ConfigW : public QWidget{
 
 public:
 
-    ConfigW(Config *config, Component *component, bool initConfig, std::unordered_map<QStringView,Arg*> &argsByName);
+    ConfigW(Config *config, Component *component, bool initConfig, std::unordered_map<QStringView,Arg> &args);
     void update_from_config(Config *config);
 
 

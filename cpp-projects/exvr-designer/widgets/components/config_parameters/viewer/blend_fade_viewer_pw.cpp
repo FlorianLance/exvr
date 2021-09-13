@@ -12,8 +12,16 @@ void BlendFadeViewerConfigParametersW::insert_widgets(){
 
 void BlendFadeViewerConfigParametersW::init_and_register_widgets(){
 
-    add_input_ui(blendAndFade.init_widget("Blend and fade", true));
-    add_input_ui(onlyBlend.init_widget("Only blend", false));
+    add_inputs_ui(
+        ExRadioButtonW::init_group_widgets(group1,
+            {&blendAndFade, &onlyBlend},
+            {
+                "Blend and fade",
+                "Only blend",
+            },
+            {true,false}
+        )
+    );
 
     DsbSettings s = {MinV<qreal>{0.0}, V<qreal>{1.0}, MaxV<qreal>{1000.0}, StepV<qreal>{0.1}, 2};
     add_input_ui(durationBlend.init_widget(s));

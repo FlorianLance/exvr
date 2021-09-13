@@ -31,6 +31,7 @@ class BlendFadeViewerConfigParametersW : public ConfigParametersW{
 
 public:
 
+    QButtonGroup group1;
     ExRadioButtonW onlyBlend{"only_blend"};
     ExRadioButtonW blendAndFade{"blend_and_fade"};
 

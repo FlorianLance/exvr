@@ -32,8 +32,17 @@ void CameraInitConfigParametersW::insert_widgets(){
 
 void CameraInitConfigParametersW::init_and_register_widgets(){
 
-    add_input_ui(useNeutral.init_widget("start neutral camera", true));
-    add_input_ui(useEye.init_widget("eye camera", false));
+    add_inputs_ui(
+        ExRadioButtonW::init_group_widgets(group1,
+            {&useNeutral, &useEye},
+            {
+                "start neutral camera",
+                "eye camera",
+            },
+            {true, false}
+        )
+    );
+
     add_input_ui(cbStartExperiment.init_widget("Start experiment (init cam)", true, true));
 
     DsbSettings offsetPos{MinV<qreal>{-1000.},V<qreal>{0.},MaxV<qreal>{1000.},StepV<qreal>{0.01}, 3};
@@ -97,8 +106,17 @@ void CameraConfigParametersW::init_and_register_widgets(){
     DsbSettings offsetRot{MinV<qreal>{-360.},V<qreal>{0.},MaxV<qreal>{360.},StepV<qreal>{0.1}, 3};
     Vector3dSettings offsetVecRot = {offsetRot,offsetRot,offsetRot};
 
-    add_input_ui(useNeutral.init_widget("start neutral camera", true));
-    add_input_ui(useEye.init_widget("eye camera", false));
+    add_inputs_ui(
+        ExRadioButtonW::init_group_widgets(group1,
+            {&useNeutral, &useEye},
+            {
+                "start neutral camera",
+                "eye camera",
+            },
+            {true, false}
+        )
+    );
+
     add_input_ui(position.init_widget("position: ", offsetVecPos));
     add_input_ui(rotation.init_widget("rotation: ", offsetVecRot));
 

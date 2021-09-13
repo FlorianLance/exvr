@@ -42,6 +42,7 @@ public :
 
     ExCheckBoxW goNextWhenTrigger{"trigger_go_next"};
 
+    QButtonGroup group1;
     ExRadioButtonW solve{"solve"};
     ExRadioButtonW dissolve{"dissolve"};
     ExRadioButtonW move_table_inside{"move_table_inside"};

@@ -54,7 +54,7 @@ namespace Ex{
 
                 } else { 
                     
-                    GUILayout.Label("(" + pair.Value.xml.KeyUiElement + ") " + pair.Key, GUILayout.Width(w1));
+                    GUILayout.Label(pair.Key, GUILayout.Width(w1));
                     GUILayout.Label(pair.Value.type.ToString(), GUILayout.Width(w2));
                     GUILayout.Label(Converter.to_string(pair.Value.value), GUILayout.Width(w3));
                     if (pair.Value.xml.Dim > 0) {
@@ -102,7 +102,6 @@ namespace Ex {
 
         public int key;
         public string keyStr;
-        private Dictionary<int, string> keyToName = null;
         public Dictionary<string, Argument> args = null;
 
 
@@ -115,21 +114,11 @@ namespace Ex {
         }
 
         // contains
-        public bool has(int argKey) {
-            return keyToName.ContainsKey(argKey);
-        }
 
         public bool has(string argName) {
             return args.ContainsKey(argName);
         }
         
-        public string get_arg_name_from_key(int key) {
-            if (has(key)) {
-                return keyToName[key];
-            }
-            return "";
-        }
-
         public Argument get(string argName) {
 
             if (!has(argName)) {
@@ -196,12 +185,6 @@ namespace Ex {
         }
 
         // get only if exists
-        public void get_if_exists<T>(int argKey, ref T value) {
-            if (has(argKey)) {
-                value = get<T>(keyToName[argKey]);
-            }
-        }
-
         public void get_if_exists<T>(string argName, ref T value) {
             if (has(argName)) {
                 value = get<T>(argName);
@@ -693,15 +676,14 @@ namespace Ex {
         public bool update_from_xml(XML.Arg xmlArg) {
 
             // get the name from its id
-            if (!has(xmlArg.KeyUiElement)) {
-                log_error(string.Format("Argument {0} of key {1} doesn't exist.", xmlArg.Name, xmlArg.KeyUiElement.ToString()));
+            if (!has(xmlArg.Name)) {
+                log_error(string.Format("Argument {0} doesn't exist.", xmlArg.Name));
                 return false;
             }
 
             // convert xml to arg
-            xmlArg.Name = keyToName[xmlArg.KeyUiElement];
             if (!args[xmlArg.Name].update_from_xml(xmlArg)) {
-                log_error(string.Format("Cannot update argument {0} of key {1} with value {2}.", xmlArg.Name, xmlArg.KeyUiElement.ToString(), xmlArg.Value));
+                log_error(string.Format("Cannot update argument {0} with value {1}.", xmlArg.Name, xmlArg.Value));
                 return false;
             }
 
@@ -709,28 +691,24 @@ namespace Ex {
         }
 
         public void init_from_xml(XML.Arg xmlArg) {
-            args = new Dictionary<string, Argument>(1);
-            keyToName = new Dictionary<int, string>(1);
 
+            args = new Dictionary<string, Argument>(1);
             Argument arg = new Argument();
             if (!arg.update_from_xml(xmlArg)) {
-                log_error(string.Format("Cannot initialize argument {0} of key {1} with value {2}.", xmlArg.Name, xmlArg.KeyUiElement.ToString(), xmlArg.Value));
+                log_error(string.Format("Cannot initialize argument {0} with value {1}.", xmlArg.Name, xmlArg.Value));
             }
             args[xmlArg.Name] = arg;
-            keyToName[xmlArg.KeyUiElement] = xmlArg.Name;
         }
 
         public void init_from_xml(List<XML.Arg> xmlArgs) {
 
             args = new Dictionary<string, Argument>(xmlArgs.Count);
-            keyToName = new Dictionary<int, string>(xmlArgs.Count);
             foreach (XML.Arg xmlArg in xmlArgs) {
                 Argument arg = new Argument();
                 if (!arg.update_from_xml(xmlArg)) {
-                    log_error(string.Format("Cannot initialize argument {0} of key {1} with value {2}.", xmlArg.Name, xmlArg.KeyUiElement.ToString(), xmlArg.Value));
+                    log_error(string.Format("Cannot initialize argument {0} with value {1}.", xmlArg.Name,xmlArg.Value));
                 }
                 args[xmlArg.Name] = arg;
-                keyToName[xmlArg.KeyUiElement] = xmlArg.Name;
             }
         }
     }

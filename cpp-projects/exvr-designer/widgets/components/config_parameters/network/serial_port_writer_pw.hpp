@@ -44,6 +44,7 @@ class SerialPortWriterConfigParametersW : public ConfigParametersW{
 
 public :
 
+    QButtonGroup group1;
     ExRadioButtonW m_rbBitsMessage{"bits_mode"};
     ExRadioButtonW m_rbIntMessage{"int_mode"};
     ExRadioButtonW m_rbStringMessage{"string_mode"};
@@ -64,9 +65,19 @@ public :
 
     }
     void init_and_register_widgets() override{
-        add_input_ui(m_rbBitsMessage.init_widget("Bits message (ex: 0101_0100 0101_0110...)", false));
-        add_input_ui(m_rbIntMessage.init_widget("Integers message (ex: 254 13 0 255...)", false));
-        add_input_ui(m_rbStringMessage.init_widget("String message (ex: blabla...)", true));
+
+        add_inputs_ui(
+            ExRadioButtonW::init_group_widgets(group1,
+                {&m_rbBitsMessage, &m_rbIntMessage, &m_rbStringMessage},
+                {
+                    "Bits message (ex: 0101_0100 0101_0110...)",
+                    "Integers message (ex: 254 13 0 255...)",
+                    "String message (ex: blabla...)"
+                },
+                {false, false, true}
+            )
+        );
+
         add_input_ui(m_teMessage.init_widget("..."));
         add_input_ui(m_cbSendWhendRoutineStarts.init_widget("Send message when routine starts ", true));
         add_input_ui(m_cbSendWhenNewTimelineBlock.init_widget("Send message when new update timeline block starts ", false));

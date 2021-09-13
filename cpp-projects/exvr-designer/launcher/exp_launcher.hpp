@@ -57,7 +57,7 @@ public slots:
     void go_to_specific_instance_element(int elementOrderId);
 
     void update_component_config_argument(ComponentKey componentKey, ConfigKey configKey, Arg arg, bool initConfig);
-    void trigger_component_config_action(ComponentKey componentKey, ConfigKey configKey, QString actionName, bool initConfig);
+    void trigger_component_config_action(ComponentKey componentKey, ConfigKey configKey, QStringView actionName, bool initConfig);
     void update_connector_node(ElementKey routineKey,ConditionKey conditionKey, ConnectorKey connectorKey, QString name, Arg arg);
 
     void close_program();

@@ -19,9 +19,6 @@ namespace Ex{
         public class Arg{
 
             // attributes
-            [XmlAttribute(AttributeName = "key")]
-            public int KeyUiElement { get; set; }
-
             [XmlAttribute(AttributeName = "name")]
             public string Name { get; set; }
 

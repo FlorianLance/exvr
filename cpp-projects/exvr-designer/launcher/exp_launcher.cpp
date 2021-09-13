@@ -10,9 +10,6 @@
 // std
 #include <optional>
 
-// Qt
-#include <QStringRef>
-
 // qt-utility
 #include "qt_logger.hpp"
 
@@ -299,7 +296,6 @@ void ExpLauncher::update_component_config_argument(ComponentKey componentKey, Co
 
     const QString componentKeyStr    = QString::number(componentKey.v);
     const QString configKeyStr       = QString::number(configKey.v);
-    const QString uiElementKeyStr    = QString::number(arg.uiElementKey.v);
     const QString unityTypeStr       = from_view(get_unity_type_string(arg.unity_type()));
     const QString dimStr             = QString::number(arg.dimensions_nb());
 
@@ -310,10 +306,18 @@ void ExpLauncher::update_component_config_argument(ComponentKey componentKey, Co
         }
         sizesStr += QString::number(arg.size_dimension(ii));
     }    
-    m_expLauncherCommunication->send_udp_command(gen_command({to_command_id(ExpLauncherCommand::UpdateComponent), componentKeyStr, configKeyStr, uiElementKeyStr, arg.value(), unityTypeStr, dimStr, sizesStr, arg.separator()}));
+
+    QString command =
+        StartCmd %
+        to_command_id(ExpLauncherCommand::UpdateComponent) % Sep %
+        componentKeyStr % Sep % configKeyStr % Sep %
+        arg.name % Sep % arg.value() % Sep % unityTypeStr % Sep % dimStr % Sep % sizesStr % Sep % arg.separator() %
+        EndCmd;
+
+    m_expLauncherCommunication->send_udp_command(std::move(command));
 }
 
-void ExpLauncher::trigger_component_config_action(ComponentKey componentKey, ConfigKey configKey, QString actionName, bool initConfig){
+void ExpLauncher::trigger_component_config_action(ComponentKey componentKey, ConfigKey configKey, QStringView actionName, bool initConfig){
 
     Q_UNUSED(initConfig)
 
@@ -324,7 +328,8 @@ void ExpLauncher::trigger_component_config_action(ComponentKey componentKey, Con
     const QString componentKeyStr    = QString::number(componentKey.v);
     const QString configKeyStr       = QString::number(configKey.v);
 
-    m_expLauncherCommunication->send_udp_command(gen_command({to_command_id(ExpLauncherCommand::Action), componentKeyStr, configKeyStr, actionName}));
+    m_expLauncherCommunication->send_udp_command(
+            gen_command({to_command_id(ExpLauncherCommand::Action), componentKeyStr, configKeyStr, actionName.toString()}));
 }
 
 void ExpLauncher::update_connector_node(ElementKey routineKey, ConditionKey conditionKey, ConnectorKey connectorKey, QString name, Arg arg){

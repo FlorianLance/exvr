@@ -308,7 +308,7 @@ struct Component {
 
     using TComponentSlots = std::tuple<
         T,                             FunctionN,                      CNT,                    Doc>;
-    static constexpr TupleArray<84,TComponentSlots> componentsSlots = {{
+    static constexpr TupleArray<86,TComponentSlots> componentsSlots = {{
         TComponentSlots
         // Audio
         {T::AudioSource,               "play"sv,                       CNT::void_t,            "..."sv},
@@ -316,6 +316,8 @@ struct Component {
         {T::AudioSource,               "set time"sv,                   CNT::float_t,           "..."sv},
         {T::AudioSource,               "set volume"sv,                 CNT::float_t,           "..."sv},
         // Avatar
+        {T::Humanoid_avatar,           "init target"sv,                CNT::string_any_t,      "..."sv},
+        {T::Humanoid_avatar,           "update target"sv,              CNT::string_any_t,      "..."sv},
         {T::Humanoid_controller,       "init target"sv,                CNT::string_any_t,      "..."sv},
         {T::Humanoid_controller,       "update target"sv,              CNT::string_any_t,      "..."sv},
         // Camera
@@ -389,7 +391,7 @@ struct Component {
         {T::Python_script,             "slot4"sv,                      CNT::any_t,             "..."sv},
         // Tracking
         {T::Leap_motion_arms_display,  "trigger"sv,                    CNT::void_t,            "..."sv},
-        {T::Leap_motion_arms_display,  "rupdate frame"sv,              CNT::lm_frame_t,        "..."sv},
+        {T::Leap_motion_arms_display,  "update frame"sv,              CNT::lm_frame_t,        "..."sv},
         {T::Leap_motion_tracking,      "update tracking"sv,            CNT::lm_hands_frame_t,  "..."sv},
         {T::Thera_trainer_platform,    "update rotation"sv,            CNT::vector2_t,         "Set thera trainer platform current rotation angles"sv},
         {T::Biopac,                    "trigger channels"sv,           CNT::void_t,            "..."sv},
@@ -412,11 +414,12 @@ struct Component {
 
     using TComponentSignals = std::tuple<
         CT,                             FunctionN,                     CNT,                            Doc>;
-    static constexpr TupleArray<56, TComponentSignals> componentsSignals = {{
+    static constexpr TupleArray<57, TComponentSignals> componentsSignals = {{
         TComponentSignals
         // Audio
         {T::AudioSource,               "sample value channel"sv,       CNT::id_any_t,                  "..."sv},
         // Avatar
+        {T::Humanoid_avatar,           "target transform"sv,           CNT::string_any_t,              "..."sv},
         {T::Humanoid_controller,       "target transform"sv,           CNT::string_any_t,              "..."sv},
         // Camera
         {T::Camera,                    "eye cam"sv,                    CNT::transform_t,               "Eye camera world transform"sv},

@@ -59,6 +59,7 @@ public:
     TextSubPart m_valueTxt {"tvalue", true};
 
     // slider settings
+    QButtonGroup group1;
     ExRadioButtonW m_displayMinMax{"display_min_max"};
     ExRadioButtonW m_displayMinMaxValue{"display_min_max_value"};
     ExRadioButtonW m_displaySliderTextes{"display_slider_textes_text"};

@@ -42,11 +42,11 @@ public :
     ExVector3dW neutralCameraToHeadOffsetPos{"neutral_camera_to_head_offset_pos"};
     ExVector3dW neutralCameraToHeadOffsetRot{"neutral_camera_to_head_offset_rot"};
 
+    QButtonGroup group1;
     ExRadioButtonW updateEyesCameraFromHead{"update_eyes_camera_from_head"};
-
     ExRadioButtonW doNotUpdate{"no_not_update"};
-
     ExRadioButtonW updateHeadFromEyesCamera{"update_head_from_eyes_camera"};
+
     ExVector3dW headFromEyesOffsetPos{"head_from_eyes_offset_pos"};
     ExVector3dW headFromEyesOffsetRot{"head_from_eyes_offset_rot"};
 

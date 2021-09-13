@@ -75,7 +75,7 @@
 
 using namespace tool::ex;
 
-ConfigW::ConfigW(Config *config, Component *component, bool initConfig, std::unordered_map<QStringView,Arg*> &argsByName) :
+ConfigW::ConfigW(Config *config, Component *component, bool initConfig, std::unordered_map<QStringView,Arg> &args) :
       configKey(ConfigKey{config->key()}), componentKey(ComponentKey{component->key()}), name(config->name){
 
     Bench::start("[ConfigW generate widget]"sv, false);
@@ -84,7 +84,7 @@ ConfigW::ConfigW(Config *config, Component *component, bool initConfig, std::uno
         p->insert_widgets();
         p->init_and_register_widgets();        
         p->create_connections();
-        p->init_from_args(argsByName);
+        p->init_from_args(args);
         p->late_update_ui();
         p->end_stretch();        
     Bench::stop();

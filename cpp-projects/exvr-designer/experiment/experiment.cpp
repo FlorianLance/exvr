@@ -1726,23 +1726,23 @@ void Experiment::arg_updated(ComponentKey componentKey, ConfigKey configKey, Arg
     }
 }
 
-void Experiment::arg_removed(ComponentKey componentKey, ConfigKey configKey, UiElementKey argKey, bool initConfig){
+void Experiment::arg_removed(ComponentKey componentKey, ConfigKey configKey, QStringView argName, bool initConfig){
 
     if(auto component = get_component(componentKey); component != nullptr){
         if(initConfig){
-            component->initConfig->remove_arg(argKey);
+            component->initConfig->remove_arg(argName);
         }else{
-            component->get_config(configKey)->remove_arg(argKey);
+            component->get_config(configKey)->remove_arg(argName);
         }
     }
 }
 
-void Experiment::swap_arg(ComponentKey componentKey, ConfigKey configKey, UiElementKey argKey1, UiElementKey argKey2, bool initConfig){
+void Experiment::swap_arg(ComponentKey componentKey, ConfigKey configKey, QStringView argName1, QStringView argName2, bool initConfig){
     if(auto component = get_component(componentKey); component != nullptr){
         if(initConfig){
-            component->initConfig->swap_arg(argKey1, argKey2);
+            component->initConfig->swap_arg(argName1, argName2);
         }else{
-            component->get_config(configKey)->swap_arg(argKey1, argKey2);
+            component->get_config(configKey)->swap_arg(argName1, argName2);
         }
     }
 }

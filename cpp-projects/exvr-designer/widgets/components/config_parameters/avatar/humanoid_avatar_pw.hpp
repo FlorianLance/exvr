@@ -62,6 +62,7 @@ private:
     ExVector3dW headTrackingOffsetPos  {"head_tracking_offset_pos"};
     ExVector3dW headTrackingOffsetRot  {"head_tracking_offset_rot"};
 
+    QButtonGroup group1;
     ExRadioButtonW pitchYawRollRot  {"pitch_yaw_roll"};
     ExRadioButtonW yawRollPitchRot  {"yaw_roll_pitch"};
 

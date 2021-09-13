@@ -48,17 +48,22 @@ public :
     void map_sub_part(ConfigParametersSubPart *subPart);
 
     // # update
-    void init_from_args(std::unordered_map<QStringView,Arg*> &argsByName);
+    void init_from_args(std::unordered_map<QStringView,Arg> &args);
     void update_from_resources();
     void update_from_components();
     void reset_args();
 
     void add_input_ui(ExBaseW *w);
+    void add_inputs_ui(std::vector<ExBaseW*> widgets);
+
     void add_action_ui(ExBaseW *w);
     void add_non_ui_arg(Arg arg);
     void add_generator_ui(ExParametersGeneratorWidgetW *g);
 
-    inline std::unordered_map<UiElementKey, ExBaseW*> *input_ui_widgets(){
+//    inline std::unordered_map<UiElementKey, ExBaseW*> *input_ui_widgets(){
+//        return &m_inputUiElements;
+//    }
+    inline std::unordered_map<QStringView, ExBaseW*> *input_ui_widgets(){
         return &m_inputUiElements;
     }
 
@@ -74,12 +79,17 @@ protected:
 
 private:
 
-    std::unordered_map<UiElementKey, ExBaseW*> m_inputUiElements;
-    std::unordered_map<QStringView, ExBaseW*> m_inputUiElementsNames;
+//    std::unordered_map<UiElementKey, ExBaseW*> m_inputUiElements;
+//    std::unordered_map<QStringView, ExBaseW*> m_inputUiElementsNames;
+    std::unordered_map<QStringView, ExBaseW*> m_inputUiElements;
 
-    std::unordered_map<UiElementKey, ExBaseW*> m_actionUiElements;
-    std::unordered_map<UiElementKey, Arg> m_inputNonUiArguments;
-    std::unordered_map<UiElementKey, ExParametersGeneratorWidgetW*> m_generatorsUiElements;
+    std::unordered_map<QStringView, ExBaseW*> m_actionUiElements;
+    std::unordered_map<QStringView, Arg> m_inputNonUiArguments;
+    std::unordered_map<QStringView, ExParametersGeneratorWidgetW*> m_generatorsUiElements;
+
+//    std::unordered_map<UiElementKey, ExBaseW*> m_actionUiElements;
+//    std::unordered_map<UiElementKey, Arg> m_inputNonUiArguments;
+//    std::unordered_map<UiElementKey, ExParametersGeneratorWidgetW*> m_generatorsUiElements;
 
     bool endStretch = true;
 };

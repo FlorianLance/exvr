@@ -98,7 +98,7 @@ class NodeContainerW : public BaseNodeContainerW{
 
 public:
     NodeContainerW(){
-        w = std::make_unique<W>();
+        w = std::make_unique<W>("value");
     }    
 
     virtual void initialize(){}

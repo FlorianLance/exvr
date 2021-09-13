@@ -161,8 +161,8 @@ public slots:
     // ## arguments
     void new_arg(ComponentKey componentKey, ConfigKey configKey, Arg arg, bool initConfig);
     void arg_updated(ComponentKey componentKey, ConfigKey configKey, Arg arg, bool initConfig);
-    void arg_removed(ComponentKey componentKey, ConfigKey configKey, UiElementKey argKey, bool initConfig);
-    void swap_arg(ComponentKey componentKey, ConfigKey configKey, UiElementKey argKey1, UiElementKey argKey2, bool initConfig);
+    void arg_removed(ComponentKey componentKey, ConfigKey configKey, QStringView argName, bool initConfig);
+    void swap_arg(ComponentKey componentKey, ConfigKey configKey, QStringView argName1, QStringView argName2, bool initConfig);
 
     // elements
     size_t get_element_position(Element *element) const;

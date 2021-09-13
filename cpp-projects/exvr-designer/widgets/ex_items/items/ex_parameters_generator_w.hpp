@@ -31,7 +31,8 @@ public :
 
     ExParametersGeneratorWidgetW(QString name ="");
     ~ExParametersGeneratorWidgetW() override;
-    ExParametersGeneratorWidgetW *init_widget(std::unordered_map<UiElementKey, ExBaseW*> *inputUiElements, bool enabled = true);
+//    ExParametersGeneratorWidgetW *init_widget(std::unordered_map<UiElementKey, ExBaseW*> *inputUiElements, bool enabled = true);
+    ExParametersGeneratorWidgetW *init_widget(std::unordered_map<QStringView, ExBaseW*> *inputUiElements, bool enabled = true);
 
     void update_from_arg(const Arg &arg) override;
     Arg convert_to_arg() const override;
@@ -56,15 +57,22 @@ public:
 private:
 
     int currentId = 0;
-    QVector<UiElementKey> elementsOrder;
-    std::unordered_map<UiElementKey, ExBaseW*> generatorElements;
-    std::unordered_map<UiElementKey, ExBaseW*> *m_inputUiElements = nullptr;
+//    QVector<UiElementKey> elementsOrder;
+//    std::unordered_map<UiElementKey, ExBaseW*> generatorElements;
+//    std::unordered_map<UiElementKey, ExBaseW*> *m_inputUiElements = nullptr;
+
+    QVector<QStringView> elementsOrder;
+    std::unordered_map<QStringView, ExBaseW*> generatorElements;
+    std::unordered_map<QStringView, ExBaseW*> *m_inputUiElements = nullptr;
 
 signals:
 
     void add_ui_signal(Arg arg);
-    void remove_ui_signal(UiElementKey argKey);
-    void swap_ui_signal(UiElementKey arg1Key, UiElementKey arg2Key);
+//    void remove_ui_signal(UiElementKey argKey);
+//    void swap_ui_signal(UiElementKey arg1Key, UiElementKey arg2Key);
+
+    void remove_ui_signal(QStringView argName);
+    void swap_ui_signal(QStringView arg1Name, QStringView arg2Name);
 };
 
 }

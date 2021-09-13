@@ -49,9 +49,19 @@ void tool::ex::FPPAvatarCameraConfigParametersW::init_and_register_widgets(){
     add_input_ui(neutralPitch.init_widget("Pitch", false));
     add_input_ui(neutralYaw.init_widget("Yaw", true));
     add_input_ui(neutralRoll.init_widget("Roll", false));
-    add_input_ui(updateEyesCameraFromHead.init_widget("Update eyes camera from avatar head", false));
-    add_input_ui(updateHeadFromEyesCamera.init_widget("Update avatar head from eyes camera", false));
-    add_input_ui(doNotUpdate.init_widget("Do nothing", true));
+
+    add_inputs_ui(
+        ExRadioButtonW::init_group_widgets(group1,
+            {&updateEyesCameraFromHead, &updateHeadFromEyesCamera, &doNotUpdate},
+            {
+                "Update eyes camera from avatar head",
+                "Update avatar head from eyes camera",
+                "Do nothing"
+            },
+            {false, false, true}
+        )
+    );
+
 
     DsbSettings offsetS{MinV<qreal>{-2.},V<qreal>{0.1},MaxV<qreal>{2.},StepV<qreal>{0.01}, 2};
     DsbSettings offsetRot{MinV<qreal>{-180.},V<qreal>{0.},MaxV<qreal>{180.},StepV<qreal>{0.1}, 2};

@@ -127,10 +127,19 @@ void SliderUiConfigParametersW::init_and_register_widgets(){
     add_input_ui(m_wholeValue.init_widget( "Use whole values", false));
     add_input_ui(m_randomStart.init_widget( "Random start", false));
 
-    add_input_ui(m_displayMinMax.init_widget("Display min/max", false));
-    add_input_ui(m_displayMinMaxValue.init_widget("Display min/max/value", true));
-    add_input_ui(m_displaySliderTextes.init_widget("Display slider descriptions", false));
-    add_input_ui(m_displayNothing.init_widget("Display nothing", false));
+    add_inputs_ui(
+        ExRadioButtonW::init_group_widgets(group1,
+            {&m_displayMinMax, &m_displayMinMaxValue, &m_displaySliderTextes, &m_displayNothing},
+            {
+                "Display min/max",
+                "Display min/max/value",
+                "Display slider descriptions",
+                "Display nothing"
+            },
+            {false, true, false, false}
+        )
+    );
+
     add_input_ui(m_displaySteps.init_widget("Display steps", false));
 
     add_input_ui(m_sliderText1.init_widget("Slider txt1"));

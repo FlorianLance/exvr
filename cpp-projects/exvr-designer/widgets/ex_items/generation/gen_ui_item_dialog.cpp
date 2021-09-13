@@ -757,9 +757,11 @@ void GenUIItemDialog::add_gen_widget(BaseGenW *w){
     m_layout->addWidget(ui::F::gen(ui::L::HB(), {m_genW = w}, LStretch{true}, LMargins{true}, QFrame::Box));
 }
 
-Arg GenUIItemDialog::generate_arg(UiElementKey key) const{
+//Arg GenUIItemDialog::generate_arg(UiElementKey key) const{
+Arg GenUIItemDialog::generate_arg() const{
 
-    auto arg = Arg::generate_init_ui_arg(key, m_type, name());
+//    auto arg = Arg::generate_init_ui_arg(key, m_type, name());
+    auto arg = Arg::generate_init_ui_arg(m_type, name());
     if(m_genW != nullptr){
         m_genW->update_arg(arg);
     }

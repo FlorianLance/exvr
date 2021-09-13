@@ -12,8 +12,18 @@ void tool::ex::QualisysTrackingInitConfigParametersW::insert_widgets(){
 }
 
 void tool::ex::QualisysTrackingInitConfigParametersW::init_and_register_widgets(){
-    add_input_ui(connectToFirstAvailable.init_widget("Connect to first server available", true));
-    add_input_ui(specifyServer.init_widget("Connect to server matching infos", false));
+
+    add_inputs_ui(
+        ExRadioButtonW::init_group_widgets(group1,
+            {&connectToFirstAvailable, &specifyServer},
+            {
+                "Connect to first server available",
+                "Connect to server matching infos",
+            },
+            {true, false}
+        )
+    );
+
     add_input_ui(hostName.init_widget(""));
     add_input_ui(ipAdress.init_widget(""));
 }

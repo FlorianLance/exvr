@@ -56,12 +56,22 @@ void MriConfigParametersW::insert_widgets(){
 void MriConfigParametersW::init_and_register_widgets(){
 
     map_sub_part(transform.init_widget());    
-    add_input_ui(solve.init_widget("solve", false));
-    add_input_ui(dissolve.init_widget("dissolve", false));
-    add_input_ui(move_table_inside.init_widget("move table inside", false));
-    add_input_ui(move_table_outside.init_widget("move table outside", false));
-    add_input_ui(move_table_qualisys.init_widget("move table using qualisys", false));
-    add_input_ui(nothing.init_widget("nothing", true));
+
+    add_inputs_ui(
+        ExRadioButtonW::init_group_widgets(group1,
+            {&solve, &dissolve, &move_table_inside, &move_table_outside, &move_table_qualisys, &nothing},
+            {
+                "solve",
+                "dissolve",
+                "move table inside",
+                "move table outside",
+                "move table using qualisys",
+                "nothing"
+            },
+            {false, false, false, false, false, true}
+        )
+    );
+
     add_input_ui(duration.init_widget(MinV<qreal>{0.01},V<qreal>{5.},MaxV<qreal>{25.},StepV<qreal>{0.01}, 2));
     add_input_ui(distance.init_widget(MinV<qreal>{0.00},V<qreal>{1.0},MaxV<qreal>{2.5},StepV<qreal>{0.01}, 2));
     add_input_ui(room.init_widget("room", true));

@@ -35,7 +35,10 @@ public:
     void block_signals(bool state);
 
     QFrame *frame = nullptr;
-    std_v1<std::pair<UiElementKey, ExBaseW*>> inputUiElements;
+    std_v1<std::pair<QStringView, ExBaseW*>> inputUiElements;
+
+    void add_input_ui(ExBaseW *w);
+    void add_inputs_ui(std::vector<ExBaseW *> widgets);
 };
 
 class TransformSubPart : public ConfigParametersSubPart{
@@ -115,6 +118,7 @@ public:
     ExCheckBoxW bold;
     ExCheckBoxW highlight;
     ExCheckBoxW underline;
+    QButtonGroup group1;
     ExRadioButtonW none;
     ExRadioButtonW lowerCase;
     ExRadioButtonW upperCase;

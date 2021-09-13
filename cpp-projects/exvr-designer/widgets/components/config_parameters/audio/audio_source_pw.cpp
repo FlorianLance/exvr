@@ -36,6 +36,7 @@ struct AudioSourceInitConfigParametersW::Impl{
 struct AudioSourceConfigParametersW::Impl{
     ExCheckBoxW displaySoundOrigin = {"display"};
     ExCheckBoxW playNewBlock = {"play_new_block"};
+    QButtonGroup group1;
     ExRadioButtonW pauseEndBlock = {"pause_end_block"};
     ExRadioButtonW stopEndBlock = {"stop_end_block"};
     ExRadioButtonW nothingEndBlock = {"nothing_end_block"};
@@ -174,9 +175,15 @@ void AudioSourceConfigParametersW::insert_widgets(){
 void AudioSourceConfigParametersW::init_and_register_widgets(){
 
     add_input_ui(m_p->playNewBlock.init_widget("Play when update block starts", true));
-    add_input_ui(m_p->pauseEndBlock.init_widget("Pause when update block ends", false));
-    add_input_ui(m_p->stopEndBlock.init_widget("Stop when update block ends", true));
-    add_input_ui(m_p->nothingEndBlock.init_widget("Do nothing when update block ends", false));
+
+    add_inputs_ui(
+        ExRadioButtonW::init_group_widgets(m_p->group1,
+            {&m_p->pauseEndBlock, &m_p->stopEndBlock, &m_p->nothingEndBlock},
+            {"Pause when update block ends","Stop when update block ends","Do nothing when update block ends"},
+            {false, true, false}
+        )
+    );
+
     add_input_ui(m_p->displaySoundOrigin.init_widget("Display sound origin", false));
     add_input_ui(m_p->doLoop.init_widget("Loop", false));
     add_input_ui(m_p->isSpatialized.init_widget("Spatialized", false));
