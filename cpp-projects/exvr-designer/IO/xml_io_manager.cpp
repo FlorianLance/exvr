@@ -696,7 +696,7 @@ void XmlIoManager::write_action(const Action *action) {
     w->writeAttribute(QSL("key_config"),    QString::number(action->config->key()));
     w->writeAttribute(QSL("node_used"),     action->nodeUsed ? QSL("1") : QSL("0"));
     w->writeAttribute(QSL("node_position"), QString::number(action->nodePosition.x()) % QSL(" ") % QString::number(action->nodePosition.y()));
-    w->writeAttribute(QSL("node_size"),     QString::number(action->nodeSize.width()) % QSL(" ") % QString::number(action->nodeSize.height()));
+    //w->writeAttribute(QSL("node_size"),     QString::number(action->nodeSize.width()) % QSL(" ") % QString::number(action->nodeSize.height()));
 
     w->writeComment(QSL("Component ") % action->component->name() % QSL(" with config ") % action->config->name);
     write_timeline(action->timelineUpdate.get());
@@ -806,10 +806,10 @@ std::tuple<ActionUP, QString> XmlIoManager::read_action(){
         action->nodePosition = QPointF(split[0].toDouble(), split[1].toDouble());
     }
 
-    if(auto nodeSizeStr = read_attribute<QString>(QSL("node_size"), false); nodeSizeStr.has_value()){
-        const auto split = nodeSizeStr.value().split(" ");
-        action->nodeSize = QSize(split[0].toInt(), split[1].toInt());
-    }
+//    if(auto nodeSizeStr = read_attribute<QString>(QSL("node_size"), false); nodeSizeStr.has_value()){
+//        const auto split = nodeSizeStr.value().split(" ");
+//        action->nodeSize = QSize(split[0].toInt(), split[1].toInt());
+//    }
 
     r->readNext();
     while(!r->atEnd()){

@@ -51,7 +51,7 @@ struct Action{
     // ui
     // # graph
     QPointF nodePosition;
-    QSize nodeSize;
+    //QSize nodeSize;
     bool nodeUsed = false;
     bool nodeSelected = false;
 };

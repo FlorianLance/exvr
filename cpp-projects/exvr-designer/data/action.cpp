@@ -27,7 +27,7 @@ ActionUP Action::copy_with_new_element_id(const Action &actionToCopy){
     action->timelineVisibility = Timeline::copy_with_new_element_id(*actionToCopy.timelineVisibility);
     action->nodePosition = actionToCopy.nodePosition;
     action->nodeUsed = actionToCopy.nodeUsed;
-    action->nodeSize = actionToCopy.nodeSize; // not used
+    //action->nodeSize = actionToCopy.nodeSize; // not used
     return action;
 }
 

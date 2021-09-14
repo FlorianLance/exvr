@@ -768,15 +768,17 @@ namespace Ex{
                 } else if (action.type == ScheduledAction.Type.UpdateConnectorParameter) {
 
                     Routine routine = routines.get(action.elementKey);
-                    if (routine != null) {
-                        Condition condition = routine.get_condition_from_key(action.conditionKey);
-                        if (condition != null) {
-                            var connector = condition.get_connector(action.connectorKey);
-                            if (connector != null) {
-                                connector.base_update_from_gui(action.arg);
-                            }
-                        }
+                    if (routine == null) {
+                        return;
                     }
+                    Condition condition = routine.get_condition_from_key(action.conditionKey);
+                    if (condition == null) {
+                        return;
+                    }
+                    var connector = condition.get_connector(action.connectorKey);
+                    if (connector != null) {
+                        connector.base_update_from_gui(action.arg);
+                    }                                        
 
                 } else if (action.type == ScheduledAction.Type.ComponentActionFromGui) {
 

@@ -267,6 +267,7 @@ namespace Ex{
         }
 
         public void base_update_from_gui(XML.Arg arg) {
+
             m_config.init_from_xml(arg);
             currentFunction = Function.update_from_gui;
 
