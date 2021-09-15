@@ -301,7 +301,6 @@ QString XmlIoManager::invalid_bracket_error_message(int id, IdKey::Type type){
 
 void XmlIoManager::write_generator(const Generator &generator){
 
-    w->writeAttribute(QSL("gen"), generator.name);
     w->writeAttribute(QSL("g_order"), QString::number(generator.order));
 
     if(generator.info.has_value()){
@@ -324,14 +323,13 @@ void XmlIoManager::write_generator(const Generator &generator){
 Generator XmlIoManager::read_generator(){
 
     Generator g;   
-    g.name      = read_attribute<QString>({"gen","generator"}, true).value();
     if(auto order = read_attribute<int>({"g_order","gen_order"}, true); order.has_value()){
         g.order = order.value();
     }
     g.info      = read_attribute<QString>({QSL("g_info"), QSL("gen_text")}, false);
-    g.decimals  = read_attribute<QString>({QSL("g_dec"),QSL("gen_decimals")}, false);
-    g.min       = read_attribute<QString>({QSL("g_min"), QSL("gen_min")}, false);
-    g.max       = read_attribute<QString>({QSL("g_max"), QSL("gen_max")}, false);
+    g.decimals  = read_attribute<QString>({QSL("g_dec"),  QSL("gen_decimals")}, false);
+    g.min       = read_attribute<QString>({QSL("g_min"),  QSL("gen_min")}, false);
+    g.max       = read_attribute<QString>({QSL("g_max"),  QSL("gen_max")}, false);
     g.step      = read_attribute<QString>({QSL("g_step"), QSL("gen_singleStep")}, false);
     return g;
 }
@@ -339,7 +337,6 @@ Generator XmlIoManager::read_generator(){
 void XmlIoManager::write_argument(const Arg &arg){
 
     w->writeStartElement(QSL("Arg"));
-//    w->writeAttribute(QSL("key"),   QString::number(arg.uiElementKey.v));
     w->writeAttribute(QSL("name"),  arg.name);
     w->writeAttribute(QSL("ui"),    from_view(get_name(arg.associated_ui_type())));
     w->writeAttribute(QSL("value"), arg.value());
@@ -359,8 +356,9 @@ void XmlIoManager::write_argument(const Arg &arg){
         w->writeAttribute(QSL("sizes"), sizesStr);
     }
 
-    if(arg.generator.name.length() > 0){
-        write_generator(arg.generator);
+    if(arg.generator.has_value()){
+        w->writeAttribute(QSL("gen"), "");
+        write_generator(arg.generator.value());
     }
 
     w->writeEndElement();

@@ -87,11 +87,11 @@ void ExResourcesListW::update_from_arg(const Arg &arg){
 
     w->blockSignals(true);
 
-    if(generatorName.length() > 0){
-        if(auto type = Resource::get_type(arg.generator.info->toStdString()); type.has_value()){
+    if(arg.generator.has_value()){
+        if(auto type = Resource::get_type(arg.generator->info->toStdString()); type.has_value()){
             m_resourceType = {type.value()};
             m_icon->setIcon(QIcon(from_view(Resource::get_icon_path(m_resourceType.value()))));
-            m_title->setText(arg.generator.info.value());
+            m_title->setText(arg.generator->info.value());
         }
     }
 
@@ -132,9 +132,9 @@ Arg ExResourcesListW::convert_to_arg() const{
     }
 
     arg.init_from(keysStr, " ");
-    if(generatorName.length() > 0){
+    if(hasGenerator){
         if(m_resourceType.has_value()){
-            arg.generator.info = std::string(Resource::get_name(m_resourceType.value())).c_str();
+            arg.generator->info = std::string(Resource::get_name(m_resourceType.value())).c_str();
         }
     }
 

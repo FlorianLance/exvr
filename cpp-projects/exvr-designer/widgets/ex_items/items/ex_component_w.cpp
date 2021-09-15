@@ -62,11 +62,11 @@ void ExComponentW::update_from_arg(const Arg &arg){
 
     w->blockSignals(true);
 
-    if(generatorName.length() > 0){
-        if(auto type = Component::get_type_from_name(arg.generator.info.value().toStdString()); type.has_value()){
+    if(arg.generator.has_value()){
+        if(auto type = Component::get_type_from_name(arg.generator->info.value().toStdString()); type.has_value()){
             m_componentType = type;
             m_icon->setIcon(QIcon(from_view(Component::get_icon_path(m_componentType.value()))));
-            m_title->setText(arg.generator.info.value());
+            m_title->setText(arg.generator->info.value());
         }
     }
 
@@ -83,9 +83,9 @@ Arg ExComponentW::convert_to_arg() const{
     Arg arg = ExBaseW::convert_to_arg();
     arg.init_from({m_componentNames->currentText(),QString::number(m_currentKey)}, "%%%");
 
-    if(generatorName.length() > 0){
+    if(hasGenerator){
         if(m_componentType.has_value()){
-            arg.generator.info = from_view(Component::get_full_name(m_componentType.value()));
+            arg.generator->info = from_view(Component::get_full_name(m_componentType.value()));
         }
     }
 

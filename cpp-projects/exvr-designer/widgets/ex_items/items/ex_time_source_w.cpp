@@ -80,7 +80,8 @@ Arg ExTimeW::convert_to_arg() const{
     return typeA;
 }
 
-void ExTimeW::set_generator(QString genName){
-    typeT.set_generator(genName);
-    frequency.set_generator(genName);
+void ExTimeW::set_as_generator(){
+    ExBaseW::set_as_generator();
+    typeT.set_as_generator();
+    frequency.set_as_generator();
 }

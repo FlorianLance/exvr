@@ -86,11 +86,11 @@ void ExComponentsListW::update_from_arg(const Arg &arg){
 
     w->blockSignals(true);
 
-    if(generatorName.length() > 0){
-        if(auto type = Component::get_type_from_name(arg.generator.info->toStdString()); type.has_value()){
+    if(arg.generator.has_value()){
+        if(auto type = Component::get_type_from_name(arg.generator->info->toStdString()); type.has_value()){
             m_componentType = {type.value()};
             m_icon->setIcon(QIcon(from_view(Component::get_icon_path(m_componentType.value()))));
-            m_title->setText(arg.generator.info.value());
+            m_title->setText(arg.generator->info.value());
         }
     }
 
@@ -126,9 +126,9 @@ Arg ExComponentsListW::convert_to_arg() const{
     }
 
     arg.init_from(keysStr, " ");
-    if(generatorName.length() > 0){
+    if(hasGenerator){
         if(m_componentType.has_value()){
-            arg.generator.info = from_view(Component::get_full_name(m_componentType.value()));
+            arg.generator->info = from_view(Component::get_full_name(m_componentType.value()));
         }
     }
 

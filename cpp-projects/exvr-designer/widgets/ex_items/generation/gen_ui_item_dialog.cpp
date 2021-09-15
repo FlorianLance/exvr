@@ -23,6 +23,101 @@
 using namespace tool::ex;
 
 
+GenUIItemDialog::GenUIItemDialog(QString title){
+
+    setWindowTitle(title);
+    m_layout = new QVBoxLayout(this);
+    m_layout->addWidget(ui::F::gen(ui::L::HB(), {ui::W::txt("Name parameter"), m_leName = new QLineEdit()}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
+    m_layout->addWidget(ui::F::gen(ui::L::HB(), {m_laValid = ui::W::txt("")}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
+}
+
+GenUIItemDialog::GenUIItemDialog(UiType type) : m_type(type){
+
+    setWindowTitle(QSL("Add ") % from_view(get_name(m_type)));
+    m_layout = new QVBoxLayout(this);
+    m_layout->addWidget(ui::F::gen(ui::L::HB(), {ui::W::txt("Name parameter"), m_leName = new QLineEdit()}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
+    m_layout->addWidget(ui::F::gen(ui::L::HB(), {m_laValid = ui::W::txt("")}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
+}
+
+bool GenUIItemDialog::show_dialog(QStringList othersParameters){
+
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, this);
+    buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
+    m_layout->addWidget(buttonBox);
+
+    m_laValid->setText(m_notEmptyStr);
+
+    connect(buttonBox, &QDialogButtonBox::accepted, this, &GenUIItemDialog::accept);
+    connect(buttonBox, &QDialogButtonBox::rejected, this, &GenUIItemDialog::reject);
+    connect(m_leName,   &QLineEdit::textChanged, this, [&, buttonBox]{
+
+        const bool alreadyUsed = othersParameters.contains(m_leName->text());
+        const bool empty = m_leName->text().isEmpty();
+
+        bool isValid = true;
+        std::optional<QString> errorMessage;
+        if(m_genW != nullptr){
+            isValid      = m_genW->isValid;
+            errorMessage = m_genW->errorMessage;
+        }
+
+        if(isValid){
+            buttonBox->button(QDialogButtonBox::Ok)->setEnabled(!alreadyUsed && !empty);
+            m_laValid->setText(empty ? m_notEmptyStr : (alreadyUsed ? m_aldreayUsedStr : ""));
+        }else{
+            buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
+            m_laValid->setText(errorMessage.value());
+        }
+    });
+
+    if(m_genW != nullptr){
+        connect(m_genW, &BaseGenW::updated_signal, this, [&, buttonBox]{
+
+            const bool alreadyUsed = othersParameters.contains(m_leName->text());
+            const bool empty = m_leName->text().isEmpty();
+
+            bool isValid = true;
+            std::optional<QString> errorMessage;
+            if(m_genW != nullptr){
+                isValid      = m_genW->isValid;
+                errorMessage = m_genW->errorMessage;
+            }
+
+            if(isValid){
+                buttonBox->button(QDialogButtonBox::Ok)->setEnabled(!alreadyUsed && !empty);
+                m_laValid->setText(empty ? m_notEmptyStr : (alreadyUsed ? m_aldreayUsedStr : ""));
+            }else{
+                buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
+                m_laValid->setText(errorMessage.value());
+            }
+        });
+    }
+
+    return exec() == QDialog::Accepted;
+}
+
+void GenUIItemDialog::add_row(QString name, QWidget *w){
+    m_layout->addWidget(ui::F::gen(ui::L::HB(), {ui::W::txt(name),w}, LStretch{true}, LMargins{true}, QFrame::Box));
+}
+
+void GenUIItemDialog::add_gen_widget(BaseGenW *w){
+    m_layout->addWidget(ui::F::gen(ui::L::HB(), {m_genW = w}, LStretch{true}, LMargins{true}, QFrame::Box));
+}
+
+Arg GenUIItemDialog::generate_arg(int order) const{
+
+    auto arg = Arg::generate_init_ui_arg(m_type, name(), order);
+    if(m_genW != nullptr){
+        m_genW->update_arg(arg);
+    }
+    return arg;
+}
+
+QString GenUIItemDialog::name() const{
+    return m_leName->text();
+}
+
+
 GenSpinboxW::GenSpinboxW(QString text){
 
     auto l = new QVBoxLayout();
@@ -80,9 +175,9 @@ GenSpinboxW::GenSpinboxW(QString text){
 void GenSpinboxW::update_arg(Arg &arg) const {
     arg.set_value(QString::number(value.value()));
     arg.set_separator("");
-    arg.generator.min        = QString::number(min.value());
-    arg.generator.max        = QString::number(max.value());
-    arg.generator.step = QString::number(step.value());
+    arg.generator->min  = QString::number(min.value());
+    arg.generator->max  = QString::number(max.value());
+    arg.generator->step = QString::number(step.value());
 }
 
 SpinboxFloatGenW::SpinboxFloatGenW(){
@@ -151,10 +246,10 @@ SpinboxFloatGenW::SpinboxFloatGenW(){
 void SpinboxFloatGenW::update_arg(Arg &arg) const {
     arg.set_value(QString::number(value.value()));
     arg.set_separator("");
-    arg.generator.min        = QString::number(min.value());
-    arg.generator.max        = QString::number(max.value());
-    arg.generator.step = QString::number(step.value());
-    arg.generator.decimals   = QString::number(decimals.value());
+    arg.generator->min        = QString::number(min.value());
+    arg.generator->max        = QString::number(max.value());
+    arg.generator->step       = QString::number(step.value());
+    arg.generator->decimals   = QString::number(decimals.value());
 }
 
 SpinboxDoubleGenW::SpinboxDoubleGenW(QString text){
@@ -223,13 +318,11 @@ SpinboxDoubleGenW::SpinboxDoubleGenW(QString text){
 void SpinboxDoubleGenW::update_arg(Arg &arg) const {
     arg.set_value(QString::number(value.value()));
     arg.set_separator("");
-    arg.generator.min        = QString::number(min.value());
-    arg.generator.max        = QString::number(max.value());
-    arg.generator.step = QString::number(step.value());
-    arg.generator.decimals   = QString::number(decimals.value());
+    arg.generator->min        = QString::number(min.value());
+    arg.generator->max        = QString::number(max.value());
+    arg.generator->step       = QString::number(step.value());
+    arg.generator->decimals   = QString::number(decimals.value());
 }
-
-
 
 Vector2dGenW::Vector2dGenW(){
 
@@ -315,10 +408,10 @@ Vector2dGenW::Vector2dGenW(){
 void Vector2dGenW::update_arg(Arg &arg) const {
     arg.set_value(QString::number(valueX.value()) + " " + QString::number(valueY.value()));
     arg.set_separator(" ");
-    arg.generator.min        = QString::number(min.value());
-    arg.generator.max        = QString::number(max.value());
-    arg.generator.step = QString::number(step.value());
-    arg.generator.decimals   = QString::number(decimals.value());
+    arg.generator->min        = QString::number(min.value());
+    arg.generator->max        = QString::number(max.value());
+    arg.generator->step       = QString::number(step.value());
+    arg.generator->decimals   = QString::number(decimals.value());
 }
 
 Vector3dGenW::Vector3dGenW(){
@@ -427,10 +520,10 @@ Vector3dGenW::Vector3dGenW(){
 void Vector3dGenW::update_arg(Arg &arg) const {
     arg.set_value(QString::number(valueX.value()) + " " + QString::number(valueY.value()) + " " + QString::number(valueZ.value()));
     arg.set_separator(" ");
-    arg.generator.min        = QString::number(min.value());
-    arg.generator.max        = QString::number(max.value());
-    arg.generator.step = QString::number(step.value());
-    arg.generator.decimals   = QString::number(decimals.value());
+    arg.generator->min        = QString::number(min.value());
+    arg.generator->max        = QString::number(max.value());
+    arg.generator->step       = QString::number(step.value());
+    arg.generator->decimals   = QString::number(decimals.value());
 }
 
 TransformGenW::TransformGenW(){
@@ -620,10 +713,10 @@ void TransformGenW::update_arg(Arg &arg) const{
         scV     % QSL(" ") % scV  % QSL(" ") % scV
     );
     arg.set_separator(QSL(" "));
-    arg.generator.min       = QString::number(trMin.value()) + " " + QString::number(rotMin.value()) + " " + QString::number(scMin.value());
-    arg.generator.max       = QString::number(trMax.value()) + " " + QString::number(rotMax.value()) + " " + QString::number(scMax.value());
-    arg.generator.step      = QString::number(trStep.value()) + " " + QString::number(rotStep.value()) + " " + QString::number(scStep.value());
-    arg.generator.decimals  = QString::number(trDec.value()) + " " + QString::number(rotDec.value()) + " " + QString::number(scDec.value());
+    arg.generator->min       = QString::number(trMin.value()) + " " + QString::number(rotMin.value()) + " " + QString::number(scMin.value());
+    arg.generator->max       = QString::number(trMax.value()) + " " + QString::number(rotMax.value()) + " " + QString::number(scMax.value());
+    arg.generator->step      = QString::number(trStep.value()) + " " + QString::number(rotStep.value()) + " " + QString::number(scStep.value());
+    arg.generator->decimals  = QString::number(trDec.value()) + " " + QString::number(rotDec.value()) + " " + QString::number(scDec.value());
 
 }
 
@@ -649,7 +742,7 @@ ResourceGenW::ResourceGenW(){
 void ResourceGenW::update_arg(Arg &arg) const {
     arg.set_separator("");
     arg.set_value("");
-    arg.generator.info = resourcesTypes.currentText();
+    arg.generator->info = resourcesTypes.currentText();
 }
 
 ComponentGenW::ComponentGenW(){
@@ -673,104 +766,9 @@ ComponentGenW::ComponentGenW(){
 void ComponentGenW::update_arg(Arg &arg) const{
     arg.set_separator("");
     arg.set_value("");
-    arg.generator.info = componentsTypes.currentText();
+    arg.generator->info = componentsTypes.currentText();
 }
 
-GenUIItemDialog::GenUIItemDialog(QString title){
-
-    setWindowTitle(title);
-    m_layout = new QVBoxLayout(this);
-    m_layout->addWidget(ui::F::gen(ui::L::HB(), {ui::W::txt("Name parameter"), m_leName = new QLineEdit()}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
-    m_layout->addWidget(ui::F::gen(ui::L::HB(), {m_laValid = ui::W::txt("")}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
-}
-
-GenUIItemDialog::GenUIItemDialog(UiType type) : m_type(type){
-
-    setWindowTitle(QSL("Add ") % from_view(get_name(m_type)));
-    m_layout = new QVBoxLayout(this);
-    m_layout->addWidget(ui::F::gen(ui::L::HB(), {ui::W::txt("Name parameter"), m_leName = new QLineEdit()}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
-    m_layout->addWidget(ui::F::gen(ui::L::HB(), {m_laValid = ui::W::txt("")}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
-}
-
-bool GenUIItemDialog::show_dialog(QStringList othersParameters){
-
-    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, this);
-    buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
-    m_layout->addWidget(buttonBox);
-
-    m_laValid->setText(m_notEmptyStr);
-
-    connect(buttonBox, &QDialogButtonBox::accepted, this, &GenUIItemDialog::accept);
-    connect(buttonBox, &QDialogButtonBox::rejected, this, &GenUIItemDialog::reject);
-    connect(m_leName,   &QLineEdit::textChanged, this, [&, buttonBox]{
-
-        const bool alreadyUsed = othersParameters.contains(m_leName->text());
-        const bool empty = m_leName->text().isEmpty();
-
-        bool isValid = true;
-        std::optional<QString> errorMessage;
-        if(m_genW != nullptr){
-            isValid      = m_genW->isValid;
-            errorMessage = m_genW->errorMessage;
-        }
-
-        if(isValid){
-            buttonBox->button(QDialogButtonBox::Ok)->setEnabled(!alreadyUsed && !empty);
-            m_laValid->setText(empty ? m_notEmptyStr : (alreadyUsed ? m_aldreayUsedStr : ""));
-        }else{
-            buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
-            m_laValid->setText(errorMessage.value());
-        }
-    });
-
-    if(m_genW != nullptr){
-        connect(m_genW, &BaseGenW::updated_signal, this, [&, buttonBox]{
-
-            const bool alreadyUsed = othersParameters.contains(m_leName->text());
-            const bool empty = m_leName->text().isEmpty();
-
-            bool isValid = true;
-            std::optional<QString> errorMessage;
-            if(m_genW != nullptr){
-                isValid      = m_genW->isValid;
-                errorMessage = m_genW->errorMessage;
-            }
-
-            if(isValid){
-                buttonBox->button(QDialogButtonBox::Ok)->setEnabled(!alreadyUsed && !empty);
-                m_laValid->setText(empty ? m_notEmptyStr : (alreadyUsed ? m_aldreayUsedStr : ""));
-            }else{
-                buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
-                m_laValid->setText(errorMessage.value());
-            }
-        });
-    }
-
-    return exec() == QDialog::Accepted;
-}
-
-void GenUIItemDialog::add_row(QString name, QWidget *w){
-    m_layout->addWidget(ui::F::gen(ui::L::HB(), {ui::W::txt(name),w}, LStretch{true}, LMargins{true}, QFrame::Box));
-}
-
-void GenUIItemDialog::add_gen_widget(BaseGenW *w){
-    m_layout->addWidget(ui::F::gen(ui::L::HB(), {m_genW = w}, LStretch{true}, LMargins{true}, QFrame::Box));
-}
-
-//Arg GenUIItemDialog::generate_arg(UiElementKey key) const{
-Arg GenUIItemDialog::generate_arg() const{
-
-//    auto arg = Arg::generate_init_ui_arg(key, m_type, name());
-    auto arg = Arg::generate_init_ui_arg(m_type, name());
-    if(m_genW != nullptr){
-        m_genW->update_arg(arg);
-    }
-    return arg;
-}
-
-QString GenUIItemDialog::name() const{
-    return m_leName->text();
-}
 
 TextGenW::TextGenW(QString text){
     auto l = new QVBoxLayout();
@@ -789,7 +787,7 @@ CurveGen::CurveGen(){
 
 //    QLineEdit curveTitle;
 //    QLineEdit xTitle;
-//    QLineEdit yTitle;
+//    QLineEdit xTitle;
 //    QDoubleSpinBox minX;
 //    QDoubleSpinBox maxX;
 //    QDoubleSpinBox minY;
@@ -797,16 +795,51 @@ CurveGen::CurveGen(){
 
     auto l = new QVBoxLayout();
     l->setContentsMargins(0,0,0,0);
-    l->addWidget(ui::F::gen(ui::L::HB(), {ui::W::txt("...")}, LStretch{false}, LMargins{false}, QFrame::NoFrame));
+    l->addWidget(ui::F::gen(ui::L::HB(), {ui::W::txt("Curve title"), &curveTitle}, LStretch{false}, LMargins{false}, QFrame::NoFrame));
+    l->addWidget(ui::F::gen(ui::L::HB(), {ui::W::txt("X axis title"), &xTitle}, LStretch{false}, LMargins{false}, QFrame::NoFrame));
+    l->addWidget(ui::F::gen(ui::L::HB(), {ui::W::txt("Y axis title"), &yTitle}, LStretch{false}, LMargins{false}, QFrame::NoFrame));
+    l->addWidget(ui::F::gen(ui::L::HB(), {ui::W::txt("X min/max values"), &minX, &maxX}, LStretch{false}, LMargins{false}, QFrame::NoFrame));
+    l->addWidget(ui::F::gen(ui::L::HB(), {ui::W::txt("Y min/max values"), &minY, &maxY}, LStretch{false}, LMargins{false}, QFrame::NoFrame));
     l->addStretch();
     setLayout(l);
+
+    ui::W::init(&minX,        MinV<qreal>{std::numeric_limits<qreal>::lowest()},V<qreal>{0.},MaxV<qreal>{std::numeric_limits<qreal>::max()},StepV<qreal>{0.01}, 2);
+    ui::W::init(&maxX,        MinV<qreal>{std::numeric_limits<qreal>::lowest()},V<qreal>{1.},MaxV<qreal>{std::numeric_limits<qreal>::max()},StepV<qreal>{0.01}, 2);
+    ui::W::init(&minY,        MinV<qreal>{std::numeric_limits<qreal>::lowest()},V<qreal>{0.},MaxV<qreal>{std::numeric_limits<qreal>::max()},StepV<qreal>{0.01}, 2);
+    ui::W::init(&maxY,        MinV<qreal>{std::numeric_limits<qreal>::lowest()},V<qreal>{1.},MaxV<qreal>{std::numeric_limits<qreal>::max()},StepV<qreal>{0.01}, 2);
+    ui::W::init(&curveTitle, "default");
+    ui::W::init(&xTitle, "x");
+    ui::W::init(&yTitle, "y");
+
+    connect(&minX, QOverload<qreal>::of(&QDoubleSpinBox::valueChanged), this, [&]{
+        if(maxX.value() < minX.value()){
+            maxX.setValue(minX.value());
+        }
+    });
+    connect(&maxX, QOverload<qreal>::of(&QDoubleSpinBox::valueChanged), this, [&]{
+        if(minX.value() > maxX.value()){
+            minX.setValue(maxX.value());
+        }
+    });
+    connect(&minY, QOverload<qreal>::of(&QDoubleSpinBox::valueChanged), this, [&]{
+        if(maxY.value() < minY.value()){
+            maxY.setValue(minY.value());
+        }
+    });
+    connect(&maxY, QOverload<qreal>::of(&QDoubleSpinBox::valueChanged), this, [&]{
+        if(minY.value() > maxY.value()){
+            minY.setValue(maxY.value());
+        }
+    });
 }
 
 void CurveGen::update_arg(Arg &arg) const{
-    std::vector<double> x =  {0.,1.};
-    std::vector<double> y =  {0.,1.};
+    std::vector<double> x =  {minX.value(),maxX.value()};
+    std::vector<double> y =  {minY.value(),maxY.value()};
     arg.init_from_curve(&x, &y, " ");
-    // ...
+    arg.generator->min = QString::number(minX.value()) % QSL(" ") % QString::number(minY.value());
+    arg.generator->max = QString::number(maxX.value()) % QSL(" ") % QString::number(maxY.value());
+    arg.generator->info = curveTitle.text() % QSL("%%%") % xTitle.text() % QSL("%%%") % yTitle.text();
 }
 
 ComboTextGen::ComboTextGen(QString text){
@@ -853,14 +886,26 @@ void ComboTextGen::update_arg(Arg &arg) const{
 
     arg.set_value(split[0]);
     arg.set_separator("");
-    arg.generator.info = leText.text();
+    arg.generator->info = leText.text();
 }
 
 
-CodeEditorGen::CodeEditorGen(){}
+CodeEditorGen::CodeEditorGen(){
 
-void CodeEditorGen::update_arg(Arg &arg) const{}
+}
 
-ColorPickGen::ColorPickGen(){}
+void CodeEditorGen::update_arg(Arg &arg) const{
 
-void ColorPickGen::update_arg(Arg &arg) const{}
+}
+
+ColorPickGen::ColorPickGen(){
+
+}
+
+void ColorPickGen::update_arg(Arg &arg) const{
+
+}
+
+CheckBoxGen::CheckBoxGen(){}
+
+void CheckBoxGen::update_arg(Arg &arg) const{}

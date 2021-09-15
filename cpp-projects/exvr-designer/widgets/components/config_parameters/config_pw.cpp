@@ -87,8 +87,8 @@ void ConfigParametersW::init_from_args(std::unordered_map<QStringView,Arg> &args
     // input ui
     for(const auto &inputUiElem : m_inputUiElements){
 
-        ExBaseW *exW         = inputUiElem.second;
-        QStringView itemName = exW->itemName;
+        QStringView itemName = inputUiElem.first;
+        ExBaseW *exW         = inputUiElem.second;        
 
         // event filter
         exW->installEventFilter(this);
@@ -114,7 +114,6 @@ void ConfigParametersW::init_from_args(std::unordered_map<QStringView,Arg> &args
     // actions ui
     for(const auto &actionUiElem : m_actionUiElements){
 
-//        const auto uiKey = actionUiElem.first;
         ExBaseW *exW     = actionUiElem.second;
 
         // event filter
@@ -122,14 +121,13 @@ void ConfigParametersW::init_from_args(std::unordered_map<QStringView,Arg> &args
 
         // init connections
         connect(exW, &ExBaseW::action_signal, this, [&](QStringView uiName){
-//            static_cast<void>(uiName);
             emit GSignals::get()->action_signal(componentKey, configKey, uiName, initConfig);
         });
     }
 
     // arg only
     for(const auto &inputNonUiArg : m_inputNonUiArguments){
-        QStringView name = inputNonUiArg.second.name;
+        QStringView name = inputNonUiArg.first;
         if(args.count(name) == 0){
             emit GSignals::get()->new_arg_signal(componentKey, configKey, inputNonUiArg.second, initConfig);
         }
@@ -139,6 +137,8 @@ void ConfigParametersW::init_from_args(std::unordered_map<QStringView,Arg> &args
     for(const auto &generatorUiElem : m_generatorsUiElements){
 
         ExParametersGeneratorWidgetW* generator = generatorUiElem.second;
+        //QStringView itemName = generatorUiElem.first;
+
         connect(generator, &ExParametersGeneratorWidgetW::add_ui_signal, this, [this](Arg arg){
             emit GSignals::get()->new_arg_signal(componentKey, configKey, std::move(arg), initConfig);
         });
@@ -157,7 +157,8 @@ void ConfigParametersW::init_from_args(std::unordered_map<QStringView,Arg> &args
         });
 
         for(const auto &arg : args){
-            if(arg.second.generator.name == generator->generatorName){
+            // TODO do not work if more than one generator
+            if(arg.second.generator.has_value()){
                 generator->update_from_arg(arg.second);
             }
         }

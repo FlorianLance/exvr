@@ -30,6 +30,34 @@ signals:
     void updated_signal();
 };
 
+class GenUIItemDialog : public QDialog{
+
+public:
+
+    GenUIItemDialog(QString title);
+    GenUIItemDialog(UiType type);
+
+    bool show_dialog(QStringList othersParameters);
+    void add_row(QString name, QWidget *w);
+    void add_gen_widget(BaseGenW *w);
+
+    Arg generate_arg(int order) const;
+    QString name() const;
+
+private:
+
+    UiType m_type;
+
+    const QString m_notEmptyStr {"(Parameter name must not be empty)"};
+    const QString m_aldreayUsedStr {"(Parameter name is already used)"};
+
+    QVBoxLayout *m_layout = nullptr;
+    QLabel *m_laValid = nullptr;
+    QLineEdit *m_leName = nullptr;
+    BaseGenW *m_genW = nullptr;
+};
+
+
 class GenSpinboxW : public BaseGenW{
 
 public:
@@ -146,6 +174,11 @@ public:
     void update_arg(Arg &arg) const override;
 };
 
+class CheckBoxGen : public BaseGenW{
+public:
+    CheckBoxGen();
+    void update_arg(Arg &arg) const override;
+};
 
 class ComboTextGen : public BaseGenW{
 
@@ -204,33 +237,7 @@ public:
 };
 
 
-class GenUIItemDialog : public QDialog{
 
-public:
-
-    GenUIItemDialog(QString title);
-    GenUIItemDialog(UiType type);
-
-    bool show_dialog(QStringList othersParameters);
-    void add_row(QString name, QWidget *w);
-    void add_gen_widget(BaseGenW *w);
-
-//    Arg generate_arg(UiElementKey key) const;
-    Arg generate_arg() const;
-    QString name() const;
-
-private:
-
-    UiType m_type;
-
-    const QString m_notEmptyStr {"(Parameter name must not be empty)"};
-    const QString m_aldreayUsedStr {"(Parameter name is already used)"};
-
-    QVBoxLayout *m_layout = nullptr;
-    QLabel *m_laValid = nullptr;
-    QLineEdit *m_leName = nullptr;
-    BaseGenW *m_genW = nullptr;
-};
 
 
 }

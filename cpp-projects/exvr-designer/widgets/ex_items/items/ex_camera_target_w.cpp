@@ -107,14 +107,15 @@ Arg ExCameraTargetW::convert_to_arg() const{
     return arg;
 }
 
-void ExCameraTargetW::set_generator(QString genName){
-    displayCamera.set_generator(genName);
-    sphericInterpolation.set_generator(genName);
-    time.set_generator(genName);
-    translation.set_generator(genName);
-    rotation.set_generator(genName);
-    color.set_generator(genName);
-    speed.set_generator(genName);
+void ExCameraTargetW::set_as_generator(){
+    ExBaseW::set_as_generator();
+    displayCamera.set_as_generator();
+    sphericInterpolation.set_as_generator();
+    time.set_as_generator();
+    translation.set_as_generator();
+    rotation.set_as_generator();
+    color.set_as_generator();
+    speed.set_as_generator();
 }
 
 

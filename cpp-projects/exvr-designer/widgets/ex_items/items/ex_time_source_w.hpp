@@ -22,7 +22,7 @@ public:
 
     void update_from_arg(const Arg &arg) override;
     Arg convert_to_arg() const override;
-    void set_generator(QString genName) override;
+    void set_as_generator() override;
 
     ExComboBoxTextW typeT = {"type"};
     ExSpinBoxW frequency = {"frequency"};

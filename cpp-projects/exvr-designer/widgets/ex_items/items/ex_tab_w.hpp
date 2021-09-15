@@ -105,12 +105,11 @@ public:
         return arg;
     }
 
-    virtual void set_generator(QString genName) override{
+    virtual void set_as_generator() override{
         for(auto &w : widgets){
-            w->set_generator(genName);
+            w->set_as_generator();
         }
     }
-
 
 
 private:
