@@ -15,7 +15,7 @@
 #include <QFileDialog>
 
 // local
-#include "experiment.hpp"
+#include "experiment/experiment.hpp"
 #include "ui_generate_instances_dialog.h"
 
 

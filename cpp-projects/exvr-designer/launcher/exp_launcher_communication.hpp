@@ -16,7 +16,6 @@
 // local
 #include "utility/path_utility.hpp"
 
-
 namespace tool::ex {
 
 class ExpLauncherCommunication : public QObject{

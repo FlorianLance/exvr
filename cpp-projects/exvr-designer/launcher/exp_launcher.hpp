@@ -20,12 +20,12 @@
 #include "utility/tuple_array.hpp"
 
 // local
-#include "path_utility.hpp"
+#include "utility/path_utility.hpp"
+#include "data/config.hpp"
+#include "data/states.hpp"
+#include "data/settings.hpp"
 #include "exp_launcher_process.hpp"
 #include "exp_launcher_communication.hpp"
-#include "config.hpp"
-#include "states.hpp"
-#include "settings.hpp"
 
 namespace tool::ex {
 

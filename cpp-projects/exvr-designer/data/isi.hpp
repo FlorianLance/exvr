@@ -13,9 +13,11 @@
 // base
 #include "utility/types_utility.hpp"
 
+// qt-utility
+#include "qt_str.hpp"
+
 // local
 #include "element.hpp"
-#include "qt_str.hpp"
 
 namespace tool::ex {
 

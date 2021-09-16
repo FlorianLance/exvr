@@ -15,7 +15,7 @@
 #include "qt_ui.hpp"
 
 // local
-#include "path_utility.hpp"
+#include "utility/path_utility.hpp"
 
 using namespace tool::ex;
 

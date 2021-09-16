@@ -14,11 +14,11 @@
 #include <QObject>
 
 // local
-#include "interval.hpp"
-#include "connector.hpp"
-#include "connection.hpp"
-#include "resource.hpp"
-#include "loop.hpp"
+#include "data/interval.hpp"
+#include "data/connector.hpp"
+#include "data/connection.hpp"
+#include "data/loop.hpp"
+#include "resources/resource.hpp"
 
 namespace tool::ex{
 

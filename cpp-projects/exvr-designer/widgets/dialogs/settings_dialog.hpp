@@ -12,8 +12,7 @@
 
 // local
 #include "ui_settings.h"
-#include "settings.hpp"
-
+#include "data/settings.hpp"
 
 namespace tool::ex {
 

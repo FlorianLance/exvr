@@ -14,8 +14,9 @@
 #include <memory>
 
 // local
-#include "component.hpp"
-#include "config_pw.hpp"
+#include "data/component.hpp"
+#include "config_parameters/config_pw.hpp"
+
 
 namespace tool::ex {
 

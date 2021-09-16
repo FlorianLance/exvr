@@ -12,8 +12,8 @@
 #include <QVector>
 #include <QDebug>
 
-// local
-#include "argument.hpp"
+// qt-utility
+#include "data/argument.hpp"
 
 namespace tool::ex {
 
@@ -31,10 +31,7 @@ struct Config{
     void update_arg(Arg arg);
     void add_arg(Arg arg);
     void remove_arg(QStringView argName);
-//    void remove_arg(UiElementKey argKey);
-//    void swap_arg(UiElementKey arg1Key, UiElementKey arg2Key);
     void swap_arg(QStringView arg1Name, QStringView arg2Name);
-
 
     inline QString to_string() const{return QSL("Config(") % name % QSL("|") % QString::number(key()) % QSL(")");}
 
@@ -42,7 +39,5 @@ struct Config{
     IdKey key;
 
     std::unordered_map<QStringView, Arg> args;
-//    std::unordered_map<UiElementKey, Arg> args;
-//    std::unordered_map<QStringView, Arg*> argsByName;
 };
 }

@@ -18,12 +18,13 @@
 // base
 #include "utility/benchmark.hpp"
 
-// local
-#include "ex_label_w.hpp"
-#include "argument.hpp"
+// qt-utility
 #include "qt_str.hpp"
-#include "ex_base_w.hpp"
-#include "connections/data_models/data/nodes_data.hpp"
+#include "data/argument.hpp"
+#include "ex_widgets/ex_label_w.hpp"
+
+// local
+#include "widgets/connections/data_models/data/nodes_data.hpp"
 
 namespace tool::ex{
 

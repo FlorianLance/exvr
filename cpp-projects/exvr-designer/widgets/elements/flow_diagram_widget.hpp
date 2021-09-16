@@ -16,7 +16,7 @@
 #include <QMenu>
 
 // local
-#include "flow_sequence.hpp"
+#include "flow/flow_sequence.hpp"
 
 // debug
 #include <QDebug>

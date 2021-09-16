@@ -10,11 +10,13 @@
 // base
 #include "utility/types_utility.hpp"
 
+// qt-utility
+#include "ex_widgets/ex_base_w.hpp"
+
 // local
-#include "../base_node_data_model.hpp"
-#include "../base_embedded_widget.hpp"
-#include "ex_base_w.hpp"
-#include "connector.hpp"
+#include "widgets/connections/data_models/base_node_data_model.hpp"
+#include "widgets/connections/data_models/base_embedded_widget.hpp"
+#include "data/connector.hpp"
 
 
 // nodes

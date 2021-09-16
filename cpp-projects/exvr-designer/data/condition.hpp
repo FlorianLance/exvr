@@ -9,11 +9,14 @@
 
 // base
 #include "utility/types_utility.hpp"
-#include "data/action.hpp"
-#include "data/connection.hpp"
-#include "connector.hpp"
+
 // qt_utility
 #include "qt_str.hpp"
+
+// local
+#include "action.hpp"
+#include "connection.hpp"
+#include "connector.hpp"
 
 namespace tool::ex {
 

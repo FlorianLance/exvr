@@ -7,8 +7,9 @@
 
 #pragma once
 
-#include "flow/remove_flow_element.hpp"
-#include "flow/move_flow_element.hpp"
+// local
+#include "remove_flow_element.hpp"
+#include "move_flow_element.hpp"
 
 namespace tool::ex {
 

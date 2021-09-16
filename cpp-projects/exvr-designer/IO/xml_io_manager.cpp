@@ -19,7 +19,7 @@
 #include "utility/benchmark.hpp"
 
 // local
-#include "node_flow.hpp"
+#include "data/node_flow.hpp"
 #include "utility/maths_utility.hpp"
 
 
@@ -1895,4 +1895,4 @@ bool XmlIoManager::load_dropped_experiment_file(QString path){
 }
 
 
-#include "moc_xml_io_manager.cpp"
+//#include "moc_xml_io_manager.cpp"

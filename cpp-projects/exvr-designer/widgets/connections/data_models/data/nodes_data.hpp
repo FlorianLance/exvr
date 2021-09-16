@@ -30,7 +30,7 @@ using QtNodes::NodeDataType;
 #include "qt_convertors.hpp"
 
 // local
-#include "connection_node.hpp"
+#include "data/connection_node.hpp"
 
 namespace tool::ex {
 

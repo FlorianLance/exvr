@@ -16,7 +16,7 @@
 #include <QGraphicsObject>
 
 // local
-#include "element.hpp"
+#include "data/element.hpp"
 #include "settings/display.hpp"
 
 namespace tool::ex {

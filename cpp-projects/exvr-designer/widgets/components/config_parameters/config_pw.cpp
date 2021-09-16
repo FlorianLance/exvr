@@ -8,10 +8,10 @@
 #include "config_pw.hpp"
 
 // local
-#include "global_signals.hpp"
-#include "resources_manager.hpp"
-#include "ex_resource_w.hpp"
-#include "ex_component_w.hpp"
+#include "experiment/global_signals.hpp"
+#include "resources/resources_manager.hpp"
+#include "ex_widgets/ex_resource_w.hpp"
+#include "ex_widgets/ex_component_w.hpp"
 
 using namespace tool::ex;
 
@@ -220,10 +220,10 @@ void ConfigParametersW::add_non_ui_arg(Arg arg){
     }
 }
 
-void ConfigParametersW::add_generator_ui(ExParametersGeneratorWidgetW *g){
+void ConfigParametersW::add_generator_ui(ExBaseW *g){
     QStringView uiName = g->itemName;
     if(m_generatorsUiElements.count(uiName) == 0){
-        m_generatorsUiElements[uiName] = g;
+        m_generatorsUiElements[uiName] = dynamic_cast<ExParametersGeneratorWidgetW*>(g);
     }else{
         qWarning() << "ConfigParametersW generator ui with name " << g->itemName << " already exists.";
     }

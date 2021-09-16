@@ -10,8 +10,8 @@
 // Qt
 #include <QString>
 
-// local
-#include "id_key.hpp"
+// qt-utility
+#include "data/id_key.hpp"
 
 namespace tool::ex {
 

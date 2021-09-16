@@ -16,11 +16,11 @@
 #include <QFile>
 #include <QTextStream>
 
-// qt-utility
-#include "qt_str.hpp"
-
 // base
 #include "utility/tuple_array.hpp"
+
+// qt-utility
+#include "qt_str.hpp"
 
 // local
 #include "element.hpp"

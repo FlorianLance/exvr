@@ -7,8 +7,10 @@
 
 #pragma once
 
+// qt-utility
+#include "data/argument.hpp"
+
 // local
-#include "argument.hpp"
 #include "connection_node.hpp"
 
 namespace tool::ex {

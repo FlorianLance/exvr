@@ -8,11 +8,10 @@
 #include "connections_widget.hpp"
 
 // local
-#include "connections/data_models/all_node_data_models.hpp"
-#include "connections/data_models/data/nodes_data_converters.hpp"
+#include "data_models/all_node_data_models.hpp"
+#include "data_models/data/nodes_data_converters.hpp"
 #include "utility/benchmark.hpp"
-#include "global_signals.hpp"
-
+#include "experiment/global_signals.hpp"
 
 using namespace tool;
 using namespace tool::ex;

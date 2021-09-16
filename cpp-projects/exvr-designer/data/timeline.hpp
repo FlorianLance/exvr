@@ -13,7 +13,6 @@
 // qt-utility
 #include "qt_str.hpp"
 
-
 // local
 #include "interval.hpp"
 

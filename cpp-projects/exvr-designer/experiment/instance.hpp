@@ -6,10 +6,12 @@
 
 #pragma once
 
-// local
-#include "experiment/experiment.hpp"
-#include "randomizer.hpp"
+// qt-utility
 #include "qt_str.hpp"
+
+// local
+#include "experiment.hpp"
+#include "randomizer.hpp"
 
 namespace tool::ex {
 

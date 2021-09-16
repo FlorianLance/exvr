@@ -15,10 +15,10 @@
 
 // qt-utility
 #include "qt_str.hpp"
+#include "data/id_key.hpp"
 
 // local
 #include "forward.hpp"
-#include "data/id_key.hpp"
 #include "config.hpp"
 #include "connection_node.hpp"
 

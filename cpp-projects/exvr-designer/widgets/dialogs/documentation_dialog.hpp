@@ -17,13 +17,12 @@
 #include <QVBoxLayout>
 #include <QLabel>
 
-
 // qt-utility
-#include "ex_code_editor_w.hpp"
+#include "ex_widgets/ex_code_editor_w.hpp"
 
 // local
-#include "component.hpp"
-#include "connector.hpp"
+#include "data/component.hpp"
+#include "data/connector.hpp"
 
 namespace tool::ex {
 

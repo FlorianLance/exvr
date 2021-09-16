@@ -11,7 +11,7 @@
 #include <QObject>
 
 // local
-// # elements
+// # flow
 #include "loop_flow_element.hpp"
 #include "routine_flow_element.hpp"
 #include "isi_flow_element.hpp"

@@ -11,9 +11,8 @@
 #include <QApplication>
 #include <QStandardPaths>
 
-// local
+// qt-utility
 #include "qt_str.hpp"
-
 
 namespace tool::ex{
 

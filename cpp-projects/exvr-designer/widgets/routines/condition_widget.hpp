@@ -23,12 +23,12 @@
 // # actions
 #include "action_widget.hpp"
 // # components
-#include "components_manager_widget.hpp"
+#include "widgets/components/components_manager_widget.hpp"
 // connections
-#include "connections/connections_widget.hpp"
+#include "widgets/connections/connections_widget.hpp"
 // # data
-#include "condition.hpp"
-#include "gui.hpp"
+#include "data/condition.hpp"
+#include "data/gui.hpp"
 
 namespace tool::ex {
 

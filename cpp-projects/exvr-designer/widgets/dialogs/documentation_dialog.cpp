@@ -17,7 +17,7 @@
 #include "widgets/text_widget_highlighter.hpp"
 
 // local
-#include "path_utility.hpp"
+#include "utility/path_utility.hpp"
 
 
 using namespace tool::ex;

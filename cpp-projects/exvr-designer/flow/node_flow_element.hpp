@@ -11,7 +11,7 @@
 #include <QVector>
 
 // local
-#include "node_flow.hpp"
+#include "data/node_flow.hpp"
 #include "add_flow_element.hpp"
 
 namespace tool::ex {

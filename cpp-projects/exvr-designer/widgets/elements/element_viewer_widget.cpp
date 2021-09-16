@@ -8,7 +8,7 @@
 #include "element_viewer_widget.hpp"
 
 // local
-#include "global_signals.hpp"
+#include "experiment/global_signals.hpp"
 
 // Qt
 #include <QFileDialog>

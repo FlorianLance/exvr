@@ -12,16 +12,15 @@
 #include <QDesktopWidget>
 
 // local
-#include "experiment.hpp"
-
+// # experiment
+#include "experiment/experiment.hpp"
 // # launcher
 #include "launcher/exp_launcher.hpp"
-// # widget
-#include "flow_diagram_widget.hpp"
-#include "element_viewer_widget.hpp"
-#include "components_manager_widget.hpp"
-#include "routines_manager_tab_widget.hpp"
-// # dialogs
+// # widgets
+#include "elements/flow_diagram_widget.hpp"
+#include "elements/element_viewer_widget.hpp"
+#include "components/components_manager_widget.hpp"
+#include "routines/routines_manager_tab_widget.hpp"
 #include "dialogs/resources_manager_dialog.hpp"
 #include "dialogs/documentation_dialog.hpp"
 #include "dialogs/settings_dialog.hpp"

@@ -35,7 +35,7 @@ using QtNodes::TypeConverterId;
 #include "ex_flow_view_widget.hpp"
 
 // # data models
-#include "data_models/connectors/component/component_node_data_model.hpp"
+#include "data_models/connectors/component_node_data_model.hpp"
 #include "data_models/connectors/connector_node_data_model.hpp"
 
 Q_DECLARE_METATYPE(tool::ex::Connection*)

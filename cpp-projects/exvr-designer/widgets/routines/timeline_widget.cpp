@@ -8,7 +8,7 @@
 #include "timeline_widget.hpp"
 
 // local
-#include "global_signals.hpp"
+#include "experiment/global_signals.hpp"
 
 using namespace tool;
 using namespace tool::ex;
@@ -194,4 +194,4 @@ void TimelineW::leaveEvent(QEvent *event){
     update();
 }
 
-#include "moc_timeline_widget.cpp"
+//#include "moc_timeline_widget.cpp"

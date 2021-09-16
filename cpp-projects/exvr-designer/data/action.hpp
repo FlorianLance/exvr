@@ -7,11 +7,13 @@
 
 #pragma once
 
+// qt-utility
+#include "data/id_key.hpp"
+
 // local
-#include "id_key.hpp"
 #include "forward.hpp"
-#include "timeline.hpp"
-#include "connection.hpp"
+#include "data/timeline.hpp"
+#include "data/connection.hpp"
 
 namespace tool::ex {
 

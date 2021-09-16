@@ -8,7 +8,7 @@
 #pragma once
 
 // local
-#include "isi.hpp"
+#include "data/isi.hpp"
 #include "movable_flow_element.hpp"
 
 namespace tool::ex {

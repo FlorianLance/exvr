@@ -12,10 +12,10 @@
 #include <QDialog>
 
 // local
-#include "routine.hpp"
-#include "loop.hpp"
-#include "ui_copy_to_conditions.h"
+#include "data/routine.hpp"
+#include "data/loop.hpp"
 #include "widgets/list_widget.hpp"
+#include "ui_copy_to_conditions.h"
 
 
 namespace tool::ex {

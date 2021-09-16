@@ -17,7 +17,7 @@
 
 // local
 #include "utility/path_utility.hpp"
-#include "settings.hpp"
+#include "data/settings.hpp"
 
 namespace tool::ex {
 

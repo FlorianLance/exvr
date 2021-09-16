@@ -9,6 +9,7 @@
 
 // local
 #include "sub_parts_pw.hpp"
+#include "ex_widgets/ex_parameters_generator_w.hpp"
 
 namespace tool::ex {
 
@@ -58,7 +59,7 @@ public :
 
     void add_action_ui(ExBaseW *w);
     void add_non_ui_arg(Arg arg);
-    void add_generator_ui(ExParametersGeneratorWidgetW *g);
+    void add_generator_ui(ExBaseW *g);
 
     inline std::unordered_map<QStringView, ExBaseW*> *input_ui_widgets(){
         return &m_inputUiElements;
@@ -75,7 +76,6 @@ protected:
     QVBoxLayout *m_layout = nullptr;
 
 private:
-
 
     std::unordered_map<QStringView, ExBaseW*> m_inputUiElements;
     std::unordered_map<QStringView, ExBaseW*> m_actionUiElements;

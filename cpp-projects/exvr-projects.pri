@@ -16,12 +16,14 @@ EXVR_EXPORT_TARGET       = "dll"
 # app
 ## exvr-designer
 EXVR_DESIGNER_TARGET    = "app"
+EXVR_TEST_TARGET        = "app"
 
 # projects list
 EXVR_CPP_PROJECTS +=\
     EXVR_COMPONENTS:exvr-components:exvr-componentsd \
     EXVR_EXPORT:exvr-export:exvr-exportd \
     EXVR_DESIGNER:exvr-designer:exvr-designerd \
+    EXVR_TEST:exvr-test:exvr-testd \
 
 # sub dir
 EXVR_CPP_PROJECTS_DIR       = $$EXVR_REPOSITORY_DIR"/cpp-projects"

@@ -14,7 +14,7 @@
 
 // local
 // # data
-#include "action.hpp"
+#include "data/action.hpp"
 // # widgets
 #include "ui_action.h"
 #include "timeline_widget.hpp"

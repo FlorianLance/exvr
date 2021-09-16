@@ -29,10 +29,10 @@
 
 // local
 #include "designer_window.hpp"
-#include "path_utility.hpp"
+#include "utility/path_utility.hpp"
 #include "connections/data_models/all_node_data_models.hpp"
 #include "connections/data_models/connectors/connector_node_data_model.hpp"
-#include "global_signals.hpp"
+#include "experiment/global_signals.hpp"
 
 // debug
 #include <QDebug>
@@ -787,4 +787,4 @@ void DesignerWindow::create_element_viewer(){
     m_elementViewerW = std::make_unique<ElementViewerW>(m_ui.twSelectedElement);
 }
 
-#include "moc_designer_window.cpp"
+//#include "moc_designer_window.cpp"

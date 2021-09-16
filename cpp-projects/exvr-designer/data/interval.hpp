@@ -12,9 +12,7 @@
 
 // qt-utility
 #include "qt_str.hpp"
-
-// local
-#include "id_key.hpp"
+#include "data/id_key.hpp"
 
 namespace tool::ex {
 

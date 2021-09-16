@@ -14,7 +14,7 @@
 #include <QColor>
 
 // local
-#include "element.hpp"
+#include "data/element.hpp"
 
 namespace tool::ex::display {
 

@@ -10,15 +10,15 @@
 
 // local
 // # data
-#include "routine.hpp"
-#include "isi.hpp"
-#include "loop.hpp"
-#include "settings.hpp"
-#include "gui.hpp"
-#include "interval.hpp"
-#include "argument.hpp"
-#include "components_manager.hpp"
-#include "states.hpp"
+#include "data/routine.hpp"
+#include "data/isi.hpp"
+#include "data/loop.hpp"
+#include "data/settings.hpp"
+#include "data/gui.hpp"
+#include "data/interval.hpp"
+#include "data/argument.hpp"
+#include "data/components_manager.hpp"
+#include "data/states.hpp"
 // # resources
 #include "resources/resources_manager.hpp"
 // # experiment

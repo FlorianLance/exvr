@@ -9,11 +9,11 @@
 
 // qt-utility
 #include "qt_logger.hpp"
+#include "qt_str.hpp"
 
 // local
 #include "element.hpp"
 #include "condition.hpp"
-#include "qt_str.hpp"
 
 namespace tool::ex {
 

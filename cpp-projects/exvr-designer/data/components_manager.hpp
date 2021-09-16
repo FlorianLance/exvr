@@ -24,7 +24,6 @@
 // local
 #include "component.hpp"
 
-
 namespace tool::ex {
 
 class ComponentsManager;

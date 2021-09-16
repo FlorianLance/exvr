@@ -19,9 +19,10 @@ using QtNodes::DataModelRegistry;
 #include "utility/vector_utility.hpp"
 
 // local
-#include "connector.hpp"
+#include "data/connector.hpp"
+#include "data/component.hpp"
 #include "connectors/connector_node_data_model.hpp"
-#include "connectors/component/component_node_data_model.hpp"
+#include "connectors/component_node_data_model.hpp"
 
 namespace tool::ex {
 

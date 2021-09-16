@@ -16,11 +16,13 @@
 #include <QStringBuilder>
 #include <QInputDialog>
 
-// local
-#include "config.hpp"
-#include "node_flow.hpp"
+// qt-utility
 #include "qt_str.hpp"
-#include "path_utility.hpp"
+
+// local
+#include "data/config.hpp"
+#include "data/node_flow.hpp"
+#include "utility/path_utility.hpp"
 
 using namespace tool;
 using namespace tool::ex;

@@ -19,9 +19,9 @@
 #include "widgets/custom_combobox_w.hpp"
 
 // local
-#include "component.hpp"
-#include "config.hpp"
-#include "global_signals.hpp"
+#include "data/component.hpp"
+#include "data/config.hpp"
+#include "experiment/global_signals.hpp"
 
 using namespace tool;
 using namespace tool::ex;
