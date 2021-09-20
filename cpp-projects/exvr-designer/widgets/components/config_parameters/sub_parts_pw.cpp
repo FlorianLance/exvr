@@ -171,7 +171,7 @@ WordSpaceCanvasSubPart::WordSpaceCanvasSubPart() : m_p(std::make_unique<Impl>())
 WordSpaceCanvasSubPart::~WordSpaceCanvasSubPart(){}
 
 WordSpaceCanvasSubPart *WordSpaceCanvasSubPart::init_widget(){
-    add_input_ui(m_p->scaleFactor.init_widget({MinV<qreal>{-1000.}, V<qreal>{0.25}, MaxV<qreal>{1000.}, StepV<qreal>{0.01}, 2}));
+    add_input_ui(m_p->scaleFactor.init_widget({MinV<qreal>{0.}, V<qreal>{0.25}, MaxV<qreal>{1000.}, StepV<qreal>{0.01}, 2}));
     add_input_ui(m_p->width.init_widget(MinV<int>{-10000}, V<int>{400}, MaxV<int>{10000}, StepV<int>{1}));
     add_input_ui(m_p->height.init_widget(MinV<int>{-10000}, V<int>{400}, MaxV<int>{10000}, StepV<int>{1}));
     add_input_ui(m_p->position.init_widget("<b>Position</b>"));

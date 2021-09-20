@@ -129,6 +129,8 @@ namespace Ex{
                 m_roomElementsGO.Add(bars4.GetChild(ii).gameObject);
             }
 
+            //m_roomElementsGO
+
             // lights
             m_lights = new List<Light>();
             var lightsParent = roomTr.transform.Find("Lights");

@@ -62,6 +62,7 @@ struct Condition  {
     Connection *get_connection_from_key(ConnectionKey connectionKey, bool displayError = true) const;
     Connection *get_connection_from_id(RowId  idTab, bool displayError = true) const;
     void remove_connection(ConnectionKey connectionKey);
+    void check_connections();
 
     // connectors
     Connector *get_connector_from_key(ConnectorKey connectorKey, bool displayError = true) const;
@@ -77,6 +78,7 @@ struct Condition  {
     void remove_component_node(ComponentKey componentKey);
 
     void update_max_length(SecondsTS length);
+
 
     IdKey key;
     QString name;    

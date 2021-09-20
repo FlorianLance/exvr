@@ -1517,6 +1517,7 @@ RoutineUP XmlIoManager::read_routine(){
     while(!r->atEnd()){
         if(check_start_node(QSL("Condition"))){
             if(auto condition = read_condition(routine.get()); condition != nullptr){
+                condition->check_connections();
                 routine->conditions.emplace_back(std::move(condition));
             }
         }else if(check_end_node(QSL("Routine"))){                                                

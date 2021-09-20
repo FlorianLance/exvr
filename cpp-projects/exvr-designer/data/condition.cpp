@@ -211,6 +211,63 @@ void Condition::update_max_length(SecondsTS length){
     }
 }
 
+void Condition::check_connections(){
+
+    std::vector<size_t> idConnectionsToBeRemoved;
+    std::unordered_set<int> connectionsKeysToBeRemoved;
+    for(const auto &connection : connections){
+        for(size_t ii = 0; ii < connections.size(); ++ii){
+
+            auto connectionToCheck = connections[ii].get();
+            qDebug() << "check " <<
+                        connection->key() << " with " << connectionToCheck->key() << " "
+                     << connection->startKey << " " <<  connectionToCheck->startKey << " "
+                        << connection->endKey << " " <<  connectionToCheck->endKey << " "
+                           << connection->startIndex << " " <<  connectionToCheck->startIndex << " "
+                              << connection->endIndex << " " <<  connectionToCheck->endIndex << " ";
+
+            if(connectionsKeysToBeRemoved.contains(connectionToCheck->key())){
+                qDebug() << "already removed";
+                continue;
+            }
+
+
+            if(connection->key() == connectionToCheck->key()){
+                qDebug() << "same key";
+                continue;
+            }
+
+            if(connection->startKey != connectionToCheck->startKey){
+                continue;
+            }
+
+            if(connection->endKey != connectionToCheck->endKey){
+                continue;
+            }
+
+            if(connection->startIndex != connectionToCheck->startIndex){
+                continue;
+            }
+
+            if(connection->endIndex != connectionToCheck->endIndex){
+                continue;
+            }
+
+            qDebug() << "add " << ii << connectionToCheck->key();
+            idConnectionsToBeRemoved.push_back(ii);
+            connectionsKeysToBeRemoved.insert(connectionToCheck->key());
+            QtLogger::warning(QSL("Connection with key ") % QString::number(connectionToCheck->key()) %
+                              QSL(" is a duplicate of connection with key") % QString::number(connection->key()) % QSL(", it will be removed."));
+        }
+    }
+
+    std::sort(std::begin(idConnectionsToBeRemoved), std::end(idConnectionsToBeRemoved), std::greater<>());
+    for(auto id : idConnectionsToBeRemoved){
+        qDebug() << "erase " << id;
+        connections.erase(std::begin(connections) + id);
+    }
+}
+
 bool Condition::contains_set_key(int setKeyToCheck) const{
 
     auto keyFound = std::find_if(std::begin(setsKeys), std::end(setsKeys), [setKeyToCheck](int setKey){
