@@ -55,7 +55,44 @@ constexpr int test(){
     return total;
 }
 
+static bool comp1(const std::unique_ptr<int> &l, const std::unique_ptr<int> &r){
+    return (*l)< (*r);
+}
+
+static bool comp2(const std::unique_ptr<int> &l, const std::unique_ptr<int> &r){
+    return (*l) == (*r);
+}
+
+
 int main(int argc, char *argv[]){
+
+    std::vector<std::unique_ptr<int>> bb;
+    bb.emplace_back(std::make_unique<int>(9));
+    bb.emplace_back(std::make_unique<int>(8));
+    bb.emplace_back(std::make_unique<int>(9));
+    bb.emplace_back(std::make_unique<int>(2));
+    bb.emplace_back(std::make_unique<int>(9));
+    bb.emplace_back(std::make_unique<int>(3));
+    bb.emplace_back(std::make_unique<int>(5));
+    bb.emplace_back(std::make_unique<int>(3));
+
+
+    std::vector<int> aa = {9,9,8,9,9,2,3,3,4,5,4,7};
+
+    for(const auto& v : bb){
+        std::cout << *v << " ";
+    }
+    std::cout << "\n";
+
+    std::sort( bb.begin(), bb.end(), comp1);
+    bb.erase( std::unique( bb.begin(), bb.end(), comp2), bb.end() );
+
+    for(const auto& v : bb){
+        std::cout << *v << " ";
+    }
+    std::cout << "\n";
+
+
 
     // build parameters
     const QString numVersion = "0.99z57";
@@ -72,7 +109,7 @@ int main(int argc, char *argv[]){
     splash.show();
     QTimer::singleShot(1000, &splash, &QWidget::close);
 
-    tool::ex::Paths::initialize_paths();        
+    tool::ex::Paths::initialize_paths(QApplication::applicationDirPath());
     tool::ex::ExVrController controller(numVersion, lncoComponents);
 
     QCoreApplication::instance()->installEventFilter(&controller);

@@ -82,51 +82,12 @@ bool XmlIoManager::load_experiment_file(QString expFilePath){
         return false;
     }
 
-    // no errors, update path
+    // xml has been fully loaded, update path
     m_experiment->states.currentExpfilePath = expFileToLoad;
 
-    m_experiment->compute_loops_levels();
-
-    // check for empty condition sets keys
-    for(auto &routine : m_experiment->get_elements_from_type<Routine>()){
-
-        for(auto &condition : routine->conditions){
-
-            if(routine->insideLoops.size() == 0){
-                continue;
-            }
-
-            if(condition->setsKeys.size() == 0){
-
-                QtLogger::error("[XML] OUTDATED SETS SYSTEM, WILL TRY TO UPGRADE, MAY FAIL IF LOOPS HAVE SAME SETS NAMES -> from routine " %
-                                routine->name() % QSL(" with condition ") % condition->name);
-
-                size_t countMatched = 0;
-                auto split = condition->name.split("-");
-                for(auto set : split){
-
-                    for(auto &loop : routine->insideLoops){
-
-                        bool found = false;
-                        for(const auto &loopSet : dynamic_cast<Loop*>(loop)->sets){
-                            if(loopSet.name == set){
-                                found = true;
-                                ++countMatched;
-                                condition->setsKeys.emplace_back(loopSet.key());
-
-                                break;
-                            }
-                        }
-
-                        if(found){
-                            break;
-                        }
-                    }
-                }                
-                QtLogger::error(QSL("[XML] FOUND ") % QString::number(countMatched) % QSL(" OUT OF ") % QString::number(split.size()) % " SETS MATCHING. PLEASE CHECK IT.");
-            }
-        }
-    }
+//    m_experiment->check_elements();
+    m_experiment->compute_loops_levels();    
+    m_experiment->check_legacy_conditions(); // due to previous used xml format
 
     m_experiment->update_conditions();
     m_experiment->selectedElement = nullptr;
@@ -205,7 +166,7 @@ bool XmlIoManager::read_exp(){
             }
         }else if(check_start_node(QSL("FlowSequence"))){
             QtLogger::message(QSL("[XML] Read flow sequence..."));
-            if(!read_flow_order()){
+            if(!read_flow_sequence()){
                 break;
             }
         }else if(check_end_node(QSL("Experiment"))){
@@ -218,26 +179,25 @@ bool XmlIoManager::read_exp(){
     return currentNodeValid;
 }
 
-void XmlIoManager::read_element(){
-
-    // node
-    m_experiment->elements.emplace_back(std::make_unique<NodeFlow>());
+ElementUP XmlIoManager::read_element(){
 
     const auto id = read_attribute<int>(QSL("key"), true);
     const auto &typeStr = read_attribute<QString>(QSL("type"), true);
     if(!id.has_value() || !typeStr.has_value()){
         QtLogger::error(QSL("[XML] Invalid element at line: ") % QString::number(r->lineNumber()));
-        return;
+        return nullptr;
     }
     const Element::Type type = Element::get_type(typeStr.value().toStdString());
 
+    ElementUP element = nullptr;
     switch (type) {{
     case Element::Type::Routine:
             for(size_t ii = 0; ii < readXmlRoutines.size(); ++ii){
                 if(readXmlRoutines[ii] != nullptr){
                     if(readXmlRoutines[ii]->key() == id){
-                        m_experiment->elements.emplace_back(std::move(readXmlRoutines[ii]));
+                        element = std::move(readXmlRoutines[ii]);
                         readXmlRoutines[ii] = nullptr;
+                        return std::move(element);
                     }
                 }
             }
@@ -246,8 +206,9 @@ void XmlIoManager::read_element(){
             for(size_t ii = 0; ii < readXmlISIs.size(); ++ii){
                 if(readXmlISIs[ii] != nullptr){
                     if(readXmlISIs[ii]->key() == id){
-                        m_experiment->elements.emplace_back(std::move(readXmlISIs[ii]));
+                        element = std::move(readXmlISIs[ii]);
                         readXmlISIs[ii] = nullptr;
+                        return std::move(element);
                     }
                 }
             }
@@ -256,8 +217,9 @@ void XmlIoManager::read_element(){
             for(size_t ii = 0; ii < readXmlStartLoops.size(); ++ii){
                 if(readXmlStartLoops[ii] != nullptr){
                     if(readXmlStartLoops[ii]->loop->key() == id){
-                        m_experiment->elements.emplace_back(std::move(readXmlStartLoops[ii]));
+                        element = std::move(readXmlStartLoops[ii]);
                         readXmlStartLoops[ii] = nullptr;
+                        return std::move(element);
                     }
                 }
             }
@@ -266,13 +228,38 @@ void XmlIoManager::read_element(){
             for(size_t ii = 0; ii < readXmlEndLoops.size(); ++ii){
                 if(readXmlEndLoops[ii] != nullptr){
                     if(readXmlEndLoops[ii]->loop->key() == id){
-                        m_experiment->elements.emplace_back(std::move(readXmlEndLoops[ii]));
+                        element = std::move(readXmlEndLoops[ii]);
                         readXmlEndLoops[ii] = nullptr;
+                        return std::move(element);
                     }
                 }
             }
     }break;{
     default: break;}
+    }
+
+    QtLogger::error(QSL("[XML] Cannot find flow sequence element at line: ") % QString::number(r->lineNumber()) % QSL(" with id ") % QString::number(id.value()));
+
+    return nullptr;
+}
+
+void XmlIoManager::check_read_elements(){
+
+    // routines
+    size_t countBefore = readXmlRoutines.size();
+
+    std::sort(readXmlRoutines.begin(), readXmlRoutines.end());
+    readXmlRoutines.erase(std::unique(readXmlRoutines.begin(), readXmlRoutines.end()), readXmlRoutines.end());
+
+    size_t countAfter = readXmlRoutines.size();
+    if(countBefore > countAfter){
+        QtLogger::warning(
+            QSL("Remove ") % QString::number(countBefore - countAfter) % QSL(" duplicated routines.")
+        );
+    }
+
+    for(auto &routine : readXmlRoutines){
+        routine->check_integrity();
     }
 }
 
@@ -296,7 +283,7 @@ bool XmlIoManager::check_end_node(QString nodeName){
 }
 
 QString XmlIoManager::invalid_bracket_error_message(int id, IdKey::Type type){
-    return QSL("Invalid xml ") % IdKey::get_name(type) % QSL(" (id:") % QString::number(id) % QSL("), no end bracket.");
+    return QSL("Invalid xml ") % from_view(IdKey::to_string(type)) % QSL(" (id:") % QString::number(id) % QSL("), no end bracket.");
 }
 
 void XmlIoManager::write_generator(const Generator &generator){
@@ -1239,30 +1226,31 @@ void XmlIoManager::write_routine(const Routine *routine){
 }
 
 void XmlIoManager::write_settings(){
-    const Settings &settings = m_experiment->settings;
+
+    auto settings = m_experiment->settings();
 
     w->writeStartElement(QSL("Settings"));{
 
-        w->writeAttribute(QSL("debug"), settings.debug ? "1" : "0");
-        w->writeAttribute(QSL("csharp_debug_info"), settings.csharpAddDebugInfo? "1" : "0");
-        w->writeAttribute(QSL("catch_components_exceptions"), settings.catchComponentsExceptions ? "1" : "0");
-        w->writeAttribute(QSL("positional_tracking"), settings.positionalTracking ? "1" : "0");
-        w->writeAttribute(QSL("catch_external_keyboard_events"), settings.catchExternalKeyboardKeysEvents ? "1" : "0");
+        w->writeAttribute(QSL("debug"), settings->debug ? "1" : "0");
+        w->writeAttribute(QSL("csharp_debug_info"), settings->csharpAddDebugInfo? "1" : "0");
+        w->writeAttribute(QSL("catch_components_exceptions"), settings->catchComponentsExceptions ? "1" : "0");
+        w->writeAttribute(QSL("positional_tracking"), settings->positionalTracking ? "1" : "0");
+        w->writeAttribute(QSL("catch_external_keyboard_events"), settings->catchExternalKeyboardKeysEvents ? "1" : "0");
 
         w->writeStartElement(QSL("Display"));{
-            w->writeAttribute(QSL("mode"), QString::number(static_cast<int>(settings.displayMode)));
-            w->writeAttribute(QSL("stereo_fov"), QString::number(static_cast<int>(settings.stereoCameraFOV)));
-            w->writeAttribute(QSL("fullscreen"), settings.fullscreen ? "1" : "0");
-            w->writeAttribute(QSL("monitor_id"), QString::number(static_cast<int>(settings.monitorId)));
-            w->writeAttribute(QSL("resolution_id"), QString::number(static_cast<int>(settings.resolutionId)));
-            w->writeAttribute(QSL("custom_width"), QString::number(static_cast<int>(settings.customWidth)));
-            w->writeAttribute(QSL("custom_height"), QString::number(static_cast<int>(settings.customHeight)));
+            w->writeAttribute(QSL("mode"), QString::number(static_cast<int>(settings->displayMode)));
+            w->writeAttribute(QSL("stereo_fov"), QString::number(static_cast<int>(settings->stereoCameraFOV)));
+            w->writeAttribute(QSL("fullscreen"), settings->fullscreen ? "1" : "0");
+            w->writeAttribute(QSL("monitor_id"), QString::number(static_cast<int>(settings->monitorId)));
+            w->writeAttribute(QSL("resolution_id"), QString::number(static_cast<int>(settings->resolutionId)));
+            w->writeAttribute(QSL("custom_width"), QString::number(static_cast<int>(settings->customWidth)));
+            w->writeAttribute(QSL("custom_height"), QString::number(static_cast<int>(settings->customHeight)));
         }w->writeEndElement(); // /Display
 
         w->writeStartElement(QSL("Camera"));{
-            w->writeAttribute(QSL("neutral_x"), settings.neutralX ? "1" : "0");
-            w->writeAttribute(QSL("neutral_y"), settings.neutralY ? "1" : "0");
-            w->writeAttribute(QSL("neutral_z"), settings.neutralZ ? "1" : "0");
+            w->writeAttribute(QSL("neutral_x"), settings->neutralX ? "1" : "0");
+            w->writeAttribute(QSL("neutral_y"), settings->neutralY ? "1" : "0");
+            w->writeAttribute(QSL("neutral_z"), settings->neutralZ ? "1" : "0");
         }w->writeEndElement(); // /Camera
 
     }w->writeEndElement(); // /Settings
@@ -1517,14 +1505,14 @@ RoutineUP XmlIoManager::read_routine(){
     while(!r->atEnd()){
         if(check_start_node(QSL("Condition"))){
             if(auto condition = read_condition(routine.get()); condition != nullptr){
-                condition->check_connections();
                 routine->conditions.emplace_back(std::move(condition));
             }
-        }else if(check_end_node(QSL("Routine"))){                                                
+        }else if(check_end_node(QSL("Routine"))){
             return routine;
         }
         r->readNext();
     }
+
 
     QtLogger::error(QSL("[XML] ") % invalid_bracket_error_message(key.value(), IdKey::Type::Element));
 
@@ -1535,34 +1523,34 @@ bool XmlIoManager::read_settings(){
 
     QtLogger::status(QSL("Read settings."), 2000);
 
+    auto settings = m_experiment->settings();
     while(!r->atEnd()){
 
         if(check_start_node(QSL("Settings"))){
-            assign_attribute(m_experiment->settings.debug, QSL("debug"), true);
-            assign_attribute(m_experiment->settings.csharpAddDebugInfo, QSL("csharp_debug_info"), false);
-            assign_attribute(m_experiment->settings.catchComponentsExceptions, QSL("catch_components_exceptions"), false);
-            assign_attribute(m_experiment->settings.positionalTracking, QSL("positional_tracking"), false);
-            assign_attribute(m_experiment->settings.catchExternalKeyboardKeysEvents, QSL("catch_external_keyboard_events"), false);
+            assign_attribute(settings->debug, QSL("debug"), true);
+            assign_attribute(settings->csharpAddDebugInfo, QSL("csharp_debug_info"), false);
+            assign_attribute(settings->catchComponentsExceptions, QSL("catch_components_exceptions"), false);
+            assign_attribute(settings->positionalTracking, QSL("positional_tracking"), false);
+            assign_attribute(settings->catchExternalKeyboardKeysEvents, QSL("catch_external_keyboard_events"), false);
         }
 
         if(check_start_node(QSL("Display"))){           
             if(auto dMode = read_attribute<int>(QSL("mode"), true); dMode.has_value()){
-                m_experiment->settings.displayMode = static_cast<Settings::ExpLauncherDisplayMode>(dMode.value());
+                settings->displayMode = static_cast<Settings::ExpLauncherDisplayMode>(dMode.value());
             }
-            assign_attribute(m_experiment->settings.monitorId, QSL("monitor_id"), false);
-            assign_attribute(m_experiment->settings.stereoCameraFOV, QSL("stereo_fov"), false);
-            assign_attribute(m_experiment->settings.fullscreen, QSL("fullscreen"), false);
-            assign_attribute(m_experiment->settings.resolutionId, QSL("resolution_id"), false);
-            assign_attribute(m_experiment->settings.customWidth, QSL("custom_width"), false);
-            assign_attribute(m_experiment->settings.customHeight, QSL("custom_height"), false);
+            assign_attribute(settings->monitorId, QSL("monitor_id"), false);
+            assign_attribute(settings->stereoCameraFOV, QSL("stereo_fov"), false);
+            assign_attribute(settings->fullscreen, QSL("fullscreen"), false);
+            assign_attribute(settings->resolutionId, QSL("resolution_id"), false);
+            assign_attribute(settings->customWidth, QSL("custom_width"), false);
+            assign_attribute(settings->customHeight, QSL("custom_height"), false);
         }
 
         if(check_start_node(QSL("Camera"))){
-            assign_attribute(m_experiment->settings.neutralX, QSL("neutral_x"), false);
-            assign_attribute(m_experiment->settings.neutralY, QSL("neutral_y"), false);
-            assign_attribute(m_experiment->settings.neutralZ, QSL("neutral_z"), false);
+            assign_attribute(settings->neutralX, QSL("neutral_x"), false);
+            assign_attribute(settings->neutralY, QSL("neutral_y"), false);
+            assign_attribute(settings->neutralZ, QSL("neutral_z"), false);
         }
-
 
         if(check_end_node(QSL("Settings"))){
             return true;
@@ -1698,6 +1686,7 @@ bool XmlIoManager::read_routines(){
             }
 
         }else if(check_end_node(QSL("Routines"))){
+
             return true;
         }
         //QCoreApplication::processEvents( QEventLoop::AllEvents, 2);
@@ -1755,7 +1744,8 @@ bool XmlIoManager::read_flow_elements(){
             if(!read_loops()){
                 return false;
             }
-        }else if(check_end_node(QSL("FlowElements"))){
+        }else if(check_end_node(QSL("FlowElements"))){            
+            check_read_elements();
             return true;
         }
         r->readNext();
@@ -1767,17 +1757,19 @@ bool XmlIoManager::read_flow_elements(){
 
 
 
-bool XmlIoManager::read_flow_order(){
+bool XmlIoManager::read_flow_sequence(){
 
     QtLogger::status("Read flow sequence.", 2000);
-    BenchGuard bench("[XML::read_flow_order]");
+    BenchGuard bench("[XML::read_flow_sequence]");
     //QCoreApplication::processEvents( QEventLoop::AllEvents, 5);
 
     r->readNext();
     while(!r->atEnd()){
-
-        if(check_start_node(QSL("Element"))){            
-            read_element();
+        if(check_start_node(QSL("Element"))){
+            if(auto element = read_element(); element != nullptr){
+                m_experiment->elements.emplace_back(std::make_unique<NodeFlow>());
+                m_experiment->elements.emplace_back(std::move(element));
+            }
         }else if(check_end_node(QSL("FlowSequence"))){
             // last node
             m_experiment->elements.emplace_back(std::make_unique<NodeFlow>());
@@ -1896,4 +1888,4 @@ bool XmlIoManager::load_dropped_experiment_file(QString path){
 }
 
 
-//#include "moc_xml_io_manager.cpp"
+#include "moc_xml_io_manager.cpp"

@@ -393,4 +393,15 @@ namespace tool::ex {
         bool selected = false;
     };
 
+    static bool operator<(const ConnectorUP &l, const ConnectorUP &r){
+        if(l->key() == r->key()){
+            return false;
+        }
+        return true;
+    }
+
+    static bool operator==(const ConnectorUP &l, const ConnectorUP &r){
+        return !(l < r) && !(r < l);
+    }
+
 }

@@ -100,6 +100,8 @@ public:
         return type == Type::Isi;
     }
 
+    virtual void check_integrity(){}
+
     IdKey key;
     Type type = Type::Default;
 
@@ -111,4 +113,15 @@ private:
     QString m_name = "";
     bool m_isSelected = false;  /**< is the element selected ? */
 };
+
+static bool operator<(const ElementUP &l, const ElementUP &r){
+    if(l->key() == r->key()){
+        return false;
+    }
+    return true;
+}
+
+static bool operator==(const ElementUP &l, const ElementUP &r){
+    return !(l < r) && !(r < l);
+}
 }

@@ -27,7 +27,7 @@ public:
     //int headerData(int section, Qt::Orientation orientation, int role) const;
 
 
-    std::unordered_map<std::string_view, std::pair<QString, std::int64_t>> elements;
+    std::unordered_map<std::string_view, std::tuple<QString, std::int64_t, bool>> elements;
     std::vector<std::string_view> order;
 
 //    std::vector<
@@ -55,5 +55,7 @@ private:
 
     QTableView *view = nullptr;
     Table *model = nullptr;
+
+    QCheckBox *sort = nullptr;
 };
 }

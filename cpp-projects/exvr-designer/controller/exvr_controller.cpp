@@ -58,10 +58,12 @@ ExVrController::ExVrController(const QString &nVersion, bool lncoComponents){
 
     // init logging system
     QtLogger::init(QApplication::applicationDirPath() % QSL("/logs/"), QSL("designer_log.html"));
-    QtLogger::set_type_message_color(QtLogger::MessageType::normal,  QColor(189,189,189));
-    QtLogger::set_type_message_color(QtLogger::MessageType::warning, QColor(243, 158, 3));
-    QtLogger::set_type_message_color(QtLogger::MessageType::error,   QColor(244,4,4));
-    QtLogger::set_type_message_color(QtLogger::MessageType::unknow,  Qt::white);
+    QtLogger::set_html_ui_type_message_color(QtLogger::MessageType::normal,  QColor(189,189,189));
+    QtLogger::set_html_ui_type_message_color(QtLogger::MessageType::warning, QColor(243, 158, 3));
+    QtLogger::set_html_ui_type_message_color(QtLogger::MessageType::error,   QColor(244,4,4));
+    QtLogger::set_html_ui_type_message_color(QtLogger::MessageType::unknow,  Qt::white);
+
+    Bench::disable_display();
 
     QtLogger::message("[CONTROLLER] Generate signals");
     GSignals::init();
@@ -110,23 +112,24 @@ ExVrController::ExVrController(const QString &nVersion, bool lncoComponents){
 
     connect(&experimentUpdateTimer, &QTimer::timeout, this, [&]{
 
-
         Bench::start("[Update full UI]"sv, false);
-
-        if(exp()->updateFlag & UpdateUI){
+        if(exp()->update_flag() & UpdateSettings){
+            qDebug() << "UpdateSettings";
             Bench::start("[Update dialogs]"sv, false);
-            m_settingsD->update_from_settings(exp()->settings);
+            m_settingsD->update_from_settings(exp()->settings());
             Bench::stop();
         }
 
-        if(exp()->updateFlag & UpdateResources){ // update experiment components
+        if(exp()->update_flag() & UpdateResources){ // update experiment components
             Bench::start("[Update resources]"sv, false);
             m_resourcesD->update_from_resources_manager(ResourcesManager::get());
             Bench::stop();
         }
 
         Bench::start("[Update designer window]"sv);
-            ui()->update_from_experiment(exp(), exp()->updateFlag);
+        if(exp()->update_flag() != 0){
+            ui()->update_from_experiment(exp(), exp()->update_flag());
+        }
         Bench::stop();
 
         // infos
@@ -170,24 +173,10 @@ ExVrController::ExVrController(const QString &nVersion, bool lncoComponents){
 
         Bench::stop();
 
-//        if((update & UpdateComponents) || (update & UpdateRoutines)){
-            // Bench::display(BenchUnit::milliseconds, 50, false);
-//        }
 
         m_benchmarkD->update();
 
-//        QString e;
-//        for(const auto &event : countEvents){
-//            QString o;
-//            int total = 0;
-//            for(const auto &obj : event.second){
-//                o += obj.first + " ";
-//                total += obj.second;
-//            }
-//            e += "[" + ToString(event.first) + " [" + o + " | " + QString::number(total) + "]";
-//        }
-//        countEvents.clear();
-//        qDebug() << e;
+
         Bench::display(BenchUnit::milliseconds, 0, true);
         Bench::reset();
 
@@ -884,7 +873,7 @@ void ExVrController::generate_main_window_connections(){
     connect(ui(), &DMW::go_to_current_element_signal,                               this, &CON::go_to_current_specific_instance_element);
     connect(ui(), &DMW::go_to_specific_element_signal,                              this, &CON::got_to_specific_instance_element);
     connect(ui(), &DMW::start_experiment_launcher_signal,                           this, [&](){
-        emit start_experiment_launcher_signal(exp()->settings);
+        emit start_experiment_launcher_signal(*exp()->settings());
     });
 
     // -> gui
@@ -984,6 +973,7 @@ void ExVrController::generate_logger_connections(){
     // -> main window
     connect(log(), &QtLogger::message_signal,         ui(), &DMW::insert_log_from_ui);
     connect(log(), &QtLogger::error_signal,           ui(), &DMW::insert_log_from_ui);
+    connect(log(), &QtLogger::warning_signal,         ui(), &DMW::insert_log_from_ui);
     connect(log(), &QtLogger::unity_message_signal,   ui(), &DMW::insert_log_from_ui);
     connect(log(), &QtLogger::unity_error_signal,     ui(), &DMW::insert_log_from_ui);
     connect(log(), &QtLogger::unity_warning_signal,   ui(), &DMW::insert_log_from_ui);
@@ -995,8 +985,8 @@ void ExVrController::generate_dialogs_connections(){
     connect(set(), &SettingsDialog::reset_settings_signal,      exp(), &EXP::reset_settings);
     connect(set(), &SettingsDialog::settings_updated_signal,    exp(), &EXP::update_settings);
     connect(set(), &SettingsDialog::settings_canceled_signal,   this, [&]{
-        m_settingsD->update_from_settings(exp()->settings);
-        exp()->add_to_update_flag(UpdateUI);
+        m_settingsD->update_from_settings(exp()->settings());
+        exp()->add_to_update_flag(UpdateSettings);
     });
     // -> copyt to condition dialog
     connect(m_copyToCondD.get(), &CopyToConditionDialog::copy_to_conditions_signal, exp(), &Experiment::copy_to_conditions);

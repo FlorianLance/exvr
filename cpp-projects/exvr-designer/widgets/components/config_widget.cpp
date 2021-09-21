@@ -226,7 +226,7 @@ ConfigParametersW *ConfigW::generate_parameters(Component::Type type, bool initC
     case CT::Attach_object_to_hand:
         return gen_params_w<AttachObjectToHandInitConfigParametersW,AttachObjectToHandConfigParametersW>(initConfig);
     case CT::Biopac:
-        return gen_params_w<BiopacMP36InitConfigParametersW,BiopacMP36ConfigParametersW>(initConfig);
+        return gen_params_w<BiopacInitConfigParametersW,BiopacConfigParametersW>(initConfig);
     case CT::Fop_robot:
         return gen_params_w<FopRobotInitConfigParametersW,FopRobotConfigParametersW>(initConfig);
     case CT::Qualisys:

@@ -211,60 +211,47 @@ void Condition::update_max_length(SecondsTS length){
     }
 }
 
-void Condition::check_connections(){
+void Condition::check_integrity(){
 
-    std::vector<size_t> idConnectionsToBeRemoved;
-    std::unordered_set<int> connectionsKeysToBeRemoved;
-    for(const auto &connection : connections){
-        for(size_t ii = 0; ii < connections.size(); ++ii){
+    // connections
+    size_t countBefore = connections.size();
+    std::sort(connections.begin(), connections.end());
+    connections.erase(std::unique(connections.begin(), connections.end()), connections.end());
 
-            auto connectionToCheck = connections[ii].get();
-            qDebug() << "check " <<
-                        connection->key() << " with " << connectionToCheck->key() << " "
-                     << connection->startKey << " " <<  connectionToCheck->startKey << " "
-                        << connection->endKey << " " <<  connectionToCheck->endKey << " "
-                           << connection->startIndex << " " <<  connectionToCheck->startIndex << " "
-                              << connection->endIndex << " " <<  connectionToCheck->endIndex << " ";
-
-            if(connectionsKeysToBeRemoved.contains(connectionToCheck->key())){
-                qDebug() << "already removed";
-                continue;
-            }
-
-
-            if(connection->key() == connectionToCheck->key()){
-                qDebug() << "same key";
-                continue;
-            }
-
-            if(connection->startKey != connectionToCheck->startKey){
-                continue;
-            }
-
-            if(connection->endKey != connectionToCheck->endKey){
-                continue;
-            }
-
-            if(connection->startIndex != connectionToCheck->startIndex){
-                continue;
-            }
-
-            if(connection->endIndex != connectionToCheck->endIndex){
-                continue;
-            }
-
-            qDebug() << "add " << ii << connectionToCheck->key();
-            idConnectionsToBeRemoved.push_back(ii);
-            connectionsKeysToBeRemoved.insert(connectionToCheck->key());
-            QtLogger::warning(QSL("Connection with key ") % QString::number(connectionToCheck->key()) %
-                              QSL(" is a duplicate of connection with key") % QString::number(connection->key()) % QSL(", it will be removed."));
-        }
+    size_t countAfter = connections.size();
+    if(countBefore > countAfter){
+        QtLogger::warning(
+            QSL("Remove ") % QString::number(countBefore - countAfter) % QSL(" duplicated connections from condition ") %
+            name % QSL(" with id ") % QString::number(key()) % QSL(".")
+        );
     }
 
-    std::sort(std::begin(idConnectionsToBeRemoved), std::end(idConnectionsToBeRemoved), std::greater<>());
-    for(auto id : idConnectionsToBeRemoved){
-        qDebug() << "erase " << id;
-        connections.erase(std::begin(connections) + id);
+    // connectors
+    countBefore = connectors.size();
+    std::sort( connectors.begin(), connectors.end() );
+    connectors.erase( std::unique( connectors.begin(), connectors.end() ), connectors.end() );
+    countAfter = connectors.size();
+    if(countBefore > countAfter){
+        QtLogger::warning(
+            QSL("Remove ") % QString::number(countBefore - countAfter) % QSL(" duplicated connectors from condition ") %
+            name % QSL(" with id ") % QString::number(key()) % QSL(".")
+        );
+    }
+
+    // actions
+    countBefore = actions.size();
+    std::sort( actions.begin(), actions.end() );
+    actions.erase( std::unique( actions.begin(), actions.end() ), actions.end() );
+    countAfter = actions.size();
+    if(countBefore > countAfter){
+        QtLogger::warning(
+            QSL("Remove ") % QString::number(countBefore - countAfter) % QSL(" duplicated actions from condition ") %
+            name % QSL(" with id ") % QString::number(key()) % QSL(".")
+        );
+    }
+
+    for(auto &action : actions){
+        action->check_integrity();
     }
 }
 

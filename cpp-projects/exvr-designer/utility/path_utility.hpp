@@ -18,7 +18,7 @@ namespace tool::ex{
 
 struct Paths{
 
-    static void initialize_paths();
+    static void initialize_paths(QString exeDir);
 
     static inline QString exeDir = "";
     static inline QString exe = "";

@@ -231,10 +231,14 @@ namespace tool::ex{
         bool                read_routines();
         bool                read_flow_elements();
         bool                read_resources();
-        bool                read_flow_order();
+        bool                read_flow_sequence();
         bool                read_settings();
-        bool                read_exp();        
-        void                read_element();
+        bool                read_exp();
+        ElementUP           read_element();
+
+        void check_read_elements();
+
+    private:
 
         Experiment *m_experiment = nullptr;
         std::unique_ptr<QXmlStreamReader> r = nullptr;

@@ -45,13 +45,27 @@ struct Routine : public Element {
     void clean_actions_from_condition(ConditionKey conditionKey);
     void delete_actions_from_condition(ConditionKey conditionKey);
 
+    void check_integrity() override;
+
+
     Condition *get_condition(ConditionKey conditionKey) const;
 
     QString to_string() const;
 
     bool isARandomizer = false;
     std_v1<ConditionUP> conditions;
-    std_v1<ConditionUP> ghostsConditions; // condition that could be restored
+//    std_v1<ConditionUP> ghostsConditions; // condition that could be restored
 };
+
+static bool operator<(const RoutineUP &l, const RoutineUP &r){
+    if(l->key() == r->key()){
+        return false;
+    }
+    return true;
+}
+
+static bool operator==(const RoutineUP &l, const RoutineUP &r){
+    return !(l < r) && !(r < l);
+}
 
 }

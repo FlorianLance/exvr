@@ -61,8 +61,7 @@ struct Condition  {
     // connections
     Connection *get_connection_from_key(ConnectionKey connectionKey, bool displayError = true) const;
     Connection *get_connection_from_id(RowId  idTab, bool displayError = true) const;
-    void remove_connection(ConnectionKey connectionKey);
-    void check_connections();
+    void remove_connection(ConnectionKey connectionKey);    
 
     // connectors
     Connector *get_connector_from_key(ConnectorKey connectorKey, bool displayError = true) const;
@@ -78,6 +77,8 @@ struct Condition  {
     void remove_component_node(ComponentKey componentKey);
 
     void update_max_length(SecondsTS length);
+
+    void check_integrity();
 
 
     IdKey key;
@@ -99,4 +100,20 @@ struct Condition  {
     static inline std_v1<ConnectorUP> connectorsToCopy = {};
     static inline std_v1<ConnectionUP> connectionsToCopy = {};
 };
+
+static bool operator<(const ConditionUP &l, const ConditionUP &r){
+    if(l->key() == r->key()){
+        return false;
+    }
+    if(l->name == r->name){
+        return false;
+    }
+    return true;
+}
+
+static bool operator==(const ConditionUP &l, const ConditionUP &r){
+    return !(l < r) && !(r < l);
+}
+
+
 }

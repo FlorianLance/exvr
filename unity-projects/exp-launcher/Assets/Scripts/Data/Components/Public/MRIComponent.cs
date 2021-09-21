@@ -91,7 +91,7 @@ namespace Ex{
             });
 
             // instantiate MRI scene
-            m_mriGO = ExVR.GlobalResources().instantiate_prebab("Components/MRI_scene", transform);
+            m_mriGO = ExVR.GlobalResources().instantiate_prebab("Components/MRI", transform);
             m_mriGO.name = "MRI_scene";
 
             // retrieve scene elements
@@ -102,7 +102,7 @@ namespace Ex{
             // magnet
             m_magnetElementsGO = new List<GameObject>();
             m_magnetElementsGO.Add(roomTr.Find("MRI/Table").gameObject);
-            m_magnetElementsGO.Add(roomTr.Find("MRI/Magnet").gameObject);
+            //m_magnetElementsGO.Add(roomTr.Find("MRI/Magnet").gameObject);
             // room
             // # elements
             m_roomElementsGO = new List<GameObject>();
@@ -421,7 +421,7 @@ namespace Ex{
                 m_controller.current_config().set_vector3("head_tracking_offset_rot",
                     initHeadOffsetRot + currentFactor * (headRotOffset - initHeadOffsetRot));
                 m_controller.update_from_current_config();
-            }
+            } 
         }
 
         #endregion

@@ -168,7 +168,7 @@ void RoutinesManagerTW::update_from_experiment(Experiment *exp){
                     }
                 Bench::stop();
                 Bench::start("RoutinesManagerTW update_from_experiment 43"sv, display);
-                    routineW->update_from_routine(&exp->gui, routine);
+                    routineW->update_from_routine(exp->gui(), routine);
                 Bench::stop();
             }
         }

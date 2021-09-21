@@ -331,6 +331,7 @@ SOURCES += \
     ex_widgets/ex_tab_w.cpp \
     ex_widgets/ex_resources_list_w.cpp \
     # widgets
+    widgets/components/config_parameters/biopac_pw.cpp \
     widgets/designer_window.cpp \
     ## components
     widgets/components/config_widget.cpp \

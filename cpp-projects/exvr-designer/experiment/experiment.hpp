@@ -35,36 +35,37 @@ constexpr static int UpdateComponents  = 0b100;
 constexpr static int UpdateRoutines    = 0b1000;
 constexpr static int UpdateUI          = 0b10000;
 constexpr static int UpdateResources   = 0b100000;
-[[maybe_unused]] constexpr static int ResetUI   = 0b1000000;
-[[maybe_unused]] constexpr static int UpdateAll = UpdateComponents | UpdateFlow | UpdateSelection | UpdateUI | UpdateRoutines | UpdateResources;
+constexpr static int UpdateSettings    = 0b1000000;
+constexpr static int ResetUI           = 0b10000000;
+constexpr static int UpdateAll         = UpdateComponents | UpdateFlow | UpdateSelection | UpdateUI | UpdateRoutines | UpdateResources | UpdateSettings;
 
-enum class Update{
-    ELEMENT, select_element,unselect_elements, add_element, remove_element, move_element, modify_element_name,
-    ROUTINE, select_condition, move_condition,
-    CONDITION, modify_condition,
-    ACTION, fill_action, remove_actions,
-};
+//enum class Update{
+//    ELEMENT, select_element,unselect_elements, add_element, remove_element, move_element, modify_element_name,
+//    ROUTINE, select_condition, move_condition,
+//    CONDITION, modify_condition,
+//    ACTION, fill_action, remove_actions,
+//};
 
 
-struct Up{
+//struct Up{
 
-    Up(bool all) : m_all(all){
-    }
+//    Up(bool all) : m_all(all){
+//    }
 
-    Up(std_v1<Update> updates){
-        for(auto &update : updates){
-            m_updates.emplace(update);
-        }
-    }
+//    Up(std_v1<Update> updates){
+//        for(auto &update : updates){
+//            m_updates.emplace(update);
+//        }
+//    }
 
-    bool check(Update u) const{
-        return m_all ? true : (m_updates.count(u) != 0);
-    }
+//    bool check(Update u) const{
+//        return m_all ? true : (m_updates.count(u) != 0);
+//    }
 
-private:
-    bool m_all = false;
-    std::unordered_set<Update> m_updates;
-};
+//private:
+//    bool m_all = false;
+//    std::unordered_set<Update> m_updates;
+//};
 
 
 class Experiment;
@@ -78,33 +79,64 @@ public:
 
     Experiment(QString nVersion);
 
-
-
-    void set_update_all_flag(){
-        updateFlag = UpdateAll;
-    }
-
-    void add_to_update_flag(int flag){
-        updateFlag |= flag;
-    }
-
-    void reset_update_flag(){
-        updateFlag = 0;
-    }
-
     // getters
+    // # element
+    std_v1<Element*> get_elements() const;
+    std_v1<Element*> get_elements_from_type(Element::Type type) const;
     Element *get_element(ElementKey elementKey) const;
+    // ## routine
     Routine *get_routine(ElementKey routineKey) const;
-    Isi *get_isi(ElementKey isiKey) const;
-    Loop *get_loop(ElementKey loopKey) const;
+    // ### condition
     Condition *get_condition(ConditionKey conditionKey) const;
     Condition *get_condition(ElementKey routineKey, ConditionKey conditionKey) const;
+    // #### action
     Action *get_action(ElementKey routineKey, ConditionKey conditionKey, ActionKey actionKey) const;
+    // ## isi
+    Isi *get_isi(ElementKey isiKey) const;
+    // ## loop
+    Loop *get_loop(ElementKey loopKey) const;
+    std_v1<Loop*> get_loops() const;
+    // # components
     Component *get_component(ComponentKey componentKey) const;
+    // ## config
     Config *get_config(ComponentKey componentKey, ConfigKey configKey) const;
 
+    inline Settings *settings() noexcept{return &m_settings;}
+    inline GUI *gui() noexcept{return &m_gui;}
+
     // check
+    void check_elements();
+    void check_legacy_conditions();
     void check_integrity();
+
+    // update flags
+    inline void set_update_all_flag() noexcept{updateFlag = UpdateAll;}
+    inline void add_to_update_flag(int flag) noexcept{updateFlag |= flag;}
+    inline void reset_update_flag() noexcept{updateFlag = 0;}
+    inline int update_flag() const noexcept {return updateFlag;}
+
+    template<class T>
+    std_v1<T*> get_elements_from_type() const{
+        std_v1<T*> children;
+        for(const auto &elem : elements){
+            if(auto child = dynamic_cast<T*>(elem.get()); child != nullptr){
+                children.emplace_back(child);
+            }
+        }
+        return children;
+    }
+
+    template<class T>
+    T* get_element_from_type_and_id(ElementKey key) const{
+        for(const auto &elem : elements){
+            if(T* child = dynamic_cast<T*>(elem.get()); child != nullptr){
+                if(elem->key() == key.v){
+                    return child;
+                }
+            }
+        }
+        return nullptr;
+    }
 
 public slots:
 
@@ -249,47 +281,14 @@ public slots:
                                       std_v1<ConnectorKey> connectorsKey, std_v1<ComponentKey> componentsKey, std_v1<ConnectionKey> connectionsKey, bool doUpdate);
     void select_nodes_and_connections(ElementKey routineKey, ConditionKey conditionKey,
                                       std_v1<ConnectorKey> connectorsKey, std_v1<ComponentKey> componentsKey, std_v1<ConnectionKey> connectionsKey, bool doUpdate);
-
-
-
 private :    
 
     // clean
     void remove_elements_not_in_flow();
 
-public :
-
-    std_v1<Loop*> get_loops() const;
-    std_v1<Element*> get_elements() const;
-    std_v1<Element*> get_elements_from_type(Element::Type type) const;
-
-    template<class T>
-    std_v1<T*> get_elements_from_type() const{
-        std_v1<T*> children;
-        for(const auto &elem : elements){
-            if(auto child = dynamic_cast<T*>(elem.get()); child != nullptr){
-                children.emplace_back(child);
-            }
-        }
-        return children;
-    }
-
-    template<class T>
-    T* get_element_from_type_and_id(ElementKey key) const{
-        for(const auto &elem : elements){
-            if(T* child = dynamic_cast<T*>(elem.get()); child != nullptr){
-                if(elem->key() == key.v){
-                    return child;
-                }
-            }
-        }
-        return nullptr;
-    }
 
 public :
 
-    Settings settings;
-    GUI gui;
     Randomizer randomizer;
 
     // elements
@@ -310,10 +309,15 @@ public :
     umap<int, umap<int, umap<int, umap<UiKey, UiValue>>>> connectorsInfo;
     umap<int, umap<int, umap<UiKey, UiValue>>>  componentsInfo;
 
+
+
+private :
+
     // update
     int updateFlag = 0;
 
-private :
+    GUI m_gui;
+    Settings m_settings;
 
     // components
     ComponentsManager *m_compM = nullptr;

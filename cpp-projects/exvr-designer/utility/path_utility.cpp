@@ -11,9 +11,9 @@
 using namespace tool::ex;
 
 
-void Paths::initialize_paths(){
+void Paths::initialize_paths(QString exeDir){
 
-    exeDir                  = QApplication::applicationDirPath();
+    Paths::exeDir           = exeDir;
     exe                     = exeDir % QSL("/ExVR.exe");
     dataDir                 = exeDir % QSL("/data");
     expLauncherDir          = exeDir % QSL("/exp-launcher");

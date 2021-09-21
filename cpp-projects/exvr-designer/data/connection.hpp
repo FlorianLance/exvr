@@ -81,13 +81,28 @@ namespace tool::ex {
     };
 
     // TODO: add component/connector pointers instead of id
-    // TOOD: add integrity check here
 
-    [[maybe_unused]] static bool operator==(const Connection &l, const Connection &r){
-        return  (l.key()  == r.key());
+
+    static bool operator<(const ConnectionUP &l, const ConnectionUP &r){
+        if(l->key() == r->key()){
+            return false;
+        }
+        if(
+            (l->startKey == r->startKey) &&
+            (l->endKey == r->endKey) &&
+            (l->startIndex == r->startIndex) &&
+            (l->endIndex == r->endIndex)){
+            return false;
+        }
+        return true;
     }
 
+    static bool operator==(const ConnectionUP &l, const ConnectionUP &r){
+        return !(l < r) && !(r < l);
+    }
 }
+
+
 
 
 

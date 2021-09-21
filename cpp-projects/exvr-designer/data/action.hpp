@@ -25,30 +25,23 @@ struct Action{
     Action() = delete;
     Action(Component *component, Config *config, ActionKey id);
 
-    static std::unique_ptr<Action> generate_component_action(Component *component, SecondsTS duration){
-        auto action = std::make_unique<Action>(component, component->configs[0].get(), ActionKey{-1});
-        action->timelineUpdate     = std::make_unique<Timeline>(Timeline::Type::Update, TimelineKey{-1});
-        action->timelineUpdate->add_interval(Interval(SecondsTS{0}, duration,IntervalKey{-1}));
-        action->timelineVisibility = std::make_unique<Timeline>(Timeline::Type::Visibility, TimelineKey{-1});
-        action->timelineVisibility->add_interval(Interval(SecondsTS{0}, duration,IntervalKey{-1}));
-        return action;
-    }
-
     void select_config(RowId  configTabId);
-
-    Config    *config               = nullptr;
-    Component *component            = nullptr;    
-
-    TimelineUP timelineUpdate       = nullptr;
-    TimelineUP timelineVisibility   = nullptr;
-
-    static ActionUP copy_with_new_element_id(const Action &actionToCopy);
-
     void update_intervals_with_max_length(SecondsTS maxLength);
 
     inline QString to_string() const{return QSL("Action(") % QString::number(key()) % QSL(")");}
 
+    static ActionUP generate_component_action(Component *component, SecondsTS duration);
+    static ActionUP copy_with_new_element_id(const Action &actionToCopy);
+
+    void check_integrity();
+
     IdKey key;
+
+    Config    *config               = nullptr;
+    Component *component            = nullptr;
+
+    TimelineUP timelineUpdate       = nullptr;
+    TimelineUP timelineVisibility   = nullptr;
 
     // ui
     // # graph
@@ -58,5 +51,20 @@ struct Action{
     bool nodeSelected = false;
 };
 
+static bool operator<(const ActionUP &l, const ActionUP &r){
+    if(l->key() == r->key()){
+        return false;
+    }
+
+    if(l->component->key() == r->component->key()){
+        return false;
+    }
+
+    return true;
+}
+
+static bool operator==(const ActionUP &l, const ActionUP &r){
+    return !(l < r) && !(r < l);
+}
 
 }

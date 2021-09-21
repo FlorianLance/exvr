@@ -34,6 +34,6 @@ SUBDIRS = \
         cpp-projects/exvr-designer\
         cpp-projects/exvr-components\
         cpp-projects/exvr-export\
-#        cpp-projects/exvr-test\
+        cpp-projects/exvr-test\
 
 

@@ -33,7 +33,7 @@ void Routine::set_as_randomizer(bool randomizer){
         condition->connections.clear();
         condition->connectors.clear();
     }
-    ghostsConditions.clear();
+//    ghostsConditions.clear();
 }
 
 void Routine::select_condition(ConditionKey conditionKey){
@@ -121,6 +121,28 @@ void Routine::delete_actions_from_condition(ConditionKey conditionKey){
         condition->remove_all_actions();
     }
 }
+
+void Routine::check_integrity(){
+
+    size_t countBefore = conditions.size();
+
+    std::sort(conditions.begin(), conditions.end());
+    conditions.erase(std::unique(conditions.begin(), conditions.end()), conditions.end());
+
+    size_t countAfter = conditions.size();
+    if(countBefore > countAfter){
+        QtLogger::warning(
+            QSL("Remove ") % QString::number(countBefore - countAfter) % QSL(" duplicated conditions from routine ") %
+            name() % QSL(" with id ") % QString::number(key()) % QSL(".")
+        );
+    }
+
+    for(auto &condition : conditions){
+        condition->check_integrity();
+    }
+}
+
+
 
 Condition *Routine::get_condition(ConditionKey conditionKey) const{
     for(const auto &condition : conditions){

@@ -30,6 +30,10 @@ namespace Ex {
         private static readonly string channelsLatencyStr        = "channels latency";
         private static readonly string triggerChannelsStr        = "trigger channels";
 
+        private static readonly List<int> samplingRateValues = new List<int>(new int[] {
+            10,25,50,100,200,250,500,1000,2000,2500,5000,10000,20000,25000
+        });
+
         private bool addHeaderLine = false;
 
         // debug
@@ -72,11 +76,11 @@ namespace Ex {
             // ex:
             // set sample rate to 5 msec per sample = 200 Hz  -> retval = setSampleRate(5.0);
 
-            // set sampling rate (2 kHz maximum)
-            double sampleRate = 1000.0 / initC.get<int>("sampling_rate");
+            // set sampling rate (25 kHz maximum)
+            double sampleRate = 1000.0 / samplingRateValues[initC.get<int>("sampling_rate_id")];
             MPCODE retval = MP.setSampleRate(sampleRate);
             if (retval != MPCODE.MPSUCCESS) {
-                log_error(string.Format("Sampling error {0} with rate: {1}", BiopacSettings.code_to_string(retval), initC.get<int>("sampling_rate").ToString()));
+                log_error(string.Format("Sampling error {0} with rate: {1}", BiopacSettings.code_to_string(retval), Converter.to_string(sampleRate)));
                 return false;
             }
             log_message("Sample rate (Hz): " + sampleRate);

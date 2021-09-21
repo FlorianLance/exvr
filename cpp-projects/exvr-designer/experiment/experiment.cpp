@@ -1554,12 +1554,12 @@ void Experiment::remove_component(ComponentKey componentKey){
                 }
             }
 
-            // remove action containing component from ghost conditions
-            for(auto &condition : routine->ghostsConditions){
-                if(auto action = condition->get_action_from_component_key(componentKey, false); action != nullptr){
-                    condition->remove_action(ActionKey{action->key()});
-                }
-            }
+//            // remove action containing component from ghost conditions
+//            for(auto &condition : routine->ghostsConditions){
+//                if(auto action = condition->get_action_from_component_key(componentKey, false); action != nullptr){
+//                    condition->remove_action(ActionKey{action->key()});
+//                }
+//            }
         }
 
         for(size_t id = 0; id < m_compM->components.size(); ++id){
@@ -1796,6 +1796,69 @@ Config *Experiment::get_config(ComponentKey componentKey, ConfigKey configKey) c
     return nullptr;
 }
 
+void Experiment::check_elements(){
+
+//    size_t countBefore = elements.size();
+//    std::sort(elements.begin(), elements.end());
+//    elements.erase(std::unique(elements.begin(), elements.end()), elements.end());
+
+//    size_t countAfter = elements.size();
+//    if(countBefore > countAfter){
+//        QtLogger::warning(
+//            QSL("Remove ") % QString::number(countBefore - countAfter) % QSL(" duplicated elements.")
+//        );
+//    }
+
+    for(auto &element : elements){
+        qDebug() << "check " << element->name();
+        element->check_integrity();
+    }
+}
+
+void Experiment::check_legacy_conditions(){
+
+    // check for empty condition sets keys
+    for(auto &routine : get_elements_from_type<Routine>()){
+
+        for(auto &condition : routine->conditions){
+
+            if(routine->insideLoops.size() == 0){
+                continue;
+            }
+
+            if(condition->setsKeys.size() == 0){
+
+                QtLogger::error("[XML] OUTDATED SETS SYSTEM, WILL TRY TO UPGRADE, MAY FAIL IF LOOPS HAVE SAME SETS NAMES -> from routine " %
+                                routine->name() % QSL(" with condition ") % condition->name);
+
+                size_t countMatched = 0;
+                auto split = condition->name.split("-");
+                for(auto set : split){
+
+                    for(auto &loop : routine->insideLoops){
+
+                        bool found = false;
+                        for(const auto &loopSet : dynamic_cast<Loop*>(loop)->sets){
+                            if(loopSet.name == set){
+                                found = true;
+                                ++countMatched;
+                                condition->setsKeys.emplace_back(loopSet.key());
+
+                                break;
+                            }
+                        }
+
+                        if(found){
+                            break;
+                        }
+                    }
+                }
+                QtLogger::error(QSL("[XML] FOUND ") % QString::number(countMatched) % QSL(" OUT OF ") % QString::number(split.size()) % " SETS MATCHING. PLEASE CHECK IT.");
+            }
+        }
+    }
+}
+
 
 
 void Experiment::new_experiment(){
@@ -1825,7 +1888,7 @@ void Experiment::clean_experiment(){
     m_compM->clean_components();
 
     // reset settings
-    settings.reset();
+    m_settings.reset();
 
     // clean id
     IdKey::reset();
@@ -1944,17 +2007,17 @@ void Experiment::update_exp_state(ExpState state, QStringView infos){
 
 void Experiment::reset_settings(){
     QtLogger::message(QSL("[EXP] Reset settings"));
-    settings.reset();
-    add_to_update_flag(UpdateUI);
+    m_settings.reset();
+    add_to_update_flag(UpdateSettings);
 }
 
 void Experiment::update_settings(Settings settings){
-    this->settings = std::move(settings);
-    add_to_update_flag(UpdateUI);
+    this->m_settings = std::move(settings);
+    add_to_update_flag(UpdateSettings);
 }
 
 void Experiment::toggle_actions_connections_separation(){
-    gui.toggleActionsConnectionsSep = !gui.toggleActionsConnectionsSep;
+    m_gui.toggleActionsConnectionsSep = !m_gui.toggleActionsConnectionsSep;
     add_to_update_flag(UpdateRoutines);
 }
 

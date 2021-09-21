@@ -46,36 +46,36 @@ public:
 
 public slots:
 
-    void update_from_settings(const Settings &settings){
+    void update_from_settings(Settings *settings){
 
         // debug
-        m_ui.cbDebug->setChecked(settings.debug);
-        m_ui.cbCsharpDebugInfo->setChecked(settings.csharpAddDebugInfo);
-        m_ui.cbCatchComponentsExceptions->setChecked(settings.catchComponentsExceptions);
+        m_ui.cbDebug->setChecked(settings->debug);
+        m_ui.cbCsharpDebugInfo->setChecked(settings->csharpAddDebugInfo);
+        m_ui.cbCatchComponentsExceptions->setChecked(settings->catchComponentsExceptions);
 
         // camera
-        m_ui.cbNeutralX->setChecked(settings.neutralX);
-        m_ui.cbNeutralY->setChecked(settings.neutralY);
-        m_ui.cbNeutralZ->setChecked(settings.neutralZ);
-        m_ui.cbEnablePositionalTracking->setChecked(settings.positionalTracking);
+        m_ui.cbNeutralX->setChecked(settings->neutralX);
+        m_ui.cbNeutralY->setChecked(settings->neutralY);
+        m_ui.cbNeutralZ->setChecked(settings->neutralZ);
+        m_ui.cbEnablePositionalTracking->setChecked(settings->positionalTracking);
 
         // input
-        m_ui.cbCatchExternalKeyboardKeysEvents->setChecked(settings.catchExternalKeyboardKeysEvents);
+        m_ui.cbCatchExternalKeyboardKeysEvents->setChecked(settings->catchExternalKeyboardKeysEvents);
 
         // display
-        if(settings.displayMode == Settings::ExpLauncherDisplayMode::OpenVR){
+        if(settings->displayMode == Settings::ExpLauncherDisplayMode::OpenVR){
             m_ui.rbVrMode->setChecked(true);
-        }else if(settings.displayMode == Settings::ExpLauncherDisplayMode::Flat){
+        }else if(settings->displayMode == Settings::ExpLauncherDisplayMode::Flat){
             m_ui.rbFlatMode->setChecked(true);
         }else{
             m_ui.rbFlatStereoMode->setChecked(true);
         }
-        m_ui.sbStereoFOV->setValue(settings.stereoCameraFOV);
-        m_ui.sbMonitorId->setValue(settings.monitorId);
-        m_ui.cbFullscreen->setChecked(settings.fullscreen);        
-        m_ui.cbDefinition->setCurrentIndex(settings.resolutionId);
-        m_ui.sbDefWidth->setValue(settings.customWidth);
-        m_ui.sbDefHeight->setValue(settings.customHeight);
+        m_ui.sbStereoFOV->setValue(settings->stereoCameraFOV);
+        m_ui.sbMonitorId->setValue(settings->monitorId);
+        m_ui.cbFullscreen->setChecked(settings->fullscreen);
+        m_ui.cbDefinition->setCurrentIndex(settings->resolutionId);
+        m_ui.sbDefWidth->setValue(settings->customWidth);
+        m_ui.sbDefHeight->setValue(settings->customHeight);
 
         update_ui_state();
     }
