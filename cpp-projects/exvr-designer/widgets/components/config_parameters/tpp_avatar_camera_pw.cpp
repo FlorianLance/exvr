@@ -5,7 +5,7 @@
 ** Copyright (c) [2018] [Florian Lance][EPFL-LNCO]                            **
 ********************************************************************************/
 
-#include "fpp_avatar_camera_pw.hpp"
+#include "tpp_avatar_camera_pw.hpp"
 
 
 // qt-utility
@@ -18,24 +18,22 @@
 
 using namespace tool::ex;
 
-struct FPPAvatarCameraInitConfigParametersW::Impl{
+struct TPPAvatarCameraInitConfigParametersW::Impl{
     ExComponentW avatar{"avatar"};
 };
 
-FPPAvatarCameraInitConfigParametersW::FPPAvatarCameraInitConfigParametersW() :  ConfigParametersW(), m_p(std::make_unique<Impl>()){}
+TPPAvatarCameraInitConfigParametersW::TPPAvatarCameraInitConfigParametersW() :  ConfigParametersW(), m_p(std::make_unique<Impl>()){}
 
-void tool::ex::FPPAvatarCameraInitConfigParametersW::insert_widgets(){
+void tool::ex::TPPAvatarCameraInitConfigParametersW::insert_widgets(){
     add_widget(ui::F::gen(ui::L::HB(), {m_p->avatar()}, LStretch{false}, LMargins{true}, QFrame::NoFrame));
 }
 
-void tool::ex::FPPAvatarCameraInitConfigParametersW::init_and_register_widgets(){
+void tool::ex::TPPAvatarCameraInitConfigParametersW::init_and_register_widgets(){
     add_input_ui(m_p->avatar.init_widget(Component::T::Humanoid_avatar, "Avatar"));
 }
 
-void tool::ex::FPPAvatarCameraInitConfigParametersW::create_connections(){}
-void tool::ex::FPPAvatarCameraInitConfigParametersW::late_update_ui(){}
 
-struct FPPAvatarCameraConfigParametersW::Impl{
+struct TPPAvatarCameraConfigParametersW::Impl{
 
     ExCheckBoxW moveNeutralCameraToHead{"move_neutral_camera_to_head"};
     ExCheckBoxW neutralPitch{"neutral_pitch"};
@@ -48,16 +46,13 @@ struct FPPAvatarCameraConfigParametersW::Impl{
     ExRadioButtonW updateEyesCameraFromHead{"update_eyes_camera_from_head"};
     ExRadioButtonW doNotUpdate{"no_not_update"};
     ExRadioButtonW updateHeadFromEyesCamera{"update_head_from_eyes_camera"};
-
-    ExVector3dW headFromEyesOffsetPos{"head_from_eyes_offset_pos"};
-    ExVector3dW headFromEyesOffsetRot{"head_from_eyes_offset_rot"};
 };
 
 
-FPPAvatarCameraConfigParametersW::FPPAvatarCameraConfigParametersW() :  ConfigParametersW(), m_p(std::make_unique<Impl>()){
+TPPAvatarCameraConfigParametersW::TPPAvatarCameraConfigParametersW() :  ConfigParametersW(), m_p(std::make_unique<Impl>()){
 }
 
-void tool::ex::FPPAvatarCameraConfigParametersW::insert_widgets(){
+void tool::ex::TPPAvatarCameraConfigParametersW::insert_widgets(){
 
     add_widget(ui::F::gen(ui::L::VB(),{
         ui::F::gen(ui::L::HB(), {m_p->moveNeutralCameraToHead()}, LStretch{true}, LMargins{false}, QFrame::NoFrame),
@@ -74,13 +69,10 @@ void tool::ex::FPPAvatarCameraConfigParametersW::insert_widgets(){
     add_widget(ui::F::gen(ui::L::VB(),{
         ui::F::gen(ui::L::HB(), {ui::W::txt("Action to do:")}, LStretch{true}, LMargins{false}, QFrame::NoFrame),
         ui::F::gen(ui::L::VB(), {m_p->updateEyesCameraFromHead(), m_p->updateHeadFromEyesCamera(), m_p->doNotUpdate()}, LStretch{false}, LMargins{true}, QFrame::NoFrame),
-        ui::F::gen(ui::L::HB(), {ui::W::txt("With offset between avatar head position and neutral camera:")}, LStretch{true}, LMargins{false}, QFrame::NoFrame),
-        ui::F::gen(ui::L::HB(), {m_p->headFromEyesOffsetPos()}, LStretch{true}, LMargins{false}, QFrame::NoFrame),
-        ui::F::gen(ui::L::HB(), {m_p->headFromEyesOffsetRot()}, LStretch{true}, LMargins{false}, QFrame::NoFrame),
     }, LStretch{true}, LMargins{true}, QFrame::Box));
 }
 
-void tool::ex::FPPAvatarCameraConfigParametersW::init_and_register_widgets(){
+void tool::ex::TPPAvatarCameraConfigParametersW::init_and_register_widgets(){
 
     add_input_ui(m_p->moveNeutralCameraToHead.init_widget("Move neutral camera to head (when routine starts)", true));
     add_input_ui(m_p->neutralPitch.init_widget("Pitch", false));
@@ -106,14 +98,7 @@ void tool::ex::FPPAvatarCameraConfigParametersW::init_and_register_widgets(){
 
     add_input_ui(m_p->neutralCameraToHeadOffsetPos.init_widget("Position:", offsetVecPos));
     m_p->neutralCameraToHeadOffsetPos.x.w->setValue(0);
+    m_p->neutralCameraToHeadOffsetPos.z.w->setValue(-2.);
     add_input_ui(m_p->neutralCameraToHeadOffsetRot.init_widget("Rotation:", offsetVecRot));
-
-    add_input_ui(m_p->headFromEyesOffsetPos.init_widget("Position(m) :", offsetVecPos));
-    m_p->headFromEyesOffsetPos.x.w->setValue(0);
-    m_p->headFromEyesOffsetPos.y.w->setValue(0);
-    m_p->headFromEyesOffsetPos.z.w->setValue(0);
-    add_input_ui(m_p->headFromEyesOffsetRot.init_widget("Rotation(°) :", offsetVecRot));
 }
 
-void tool::ex::FPPAvatarCameraConfigParametersW::create_connections(){}
-void tool::ex::FPPAvatarCameraConfigParametersW::late_update_ui(){}

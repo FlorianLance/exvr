@@ -58,7 +58,10 @@ namespace Ex{
             m.SetColor("_Color", currentC.get_color("color"));
             m.SetFloat("_Metallic", currentC.get<float>("metallic"));
             m.SetFloat("_Glossiness", currentC.get<float>("smoothness"));
+        }
 
+        protected override void update_parameter_from_gui(string updatedArgName) {
+            update_from_current_config();
         }
 
         protected override void set_visibility(bool visibility) {

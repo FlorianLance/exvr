@@ -31,14 +31,13 @@ namespace Ex{
             return true;
         }
 
-        protected override void start_routine() {
-            load_text();            
+
+        public override void update_from_current_config() {
+            load_text();
         }
 
         protected override void update_parameter_from_gui(string updatedArgName) {
-            if (updatedArgName == "text") {
-                load_text();
-            }
+            update_from_current_config();
         }
 
         private void load_text() {            

@@ -123,6 +123,10 @@ namespace Ex{
             port      = currentC.get<int>("port");
         }
 
+        protected override void update_parameter_from_gui(string updatedArgName) {
+            update_from_current_config();
+        }
+
         public void write(int value) {
 
             if (!m_available) {

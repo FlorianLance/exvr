@@ -41,5 +41,10 @@ namespace Ex{
             }
             dot.GetComponent<MeshRenderer>().material.color = currentC.get<bool>("on") ? currentC.get_color("on_color") : currentC.get_color("off_color");
         }
+
+
+        protected override void update_parameter_from_gui(string updatedArgName) {
+            update_from_current_config();
+        }
     }
 }

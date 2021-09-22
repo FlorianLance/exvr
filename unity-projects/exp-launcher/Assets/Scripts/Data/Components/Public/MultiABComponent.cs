@@ -88,6 +88,10 @@ namespace Ex {
             reset_config_transform();
         }
 
+        protected override void update_parameter_from_gui(string updatedArgName) {
+            update_from_current_config();
+        }
+
         private void instantiate_sub_components(GameObject bundle) {
 
             // keep deleted components references to be added after when every component would have been regenerated

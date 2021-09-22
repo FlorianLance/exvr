@@ -132,6 +132,10 @@ namespace Ex{
             update_visibility();
         }
 
+        protected override void update_parameter_from_gui(string updatedArgName) {
+            update_from_current_config();
+        }
+
         public void update_visibility() {
             m_targetLinesLR.enabled  = is_visible() && currentC.get<bool>("debug");
             m_workingZoneLR.enabled  = is_visible() && currentC.get<bool>("debug");

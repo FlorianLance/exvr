@@ -23,6 +23,10 @@ namespace Ex{
             load_image();
         }
 
+        protected override void update_parameter_from_gui(string updatedArgName) {
+            update_from_current_config();
+        }
+
         private void load_image() {
 
             var imageData = currentC.get_resource_image_data("image");

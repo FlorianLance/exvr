@@ -131,15 +131,16 @@ namespace Ex
             ["Ex.SerialPortWriterComponent"] = gen_info(Category.Network, Pritority.Hight, Reserved.Public),
             ["Ex.ParallelPortWriterComponent"] = gen_info(Category.Network, Pritority.Hight, Reserved.Public),
             // output
-            ["Ex.LoggerComponent"] = gen_info(Category.Output, Pritority.Low, Reserved.Public),
-            ["Ex.LoggerConditionComponent"] = gen_info(Category.Output, Pritority.Low, Reserved.Public),
-            ["Ex.LoggerColumnsComponent"] = gen_info(Category.Output, Pritority.Low, Reserved.Public),
+            ["Ex.LoggerComponent"] = gen_info(Category.Output, Pritority.Hight, Reserved.Public),
+            ["Ex.LoggerConditionComponent"] = gen_info(Category.Output, Pritority.Hight, Reserved.Public),
+            ["Ex.LoggerColumnsComponent"] = gen_info(Category.Output, Pritority.Hight, Reserved.Public),
             // camera
             ["Ex.CameraTargetComponent"] = gen_info(Category.Camera, Pritority.Low, Reserved.Public),
             ["Ex.CameraTrajectoryComponent"] = gen_info(Category.Camera, Pritority.Low, Reserved.Public),
             ["Ex.CameraTrajectoryFileComponent"] = gen_info(Category.Camera, Pritority.Low, Reserved.Public),
             ["Ex.CameraComponent"] = gen_info(Category.Camera, Pritority.Low, Reserved.Public),
             ["Ex.FPPAvatarCameraComponent"] = gen_info(Category.Camera, Pritority.Low, Reserved.Closed),
+            ["Ex.TPPAvatarCameraComponent"] = gen_info(Category.Camera, Pritority.Low, Reserved.Closed),
             // scene
             ["Ex.AssetBundleComponent"] = gen_info(Category.Scene, Pritority.Hight, Reserved.Public),
             ["Ex.MultiABComponent"] = gen_info(Category.Scene, Pritority.Hight, Reserved.Public),
@@ -562,6 +563,13 @@ namespace Ex
                 return (T)componentsPerType[typeof(T)][0];
             }
             return null;
+        }
+
+        // set
+        public void set_first<T>(ref T component) where T : ExComponent {
+            if (componentsPerType[typeof(T)].Count > 0) {
+                component = (T)componentsPerType[typeof(T)][0];
+            }
         }
 
         // get all

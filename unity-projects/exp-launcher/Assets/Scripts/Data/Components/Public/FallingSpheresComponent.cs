@@ -88,18 +88,20 @@ namespace Ex {
             return true;
         }
 
-        protected override void start_routine() {
+
+        public override void update_from_current_config() {
 
             innerC.transform.localPosition = currentC.get_vector3("position");
             externC.transform.localPosition = currentC.get_vector3("position");// + new Vector3(0,0.1f, 0);
             float rayMin = currentC.get<float>("inner_circle_ray");
             float rayMax = currentC.get<float>("extern_circle_ray");
-            innerC.transform.localScale = new Vector3(2*rayMin, 0.2f, 2 * rayMin);
+            innerC.transform.localScale = new Vector3(2 * rayMin, 0.2f, 2 * rayMin);
             externC.transform.localScale = new Vector3(2 * rayMax, 0.1f, 2 * rayMax);
 
             innerC.SetActive(currentC.get<bool>("display_spawner"));
             externC.SetActive(currentC.get<bool>("display_spawner"));
-
+        }
+        protected override void start_routine() {
             spawnCounter = 0;
         }
         protected override void stop_routine() {
@@ -157,21 +159,7 @@ namespace Ex {
         }
 
         protected override void update_parameter_from_gui(string updatedArgName) {
-
-            if (updatedArgName == "position") {
-                innerC.transform.localPosition  = currentC.get_vector3("position");
-                externC.transform.localPosition = currentC.get_vector3("position") + new Vector3(0, 0.1f, 0);
-            } else if (updatedArgName == "inner_circle_ray") {
-                float rayMin = currentC.get<float>("inner_circle_ray");                
-                innerC.transform.localScale = new Vector3(2 * rayMin, 0.2f, 2 * rayMin);                
-            } else if (updatedArgName == "extern_circle_ray") {
-                float rayMax = currentC.get<float>("extern_circle_ray");
-                externC.transform.localScale = new Vector3(2 * rayMax, 0.1f, 2 * rayMax);
-            }else if(updatedArgName == "display_spawner") {
-                bool display = currentC.get<bool>(updatedArgName);
-                innerC.SetActive(display);
-                externC.SetActive(display);
-            }
+            update_from_current_config();
         }
 
         protected override void set_visibility(bool visibility) {

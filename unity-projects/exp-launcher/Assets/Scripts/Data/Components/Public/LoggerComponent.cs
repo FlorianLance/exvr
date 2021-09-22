@@ -50,7 +50,6 @@ namespace Ex{
             base.start_experiment();
         }
 
-
         protected override void start_routine() {
 
             if(m_insertNewRoutineInfo) {

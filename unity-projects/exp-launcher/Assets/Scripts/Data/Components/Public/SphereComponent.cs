@@ -59,6 +59,10 @@ namespace Ex{
             m.SetFloat("_Glossiness", currentC.get<float>("smoothness"));
         }
 
+        protected override void update_parameter_from_gui(string updatedArgName) {
+            update_from_current_config();
+        }
+
         protected override void set_visibility(bool visibility) {
             Debug.Log("s " + visibility + " " + is_visible());
             mr.enabled = visibility;

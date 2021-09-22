@@ -99,6 +99,7 @@ namespace Ex {
             update_textures_parameters();
         }
 
+
         protected override void pre_start_routine() {
             load_all_textures();
         }

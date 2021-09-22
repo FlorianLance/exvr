@@ -46,6 +46,10 @@ namespace Ex{
             }
         }
 
+        protected override void update_parameter_from_gui(string updatedArgName) {
+            update_from_current_config();
+        }
+
         protected override void set_visibility(bool visibility) {
             foreach(var line in lines) {
                 line.gameObject.SetActive(visibility);

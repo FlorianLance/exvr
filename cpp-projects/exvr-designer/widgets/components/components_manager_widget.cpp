@@ -374,6 +374,7 @@ void ComponentsManagerW::show_howering_component_custom_menu(QPoint pos, Compone
     QMenu contextMenu(tr("Context menu"), this);
     contextMenu.addMenu(&m_createNewComponentsSubMenu);
     contextMenu.addMenu(&m_createNewExperimentalComponentsSubMenu);
+    contextMenu.addMenu(&m_createNewLegacyComponentsSubMenu);
     contextMenu.addSeparator();
 
     QMenu addComponentSubMenu(tr("Add to..."));

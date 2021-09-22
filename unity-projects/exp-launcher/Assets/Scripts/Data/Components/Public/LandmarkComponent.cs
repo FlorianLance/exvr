@@ -48,6 +48,10 @@ namespace Ex {
             centerMaterial.SetColor("_Color", currentC.get_color("color"));
         }
 
+        protected override void update_parameter_from_gui(string updatedArgName) {
+            update_from_current_config();
+        }
+
         protected override void set_visibility(bool visibility) {
             landmarkGO.SetActive(visibility);
             invoke_signal("visibility changed", visibility);

@@ -56,6 +56,10 @@ namespace Ex{
                 currentC.update_transform("transform", transform, true);
             }
         }
+
+        protected override void update_parameter_from_gui(string updatedArgName) {
+            update_from_current_config();
+        }
         protected override void start_routine() {
 
             // clean objects

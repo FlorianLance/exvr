@@ -91,7 +91,7 @@ struct Component {
         /** P */ Parallel_port_writer, Plot_resource, Python_script,
         /** Q */ Qualisys,
         /** S */ Scaner_video, Scene_scaner, Serial_port_writer, Sky, Slider_ui, Sonceboz_SG, Sphere,
-        /** T */ Target_to_grab, Text_resource, Text_viewer, Thera_trainer_tracking, Thera_trainer_platform, Torus,
+        /** T */ Target_to_grab, Text_resource, Text_viewer, Thera_trainer_tracking, Thera_trainer_platform, Torus, TPP_avatar_camera,
         /** U */ Unity_asset_bundle, Udp_reader, Udp_writer,
         /** V */ Video_file, Video_file_camera_viewer, Video_saver, Camera_target,
         /** W */ Webcam, Webcam_viewer,
@@ -159,7 +159,8 @@ struct Component {
         {T::Camera_target,            C::Camera,      TO::U,     CO::C,   false,   R::OpenSource,   S::Sta, "Camera_target"sv, "Camera target"sv, "CameraTarget"sv, ":/icons/Camera"sv},
         {T::Camera_trajectory,        C::Camera,      TO::B,     CO::C,   false,   R::OpenSource,   S::Leg, "Camera_trajectory"sv, "Camera trajectory"sv, "CameraTrajectory"sv, ":/icons/Camera"sv},
         {T::Camera_trajectory_file,   C::Camera,      TO::B,     CO::C,   false,   R::OpenSource,   S::Leg, "Camera_trajectory_file"sv, "Camera trajectory file"sv, "CameraTrajectoryFile"sv, ":/icons/Camera"sv},
-        {T::FPP_avatar_camera,        C::Camera,      TO::B,     CO::B,   false,   R::ClosedSource, S::Exp, "FPP_avatar_camera"sv, "FPP avatar camera"sv, "FPPAvatarCamera"sv, ":/icons/Camera"sv},
+        {T::FPP_avatar_camera,        C::Camera,      TO::U,     CO::B,   false,   R::ClosedSource, S::Sta, "FPP_avatar_camera"sv, "First person perspective avatar camera"sv, "FPPAvatarCamera"sv, ":/icons/Camera"sv},
+        {T::TPP_avatar_camera,        C::Camera,      TO::U,     CO::B,   false,   R::ClosedSource, S::Sta, "TPP_avatar_camera"sv, "Third persond perspective avatar camera"sv, "TPPAvatarCamera"sv, ":/icons/Camera"sv},
         // Cloud
         {T::Cloud,                    C::Cloud,       TO::V,     CO::B,   false,   R::OpenSource,   S::Sta, "Cloud"sv, "Cloud"sv, "Cloud"sv, ":/icons/Cloud"sv},
         {T::Scaner_video,             C::Cloud,       TO::B,     CO::B,   false,   R::LNCO,         S::Exp, "Scaner_video"sv, "Scaner video"sv, "ScanerVideo"sv, ":/icons/Video_cloud"sv},

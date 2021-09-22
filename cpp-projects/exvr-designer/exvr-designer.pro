@@ -147,6 +147,7 @@ HEADERS += \
     ### parameters widgets
     widgets/components/config_parameters/humanoid_avatar_pw.hpp \
     widgets/components/config_parameters/fpp_avatar_camera_pw.hpp \
+    widgets/components/config_parameters/tpp_avatar_camera_pw.hpp \
     widgets/components/config_parameters/flag_pole_pw.hpp \
     widgets/components/config_parameters/asset_bundle_pw.hpp \
     widgets/components/config_parameters/multi_ab_pw.hpp \
@@ -342,6 +343,7 @@ SOURCES += \
     widgets/components/config_parameters/sub_parts_pw.cpp \
     widgets/components/config_parameters/humanoid_avatar_pw.cpp \
     widgets/components/config_parameters/fpp_avatar_camera_pw.cpp \
+    widgets/components/config_parameters/tpp_avatar_camera_pw.cpp \
     widgets/components/config_parameters/keyboard_pw.cpp \
     widgets/components/config_parameters/logger_pw.cpp \
     widgets/components/config_parameters/asset_bundle_pw.cpp \

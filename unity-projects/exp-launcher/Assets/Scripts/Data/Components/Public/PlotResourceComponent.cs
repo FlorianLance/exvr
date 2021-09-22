@@ -28,6 +28,10 @@ namespace Ex{
             load_plot();
         }
 
+        protected override void update_parameter_from_gui(string updatedArgName) {
+            update_from_current_config();
+        }
+
         private void load_plot() {
 
             if (currentC.get<bool>("random")) {

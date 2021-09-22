@@ -310,9 +310,7 @@ void ResourcesManagerDialog::generate_csharp_script(){
 
 void ResourcesManagerDialog::show_section(Resource::Type type){
 
-    qDebug() << "show section";
     if(type != Resource::Type::SizeEnum){
-        qDebug() << "set index " << m_tabsIdW[type];
         m_ui.twCategories->setCurrentIndex(m_tabsIdW[type]);
     }
 

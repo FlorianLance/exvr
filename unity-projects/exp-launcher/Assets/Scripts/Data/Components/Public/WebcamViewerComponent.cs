@@ -98,6 +98,7 @@ namespace Ex{
             resize_container();
         }
 
+
         public void resize_container() {
 
             m_panelGO.transform.position = Vector3.zero;

@@ -33,6 +33,10 @@ namespace Ex{
             m_mirrorGO.transform.Find("MirrorFrame").gameObject.SetActive(currentC.get<bool>("show_frame"));            
         }
 
+        protected override void update_parameter_from_gui(string updatedArgName) {
+            update_from_current_config();
+        }
+
         protected override void set_visibility(bool visibility) {
             m_mirrorGO.SetActive(visibility);
         }

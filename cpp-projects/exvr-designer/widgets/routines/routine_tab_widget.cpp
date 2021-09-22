@@ -70,10 +70,7 @@ void RoutineTabW::close_all_windows(){
 
 void RoutineTabW::update_from_routine(GUI *gui, Routine *routine){
 
-    qDebug() << "routine->isARandomizer " << routine->isARandomizer;
     if(routine->isARandomizer){
-
-        qDebug() << "reset " << count();
         reset();
         setEnabled(false);
         return;
@@ -143,7 +140,6 @@ void RoutineTabW::update_from_routine(GUI *gui, Routine *routine){
     // select current
     for(size_t ii = 0; ii < routine->conditions.size(); ++ii){
         if(routine->conditions[ii]->selected){
-            qDebug() << "Update current index: " << ii;
             setCurrentIndex(to_signed(ii));
             break;
         }

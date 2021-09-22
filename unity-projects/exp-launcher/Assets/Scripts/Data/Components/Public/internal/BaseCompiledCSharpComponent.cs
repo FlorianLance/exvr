@@ -88,6 +88,7 @@ namespace Ex {
         public T get<T>(string name) where T : ExComponent {return ExVR.Components().get_from_name<T>(name);}
 
         public T get_first<T>() where T : ExComponent { return ExVR.Components().get_first<T>(); }
+        public void set_first<T>(ref T component) where T : ExComponent {ExVR.Components().set_first<T>(ref component);}
 
         // # alias
         public ExComponent get_component(int key) {return get(key);}
