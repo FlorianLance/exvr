@@ -21,6 +21,9 @@
 // qt-utility
 #include "qt_ui.hpp"
 
+// local
+#include "experiment/global_signals.hpp"
+
 using namespace tool;
 using namespace tool::ex;
 
@@ -37,7 +40,7 @@ ComponentW::ComponentW(Component *component) : key(ComponentKey{component->key()
     m_iconButton->setIconSize(QSize(15,15));
     m_iconButton->setObjectName(QSL("e_") % QString::number(key.v));
     connect(m_iconButton, &QPushButton::clicked, this, [&]{
-        emit toggle_component_parameters_signal(key);
+        emit GSignals::get()->toggle_component_parameters_signal(key);
     });
 
     // title
@@ -112,7 +115,7 @@ void ComponentW::mousePressEvent(QMouseEvent *event){
 
     // right click
     if(event->button()== Qt::MouseButton::RightButton){
-        emit show_component_custom_menu_signal(event->globalPos(),key);
+        emit GSignals::get()->show_component_custom_menu_signal(event->globalPos(),key);
         return;
     }
 
@@ -136,29 +139,29 @@ void ComponentW::mousePressEvent(QMouseEvent *event){
         }
     }
 
-    emit toggle_selection_component_signal(key);
+    emit GSignals::get()->toggle_selection_component_signal(key);
 }
 
 void ComponentW::mouseDoubleClickEvent(QMouseEvent *event){
 
     if(event->button() == Qt::MouseButton::LeftButton){
-        emit toggle_component_parameters_signal(key);
+        emit GSignals::get()->toggle_component_parameters_signal(key);
     }
     if(event->button() == Qt::MouseButton::MiddleButton){
-        emit remove_component_signal(key);
+        emit GSignals::get()->remove_component_signal(key);
     }
 }
 
 void ComponentW::enterEvent(QEvent *event){
     Q_UNUSED(event)
     mouseHovering = true;
-    emit enter_component_signal(key);
+    emit GSignals::get()->enter_component_signal(key);
 }
 
 void ComponentW::leaveEvent(QEvent *event){
     Q_UNUSED(event)
     mouseHovering = false;
-    emit leave_component_signal(key);
+    emit GSignals::get()->leave_component_signal(key);
 }
 
 #include "moc_component_widget.cpp"

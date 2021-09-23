@@ -51,7 +51,7 @@ int Table::rowCount(const QModelIndex &) const{
 }
 
 int Table::columnCount(const QModelIndex &) const{
-    return 2;
+    return 3;
 }
 
 QVariant Table::data(const QModelIndex &index, int role) const{
@@ -62,12 +62,16 @@ QVariant Table::data(const QModelIndex &index, int role) const{
             return std::get<0>(elements.at(id));
         }else if (index.column() == 1){
             return std::get<1>(elements.at(id));
+        }else if(index.column() == 2){
+            return std::get<3>(elements.at(id));
         }
     }else if (role == Qt::BackgroundRole){
          if(index.column() == 0){
             return QColor(Qt::lightGray);
          }else if (index.column() == 1){
             return QColor(Qt::black);
+         }else if (index.column() == 1){
+             return QColor(Qt::lightGray);
          }
     }else if (role == Qt::ForegroundRole){
         if(index.column() == 0){
@@ -75,10 +79,14 @@ QVariant Table::data(const QModelIndex &index, int role) const{
         }else if (index.column() == 1){
             auto id = order[index.row()];
             return std::get<2>(elements.at(id)) ? QColor(Qt::green) : QColor(Qt::darkYellow);
+        }else if (index.column() == 2){
+            return QColor(Qt::black);
         }
     }else if (role == Qt::TextAlignmentRole){
         if(index.column() == 0){
             return Qt::AlignLeft;
+        }else if(index.column() == 1){
+            return Qt::AlignCenter;
         }else if(index.column() == 1){
             return Qt::AlignCenter;
         }
@@ -96,12 +104,13 @@ void Table::update(){
     }
 
     for(const auto& time : times){
-        if(!elements.contains(time.first)){
-            elements[time.first] = std::make_tuple(from_view(time.first), 0, true);
-            order.emplace_back(time.first);
+        if(!elements.contains(std::get<0>(time))){
+            elements[std::get<0>(time)] = std::make_tuple(from_view(std::get<0>(time)), 0, true, std::get<2>(time));
+            order.emplace_back(std::get<0>(time));
         }else{
-            std::get<1>(elements[time.first]) = time.second;
-            std::get<2>(elements[time.first]) = true;
+            std::get<1>(elements[std::get<0>(time)]) = std::get<1>(time);
+            std::get<2>(elements[std::get<0>(time)]) = true;
+            std::get<3>(elements[std::get<0>(time)]) = std::get<2>(time);
         }
     }
 

@@ -17,12 +17,19 @@ Action::Action(Component *component, Config *config, ActionKey id) : key(IdKey::
     this->config       = config;
 }
 
-std::unique_ptr<Action> Action::generate_component_action(Component *component, tool::SecondsTS duration){
-    auto action = std::make_unique<Action>(component, component->configs[0].get(), ActionKey{-1});
+std::unique_ptr<Action> Action::generate_component_action(Component *component, tool::SecondsTS duration,
+        std::optional<ConfigKey> configKey, bool fillUpdateTimeline, bool fillVisibilityTimeline){
+
+    auto action = std::make_unique<Action>(component,
+        configKey.has_value() ? component->get_config(configKey.value()) : component->configs[0].get(), ActionKey{-1});
     action->timelineUpdate     = std::make_unique<Timeline>(Timeline::Type::Update, TimelineKey{-1});
-    action->timelineUpdate->add_interval(Interval(SecondsTS{0}, duration,IntervalKey{-1}));
+    if(fillUpdateTimeline){
+        action->timelineUpdate->add_interval(Interval(SecondsTS{0}, duration,IntervalKey{-1}));
+    }
     action->timelineVisibility = std::make_unique<Timeline>(Timeline::Type::Visibility, TimelineKey{-1});
-    action->timelineVisibility->add_interval(Interval(SecondsTS{0}, duration,IntervalKey{-1}));
+    if(fillVisibilityTimeline){
+        action->timelineVisibility->add_interval(Interval(SecondsTS{0}, duration,IntervalKey{-1}));
+    }
     return action;
 }
 

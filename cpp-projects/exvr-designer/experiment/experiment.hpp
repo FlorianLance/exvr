@@ -8,6 +8,9 @@
 
 #pragma once
 
+// std
+#include <optional>
+
 // local
 // # data
 #include "data/routine.hpp"
@@ -248,9 +251,12 @@ public slots:
     void fill_actions_from_condition(ElementKey routineKey, ConditionKey conditionKey);
     void clean_actions_from_condition(ElementKey routineKey, ConditionKey conditionKey);
     // ### action
-    void add_action(ElementKey routineKey, ConditionKey conditionKey, ComponentKey componentKey);
-    void add_action_to_all_selected_routine_conditions(ElementKey routineKey, ComponentKey componentKey);
-    void add_action_to_all_routines_conditions(ComponentKey componentKey);
+    void add_action(ElementKey routineKey, ConditionKey conditionKey, ComponentKey componentKey,
+        std::optional<ConfigKey> ConfigKey, bool fillUpdateTimeline, bool fillVisibilityTimeline);
+    void add_action_to_all_conditions(ElementKey routineKey, ComponentKey componentKey,
+        std::optional<ConfigKey> ConfigKey, bool fillUpdateTimeline, bool fillVisibilityTimeline);
+    void add_action_to_all_routines_conditions(ComponentKey componentKey,
+        std::optional<ConfigKey> ConfigKey, bool fillUpdateTimeline, bool fillVisibilityTimeline);
     void remove_action_from_all_selected_routine_conditions(ElementKey routineKey, ComponentKey componentKey);
     void remove_action_from_all_routines_conditions(ComponentKey componentKey);
     void remove_action_from_condition(ElementKey routineKey, ConditionKey conditionKey, ActionKey actionKey, bool update = true);

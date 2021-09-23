@@ -297,7 +297,7 @@ void ConditionW::dropEvent(QDropEvent *event){
     const QMimeData *data = event->mimeData();
     auto split = data->text().split("_");
     if(split[0] == QSL("e")){
-        GSignals::get()->add_action_signal(routine_key(), condition_key(), ComponentKey{split[1].toInt()});
+        GSignals::get()->add_action_signal(routine_key(), condition_key(), ComponentKey{split[1].toInt()}, {}, true, true);
     }else if(split[0] == QSL("action")){
         // ...
     }

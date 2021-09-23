@@ -48,6 +48,8 @@ public :
     void update_from_components_manager(ComponentsManager *compM);
     void close_all_configs_dialogs();
 
+    void add_new_component(Component::Type type, int id);
+
 public slots:        
 
     void dragEnterEvent(QDragEnterEvent *event) override;
@@ -57,37 +59,16 @@ public slots:
     void update_style();
     void update_components_to_display();
 
-protected slots:
-
     void toggle_component_parameters_dialog(ComponentKey componentKey);
+    void toggle_component_selection(ComponentKey componentKey);
 
     void show_howering_component_custom_menu(QPoint pos, ComponentKey componentKey);
     void show_context_menu(const QPoint &pos);
 
-    void add_new_component(Component::Type type, int id);
-
-    void toggle_component_selection(ComponentKey componentKey);
 
 private:
 
     void initialize_menues();
-
-signals:
-
-    // component
-    void update_component_position_signal(ComponentKey componentKey, RowId id);
-    void add_component_signal(Component::Type, RowId id);    
-    void remove_component_signal(ComponentKey componentKey);
-    void duplicate_component_signal(ComponentKey componentKey);
-    void show_component_informations_signal(ComponentKey componentKey);
-    // # sort
-    void sort_components_by_category_signal();
-    void sort_components_by_type_signal();
-    void sort_components_by_name_signal();
-
-
-
-    void ask_for_udapte_signal(int);
 
 private :
 
@@ -102,7 +83,9 @@ private :
     QMenu m_sortComponentsSubMenu;
 
     ui::ListWidget m_componentsListW;
-    std::unordered_map<int, ComponentsConfigDialogUP> m_dialogsW;
+
+    std::unordered_map<ComponentKey, ComponentsConfigDialogUP> m_dialogsW;
+    std::unordered_map<ComponentKey, QStringList> m_configsList;
 
     QComboBox m_cbComponentsToDisplay;
 

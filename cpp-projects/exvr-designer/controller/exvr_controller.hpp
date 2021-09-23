@@ -146,13 +146,14 @@ private :
 
     // dialogs ui
     std::unique_ptr<CopyToConditionDialog> m_copyToCondD    = nullptr;
-    std::unique_ptr<QDialog> m_componentsInfoD                    = nullptr;
+    std::unique_ptr<QDialog> m_componentsInfoD              = nullptr;
     std::unique_ptr<QDialog> m_goToD                        = nullptr;
     std::unique_ptr<QDialog> m_playDelayD                   = nullptr;
     std::unique_ptr<BenchmarkDialog> m_benchmarkD           = nullptr;
     std::unique_ptr<SettingsDialog> m_settingsD             = nullptr;
     std::unique_ptr<ResourcesManagerDialog> m_resourcesD    = nullptr;
     std::unique_ptr<DocumentationDialog> m_documentationD   = nullptr;
+    std::unique_ptr<QDialog> m_addActionDetailsD            = nullptr;
 
     // experiment launcher
     std::unique_ptr<ExpLauncher> m_expLauncher = nullptr;

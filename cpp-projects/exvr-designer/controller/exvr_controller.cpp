@@ -39,6 +39,7 @@ ExVrController::ExVrController(const QString &nVersion, bool lncoComponents){
     qRegisterMetaType<SetKey>("SetKey");
     qRegisterMetaType<ActionKey>("ActionKey");
     qRegisterMetaType<ConfigKey>("ConfigKey");
+    qRegisterMetaType<std::optional<ConfigKey>>("std::optional<ConfigKey>");
     qRegisterMetaType<IntervalKey>("IntervalKey");
     qRegisterMetaType<TimelineKey>("TimelineKey");
     qRegisterMetaType<ConditionKey>("ConditionKey");
@@ -231,6 +232,10 @@ void ExVrController::close_exvr(){
     if(m_playDelayD != nullptr){
         m_playDelayD->close();
         m_playDelayD = nullptr;
+    }
+    if(m_addActionDetailsD != nullptr){
+        m_addActionDetailsD->close();
+        m_addActionDetailsD = nullptr;
     }
 
     m_copyToCondD->close();
@@ -698,6 +703,8 @@ void ExVrController::generate_global_signals_connections(){
 
     auto s = GSignals::get();
 
+    // -> component infos
+    connect(s, &GSignals::show_component_informations_signal,  this, &CON::show_component_informations);
     // -> about
     connect(s, &GSignals::show_about_signal, this, [&]{
         Ui_AboutD about;
@@ -730,7 +737,14 @@ void ExVrController::generate_global_signals_connections(){
             doc()->show_components_section(component->type, true);
         }
     });
-    // -> experiment
+
+    connect(s, &GSignals::sort_components_by_category_signal,         exp(), &EXP::sort_components_by_category);
+    connect(s, &GSignals::sort_components_by_type_signal,             exp(), &EXP::sort_components_by_type);
+    connect(s, &GSignals::sort_components_by_name_signal,             exp(), &EXP::sort_components_by_name);
+    connect(s, &GSignals::update_component_position_signal,           exp(), &EXP::update_component_position);
+    connect(s, &GSignals::add_component_signal,                       exp(), &EXP::add_component);
+    connect(s, &GSignals::remove_component_signal,                    exp(), &EXP::remove_component);
+    connect(s, &GSignals::duplicate_component_signal,                 exp(), &EXP::duplicate_component);
     connect(s, &GSignals::select_routine_condition_signal,            exp(), &EXP::select_routine_condition);
     connect(s, &GSignals::move_routine_condition_down_signal,         exp(), &EXP::move_routine_condition_down);
     connect(s, &GSignals::move_routine_condition_up_signal,           exp(), &EXP::move_routine_condition_up);
@@ -815,18 +829,96 @@ void ExVrController::generate_global_signals_connections(){
     connect(s, &GSignals::routine_selected_signal,                    this, [&](ElementKey elementKey){
         exp()->select_element(elementKey);}
     );
-    connect(s, &GSignals::insert_action_signal, this, [&](ComponentKey componentKey){
+    connect(s, &GSignals::insert_action_to_selected_routine_signal, this, [&](ComponentKey componentKey){
         if(auto cRoutineW = ui()->routines_manager()->current_routine_widget(); cRoutineW != nullptr){
             if(auto cCondW = cRoutineW->current_condition_widget(); cCondW != nullptr){
-                exp()->add_action(cRoutineW->routine_key(), cCondW->condition_key(), componentKey);
+                exp()->add_action(cRoutineW->routine_key(), cCondW->condition_key(), componentKey, {}, true, true);
             }
         }
     });
     connect(s, &GSignals::insert_action_to_all_selected_routine_conditions_signal, this, [&](ComponentKey componentKey){
         if(auto cRoutineW = ui()->routines_manager()->current_routine_widget(); cRoutineW != nullptr){
-            exp()->add_action_to_all_selected_routine_conditions(cRoutineW->routine_key(), componentKey);
+            exp()->add_action_to_all_conditions(cRoutineW->routine_key(), componentKey, {}, true, true);
         }
     });
+
+    connect(s, &GSignals::insert_action_with_details_signal, this, [&](ComponentKey componentKey){
+
+
+        m_addActionDetailsD = std::make_unique<QDialog>();
+        m_addActionDetailsD->setParent(ui());
+        m_addActionDetailsD->setWindowTitle("Specify details for adding component:");
+        m_addActionDetailsD->setLayout(new QVBoxLayout());
+        m_addActionDetailsD->setWindowFlags(Qt::Dialog | Qt::WindowTitleHint);
+        m_addActionDetailsD->setModal(true);
+
+        auto rbCurrentCondition      = new QRadioButton("... current condition of selected routine");
+        auto rbAllRoutineConditions  = new QRadioButton("... all conditions of selected routine");
+        auto rbAllRoutinesConditions = new QRadioButton("... all conditions of every routine");
+        rbCurrentCondition->setChecked(true);
+        m_addActionDetailsD->layout()->addWidget(ui::F::gen(ui::L::VB(),
+            {ui::W::txt("Add to ..."), rbCurrentCondition, rbAllRoutineConditions, rbAllRoutinesConditions}, LStretch{true}, LMargins{true}, QFrame::NoFrame));
+
+        m_addActionDetailsD->layout()->addWidget(ui::W::horizontal_line());
+
+        auto component = exp()->get_component(componentKey);
+
+        auto cbConfigs = new QComboBox();
+        cbConfigs->addItems(component->get_configs_name());
+        m_addActionDetailsD->layout()->addWidget(ui::F::gen(ui::L::HB(),
+            {ui::W::txt("Select config to use:"), cbConfigs}, LStretch{true}, LMargins{true}, QFrame::NoFrame));
+
+        m_addActionDetailsD->layout()->addWidget(ui::W::horizontal_line());
+
+        QRadioButton *rbFillU = nullptr;
+        QRadioButton *rbEmptyU = nullptr;
+        QRadioButton *rbFillV = nullptr;
+        QRadioButton *rbEmptyV = nullptr;
+
+        auto to = Component::get_timeline_opt(component->type);
+        if (to == Component::TimelineO::Both || to == Component::TimelineO::Update){
+            m_addActionDetailsD->layout()->addWidget(ui::F::gen(ui::L::HB(),
+                {ui::W::txt("Update timeline: "), rbFillU = new QRadioButton("Fill"), rbEmptyU = new QRadioButton("Empty")}, LStretch{true}, LMargins{true}, QFrame::NoFrame));
+        }
+        if (to == Component::TimelineO::Both || to == Component::TimelineO::Visibility){
+            m_addActionDetailsD->layout()->addWidget(ui::F::gen(ui::L::HB(),
+                {ui::W::txt("Visibility timeline: "), rbFillV = new QRadioButton("Fill"), rbEmptyV = new QRadioButton("Empty")}, LStretch{true}, LMargins{true}, QFrame::NoFrame));
+        }
+
+        m_addActionDetailsD->layout()->addWidget(ui::W::horizontal_line());
+
+        auto pbOk  = new QPushButton("Ok");
+        auto pbCancel = new QPushButton("Cancel");
+        m_addActionDetailsD->layout()->addWidget(ui::F::gen(ui::L::HB(), {pbOk, pbCancel}, LStretch{true}, LMargins{true}, QFrame::NoFrame));
+        ui::L::stretch(m_addActionDetailsD->layout());
+
+        connect(pbOk,   &QPushButton::clicked, this, [=]{
+            bool fillU = rbFillU == nullptr ? false : rbFillU->isChecked();
+            bool fillV = rbFillV == nullptr ? false : rbFillV->isChecked();
+
+            const auto idConfig = cbConfigs->currentIndex();
+            if(rbCurrentCondition->isChecked()){
+                if(auto cRoutineW = ui()->routines_manager()->current_routine_widget(); cRoutineW != nullptr){
+                    if(auto cCondW = cRoutineW->current_condition_widget(); cCondW != nullptr){
+                        exp()->add_action(cRoutineW->routine_key(), cCondW->condition_key(), componentKey,
+                            ConfigKey{component->configs[idConfig]->key()}, fillU, fillV);
+                    }
+                }
+            }else if(rbAllRoutineConditions->isChecked()){
+                if(auto cRoutineW = ui()->routines_manager()->current_routine_widget(); cRoutineW != nullptr){
+                    exp()->add_action_to_all_conditions(cRoutineW->routine_key(), componentKey,
+                        ConfigKey{component->configs[idConfig]->key()}, fillU, fillV);
+                }
+            }else{
+                exp()->add_action_to_all_routines_conditions(componentKey,
+                    ConfigKey{component->configs[idConfig]->key()}, fillU, fillV);
+            }
+        });
+        connect(pbOk,     &QPushButton::clicked, m_addActionDetailsD.get(), &QDialog::accept);
+        connect(pbCancel, &QPushButton::clicked, m_addActionDetailsD.get(), &QDialog::reject);
+        m_addActionDetailsD->show();
+    });
+
 
     connect(s, &GSignals::remove_action_from_all_selected_routine_conditions_signal, this, [&](ComponentKey componentKey){
         if(auto cRoutineW = ui()->routines_manager()->current_routine_widget(); cRoutineW != nullptr){
@@ -837,6 +929,14 @@ void ExVrController::generate_global_signals_connections(){
     connect(s, &GSignals::connector_node_modified_signal,             exp_launcher(), &LAU::update_connector_node);
     connect(s, &GSignals::arg_updated_signal,                         exp_launcher(), &LAU::update_component_config_argument);
     connect(s, &GSignals::action_signal,                              exp_launcher(), &LAU::trigger_component_config_action);
+
+    // -> components manager
+    auto componentsM = ui()->components_manager();
+    connect(s, &GSignals::show_component_custom_menu_signal,          componentsM, &COM::show_howering_component_custom_menu);
+    connect(s, &GSignals::toggle_component_parameters_signal,         componentsM, &COM::toggle_component_parameters_dialog);
+    connect(s, &GSignals::toggle_selection_component_signal,          componentsM, &COM::toggle_component_selection);
+    connect(s, &GSignals::enter_component_signal,                     componentsM, &COM::update_style);
+    connect(s, &GSignals::leave_component_signal,                     componentsM, &COM::update_style);
 }
 
 void ExVrController::generate_main_window_connections(){
@@ -919,17 +1019,6 @@ void ExVrController::generate_main_window_connections(){
 
 void ExVrController::generate_components_manager_connections(){
 
-    auto componentsM = ui()->components_manager();
-    // -> controller
-    connect(componentsM, &COM::show_component_informations_signal,  this, &CON::show_component_informations);
-    // -> experiment
-    connect(componentsM, &COM::sort_components_by_category_signal, exp(), &EXP::sort_components_by_category);
-    connect(componentsM, &COM::sort_components_by_type_signal,     exp(), &EXP::sort_components_by_type);
-    connect(componentsM, &COM::sort_components_by_name_signal,     exp(), &EXP::sort_components_by_name);    
-    connect(componentsM, &COM::update_component_position_signal,   exp(), &EXP::update_component_position);
-    connect(componentsM, &COM::add_component_signal,               exp(), &EXP::add_component);
-    connect(componentsM, &COM::remove_component_signal,            exp(), &EXP::remove_component);
-    connect(componentsM, &COM::duplicate_component_signal,         exp(), &EXP::duplicate_component);
 }
 
 void ExVrController::generate_flow_diagram_connections(){

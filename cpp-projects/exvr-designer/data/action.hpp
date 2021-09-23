@@ -30,7 +30,8 @@ struct Action{
 
     inline QString to_string() const{return QSL("Action(") % QString::number(key()) % QSL(")");}
 
-    static ActionUP generate_component_action(Component *component, SecondsTS duration);
+    static ActionUP generate_component_action(Component *component, SecondsTS duration,
+        std::optional<ConfigKey> configKey, bool fillUpdateTimeline, bool fillVisibilityTimeline);
     static ActionUP copy_with_new_element_id(const Action &actionToCopy);
 
     void check_integrity();

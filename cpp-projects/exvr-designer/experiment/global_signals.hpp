@@ -82,17 +82,18 @@ signals:
     // ### actions
     void delete_actions_signal(ElementKey routineKey, ConditionKey conditionKey);
     void fill_actions_signal(ElementKey routineKey, ConditionKey conditionKey);
-    void clean_actions_signal(ElementKey routineKey, ConditionKey conditionKey);
-    void add_action_signal(ElementKey routineKey, ConditionKey conditionKey, ComponentKey componentKey);
+    void clean_actions_signal(ElementKey routineKey, ConditionKey conditionKey);    
+    void add_action_signal(ElementKey routineKey, ConditionKey conditionKey, ComponentKey componentKey, std::optional<ConfigKey> ConfigKey, bool fillUpdate, bool fillVisibility);
     void delete_action_signal(ElementKey routineKey, ConditionKey conditionKey, ActionKey actionKey);
     void fill_action_signal(ElementKey routineKey, ConditionKey conditionKey, ActionKey actionKey, bool update, bool visibility);
     void clean_action_signal(ElementKey routineKey, ConditionKey conditionKey, ActionKey actionKey, bool update, bool visibility);
     void move_action_signal(ElementKey routineKey, ConditionKey conditionKey, ActionKey actionKey, RowId id);
     void move_action_up_signal(ElementKey routineKey, ConditionKey conditionKey, ActionKey actionKey);
     void move_action_down_signal(ElementKey routineKey, ConditionKey conditionKey, ActionKey actionKey);
-    void insert_action_signal(ComponentKey componentKey);
+    void insert_action_to_selected_routine_signal(ComponentKey componentKey);
     void insert_action_to_all_selected_routine_conditions_signal(ComponentKey componentKey);
-    void insert_action_to_all_routines_conditions_signal(ComponentKey componentKey);
+    void insert_action_to_all_routines_conditions_signal(ComponentKey componentKey, std::optional<ConfigKey> ConfigKey, bool fillUpdate, bool fillVisibility);
+    void insert_action_with_details_signal(ComponentKey componentKey);
     void remove_action_from_all_selected_routine_conditions_signal(ComponentKey componentKey);
     void remove_action_from_all_routines_conditions_signal(ComponentKey componentKey);
     // #### timeline
@@ -121,6 +122,19 @@ signals:
     void show_component_node_documentation_signal(ComponentKey componentKey);
     void display_component_help_window_signal(Component::Type type, bool resetWindow = true);
     void component_name_changed_signal(ComponentKey componentKey, QString name);
+    void sort_components_by_category_signal();
+    void sort_components_by_type_signal();
+    void sort_components_by_name_signal();
+    void update_component_position_signal(ComponentKey componentKey, RowId position);
+    void add_component_signal(Component::Type type, RowId position);
+    void show_component_custom_menu_signal(QPoint globalPos, ComponentKey key);
+    void toggle_selection_component_signal(ComponentKey key);
+    void toggle_component_parameters_signal(ComponentKey key);
+    void remove_component_signal(ComponentKey key);
+    void duplicate_component_signal(ComponentKey componentKey);
+    void enter_component_signal(ComponentKey key);
+    void leave_component_signal(ComponentKey key);
+    void show_component_informations_signal(ComponentKey componentKey);
     // ## config
     void select_config_signal(ElementKey routineKey,ConditionKey conditionKey, ActionKey actionKey, RowId configTabId);
     void insert_config_signal(ComponentKey componentKey, RowId id, QString name);
@@ -134,6 +148,8 @@ signals:
     void arg_removed_signal(ComponentKey componentKey, ConfigKey configKey, QStringView argName, bool initConfig);
     void swap_arg_signal(ComponentKey componentKey, ConfigKey configKey, QStringView argName1, QStringView argName2, bool initConfig);
     void action_signal(ComponentKey componentKey, ConfigKey configKey, QStringView actionName, bool initConfig);
+
+    void ask_for_udapte_signal(int);
 
 private:
     static inline std::unique_ptr<GSignals> m_signals = nullptr;

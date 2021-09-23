@@ -71,8 +71,8 @@ ComponentsManagerW::ComponentsManagerW(bool lncoComponents) :
 
 ComponentConfigDialog *ComponentsManagerW::component_dialog(ComponentKey componentKey){
 
-    if(m_dialogsW.count(componentKey.v) != 0){
-        return m_dialogsW[componentKey.v].get();
+    if(m_dialogsW.count(componentKey) != 0){
+        return m_dialogsW[componentKey].get();
     }
 
     return nullptr;
@@ -120,7 +120,7 @@ void ComponentsManagerW::update_from_components_manager(ComponentsManager *compM
             }
             mask[componentW->key.v] = found;
             if(!found){
-                m_dialogsW.erase(componentW->key.v);
+                m_dialogsW.erase(componentW->key);
                 delete m_componentsListW.remove_at(ii);
             }
         }
@@ -128,38 +128,33 @@ void ComponentsManagerW::update_from_components_manager(ComponentsManager *compM
     Bench::stop();
     Bench::start("[CM: Generates new components]"sv, false);
 
+        m_configsList.clear();
+
         // add new widget/dialog
-        for(const auto &component : compM->components){
+        for(const auto &component : compM->components){                        
 
-             if(!mask[component->key()]){
+            // update config list
+            m_configsList[{component->key()}] = component->get_configs_name();
 
-                 Bench::start("[CM: Generate component config dialog]"sv, false);
+            if(!mask[component->key()]){
 
-                     ComponentKey componentKey  = ComponentKey{component->key()};
+                ComponentKey componentKey  = ComponentKey{component->key()};
 
-                     // dialog
-                     auto configDialog = std::make_unique<ComponentConfigDialog>(this, component.get());                     
-                     connect(configDialog.get(), &ComponentConfigDialog::finished, this, [=](){
-                         component_widget(componentKey)->showWindow = false;
-                         update_style();
-                     });
+                Bench::start("[CM: Generate component config dialog]"sv, false);                    
 
-                 Bench::stop();
-                    m_dialogsW[componentKey.v] = std::move(configDialog);
+                    // dialog
+                    auto configDialog = std::make_unique<ComponentConfigDialog>(this, component.get());
+                    connect(configDialog.get(), &ComponentConfigDialog::finished, this, [=](){
+                        component_widget(componentKey)->showWindow = false;
+                        update_style();
+                    });
+                    m_dialogsW[componentKey] = std::move(configDialog);
+                Bench::stop();
 
-                 Bench::start("[CM: Generate Component widget]"sv, false);
-                     auto componentW = new ComponentW(component.get());
-                     connect(componentW, &ComponentW::show_component_custom_menu_signal,     this, &ComponentsManagerW::show_howering_component_custom_menu);
-                     connect(componentW, &ComponentW::toggle_component_parameters_signal,    this, &ComponentsManagerW::toggle_component_parameters_dialog);
-                     connect(componentW, &ComponentW::remove_component_signal,               this, &ComponentsManagerW::remove_component_signal);
-                     connect(componentW, &ComponentW::toggle_selection_component_signal,     this, &ComponentsManagerW::toggle_component_selection);
-                     connect(componentW, &ComponentW::enter_component_signal,                this, &ComponentsManagerW::update_style);
-                     connect(componentW, &ComponentW::leave_component_signal,                this, &ComponentsManagerW::update_style);
-                 Bench::stop();
-                 Bench::start("[CM: Add component widget]"sv, false);
-                    m_componentsListW.add_widget(componentW);
-                 Bench::stop();
-             }
+                Bench::start("[CM: Generate Component widget]"sv, false);   
+                    m_componentsListW.add_widget(new ComponentW(component.get()));
+                Bench::stop();
+            }
         }
 
     Bench::stop();
@@ -188,7 +183,7 @@ void ComponentsManagerW::update_from_components_manager(ComponentsManager *compM
             componentW->update_from_component(component);
         Bench::stop();
         Bench::start("[CM: Update dialog]"sv, false);
-            m_dialogsW[component->key()]->update_from_component(component);
+            m_dialogsW[ComponentKey{component->key()}]->update_from_component(component);
         Bench::stop();
     }
 
@@ -230,19 +225,19 @@ void ComponentsManagerW::initialize_menues(){
     {
         QAction *sortA = new QAction(QSL("category"));
         connect(sortA, &QAction::triggered, this, [=](){
-            emit sort_components_by_category_signal();
+            emit GSignals::get()->sort_components_by_category_signal();
         });
         m_sortComponentsSubMenu.addAction(sortA);
 
         sortA = new QAction(QSL("type"));
         connect(sortA, &QAction::triggered, this, [=](){
-            emit sort_components_by_type_signal();
+            emit GSignals::get()->sort_components_by_type_signal();
         });
         m_sortComponentsSubMenu.addAction(sortA);
 
         sortA = new QAction(QSL("name"));
         connect(sortA, &QAction::triggered, this, [=](){
-            emit sort_components_by_name_signal();
+            emit GSignals::get()->sort_components_by_name_signal();
         });
         m_sortComponentsSubMenu.addAction(sortA);
     }
@@ -377,23 +372,34 @@ void ComponentsManagerW::show_howering_component_custom_menu(QPoint pos, Compone
     contextMenu.addMenu(&m_createNewLegacyComponentsSubMenu);
     contextMenu.addSeparator();
 
+    QMenu addToSubMenu(tr("Add to..."));
+
+//    m_configsList[componentKey];
+
+
     QMenu addComponentSubMenu(tr("Add to..."));
     {
-        QAction *addA = new QAction("current condition");
+        QAction *addA = new QAction("... current condition (first config)");
         connect(addA, &QAction::triggered, this, [=](){
-            emit GSignals::get()->insert_action_signal(componentKey);
+            emit GSignals::get()->insert_action_to_selected_routine_signal(componentKey);
         });
         addComponentSubMenu.addAction(addA);
 
-        addA = new QAction("all conditions of the selected routine");
+        addA = new QAction("... all conditions of current routine (first config)");
         connect(addA, &QAction::triggered, this, [=](){
             emit GSignals::get()->insert_action_to_all_selected_routine_conditions_signal(componentKey);
         });
         addComponentSubMenu.addAction(addA);
 
-        addA = new QAction("all conditions of every routine");
+        addA = new QAction("... all conditions of every routine (first config)");
         connect(addA, &QAction::triggered, this, [=](){
-            emit GSignals::get()->insert_action_to_all_routines_conditions_signal(componentKey);
+            emit GSignals::get()->insert_action_to_all_routines_conditions_signal(componentKey, {}, true, true);
+        });
+        addComponentSubMenu.addAction(addA);
+
+        addA = new QAction("specify details");
+        connect(addA, &QAction::triggered, this, [=](){
+            emit GSignals::get()->insert_action_with_details_signal(componentKey);
         });
         addComponentSubMenu.addAction(addA);
     }
@@ -431,13 +437,13 @@ void ComponentsManagerW::show_howering_component_custom_menu(QPoint pos, Compone
 
     QAction *duplicateA = new QAction(QSL("Duplicate"));
     connect(duplicateA, &QAction::triggered, this, [=](){
-        emit duplicate_component_signal(componentKey);
+        emit GSignals::get()->GSignals::get()->duplicate_component_signal(componentKey);
     });
     contextMenu.addAction(duplicateA);
 
     QAction *removeA = new QAction(QSL("Delete"));
     connect(removeA, &QAction::triggered, this, [=](){
-        emit remove_component_signal(componentKey);
+        emit GSignals::get()->remove_component_signal(componentKey);
     });
     contextMenu.addAction(removeA);
     contextMenu.addSeparator();
@@ -447,7 +453,7 @@ void ComponentsManagerW::show_howering_component_custom_menu(QPoint pos, Compone
 
     QAction *identifyA = new QAction(QSL("Show informations"));
     connect(identifyA, &QAction::triggered, this, [=](){
-        emit show_component_informations_signal(componentKey);
+        emit GSignals::get()->show_component_informations_signal(componentKey);
     });
     contextMenu.addAction(identifyA);
 
@@ -502,7 +508,7 @@ void ComponentsManagerW::add_new_component(tool::ex::Component::Type type, int i
         }
     }
 
-    emit add_component_signal(type, RowId{id});
+    emit GSignals::get()->add_component_signal(type, RowId{id});
 }
 
 void ComponentsManagerW::close_all_configs_dialogs(){
@@ -545,19 +551,19 @@ void ComponentsManagerW::dropEvent(QDropEvent *event){
             dropPositionOnComponent = true;
             bool belowId = dropComponentPosition < to_signed(ii);
             if(cursorLocalPos.y() < c->rect().center().y()){
-                if(belowId){
-                    emit update_component_position_signal(dropComponentKey, RowId{ii-1});
+                if(belowId){                    
+                    emit GSignals::get()->update_component_position_signal(dropComponentKey, RowId{ii-1});
                     return;
                 }else{
-                    emit update_component_position_signal(dropComponentKey, RowId{ii});
+                    emit GSignals::get()->update_component_position_signal(dropComponentKey, RowId{ii});
                     return;
                 }
             }else{
                 if(belowId){
-                    emit update_component_position_signal(dropComponentKey, RowId{ii});
+                    emit GSignals::get()->update_component_position_signal(dropComponentKey, RowId{ii});
                     return;
                 }else{
-                    emit update_component_position_signal(dropComponentKey, RowId{ii+1});
+                    emit GSignals::get()->update_component_position_signal(dropComponentKey, RowId{ii+1});
                     return;
                 }
             }
@@ -567,16 +573,16 @@ void ComponentsManagerW::dropEvent(QDropEvent *event){
     auto firstW = m_componentsListW.widget_at(0);
     const auto firstPos = firstW->mapToGlobal(firstW->rect().topLeft());
     if(cursorPos.y() < firstPos.y()){
-        emit update_component_position_signal(dropComponentKey, RowId{0});
+        emit GSignals::get()->update_component_position_signal(dropComponentKey, RowId{0});
     }else{
-        emit update_component_position_signal(dropComponentKey, RowId{m_componentsListW.count()-1});
+        emit GSignals::get()->update_component_position_signal(dropComponentKey, RowId{m_componentsListW.count()-1});
     }
 }
 
 void ComponentsManagerW::update_component_dialog_with_info(ComponentKey componentKey, ConfigKey configKey, QStringView id, QStringView value){
 
     for(auto &dialogW : m_dialogsW){        
-        if(dialogW.first == componentKey.v){
+        if(dialogW.first.v == componentKey.v){
             dialogW.second->update_with_info(configKey, id, value);
             break;
         }

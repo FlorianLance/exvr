@@ -23,11 +23,11 @@ public:
 
     void update();
 
-    std::vector<std::pair<std::string_view, std::int64_t>> times;
+    std::vector<std::tuple<std::string_view, std::int64_t, size_t>> times;
     //int headerData(int section, Qt::Orientation orientation, int role) const;
 
 
-    std::unordered_map<std::string_view, std::tuple<QString, std::int64_t, bool>> elements;
+    std::unordered_map<std::string_view, std::tuple<QString, std::int64_t, bool, size_t>> elements;
     std::vector<std::string_view> order;
 
 //    std::vector<

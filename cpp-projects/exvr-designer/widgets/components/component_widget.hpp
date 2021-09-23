@@ -51,15 +51,6 @@ protected:
     void enterEvent(QEvent *event) override;
     void leaveEvent(QEvent *event) override;
 
-signals:
-
-    void show_component_custom_menu_signal(QPoint globalPos, ComponentKey key);
-    void toggle_selection_component_signal(ComponentKey key);
-    void toggle_component_parameters_signal(ComponentKey key);
-    void remove_component_signal(ComponentKey key);
-    void enter_component_signal(ComponentKey key);
-    void leave_component_signal(ComponentKey key);
-
 public :
 
     // data

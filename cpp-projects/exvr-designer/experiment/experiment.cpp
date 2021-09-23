@@ -889,7 +889,8 @@ void Experiment::select_nodes_and_connections(ElementKey routineKey, ConditionKe
 }
 
 
-void Experiment::add_action(ElementKey routineKey, ConditionKey conditionKey, ComponentKey componentKey){
+void Experiment::add_action(ElementKey routineKey, ConditionKey conditionKey, ComponentKey componentKey,
+    std::optional<ConfigKey> configKey, bool fillUpdateTimeline, bool fillVisibilityTimeline){
 
     auto component = m_compM->get_component(componentKey);
     if(component == nullptr){
@@ -906,12 +907,14 @@ void Experiment::add_action(ElementKey routineKey, ConditionKey conditionKey, Co
         }
 
         // add component to action
-        condition->actions.emplace_back(Action::generate_component_action(component, condition->duration));
+        condition->actions.emplace_back(Action::generate_component_action(
+            component, condition->duration, configKey, fillUpdateTimeline, fillVisibilityTimeline));
         add_to_update_flag(UpdateRoutines);
     }
 }
 
-void Experiment::add_action_to_all_selected_routine_conditions(ElementKey routineKey, ComponentKey componentKey){
+void Experiment::add_action_to_all_conditions(ElementKey routineKey, ComponentKey componentKey,
+    std::optional<ConfigKey> configKey, bool fillUpdateTimeline, bool fillVisibilityTimeline){
 
     auto component = m_compM->get_component(componentKey);
     if(component == nullptr){
@@ -930,7 +933,8 @@ void Experiment::add_action_to_all_selected_routine_conditions(ElementKey routin
             }
 
             if(!found){
-                condition->actions.emplace_back(Action::generate_component_action(component, condition->duration));
+                condition->actions.emplace_back(Action::generate_component_action(
+                    component, condition->duration, configKey, fillUpdateTimeline, fillVisibilityTimeline));
             }                        
         }
     }
@@ -938,7 +942,8 @@ void Experiment::add_action_to_all_selected_routine_conditions(ElementKey routin
     add_to_update_flag(UpdateRoutines);
 }
 
-void Experiment::add_action_to_all_routines_conditions(ComponentKey componentKey){
+void Experiment::add_action_to_all_routines_conditions(ComponentKey componentKey,
+    std::optional<ConfigKey> configKey, bool fillUpdateTimeline, bool fillVisibilityTimeline){
 
     auto component = m_compM->get_component(componentKey);
     if(component == nullptr){
@@ -956,7 +961,8 @@ void Experiment::add_action_to_all_routines_conditions(ComponentKey componentKey
             }
 
             if(!found){
-                condition->actions.emplace_back(Action::generate_component_action(component, condition->duration));
+                condition->actions.emplace_back(Action::generate_component_action(
+                    component, condition->duration, configKey, fillUpdateTimeline, fillVisibilityTimeline));
             }
         }
     }
@@ -1687,7 +1693,7 @@ void Experiment::move_config_in_component(ComponentKey componentKey, RowId from,
         auto config = std::move(component->configs[from.v]);
         component->configs.erase(component->configs.begin() + from.v);
         component->configs.insert(component->configs.begin() + to.v, std::move(config));
-        add_to_update_flag(UpdateRoutines);
+        add_to_update_flag(UpdateComponents |UpdateRoutines);
     }
 }
 
