@@ -186,7 +186,7 @@ ConfigParametersW *ConfigW::generate_parameters(Component::Type type, bool initC
     case CT::Parallel_port_writer:
         return gen_params_w<ParallelPortWriterInitConfigParametersW,ParallelPortWriterConfigParametersW>(initConfig);
     case CT::Serial_port_writer:
-        return gen_params_w<SerialPortWriterCommonParameterW,SerialPortWriterConfigParametersW>(initConfig);
+        return gen_params_w<SerialPortWriteInitParameterW,SerialPortWriterConfigParametersW>(initConfig);
     case CT::Udp_reader:
         return gen_params_w<UdpReaderInitConfigParametersW,UdpReaderConfigParametersW>(initConfig);
     case CT::Udp_writer:

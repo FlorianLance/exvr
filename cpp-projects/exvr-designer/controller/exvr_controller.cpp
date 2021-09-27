@@ -699,6 +699,7 @@ void ExVrController::start_specific_instance(){
     emit load_experiment_unity_signal(Paths::tempExp, pathFile);
 }
 
+
 void ExVrController::generate_global_signals_connections(){
 
     auto s = GSignals::get();

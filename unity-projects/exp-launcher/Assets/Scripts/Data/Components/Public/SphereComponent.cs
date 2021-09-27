@@ -64,7 +64,6 @@ namespace Ex{
         }
 
         protected override void set_visibility(bool visibility) {
-            Debug.Log("s " + visibility + " " + is_visible());
             mr.enabled = visibility;
             invoke_signal("visibility changed", visibility);
         }

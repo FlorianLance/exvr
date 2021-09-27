@@ -29,6 +29,7 @@ namespace Ex{
 
         public void reset() {
 
+
             //Valve.VR.OpenVR.System.ResetSeatedZeroPose();
             //Valve.VR.OpenVR.Compositor.SetTrackingSpace(Valve.VR.ETrackingUniverseOrigin.TrackingUniverseRawAndUncalibrated);
             //Valve.VR.ETrackingUniverseOrigin.TrackingUniverseSeated);

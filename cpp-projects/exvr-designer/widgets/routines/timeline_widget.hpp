@@ -22,10 +22,7 @@
 namespace tool::ex{
 
 class TimelineW : public QWidget{
-
-    Q_OBJECT
-
-    public :
+public :
 
     TimelineW(ElementKey routineKey, ConditionKey conditionKey, ActionKey actionKey, Timeline *timeline, bool drawAxe, bool updateTimeline);
 
@@ -82,8 +79,12 @@ private:
 
     std_v1<QRectF> m_elementsPartsAreas;
     std_v1<QRectF> m_intervalsAreas;
-
-
+    static constexpr QColor backgroundCol = QColor(255,255,255);
+    static constexpr QColor invalidIntervals = QColor(255,0,0);
+    static constexpr QColor intervalAreaCol = QColor(81,219,51);
+    static constexpr QColor elementAreaCol = QColor(50,50,50,100);
+    static constexpr QColor lineCol = QColor(255,255,255);
+    static constexpr QColor textCol = QColor(0,0,0);
 };
 }
 

@@ -23,23 +23,22 @@ TimelineW::TimelineW(ElementKey routineKey, ConditionKey conditionKey, ActionKey
 
 QRectF TimelineW::interval_to_rect(const Interval &i) const{
 
-    qreal startX = (i.start.v/m_maxLength.v) * rightTopIntervalsR.width();
-    qreal endX   = (i.end.v/m_maxLength.v)   * rightTopIntervalsR.width();
-
-    return QRectF(
+    const qreal startX = (i.start.v/m_maxLength.v) * rightTopIntervalsR.width();
+    const qreal endX   = (i.end.v/m_maxLength.v)   * rightTopIntervalsR.width();
+    return QRectF{
         rightTopIntervalsR.x() + startX,
         rightTopIntervalsR.y(),
         endX-startX,
         rightTopIntervalsR.height()
-    );
+    };
 }
 
 Interval TimelineW::rect_to_interval(const QRectF &r) const{
-    return Interval(
+    return Interval{
         SecondsTS{m_maxLength.v*(r.x()-m_widthOffset)/m_timelineWidth},
         SecondsTS{m_maxLength.v*(r.x()+r.width()-m_widthOffset)/m_timelineWidth},
         IntervalKey{-1}
-    );
+    };
 }
 
 void TimelineW::update_from_timeline(Timeline *timeline, qreal scale, qreal factorSize, SecondsTS max){
@@ -49,13 +48,12 @@ void TimelineW::update_from_timeline(Timeline *timeline, qreal scale, qreal fact
     m_maxLength  = max;
 
     m_timelineWidth = m_factorSize*m_widthPart*m_maxLength.v/m_scale;
-    setMinimumWidth(int(m_timelineWidth+m_widthOffset));
-    setMaximumWidth(int(m_timelineWidth+m_widthOffset));
+    setMinimumWidth(std::round(m_timelineWidth+m_widthOffset));
+    setMaximumWidth(std::round(m_timelineWidth+m_widthOffset));
     setMinimumHeight(25);
     setMaximumHeight(25);
 
     timelineR = rect();
-
 
     leftTextPartR = QRectF{
         timelineR.topLeft(),
@@ -69,12 +67,13 @@ void TimelineW::update_from_timeline(Timeline *timeline, qreal scale, qreal fact
 
     rightTopIntervalsR = QRectF{
         rightPartR.topLeft(),
-        QSizeF(rightPartR.width(), rightPartR.height() *2./3.)
+        QSizeF{rightPartR.width(), rightPartR.height() * 2./3.}
     };
 
     rightBottomAxisR = QRectF{
-        rightPartR.topLeft() + QPointF(0, rightTopIntervalsR.height()),
-        QSizeF(rightPartR.width(), rightPartR.height() /3.)
+        rightPartR.topLeft() +
+        QPointF{0, rightTopIntervalsR.height()},
+        QSizeF{rightPartR.width(), rightPartR.height() / 3.}
     };
 
 
@@ -85,7 +84,7 @@ void TimelineW::update_from_timeline(Timeline *timeline, qreal scale, qreal fact
         }
     }
 
-    size_t nbParts = size_t(m_maxLength.v/m_scale);
+    size_t nbParts = std::round(m_maxLength.v/m_scale);
     m_elementsPartsAreas.resize(nbParts);
     for(size_t ii = 0; ii < nbParts; ++ii){
         m_elementsPartsAreas[ii] = QRectF{
@@ -108,22 +107,21 @@ void TimelineW::paintEvent(QPaintEvent *event){
     QPainter p(this);
 
     // fill whole widget with white
-    p.fillRect(timelineR,  Qt::white);
+    p.fillRect(timelineR,  backgroundCol);
 
     // fill intervals with red
-    p.fillRect(rightTopIntervalsR,  Qt::red);
-//    p.fillRect(rightBottomAxisR,  Qt::white);
-
+    p.fillRect(rightTopIntervalsR,  invalidIntervals);
 
     // debug
-//    p.fillRect(rightBottomAxisR,  Qt::yellow);
+    // p.fillRect(rightBottomAxisR,  Qt::yellow);
 
     // draw left text
-    p.drawText(leftTextPartR, (type == Timeline::Type::Visibility ? "Visibility" : "Update"));
+    p.drawText(leftTextPartR, (type == Timeline::Type::Visibility ? QSL("Visibility") : QSL("Update")));
+
 
     // draw intervals
     for(auto &part : m_intervalsAreas){
-        p.fillRect(part,QColor(81,219,51));// Qt::green);
+        p.fillRect(part,intervalAreaCol);
         // debug
         // p.setPen(Qt::blue);
         // p.drawLine(part.topLeft(),part.bottomRight());
@@ -131,24 +129,24 @@ void TimelineW::paintEvent(QPaintEvent *event){
     }
 
     for(auto &part : m_elementsPartsAreas){
-        if(QRectF(part.x(), part.y(), part.width(), part.height()).contains(m_currentMousePos)){
-            p.fillRect(part, QColor(50,50,50,100));
+        if(part.contains(m_currentMousePos)){
+            p.fillRect(part, elementAreaCol);
         }
     }
 
     if(m_drawAxe){
-        p.setPen(Qt::black);
-        p.drawText(rightBottomAxisR.bottomLeft(), "0");
+        p.setPen(textCol);
+        p.drawText(rightBottomAxisR.bottomLeft(), QSL("0"));
     }
 
     for(size_t ii = 0; ii < m_elementsPartsAreas.size(); ++ii){
         const auto &part = m_elementsPartsAreas[ii];
         if(ii < m_elementsPartsAreas.size()-1){
-            p.setPen(QColor(255,255,255));
-            p.drawLine(QLineF(part.topRight(),part.bottomRight()));
+            p.setPen(lineCol);
+            p.drawLine(QLineF{part.topRight(),part.bottomRight()});
         }
         if(m_drawAxe){
-            p.setPen(Qt::black);
+            p.setPen(textCol);
             p.drawText(QPointF{
                 part.x() + m_elementsPartsAreas[0].width(), rightBottomAxisR.bottomLeft().y()},
                 QString::number(m_maxLength.v*(part.bottomRight().x()-m_widthOffset)/m_timelineWidth)
@@ -193,5 +191,3 @@ void TimelineW::leaveEvent(QEvent *event){
     m_clickOn = false;
     update();
 }
-
-//#include "moc_timeline_widget.cpp"

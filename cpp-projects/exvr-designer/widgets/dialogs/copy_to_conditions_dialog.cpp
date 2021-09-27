@@ -79,7 +79,10 @@ CopyToConditionDialog::CopyToConditionDialog(){
     connect(ui.cbApplyContainFilter, &QCheckBox::clicked, this, [&]{
         update_list_from_filters();
     });
-    connect(ui.leContainsFilter, &QLineEdit::textChanged, this, [&](const QString &){
+    connect(ui.leContainsCondFilter, &QLineEdit::textChanged, this, [&](const QString &){
+        update_list_from_filters();
+    });
+    connect(ui.leContainsRoutineFilter, &QLineEdit::textChanged, this, [&](const QString &){
         update_list_from_filters();
     });
     connect(ui.cbApplySetFilter, &QCheckBox::clicked, this, [&]{
@@ -93,7 +96,8 @@ CopyToConditionDialog::CopyToConditionDialog(){
 
 void CopyToConditionDialog::update_list_from_filters(){
 
-    const auto text = ui.leContainsFilter->text();
+    const auto containsRoutTxt = ui.leContainsRoutineFilter->text();
+    const auto containsCondTxt = ui.leContainsCondFilter->text();
     const bool containFilterEnabled = ui.cbApplyContainFilter->isChecked();
     const bool setFilterEnabled     = ui.cbApplySetFilter->isChecked();
 
@@ -113,10 +117,14 @@ void CopyToConditionDialog::update_list_from_filters(){
     for(const auto &routineConditions : conditionsPerRoutines){
 
         auto lw = routineConditions.second.get();
+
+//        bool routineFiltered = routineConditions.first->name().contains(containsRoutTxt);
+
+
         for(int ii = 0; ii < lw->count(); ++ii){
             auto cb =  qobject_cast<QCheckBox*>(lw->widget_at(ii));
 
-            bool stateFromContainFilter = containFilterEnabled && !cb->text().contains(text);
+            bool stateFromContainFilter = containFilterEnabled && !cb->text().contains(containsCondTxt);
             bool stateFromSetFilter = false;
             if(setFilterEnabled){
                 stateFromSetFilter = true;
@@ -178,7 +186,8 @@ void CopyToConditionDialog::update_from_data(ElementKey currentRoutineKey, Condi
 
     ui.cbApplyContainFilter->setChecked(false);
     ui.cbApplySetFilter->setChecked(false);
-    ui.leContainsFilter->setText("");
+    ui.leContainsRoutineFilter->setText("");
+    ui.leContainsCondFilter->setText("");
 
     // fils sets
     ui.twSets->addTab(new QWidget(), QSL("Loops: "));

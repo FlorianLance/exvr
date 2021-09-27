@@ -5,47 +5,6 @@
 ** Copyright (c) [2018] [Florian Lance][EPFL-LNCO]                            **
 ********************************************************************************/
 
-
-
-////Functions exported from DLL.
-////For easy inclusion is user projects.
-////Original InpOut32 function support
-//void _stdcall Out32(short PortAddress, short data);
-//short _stdcall Inp32(short PortAddress);
-
-////My extra functions for making life easy
-//BOOL _stdcall IsInpOutDriverOpen();  //Returns TRUE if the InpOut driver was opened successfully
-
-////DLLPortIO function support
-//UCHAR _stdcall DlPortReadPortUchar(USHORT port);
-//void _stdcall DlPortWritePortUchar(USHORT port, UCHAR Value);
-
-//USHORT _stdcall DlPortReadPortUshort(USHORT port);
-//void _stdcall DlPortWritePortUshort(USHORT port, USHORT Value);
-
-//ULONG _stdcall DlPortReadPortUlong(ULONG port);
-//void _stdcall DlPortWritePortUlong(ULONG port, ULONG Value);
-
-
-//DLLPortIO function support
-//UCHAR _stdcall DlPortReadPortUchar(USHORT port);
-//void _stdcall DlPortWritePortUchar(USHORT port, UCHAR Value);
-
-//USHORT _stdcall DlPortReadPortUshort(USHORT port);
-//void _stdcall DlPortWritePortUshort(USHORT port, USHORT Value);
-
-//ULONG _stdcall DlPortReadPortUlong(ULONG port);
-//void _stdcall DlPortWritePortUlong(ULONG port, ULONG Value);
-
-//[DllImport("inpoutx64.dll", EntryPoint = "Inp32")]
-//private static extern char Inp32_x64(short PortAddress);
-
-//[DllImport("inpoutx64.dll", EntryPoint = "DlPortReadPortUshort")]
-//private static extern ushort DlPortReadPortUshort_x64(ushort PortAddress);
-
-//[DllImport("inpoutx64.dll", EntryPoint = "DlPortReadPortUlong")]
-//private static extern uint DlPortReadPortUlong_x64(int PortAddress);
-
 // system
 using System;
 using System.Runtime.InteropServices;
@@ -167,3 +126,43 @@ namespace Ex{
         }
     }
 }
+
+
+////Functions exported from DLL.
+////For easy inclusion is user projects.
+////Original InpOut32 function support
+//void _stdcall Out32(short PortAddress, short data);
+//short _stdcall Inp32(short PortAddress);
+
+////My extra functions for making life easy
+//BOOL _stdcall IsInpOutDriverOpen();  //Returns TRUE if the InpOut driver was opened successfully
+
+////DLLPortIO function support
+//UCHAR _stdcall DlPortReadPortUchar(USHORT port);
+//void _stdcall DlPortWritePortUchar(USHORT port, UCHAR Value);
+
+//USHORT _stdcall DlPortReadPortUshort(USHORT port);
+//void _stdcall DlPortWritePortUshort(USHORT port, USHORT Value);
+
+//ULONG _stdcall DlPortReadPortUlong(ULONG port);
+//void _stdcall DlPortWritePortUlong(ULONG port, ULONG Value);
+
+
+//DLLPortIO function support
+//UCHAR _stdcall DlPortReadPortUchar(USHORT port);
+//void _stdcall DlPortWritePortUchar(USHORT port, UCHAR Value);
+
+//USHORT _stdcall DlPortReadPortUshort(USHORT port);
+//void _stdcall DlPortWritePortUshort(USHORT port, USHORT Value);
+
+//ULONG _stdcall DlPortReadPortUlong(ULONG port);
+//void _stdcall DlPortWritePortUlong(ULONG port, ULONG Value);
+
+//[DllImport("inpoutx64.dll", EntryPoint = "Inp32")]
+//private static extern char Inp32_x64(short PortAddress);
+
+//[DllImport("inpoutx64.dll", EntryPoint = "DlPortReadPortUshort")]
+//private static extern ushort DlPortReadPortUshort_x64(ushort PortAddress);
+
+//[DllImport("inpoutx64.dll", EntryPoint = "DlPortReadPortUlong")]
+//private static extern uint DlPortReadPortUlong_x64(int PortAddress);

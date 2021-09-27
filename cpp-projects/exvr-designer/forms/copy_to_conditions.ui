@@ -45,58 +45,99 @@
           <number>4</number>
          </property>
          <item>
-          <widget class="QWidget" name="wTop" native="true">
-           <layout class="QHBoxLayout" name="horizontalLayout_2">
-            <property name="spacing">
-             <number>2</number>
-            </property>
+          <widget class="QWidget" name="wContainsRoutineFilter" native="true">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>0</height>
+            </size>
+           </property>
+           <layout class="QHBoxLayout" name="horizontalLayout" stretch="3,2">
             <property name="leftMargin">
-             <number>2</number>
+             <number>0</number>
             </property>
             <property name="topMargin">
-             <number>2</number>
+             <number>0</number>
             </property>
             <property name="rightMargin">
-             <number>2</number>
+             <number>0</number>
             </property>
             <property name="bottomMargin">
-             <number>2</number>
+             <number>0</number>
             </property>
             <item>
-             <widget class="QCheckBox" name="cbApplyContainFilter">
+             <widget class="QCheckBox" name="cbApplyRoutineNameFilter">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
               <property name="text">
-               <string>keep only if condition name contains:</string>
+               <string>keep routine only if name contains:</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QLineEdit" name="leContainsFilter"/>
+             <widget class="QLineEdit" name="leContainsRoutineFilter">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+             </widget>
             </item>
            </layout>
           </widget>
          </item>
          <item>
-          <widget class="QWidget" name="widget_3" native="true">
-           <layout class="QHBoxLayout" name="horizontalLayout_5">
+          <widget class="QWidget" name="wContainsCondFilter" native="true">
+           <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="3,2">
             <property name="spacing">
-             <number>2</number>
+             <number>6</number>
             </property>
             <property name="leftMargin">
-             <number>2</number>
+             <number>0</number>
             </property>
             <property name="topMargin">
-             <number>2</number>
+             <number>0</number>
             </property>
             <property name="rightMargin">
-             <number>2</number>
+             <number>0</number>
             </property>
             <property name="bottomMargin">
-             <number>2</number>
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QCheckBox" name="cbApplyContainFilter">
+              <property name="text">
+               <string>keep condition only if name contains:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="leContainsCondFilter"/>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="QWidget" name="wCondMadeOf" native="true">
+           <layout class="QHBoxLayout" name="horizontalLayout_5">
+            <property name="spacing">
+             <number>6</number>
+            </property>
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
             </property>
             <item>
              <widget class="QCheckBox" name="cbApplySetFilter">
               <property name="text">
-               <string>keep if condition is made from at least one set below:</string>
+               <string>keep condition if name  is made from at least one selected set below:</string>
               </property>
              </widget>
             </item>
@@ -107,8 +148,20 @@
           <widget class="QTabWidget" name="twSets"/>
          </item>
          <item>
-          <widget class="QWidget" name="widget_2" native="true">
+          <widget class="QWidget" name="wBottom" native="true">
            <layout class="QHBoxLayout" name="horizontalLayout_3">
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
             <item>
              <widget class="QPushButton" name="pbUncheckAllSets">
               <property name="text">
@@ -175,6 +228,18 @@
             </size>
            </property>
            <layout class="QGridLayout" name="gridLayout">
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
             <item row="0" column="3">
              <widget class="QPushButton" name="pbUncheckAllConds">
               <property name="text">
@@ -228,6 +293,18 @@
          <item>
           <widget class="QWidget" name="widget_4" native="true">
            <layout class="QVBoxLayout" name="verticalLayout_4">
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
             <item>
              <widget class="QLabel" name="laConditionsCount">
               <property name="text">

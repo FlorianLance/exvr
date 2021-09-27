@@ -309,7 +309,7 @@ struct Component {
 
     using TComponentSlots = std::tuple<
         T,                             FunctionN,                      CNT,                    Doc>;
-    static constexpr TupleArray<86,TComponentSlots> componentsSlots = {{
+    static constexpr TupleArray<90,TComponentSlots> componentsSlots = {{
         TComponentSlots
         // Audio
         {T::AudioSource,               "play"sv,                       CNT::void_t,            "..."sv},
@@ -356,10 +356,14 @@ struct Component {
         {T::Sphere,                    "rotation"sv,                   CNT::vector3_t,         "Set the rotation (euler angles) of the component"sv},
         {T::Sphere,                    "scale"sv,                      CNT::vector3_t,         "Set the scale of the component"sv},
         {T::Sphere,                    "transform"sv,                  CNT::transform_t,       "Set the transform of the component"sv},
-        // Network
-        {T::Udp_writer,                "send message"sv,               CNT::string_t,          "..."sv},
+        // Network        
         {T::Parallel_port_writer,      "write"sv,                      CNT::integer_t,         "..."sv},
         {T::Parallel_port_writer,      "send pulse"sv,                 CNT::integer_t,         "..."sv},
+        {T::Serial_port_writer,        "send byte pulse"sv,            CNT::integer_t,         "..."sv},
+        {T::Serial_port_writer,        "write byte"sv,                 CNT::integer_t,         "..."sv},
+        {T::Serial_port_writer,        "write message"sv,              CNT::string_t,          "..."sv},
+        {T::Serial_port_writer,        "write line message"sv,         CNT::string_t,          "..."sv},
+        {T::Udp_writer,                "send message"sv,               CNT::string_t,          "..."sv},
         // Output
         {T::Logger,                    "write"sv,                      CNT::any_t,             ""sv},
         {T::Logger,                    "write line"sv,                 CNT::any_t,             ""sv},
@@ -438,7 +442,7 @@ struct Component {
         {T::Sphere,                    "visibility changed"sv,         CNT::boolean_t,                 "Is triggered if the visibility of the component changed"sv},        
         // Network
         {T::Udp_reader,                "last message received"sv,      CNT::string_t,                  "..."sv},
-        {T::Udp_writer,                "nb bytes sent"sv,              CNT::integer_t,                 "..."sv},
+        {T::Udp_writer,                "nb bytes sent"sv,              CNT::integer_t,                 "..."sv},                                                                                
         // Resource
         {T::Plot_resource,             "plot loaded"sv,                CNT::plot_t,                    "Loaded plot (called at routine start)"sv},
         {T::Plot_resource,             "plot loaded alias"sv,          CNT::string_t,                  "Alias of the loaded plot (called at routine start)"sv},

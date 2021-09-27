@@ -132,7 +132,7 @@ private:
     void generate_logger_connections();
     void generate_dialogs_connections();
 
-private :    
+private :
 
     // data
     std::unique_ptr<Experiment> m_experiment = nullptr;

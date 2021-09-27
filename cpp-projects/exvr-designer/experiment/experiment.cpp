@@ -899,17 +899,14 @@ void Experiment::add_action(ElementKey routineKey, ConditionKey conditionKey, Co
 
     if(auto condition = get_condition(routineKey,conditionKey); condition != nullptr){
 
-        for(const auto &action : condition->actions){
-            if(action->component->key() == componentKey.v){
-                QtLogger::message(QSL("[EXP] Component already added to timeline."));
-                return;
-            }
-        }
+        if(auto action = condition->get_action_from_component_key(componentKey, false); action == nullptr){
+            condition->actions.emplace_back(Action::generate_component_action(
+                component, condition->duration, configKey, fillUpdateTimeline, fillVisibilityTimeline));
 
-        // add component to action
-        condition->actions.emplace_back(Action::generate_component_action(
-            component, condition->duration, configKey, fillUpdateTimeline, fillVisibilityTimeline));
-        add_to_update_flag(UpdateRoutines);
+            add_to_update_flag(UpdateRoutines);
+        }else{
+            QtLogger::message(QSL("[EXP] Component already added to timeline."));
+        }
     }
 }
 
@@ -922,20 +919,14 @@ void Experiment::add_action_to_all_conditions(ElementKey routineKey, ComponentKe
     }
 
     if(auto routine = get_routine(routineKey); routine != nullptr){
+
         for(auto &condition : routine->conditions){
 
-            bool found = false;
-            for(const auto &action : condition->actions){
-                if(action->component->key() == componentKey.v){
-                    found = true;
-                    break;
-                }
-            }
+            if(auto action = condition->get_action_from_component_key(componentKey, false); action == nullptr){
 
-            if(!found){
                 condition->actions.emplace_back(Action::generate_component_action(
                     component, condition->duration, configKey, fillUpdateTimeline, fillVisibilityTimeline));
-            }                        
+            }
         }
     }
 
@@ -952,15 +943,9 @@ void Experiment::add_action_to_all_routines_conditions(ComponentKey componentKey
 
     for(auto &routine : get_elements_from_type<Routine>()){
         for(auto &condition : routine->conditions){
-            bool found = false;
-            for(const auto &action : condition->actions){
-                if(action->component->key() == componentKey.v){
-                    found = true;
-                    break;
-                }
-            }
 
-            if(!found){
+            if(auto action = condition->get_action_from_component_key(componentKey, false); action == nullptr){
+
                 condition->actions.emplace_back(Action::generate_component_action(
                     component, condition->duration, configKey, fillUpdateTimeline, fillVisibilityTimeline));
             }
