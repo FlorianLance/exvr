@@ -56,15 +56,26 @@ SerialPortWriterConfigParametersW::SerialPortWriterConfigParametersW() :  Config
 }
 
 void SerialPortWriterConfigParametersW::insert_widgets(){
-    add_widget(ui::F::gen(ui::L::HB(),{ui::W::txt("Pulse time:"), m_p->pulseTime()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
-    add_widget(ui::F::gen(ui::L::VB(), {m_p->rbBitsMessage(), m_p->rbIntMessage(), m_p->rbStringMessage()}, LStretch{true}, LMargins{false}));
-    add_widget(ui::F::gen(ui::L::VB(), {ui::W::txt("Message to sent:"),  m_p->teMessage()}, LStretch{false}, LMargins{false}));
-    add_widget(ui::F::gen(ui::L::VB(), {m_p->cbSendWhendRoutineStarts(),
+
+    add_widget(ui::F::gen(ui::L::VB(), {
+        ui::W::txt("Send message:"),
+        m_p->cbSendWhendRoutineStarts(),
         m_p->cbSendWhenNewTimelineBlock(),
         m_p->cbSendWhenEndTimelineBlock(),
-        m_p->cbSendEveryFrame()}, LStretch{true}, LMargins{false}
-    ));
+        m_p->cbSendEveryFrame()}, LStretch{true}, LMargins{false} )
+    );
+    add_widget(ui::F::gen(ui::L::HB(),{ui::W::txt("Pulse time:"), m_p->pulseTime()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
+    add_widget(ui::W::horizontal_line());
+    add_widget(ui::F::gen(ui::L::VB(), {m_p->rbBitsMessage(), m_p->rbIntMessage(), m_p->rbStringMessage()}, LStretch{true}, LMargins{false}));
+    add_widget(ui::F::gen(ui::L::VB(), {ui::W::txt("Message to sent:"),  m_p->teMessage()}, LStretch{false}, LMargins{false}));
 
+    set_stretch(0,1);
+    set_stretch(1,1);
+    set_stretch(2,1);
+    set_stretch(3,1);
+    set_stretch(4,50);
+
+    no_end_stretch();
 }
 
 void SerialPortWriterConfigParametersW::init_and_register_widgets(){
@@ -82,11 +93,11 @@ void SerialPortWriterConfigParametersW::init_and_register_widgets(){
         )
     );
 
-    add_input_ui(m_p->teMessage.init_widget("..."));
-    add_input_ui(m_p->cbSendWhendRoutineStarts.init_widget("Send message when routine starts ", true));
-    add_input_ui(m_p->cbSendWhenNewTimelineBlock.init_widget("Send message when new update timeline block starts ", false));
-    add_input_ui(m_p->cbSendWhenEndTimelineBlock.init_widget("Send message when update timeline block ends", false));
-    add_input_ui(m_p->cbSendEveryFrame.init_widget("Send message at every frame", false));
+    add_input_ui(m_p->teMessage.init_widget(""));
+    add_input_ui(m_p->cbSendWhendRoutineStarts.init_widget("... when routine starts ", false));
+    add_input_ui(m_p->cbSendWhenNewTimelineBlock.init_widget("... when new update timeline block starts ", false));
+    add_input_ui(m_p->cbSendWhenEndTimelineBlock.init_widget("... when update timeline block ends", false));
+    add_input_ui(m_p->cbSendEveryFrame.init_widget("... at every frame", false));
     add_input_ui(m_p->pulseTime.init_widget(MinV<qreal>{0.00}, V<qreal>{1.0}, MaxV<qreal>{10.}, StepV<qreal>{0.01}, 2));
 }
 

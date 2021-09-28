@@ -25,7 +25,7 @@ namespace Ex{
         private List<byte> m_messageBytes = null;
       
 
-#region ex_functions
+        #region ex_functions
         protected override bool initialize() {
 
             add_slot("send byte pulse", (value) => {
@@ -53,9 +53,9 @@ namespace Ex{
             try {
                 m_port.Open();
             } catch (UnauthorizedAccessException e) {
-                log_error(e.Message);
+                log_error("Serial port open UnauthorizedAccessException::error: " + e.Message);
             } catch (IOException e) {
-                log_error(e.Message);
+                log_error("Serial port open IOException::error: " + e.Message);
             }
 
             if (!m_port.IsOpen) {
@@ -67,7 +67,7 @@ namespace Ex{
 
 
         protected override void start_routine() {
-            process_message();
+
             if (currentC.get<bool>("send_new_routine")){
                 write();
             }
@@ -87,36 +87,7 @@ namespace Ex{
             }
         }
 
-        protected override void update_parameter_from_gui(string updatedArgName) {
-            process_message();
-        }
-
-        protected override void clean() {
-            m_port.Close();
-        }
-
-        #endregion
-        #region private_functions
-
-        private static byte convert_bool_array_to_byte(bool[] source) {
-
-            byte result = 0;
-            // This assumes the array never contains more than 8 elements!
-            int index = 8 - source.Length;
-
-            // Loop through the array
-            foreach (bool b in source) {
-                // if the element is 'true' set the bit at that position
-                if (b) {
-                    result |= (byte)(1 << (7 - index));
-                }
-                index++;
-            }
-
-            return result;
-        }
-
-        private void process_message() {
+        public override void update_from_current_config() {
 
             m_message = currentC.get<string>("message");
             m_messageBytes = new List<byte>();
@@ -158,6 +129,35 @@ namespace Ex{
                     m_messageBytes.Add((byte)b);
                 }
             }
+        }
+
+        protected override void update_parameter_from_gui(string updatedArgName) {
+            update_from_current_config();
+        }
+
+        protected override void clean() {
+            m_port.Close();
+        }
+
+        #endregion
+        #region private_functions
+
+        private static byte convert_bool_array_to_byte(bool[] source) {
+
+            byte result = 0;
+            // This assumes the array never contains more than 8 elements!
+            int index = 8 - source.Length;
+
+            // Loop through the array
+            foreach (bool b in source) {
+                // if the element is 'true' set the bit at that position
+                if (b) {
+                    result |= (byte)(1 << (7 - index));
+                }
+                index++;
+            }
+
+            return result;
         }
 
 

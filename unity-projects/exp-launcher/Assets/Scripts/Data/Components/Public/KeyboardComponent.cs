@@ -22,13 +22,14 @@ namespace Ex{
         // infos
         private static readonly string infosSignal  = "buttons_state_info";
 
-        // buttons
+        // events
+        // # buttons
         private Dictionary<KeyCode,  Input.KeyboardButtonEvent> buttonsEvent  = new Dictionary<KeyCode, Input.KeyboardButtonEvent>();
-        // raw buttons
+        // #raw buttons
         private Dictionary<RawKey, Input.KeyboardButtonEvent> rawButtonsEvent = new Dictionary<RawKey, Input.KeyboardButtonEvent>();
 
-        // current 
-        public Dictionary<KeyCode, Input.KeyboardButtonState> buttonsStates = new Dictionary<KeyCode, Input.KeyboardButtonState>();
+        // states 
+        public Dictionary<KeyCode, Input.KeyboardButtonState> buttonsState = new Dictionary<KeyCode, Input.KeyboardButtonState>();
 
 
         protected override bool initialize() {
@@ -37,7 +38,7 @@ namespace Ex{
 
             foreach (var code in Input.Keyboard.Codes) {
                 buttonsEvent[code]  = new Input.KeyboardButtonEvent(code);
-                buttonsStates[code] = new Input.KeyboardButtonState(code);
+                buttonsState[code] = new Input.KeyboardButtonState(code);
             }
 
             foreach (var button in Input.Keyboard.RawCodesCorrespondence) {                
@@ -78,7 +79,7 @@ namespace Ex{
                     currentEvent.update(pressed, currentTime);
 
                     // update state
-                    var currentState = buttonsStates[keyCode];
+                    var currentState = buttonsState[keyCode];
                     currentState.update(pressed, currentTime);
 
 
@@ -95,9 +96,9 @@ namespace Ex{
 
                 // send infos only once per frame
                 if (pressedKeysCount > 0 && sendInfos) {
+
                     StringBuilder infos = new StringBuilder();
                     int currentKey = 0;
-
                     foreach (KeyCode button in Input.Keyboard.Codes) {
                         var buttonState = buttonsEvent[button];
                         if (buttonState.state == Input.Button.State.Pressed || buttonState.state == Input.Button.State.Down) {
@@ -125,7 +126,7 @@ namespace Ex{
                     currentEvent.update(pressed, currentTime);
 
                     // update state
-                    var currentState = buttonsStates[codePair.Value];
+                    var currentState = buttonsState[codePair.Value];
                     currentState.update(pressed, currentTime);
 
                     if (pressed) {

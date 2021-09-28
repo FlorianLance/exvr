@@ -763,6 +763,10 @@ namespace Ex{
             transform.localScale = scale;
         }
 
+        public virtual Vector3 forward() {
+            return transform.forward;
+        }
+
         public virtual Vector3 position() {
             return transform.position;
         }

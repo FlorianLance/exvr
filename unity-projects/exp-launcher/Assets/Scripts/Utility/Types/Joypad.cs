@@ -58,12 +58,73 @@ namespace Ex.Input {
         };
     }
 
+
+    public class JoypadButtonState {
+
+        public JoypadButton.Code code;
+        public double lastTimeDown = 0.0;
+        public int nbTimesPressed = 0;
+
+        public JoypadButtonState(JoypadButton.Code code) {
+            this.code = code;
+        }
+        public void update(bool pressed, double currentTime) {
+            if (pressed && !is_pressed()) {
+                ++nbTimesPressed;
+                lastTimeDown = currentTime;
+            } else {
+                lastTimeDown = -1.0;
+            }
+        }
+
+        public bool is_pressed() {
+            return lastTimeDown > 0.0;
+        }
+
+        public double current_time_pressed() {
+            if (is_pressed()) {
+                return ExVR.Time().ellapsed_exp_ms() - lastTimeDown;
+            }
+            return 0.0;
+        }
+    }
+
     public class JoypadButtonEvent {
 
         public JoypadButtonEvent(JoypadButton.Code code) {
             this.code = code;
             state = Button.State.None;
             triggeredExperimentTime = 0.0;
+        }
+
+        public void update(bool pressed, double currentTime) {
+
+            if (state == Input.Button.State.None) {
+                if (pressed) {
+                    state = Input.Button.State.Down;
+                }
+            } else if (state == Input.Button.State.Down) {
+                if (pressed) {
+                    state = Input.Button.State.Pressed;
+                } else {
+                    state = Input.Button.State.Up;
+                }
+
+            } else if (state == Input.Button.State.Pressed) {
+                if (!pressed) {
+                    state = Input.Button.State.Up;
+                }
+            } else if (state == Input.Button.State.Up) {
+                if (pressed) {
+                    state = Input.Button.State.Down;
+                } else {
+                    state = Input.Button.State.None;
+                }
+            }
+
+            if (state != Input.Button.State.None) {
+                triggeredExperimentTime = currentTime;
+            }
         }
 
         public JoypadButton.Code code;
@@ -117,11 +178,48 @@ namespace Ex.Input {
         };
     }
 
+    public class JoypadAxisState {
+
+        public JoypadAxis.Code code;
+        public double lastTimeDown = 0.0;
+        public float value = 0f;
+
+        public JoypadAxisState(JoypadAxis.Code code) {
+            this.code = code;
+        }
+        public void update(float value, double currentTime) {
+            this.value = value;
+            if (value != 0f) {
+                lastTimeDown = currentTime;
+            } else {
+                lastTimeDown = -1.0;
+            }
+        }
+
+        public bool is_pressed() {
+            return lastTimeDown > 0.0;
+        }
+
+        public double current_time_pressed() {
+            if (is_pressed()) {
+                return ExVR.Time().ellapsed_exp_ms() - lastTimeDown;
+            }
+            return 0.0;
+        }
+    }
+
     public class JoypadAxisEvent {
 
         public JoypadAxisEvent(JoypadAxis.Code code) {
             this.code = code;
             triggeredExperimentTime = 0.0;
+        }
+
+        public void update(float value, double currentTime) {
+            this.value = value;
+            if (value != 0f) {
+                triggeredExperimentTime = currentTime;
+            }
         }
 
         public JoypadAxis.Code code;

@@ -897,17 +897,26 @@ void Experiment::add_action(ElementKey routineKey, ConditionKey conditionKey, Co
         return;
     }
 
-    if(auto condition = get_condition(routineKey,conditionKey); condition != nullptr){
+    if(auto routine = get_routine(routineKey); routine != nullptr){
 
-        if(auto action = condition->get_action_from_component_key(componentKey, false); action == nullptr){
-            condition->actions.emplace_back(Action::generate_component_action(
-                component, condition->duration, configKey, fillUpdateTimeline, fillVisibilityTimeline));
+        if(routine->isARandomizer){
+            return;
+        }
 
-            add_to_update_flag(UpdateRoutines);
-        }else{
-            QtLogger::message(QSL("[EXP] Component already added to timeline."));
+        if(auto condition = routine->get_condition(conditionKey); condition != nullptr){
+
+            if(auto action = condition->get_action_from_component_key(componentKey, false); action == nullptr){
+                condition->actions.emplace_back(Action::generate_component_action(
+                    component, condition->duration, configKey, fillUpdateTimeline, fillVisibilityTimeline));
+
+                add_to_update_flag(UpdateRoutines);
+            }else{
+                QtLogger::message(QSL("[EXP] Component already added to timeline."));
+            }
         }
     }
+
+
 }
 
 void Experiment::add_action_to_all_conditions(ElementKey routineKey, ComponentKey componentKey,
@@ -919,6 +928,10 @@ void Experiment::add_action_to_all_conditions(ElementKey routineKey, ComponentKe
     }
 
     if(auto routine = get_routine(routineKey); routine != nullptr){
+
+        if(routine->isARandomizer){
+            return;
+        }
 
         for(auto &condition : routine->conditions){
 
@@ -942,6 +955,11 @@ void Experiment::add_action_to_all_routines_conditions(ComponentKey componentKey
     }
 
     for(auto &routine : get_elements_from_type<Routine>()){
+
+        if(routine->isARandomizer){
+            continue;
+        }
+
         for(auto &condition : routine->conditions){
 
             if(auto action = condition->get_action_from_component_key(componentKey, false); action == nullptr){

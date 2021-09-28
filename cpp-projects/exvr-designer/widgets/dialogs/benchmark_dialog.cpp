@@ -114,7 +114,4 @@ void Table::update(){
         }
     }
 
-    if(currentNb < elements.size()){
-        insertRows(0, elements.size()-currentNb);
-    }
 }

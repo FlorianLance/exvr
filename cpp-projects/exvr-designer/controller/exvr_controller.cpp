@@ -552,6 +552,10 @@ void ExVrController::show_component_informations(ComponentKey componentKey){
         auto routines = exp()->get_elements_from_type<Routine>();
         for(const auto &routine : routines){
 
+            if(routine->isARandomizer){
+                continue;
+            }
+
             std_v1<std::tuple<Condition*, Action*>> conditionsContainingComponent;
             std_v1<Condition*> conditionsNotContainingComponent;
             for(const auto& condition : routine->conditions){
@@ -880,10 +884,12 @@ void ExVrController::generate_global_signals_connections(){
         if (to == Component::TimelineO::Both || to == Component::TimelineO::Update){
             m_addActionDetailsD->layout()->addWidget(ui::F::gen(ui::L::HB(),
                 {ui::W::txt("Update timeline: "), rbFillU = new QRadioButton("Fill"), rbEmptyU = new QRadioButton("Empty")}, LStretch{true}, LMargins{true}, QFrame::NoFrame));
+            rbFillU->setChecked(true);
         }
         if (to == Component::TimelineO::Both || to == Component::TimelineO::Visibility){
             m_addActionDetailsD->layout()->addWidget(ui::F::gen(ui::L::HB(),
-                {ui::W::txt("Visibility timeline: "), rbFillV = new QRadioButton("Fill"), rbEmptyV = new QRadioButton("Empty")}, LStretch{true}, LMargins{true}, QFrame::NoFrame));
+                {ui::W::txt("Visibility timeline: "), rbFillV = new QRadioButton("Fill"), rbEmptyV = new QRadioButton("Empty")}, LStretch{true}, LMargins{true}, QFrame::NoFrame));            
+            rbFillV->setChecked(true);
         }
 
         m_addActionDetailsD->layout()->addWidget(ui::W::horizontal_line());

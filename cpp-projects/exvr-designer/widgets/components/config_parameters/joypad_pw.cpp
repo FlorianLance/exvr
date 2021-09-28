@@ -128,10 +128,12 @@ void JoypadInitConfigParametersW::update_with_info(QStringView id, QStringView v
     }else if(id == QSL("buttons_state_info")){
 
         std::vector<input::Joypad::Button> buttons;
-        for(const auto &split : value.split(',')){
-            auto button = input::Joypad::get_button(split.toInt());
-            if(button.has_value()){
-                buttons.emplace_back(button.value());
+        if(value.length() > 0){
+            for(const auto &split : value.split(',')){
+                auto button = input::Joypad::get_button(split.toInt());
+                if(button.has_value()){
+                    buttons.emplace_back(button.value());
+                }
             }
         }
 
@@ -150,6 +152,7 @@ void JoypadInitConfigParametersW::update_with_info(QStringView id, QStringView v
                 buttonsP2[button]->update(true);
             }
         }
+
     }else if(id == QSL("joysticks_info")){
         devicesLL.w->clear();
         int id = 0;

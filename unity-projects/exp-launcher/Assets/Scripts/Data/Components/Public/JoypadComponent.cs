@@ -21,28 +21,36 @@ namespace Ex{
 
         // signals
         private static readonly string axisSignal = "axis";
-        private static readonly string buttonSignal = "button";
+        private static readonly string buttonOnGuiSignal = "button";
         // infos
         private static readonly string axisInfoSignal     = "axes_state_info";
         private static readonly string buttonsInfoSignal  = "buttons_state_info";
         private static readonly string joypadInfoSignal   = "joysticks_info";
 
-        // axis
-        private Dictionary<Input.JoypadAxis.Code, Input.JoypadAxisEvent> axisStates = new Dictionary<Input.JoypadAxis.Code, Input.JoypadAxisEvent>();
-        // buttons
-        private Dictionary<Input.JoypadButton.Code, Input.JoypadButtonEvent> buttonsState = new Dictionary<Input.JoypadButton.Code, Input.JoypadButtonEvent>();
+        // events
+        // # axis
+        private Dictionary<Input.JoypadAxis.Code, Input.JoypadAxisEvent> axisEvent = new Dictionary<Input.JoypadAxis.Code, Input.JoypadAxisEvent>();
+        // # buttons
+        private Dictionary<Input.JoypadButton.Code, Input.JoypadButtonEvent> buttonsEvent = new Dictionary<Input.JoypadButton.Code, Input.JoypadButtonEvent>();
+
+        // states
+        public Dictionary<Input.JoypadAxis.Code, Input.JoypadAxisState> axisState = new Dictionary<Input.JoypadAxis.Code, Input.JoypadAxisState>();
+        public Dictionary<Input.JoypadButton.Code, Input.JoypadButtonState> buttonsState = new Dictionary<Input.JoypadButton.Code, Input.JoypadButtonState>();
+        
 
         protected override bool initialize() {
 
             add_signal(axisSignal);
-            add_signal(buttonSignal);
+            add_signal(buttonOnGuiSignal);
 
             foreach(var code in Input.JoypadAxis.Codes) {
-                axisStates[code] = new Input.JoypadAxisEvent(code);
+                axisEvent[code] = new Input.JoypadAxisEvent(code);
+                axisState[code] = new Input.JoypadAxisState(code);
             }
 
             foreach(var code in Input.JoypadButton.Codes) {
-                buttonsState[code] = new Input.JoypadButtonEvent(code);
+                buttonsEvent[code] = new Input.JoypadButtonEvent(code);
+                buttonsState[code] = new Input.JoypadButtonState(code);
             }
 
             send_joystick_info();
@@ -68,63 +76,53 @@ namespace Ex{
             var currentTime = time().ellapsed_exp_ms();
 
             int pressedKeysCount = 0;
-            foreach (var code in Input.JoypadButton.Codes) {
+            foreach (Input.JoypadButton.Code buttonCode in Input.JoypadButton.Codes) {
 
-                bool pressed = UnityEngine.Input.GetButton(Input.JoypadButton.CodesNames[code]);
-                var currentState = buttonsState[code];
+                bool pressed = UnityEngine.Input.GetButton(Input.JoypadButton.CodesNames[buttonCode]);
 
-                if (currentState.state == Input.Button.State.None) {
-                    if (pressed) {
-                        currentState.state = Input.Button.State.Down;
-                    }
-                } else if (currentState.state == Input.Button.State.Down) {
-                    if (pressed) {
-                        currentState.state = Input.Button.State.Pressed;
-                    } else {
-                        currentState.state = Input.Button.State.Up;
-                    }
+                // update event
+                var currentEvent = buttonsEvent[buttonCode];
+                currentEvent.update(pressed, currentTime);
 
-                } else if (currentState.state == Input.Button.State.Pressed) {
-                    if (!pressed) {
-                        currentState.state = Input.Button.State.Up;
-                    }
-                } else if (currentState.state == Input.Button.State.Up) {
-                    if (pressed) {
-                        currentState.state = Input.Button.State.Down;
-                    } else {
-                        currentState.state = Input.Button.State.None;
-                    }
-                }
+                // update state
+                var currentState = buttonsState[buttonCode];
+                currentState.update(pressed, currentTime);
 
                 if (pressed) {
                     ++pressedKeysCount;
                 }
 
-                if (currentState.state != Input.Button.State.None) {
-                    currentState.triggeredExperimentTime = currentTime;
-                    invoke_signal(buttonSignal, currentState);
+                if (currentEvent.state != Input.Button.State.None) {
+                    invoke_signal(buttonOnGuiSignal, currentEvent);
                 }
 
-                buttonsState[code] = currentState;
+                buttonsEvent[buttonCode] = currentEvent;
             }
 
             int movedAxisCount = 0;
-            foreach (var code in Input.JoypadAxis.Codes) {
+            foreach (Input.JoypadAxis.Code axisCode in Input.JoypadAxis.Codes) {
 
-                float value = UnityEngine.Input.GetAxis(Input.JoypadAxis.CodesNames[code]);
-                var currentState = axisStates[code];
+                float value = UnityEngine.Input.GetAxis(Input.JoypadAxis.CodesNames[axisCode]);
                 if (Math.Abs(value) < deadZone) {
                     value = 0f;
-                } else {
+                }
+
+                // update event
+                var currentEvent = axisEvent[axisCode];
+                currentEvent.update(value, currentTime);
+
+                // update state
+                var currentState = axisState[axisCode];
+                currentState.update(value, currentTime);
+
+
+                if(value != 0f) { 
                     ++movedAxisCount;
-                    currentState.triggeredExperimentTime = currentTime;
                     invoke_signal(axisSignal, currentState);
                 }
 
-                axisStates[code].value = value;
+                axisEvent[axisCode] = currentEvent;
             }
-
-
 
             // send infos only once per frame
             if (pressedKeysCount > 0 && sendInfos) {
@@ -132,7 +130,7 @@ namespace Ex{
                 StringBuilder infos = new StringBuilder();
                 int currentCode = 0;
                 foreach (var code in Input.JoypadButton.Codes) {
-                    var buttonState = buttonsState[code];
+                    var buttonState = buttonsEvent[code];
                     if (buttonState.state == Input.Button.State.Pressed || buttonState.state == Input.Button.State.Down) {
                         if (currentCode != pressedKeysCount - 1) {
                             infos.AppendFormat("{0},", ((int)code).ToString());
@@ -151,7 +149,7 @@ namespace Ex{
                 StringBuilder infos = new StringBuilder();
                 int currentCode = 0;
                 foreach (var code in Input.JoypadAxis.Codes) {
-                    var axeState = axisStates[code];
+                    var axeState = axisEvent[code];
                     if (Math.Abs(axeState.value) >= deadZone) {
                         if (currentCode != movedAxisCount - 1) {
                             infos.AppendFormat("{0},{1}%", ((int)code).ToString(), Converter.to_string(axeState.value, "0.00"));
@@ -176,7 +174,11 @@ namespace Ex{
                 joystickStr.AppendFormat("{0}%", joystick);
                 ++ii;
             }
+            if(ii == 0) {
+                log_error("No joystick detected.");
+            }
             send_infos_to_gui_init_config(joypadInfoSignal, joystickStr.ToString());
+
         }
     }
 }
