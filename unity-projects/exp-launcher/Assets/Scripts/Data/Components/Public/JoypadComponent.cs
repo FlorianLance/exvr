@@ -75,28 +75,25 @@ namespace Ex{
             }
             var currentTime = time().ellapsed_exp_ms();
 
-            int pressedKeysCount = 0;
+            int keyInputChanged = 0;
             foreach (Input.JoypadButton.Code buttonCode in Input.JoypadButton.Codes) {
 
                 bool pressed = UnityEngine.Input.GetButton(Input.JoypadButton.CodesNames[buttonCode]);
 
                 // update event
                 var currentEvent = buttonsEvent[buttonCode];
-                currentEvent.update(pressed, currentTime);
-
-                // update state
                 var currentState = buttonsState[buttonCode];
-                currentState.update(pressed, currentTime);
+                var previousState = currentEvent.state;
+                currentEvent.update(pressed, currentTime);
+                currentState.update(pressed, currentTime);   
 
-                if (pressed) {
-                    ++pressedKeysCount;
+                if (previousState != currentEvent.state) {
+                    ++keyInputChanged;
                 }
 
                 if (currentEvent.state != Input.Button.State.None) {
                     invoke_signal(buttonOnGuiSignal, currentEvent);
                 }
-
-                buttonsEvent[buttonCode] = currentEvent;
             }
 
             int movedAxisCount = 0;
@@ -107,12 +104,10 @@ namespace Ex{
                     value = 0f;
                 }
 
-                // update event
+                
                 var currentEvent = axisEvent[axisCode];
-                currentEvent.update(value, currentTime);
-
-                // update state
                 var currentState = axisState[axisCode];
+                currentEvent.update(value, currentTime);
                 currentState.update(value, currentTime);
 
 
@@ -121,18 +116,17 @@ namespace Ex{
                     invoke_signal(axisSignal, currentState);
                 }
 
-                axisEvent[axisCode] = currentEvent;
             }
 
             // send infos only once per frame
-            if (pressedKeysCount > 0 && sendInfos) {
+            if (keyInputChanged > 0 && sendInfos) {
 
                 StringBuilder infos = new StringBuilder();
                 int currentCode = 0;
                 foreach (var code in Input.JoypadButton.Codes) {
                     var buttonState = buttonsEvent[code];
                     if (buttonState.state == Input.Button.State.Pressed || buttonState.state == Input.Button.State.Down) {
-                        if (currentCode != pressedKeysCount - 1) {
+                        if (currentCode != keyInputChanged - 1) {
                             infos.AppendFormat("{0},", ((int)code).ToString());
                         } else {
                             infos.Append(((int)code).ToString());

@@ -48,9 +48,6 @@ namespace Ex{
             return true;
         }
 
-        protected override void pre_update() {
-
-        }
 
         protected override void update() {
             // reset states infos
@@ -67,7 +64,7 @@ namespace Ex{
             var currentTime  = time().ellapsed_exp_ms();
 
             // retrieve keys states
-            int pressedKeysCount = 0;
+            int keyInputChanged = 0;
             if (!ExVR.GuiSettings().catchExternalKeyboardEvents) {
 
                 foreach (KeyCode keyCode in Input.Keyboard.Codes) {
@@ -76,33 +73,29 @@ namespace Ex{
 
                     // update event
                     var currentEvent = buttonsEvent[keyCode];
-                    currentEvent.update(pressed, currentTime);
-
-                    // update state
                     var currentState = buttonsState[keyCode];
+                    var previousState = currentEvent.state;
+                    currentEvent.update(pressed, currentTime);
                     currentState.update(pressed, currentTime);
 
-
-                    if (pressed) {
-                        ++pressedKeysCount;
+                    if (previousState != currentEvent.state) {
+                        ++keyInputChanged;
                     }
 
                     if (currentEvent.state != Input.Button.State.None) {
                         invoke_signal(buttonOnGuiSignal, currentEvent);
                     }
-
-                    buttonsEvent[keyCode] = currentEvent;
                 }
 
                 // send infos only once per frame
-                if (pressedKeysCount > 0 && sendInfos) {
+                if (keyInputChanged > 0 && sendInfos) {
 
                     StringBuilder infos = new StringBuilder();
                     int currentKey = 0;
                     foreach (KeyCode button in Input.Keyboard.Codes) {
                         var buttonState = buttonsEvent[button];
                         if (buttonState.state == Input.Button.State.Pressed || buttonState.state == Input.Button.State.Down) {
-                            if (currentKey != pressedKeysCount - 1) {
+                            if (currentKey != keyInputChanged - 1) {
                                 infos.AppendFormat("{0},", ((int)button).ToString());
                             } else {
                                 infos.Append(((int)button).ToString());
@@ -121,34 +114,32 @@ namespace Ex{
 
                     bool pressed = RawKeyInput.IsKeyDown(codePair.Key);
 
-                    // update state
+                    // update event
                     var currentEvent = rawButtonsEvent[codePair.Key];
-                    currentEvent.update(pressed, currentTime);
-
-                    // update state
                     var currentState = buttonsState[codePair.Value];
+                    var previousState = currentEvent.state;
+
+                    currentEvent.update(pressed, currentTime);                    
                     currentState.update(pressed, currentTime);
 
-                    if (pressed) {
-                        ++pressedKeysCount;
+                    if (previousState != currentEvent.state) {
+                        ++keyInputChanged;
                     }
 
                     if (currentEvent.state != Input.Button.State.None) {
                         invoke_signal(buttonOnGuiSignal, currentEvent);
                     }
-
-                    rawButtonsEvent[codePair.Key] = currentEvent;
                 }
 
                 // send infos only once per frame
-                if (pressedKeysCount > 0 && sendInfos) {
+                if (keyInputChanged > 0 && sendInfos) {
                     StringBuilder infos = new StringBuilder();
                     int currentKey = 0;
 
                     foreach(var codePair in Input.Keyboard.RawCodesCorrespondence) {
                         var buttonState = rawButtonsEvent[codePair.Key];
                         if (buttonState.state == Input.Button.State.Pressed || buttonState.state == Input.Button.State.Down) {
-                            if (currentKey != pressedKeysCount - 1) {
+                            if (currentKey != keyInputChanged - 1) {
                                 infos.AppendFormat("{0},", ((int)codePair.Value).ToString());
                             } else {
                                 infos.Append(((int)codePair.Value).ToString());

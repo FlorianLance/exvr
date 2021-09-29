@@ -183,7 +183,7 @@ namespace Ex.Input {
         }
     }
 
-    public struct KeyboardButtonEvent {
+    public class KeyboardButtonEvent {
 
         public KeyboardButtonEvent(KeyCode code) {
             this.code = code;
