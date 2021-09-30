@@ -7,102 +7,152 @@
 
 #include "joypad_pw.hpp"
 
+// base
+#include "utility/joypad_utility.hpp"
+
+// qt-utility
+#include "ex_widgets/ex_list_labels_w.hpp"
+#include "ex_widgets/ex_line_edit_w.hpp"
+#include "ex_widgets/ex_color_frame_w.hpp"
+#include "ex_widgets/ex_double_spin_box_w.hpp"
 
 using namespace tool::ex;
 
+struct JoypadInitConfigParametersW::Impl{
 
-void JoypadInitConfigParametersW::insert_widgets(){
+    ExListLabelsW devicesLL;
+
+    std::map<input::Joypad::Axis, std::unique_ptr<ExLineEditW>> axesP1;
+    std::map<input::Joypad::Axis, std::unique_ptr<ExLineEditW>> axesP2;
+    std::map<input::Joypad::Axis, std::unique_ptr<ExDoubleSpinBoxW>> deadAxesP1;
+    std::map<input::Joypad::Axis, std::unique_ptr<ExDoubleSpinBoxW>> deadAxesP2;
+
+    std::map<input::Joypad::Button, std::unique_ptr<ExColorFrameW>> buttonsP1;
+    std::map<input::Joypad::Button, std::unique_ptr<ExColorFrameW>> buttonsP2;
 
     std::vector<QString> axisNames;
     std::vector<ExLineEditW*> axes1Le;
     std::vector<ExLineEditW*> axes2Le;
-
-    auto axes1 = input::Joypad::axes_from_player(1);
-    auto axes2 = input::Joypad::axes_from_player(2);
-    for(size_t ii = 0; ii < axes1.size(); ++ii){
-
-        auto le1 = std::make_unique<ExLineEditW>();
-        axes1Le.emplace_back(le1.get());
-        le1->init_widget(QSL("J1 0"), false)->init_tooltip(QSL("Joypad axis code: <b>") %  QString::number(input::Joypad::get_code(axes1[ii])) % QSL("</b>"));
-        axesP1[axes1[ii]] = std::move(le1);
-
-        auto le2 = std::make_unique<ExLineEditW>();
-        axes2Le.emplace_back(le2.get());
-        le2->init_widget(QSL("J2 0"), false)->init_tooltip(QSL("Joypad axis code: <b>") %  QString::number(input::Joypad::get_code(axes2[ii])) % QSL("</b>"));
-        axesP2[axes2[ii]] = std::move(le2);
-
-        axisNames.emplace_back(from_view(input::Joypad::get_name(axes1[ii])).split("_")[0]);
-    }
+    std::vector<ExDoubleSpinBoxW*> axes1Dead;
+    std::vector<ExDoubleSpinBoxW*> axes2Dead;
 
     std::vector<QString> buttonsNames;
     std::vector<ExColorFrameW*> buttons1Cf;
     std::vector<ExColorFrameW*> buttons2Cf;
+};
 
-    auto buttons1 = input::Joypad::buttons_from_player(1);
-    auto buttons2 = input::Joypad::buttons_from_player(2);
+JoypadInitConfigParametersW::JoypadInitConfigParametersW() : ConfigParametersW(), m_p(std::make_unique<Impl>()){
+
+    const auto axes1 = input::Joypad::axes_from_player(1);
+    const auto axes2 = input::Joypad::axes_from_player(2);
+    const DsbSettings deadS = {
+        MinV<qreal>{-0.},
+        V<qreal>{0.10},
+        MaxV<qreal>{1.},
+        StepV<qreal>{0.01},
+        2
+    };
+    for(size_t ii = 0; ii < axes1.size(); ++ii){
+
+        auto le1 = std::make_unique<ExLineEditW>();
+        m_p->axes1Le.emplace_back(le1.get());
+        le1->init_widget(QSL("0"), false)->init_tooltip(QSL("Joypad axis code: <b>") %  QString::number(input::Joypad::get_code(axes1[ii])) % QSL("</b>"));
+        m_p->axesP1[axes1[ii]] = std::move(le1);
+
+        auto de1 = std::make_unique<ExDoubleSpinBoxW>(QSL("dead_zone_") % QString::number(input::Joypad::get_code(axes1[ii])));
+        m_p->axes1Dead.emplace_back(de1.get());
+        de1->init_widget(deadS);
+        m_p->deadAxesP1[axes1[ii]] = std::move(de1);
+
+        auto le2 = std::make_unique<ExLineEditW>();
+        m_p->axes2Le.emplace_back(le2.get());
+        le2->init_widget(QSL("0"), false)->init_tooltip(QSL("Joypad axis code: <b>") %  QString::number(input::Joypad::get_code(axes2[ii])) % QSL("</b>"));
+        m_p->axesP2[axes2[ii]] = std::move(le2);
+
+        auto de2 = std::make_unique<ExDoubleSpinBoxW>(QSL("dead_zone_") % QString::number(input::Joypad::get_code(axes2[ii])));
+        m_p->axes2Dead.emplace_back(de2.get());
+        de2->init_widget(deadS);
+        m_p->deadAxesP2[axes2[ii]] = std::move(de2);
+
+        m_p->axisNames.emplace_back(from_view(input::Joypad::get_name(axes1[ii])).split("_")[0]);
+    }
+
+    const auto buttons1 = input::Joypad::buttons_from_player(1);
+    const auto buttons2 = input::Joypad::buttons_from_player(2);
     for(size_t ii = 0; ii < buttons1.size(); ++ii){
 
         auto cf1 = std::make_unique<ExColorFrameW>();
-        buttons1Cf.emplace_back(cf1.get());
+        m_p->buttons1Cf.emplace_back(cf1.get());
         cf1->init_widget(false, false)->init_tooltip(QSL("Joypad button code: <b>") %  QString::number(input::Joypad::get_code(buttons1[ii])) % QSL("</b>"));
-        buttonsP1[buttons1[ii]] = std::move(cf1);
+        m_p->buttonsP1[buttons1[ii]] = std::move(cf1);
 
         auto cf2 = std::make_unique<ExColorFrameW>();
-        buttons2Cf.emplace_back(cf2.get());
+        m_p->buttons2Cf.emplace_back(cf2.get());
         cf2->init_widget(false, false)->init_tooltip(QSL("Joypad button code: <b>") %  QString::number(input::Joypad::get_code(buttons2[ii])) % QSL("</b>"));
-        buttonsP2[buttons2[ii]] = std::move(cf2);
+        m_p->buttonsP2[buttons2[ii]] = std::move(cf2);
 
-        buttonsNames.emplace_back(from_view(input::Joypad::get_name(buttons1[ii])).split("_")[0]);
+        m_p->buttonsNames.emplace_back(from_view(input::Joypad::get_name(buttons1[ii])).split("_")[0]);
     }
+}
 
+void JoypadInitConfigParametersW::insert_widgets(){
 
     // insert ui elements
-    add_widget(ui::F::gen(ui::L::VB(), {ui::W::txt("<b>Controllers detected:</b>"),devicesLL()}, LStretch{true}, LMargins{true}, QFrame::Box));
+    add_widget(ui::F::gen(ui::L::VB(), {ui::W::txt("<b>Controllers detected:</b>"),m_p->devicesLL()}, LStretch{true}, LMargins{true}, QFrame::Box));
 
-    QFrame *allAxes = ui::F::gen(ui::L::VB(), {ui::W::txt("<b>Axes:</b>")}, LStretch{false}, LMargins{true}, QFrame::Box);
-    for(size_t ii = 0; ii < axisNames.size(); ++ii){
+    QFrame *allAxis = ui::F::gen(ui::L::G(), {}, LStretch{true}, LMargins{true}, QFrame::Box);
+    QGridLayout *gl = dynamic_cast<QGridLayout*>(allAxis->layout());
+    gl->addWidget(ui::W::txt("<b>Axis</b>"),           0, 0, 1, 1);
+    gl->addWidget(ui::W::txt("<b>Value J1</b>"),       0, 1, 1, 1);
+    gl->addWidget(ui::W::txt("<b>Dead zone J1</b>"),   0, 2, 1, 1);
+    gl->addWidget(ui::W::txt("<b>Value J2</b>"),       0, 3, 1, 1);
+    gl->addWidget(ui::W::txt("<b>Dead zone J2</b>"),   0, 4, 1, 1);
 
-        QFrame *f = ui::F::gen(ui::L::HB(), {
-            ui::W::txt(axisNames[ii]), axes1Le[ii]->w.get(), axes2Le[ii]->w.get()},
-            LStretch{false}, LMargins{false}, QFrame::NoFrame);
-
-        auto *hbL = qobject_cast<QHBoxLayout*>(f->layout());
-        if(hbL){
-            hbL->insertStretch(1);
-        }
-        allAxes->layout()->addWidget(f);
+    for(size_t ii = 0; ii < m_p->axisNames.size(); ++ii){
+        gl->addWidget(ui::W::txt(m_p->axisNames[ii]),    to_signed(ii + 1), 0, 1, 1);
+        gl->addWidget(m_p->axes1Le[ii]->w.get(),         to_signed(ii + 1), 1, 1, 1);
+        gl->addWidget(m_p->axes1Dead[ii]->w.get(),       to_signed(ii + 1), 2, 1, 1);
+        gl->addWidget(m_p->axes2Le[ii]->w.get(),         to_signed(ii + 1), 3, 1, 1);
+        gl->addWidget(m_p->axes2Dead[ii]->w.get(),       to_signed(ii + 1), 4, 1, 1);
     }
-    qobject_cast<QVBoxLayout*>(allAxes->layout())->addStretch();
-    add_widget(allAxes);
 
-    QFrame *allButtons = ui::F::gen(ui::L::VB(), {ui::W::txt("<b>Buttons:</b>")}, LStretch{false}, LMargins{true}, QFrame::Box);
-    for(size_t ii = 0; ii < buttonsNames.size(); ++ii){
 
-        QFrame *f = ui::F::gen(ui::L::HB(), {
-            ui::W::txt(buttonsNames[ii]), buttons1Cf[ii]->w.get(), buttons2Cf[ii]->w.get()},
-            LStretch{false}, LMargins{false}, QFrame::NoFrame);
+    QFrame *allButtons = ui::F::gen(ui::L::G(), {}, LStretch{true}, LMargins{true}, QFrame::Box);
+    gl = dynamic_cast<QGridLayout*>(allButtons->layout());
+    gl->addWidget(ui::W::txt("<b>Buttons</b>"), 0, 0, 1, 1);
+    gl->addWidget(ui::W::txt("<b>J1</b>"),      0, 1, 1, 1);
+    gl->addWidget(ui::W::txt("<b>J2</b>"),      0, 2, 1, 1);
 
-        auto *hbL = qobject_cast<QHBoxLayout*>(f->layout());
-        if(hbL){
-            hbL->insertStretch(1);
-        }
-        allButtons->layout()->addWidget(f);
+    for(size_t ii = 0; ii < m_p->buttonsNames.size(); ++ii){
+        gl->addWidget(ui::W::txt(m_p->buttonsNames[ii]), to_signed(ii + 1), 0, 1, 1);
+        gl->addWidget(m_p->buttons1Cf[ii]->w.get(),      to_signed(ii + 1), 1, 1, 1);
+        gl->addWidget(m_p->buttons2Cf[ii]->w.get(),      to_signed(ii + 1), 2, 1, 1);
     }
-    add_widget(ui::F::gen(ui::L::HB(), {allAxes,allButtons}, LStretch{false}, LMargins{false}, QFrame::NoFrame));;
+
+    add_widget(ui::F::gen(ui::L::HB(), {allAxis,allButtons}, LStretch{false}, LMargins{false}, QFrame::NoFrame));
+    no_end_stretch();
 }
 
 void JoypadInitConfigParametersW::init_and_register_widgets(){
-    devicesLL.init_widget(false);
+
+    m_p->devicesLL.init_widget(false);
+
+    for(const auto &dz : m_p->axes1Dead){
+        add_input_ui(dz);
+    }
+    for(const auto &dz : m_p->axes2Dead){
+        add_input_ui(dz);
+    }
 }
 
 void JoypadInitConfigParametersW::update_with_info(QStringView id, QStringView value){
 
     if(id == QSL("axes_state_info")){
 
-        for(auto &axisUI : axesP1){
+        for(auto &axisUI : m_p->axesP1){
             axisUI.second->w->setText("0.00");
         }
-        for(auto &axisUI : axesP2){
+        for(auto &axisUI : m_p->axesP2){
             axisUI.second->w->setText("0.00");
         }
 
@@ -118,9 +168,9 @@ void JoypadInitConfigParametersW::update_with_info(QStringView id, QStringView v
 
             if(axis.has_value()){
                 if(input::Joypad::get_player(axis.value()) == 1){
-                    axesP1[axis.value()]->w->setText(value);
+                    m_p->axesP1[axis.value()]->w->setText(value);
                 }else{
-                    axesP2[axis.value()]->w->setText(value);
+                    m_p->axesP2[axis.value()]->w->setText(value);
                 }
             }
         }
@@ -137,42 +187,31 @@ void JoypadInitConfigParametersW::update_with_info(QStringView id, QStringView v
             }
         }
 
-        for(auto &buttonUI : buttonsP1){
+        for(auto &buttonUI : m_p->buttonsP1){
             buttonUI.second->update(false);
         }
-        for(auto &buttonUI : buttonsP2){
+        for(auto &buttonUI : m_p->buttonsP2){
             buttonUI.second->update(false);
         }
 
         for(const auto &button : buttons){
 
             if(input::Joypad::get_player(button) == 1){
-                buttonsP1[button]->update(true);
+                m_p->buttonsP1[button]->update(true);
             }else{
-                buttonsP2[button]->update(true);
+                m_p->buttonsP2[button]->update(true);
             }
         }
 
     }else if(id == QSL("joysticks_info")){
-        devicesLL.w->clear();
+        m_p->devicesLL.w->clear();
         int id = 0;
         for(const auto &split : value.split('%')){
             if(split.length() == 0){
                 break;
             }
-            devicesLL.w->addItem(QSL("J") % QString::number(id++) % QSL(" ") % split);
+            m_p->devicesLL.w->addItem(QSL("J") % QString::number(id++) % QSL(" ") % split);
         }
     }
 }
 
-void JoypadInitConfigParametersW::create_connections(){}
-
-void JoypadInitConfigParametersW::late_update_ui(){}
-
-void JoypadConfigParametersW::insert_widgets(){}
-
-void JoypadConfigParametersW::init_and_register_widgets(){}
-
-void JoypadConfigParametersW::create_connections(){}
-
-void JoypadConfigParametersW::late_update_ui(){}

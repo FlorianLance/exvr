@@ -7,14 +7,6 @@
 
 #pragma once
 
-// base
-#include "utility/joypad_utility.hpp"
-
-// qt-utility
-#include "ex_widgets/ex_list_labels_w.hpp"
-#include "ex_widgets/ex_line_edit_w.hpp"
-#include "ex_widgets/ex_color_frame_w.hpp"
-
 // local
 #include "config_pw.hpp"
 
@@ -25,35 +17,24 @@ class JoypadInitConfigParametersW : public ConfigParametersW{
 
 public :
 
-    ExListLabelsW devicesLL;
-
-    std::map<input::Joypad::Axis, std::unique_ptr<ExLineEditW>> axesP1;
-    std::map<input::Joypad::Axis, std::unique_ptr<ExLineEditW>> axesP2;
-
-    std::map<input::Joypad::Button, std::unique_ptr<ExColorFrameW>> buttonsP1;
-    std::map<input::Joypad::Button, std::unique_ptr<ExColorFrameW>> buttonsP2;
+    JoypadInitConfigParametersW();
 
     void insert_widgets() override;
-
     void init_and_register_widgets() override;
+    void update_with_info(QStringView id, QStringView value) override;
 
-public:
-
-    virtual void update_with_info(QStringView id, QStringView value) override;
-
-    void create_connections() override;
-    void late_update_ui() override;
+private:
+    struct Impl;
+    std::unique_ptr<Impl> m_p = nullptr;
 };
 
 
 class JoypadConfigParametersW : public ConfigParametersW{
-
 public :
-
-    void insert_widgets() override;
-    void init_and_register_widgets() override;
-    void create_connections() override;
-    void late_update_ui() override;
+//    void insert_widgets() override;
+//    void init_and_register_widgets() override;
+//    void create_connections() override;
+//    void late_update_ui() override;
 };
 
 }

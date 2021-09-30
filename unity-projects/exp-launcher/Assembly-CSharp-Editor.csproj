@@ -738,6 +738,9 @@
     <Reference Include="Boo.Lang">
       <HintPath>C:\Program Files\Unity\Hub\Editor\2019.4.28f1\Editor\Data\MonoBleedingEdge\lib\mono\unityscript\Boo.Lang.dll</HintPath>
     </Reference>
+    <Reference Include="System.MAnagement">
+      <HintPath>C:\Program Files\Unity\Hub\Editor\2019.4.28f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\System.MAnagement.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEditor.TestRunner">
       <HintPath>Library\ScriptAssemblies\UnityEditor.TestRunner.dll</HintPath>
     </Reference>

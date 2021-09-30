@@ -795,6 +795,7 @@
     <None Include="Assets\Thirdparty\public\TextMesh Pro\Examples &amp; Extras\Fonts\Oswald-Bold - OFL.txt" />
     <None Include="Assets\Resources\Shaders\ParaboloidGeoScreenSizeShader.shader" />
     <None Include="Assets\Resources\Shaders\StereoEyeIndexColor.shader" />
+    <None Include="Assets\csc.rsp" />
     <None Include="Assets\Resources\Shaders\SceneShader2.shader" />
     <None Include="Assets\Thirdparty\public\TextMesh Pro\Examples &amp; Extras\Fonts\Anton OFL.txt" />
     <None Include="Assets\Thirdparty\public\LeapMotion\Core\readme.txt" />
@@ -1414,6 +1415,9 @@
     </Reference>
     <Reference Include="Boo.Lang">
       <HintPath>C:\Program Files\Unity\Hub\Editor\2019.4.28f1\Editor\Data\MonoBleedingEdge\lib\mono\unityscript\Boo.Lang.dll</HintPath>
+    </Reference>
+    <Reference Include="System.MAnagement">
+      <HintPath>C:\Program Files\Unity\Hub\Editor\2019.4.28f1\Editor\Data\MonoBleedingEdge\lib\mono\4.7.1-api\System.MAnagement.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Timeline.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.Timeline.Editor.dll</HintPath>
