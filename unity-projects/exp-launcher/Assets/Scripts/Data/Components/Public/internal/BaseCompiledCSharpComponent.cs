@@ -61,6 +61,7 @@ namespace Ex {
 
         // commands
         public void next() { p.command().next(); }
+        public void schedule_next(int milliseconds) { p.command().schedule_next(milliseconds); }
         public void previous() { p.command().previous(); }
         public void close() { p.components().close(p); }
         public void stop() { p.command().force_stop_experiment(); }

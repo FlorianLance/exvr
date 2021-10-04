@@ -98,7 +98,7 @@ JoypadInitConfigParametersW::JoypadInitConfigParametersW() : ConfigParametersW()
 void JoypadInitConfigParametersW::insert_widgets(){
 
     // insert ui elements
-    add_widget(ui::F::gen(ui::L::VB(), {ui::W::txt("<b>Controllers detected:</b>"),m_p->devicesLL()}, LStretch{true}, LMargins{true}, QFrame::Box));
+    add_widget(ui::F::gen(ui::L::VB(), {ui::W::txt("<b>Controllers detected:</b>"),m_p->devicesLL()}, LStretch{false}, LMargins{true}, QFrame::Box));
 
     QFrame *allAxis = ui::F::gen(ui::L::G(), {}, LStretch{true}, LMargins{true}, QFrame::Box);
     QGridLayout *gl = dynamic_cast<QGridLayout*>(allAxis->layout());

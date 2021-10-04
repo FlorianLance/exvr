@@ -25,7 +25,7 @@ namespace Ex{
 
             // init slots
             add_slot("set text", (text) => {
-                m_text.SetText((string)text);
+                set_text((string)text);
             });
 
             // init gameObject
@@ -86,6 +86,11 @@ namespace Ex{
 
             rTr = m_text.GetComponent<RectTransform>();
             rTr.sizeDelta = new Vector2(currentC.get<int>("width"), currentC.get<int>("height"));
+        }
+
+        public void set_text(string text) {
+            currentC.set<string>("t_text", text);
+            update_text();
         }
 
         public void update_text() {

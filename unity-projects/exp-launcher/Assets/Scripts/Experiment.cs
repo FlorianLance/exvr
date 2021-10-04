@@ -612,6 +612,9 @@ namespace Ex{
         public void schedule_go_to_next_element(ScheduledAction.Source source) {
             m_scheduledActions.Add(new ScheduledAction(source, ScheduledAction.Type.Next));
         }
+        public void schedule_go_to_next_element(ScheduledAction.Source source, int milliseconds) {
+
+        }
 
         public void schedule_go_to_previous_element(ScheduledAction.Source source) {
             m_scheduledActions.Add(new ScheduledAction(source, ScheduledAction.Type.Previous));

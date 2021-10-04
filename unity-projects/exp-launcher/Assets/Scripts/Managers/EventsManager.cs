@@ -9,6 +9,13 @@
 using UnityEngine;
 using UnityEngine.Events;
 
+// system
+using System;
+using System.Runtime.InteropServices;
+using System.Collections;
+using System.Management;
+
+
 namespace Ex{
 
     namespace Events {
@@ -26,6 +33,8 @@ namespace Ex{
             public UnityEvent StopExperimentEvent   = new UnityEvent();
             public UnityEvent PauseExperimentEvent  = new UnityEvent();
 
+            public Events.IntEvent ScheduleNextEvent = new Events.IntEvent();
+
             public Events.StringEvent NextElementWithNameEvent          = new Events.StringEvent();
             public Events.StringEvent PreviousElementWithNameEvent      = new Events.StringEvent();
             public Events.StringEvent NextElementWithConditionEvent     = new Events.StringEvent();
@@ -35,6 +44,15 @@ namespace Ex{
 
             public void next() {
                 NextElementEvent.Invoke();
+            }
+
+            IEnumerator next_in(int milliseconds) {
+                yield return new WaitForSeconds(milliseconds * 0.001f);
+                next();
+            }
+
+            public void schedule_next(int milliseconds) {
+                ExVR.Coroutines().start(next_in(milliseconds));
             }
 
             public void previous() {

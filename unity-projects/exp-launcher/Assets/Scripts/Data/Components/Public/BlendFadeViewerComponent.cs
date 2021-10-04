@@ -21,7 +21,7 @@ namespace Ex{
             if(m_overlayGo == null) {
                 return false;
             }
-            m_overlayGo.transform.localScale = new Vector3(0.4f, 0.4f, 0.4f);
+            m_overlayGo.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
             m_overlay = m_overlayGo.GetComponent<BlendFadeOverlay>();
             m_overlay.initialize();
 
