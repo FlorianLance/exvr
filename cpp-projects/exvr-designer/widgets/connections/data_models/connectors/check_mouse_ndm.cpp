@@ -10,6 +10,9 @@
 
 #include "check_mouse_ndm.hpp"
 
+// base
+#include "utility/mouse_utility.hpp"
+
 using namespace tool::ex;
 
 void CheckMouseButtonEmbeddedW::initialize(){
@@ -103,22 +106,16 @@ void CheckMouseButtonNodeDataModel::compute(){
     }
 }
 
-QString CheckMouseButtonNodeDataModel::portCaption(QtNodes::PortType t, QtNodes::PortIndex i) const{
-
-    auto c = ConnectorNodeDataModel::portCaption(t,i);
-    if(t == QtNodes::PortType::In){
-        return QSL("in (") % c % QSL(")");
-    }else{
-        if(i == 0){
-            return QSL("down (") % c % QSL(")");
-        }else if(i == 1){
-            return QSL("up (") % c % QSL(")");
-        }else if(i == 2){
-            return QSL("pressed (") % c % QSL(")");
-        }else{
-            return QSL("trigger exp time ms (") % c % QSL(")");
-        }
+void CheckMouseButtonNodeDataModel::init_ports_caption(){
+    const auto io = Connector::get_io(m_type);
+    for(size_t ii = 0; ii < io.inNb; ++ii){
+        inPortsInfo[ii].caption = QSL("in (") % get_name(io.inTypes[ii]) % QSL(")");
     }
+    outPortsInfo[0].caption = QSL("down (") % get_name(io.outTypes[0]) % QSL(")");
+    outPortsInfo[1].caption = QSL("up (") % get_name(io.outTypes[1]) % QSL(")");
+    outPortsInfo[2].caption = QSL("pressed (") % get_name(io.outTypes[2]) % QSL(")");
+    outPortsInfo[3].caption = QSL("trigger exp time ms (") % get_name(io.outTypes[3]) % QSL(")");
 }
 
-//#include "moc_check_mouse_ndm.cpp"
+
+#include "moc_check_mouse_ndm.cpp"

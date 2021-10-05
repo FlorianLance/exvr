@@ -24,6 +24,12 @@ void BinaryOperationEmbeddedW::initialize(){
 
 void BinaryOperationNodeDataModel::compute(){
 
+    m_caption = embedded_w()->w->w->currentText();
+
+    const auto io = Connector::get_io(m_type);
+    inPortsInfo[1].caption =  (embedded_w()->w->w->currentIndex() != 3) ?
+            QSL("B (") % get_name(io.inTypes[1]) % QSL(")") : QSL("-");
+
     if(check_infinity_loop()){
         return;
     }
@@ -86,28 +92,23 @@ void BinaryOperationNodeDataModel::compute(){
         str::Convertor::to_str(state),
         {
             std::make_shared<BoolData>(state)
-        } );
+                } );
 }
 
-QString BinaryOperationNodeDataModel::portCaption(QtNodes::PortType t, QtNodes::PortIndex i) const{
 
-    auto c = ConnectorNodeDataModel::portCaption(t,i);
-    if(t == PortType::In){
-        if(i == 0){
-            return QSL("A (") % c % QSL(")");
-        }else if(i == 1){            
-            if(embedded_w()->w->w->currentIndex() == 3){
-                return QSL("-");
-            }else{
-                return QSL("B (") % c % QSL(")");
-            }
-        }
+void BinaryOperationNodeDataModel::init_ports_caption(){
+
+    const auto io = Connector::get_io(m_type);
+
+    inPortsInfo[0].caption = QSL("A (") % get_name(io.inTypes[0]) % QSL(")");
+    inPortsInfo[1].caption = QSL("B (") % get_name(io.inTypes[1]) % QSL(")");
+
+    for(size_t ii = 0; ii < io.outNb; ++ii){
+        outPortsInfo[ii].caption = QSL("out (") % get_name(io.outTypes[ii]) % QSL(")");
     }
-    return QSL("out (") % c % QSL(")");
 }
 
-QString BinaryOperationNodeDataModel::caption() const{
-    return embedded_w()->w->w->currentText();
-}
+
+
 
 #include "moc_binary_operation_ndm.cpp"

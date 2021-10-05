@@ -10,6 +10,9 @@
 
 #include "keyboard_ndm.hpp"
 
+// base
+#include "utility/keyboard_utility.hpp"
+
 using namespace tool::ex;
 
 void KeyboardButtonEmbeddedW::initialize(){
@@ -104,24 +107,16 @@ void CheckKeyboardButtonNodeDataModel::compute(){
     }
 }
 
-QString CheckKeyboardButtonNodeDataModel::portCaption(QtNodes::PortType t, QtNodes::PortIndex i) const{
-
-    auto c = ConnectorNodeDataModel::portCaption(t,i);
-    if(t == QtNodes::PortType::In){
-        return QSL("in (") % c % QSL(")");
-    }else{
-        if(i == 0){
-            return QSL("down (") % c % QSL(")");
-        }else if(i == 1){
-            return QSL("up (") % c % QSL(")");
-        }else if(i == 2){
-            return QSL("pressed (") % c % QSL(")");
-        }else{
-            return QSL("trigger exp time ms (") % c % QSL(")");
-        }
+void CheckKeyboardButtonNodeDataModel::init_ports_caption(){
+    const auto io = Connector::get_io(m_type);
+    for(size_t ii = 0; ii < io.inNb; ++ii){
+        inPortsInfo[ii].caption = QSL("in (") % get_name(io.inTypes[ii]) % QSL(")");
     }
+    outPortsInfo[0].caption = QSL("down (") % get_name(io.outTypes[0]) % QSL(")");
+    outPortsInfo[1].caption = QSL("up (") % get_name(io.outTypes[1]) % QSL(")");
+    outPortsInfo[2].caption = QSL("pressed (") % get_name(io.outTypes[2]) % QSL(")");
+    outPortsInfo[3].caption = QSL("trigger exp time ms (") % get_name(io.outTypes[3]) % QSL(")");
 }
-
 
 void FilterKeyboardButtonNodeDataModel::compute(){
 
@@ -162,14 +157,17 @@ void FilterKeyboardButtonNodeDataModel::compute(){
         set_embedded_widget_text(embedded_w()->w->w->currentText());
     }
 }
-QString FilterKeyboardButtonNodeDataModel::portCaption(QtNodes::PortType t, QtNodes::PortIndex i) const{
 
-    auto c = ConnectorNodeDataModel::portCaption(t,i);
-    if(t == QtNodes::PortType::In){
-        return QSL("in (") % c % QSL(")");
-    }else{
-        return QSL("out (") % c % QSL(")");
+
+void FilterKeyboardButtonNodeDataModel::init_ports_caption(){
+    const auto io = Connector::get_io(m_type);
+    for(size_t ii = 0; ii < io.inNb; ++ii){
+        inPortsInfo[ii].caption = QSL("in (") % get_name(io.inTypes[ii]) % QSL(")");
+    }
+    for(size_t ii = 0; ii < io.outNb; ++ii){
+        outPortsInfo[ii].caption = QSL("out (") % get_name(io.outTypes[ii]) % QSL(")");
     }
 }
 
-//#include "moc_keyboard_ndm.cpp"
+
+#include "moc_keyboard_ndm.cpp"

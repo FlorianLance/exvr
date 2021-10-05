@@ -46,7 +46,7 @@ const QString BaseNodeContainerW::buttonStyle2 =
         border-style: inset;\
     }";
 
-NodeDataDisplayDialog::NodeDataDisplayDialog(QString caption, bool popup) : m_popup(popup){
+NodeDataDisplayDialog::NodeDataDisplayDialog(const QString &caption, bool popup) : m_popup(popup){
 
     layout = new QVBoxLayout(this);
     setWindowTitle(caption);
@@ -102,7 +102,7 @@ bool NodeDataDisplayDialog::node_settings_execute(QPoint pos){
 }
 
 
-void BaseNodeContainerW::initialize_container(QString caption, bool popup){
+void BaseNodeContainerW::initialize_container(const QString &caption, bool popup){
 
     setContentsMargins(0,0,0,0);
     setObjectName("parent-widget");

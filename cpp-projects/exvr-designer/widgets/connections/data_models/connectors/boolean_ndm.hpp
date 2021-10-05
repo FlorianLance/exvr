@@ -36,6 +36,7 @@ public slots:
     void setInData(std::shared_ptr<QtNodes::NodeData> nodeData, PortIndex port) override;
     void inputConnectionCreated(const QtNodes::Connection &c) override;
     void inputConnectionDeleted(const QtNodes::Connection &c) override;
-    QString portCaption(QtNodes::PortType t, QtNodes::PortIndex i) const override;
+public:
+    void init_ports_caption() override;
 };
 }

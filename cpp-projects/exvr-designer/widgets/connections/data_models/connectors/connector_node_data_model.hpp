@@ -35,6 +35,9 @@ public:
     virtual ~ConnectorNodeDataModel() override{}
 
     void initialize(QtNodes::NodeStyle style, ConnectorKey connectorKey);
+    virtual void init_ports_caption();
+    virtual void init_ports_types();
+    virtual void init_ports_caption_visibility();
 
     virtual void update_from_connector(const Connector &connector);
     virtual void update_with_info(QStringView id, QStringView value);
@@ -52,6 +55,7 @@ public:
     // # circularity
     bool check_infinity_loop(bool unknowValue = true);
 
+    // inputs
     bool has_inputs(const std_v1<std::shared_ptr<QtNodes::NodeData> > &inputs) const;
     // # no inputs
     bool check_if_no_inputs(const std_v1<std::shared_ptr<QtNodes::NodeData>> &inputs, std::optional<QString> text = {});
@@ -68,7 +72,6 @@ public:
     static std::shared_ptr<BaseNodeData> generate_default_runtime_any_data(){
         return std::make_shared<AnyData>(std::make_shared<IntData>(0));
     }
-
     void invalidate_data();
     void set_invalid_cast();
 
@@ -85,13 +88,6 @@ public:
     BaseNodeContainerW *node_container()const{return m_widget;}
     QWidget *embeddedWidget() override {return m_widget;}
 
-    QString name() const override;
-    QString caption() const override;
-    virtual QString portCaption(QtNodes::PortType portType, QtNodes::PortIndex index) const override;
-    virtual unsigned int nPorts(PortType portType) const override;
-    virtual bool captionVisible() const override;
-    virtual bool portCaptionVisible(PortType portType, PortIndex index) const override;
-    virtual NodeDataType dataType(PortType portType, PortIndex index) const override;
     virtual std::shared_ptr<NodeData> outData(PortIndex index) override;
     virtual void setInData(std::shared_ptr<NodeData> nodeData, PortIndex index) override;
 
@@ -101,7 +97,7 @@ public:
 
 public slots:
 
-    virtual void compute() = 0;
+    virtual void compute(){};
 
 //    void call_embedded_widget_compute_signal(){
 //        emit node_container()->compute_data_signal();

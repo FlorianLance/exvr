@@ -234,8 +234,8 @@ void ConnectionsW::add_connection(Connection *connection){
         endNode = m_componentsNodes[connection->endKey].first;
     }
 
-    auto outType = startNode->nodeDataModel()->dataType(PortType::Out,connection->startIndex);
-    auto intType = endNode->nodeDataModel()->dataType(PortType::In,connection->endIndex);
+    const NodeDataType &outType = startNode->nodeDataModel()->dataType(PortType::Out,connection->startIndex);
+    const NodeDataType &intType = endNode->nodeDataModel()->dataType(PortType::In,connection->endIndex);
 
     auto connectionW = m_scene->createConnection(*endNode, connection->endIndex, *startNode, connection->startIndex, DataNodeModels::registry->getTypeConverter(outType, intType));
     m_connections[connectionW->id()] = std::make_pair(connectionW.get(), ConnectionKey{connection->key()});

@@ -16,17 +16,12 @@ void StartRoutineNodeDataModel::compute(){
     propagate_default_runtime({std::make_shared<StringData>(""),std::make_shared<StringData>(""), std::make_shared<IntData>(0), std::make_shared<IntData>(0)});
 }
 
-QString StartRoutineNodeDataModel::portCaption(QtNodes::PortType t, QtNodes::PortIndex i) const{
-    auto c = ConnectorNodeDataModel::portCaption(t,i);
-    if(i == 0){
-        return QSL("routine (") % c % QSL(")");
-    }else if(i == 1){
-        return QSL("condition (") % c % QSL(")");
-    }else if(i == 2){
-        return QSL("routine iter (") % c % QSL(")");
-    }else{
-        return QSL("condition iter (") % c % QSL(")");
-    }
+void StartRoutineNodeDataModel::init_ports_caption(){
+    const auto io = Connector::get_io(m_type);
+    outPortsInfo[0].caption = QSL("routine (") % get_name(io.outTypes[0]) % QSL(")");
+    outPortsInfo[1].caption = QSL("condition (") % get_name(io.outTypes[1]) % QSL(")");
+    outPortsInfo[2].caption = QSL("routine iter (") % get_name(io.outTypes[2]) % QSL(")");
+    outPortsInfo[3].caption = QSL("condition iter (") % get_name(io.outTypes[3]) % QSL(")");
 }
 
 void StopRoutineNodeDataModel::compute(){
@@ -34,13 +29,10 @@ void StopRoutineNodeDataModel::compute(){
     propagate_default_runtime({std::make_shared<StringData>(""),std::make_shared<StringData>("")});
 }
 
-QString StopRoutineNodeDataModel::portCaption(QtNodes::PortType t, QtNodes::PortIndex i) const{
-    auto c = ConnectorNodeDataModel::portCaption(t,i);
-    if(i == 0){
-        return QSL("routine (") % c % QSL(")");
-    }else{
-        return QSL("condition (") % c % QSL(")");
-    }
+void StopRoutineNodeDataModel::init_ports_caption(){
+    const auto io = Connector::get_io(m_type);
+    outPortsInfo[0].caption = QSL("routine (") % get_name(io.outTypes[0]) % QSL(")");
+    outPortsInfo[1].caption = QSL("condition (") % get_name(io.outTypes[1]) % QSL(")");
 }
 
 void PreUpdateRoutineNodeDataModel::compute(){
@@ -48,9 +40,9 @@ void PreUpdateRoutineNodeDataModel::compute(){
     propagate_default_runtime({std::make_shared<RealData>(0)});
 }
 
-QString PreUpdateRoutineNodeDataModel::portCaption(QtNodes::PortType t, QtNodes::PortIndex i) const{
-    auto c = ConnectorNodeDataModel::portCaption(t,i);
-    return QSL("routine time ms (") % c % QSL(")");
+void PreUpdateRoutineNodeDataModel::init_ports_caption(){
+    const auto io = Connector::get_io(m_type);
+    outPortsInfo[0].caption = QSL("routine time ms (") % get_name(io.outTypes[0]) % QSL(")");
 }
 
 void UpdateRoutineNodeDataModel::compute(){
@@ -58,9 +50,9 @@ void UpdateRoutineNodeDataModel::compute(){
     propagate_default_runtime({std::make_shared<RealData>(0)});
 }
 
-QString UpdateRoutineNodeDataModel::portCaption(QtNodes::PortType t, QtNodes::PortIndex i) const{
-    auto c = ConnectorNodeDataModel::portCaption(t,i);
-    return QSL("routine time ms (") % c % QSL(")");
+void UpdateRoutineNodeDataModel::init_ports_caption(){
+    const auto io = Connector::get_io(m_type);
+    outPortsInfo[0].caption = QSL("routine time ms (") % get_name(io.outTypes[0]) % QSL(")");
 }
 
 void PostUpdateRoutineNodeDataModel::compute(){
@@ -68,9 +60,9 @@ void PostUpdateRoutineNodeDataModel::compute(){
     propagate_default_runtime({std::make_shared<RealData>(0)});
 }
 
-QString PostUpdateRoutineNodeDataModel::portCaption(QtNodes::PortType t, QtNodes::PortIndex i) const{
-    auto c = ConnectorNodeDataModel::portCaption(t,i);
-    return QSL("routine time ms (") % c % QSL(")");
+void PostUpdateRoutineNodeDataModel::init_ports_caption(){
+    const auto io = Connector::get_io(m_type);
+    outPortsInfo[0].caption = QSL("routine time ms (") % get_name(io.outTypes[0]) % QSL(")");
 }
 
 

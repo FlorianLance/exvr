@@ -29,14 +29,10 @@ void initialize() override;
 
 
 class DelayNodeDataModel : public TypedConnectorDataModel<Connector::Type::Delay, DelayEmbeddedW>{
-
 Q_OBJECT
 public slots:
-
     void compute() override;
-
 public:
-
-    QString portCaption(QtNodes::PortType t , QtNodes::PortIndex i) const override;
+    void init_ports_caption() override;
 };
 }

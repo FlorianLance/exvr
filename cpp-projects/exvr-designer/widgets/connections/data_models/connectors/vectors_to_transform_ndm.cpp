@@ -52,19 +52,16 @@ void VectorsToTransformNodeDataModel::compute(){
         } );
 }
 
-QString VectorsToTransformNodeDataModel::portCaption(QtNodes::PortType t, QtNodes::PortIndex i) const{
+void VectorsToTransformNodeDataModel::init_ports_caption(){
+    const auto io = Connector::get_io(m_type);
 
-    auto c = ConnectorNodeDataModel::portCaption(t,i);
-    if(t == PortType::In){
-        if(i == 0){
-            return QSL("trans (") % c % QSL(")");
-        }else if(i == 1){
-            return QSL("rot (") % c % QSL(")");
-        }else{
-            return QSL("scale (") % c % QSL(")");
-        }
+    inPortsInfo[0].caption = QSL("trans (") % get_name(io.inTypes[0]) % QSL(")");
+    inPortsInfo[1].caption = QSL("rot (") % get_name(io.inTypes[1]) % QSL(")");
+    inPortsInfo[2].caption = QSL("scale (") % get_name(io.inTypes[2]) % QSL(")");
+
+    for(size_t ii = 0; ii < io.outNb; ++ii){
+        outPortsInfo[ii].caption = QSL("in (") % get_name(io.outTypes[ii]) % QSL(")");
     }
-    return QSL("out (") % c % QSL(")");
 }
 
 #include "moc_vectors_to_transform_ndm.cpp"

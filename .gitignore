@@ -31,6 +31,7 @@ cpp-projects/_build/bin/exvr-designer/exp-launcher/MonoBleedingEdge
 cpp-projects/_build/bin/exvr-designer/exp-launcher/UnityPlayer.dll
 cpp-projects/_build/bin/exvr-designer/exp-launcher/exvr-export.dll
 cpp-projects/_build/bin/exvr-designer/exp-launcher/lnco-exvr-export.dll
+
 cpp-projects/_build/bin/exvr-designer/exp-launcher/**/*.pdb
 cpp-projects/_build/bin/exvr-designer/exp-launcher/**/*.py
 cpp-projects/_build/bin/exvr-designer/exp-launcher/**/*.exe.config
@@ -65,6 +66,8 @@ cpp-projects/_build/temp/**/*.pdb
 unity-projects/exp-launcher/exvr-export.dll
 unity-projects/exp-launcher/lnco-exvr-export.dll
 unity-projects/exp-launcher/Logs
+unity-projects/exp-launcher/ExVR-exp_Data
+unity-projects/exp-launcher/MonoBleedingEdge
 unity-projects/exp-launcher/SteamVR*
 unity-projects/exp-launcher/Unity.XRLineRenderer*
 unity-projects/exp-launcher/Assets/_TerrainAutoUpgrade

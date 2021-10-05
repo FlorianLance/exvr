@@ -68,12 +68,13 @@ void IntegerNodeDataModel::compute(){
         } );
 }
 
-QString IntegerNodeDataModel::portCaption(QtNodes::PortType t, QtNodes::PortIndex i) const{
-    auto c = ConnectorNodeDataModel::portCaption(t,i);
-    if(t == PortType::In){
-        return QSL("in (") % c % QSL(")");
-    }else{
-        return QSL("out (") % c % QSL(")");
+void IntegerNodeDataModel::init_ports_caption(){
+    const auto io = Connector::get_io(m_type);
+    for(size_t ii = 0; ii < io.inNb; ++ii){
+        inPortsInfo[ii].caption = QSL("in (") % get_name(io.inTypes[ii]) % QSL(")");
+    }
+    for(size_t ii = 0; ii < io.outNb; ++ii){
+        outPortsInfo[ii].caption = QSL("out (") % get_name(io.outTypes[ii]) % QSL(")");
     }
 }
 

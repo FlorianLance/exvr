@@ -7,15 +7,13 @@
 
 #pragma once
 
-// base
-#include "utility/joypad_utility.hpp"
+
 
 // qt-utility
 #include "ex_widgets/ex_combo_box_text_w.hpp"
 
 // local
 #include "widgets/connections/data_models/connectors/connector_node_data_model.hpp"
-#include "widgets/connections/data_models/data/nodes_data.hpp"
 
 namespace tool::ex {
 
@@ -28,10 +26,9 @@ public:
 class CheckJoypadButtonNodeDataModel : public TypedConnectorDataModel<Connector::Type::Check_joypad_button, CheckJoypadButtonEmbeddedW>{
 Q_OBJECT
 public slots:
-
-void compute() override;
+    void compute() override;
 public:
-    QString portCaption(QtNodes::PortType t , QtNodes::PortIndex i) const override;
+    void init_ports_caption() override;
 };
 
 class CheckJoypadAxisEmbeddedW : public NodeContainerW<ExComboBoxTextW>{
@@ -42,12 +39,10 @@ public:
 
 class CheckJoypadAxisNodeDataModel : public TypedConnectorDataModel<Connector::Type::Check_joypad_axis, CheckJoypadAxisEmbeddedW>{
 Q_OBJECT
-
 public slots:
-
-void compute() override;
+    void compute() override;
 public:
-    QString portCaption(QtNodes::PortType t , QtNodes::PortIndex i) const override;
+    void init_ports_caption() override;
 };
 
 }

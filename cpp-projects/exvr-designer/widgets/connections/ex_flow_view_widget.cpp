@@ -15,11 +15,15 @@ using namespace tool::ex;
 
 
 void ExFlowView::paintEvent(QPaintEvent *event){
+    tool::Bench::start("ExFlowView::mouseMoveEvent");
     QtNodes::FlowView::paintEvent(event);
+    tool::Bench::stop();
 }
 
 void ExFlowView::resizeEvent(QResizeEvent *event){
+    tool::Bench::start("ExFlowView::resizeEvent");
     QtNodes::FlowView::resizeEvent(event);
+    tool::Bench::stop();
 }
 
 void ExFlowView::wheelEvent(QWheelEvent *event){
@@ -56,8 +60,9 @@ void ExFlowView::wheelEvent(QWheelEvent *event){
     }
 }
 
-
 void ExFlowView::mousePressEvent(QMouseEvent *event){
+
+    tool::Bench::start("ExFlowView::mousePressEvent");
 
     auto scenePos = mapToScene(event->pos());
     if(event->button()== Qt::MouseButton::LeftButton){
@@ -67,20 +72,26 @@ void ExFlowView::mousePressEvent(QMouseEvent *event){
 
     FlowView::mousePressEvent(event);
     emit mouse_pressed_event_signal(event);
+
+    tool::Bench::stop();
 }
 
 void ExFlowView::mouseReleaseEvent(QMouseEvent *event){
 
+    tool::Bench::start("ExFlowView::mouseReleaseEvent");
+
     leftClick = false;
     FlowView::mouseReleaseEvent(event);
     emit mouse_release_event_signal(event);
+
+    tool::Bench::stop();
 }
 
 void ExFlowView::mouseMoveEvent(QMouseEvent *event){
 
-    Bench::start("ExFlowView mouseMoveEvent"sv);
+    Bench::start("ExFlowView::mouseMoveEvent");
+
     FlowView::mouseMoveEvent(event);
-    Bench::stop();
 
     // check if mouse hovering a node
     hoveredNode = nullptr;
@@ -98,6 +109,8 @@ void ExFlowView::mouseMoveEvent(QMouseEvent *event){
             break;
         }
     }
+
+    Bench::stop();
 }
 
 

@@ -30,21 +30,14 @@ void DecimalCounterConfigNodeDataModel::compute(){
     propagate_default_runtime({std::make_shared<DecimalData>(Decimal(0))});
 }
 
-QString DecimalCounterConfigNodeDataModel::portCaption(PortType t, PortIndex i ) const{
+void DecimalCounterConfigNodeDataModel::init_ports_caption(){
 
-    auto c = ConnectorNodeDataModel::portCaption(t,i);
-    if(t == PortType::In){
-        switch (i) {
-            case 0:
-                return QSL("add (") % c % QSL(")");
-            case 1:
-                return QSL("sub (") % c % QSL(")");
-            case 2:
-                return QSL("reset (") % c % QSL(")");
-        }
-    }
+    const auto io = Connector::get_io(m_type);
+    inPortsInfo[0].caption = QSL("add (") % get_name(io.inTypes[0]) % QSL(")");
+    inPortsInfo[1].caption = QSL("sub (") % get_name(io.inTypes[1]) % QSL(")");
+    inPortsInfo[2].caption = QSL("reset (") % get_name(io.inTypes[2]) % QSL(")");
 
-    return QSL("count (") % c % QSL(")");
+    outPortsInfo[0].caption = QSL("count (") % get_name(io.outTypes[0]) % QSL(")");
 }
 
 

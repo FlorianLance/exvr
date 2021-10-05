@@ -30,10 +30,9 @@ class DecimalCounterConfigNodeDataModel : public TypedConnectorDataModel<Connect
 Q_OBJECT
 
 public slots:
-
-void compute() override;
+    void compute() override;
 public:
-    virtual QString portCaption(PortType, PortIndex) const override;
+    void init_ports_caption() override;
 };
 }
 

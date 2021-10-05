@@ -28,6 +28,16 @@ void DecimalOperationEmbeddedW::initialize(){
 void DecimalOperationNodeDataModel::compute(){
 
     const int index = embedded_w()->w->w->currentIndex();
+    m_caption = embedded_w()->w->w->currentText();
+
+    const auto typeOut = (embedded_w()->w->w->currentIndex() < 5) ? DecimalData().type() : BoolData().type();
+    for(size_t ii = 0; ii < outPortsInfo.size(); ++ii){
+        outPortsInfo[ii].type = typeOut;
+    }
+    outPortsInfo[0].caption = (embedded_w()->w->w->currentIndex() < 5) ?
+        QSL("out (") % from_view(ConnectionNode::get_name(ConnectionNode::Type::decimal_t)) % QSL(")") :
+        QSL("out (") % from_view(ConnectionNode::get_name(ConnectionNode::Type::boolean_t)) % QSL(")");
+
 
     if(check_infinity_loop()){
         return;
@@ -126,37 +136,12 @@ void DecimalOperationNodeDataModel::compute(){
     }
 }
 
-QString DecimalOperationNodeDataModel::portCaption(QtNodes::PortType t, QtNodes::PortIndex i) const{
+void DecimalOperationNodeDataModel::init_ports_caption(){
 
-    auto c = ConnectorNodeDataModel::portCaption(t,i);
-    if(t == PortType::In){
-        if(i == 0){
-            return QSL("A (") % c % QSL(")");
-        }else if(i == 1){
-            return QSL("B (") % c % QSL(")");
-        }
-    }
-
-    if(embedded_w()->w->w->currentIndex() < 5){
-        return QSL("out (") % from_view(ConnectionNode::get_name(ConnectionNode::Type::decimal_t)) % QSL(")");
-    }else{
-        return QSL("out (") % from_view(ConnectionNode::get_name(ConnectionNode::Type::boolean_t)) % QSL(")");
-    }
-}
-
-QString DecimalOperationNodeDataModel::caption() const{
-    return embedded_w()->w->w->currentText();
-}
-
-QtNodes::NodeDataType DecimalOperationNodeDataModel::dataType(QtNodes::PortType t, QtNodes::PortIndex i) const{
-
-    if(t == PortType::In){
-        return ConnectorNodeDataModel::dataType(t,i);
-    }
-
-    return embedded_w()->w->w->currentIndex() < 5 ?
-                DecimalData().type() :
-                BoolData().type();
+    const auto io = Connector::get_io(m_type);
+    inPortsInfo[0].caption = QSL("A (") % get_name(io.inTypes[0]) % QSL(")");
+    inPortsInfo[1].caption = QSL("B (") % get_name(io.inTypes[1]) % QSL(")");
+    outPortsInfo[0].caption = QSL("out (") % from_view(ConnectionNode::get_name(ConnectionNode::Type::decimal_t)) % QSL(")");
 }
 
 

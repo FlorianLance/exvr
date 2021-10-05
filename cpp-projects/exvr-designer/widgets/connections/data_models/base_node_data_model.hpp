@@ -20,6 +20,12 @@
 
 using QtNodes::NodeDataModel;
 
+struct PortInfo{
+    bool captionVisibility;
+    QString caption;
+    QtNodes::NodeDataType type;
+};
+
 namespace tool::ex{
 
 class BaseNodeDataModel : public NodeDataModel{           
@@ -34,6 +40,15 @@ public:
 
     QtNodes::NodeValidationState validationState() const override;
     QString validationMessage() const override;
+
+    const QString &name() const override {return m_name;}
+    const QString &caption() const override { return m_caption;}
+
+    unsigned int nPorts(QtNodes::PortType portType) const override{ return nbPorts[static_cast<int>(portType)];}
+    const QString &portCaption(QtNodes::PortType t, QtNodes::PortIndex i ) const override;
+    const QtNodes::NodeDataType &dataType(QtNodes::PortType portType, QtNodes::PortIndex portIndex) const override;
+    bool portCaptionVisible(QtNodes::PortType portType, QtNodes::PortIndex index) const override;
+    virtual bool captionVisible() const override{ return m_captionVisibility;};
 
 public slots:
 
@@ -61,6 +76,17 @@ public:
 
     QtNodes::NodeValidationState modelValidationState = QtNodes::NodeValidationState::Valid;
     QString modelValidationMessage;
+
+protected:
+
+    QString m_caption;
+    QString m_name;
+
+    std::vector<unsigned int> nbPorts = {0,0,0};
+    std::vector<PortInfo> inPortsInfo;
+    std::vector<PortInfo> outPortsInfo;
+    bool m_captionVisibility;
+
 };
 }
 

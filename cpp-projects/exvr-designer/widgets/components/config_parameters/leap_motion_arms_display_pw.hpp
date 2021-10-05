@@ -58,7 +58,7 @@ public :
         add_sub_part_widget(m_tr);        
         QFrame *frame2 = ui::F::gen(ui::L::HB(),{new QLabel("Part to display: "), m_cbtPartToDisplay()}, LStretch{false}, LMargins{true});
         QFrame *frame3 = ui::F::gen(ui::L::HB(),{m_cbDisplayColliders()}, LStretch{false}, LMargins{true});
-        add_widget(ui::F::gen(ui::L::VB(),{frame2, frame3}, LStretch{true}, LMargins{false},QFrame::Box));
+        add_widget(ui::F::gen(ui::L::VB(),{frame2, frame3}, LStretch{false}, LMargins{false},QFrame::Box));
     }
 
     void init_and_register_widgets() override{

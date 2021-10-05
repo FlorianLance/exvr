@@ -52,19 +52,18 @@ void Vector3ToRealsNodeDataModel::compute(){
     );
 }
 
-QString Vector3ToRealsNodeDataModel::portCaption(QtNodes::PortType t, QtNodes::PortIndex i) const{
 
-    auto c = ConnectorNodeDataModel::portCaption(t,i);
-    if(t == PortType::Out){
-        if(i == 0){
-            return QSL("x (") % c % QSL(")");
-        }else if(i == 1){
-            return QSL("y (") % c % QSL(")");
-        }else{
-            return QSL("z (") % c % QSL(")");
-        }
-    }
-    return QSL("xyz (") % c % QSL(")");
+void Vector3ToRealsNodeDataModel::init_ports_caption(){
+
+    const auto io = Connector::get_io(m_type);
+
+    inPortsInfo[0].caption = QSL("xyz (") % get_name(io.inTypes[0]) % QSL(")");
+
+    outPortsInfo[0].caption = QSL("x (") % get_name(io.outTypes[0]) % QSL(")");
+    outPortsInfo[1].caption = QSL("y (") % get_name(io.outTypes[1]) % QSL(")");
+    outPortsInfo[2].caption = QSL("z (") % get_name(io.outTypes[2]) % QSL(")");
 }
+
+
 
 #include "moc_vector3_to_reals_ndm.cpp"

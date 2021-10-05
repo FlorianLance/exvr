@@ -74,17 +74,14 @@ void DataNodeModels::initialize(){
 
     // TEST
 //    r->registerTypeConverter(std::make_pair(BoolData().type(),IntData().type()),UniversalConverter(BoolData().type_data(), IntData().type_data()));
-
-
-    auto inType = DecimalData().type();
-    r->registerTypeConverter(std::make_pair(inType, BoolData().type()),TC{DecimalToBoolConverter()});
-    r->registerTypeConverter(std::make_pair(inType, IntData().type()),TC{DecimalToIntegerConverter()});
-    r->registerTypeConverter(std::make_pair(inType, FloatData().type()),TC{DecimalToFloatConverter()});
-    r->registerTypeConverter(std::make_pair(inType, RealData().type()),TC{DecimalToRealConverter()});
-    r->registerTypeConverter(std::make_pair(inType, StringData().type()),TC{DecimalToStringConverter()});
-    r->registerTypeConverter(std::make_pair(inType, AnyData().type()),TC{ToAnyConverter()});
-    r->registerTypeConverter(std::make_pair(inType, VoidData().type()),TC{ToVoidConverter()});
-    r->registerTypeConverter(std::make_pair(inType, RealListData().type()),TC{DecimalToRealListConverter()});
+    r->registerTypeConverter(std::make_pair(DecimalData().type(), BoolData().type()),TC{DecimalToBoolConverter()});
+    r->registerTypeConverter(std::make_pair(DecimalData().type(), IntData().type()),TC{DecimalToIntegerConverter()});
+    r->registerTypeConverter(std::make_pair(DecimalData().type(), FloatData().type()),TC{DecimalToFloatConverter()});
+    r->registerTypeConverter(std::make_pair(DecimalData().type(), RealData().type()),TC{DecimalToRealConverter()});
+    r->registerTypeConverter(std::make_pair(DecimalData().type(), StringData().type()),TC{DecimalToStringConverter()});
+    r->registerTypeConverter(std::make_pair(DecimalData().type(), AnyData().type()),TC{ToAnyConverter()});
+    r->registerTypeConverter(std::make_pair(DecimalData().type(), VoidData().type()),TC{ToVoidConverter()});
+    r->registerTypeConverter(std::make_pair(DecimalData().type(), RealListData().type()),TC{DecimalToRealListConverter()});
     // ### bool    
     r->registerTypeConverter(std::make_pair(BoolData().type(),DecimalData().type()),TC{BoolToDecimalConverter()});
     r->registerTypeConverter(std::make_pair(BoolData().type(),IntData().type()),TC{BoolToIntegerConverter()});
@@ -161,6 +158,7 @@ void DataNodeModels::initialize(){
     r->registerTypeConverter(std::make_pair(AnyData().type(),MouseButtonEventData().type()),TC{FromAnyConverter()});
     r->registerTypeConverter(std::make_pair(AnyData().type(),JoypadButtonEventData().type()),TC{FromAnyConverter()});
     r->registerTypeConverter(std::make_pair(AnyData().type(),JoypadAxisEventData().type()),TC{FromAnyConverter()});
+    r->registerTypeConverter(std::make_pair(AnyData().type(),GameObjectListData().type()),TC{FromAnyConverter()});
     // ### void
     r->registerTypeConverter(std::make_pair(VoidData().type(),AnyData().type()),TC{ToAnyConverter()});
     // ### leap motion frame
@@ -209,6 +207,10 @@ void DataNodeModels::initialize(){
     // ### string any
     r->registerTypeConverter(std::make_pair(StringAnyData().type(),AnyData().type()),TC{ToAnyConverter()});
     r->registerTypeConverter(std::make_pair(StringAnyData().type(),VoidData().type()),TC{ToVoidConverter()});
+    // ### gameobject list
+    r->registerTypeConverter(std::make_pair(GameObjectListData().type(),AnyData().type()),TC{ToAnyConverter()});
+    r->registerTypeConverter(std::make_pair(GameObjectListData().type(),VoidData().type()),TC{ToVoidConverter()});
+
 //    // ### component out data
 //    r->registerTypeConverter(std::make_pair(ComponentOutData().type(),IntData().type()),TC{FromComponentConverter()});
 

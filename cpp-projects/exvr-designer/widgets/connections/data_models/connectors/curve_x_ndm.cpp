@@ -44,10 +44,14 @@ void CurveXNodeDataModel::compute(){
     set_embedded_widget_text(embedded_w()->curveTitle);
 }
 
-QString CurveXNodeDataModel::portCaption(QtNodes::PortType t, QtNodes::PortIndex i) const{
-    auto c = ConnectorNodeDataModel::portCaption(t,i);
-    return QSL("in (") % c % QSL(")");
+void CurveXNodeDataModel::init_ports_caption(){
+    const auto io = Connector::get_io(m_type);
+    for(size_t ii = 0; ii < io.inNb; ++ii){
+        inPortsInfo[ii].caption = QSL("in (") % get_name(io.inTypes[ii]) % QSL(")");
+    }
 }
+
+
 
 
 #include "moc_curve_x_ndm.cpp"

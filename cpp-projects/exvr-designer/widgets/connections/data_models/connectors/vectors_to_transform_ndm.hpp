@@ -22,20 +22,13 @@ using QtNodes::PortType;
 #include "widgets/connections/data_models/connectors/connector_node_data_model.hpp"
 #include "widgets/connections/data_models/data/nodes_data.hpp"
 
-
 namespace tool::ex {
 
-
 class VectorsToTransformNodeDataModel : public TypedConnectorDataModel<Connector::Type::Vectors_to_transform, PlaceHolderEmbeddedW>{
-
 Q_OBJECT
-
 public slots:
-
     void compute() override;
-
 public:
-
-    QString portCaption(QtNodes::PortType t , QtNodes::PortIndex i) const override;
+    void init_ports_caption() override;
 };
 }

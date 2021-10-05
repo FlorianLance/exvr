@@ -173,9 +173,9 @@ namespace tool::ex {
         static constexpr int maxOutputConnection = 10;
 
         struct IO{
-            size_t inNb;
+            unsigned int inNb;
             std_a1<ConnectionNode::Type,maxInputConnection> inTypes;
-            size_t outNb;
+            unsigned int outNb;
             std_a1<ConnectionNode::Type,maxOutputConnection> outTypes;
         };
 

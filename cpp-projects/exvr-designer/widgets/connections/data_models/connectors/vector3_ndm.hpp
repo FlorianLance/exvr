@@ -12,10 +12,8 @@
 
 // local
 #include "widgets/connections/data_models/connectors/connector_node_data_model.hpp"
-#include "widgets/connections/data_models/data/nodes_data.hpp"
 
 namespace tool::ex {
-
 
 class Vector3EmbeddedW : public NodeContainerW<ExVector3dW>{
 Q_OBJECT
@@ -23,12 +21,12 @@ public:
     void initialize() override;
 };
 
-
 class Vector3NodeDataModel : public TypedConnectorDataModel<Connector::Type::Vector3, Vector3EmbeddedW>{
 Q_OBJECT
-public slots:    
+public slots:
     void compute() override;
-    QString portCaption(QtNodes::PortType t , QtNodes::PortIndex i) const override;
+public:
+    void init_ports_caption() override;
 };
 }
 

@@ -7,15 +7,11 @@
 
 #pragma once
 
-// base
-#include "utility/mouse_utility.hpp"
-
 // qt-utility
 #include "ex_widgets/ex_combo_box_text_w.hpp"
 
 // local
 #include "widgets/connections/data_models/connectors/connector_node_data_model.hpp"
-#include "widgets/connections/data_models/data/nodes_data.hpp"
 
 namespace tool::ex {
 
@@ -28,9 +24,8 @@ public:
 class CheckMouseButtonNodeDataModel : public TypedConnectorDataModel<Connector::Type::Check_mouse_button, CheckMouseButtonEmbeddedW>{
 Q_OBJECT
 public slots:
-
-void compute() override;
+    void compute() override;
 public:
-    QString portCaption(QtNodes::PortType t , QtNodes::PortIndex i) const override;
+    void init_ports_caption() override;
 };
 }

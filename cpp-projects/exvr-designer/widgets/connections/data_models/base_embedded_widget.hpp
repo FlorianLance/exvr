@@ -34,7 +34,7 @@ Q_OBJECT
 
 public:
 
-    NodeDataDisplayDialog(QString caption, bool popup);
+    NodeDataDisplayDialog(const QString &caption, bool popup);
 
     void add_row_in_dialog(QString name, QWidget *w, bool horizontalLayout);
     bool node_settings_execute(QPoint pos);
@@ -53,7 +53,7 @@ public:
 
     ~BaseNodeContainerW();
 
-    void initialize_container(QString caption, bool popup);
+    void initialize_container(const QString &caption, bool popup);
 
     void close();
     void add_row_in_dialog(QString name, QWidget *w, bool horizontalLayout = true);

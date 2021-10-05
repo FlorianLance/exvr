@@ -50,17 +50,14 @@ void BooleanNodeDataModel::inputConnectionDeleted(const QtNodes::Connection &c){
     }
 }
 
-QString BooleanNodeDataModel::portCaption(QtNodes::PortType t, QtNodes::PortIndex i) const{
+void BooleanNodeDataModel::init_ports_caption(){
+    const auto io = Connector::get_io(m_type);
 
-    auto c = ConnectorNodeDataModel::portCaption(t,i);
-    if(t == PortType::In){
-        if(i == 0){
-            return QSL("in (") % c % QSL(")");
-        }else{
-            return QSL("toggle (") % c % QSL(")");
-        }
-    }else{
-        return QSL("out (") % c % QSL(")");
+    inPortsInfo[0].caption = QSL("in (") % get_name(io.inTypes[0]) % QSL(")");
+    inPortsInfo[1].caption = QSL("toggle (") % get_name(io.inTypes[1]) % QSL(")");
+
+    for(size_t ii = 0; ii < io.outNb; ++ii){
+        outPortsInfo[ii].caption = QSL("out (") % get_name(io.outTypes[ii]) % QSL(")");
     }
 }
 

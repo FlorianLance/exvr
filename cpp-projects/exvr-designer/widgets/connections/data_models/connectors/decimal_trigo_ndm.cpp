@@ -27,6 +27,8 @@ void DecimalTrigoEmbeddedW::initialize(){
 
 void DecimalTrigoNodeDataModel::compute(){
 
+    m_caption = embedded_w()->w->w->currentText();
+
     if(check_infinity_loop()){
         return;
     }
@@ -85,17 +87,13 @@ void DecimalTrigoNodeDataModel::compute(){
         } );
 }
 
-QString DecimalTrigoNodeDataModel::caption() const{
-    return embedded_w()->w->w->currentText();
-}
-
-QString DecimalTrigoNodeDataModel::portCaption(QtNodes::PortType t, QtNodes::PortIndex i) const{
-
-    auto c = ConnectorNodeDataModel::portCaption(t,i);
-    if(t == PortType::In){
-        return QSL("in (") % c % QSL(")");
-    }else{
-        return QSL("out (") % c % QSL(")");
+void DecimalTrigoNodeDataModel::init_ports_caption(){
+    const auto io = Connector::get_io(m_type);
+    for(size_t ii = 0; ii < io.inNb; ++ii){
+        inPortsInfo[ii].caption = QSL("in (") % get_name(io.inTypes[ii]) % QSL(")");
+    }
+    for(size_t ii = 0; ii < io.outNb; ++ii){
+        outPortsInfo[ii].caption = QSL("out (") % get_name(io.inTypes[ii]) % QSL(")");
     }
 }
 

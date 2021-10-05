@@ -25,16 +25,11 @@ using QtNodes::PortType;
 
 namespace tool::ex {
 
-
 class Vector2ToRealsNodeDataModel : public TypedConnectorDataModel<Connector::Type::Vec2_to_reals, PlaceHolderEmbeddedW>{
-
 Q_OBJECT
 public slots:
-
     void compute() override;
-
 public:
-
-    QString portCaption(QtNodes::PortType t , QtNodes::PortIndex i) const override;
+    void init_ports_caption() override;
 };
 }

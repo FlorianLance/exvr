@@ -10,14 +10,9 @@
 
 using namespace tool::ex;
 
-void LoggerNodeDataModel::compute(){
-}
-
-QString LoggerNodeDataModel::portCaption(QtNodes::PortType t, QtNodes::PortIndex i) const{
-
-    auto c = ConnectorNodeDataModel::portCaption(t,i);
-    return QSL("in (") % c % QSL(")");
+void LoggerNodeDataModel::init_ports_caption(){
+    const auto io = Connector::get_io(m_type);
+    inPortsInfo[0].caption = QSL("in (") % get_name(io.inTypes[0]) % QSL(")");
 }
 
 
-#include "moc_logger_ndm.cpp"

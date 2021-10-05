@@ -25,6 +25,20 @@ void StringOperationEmbeddedW::initialize(){
 
 void StringOperationNodeDataModel::compute(){
 
+    m_caption = embedded_w()->w->w->currentText();
+
+    auto cId = embedded_w()->w->w->currentIndex();
+    if(cId < 2){
+        outPortsInfo[0].caption = QSL("out (") % from_view(ConnectionNode::get_name(ConnectionNode::Type::string_t)) % QSL(")");
+        outPortsInfo[0].type = StringData().type();
+    }else if(cId < 8){
+        outPortsInfo[0].caption = QSL("out (") % from_view(ConnectionNode::get_name(ConnectionNode::Type::boolean_t)) % QSL(")");
+        outPortsInfo[0].type = BoolData().type();
+    }else{
+        outPortsInfo[0].caption = QSL("out (") % from_view(ConnectionNode::get_name(ConnectionNode::Type::string_list_t)) % QSL(")");
+        outPortsInfo[0].type = StringListData().type();
+    }
+
     if(check_infinity_loop()){
         return;
     }
@@ -106,51 +120,12 @@ void StringOperationNodeDataModel::compute(){
     }
 }
 
-QString StringOperationNodeDataModel::portCaption(QtNodes::PortType t, QtNodes::PortIndex i) const{
-
-    auto c = ConnectorNodeDataModel::portCaption(t,i);
-    if(t == PortType::In){
-        if(i == 0){
-            return QSL("A (") % c % QSL(")");
-        }else if(i == 1){
-            return QSL("B (") % c % QSL(")");
-        }
-    }
-
-    if(embedded_w()->w->w->currentIndex() < 2){
-        return QSL("out (") % from_view(ConnectionNode::get_name(ConnectionNode::Type::string_t)) % QSL(")");
-    }else if(embedded_w()->w->w->currentIndex() < 8){
-        return QSL("out (") % from_view(ConnectionNode::get_name(ConnectionNode::Type::boolean_t)) % QSL(")");
-    }else{
-        return QSL("out (") % from_view(ConnectionNode::get_name(ConnectionNode::Type::string_list_t)) % QSL(")");
-    }
+void StringOperationNodeDataModel::init_ports_caption(){
+    const auto io = Connector::get_io(m_type);
+    inPortsInfo[0].caption = QSL("A (") % get_name(io.inTypes[0]) % QSL(")");
+    inPortsInfo[1].caption = QSL("B (") % get_name(io.inTypes[1]) % QSL(")");
+    outPortsInfo[0].caption = QSL("out (") % from_view(ConnectionNode::get_name(ConnectionNode::Type::string_t)) % QSL(")");
 }
 
-QString StringOperationNodeDataModel::caption() const{
-    return embedded_w()->w->w->currentText();
-}
-
-QtNodes::NodeDataType StringOperationNodeDataModel::dataType(QtNodes::PortType t, QtNodes::PortIndex i) const{
-
-    if(t == PortType::In){
-        return ConnectorNodeDataModel::dataType(t,i);
-    }
-
-    if(embedded_w()->w->w->currentIndex() < 2){
-        return StringData().type();
-    }else if(embedded_w()->w->w->currentIndex() < 8){
-        return BoolData().type();
-    }else{
-        return StringListData().type();
-    }
-}
-
-unsigned int StringOperationNodeDataModel::nPorts(QtNodes::PortType t) const{
-    if(t == PortType::In){
-        return 2;
-    }else{
-        return 1;
-    }
-}
 
 #include "moc_string_operation_ndm.cpp"

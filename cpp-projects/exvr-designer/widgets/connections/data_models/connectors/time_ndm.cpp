@@ -37,17 +37,16 @@ bool TimeEmbeddedW::set_text_value(QStringView value){
 
 void TimeNodeDataModel::compute(){
 
+    m_caption = embedded_w()->w->typeT.w->currentText() % QSL(" (") % QString::number(embedded_w()->w->frequency.w->value()) % QSL(")");
+
     set_valid_state();
     propagate_default_runtime({std::make_shared<RealData>(0)});
 }
 
-QString TimeNodeDataModel::caption() const{
-    return embedded_w()->w->typeT.w->currentText() % QSL(" (") % QString::number(embedded_w()->w->frequency.w->value()) % QSL(")");
-}
 
-QString TimeNodeDataModel::portCaption(QtNodes::PortType t, QtNodes::PortIndex i) const{
-    auto c = ConnectorNodeDataModel::portCaption(t,i);
-    return QSL("ms (") % c % QSL(")");
+void TimeNodeDataModel::init_ports_caption(){
+    const auto io = Connector::get_io(m_type);
+    outPortsInfo[0].caption = QSL("ms (") % get_name(io.outTypes[0]) % QSL(")");
 }
 
 

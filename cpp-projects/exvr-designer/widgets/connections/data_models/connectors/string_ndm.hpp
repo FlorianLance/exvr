@@ -12,7 +12,6 @@
 
 // local
 #include "widgets/connections/data_models/connectors/connector_node_data_model.hpp"
-#include "widgets/connections/data_models/data/nodes_data.hpp"
 
 namespace tool::ex {
 
@@ -22,11 +21,11 @@ public:
     void initialize() override;
 };
 
-
 class StringNodeDataModel : public TypedConnectorDataModel<Connector::Type::String, StringEmbeddedW>{
 Q_OBJECT
 public slots:
     void compute() override;
-    QString portCaption(QtNodes::PortType t , QtNodes::PortIndex i) const override;
+public:
+    void init_ports_caption() override;
 };
 }

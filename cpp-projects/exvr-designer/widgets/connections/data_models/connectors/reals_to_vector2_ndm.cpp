@@ -51,17 +51,11 @@ void RealsToVector2NodeDataModel::compute(){
     );
 }
 
-QString RealsToVector2NodeDataModel::portCaption(QtNodes::PortType t, QtNodes::PortIndex i) const{
-
-    auto c = ConnectorNodeDataModel::portCaption(t,i);
-    if(t == PortType::In){
-        if(i == 0){
-            return QSL("x (") % c % QSL(")");
-        }else if(i == 1){
-            return QSL("y (") % c % QSL(")");
-        }
-    }
-    return QSL("xy (") % c % QSL(")");
+void RealsToVector2NodeDataModel::init_ports_caption(){
+    const auto io = Connector::get_io(m_type);
+    inPortsInfo[0].caption = QSL("x (") % get_name(io.inTypes[0]) % QSL(")");
+    inPortsInfo[1].caption = QSL("y (") % get_name(io.inTypes[1]) % QSL(")");
+    outPortsInfo[0].caption = QSL("xy (") % get_name(io.outTypes[0]) % QSL(")");
 }
 
 

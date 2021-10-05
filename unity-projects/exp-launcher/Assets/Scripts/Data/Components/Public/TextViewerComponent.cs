@@ -67,10 +67,13 @@ namespace Ex{
 
                 // move to head
                 Transform camTr = ExVR.Display().cameras().get_eye_camera_transform();
-                m_textGO.transform.position = camTr.position + camTr.forward * currentC.get<float>("distance");
-                m_textGO.transform.rotation = camTr.rotation;
-                m_textGO.transform.eulerAngles += currentC.get_vector3("rotation");
+                //m_textGO.transform.position = camTr.position + camTr.forward * currentC.get<float>("distance");
+                //m_textGO.transform.rotation = camTr.rotation;
+                //m_textGO.transform.eulerAngles += currentC.get_vector3("rotation");
                 rTr.pivot = currentC.get_vector2("pivot");
+                //rTr.localPosition = Vector3.zero;
+                rTr.rotation = camTr.rotation * Quaternion.Euler(currentC.get_vector3("rotation"));
+                rTr.position = camTr.position + camTr.forward * currentC.get<float>("distance");
 
             } else {
                 rTr.localPosition = currentC.get_vector3("position");

@@ -65,14 +65,15 @@ public:
     BaseNodeData(ConnectionNode::Type type, QString text = "") :  m_type(type), m_text(text) {
         if(type == ConnectionNode::Type::component_out_data_t){
             m_runtime = true;
-        }
+        }        
+        m_nodeDatatype = NodeDataType {get_id(m_type), get_name(m_type)};
     }
 
     inline QString value_as_text() const{return m_text;}
-    NodeDataType type() const override {return NodeDataType {id(), name()};}
+    const NodeDataType& type() const override {return m_nodeDatatype;}
     ConnectionNode::Type type_data() const{return m_type;}
-    inline QString id()   const {return get_id(m_type);}
-    inline QString name() const {return get_name(m_type);}
+    inline const QString &id()   const {return m_nodeDatatype.id;}
+    inline const QString &name() const {return m_nodeDatatype.name;}
 
     constexpr bool is_runtime() const noexcept{
         return m_runtime;

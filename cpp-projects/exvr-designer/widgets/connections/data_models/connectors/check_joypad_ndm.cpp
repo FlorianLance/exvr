@@ -8,6 +8,9 @@
 
 #include "check_joypad_ndm.hpp"
 
+// base
+#include "utility/joypad_utility.hpp"
+
 using namespace tool::ex;
 
 void CheckJoypadButtonEmbeddedW::initialize(){
@@ -102,23 +105,17 @@ void CheckJoypadButtonNodeDataModel::compute(){
     }
 }
 
-QString CheckJoypadButtonNodeDataModel::portCaption(QtNodes::PortType t, QtNodes::PortIndex i) const{
-
-    auto c = ConnectorNodeDataModel::portCaption(t,i);
-    if(t == QtNodes::PortType::In){
-        return QSL("in (") % c % QSL(")");
-    }else{
-        if(i == 0){
-            return QSL("down (") % c % QSL(")");
-        }else if(i == 1){
-            return QSL("up (") % c % QSL(")");
-        }else if(i == 2){
-            return QSL("pressed (") % c % QSL(")");
-        }else{
-            return QSL("trigger exp time ms (") % c % QSL(")");
-        }
+void CheckJoypadButtonNodeDataModel::init_ports_caption(){
+    const auto io = Connector::get_io(m_type);
+    for(size_t ii = 0; ii < io.inNb; ++ii){
+        inPortsInfo[ii].caption = QSL("in (") % get_name(io.inTypes[ii]) % QSL(")");
     }
+    outPortsInfo[0].caption = QSL("down (") % get_name(io.outTypes[0]) % QSL(")");
+    outPortsInfo[1].caption = QSL("up (") % get_name(io.outTypes[1]) % QSL(")");
+    outPortsInfo[2].caption = QSL("pressed (") % get_name(io.outTypes[2]) % QSL(")");
+    outPortsInfo[3].caption = QSL("trigger exp time ms (") % get_name(io.outTypes[3]) % QSL(")");
 }
+
 
 void CheckJoypadAxisEmbeddedW::initialize(){
 
@@ -193,20 +190,13 @@ void CheckJoypadAxisNodeDataModel::compute(){
     }
 }
 
-
-QString CheckJoypadAxisNodeDataModel::portCaption(QtNodes::PortType t, QtNodes::PortIndex i) const{
-
-    auto c = ConnectorNodeDataModel::portCaption(t,i);
-    if(t == QtNodes::PortType::In){        
-        return QSL("in (") % c % QSL(")");
-    }else{
-        if( i == 0){
-            return QSL("[0-1] (") % c % QSL(")");
-        }else{
-            return QSL("trigger exp time ms (") % c % QSL(")");
-        }
+void CheckJoypadAxisNodeDataModel::init_ports_caption(){
+    const auto io = Connector::get_io(m_type);
+    for(size_t ii = 0; ii < io.inNb; ++ii){
+        inPortsInfo[ii].caption = QSL("in (") % get_name(io.inTypes[ii]) % QSL(")");
     }
+    outPortsInfo[0].caption = QSL("[0-1] (") % get_name(io.outTypes[0]) % QSL(")");
+    outPortsInfo[1].caption = QSL("trigger exp time ms (") % get_name(io.outTypes[1]) % QSL(")");
 }
 
-
-//#include "moc_check_joypad_ndm.cpp"
+#include "moc_check_joypad_ndm.cpp"

@@ -31,6 +31,7 @@ class CheckStrNodeDataModel : public TypedConnectorDataModel<Connector::Type::Ch
     Q_OBJECT
 public slots:
     void compute() override;
-    QString portCaption(QtNodes::PortType t, QtNodes::PortIndex i) const override;
+public:
+    void init_ports_caption() override;
 };
 }

@@ -8,39 +8,35 @@
 
 #include "basic_ndm.hpp"
 
-
 using namespace tool::ex;
 
-void NextNodeDataModel::compute(){
+void NextNodeDataModel::init_ports_caption(){
+    const auto io = Connector::get_io(m_type);
+    for(size_t ii = 0; ii < io.inNb; ++ii){
+        inPortsInfo[ii].caption = QSL("in (") % get_name(io.inTypes[ii]) % QSL(")");
+    }
 }
 
-QString NextNodeDataModel::portCaption(QtNodes::PortType t, QtNodes::PortIndex i) const{
-    auto c = ConnectorNodeDataModel::portCaption(t,i);
-    return QSL("in (") % c % QSL(")");
+void PreviousNodeDataModel::init_ports_caption(){
+    const auto io = Connector::get_io(m_type);
+    for(size_t ii = 0; ii < io.inNb; ++ii){
+        inPortsInfo[ii].caption = QSL("in (") % get_name(io.inTypes[ii]) % QSL(")");
+    }
 }
 
-void PreviousNodeDataModel::compute(){
+
+void StopNodeDataModel::init_ports_caption(){
+    const auto io = Connector::get_io(m_type);
+    for(size_t ii = 0; ii < io.inNb; ++ii){
+        inPortsInfo[ii].caption = QSL("in (") % get_name(io.inTypes[ii]) % QSL(")");
+    }
 }
 
-QString PreviousNodeDataModel::portCaption(QtNodes::PortType t, QtNodes::PortIndex i) const{
-    auto c = ConnectorNodeDataModel::portCaption(t,i);
-    return QSL("in (") % c % QSL(")");
-}
-
-void StopNodeDataModel::compute(){
-}
-
-QString StopNodeDataModel::portCaption(QtNodes::PortType t, QtNodes::PortIndex i) const{
-    auto c = ConnectorNodeDataModel::portCaption(t,i);
-    return QSL("in (") % c % QSL(")");
-}
-
-void PauseNodeDataModel::compute(){
-}
-
-QString PauseNodeDataModel::portCaption(QtNodes::PortType t, QtNodes::PortIndex i) const{
-    auto c = ConnectorNodeDataModel::portCaption(t,i);
-    return QSL("in (") % c % QSL(")");
+void PauseNodeDataModel::init_ports_caption(){
+    const auto io = Connector::get_io(m_type);
+    for(size_t ii = 0; ii < io.inNb; ++ii){
+        inPortsInfo[ii].caption = QSL("in (") % get_name(io.inTypes[ii]) % QSL(")");
+    }
 }
 
 void NextWithNameEmbeddedW::initialize(){
@@ -59,9 +55,11 @@ void NextWithNameNodeDataModel::compute(){
     set_embedded_widget_text(embedded_w()->w->w->text());
 }
 
-QString NextWithNameNodeDataModel::portCaption(QtNodes::PortType t, QtNodes::PortIndex i) const{
-    auto c = ConnectorNodeDataModel::portCaption(t,i);
-    return QSL("in (") % c % QSL(")");
+void NextWithNameNodeDataModel::init_ports_caption(){
+    const auto io = Connector::get_io(m_type);
+    for(size_t ii = 0; ii < io.inNb; ++ii){
+        inPortsInfo[ii].caption = QSL("in (") % get_name(io.inTypes[ii]) % QSL(")");
+    }
 }
 
 void PreviousWithNameEmbeddedW::initialize(){
@@ -80,9 +78,11 @@ void PreviousWithNameNodeDataModel::compute(){
     set_embedded_widget_text(embedded_w()->w->w->text());
 }
 
-QString PreviousWithNameNodeDataModel::portCaption(QtNodes::PortType t, QtNodes::PortIndex i) const{
-    auto c = ConnectorNodeDataModel::portCaption(t,i);
-    return QSL("in (") % c % QSL(")");
+void PreviousWithNameNodeDataModel::init_ports_caption(){
+    const auto io = Connector::get_io(m_type);
+    for(size_t ii = 0; ii < io.inNb; ++ii){
+        inPortsInfo[ii].caption = QSL("in (") % get_name(io.inTypes[ii]) % QSL(")");
+    }
 }
 
 void NextWithCondEmbeddedW::initialize(){
@@ -100,9 +100,11 @@ void NextWithCondNodeDataModel::compute(){
     set_embedded_widget_text(embedded_w()->w->w->text());
 }
 
-QString NextWithCondNodeDataModel::portCaption(QtNodes::PortType t, QtNodes::PortIndex i) const{
-    auto c = ConnectorNodeDataModel::portCaption(t,i);
-    return QSL("in (") % c % QSL(")");
+void NextWithCondNodeDataModel::init_ports_caption(){
+    const auto io = Connector::get_io(m_type);
+    for(size_t ii = 0; ii < io.inNb; ++ii){
+        inPortsInfo[ii].caption = QSL("in (") % get_name(io.inTypes[ii]) % QSL(")");
+    }
 }
 
 void PreviousWithCondEmbeddedW::initialize(){
@@ -121,11 +123,12 @@ void PreviousWithCondNodeDataModel::compute(){
     set_embedded_widget_text(embedded_w()->w->w->text());
 }
 
-QString PreviousWithCondNodeDataModel::portCaption(QtNodes::PortType t, QtNodes::PortIndex i) const{
-    auto c = ConnectorNodeDataModel::portCaption(t,i);
-    return QSL("in (") % c % QSL(")");
+void PreviousWithCondNodeDataModel::init_ports_caption(){
+    const auto io = Connector::get_io(m_type);
+    for(size_t ii = 0; ii < io.inNb; ++ii){
+        inPortsInfo[ii].caption = QSL("in (") % get_name(io.inTypes[ii]) % QSL(")");
+    }
 }
-
 
 void ForceComponentConfigW::initialize(){
 
@@ -144,11 +147,12 @@ void ForceComponentConfigNodeDataModel::compute(){
     set_embedded_widget_text(embedded_w()->w->display());
 }
 
-QString ForceComponentConfigNodeDataModel::portCaption(QtNodes::PortType t, QtNodes::PortIndex i) const{
-    auto c = ConnectorNodeDataModel::portCaption(t,i);
-    return QSL("in (") % c % QSL(")");
+void ForceComponentConfigNodeDataModel::init_ports_caption(){
+    const auto io = Connector::get_io(m_type);
+    for(size_t ii = 0; ii < io.inNb; ++ii){
+        inPortsInfo[ii].caption = QSL("in (") % get_name(io.inTypes[ii]) % QSL(")");
+    }
 }
-
 
 
 #include "moc_basic_ndm.cpp"

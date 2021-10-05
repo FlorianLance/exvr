@@ -27,59 +27,44 @@ namespace tool::ex {
 
 
 class StartRoutineNodeDataModel : public TypedConnectorDataModel<Connector::Type::Start_routine, PlaceHolderEmbeddedW>{
-
 Q_OBJECT
 public slots:
-
-void compute() override;
+    void compute() override;
 public:
-    QString portCaption(QtNodes::PortType t , QtNodes::PortIndex i) const override;
+    void init_ports_caption() override;
 };
 
 class StopRoutineNodeDataModel : public TypedConnectorDataModel<Connector::Type::Stop_routine, PlaceHolderEmbeddedW>{
-
 Q_OBJECT
 public slots:
-
-void compute() override;
+    void compute() override;
 public:
-    QString portCaption(QtNodes::PortType t , QtNodes::PortIndex i) const override;
+    void init_ports_caption() override;
 };
 
 class PreUpdateRoutineNodeDataModel : public TypedConnectorDataModel<Connector::Type::Pre_update_routine, PlaceHolderEmbeddedW>{
-
 Q_OBJECT
 public slots:
-
-void compute() override;
+    void compute() override;
 public:
-    QString portCaption(QtNodes::PortType t , QtNodes::PortIndex i) const override;
+    void init_ports_caption() override;
 };
 
 class PostUpdateRoutineNodeDataModel : public TypedConnectorDataModel<Connector::Type::Post_update_routine, PlaceHolderEmbeddedW>{
-
 Q_OBJECT
 public slots:
-
-void compute() override;
+    void compute() override;
 public:
-    QString portCaption(QtNodes::PortType t , QtNodes::PortIndex i) const override;
+    void init_ports_caption() override;
 };
-
 
 class UpdateRoutineNodeDataModel : public TypedConnectorDataModel<Connector::Type::Update_routine, PlaceHolderEmbeddedW>{
-
 Q_OBJECT
 public slots:
-
-void compute() override;
+    void compute() override;
 public:
-    QString portCaption(QtNodes::PortType t , QtNodes::PortIndex i) const override;
+    void init_ports_caption() override;
 };
-
-
-
-
 
 }
 

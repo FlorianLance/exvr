@@ -14,12 +14,64 @@
 using namespace tool::ex;
 
 ConnectorNodeDataModel::ConnectorNodeDataModel(Connector::Type t, BaseNodeContainerW *w) :
-      BaseNodeDataModel(Type::Connector), m_type(t), m_widget(w) {
+    BaseNodeDataModel(Type::Connector), m_type(t), m_widget(w) {
+}
+
+void ConnectorNodeDataModel::init_ports_caption(){
+
+    const auto io = Connector::get_io(m_type);
+    for(size_t ii = 0; ii < io.inNb; ++ii){
+        inPortsInfo[ii].caption = get_name(io.inTypes[ii]);
+    }
+    for(size_t ii = 0; ii < io.outNb; ++ii){
+        outPortsInfo[ii].caption = get_name(io.outTypes[ii]);
+    }
+}
+
+void ConnectorNodeDataModel::init_ports_types(){
+
+    const auto io = Connector::get_io(m_type);
+    for(size_t ii = 0; ii < io.inNb; ++ii){
+        inPortsInfo[ii].type = generate_node_data_type(io.inTypes[ii]);
+    }
+    for(size_t ii = 0; ii < io.outNb; ++ii){
+        outPortsInfo[ii].type = generate_node_data_type(io.outTypes[ii]);
+    }
+}
+
+void ConnectorNodeDataModel::init_ports_caption_visibility(){
+
+    const auto io = Connector::get_io(m_type);
+    for(size_t ii = 0; ii < io.inNb; ++ii){
+        inPortsInfo[ii].captionVisibility = Connector::get_in_port_visibility(m_type, ii);
+    }
+    for(size_t ii = 0; ii < io.outNb; ++ii){
+        outPortsInfo[ii].captionVisibility = Connector::get_out_port_visibility(m_type, ii);
+    }
 }
 
 void ConnectorNodeDataModel::initialize(QtNodes::NodeStyle style, ConnectorKey connectorKey){
 
     key = connectorKey.v;
+
+    // name / caption
+    m_name = from_view(Connector::get_name(m_type));
+    m_caption = from_view(Connector::get_caption(m_type));
+    m_captionVisibility = Connector::get_caption_visibility(m_type);
+
+    // set nb ports
+    const auto io = Connector::get_io(m_type);
+    nbPorts[static_cast<size_t>(PortType::In)]   = io.inNb;
+    nbPorts[static_cast<size_t>(PortType::Out)]  = io.outNb;
+    nbPorts[static_cast<size_t>(PortType::None)] = 0;
+
+    // ports type/caption
+    inPortsInfo.resize(io.inNb);
+    outPortsInfo.resize(io.outNb);
+
+    init_ports_caption();
+    init_ports_types();
+    init_ports_caption_visibility();
 
     // resize data
     inputData.resize(nPorts(PortType::In));
@@ -335,73 +387,7 @@ void ConnectorNodeDataModel::update_with_info(QStringView id, QStringView value)
     }
 }
 
-QString ConnectorNodeDataModel::name() const{
-    return from_view(Connector::get_name(m_type));
-}
 
-QString ConnectorNodeDataModel::caption() const{
-    return from_view(Connector::get_caption(m_type));
-}
-
-QString ConnectorNodeDataModel::portCaption(QtNodes::PortType portType, QtNodes::PortIndex index) const{
-
-    const auto io = Connector::get_io(m_type);
-    if(portType == QtNodes::PortType::In){
-        if(index < to_signed(io.inNb)){
-            return get_name(io.inTypes[to_unsigned(index)]);
-        }
-    }else if(portType == QtNodes::PortType::Out){
-        if(index < to_signed(io.outNb)){
-            return get_name(io.outTypes[to_unsigned(index)]);
-        }
-    }
-    return QSL("error");
-}
-
-unsigned int ConnectorNodeDataModel::nPorts(QtNodes::PortType portType) const{
-
-    const auto io = Connector::get_io(m_type);
-    if(portType == QtNodes::PortType::In){
-        return static_cast<unsigned int>((io.inNb));
-    }else if(portType == QtNodes::PortType::Out){
-        return static_cast<unsigned int>((io.outNb));
-    }
-    return 0;
-}
-
-bool ConnectorNodeDataModel::captionVisible() const{
-    return Connector::get_caption_visibility(m_type);
-}
-
-bool ConnectorNodeDataModel::portCaptionVisible(QtNodes::PortType portType, QtNodes::PortIndex index) const{
-
-    const auto io = Connector::get_io(m_type);
-    if(portType == QtNodes::PortType::In){
-        if(index < to_signed(io.inNb)){
-            return Connector::get_in_port_visibility(m_type, to_unsigned(index));
-        }
-    }else if(portType == QtNodes::PortType::Out){
-        if(index < to_signed(io.outNb)){
-            return Connector::get_out_port_visibility(m_type, to_unsigned(index));
-        }
-    }
-    return  false;
-}
-
-QtNodes::NodeDataType ConnectorNodeDataModel::dataType(QtNodes::PortType portType, QtNodes::PortIndex index) const{
-
-    const auto io = Connector::get_io(m_type);
-    if(portType == QtNodes::PortType::In){
-        if(index < to_signed(io.inNb)){
-            return generate_node_data_type(io.inTypes[to_unsigned(index)]);
-        }
-    }else if(portType == QtNodes::PortType::Out){
-        if(index < to_signed(io.outNb)){
-            return generate_node_data_type(io.outTypes[to_unsigned(index)]);
-        }
-    }
-    return NodeDataType();
-}
 
 std::shared_ptr<QtNodes::NodeData> ConnectorNodeDataModel::outData(QtNodes::PortIndex index){
     return outputData[to_unsigned(index)];

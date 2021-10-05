@@ -37,56 +37,41 @@ ComponentNodeDataModel::ComponentNodeDataModel(int key, Component::Type componen
             wPtr)
         );
     }
+
+
+    m_captionVisibility = true;
+
+    nbPorts[static_cast<int>(PortType::In)]   = static_cast<unsigned int>(slotsF.size());
+    nbPorts[static_cast<int>(PortType::Out)]  = static_cast<unsigned int>(signalsF.size());
+    nbPorts[static_cast<int>(PortType::None)] = 0;
+
+    inPortsInfo.resize(slotsF.size());
+    for(size_t ii = 0; ii < slotsF.size(); ++ii){
+        inPortsInfo[ii].caption = from_view(slotsF[ii].first.functionName)
+            % QSL(" (") % from_view(ConnectionNode::get_name(slotsF[ii].first.argType)) % QSL(")");
+
+        inPortsInfo[ii].type = generate_node_data_type(slotsF[ii].first.argType);
+        inPortsInfo[ii].captionVisibility = true;
+    }
+
+    outPortsInfo.resize(signalsF.size());
+    for(size_t ii = 0; ii < signalsF.size(); ++ii){
+        outPortsInfo[ii].caption = from_view(signalsF[ii].first.functionName)
+            % QSL(" (") % from_view(ConnectionNode::get_name(signalsF[ii].first.argType)) % QSL(")");
+
+        outPortsInfo[ii].type = generate_node_data_type(signalsF[ii].first.argType);
+        outPortsInfo[ii].captionVisibility = true;
+    }
 }
 
 void ComponentNodeDataModel::update_name(QString componentName){
-    m_name      = componentName + "_component";
+    m_name      = componentName % QSL("_component");
     m_caption   = componentName;
-}
-
-unsigned int tool::ex::ComponentNodeDataModel::nPorts(QtNodes::PortType portType) const {
-
-    switch (portType){
-    case PortType::In:
-        return static_cast<unsigned int>(slotsF.size());
-    case PortType::Out:
-        return static_cast<unsigned int>(signalsF.size());
-    case PortType::None:
-        break;
-    }
-    return 0;
-}
-
-QtNodes::NodeDataType tool::ex::ComponentNodeDataModel::dataType(QtNodes::PortType portType, QtNodes::PortIndex portIndex) const {
-
-    auto id = static_cast<size_t>(portIndex);
-    if(portType == PortType::In){
-        return generate_node_data_type(slotsF[id].first.argType);
-    }else if(portType == PortType::Out){        
-        return generate_node_data_type(signalsF[id].first.argType);
-    }
-
-    return NodeDataType();
-}
-
-QString ComponentNodeDataModel::portCaption(PortType t, PortIndex i ) const{
-
-    auto id = static_cast<size_t>(i);
-    if(t == PortType::In){
-        if(id < slotsF.size()){
-            return from_view(slotsF[id].first.functionName) % QSL(" (") + from_view(ConnectionNode::get_name(slotsF[id].first.argType)) % QSL(")");
-        }
-    }else if(t == PortType::Out){
-        if(id < signalsF.size()){
-            return from_view(signalsF[id].first.functionName) % QSL(" (") + from_view(ConnectionNode::get_name(signalsF[id].first.argType)) % QSL(")");
-        }
-    }
-    return "";
 }
 
 void ComponentNodeDataModel::setInData(std::shared_ptr<QtNodes::NodeData> nodeData, PortIndex port){
 
-    auto id = static_cast<size_t>(port);
+    const auto id = static_cast<size_t>(port);
     if(id < slotsF.size()){
         slotsF[id].second = nodeData;
     }
@@ -94,7 +79,7 @@ void ComponentNodeDataModel::setInData(std::shared_ptr<QtNodes::NodeData> nodeDa
 
 std::shared_ptr<QtNodes::NodeData> ComponentNodeDataModel::outData(QtNodes::PortIndex port){
 
-    auto id = static_cast<size_t>(port);
+    const auto id = static_cast<size_t>(port);
     if(id < signalsF.size()){
         return signalsF[id].second;
     }

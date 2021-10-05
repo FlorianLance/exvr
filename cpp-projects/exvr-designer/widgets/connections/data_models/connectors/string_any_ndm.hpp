@@ -7,16 +7,11 @@
 
 #pragma once
 
-// nodes
-#include "nodes/NodeDataModel.hpp"
-using QtNodes::NodeValidationState;
-
 // qt-utility
 #include "ex_widgets/ex_line_edit_w.hpp"
 
 // local
 #include "widgets/connections/data_models/connectors/connector_node_data_model.hpp"
-#include "widgets/connections/data_models/data/nodes_data.hpp"
 
 namespace tool::ex {
 
@@ -30,6 +25,7 @@ class StringAnyNodeDataModel : public TypedConnectorDataModel<Connector::Type::S
 Q_OBJECT
 public slots:
     void compute() override;
-    QString portCaption(QtNodes::PortType t, QtNodes::PortIndex i) const override;
+public:
+    void init_ports_caption() override;
 };
 }

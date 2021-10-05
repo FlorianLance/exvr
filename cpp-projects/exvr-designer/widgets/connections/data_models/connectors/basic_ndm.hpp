@@ -28,35 +28,23 @@ using QtNodes::PortType;
 namespace tool::ex {
 
 class NextNodeDataModel : public TypedConnectorDataModel<Connector::Type::Next, PlaceHolderEmbeddedW>{
-Q_OBJECT
-public slots:
-    void compute() override;
 public:
-    QString portCaption(QtNodes::PortType t , QtNodes::PortIndex i) const override;
+    void init_ports_caption() override;
 };
 
 class PreviousNodeDataModel : public TypedConnectorDataModel<Connector::Type::Previous, PlaceHolderEmbeddedW>{
-Q_OBJECT
-public slots:
-    void compute() override;
 public:
-    QString portCaption(QtNodes::PortType t , QtNodes::PortIndex i) const override;
+    void init_ports_caption() override;
 };
 
 class StopNodeDataModel : public TypedConnectorDataModel<Connector::Type::Stop, PlaceHolderEmbeddedW>{
-Q_OBJECT
-public slots:
-    void compute() override;
 public:
-    QString portCaption(QtNodes::PortType t , QtNodes::PortIndex i) const override;
+    void init_ports_caption() override;
 };
 
 class PauseNodeDataModel : public TypedConnectorDataModel<Connector::Type::Pause, PlaceHolderEmbeddedW>{
-Q_OBJECT
-public slots:
-    void compute() override;
 public:
-    QString portCaption(QtNodes::PortType t , QtNodes::PortIndex i) const override;
+    void init_ports_caption() override;
 };
 
 class NextWithNameEmbeddedW : public NodeContainerW<ExLineEditW>{
@@ -69,7 +57,7 @@ Q_OBJECT
 public slots:
     void compute() override;
 public:
-    QString portCaption(QtNodes::PortType t , QtNodes::PortIndex i) const override;
+    void init_ports_caption() override;
 };
 
 class PreviousWithNameEmbeddedW : public NodeContainerW<ExLineEditW>{
@@ -82,7 +70,7 @@ Q_OBJECT
 public slots:
     void compute() override;
 public:
-    QString portCaption(QtNodes::PortType t , QtNodes::PortIndex i) const override;
+    void init_ports_caption() override;
 };
 
 class NextWithCondEmbeddedW : public NodeContainerW<ExLineEditW>{
@@ -95,7 +83,7 @@ Q_OBJECT
 public slots:
     void compute() override;    
 public:
-    QString portCaption(QtNodes::PortType t , QtNodes::PortIndex i) const override;
+    void init_ports_caption() override;
 };
 
 class PreviousWithCondEmbeddedW : public NodeContainerW<ExLineEditW>{
@@ -108,7 +96,7 @@ Q_OBJECT
 public slots:
     void compute() override;
 public:
-    QString portCaption(QtNodes::PortType t , QtNodes::PortIndex i) const override;
+    void init_ports_caption() override;
 };
 
 class ForceComponentConfigW  : public NodeContainerW<ExConfigW>{
@@ -122,7 +110,7 @@ class ForceComponentConfigNodeDataModel : public TypedConnectorDataModel<Connect
 public slots:
     void compute() override;
 public:
-    QString portCaption(QtNodes::PortType t , QtNodes::PortIndex i) const override;
+    void init_ports_caption() override;
 };
 
 }
