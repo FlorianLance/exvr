@@ -264,21 +264,47 @@ void ExVrController::close_exvr(){
 
 void ExVrController::generate_instances(){
 
-    GenerateInstancesDialog instancesDialog(exp()->get_elements_from_type<Routine>());
+    GenerateInstancesDialog instancesDialog;
     instancesDialog.exec();
 
     if(instancesDialog.directoryPath.size() > 0){
+
         exp()->update_randomization_seed(instancesDialog.randomSeed);
-        for(int ii = 0; ii < instancesDialog.nbInstances; ++ii){
-            auto instance = Instance::generate_from_full_experiment(&exp()->randomizer, *exp(), ii);
-            if(!instance){
-                return;
+
+        if(instancesDialog.useBaseName){
+            for(int ii = 0; ii < instancesDialog.nbInstances; ++ii){
+                auto instance = Instance::generate_from_full_experiment(&exp()->randomizer, *exp(), ii);
+                if(!instance){
+                    return;
+                }
+
+                const QString instanceFileName =
+                        instancesDialog.directoryPath % QSL("/") %
+                        instancesDialog.baseName %
+                        QString::number(ii+instancesDialog.startId) % QSL(".xml");
+
+                if(!xml()->save_instance_file(*instance, instanceFileName)){
+                    return;
+                }
+                QtLogger::message(QSL("[CONTROLLER] Instance [") %  instanceFileName % QSL("] generated."));
             }
-            QString instanceFileName = instancesDialog.directoryPath % QSL("/") % instancesDialog.baseName % QString::number(ii) % QSL(".xml");
-            if(!xml()->save_instance_file(*instance, instanceFileName)){
-                return;
+        }else if(instancesDialog.useManual){
+
+            for(int ii = 0; ii < instancesDialog.manualNames.size(); ++ii){
+
+                auto instance = Instance::generate_from_full_experiment(&exp()->randomizer, *exp(), ii);
+                if(!instance){
+                    return;
+                }
+
+                const QString instanceFileName =
+                        instancesDialog.directoryPath % QSL("/") %
+                        instancesDialog.manualNames[ii] % QSL(".xml");
+                if(!xml()->save_instance_file(*instance, instanceFileName)){
+                    return;
+                }
+                QtLogger::message(QSL("[CONTROLLER] Instance [") %  instanceFileName % QSL("] generated."));
             }
-            QtLogger::message(QSL("[CONTROLLER] Instance [") %  instanceFileName % QSL("] generated."));
         }
     }
 }

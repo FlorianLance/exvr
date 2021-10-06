@@ -41,7 +41,7 @@
     </property>
     <item row="1" column="0">
      <widget class="QWidget" name="wMiddle" native="true">
-      <layout class="QVBoxLayout" name="vlExpDesigner" stretch="1,3">
+      <layout class="QVBoxLayout" name="vlExpDesigner" stretch="3,7">
        <property name="spacing">
         <number>2</number>
        </property>
@@ -199,7 +199,7 @@
                <x>0</x>
                <y>0</y>
                <width>1238</width>
-               <height>204</height>
+               <height>245</height>
               </rect>
              </property>
              <layout class="QHBoxLayout" name="hlFlows">

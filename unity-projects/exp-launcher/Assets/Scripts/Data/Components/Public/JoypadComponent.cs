@@ -167,9 +167,11 @@ namespace Ex{
             StringBuilder joystickStr = new StringBuilder();
             int ii = 0;
             foreach (string joystick in UnityEngine.Input.GetJoystickNames()) {
-                log_message(string.Format("Joystick n°{0} detected: {1}", ii, joystick));
-                joystickStr.AppendFormat("{0}%", joystick);
-                ++ii;
+                if (joystick.Length > 0) {
+                    log_message(string.Format("Joystick n°{0} detected: {1}", ii, joystick));
+                    joystickStr.AppendFormat("{0}%", joystick);
+                    ++ii;
+                }
             }
             if(ii == 0) {
                 log_error("No joystick detected.");

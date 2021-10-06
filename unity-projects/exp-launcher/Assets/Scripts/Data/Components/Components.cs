@@ -93,7 +93,7 @@ namespace Ex
         public static readonly Dictionary<Category, string> Category2Transform = new Dictionary<Category, string> {
             [Category.Audio] = "[C:Audio]",
             [Category.Resource] = "[C:Resource]",
-            [Category.Image] = "[C:Image]",
+            [Category.Flow] = "[C:Flow]",
             [Category.Input] = "[C:Input]",
             [Category.Network] = "[C:Network]",
             [Category.Output] = "[C:Output]",
@@ -121,10 +121,38 @@ namespace Ex
             // audio
             ["Ex.MicrophoneComponent"] = gen_info(Category.Audio, Pritority.Medium, Reserved.Public),
             ["Ex.AudioSourceComponent"] = gen_info(Category.Audio, Pritority.Medium, Reserved.Public),
+            // avatar
+            ["Ex.HumanoidAvatarComponent"] = gen_info(Category.Avatar, Pritority.Medium, Reserved.Closed),
+            ["Ex.HumanoidControllerComponent"] = gen_info(Category.Avatar, Pritority.Low, Reserved.Closed),
+            // camera
+            ["Ex.CameraTargetComponent"] = gen_info(Category.Camera, Pritority.Low, Reserved.Public),
+            ["Ex.CameraTrajectoryComponent"] = gen_info(Category.Camera, Pritority.Low, Reserved.Public),
+            ["Ex.CameraTrajectoryFileComponent"] = gen_info(Category.Camera, Pritority.Low, Reserved.Public),
+            ["Ex.CameraComponent"] = gen_info(Category.Camera, Pritority.Low, Reserved.Public),
+            ["Ex.FPPAvatarCameraComponent"] = gen_info(Category.Camera, Pritority.Low, Reserved.Closed),
+            ["Ex.TPPAvatarCameraComponent"] = gen_info(Category.Camera, Pritority.Low, Reserved.Closed),
+            // cloud
+            ["Ex.CloudComponent"] = gen_info(Category.Cloud, Pritority.Medium, Reserved.Public),
+            ["Ex.ScanerVideoComponent"] = gen_info(Category.Cloud, Pritority.Medium, Reserved.LNCO),
+            // environment
+            ["Ex.SkyComponent"] = gen_info(Category.Environment, Pritority.Hight, Reserved.Public),
+            // environment
+            ["Ex.ConfigComponent"] = gen_info(Category.Flow, Pritority.Hight, Reserved.Public),
             // input
             ["Ex.JoypadComponent"] = gen_info(Category.Input, Pritority.Hight, Reserved.Public),
             ["Ex.MouseComponent"] = gen_info(Category.Input, Pritority.Hight, Reserved.Public),
             ["Ex.KeyboardComponent"] = gen_info(Category.Input, Pritority.Hight, Reserved.Public),
+            // interaction
+            ["Ex.FlagPoleComponent"] = gen_info(Category.Interaction, Pritority.Medium, Reserved.Public),
+            ["Ex.MarkToCleanComponent"] = gen_info(Category.Interaction, Pritority.Medium, Reserved.Public),
+            ["Ex.TargetToGrabComponent"] = gen_info(Category.Interaction, Pritority.Medium, Reserved.Public),
+            // model
+            ["Ex.CubeComponent"] = gen_info(Category.Model, Pritority.Medium, Reserved.Public),
+            ["Ex.SphereComponent"] = gen_info(Category.Model, Pritority.Medium, Reserved.Public),
+            ["Ex.TorusComponent"] = gen_info(Category.Model, Pritority.Medium, Reserved.Public),
+            ["Ex.LinesComponent"] = gen_info(Category.Model, Pritority.Medium, Reserved.Public),
+            ["Ex.CylinderComponent"] = gen_info(Category.Model, Pritority.Medium, Reserved.Public),
+            ["Ex.LandmarkComponent"] = gen_info(Category.Model, Pritority.Medium, Reserved.Public),
             // network
             ["Ex.UdpReaderComponent"] = gen_info(Category.Network, Pritority.Hight, Reserved.Public),
             ["Ex.UdpWriterComponent"] = gen_info(Category.Network, Pritority.Hight, Reserved.Public),
@@ -134,13 +162,13 @@ namespace Ex
             ["Ex.LoggerComponent"] = gen_info(Category.Output, Pritority.Hight, Reserved.Public),
             ["Ex.LoggerConditionComponent"] = gen_info(Category.Output, Pritority.Hight, Reserved.Public),
             ["Ex.LoggerColumnsComponent"] = gen_info(Category.Output, Pritority.Hight, Reserved.Public),
-            // camera
-            ["Ex.CameraTargetComponent"] = gen_info(Category.Camera, Pritority.Low, Reserved.Public),
-            ["Ex.CameraTrajectoryComponent"] = gen_info(Category.Camera, Pritority.Low, Reserved.Public),
-            ["Ex.CameraTrajectoryFileComponent"] = gen_info(Category.Camera, Pritority.Low, Reserved.Public),
-            ["Ex.CameraComponent"] = gen_info(Category.Camera, Pritority.Low, Reserved.Public),
-            ["Ex.FPPAvatarCameraComponent"] = gen_info(Category.Camera, Pritority.Low, Reserved.Closed),
-            ["Ex.TPPAvatarCameraComponent"] = gen_info(Category.Camera, Pritority.Low, Reserved.Closed),
+            // resource
+            ["Ex.ImageResourceComponent"] = gen_info(Category.Resource, Pritority.Hight, Reserved.Public),
+            ["Ex.PlotResourceComponent"] = gen_info(Category.Resource, Pritority.Hight, Reserved.Public),
+            ["Ex.TextResourceComponent"] = gen_info(Category.Resource, Pritority.Hight, Reserved.Public),
+            ["Ex.VideoResourceComponent"] = gen_info(Category.Resource, Pritority.Hight, Reserved.Public),
+            ["Ex.AudioResourceComponent"] = gen_info(Category.Resource, Pritority.Hight, Reserved.Public),
+            ["Ex.DirectoryResourceComponent"] = gen_info(Category.Resource, Pritority.Hight, Reserved.Public),
             // scene
             ["Ex.AssetBundleComponent"] = gen_info(Category.Scene, Pritority.Hight, Reserved.Public),
             ["Ex.MultiABComponent"] = gen_info(Category.Scene, Pritority.Hight, Reserved.Public),
@@ -152,13 +180,6 @@ namespace Ex
             ["Ex.CSharpFunctionComponent"] = gen_info(Category.Script, Pritority.Low, Reserved.Public),
             ["Ex.CSharpScriptComponent"] = gen_info(Category.Script, Pritority.Low, Reserved.Public),
             ["Ex.PythonScriptComponent"] = gen_info(Category.Script, Pritority.Medium, Reserved.Public),
-            // UI
-            ["Ex.SliderUIComponent"] = gen_info(Category.UI, Pritority.Medium, Reserved.Public),
-            // video
-            ["Ex.VideoFileComponent"] = gen_info(Category.Video, Pritority.Medium, Reserved.Public),
-            ["Ex.VideoFileCameraViewerComponent"] = gen_info(Category.Video, Pritority.Medium, Reserved.Public),
-            ["Ex.WebcamComponent"] = gen_info(Category.Video, Pritority.Medium, Reserved.Public),
-            ["Ex.VideoSaverComponent"] = gen_info(Category.Video, Pritority.Medium, Reserved.Public),
             // tracking
             ["Ex.SceneScanerComponent"] = gen_info(Category.Tracking, Pritority.Medium, Reserved.LNCO),
             ["Ex.LeapMotionComponent"] = gen_info(Category.Tracking, Pritority.Hight, Reserved.Public),
@@ -174,32 +195,13 @@ namespace Ex
             ["Ex.QualisysTrackingComponent"] = gen_info(Category.Tracking, Pritority.Hight, Reserved.Public),
             ["Ex.SoncebozSGComponent"] = gen_info(Category.Tracking, Pritority.Hight, Reserved.LNCO),
             ["Ex.FOPRobotComponent"] = gen_info(Category.Tracking, Pritority.Hight, Reserved.LNCO),
-            // model
-            ["Ex.CubeComponent"] = gen_info(Category.Model, Pritority.Medium, Reserved.Public),
-            ["Ex.SphereComponent"] = gen_info(Category.Model, Pritority.Medium, Reserved.Public),
-            ["Ex.TorusComponent"] = gen_info(Category.Model, Pritority.Medium, Reserved.Public),
-            ["Ex.LinesComponent"] = gen_info(Category.Model, Pritority.Medium, Reserved.Public),
-            ["Ex.CylinderComponent"] = gen_info(Category.Model, Pritority.Medium, Reserved.Public),
-            ["Ex.LandmarkComponent"] = gen_info(Category.Model, Pritority.Medium, Reserved.Public),
-            // cloud
-            ["Ex.CloudComponent"] = gen_info(Category.Cloud, Pritority.Medium, Reserved.Public),
-            ["Ex.ScanerVideoComponent"] = gen_info(Category.Cloud, Pritority.Medium, Reserved.LNCO),
-            // avatar
-            ["Ex.HumanoidAvatarComponent"] = gen_info(Category.Avatar, Pritority.Medium, Reserved.Closed),
-            ["Ex.HumanoidControllerComponent"] = gen_info(Category.Avatar, Pritority.Low, Reserved.Closed),
-            // interaction
-            ["Ex.FlagPoleComponent"] = gen_info(Category.Interaction, Pritority.Medium, Reserved.Public),
-            ["Ex.MarkToCleanComponent"] = gen_info(Category.Interaction, Pritority.Medium, Reserved.Public),
-            ["Ex.TargetToGrabComponent"] = gen_info(Category.Interaction, Pritority.Medium, Reserved.Public),
-            // environment
-            ["Ex.SkyComponent"] = gen_info(Category.Environment, Pritority.Hight, Reserved.Public),
-            // resource
-            ["Ex.ImageResourceComponent"] = gen_info(Category.Resource, Pritority.Hight, Reserved.Public),
-            ["Ex.PlotResourceComponent"] = gen_info(Category.Resource, Pritority.Hight, Reserved.Public),
-            ["Ex.TextResourceComponent"] = gen_info(Category.Resource, Pritority.Hight, Reserved.Public),
-            ["Ex.VideoResourceComponent"] = gen_info(Category.Resource, Pritority.Hight, Reserved.Public),
-            ["Ex.AudioResourceComponent"] = gen_info(Category.Resource, Pritority.Hight, Reserved.Public),
-            ["Ex.DirectoryResourceComponent"] = gen_info(Category.Resource, Pritority.Hight, Reserved.Public),
+            // UI
+            ["Ex.SliderUIComponent"] = gen_info(Category.UI, Pritority.Medium, Reserved.Public),
+            // video
+            ["Ex.VideoFileComponent"] = gen_info(Category.Video, Pritority.Medium, Reserved.Public),
+            ["Ex.VideoFileCameraViewerComponent"] = gen_info(Category.Video, Pritority.Medium, Reserved.Public),
+            ["Ex.WebcamComponent"] = gen_info(Category.Video, Pritority.Medium, Reserved.Public),
+            ["Ex.VideoSaverComponent"] = gen_info(Category.Video, Pritority.Medium, Reserved.Public),
             // viewer
             ["Ex.FixationCrossViewerComponent"] = gen_info(Category.Viewer, Pritority.Low, Reserved.Public),
             ["Ex.ImageViewerComponent"] = gen_info(Category.Viewer, Pritority.Low, Reserved.Public),

@@ -34,7 +34,7 @@ using ComponentUP = std::unique_ptr<Component>;
 struct Component {
 
     enum class Category : int {
-        Audio, Avatar, Camera, Cloud, Environment,
+        Audio, Avatar, Camera, Cloud, Environment, Flow,
         Input, Interaction, Model, Network, Output, Resource, Scene, Script, Tracking, UI, Video, Viewer,
         SizeEnum};
     using C  = Category;
@@ -48,6 +48,7 @@ struct Component {
         {Category::Camera,      "Camera"sv        },
         {Category::Cloud,       "Cloud"sv         },
         {Category::Environment, "Environment"sv   },
+        {Category::Flow,        "Flow"sv          },
         {Category::Input,       "Input"sv         },
         {Category::Interaction, "Interaction"sv   },
         {Category::Model,       "Model"sv         },
@@ -80,7 +81,7 @@ struct Component {
     enum class Type : int {
         /** A */ AudioSource, Attach_object_to_hand,
         /** B */ Biopac, Blend_fade_viewer,
-        /** C */ Camera, Camera_trajectory, Camera_trajectory_file, Cloud, CSharp_function, CSharp_script, Cube, Cylinder,
+        /** C */ Camera, Camera_trajectory, Camera_trajectory_file, Cloud, Config, CSharp_function, CSharp_script, Cube, Cylinder,
         /** F */ Falling_spheres, Fixation_cross_viewer, Flag_pole, Flashing_dot, Fop_robot, Fov_simulator_viewer, FPP_avatar_camera,
         /** H */ Humanoid_avatar, Humanoid_controller,
         /** I */ Image_resource, Image_viewer,
@@ -163,9 +164,11 @@ struct Component {
         {T::TPP_avatar_camera,        C::Camera,      TO::U,     CO::B,   false,   R::ClosedSource, S::Sta, "TPP_avatar_camera"sv, "Third persond perspective avatar camera"sv, "TPPAvatarCamera"sv, ":/icons/Camera"sv},
         // Cloud
         {T::Cloud,                    C::Cloud,       TO::V,     CO::B,   false,   R::OpenSource,   S::Sta, "Cloud"sv, "Cloud"sv, "Cloud"sv, ":/icons/Cloud"sv},
-        {T::Scaner_video,             C::Cloud,       TO::B,     CO::B,   false,   R::LNCO,         S::Exp, "Scaner_video"sv, "Scaner video"sv, "ScanerVideo"sv, ":/icons/Video_cloud"sv},
+        {T::Scaner_video,             C::Cloud,       TO::B,     CO::B,   false,   R::LNCO,         S::Exp, "Scaner_video"sv, "Scaner video"sv, "ScanerVideo"sv, ":/icons/Video_cloud"sv},                                                                          
         // Environment
         {T::Sky,                      C::Environment, TO::N,     CO::C,   true,    R::OpenSource,   S::Sta, "Sky"sv, "Sky"sv, "Sky"sv, ":/icons/Sky"sv},
+        // Flow
+        {T::Config,                   C::Flow,        TO::N,     CO::C,   false,   R::OpenSource,   S::Sta, "Config"sv, "Config"sv, "Config"sv, ":/icons/Sky"sv},
         // Input
         {T::Joypad,                   C::Input,       TO::U,     CO::I,   true,    R::OpenSource,   S::Sta, "Joypad"sv, "Joypad"sv, "Joypad"sv,":/icons/Joypad"sv},
         {T::Keyboard,                 C::Input,       TO::U,     CO::I,   true,    R::OpenSource,   S::Sta, "Keyboard"sv, "Keyboard"sv, "Keyboard"sv, ":/icons/Keyboard"sv},
@@ -419,7 +422,7 @@ struct Component {
 
     using TComponentSignals = std::tuple<
         CT,                             FunctionN,                     CNT,                            Doc>;
-    static constexpr TupleArray<57, TComponentSignals> componentsSignals = {{
+    static constexpr TupleArray<58, TComponentSignals> componentsSignals = {{
         TComponentSignals
         // Audio
         {T::AudioSource,               "sample value channel"sv,       CNT::id_any_t,                  "..."sv},
@@ -429,6 +432,8 @@ struct Component {
         // Camera
         {T::Camera,                    "eye cam"sv,                    CNT::transform_t,               "Eye camera world transform"sv},
         {T::Camera,                    "neutral cam"sv,                CNT::transform_t,               "Start neutral camera world transform"sv},
+        // Flow
+        {T::Config,                    "current config"sv,             CNT::string_t,                  "Current config of the component"sv},
         // Input
         {T::Mouse,                     "button"sv,                     CNT::mouse_button_event_t,      "Mouse button event"sv},
         {T::Keyboard,                  "button"sv,                     CNT::keyboard_button_event_t,   "Keyboard button event"sv},

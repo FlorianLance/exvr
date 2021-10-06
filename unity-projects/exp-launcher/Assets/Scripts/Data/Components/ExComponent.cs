@@ -53,7 +53,7 @@ namespace Ex{
             Avatar,
             Camera,
             Environment,
-            Image,
+            Flow,
             Input,
             Interaction,                        
             Model,

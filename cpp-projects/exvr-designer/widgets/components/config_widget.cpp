@@ -155,6 +155,9 @@ ConfigParametersW *ConfigW::generate_parameters(Component::Type type, bool initC
     // ############################# Environment
     case CT::Sky:
         return gen_params_w<SkyInitConfigParametersW,SkyConfigParametersW>(initConfig);
+    // ############################# Flow
+    case CT::Config:
+        return gen_params_w<ConfigParametersW,ConfigParametersW>(initConfig);
     // ############################# Input
     case CT::Joypad:
         return gen_params_w<JoypadInitConfigParametersW,JoypadConfigParametersW>(initConfig);
