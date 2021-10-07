@@ -149,9 +149,7 @@ void ForceComponentConfigNodeDataModel::compute(){
 
 void ForceComponentConfigNodeDataModel::init_ports_caption(){
     const auto io = Connector::get_io(m_type);
-    for(size_t ii = 0; ii < io.inNb; ++ii){
-        inPortsInfo[ii].caption = QSL("in (") % get_name(io.inTypes[ii]) % QSL(")");
-    }
+    inPortsInfo[0].caption = QSL("in (") % get_name(io.inTypes[0]) % QSL(")");
 }
 
 

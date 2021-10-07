@@ -18,6 +18,7 @@ namespace Ex{
         public string expLauncherMainDir;
         public string expLauncherDataDir;
         public string expLauncherMonoDir;
+        public string expLauncherTempGeneratedDir;
 
         public string designerMainDir;
         public string designerDataTempDir;
@@ -44,6 +45,10 @@ namespace Ex{
                 //expLauncherExeFile = ...;
             }
             expLauncherMonoDir = expLauncherMainDir + "/mono-scripting";
+            expLauncherTempGeneratedDir = expLauncherMainDir + "/temp_generated";
+            if (!Directory.Exists(expLauncherTempGeneratedDir)) {
+                Directory.CreateDirectory(expLauncherTempGeneratedDir);
+            }
 
 #if UNITY_EDITOR
             designerMainDir             = string.Format("{0}/../../cpp-projects/_build/bin/exvr-designer", expLauncherMainDir);
@@ -64,5 +69,7 @@ namespace Ex{
                 designerDefaultInstanceFile = expLauncherMainDir + "/debug-instance.xml";
             }
         }
+
+
     }
 }

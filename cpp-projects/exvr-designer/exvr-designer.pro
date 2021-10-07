@@ -133,6 +133,7 @@ HEADERS += \
     experiment/global_signals.hpp \
     # widgets
     ## main
+    widgets/components/config_parameters/csharp_pw.hpp \
     widgets/designer_window.hpp\
     ## elements
     widgets/dialogs/benchmark_dialog.hpp \
@@ -172,7 +173,6 @@ HEADERS += \
     widgets/components/config_parameters/camera_trajectory_file_pw.hpp \
     widgets/components/config_parameters/camera_pw.hpp \
     widgets/components/config_parameters/python_script_pw.hpp \
-    widgets/components/config_parameters/csharp_script_pw.hpp \
     widgets/components/config_parameters/sonceboz_sg_pw.hpp \
     widgets/components/config_parameters/duo_tracking_pw.hpp \
     widgets/components/config_parameters/scene_scaner_pw.hpp \
@@ -333,6 +333,7 @@ SOURCES += \
     ex_widgets/ex_resources_list_w.cpp \
     # widgets
     widgets/components/config_parameters/biopac_pw.cpp \
+    widgets/components/config_parameters/csharp_pw.cpp \
     widgets/components/config_parameters/parallel_port_writer_pw.cpp \
     widgets/components/config_parameters/serial_port_writer_pw.cpp \
     widgets/designer_window.cpp \

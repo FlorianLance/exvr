@@ -16,7 +16,7 @@
 // # parameters
 #include "config_parameters/fixation_cross_viewer_pw.hpp"
 #include "config_parameters/python_script_pw.hpp"
-#include "config_parameters/csharp_script_pw.hpp"
+#include "config_parameters/csharp_pw.hpp"
 #include "config_parameters/duo_tracking_pw.hpp"
 #include "config_parameters/asset_bundle_pw.hpp"
 #include "config_parameters/slider_ui_pw.hpp"

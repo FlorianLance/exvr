@@ -6,82 +6,117 @@
 ********************************************************************************/
 
 // system
-using System;
+using System.IO;
+using System.Text;
 using System.Collections.Generic;
 using System.Reflection;
-using System.CodeDom.Compiler;
 
-// unity
-using UnityEngine;
-
-namespace Ex{
-
+namespace Ex {
 
     public class CSharpFunctionComponent : ExComponent {
 
+        public static readonly string[] charsToRemove = new string[] { "@", ",", ".", ";", "'", "{", "}", "(", ")", "[", "]", " ", "-" };
+
+        public static readonly string startClassStr = "namespace Ex.CSharpFunctions { public class {0} { {1} ";
+        public static readonly string configStr = "public class {0} { {1} public static object function(object input) {object output = null; {2} return output;} }";
+        public static readonly string endClassStr = "}}";
+
+        private static string generate_code(string className, string initConfigExtraContent, List<string> configsName, List<string> condConfigsFunctionContent, List<string> condConfigsExtraContent) {
+
+            StringBuilder b = new StringBuilder();
+            b.Append("using System;\nusing System.Collections.Generic;\nusing UnityEngine;\n");
+            b.Append(" namespace Ex.CSharpFunctions { public class ");
+            b.Append(className);
+            b.Append(" { \n");
+            b.Append(initConfigExtraContent);
+            for (int ii = 0; ii < configsName.Count; ++ii) {
+                b.Append("public class ");
+                b.Append(configsName[ii]);
+                b.Append(" { \n");
+                b.Append(condConfigsExtraContent[ii]);
+                b.Append("\n public static object function(object input) {\nobject output = null;\n");
+                b.Append(condConfigsFunctionContent[ii]);
+                b.Append(" \nreturn output;\n} \n}");
+            }
+            b.Append("\n }\n}");
+            return b.ToString();
+        }
+
+        private static List<string> generate_temp_files_from_source_batch(string baseName, List<string> sources) {
+
+            List<string> fileNames = new List<string>(sources.Count);
+            for (int ii = 0; ii < sources.Count; ++ii) {
+                fileNames.Add(ExVR.Paths().expLauncherTempGeneratedDir + "/" + baseName + "_" + ii + ".cs");
+                if (File.Exists(fileNames[ii])) {
+                    File.Delete(fileNames[ii]);
+                }
+                FileStream f = new FileStream(fileNames[ii], FileMode.CreateNew);
+                using (StreamWriter s = new StreamWriter(f, Encoding.UTF8)) {
+                    s.Write(sources[ii]);
+                    s.Close();
+                }
+                f.Close();
+            }
+
+            return fileNames;
+        }
 
 
-        private static readonly string startPart = "namespace Ex{public class CSharpFunction{";
-        private static readonly string startFunctionPart = "public static object function(object input){object output = null;";
-        private static readonly string endPart = "return output;}}}";
+        public static List<string> generate_files_from_scripts_functions(XML.Components componentsXML) {
 
-        List<Assembly> assemblies = null;
+            
+
+            List<string> csharpFunctionsComponentsCode = new List<string>();
+            foreach (var component in componentsXML.Component) {
+                if (component.Type == "CSharpFunction") {
+
+                    string initConfigExtraContent = "";
+                    List<string> configs = new List<string>();
+                    List<string> condConfigsFuncContent = new List<string>();
+                    List<string> condConfigsExtraContent = new List<string>();
+
+                    foreach (var arg in component.InitConfig.Arg) {
+                        if (arg.Name == "extra") {
+                            initConfigExtraContent = arg.Value;
+                            break;
+                        }
+                    }
+
+                    foreach (var config in component.Configs.Config) {
+
+                        string configName = config.Name;
+                        foreach (var c in charsToRemove) {
+                            configName = configName.Replace(c, "_");
+                        }
+
+                        configs.Add(configName);
+                        foreach (var arg in config.Arg) {
+                            if (arg.Name == "function") {
+                                condConfigsFuncContent.Add(arg.Value);
+                                continue;
+                            }
+                            if (arg.Name == "extra") {
+                                condConfigsExtraContent.Add(arg.Value);
+                                continue;
+                            }
+                        }
+                    }
+                    
+                    var componentName = component.Name;
+                    foreach (var c in charsToRemove) {
+                        componentName = componentName.Replace(c, "_");
+                    }
+
+                    csharpFunctionsComponentsCode.Add(CSharpFunctionComponent.generate_code(componentName,initConfigExtraContent, configs, condConfigsFuncContent, condConfigsExtraContent)); ;
+                }
+            }
+
+            return generate_temp_files_from_source_batch("csharpFunctions", csharpFunctionsComponentsCode);
+        }
+
         Dictionary<string, MethodInfo> methods = null;
         MethodInfo currentMethod = null;
 
-        public static Assembly compile_assembly_from_text(string code) {
-
-            Modified.Mono.CSharp.CSharpCodeCompiler provider = new Modified.Mono.CSharp.CSharpCodeCompiler();
-            var param = new CompilerParameters();
-
-            // add assemblies
-            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies()) {
-                if (assembly.GetName().Name != "Microsoft.GeneratedCode"
-                    && assembly.GetName().Name != "Anonymously Hosted DynamicMethods Assembly") {
-                    param.ReferencedAssemblies.Add(assembly.Location);
-                }
-            }
-
-            // parameters
-            param.GenerateExecutable = false;
-            param.GenerateInMemory = true;
-            param.IncludeDebugInformation = true;
-            param.TreatWarningsAsErrors = false;
-
-            // Compile the source            
-            CompilerResults result = null;
-            try {
-                result = provider.CompileAssemblyFromSource(param, code);
-            } catch (Exception ex) {
-                ExVR.Log().error(string.Format("[COMPILER] Cannot compile csharp code: {0}", ex.Message), false);
-            }
-
-            if (result != null) {
-                foreach (CompilerError error in result.Errors) {
-
-                    string errorMsg = string.Format("[COMPILER] Compilation {0} {1} : \"{2}\" from file {3} at line {4} and column {5}",
-                        error.IsWarning ? "warning " : "error ",
-                        error.ErrorNumber,
-                        error.ErrorText,
-                        error.FileName,
-                        error.Line,
-                        error.Column
-                    );
-
-                    if (error.IsWarning) {
-                        ExVR.Log().warning(errorMsg, false);
-                    } else {
-                        ExVR.Log().error(errorMsg, false);
-                        return null;
-                    }
-                }
-            } else {
-                ExVR.Log().error("[COMPILER] CompileAssemblyFromFile crash", false);
-                return null;
-            }
-
-            return result.CompiledAssembly;
-        }
 
         protected override bool initialize() {
 
@@ -89,27 +124,42 @@ namespace Ex{
             connections().add_slot("input", (input) => {
                 invoke_signal("output", currentMethod.Invoke(null, new object[1] { input }));
             });
-            connections().add_signal("output");            
+            connections().add_signal("output");
 
-            // generate assemblies
-            assemblies = new List<Assembly>();
-            methods = new Dictionary<string, MethodInfo>();
+
+            string className = name;
+            foreach (var c in charsToRemove) {
+                className = className.Replace(c, "_");
+            }
+
+            // retrieve type
+            var assembly = CSharpScriptResource.get_compiled_assembly();
+            if (assembly == null) {
+                log_error(string.Concat("No assembly available, cannot instantiate class Ex.CSharpFunctions.", className));
+                return false;
+            }
+
+
             var flagPublic = System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public;
+            methods = new Dictionary<string, MethodInfo>();
             foreach (var config in configs) {
-                var assembly = compile_assembly_from_text(string.Concat(startPart, config.get<string>("extra"), startFunctionPart, config.get<string>("function"), endPart));
 
+                string configName = config.name;
+                foreach (var c in charsToRemove) {
+                    configName = configName.Replace(c, "_");
+                }
 
-                var runtimeType = assembly.GetType("Ex.CSharpFunction");
+                // get nested class using '+'
+                var configClassName = string.Format("Ex.CSharpFunctions.{0}+{1}", className, configName);
+                var runtimeType = assembly.GetType(configClassName);
                 if (runtimeType == null) {
-                    log_error(string.Format("Cannot instantiate class Ex.CSharpFunction for config {0}", config.name));
+                    log_error(string.Concat("Cannot instantiate class ", configClassName));
                     return false;
                 }
 
                 var method = runtimeType.GetMethod("function", flagPublic);
                 methods[config.name] = method;
-
-                assemblies.Add(assembly);
-            }           
+            }
 
             return true;
         }

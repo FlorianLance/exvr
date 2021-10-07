@@ -205,7 +205,7 @@ struct Component {
         {T::Multi_AB,                 C::Scene,       TO::V,     CO::B,   false,   R::OpenSource,   S::Sta, "Multi_AB"sv, "Multi assets bundles"sv, "MultiAB"sv, ":/icons/Unity_scene_bundle"sv},
         {T::Unity_asset_bundle,       C::Scene,       TO::V,     CO::B,   false,   R::OpenSource,   S::Sta, "Unity_asset_bundle"sv, "Unity asset bundle"sv, "AssetBundle"sv, ":/icons/Unity_scene_bundle"sv},
         // Script
-        {T::CSharp_function,          C::Script,      TO::N,     CO::C,   false,   R::OpenSource,   S::Sta, "CSharp_function"sv, "CSharp function"sv, "CSharpFunction"sv, ":/icons/CSharp"sv},
+        {T::CSharp_function,          C::Script,      TO::N,     CO::B,   false,   R::OpenSource,   S::Sta, "CSharp_function"sv, "CSharp function"sv, "CSharpFunction"sv, ":/icons/CSharp"sv},
         {T::CSharp_script,            C::Script,      TO::B,     CO::B,   false,   R::OpenSource,   S::Sta, "CSharp_script"sv, "CSharp script"sv, "CSharpScript"sv, ":/icons/CSharp"sv},
         {T::Python_script,            C::Script,      TO::B,     CO::B,   false,   R::OpenSource,   S::Exp, "Python_script"sv, "Python script"sv, "PythonScript"sv, ":/icons/Python_script"sv},
         // Tracking

@@ -31,12 +31,19 @@ namespace Ex{
         // trajectories
         private Queue<Trajectory> savedTrajectories = new Queue<Trajectory>();        
 
+        public void set_factor(float factor) {
+            movementFactor = factor;
+        }
+        public void set_offset(Vector3 offset) {
+            movementOffset = offset;
+        }
+
         protected override bool initialize() {
             add_slot("set factor", (factor) => {
-                movementFactor = (float)factor;
+                set_factor((float)factor);
             });
             add_slot("set offset", (offset) => {
-                movementOffset = (Vector3)offset;
+                set_offset((Vector3)offset);
             });
             return true;
         }

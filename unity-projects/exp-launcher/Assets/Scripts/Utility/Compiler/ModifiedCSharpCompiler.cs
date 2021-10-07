@@ -38,6 +38,7 @@ namespace Modified.Mono.CSharp{
     using System.IO;
     using System.Text;
     using System.Reflection;
+    using System.Collections.Generic;
     using System.Collections.Specialized;
     using System.Diagnostics;
     using System.Text.RegularExpressions;
@@ -67,6 +68,8 @@ namespace Modified.Mono.CSharp{
                 }
             }
         }
+
+
 
         public CSharpCodeCompiler() {
         }
@@ -399,6 +402,8 @@ namespace Modified.Mono.CSharp{
             }
             return CompileAssemblyFromFileBatch(options, fileNames);
         }
+
+
 
         private CompilerResults CompileFromSourceBatch(CompilerParameters options, string[] sources) {
 

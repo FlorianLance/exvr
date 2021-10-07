@@ -204,7 +204,9 @@ namespace Ex {
             return true;
         }
 
-        public void generate_from_xml(XML.Resources xmlResources) {
+        public void generate_from_xml(XML.Experiment xmlExperiment) {
+
+            XML.Resources xmlResources = xmlExperiment.Resources;
 
             // fill dictionnay for commodity
             var resources = new Dictionary<ResourceType, Dictionary<string, XML.Resource>>();
@@ -290,10 +292,16 @@ namespace Ex {
             // ###  compile/recompile scripts
             if ((xmlResources.ReloadCode & (int)ResourceType.CSharpScript) != 0) {
 
-                // retrieve scripts files
                 List<string> scriptsFiles = new List<string>();
+
+                // retrieve resources scripts
                 foreach (var csharpData in m_pathMappingResources[ResourceType.CSharpScript]) {
                     scriptsFiles.Add(csharpData.Value.path);
+                }
+
+                // retrieve ui functions scripts                
+                foreach (var tempFile in CSharpFunctionComponent.generate_files_from_scripts_functions(xmlExperiment.Components)) {
+                    scriptsFiles.Add(tempFile);
                 }
 
                 // compile assembly from scripts

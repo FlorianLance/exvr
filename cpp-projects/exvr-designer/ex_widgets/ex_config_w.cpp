@@ -157,10 +157,14 @@ void ExConfigW::update_from_components(){
 }
 
 QString ExConfigW::display() const{
-    return QSL("Rout: <b>") % m_currentRoutineName              % QSL("</b><br>") %
-           QSL("Cond: <b>") % m_currentConditionName            % QSL("</b><br>") %
-           QSL("Comp: <b>") % m_componentNames->currentText()   % QSL("</b><br>") %
-           QSL("Conf: <b>") % m_configNames->currentText()      % QSL("</b>");
+//    return QSL("Rout: <b>") % m_currentRoutineName              % QSL("</b><br>") %
+//           QSL("Cond: <b>") % m_currentConditionName            % QSL("</b><br>") %
+//           QSL("Comp: <b>") % m_componentNames->currentText()   % QSL("</b><br>") %
+//           QSL("Conf: <b>") % m_configNames->currentText()      % QSL("</b>");
+    return QSL("Rout: ") % m_currentRoutineName              % QSL("\n") %
+           QSL("Cond: ") % m_currentConditionName            % QSL("\n") %
+           QSL("Comp: ") % m_componentNames->currentText()   % QSL("\n") %
+           QSL("Conf: ") % m_configNames->currentText()      % QSL("");
 }
 
 void ExConfigW::update_components_list_widget(){

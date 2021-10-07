@@ -36,10 +36,7 @@ void PassValueTriggerNodeDataModel::init_ports_caption(){
     const auto io = Connector::get_io(m_type);
     inPortsInfo[0].caption = QSL("in (") % get_name(io.inTypes[0]) % QSL(")");
     inPortsInfo[1].caption = QSL("pass (") % get_name(io.inTypes[1]) % QSL(")");
-
-    for(size_t ii = 0; ii < io.inNb; ++ii){
-        outPortsInfo[ii].caption = QSL("out (") % get_name(io.outTypes[ii]) % QSL(")");
-    }
+    outPortsInfo[0].caption = QSL("out (") % get_name(io.outTypes[0]) % QSL(")");
 }
 
 #include "moc_pass_value_trigger_ndm.cpp"

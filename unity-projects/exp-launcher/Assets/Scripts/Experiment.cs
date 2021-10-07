@@ -352,7 +352,7 @@ namespace Ex{
             ExVR.GuiSettings().read_from_xml(m_xmlExperiment.Settings);
 
             // read resources
-            experimentResourcesManager.generate_from_xml(m_xmlExperiment.Resources);
+            experimentResourcesManager.generate_from_xml(m_xmlExperiment);            
 
             // generate components and flow elements
             if (!ExVR.Components().generate(m_xmlExperiment.Components)) {
@@ -398,7 +398,7 @@ namespace Ex{
 
 #endregion load_experiment
 
-#region experiment_control
+        #region experiment_control
 
         public void start_experiment() {
 
