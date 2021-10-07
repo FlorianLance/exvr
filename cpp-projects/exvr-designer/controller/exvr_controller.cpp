@@ -851,9 +851,8 @@ void ExVrController::generate_global_signals_connections(){
         m_copyToCondD->update_from_data(
             routineKey,
             conditionKey,
-            exp()->get_elements_from_type<Routine>(),
-            exp()->get_loops()
-            );
+            exp()->get_elements_from_type<Routine>()
+        );
         m_copyToCondD->exec();
 
     });
