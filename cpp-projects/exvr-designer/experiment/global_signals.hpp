@@ -136,10 +136,11 @@ signals:
     void leave_component_signal(ComponentKey key);
     void show_component_informations_signal(ComponentKey componentKey);
     // ## config
-    void select_config_signal(ElementKey routineKey,ConditionKey conditionKey, ActionKey actionKey, RowId configTabId);
+    void select_action_config_signal(ElementKey routineKey,ConditionKey conditionKey, ActionKey actionKey, RowId configTabId);
     void insert_config_signal(ComponentKey componentKey, RowId id, QString name);
     void copy_config_signal(ComponentKey componentKey, RowId id, QString name);
     void remove_config_signal(ComponentKey componentKey, RowId id);
+    void select_config_signal(ComponentKey componentKey, RowId id);
     void move_config_signal(ComponentKey componentKey, RowId from, RowId to);
     void rename_config_signal(ComponentKey componentKey, RowId id, QString name);
     // ### args

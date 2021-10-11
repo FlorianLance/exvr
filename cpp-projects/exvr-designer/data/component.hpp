@@ -568,6 +568,8 @@ public:
     Type type = Type::SizeEnum;
     Category category   = Category::SizeEnum;
     ConfigUP initConfig = nullptr;
+
+    RowId selectedConfigId = {0};
     std_v1<ConfigUP> configs;    
 };
 }

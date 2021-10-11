@@ -1064,7 +1064,7 @@ void Experiment::move_action_down(ElementKey routineKey, ConditionKey conditionK
     }
 }
 
-void Experiment::select_config(ElementKey routineKey, ConditionKey conditionKey, ActionKey actionKey, RowId  configTabId){
+void Experiment::select_action_config(ElementKey routineKey, ConditionKey conditionKey, ActionKey actionKey, RowId  configTabId){
 
     if(auto action = get_action(routineKey, conditionKey, actionKey); action != nullptr){
         action->select_config(configTabId);
@@ -1625,6 +1625,13 @@ void Experiment::sort_components_by_name(){
     add_to_update_flag(UpdateComponents);
 }
 
+void Experiment::select_config_in_component(ComponentKey componentKey, RowId id){
+    if(auto component = get_component(componentKey); component != nullptr){
+        component->selectedConfigId = id;
+        add_to_update_flag(UpdateComponents | UpdateRoutines);
+    }
+}
+
 void Experiment::insert_config_in_component(ComponentKey componentKey, RowId id, QString configName){
 
     if(auto component = get_component(componentKey); component != nullptr){
@@ -1636,6 +1643,7 @@ void Experiment::insert_config_in_component(ComponentKey componentKey, RowId id,
         }
 
         component->configs.insert(component->configs.begin() + id.v + 1, std::make_unique<Config>(configName, ConfigKey{-1}));
+        component->selectedConfigId = {id.v + 1};
         add_to_update_flag(UpdateComponents | UpdateRoutines);
     }
 }
@@ -1652,6 +1660,7 @@ void Experiment::copy_config_from_component(ComponentKey componentKey, RowId id,
 
         component->configs.insert(component->configs.begin() + id.v + 1,
             Config::copy_with_new_element_id(*component->configs[id.v].get(), configName));
+        component->selectedConfigId = {id.v + 1};
         add_to_update_flag(UpdateComponents | UpdateRoutines);
     }
 }
@@ -1685,6 +1694,10 @@ void Experiment::remove_config_from_component(ComponentKey componentKey, RowId i
 
             QtLogger::message(QSL("[EXP] Remove ") % config->to_string() % QSL(" from ") % component->to_string());
             component->configs.erase(component->configs.begin() + id.v);
+            component->selectedConfigId = {id.v-1};
+            if(component->selectedConfigId.v < 0){
+                component->selectedConfigId.v = 0;
+            }
         }
 
         add_to_update_flag(UpdateComponents | UpdateRoutines);
@@ -1696,7 +1709,8 @@ void Experiment::move_config_in_component(ComponentKey componentKey, RowId from,
         auto config = std::move(component->configs[from.v]);
         component->configs.erase(component->configs.begin() + from.v);
         component->configs.insert(component->configs.begin() + to.v, std::move(config));
-        add_to_update_flag(UpdateComponents |UpdateRoutines);
+        component->selectedConfigId = to;
+        add_to_update_flag(UpdateComponents |UpdateRoutines);                
     }
 }
 

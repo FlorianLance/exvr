@@ -114,6 +114,9 @@
            <property name="toolTip">
             <string>Component configuration used for the action</string>
            </property>
+           <property name="maxVisibleItems">
+            <number>50</number>
+           </property>
           </widget>
          </item>
          <item>
@@ -186,7 +189,7 @@
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="../../../resources/resources.qrc">
+            <iconset resource="../../_resources/resources.qrc">
              <normaloff>:/icons/Fill_action</normaloff>:/icons/Fill_action</iconset>
            </property>
            <property name="iconSize">
@@ -221,7 +224,7 @@
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="../../../resources/resources.qrc">
+            <iconset resource="../../_resources/resources.qrc">
              <normaloff>:/icons/Empty_action</normaloff>:/icons/Empty_action</iconset>
            </property>
            <property name="iconSize">
@@ -247,7 +250,7 @@
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="../../../resources/resources.qrc">
+            <iconset resource="../../_resources/resources.qrc">
              <normaloff>:/icons/remove_action</normaloff>:/icons/remove_action</iconset>
            </property>
            <property name="iconSize">
@@ -404,7 +407,7 @@
                <string/>
               </property>
               <property name="icon">
-               <iconset resource="../../../resources/resources.qrc">
+               <iconset resource="../../_resources/resources.qrc">
                 <normaloff>:/icons/up</normaloff>:/icons/up</iconset>
               </property>
               <property name="iconSize">
@@ -433,7 +436,7 @@
                <string/>
               </property>
               <property name="icon">
-               <iconset resource="../../../resources/resources.qrc">
+               <iconset resource="../../_resources/resources.qrc">
                 <normaloff>:/icons/down</normaloff>:/icons/down</iconset>
               </property>
               <property name="iconSize">
@@ -585,7 +588,7 @@ background-color:white;</string>
   </layout>
  </widget>
  <resources>
-  <include location="../../../resources/resources.qrc"/>
+  <include location="../../_resources/resources.qrc"/>
  </resources>
  <connections/>
 </ui>

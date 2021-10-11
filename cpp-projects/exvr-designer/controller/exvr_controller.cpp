@@ -810,7 +810,8 @@ void ExVrController::generate_global_signals_connections(){
     connect(s, &GSignals::clean_action_signal,                        exp(), &EXP::clean_action);
     connect(s, &GSignals::move_action_up_signal,                      exp(), &EXP::move_action_up);
     connect(s, &GSignals::move_action_down_signal,                    exp(), &EXP::move_action_down);
-    connect(s, &GSignals::select_config_signal,                       exp(), &EXP::select_config);
+    connect(s, &GSignals::select_action_config_signal,                exp(), &EXP::select_action_config);
+    connect(s, &GSignals::select_config_signal,                       exp(), &EXP::select_config_in_component);
     connect(s, &GSignals::update_timeline_signal,                     exp(), &EXP::update_condition_timeline);
     connect(s, &GSignals::add_interval_signal,                        exp(), &EXP::add_timeline_interval);
     connect(s, &GSignals::remove_interval_signal,                     exp(), &EXP::remove_timeline_interval);

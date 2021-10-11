@@ -31,7 +31,7 @@ ExResourceW::ExResourceW(QString name) : ExItemW<QFrame>(UiType::Resource, name)
     w->setLayout(l);
     l->addWidget(m_icon = new QPushButton());
     l->addWidget(m_title = new QLabel());
-    l->addWidget(m_resourcesAlias = new QComboBox());
+    l->addWidget(m_resourcesAlias = new QComboBox());    
     l->addWidget(m_resources = new QPushButton());
     l->setStretch(0,1);
     l->setStretch(1,10);
@@ -76,6 +76,7 @@ ExResourceW *ExResourceW::init_widget(Resource::Type resourceType, QString title
     m_resources->setMinimumWidth(25);
     m_resources->setMinimumHeight(25);
     m_resources->setToolTip("Open resources manager");
+    m_resourcesAlias->setMaxVisibleItems(50);
 
     return this;
 }

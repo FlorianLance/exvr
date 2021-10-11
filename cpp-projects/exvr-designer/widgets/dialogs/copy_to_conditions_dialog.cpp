@@ -25,8 +25,10 @@ CopyToConditionDialog::CopyToConditionDialog(){
         for(size_t ii = 0; ii < conditionsPerRoutines.size(); ++ii){
             auto routine = conditionsPerRoutines[ii].first;
             auto lw = conditionsPerRoutines[ii].second.get();
-            for(int ii = 0; ii < lw->count(); ++ii){
-                if(qobject_cast<QCheckBox*>(lw->widget_at(ii))->isChecked()){
+            for(int ii = 0; ii < lw->count(); ++ii){                
+                auto w = lw->widget_at(ii)->layout()->itemAt(0)->widget();
+                auto cb = qobject_cast<QCheckBox*>(w);
+                if(cb->isChecked()){
                     conditionsToBeEcrased.emplace_back(std::make_pair(
                         ElementKey{routine->key()}, ConditionKey{routine->conditions[to_unsigned(ii)]->key()}));
                 }
@@ -67,6 +69,16 @@ CopyToConditionDialog::CopyToConditionDialog(){
         update_ui_from_conditions_checkboxes();
     });
 
+    connect(ui.lwRoutinesNames, &QListWidget::currentRowChanged, this, [&](int row){
+        ui.twRoutines->blockSignals(true);
+        ui.twRoutines->setCurrentIndex(row+1);
+        ui.twRoutines->blockSignals(false);
+    });
+    connect(ui.twRoutines->tabBar(), &QTabBar::currentChanged, this, [&](int row){
+        ui.lwRoutinesNames->blockSignals(true);
+        ui.lwRoutinesNames->setCurrentRow(row-1);
+        ui.lwRoutinesNames->blockSignals(false);
+    });
 
     update_ui_from_conditions_checkboxes();
 }
@@ -95,10 +107,11 @@ void CopyToConditionDialog::update_ui_from_conditions_checkboxes(){
 
 void CopyToConditionDialog::update_from_data(ElementKey currentRoutineKey, ConditionKey currentConditionKey, std_v1<Routine *> routines){
 
+//    ui.twRoutines->tabBar()->blockSignals(true);
+    ui.lwRoutinesNames->blockSignals(true);
+
     m_currentRoutine    = currentRoutineKey;
     m_currentCondition  = currentConditionKey;
-
-    blockSignals(true);
 
     // clean
     conditionsPerRoutines.clear();
@@ -136,16 +149,14 @@ void CopyToConditionDialog::update_from_data(ElementKey currentRoutineKey, Condi
         conditionsPerRoutines.emplace_back(std::make_pair(routine, std::move(lw)));
     }
 
-    if(ui.twRoutines->count() > 1){
-        ui.twRoutines->setCurrentIndex(1);
-    }
+    ui.twRoutines->setCurrentIndex(1);
+    ui.twRoutines->update();
 
+    ui.lwRoutinesNames->clear();
     ui.lwRoutinesNames->addItems(routinesName);
+    ui.lwRoutinesNames->setCurrentRow(0);
 
-    connect(ui.lwRoutinesNames, &QListWidget::currentRowChanged, this, [&](int row){
-        ui.twRoutines->setCurrentIndex(row+1);
-    });
-
-    blockSignals(false);
+    ui.lwRoutinesNames->blockSignals(false);
+//    ui.twRoutines->tabBar()->blockSignals(false);
 }
 

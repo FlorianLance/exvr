@@ -74,7 +74,7 @@ ActionW::ActionW(ElementKey routineKey, ConditionKey conditionKey, Action *actio
         emit GSignals::get()->move_action_down_signal(routine_key(), condition_key(),action_key());
     });
     connect(m_ui.cbConfig, QOverload<int>::of(&QComboBox::currentIndexChanged), this, [=](int index){
-        emit GSignals::get()->select_config_signal(routine_key(), condition_key(), action_key(), RowId{index});
+        emit GSignals::get()->select_action_config_signal(routine_key(), condition_key(), action_key(), RowId{index});
     });
     connect(m_ui.pbDelete, &QPushButton::clicked, this, [=]{
         emit GSignals::get()->delete_action_signal(routine_key(), condition_key(),action_key());

@@ -188,6 +188,7 @@ public slots:
     void sort_components_by_type();
     void sort_components_by_name();
     // # components configs
+    void select_config_in_component(ComponentKey componentKey, RowId id);
     void insert_config_in_component(ComponentKey componentKey, RowId id, QString configName);
     void copy_config_from_component(ComponentKey componentKey, RowId id, QString configName);
     void remove_config_from_component(ComponentKey componentKey, RowId id);
@@ -268,7 +269,7 @@ public slots:
     void add_timeline_interval(ElementKey routineKey,ConditionKey conditionKey, ActionKey actionKey, bool updateTimeline, TimelineKey timelineKey, Interval interval);
     void remove_timeline_interval(ElementKey routineKey,ConditionKey conditionKey, ActionKey actionKey, bool updateTimeline, TimelineKey timelineKey, Interval interval);
     // #### config
-    void select_config(ElementKey routineKey, ConditionKey conditionKey, ActionKey actionKey, RowId  configTabId);
+    void select_action_config(ElementKey routineKey, ConditionKey conditionKey, ActionKey actionKey, RowId  configTabId);
     // ### connection
     void create_connection(ElementKey routineKey,ConditionKey conditionKey, Connection *connection);
     void delete_connections(ElementKey routineKey, ConditionKey conditionKey);
