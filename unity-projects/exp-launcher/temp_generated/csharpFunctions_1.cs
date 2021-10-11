@@ -4,7 +4,7 @@ using UnityEngine;
  namespace Ex.CSharpFunctions { public class Set_camera_settings { 
 static CameraTargetComponent t1 = ExVR.Components().get_from_name<CameraTargetComponent>("Camera target 1"); 
 static CameraTargetComponent t2 = ExVR.Components().get_from_name<CameraTargetComponent>("Camera target 2");
-static CameraTargetComponent t3 = ExVR.Components().get_from_name<CameraTargetComponent>("Camera target 3");
+//static CameraTargetComponent t3 = ExVR.Components().get_from_name<CameraTargetComponent>("Camera target 3");
 
 static OBXComponent poc = ExVR.Components().get_csharp_script<OBXComponent>("Platform offset control");
 
@@ -12,7 +12,7 @@ static void set_cam_values(string config, Vector3 offset, float factor){
 	string txt = config;
 	txt += " Offset: " + Converter.to_string(offset);
 	txt += " Factor " + factor;
-	ExVR.Log().message(txt);
+//	ExVR.Log().message(txt);
 	set_offset(offset);
 	set_factor(factor);
 }
@@ -20,13 +20,65 @@ static void set_cam_values(string config, Vector3 offset, float factor){
 static void set_offset(Vector3 offset){
 	t1.set_offset(offset);
 	t2.set_offset(offset);
-	t3.set_offset(offset);
+	//t3.set_offset(offset);
 }
 
 static void set_factor(float factor){
 	t1.set_factor(factor);
 	t2.set_factor(factor);
-	t3.set_factor(factor);
+	//t3.set_factor(factor);
+}public class reset_offset { 
+
+ public static object function(object input) {
+object output = null;
+
+set_offset(Vector3.zero); 
+return output;
+} 
+}public class famUp_300 { 
+
+ public static object function(object input) {
+object output = null;
+
+	// startRoutineHeight - currentPosition.y [-115 300]
+	float currentFactor = (poc.currentPosition.y - poc.startRoutineHeight) / (300f - poc.startRoutineHeight);
+	set_offset(currentFactor * poc.diffV);
+ 
+return output;
+} 
+}public class famUp_200 { 
+
+ public static object function(object input) {
+object output = null;
+
+	// startRoutineHeight - currentPosition.y [-115 300]
+	float currentFactor = (poc.currentPosition.y - poc.startRoutineHeight) / (200f - poc.startRoutineHeight);
+	set_offset(currentFactor * poc.diffV);
+ 
+return output;
+} 
+}public class famDown_100 { 
+
+ public static object function(object input) {
+object output = null;
+
+	// startRoutineHeight - currentPosition.y [-115 300]
+	// startRoutineHeight - currentPosition.y [-115 300]
+	float currentFactor = 1 - (poc.currentPosition.y - 100f) / (poc.startRoutineHeight - 100f);
+	set_offset(currentFactor * poc.diffV); 
+return output;
+} 
+}public class famDown_0 { 
+
+ public static object function(object input) {
+object output = null;
+
+	// startRoutineHeight - currentPosition.y [-115 300]
+	float currentFactor = 1f - poc.currentPosition.y / poc.startRoutineHeight;
+	set_offset(currentFactor * poc.diffV);
+ 
+return output;
+} 
 }public class cStatic_pDown { 
 
  public static object function(object input) {
@@ -50,9 +102,13 @@ object output = null;
 // cam factor: 0
 // cam offset: 0
 
+
+// 	poc.currentFactor*(-poc.diffV),
+
+
 set_cam_values(
 	"cDown_pUp",
-	poc.currentFactor*(-poc.diffV),
+	Vector3.zero,//poc.currentFactor*(-poc.diffV),
 	poc.currentFactor
 );
 
@@ -103,9 +159,10 @@ object output = null;
 // cam factor: 0
 // cam offset: 0
 
+//	-poc.diffV + (poc.currentFactor * poc.diffV),
 set_cam_values(
 	"cUp_pDown",
-	-poc.diffV + (poc.currentFactor * poc.diffV),
+	Vector3.zero,//-poc.diffV,// + (poc.currentFactor * poc.diffV),
 	1f-poc.currentFactor
 );
 
@@ -124,7 +181,7 @@ object output = null;
 
 set_cam_values(
 	"cUp_pUp",
-	poc.currentFactor*poc.diffV,
+	(1f-poc.currentFactor)*poc.diffV,
 	poc.currentFactor
 );
  
@@ -145,14 +202,6 @@ set_cam_values(
 
 
  
-return output;
-} 
-}public class reset_offset { 
-
- public static object function(object input) {
-object output = null;
-
-set_offset(Vector3.zero); 
 return output;
 } 
 }

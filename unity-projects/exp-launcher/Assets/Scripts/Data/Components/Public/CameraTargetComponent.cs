@@ -32,7 +32,7 @@ namespace Ex{
         private Queue<Trajectory> savedTrajectories = new Queue<Trajectory>();        
 
         public void set_factor(float factor) {
-            movementFactor = factor;
+            movementFactor = factor;            
         }
         public void set_offset(Vector3 offset) {
             movementOffset = offset;
@@ -63,8 +63,13 @@ namespace Ex{
             continueMoving = doUpdate;
         }
         protected override void update() {
-            if (is_updating() && !movementStarted) {
+            if (is_updating() && !movementStarted) {                
                 apply_movement();
+            }
+
+            if (is_updating()) {
+                
+                Debug.Log(name + " [" + currentC.name + "] offset: " + Converter.to_string(movementOffset) + " factor: " + movementFactor +" t: " + time().ellapsed_element_s());
             }
         }
 

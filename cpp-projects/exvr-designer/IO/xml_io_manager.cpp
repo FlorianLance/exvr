@@ -634,7 +634,7 @@ void XmlIoManager::write_timeline(const Timeline *timeline){
         }
     }
     if(timeline->intervals.size() > 0){
-        w->writeComment(QSL("Starts at ") % QString::number(min) % QSL("(s) and ends at ") % QString::number(max) % QSL("s(), duration: ") % QString::number(max-min) % QSL("(s)"));
+        w->writeComment(QSL("Starts at ") % QString::number(min) % QSL("(s) and ends at ") % QString::number(max) % QSL("s(), duration: ") % QString::number(max-min) % QSL("(s) "));
     }
 
     for(const auto &interval : timeline->intervals){
@@ -683,7 +683,7 @@ void XmlIoManager::write_action(const Action *action) {
     w->writeAttribute(QSL("node_position"), QString::number(action->nodePosition.x()) % QSL(" ") % QString::number(action->nodePosition.y()));
     //w->writeAttribute(QSL("node_size"),     QString::number(action->nodeSize.width()) % QSL(" ") % QString::number(action->nodeSize.height()));
 
-    w->writeComment(QSL("Component ") % action->component->name() % QSL(" with config ") % action->config->name);
+    w->writeComment(QSL("Component ") % action->component->name() % QSL(" with config ") % action->config->name % QSL(" "));
     write_timeline(action->timelineUpdate.get());
     write_timeline(action->timelineVisibility.get());
     w->writeEndElement(); // /Action
@@ -733,7 +733,7 @@ void XmlIoManager::write_connection(const Condition *condition, const Connection
         QSL("Key") % QString::number(connection->startKey) % QSL(":") % startType % QSL(":") % startName % QSL(":Port") +
                      QString::number(connection->startIndex) + " and " +
         QSL("Key") % QString::number(connection->endKey)   % QSL(":") % endType % QSL(":") % endName % QSL(":Port") +
-                     QString::number(connection->endIndex));
+                     QString::number(connection->endIndex) % QSL(" "));
 
     w->writeStartElement(QSL("Connection"));
     w->writeAttribute(QSL("key"),      QString::number(connection->key()));
