@@ -51,6 +51,11 @@ namespace Ex{
             return true;
         }
 
+        protected override void start_experiment() {
+            if (!initC.get<bool>("init_transform_do_not_apply")) {
+                initC.update_transform("init_transform", transform, true);
+            }
+        }
         public override void update_from_current_config() {
             if (!currentC.get<bool>("transform_do_not_apply")) {
                 currentC.update_transform("transform", transform, true);
