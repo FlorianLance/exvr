@@ -16,9 +16,11 @@ namespace Ex {
         // # get
         public static Vector3 camera_rig_position() {
             return ExVR.Display().cameras().get_camera_rig_transform().position;
+            //return ExVR.Display().cameras().get_camera_rig_transform().localPosition;
         }
         public static Quaternion camera_rig_rotation() {
             return ExVR.Display().cameras().get_camera_rig_transform().rotation;
+            //return ExVR.Display().cameras().get_camera_rig_transform().localRotation;
         }
 
         public static void translate_camera_rig(Vector3 vector) {
@@ -42,6 +44,13 @@ namespace Ex {
         public static Vector3 calibration_forward() {
             return ExVR.Display().cameras().get_calibration_transform().forward;
         }
+        public static Vector3 calibration_up() {
+            return ExVR.Display().cameras().get_calibration_transform().up;
+        }
+        public static Vector3 calibration_right() {
+            return ExVR.Display().cameras().get_calibration_transform().right;
+        }
+
         // # move
         public static void move_calibration_forward(float amount) {
             ExVR.Display().cameras().move_calibration_forward_by_modifying_camera_rig(amount);

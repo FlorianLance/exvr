@@ -41,6 +41,8 @@ namespace Ex{
         private float movementFactor = 0f;
         private bool doLoop = false;
 
+        public Vector3 offset = Vector3.zero;
+
         // trajectories
         private Queue<Trajectory> savedTrajectories = new Queue<Trajectory>();        
 
@@ -186,14 +188,22 @@ namespace Ex{
                     value = 1f;
                 }
 
-                // get current origin
+                // get current                
                 var cPos = s.neutral ? CameraUtility.calibration_position() : CameraUtility.eye_camera_position();
                 var cRos = s.neutral ? CameraUtility.calibration_rotation() : CameraUtility.eye_camera_rotation();
 
+                //if (s.neutral) {
+                //    cPos +=
+                //        CameraUtility.calibration_forward() * offset.z +
+                //        CameraUtility.calibration_up()      * offset.y +
+                //        CameraUtility.calibration_right()   * offset.x;
+                //}
+
                 // compute current target
-                if(s.trTarget == null) { // use pos and rot as target
+                if (s.trTarget == null) { // use pos and rot as target
 
                     pos = Interpolate.vector(cPos, s.posTarget, value, s.sphericalInterpolation);
+                    //Debug.Log("p_target " + Converter.to_string(s.posTarget) + " pos: " + Converter.to_string(pos) + " v " + (CameraUtility.calibration_up() * offset.y));
 
                     // remove inused axies from rotation
                     if (!s.pitch || !s.yaw || !s.roll) {
@@ -213,6 +223,7 @@ namespace Ex{
                 } else { // using transform as target
 
                     pos = Interpolate.vector(cPos, s.trTarget.position, value, s.sphericalInterpolation);
+                    //Debug.Log("tr_target " + Converter.to_string(s.trTarget.position) + " pos: " + Converter.to_string(pos) + " v " + (CameraUtility.calibration_up() * offset.y));
 
                     // remove inused axies from rotation
                     if (!s.pitch || !s.yaw || !s.roll) {
@@ -231,7 +242,14 @@ namespace Ex{
 
                 // update camera
                 if (s.neutral) {
+                    //var f =
+                    //    pos +
+                    //    CameraUtility.calibration_forward() * offset.z +
+                    //    CameraUtility.calibration_up()      * offset.y +
+                    //    CameraUtility.calibration_right()   * offset.x;
+
                     CameraUtility.set_calibration_transform(pos, rot);
+
                 } else {
                     CameraUtility.set_eye_camera_transform(pos, rot);
                 }

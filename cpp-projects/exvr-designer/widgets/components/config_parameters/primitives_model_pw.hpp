@@ -11,6 +11,7 @@
 #include "ex_widgets/ex_float_spin_box_w.hpp"
 #include "ex_widgets/ex_checkbox_w.hpp"
 #include "ex_widgets/ex_select_color_w.hpp"
+#include "ex_widgets/ex_spin_box_w.hpp"
 
 // local
 #include "config_pw.hpp"

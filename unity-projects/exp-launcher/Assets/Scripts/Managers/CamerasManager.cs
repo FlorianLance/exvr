@@ -77,19 +77,24 @@ namespace Ex{
         // camera rig
         public void apply_vector_to_camera_rig_position(Vector3 vector) {
             cameraRig.position += vector;
+            //cameraRig.localPosition += vector;
         }
 
         public void set_camera_rig_position(Vector3 position) {
             cameraRig.position = position;
+            //cameraRig.localPosition = position;
         }
         public void set_camera_rig_rotation(Quaternion rotation) {
             cameraRig.rotation = rotation;
+            //cameraRig.localRotation = rotation;
         }
 
         public void set_camera_rig_transform(Vector3 worldPosition, Quaternion worldRotation) {
             var rig = get_camera_rig_transform();
             rig.rotation = worldRotation;
             rig.position = worldPosition;
+            //rig.localRotation = worldRotation;
+            //rig.localPosition = worldPosition;
         }
 
         // calibration

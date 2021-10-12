@@ -180,7 +180,7 @@ struct Component {
         // Model
         {T::Cube,                     C::Model,       TO::V,     CO::B,   false,   R::OpenSource,   S::Sta, "Cube"sv, "Cube"sv, "Cube"sv,":/icons/Cube"sv},
         {T::Cylinder,                 C::Model,       TO::V,     CO::B,   false,   R::OpenSource,   S::Sta, "Cylinder"sv, "Cylinder"sv, "Cylinder"sv,":/icons/Cylinder"sv},
-        {T::Landmark,                 C::Model,       TO::V,     CO::C,   false,   R::OpenSource,   S::Sta, "Landmark"sv, "Landmark"sv, "Landmark"sv,":/icons/Landmark"sv},
+        {T::Landmark,                 C::Model,       TO::V,     CO::B,   false,   R::OpenSource,   S::Sta, "Landmark"sv, "Landmark"sv, "Landmark"sv,":/icons/Landmark"sv},
         {T::Lines,                    C::Model,       TO::V,     CO::C,   false,   R::OpenSource,   S::Exp, "Lines"sv, "Lines"sv, "Lines"sv,":/icons/Line"sv},
         {T::Sphere,                   C::Model,       TO::V,     CO::B,   false,   R::OpenSource,   S::Sta, "Sphere"sv, "Sphere"sv, "Sphere"sv,":/icons/Sphere"sv},
         {T::Torus,                    C::Model,       TO::V,     CO::B,   false,   R::OpenSource,   S::Sta, "Torus"sv, "Torus"sv, "Torus"sv,":/icons/Torus"sv},
