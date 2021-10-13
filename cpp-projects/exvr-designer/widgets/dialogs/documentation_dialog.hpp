@@ -127,7 +127,10 @@ class DocumentationDialog : public QDialog{
 
 public :
 
-    DocumentationDialog(bool lncoComponents);
+    DocumentationDialog();
+    void enable_lnco_components(bool useComponentsFromLNCO){
+        m_lncoComponents = useComponentsFromLNCO;
+    }
 
     static QTextBrowser *generate_text_browser();
     void init_components_doc();

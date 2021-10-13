@@ -41,6 +41,7 @@ struct Timeline{
     void cut(SecondsTS max);
     double sum_intervals() const;
 
+
     void fill(SecondsTS lenght);
     void clean();
 

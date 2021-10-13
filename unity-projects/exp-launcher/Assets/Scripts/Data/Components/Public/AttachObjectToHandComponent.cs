@@ -14,6 +14,7 @@ namespace Ex{
         //private GameObject m_spongeGO = null;
         //private LeapMotionArmsDisplayComponent m_leapMotion = null;
 
+        #region ex_functions
         protected override bool initialize() {
 
             //// generate sponge
@@ -67,5 +68,7 @@ namespace Ex{
             //    transform.localRotation = fingerToAttach.transform.rotation;
             //}
         }
+
+        #endregion
     }
 }

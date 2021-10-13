@@ -77,27 +77,28 @@ namespace Ex{
         // camera rig
         public void apply_vector_to_camera_rig_position(Vector3 vector) {
             cameraRig.position += vector;
-            //cameraRig.localPosition += vector;
         }
 
         public void set_camera_rig_position(Vector3 position) {
             cameraRig.position = position;
-            //cameraRig.localPosition = position;
         }
         public void set_camera_rig_rotation(Quaternion rotation) {
             cameraRig.rotation = rotation;
-            //cameraRig.localRotation = rotation;
         }
 
         public void set_camera_rig_transform(Vector3 worldPosition, Quaternion worldRotation) {
             var rig = get_camera_rig_transform();
             rig.rotation = worldRotation;
             rig.position = worldPosition;
-            //rig.localRotation = worldRotation;
-            //rig.localPosition = worldPosition;
         }
 
         // calibration
+        public void restore_start_experiment_calibration() {
+            set_camera_rig_transform(Vector3.zero, Quaternion.identity);
+            calibration.localPosition = startExperimentCalibrationPosition;
+            calibration.localRotation = startExperimentCalibrationRotation;
+        }
+
         public void reset_calibration_from_eye_camera(bool useX, bool useY, bool useZ) {
 
             calibration.localPosition = bothEyesCamera.transform.localPosition;
@@ -112,12 +113,6 @@ namespace Ex{
         public void set_calibration(Vector3 position, Quaternion rotation){
             calibration.position = position;
             calibration.rotation = rotation;
-        }
-
-        public void restore_start_experiment_calibration() {
-            set_camera_rig_transform(Vector3.zero, Quaternion.identity);
-            calibration.localPosition = startExperimentCalibrationPosition;
-            calibration.localRotation = startExperimentCalibrationRotation;
         }
 
         // move/rotate/set target

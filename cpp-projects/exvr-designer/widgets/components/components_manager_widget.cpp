@@ -40,7 +40,7 @@ ComponentsManagerW::ComponentsManagerW(bool lncoComponents) :
     w1->layout()->setContentsMargins(0,0,0,0);
     auto w2 = new QWidget();
     w2->setLayout(new QVBoxLayout());
-    w2->layout()->addWidget(ui::W::txt(QSL("[Right click below to add components]")));
+    w2->layout()->addWidget(ui::W::txt(QSL("[Right click below to add or modify components]")));
     w2->layout()->addWidget(&m_componentsListW);
     w2->layout()->setContentsMargins(0,0,0,0);
     w1->layout()->addWidget(w2);
@@ -404,6 +404,16 @@ void ComponentsManagerW::show_howering_component_custom_menu(QPoint pos, Compone
         addComponentSubMenu.addAction(addA);
     }
     contextMenu.addMenu(&addComponentSubMenu);
+
+    QMenu modifyComponentSubMenu(tr("Modify from..."));
+    {
+        QAction *modA = new QAction("specify details");
+        connect(modA, &QAction::triggered, this, [=](){
+            emit GSignals::get()->modify_action_with_details_signal(componentKey);
+        });
+        modifyComponentSubMenu.addAction(modA);
+    }
+    contextMenu.addMenu(&modifyComponentSubMenu);
 
     QMenu removeComponentSubMenu(tr("Remove from..."));
     {

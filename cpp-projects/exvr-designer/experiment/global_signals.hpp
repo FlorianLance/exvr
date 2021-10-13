@@ -94,6 +94,7 @@ signals:
     void insert_action_to_all_selected_routine_conditions_signal(ComponentKey componentKey);
     void insert_action_to_all_routines_conditions_signal(ComponentKey componentKey, std::optional<ConfigKey> ConfigKey, bool fillUpdate, bool fillVisibility);
     void insert_action_with_details_signal(ComponentKey componentKey);
+    void modify_action_with_details_signal(ComponentKey componentKey);
     void remove_action_from_all_selected_routine_conditions_signal(ComponentKey componentKey);
     void remove_action_from_all_routines_conditions_signal(ComponentKey componentKey);
     // #### timeline

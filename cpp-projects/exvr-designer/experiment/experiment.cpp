@@ -973,6 +973,145 @@ void Experiment::add_action_to_all_routines_conditions(ComponentKey componentKey
     add_to_update_flag(UpdateRoutines);
 }
 
+void Experiment::modify_action(ElementKey routineKey, ConditionKey conditionKey, ComponentKey componentKey,
+    bool changeConfig, bool changeUpdateTimeline, bool changeVisibilityTimeline, ConfigKey configKey, bool fillUpdateTimeline, bool fillVisibilityTimeline){
+
+    auto component = m_compM->get_component(componentKey);
+    if(component == nullptr){
+        return;
+    }
+
+    if(auto routine = get_routine(routineKey); routine != nullptr){
+
+        if(routine->isARandomizer){
+            return;
+        }
+
+        if(auto condition = routine->get_condition(conditionKey); condition != nullptr){
+
+            if(auto action = condition->get_action_from_component_key(componentKey, false); action != nullptr){
+
+                if(changeConfig){
+                    if(auto config = action->component->get_config(configKey); config != nullptr){
+                        action->config = config;
+                    }
+                }
+
+                if(changeUpdateTimeline){
+                    if(fillUpdateTimeline){
+                        action->timelineUpdate->fill(condition->duration);
+                    }else{
+                        action->timelineUpdate->clean();
+                    }
+                }
+
+                if(changeVisibilityTimeline){
+                    if(fillVisibilityTimeline){
+                        action->timelineVisibility->fill(condition->duration);
+                    }else{
+                        action->timelineVisibility->clean();
+                    }
+                }
+                add_to_update_flag(UpdateRoutines);
+            }
+        }
+    }
+
+}
+
+void Experiment::modify_action_to_all_conditions(ElementKey routineKey, ComponentKey componentKey,
+    bool changeConfig, bool changeUpdateTimeline, bool changeVisibilityTimeline, ConfigKey configKey, bool fillUpdateTimeline, bool fillVisibilityTimeline){
+
+
+    auto component = m_compM->get_component(componentKey);
+    if(component == nullptr){
+        return;
+    }
+
+    if(auto routine = get_routine(routineKey); routine != nullptr){
+
+        if(routine->isARandomizer){
+            return;
+        }
+
+        for(auto &condition : routine->conditions){
+
+            if(auto action = condition->get_action_from_component_key(componentKey, false); action != nullptr){
+
+                if(changeConfig){
+                    if(auto config = action->component->get_config(configKey); config != nullptr){
+                        action->config = config;
+                    }
+                }
+
+                if(changeUpdateTimeline){
+                    if(fillUpdateTimeline){
+                        action->timelineUpdate->fill(condition->duration);
+                    }else{
+                        action->timelineUpdate->clean();
+                    }
+                }
+
+                if(changeVisibilityTimeline){
+                    if(fillVisibilityTimeline){
+                        action->timelineVisibility->fill(condition->duration);
+                    }else{
+                        action->timelineVisibility->clean();
+                    }
+                }
+            }
+        }
+    }
+
+    add_to_update_flag(UpdateRoutines);
+}
+
+void Experiment::modify_action_to_all_routines_conditions(ComponentKey componentKey,
+    bool changeConfig, bool changeUpdateTimeline, bool changeVisibilityTimeline, ConfigKey configKey, bool fillUpdateTimeline, bool fillVisibilityTimeline){
+
+    auto component = m_compM->get_component(componentKey);
+    if(component == nullptr){
+        return;
+    }
+
+    for(auto &routine : get_elements_from_type<Routine>()){
+
+        if(routine->isARandomizer){
+            continue;
+        }
+
+        for(auto &condition : routine->conditions){
+
+            if(auto action = condition->get_action_from_component_key(componentKey, false); action != nullptr){
+
+                if(changeConfig){
+                    if(auto config = action->component->get_config(configKey); config != nullptr){
+                        action->config = config;
+                    }
+                }
+
+                if(changeUpdateTimeline){
+                    if(fillUpdateTimeline){
+                        action->timelineUpdate->fill(condition->duration);
+                    }else{
+                        action->timelineUpdate->clean();
+                    }
+                }
+
+                if(changeVisibilityTimeline){
+                    if(fillVisibilityTimeline){
+                        action->timelineVisibility->fill(condition->duration);
+                    }else{
+                        action->timelineVisibility->clean();
+                    }
+                }
+            }
+        }
+    }
+
+    add_to_update_flag(UpdateRoutines);
+}
+
 void Experiment::remove_action_from_all_selected_routine_conditions(ElementKey routineKey, ComponentKey componentKey){
 
     if(auto routine = get_routine(routineKey); routine != nullptr){

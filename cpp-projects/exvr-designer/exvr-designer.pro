@@ -376,6 +376,7 @@ SOURCES += \
     ## dialogs
     widgets/dialogs/benchmark_dialog.cpp \
     widgets/dialogs/copy_to_conditions_dialog.cpp \
+    widgets/dialogs/generate_instances_dialog.cpp \
     widgets/dialogs/resources_manager_dialog.cpp \
     widgets/dialogs/documentation_dialog.cpp \
     ## elements

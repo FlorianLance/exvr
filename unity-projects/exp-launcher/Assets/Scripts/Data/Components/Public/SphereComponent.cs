@@ -15,6 +15,8 @@ namespace Ex{
         private MeshFilter mf = null;
         private Material m = null;
 
+
+        #region ex_functions
         protected override bool initialize() {
 
             // slots
@@ -75,5 +77,6 @@ namespace Ex{
             invoke_signal("visibility changed", visibility);
         }
 
+        #endregion
     }
 }

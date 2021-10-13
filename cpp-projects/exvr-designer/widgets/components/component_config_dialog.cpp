@@ -22,11 +22,6 @@
 #include "experiment/global_signals.hpp"
 
 
-
-// debug
-#include <QDebug>
-
-
 using namespace tool::ex;
 
 ComponentConfigDialog::ComponentConfigDialog(QWidget *parent, Component *component) :
@@ -93,109 +88,7 @@ void ComponentConfigDialog::set_connections(){
         }
     });
 
-    // add a new config
-    connect(m_ui.pbInsertNewConfig, &QPushButton::clicked, this, [&]{
-
-        // create a dialog for choosing the configuration name
-        QDialog configNameDialog;
-        configNameDialog.setWindowTitle(QSL("Add new config"));
-        configNameDialog.setModal(true);
-        configNameDialog.setLayout(new QHBoxLayout());
-        configNameDialog.layout()->addWidget(new QLabel(QSL("Name: ")));
-
-        QLineEdit *le = new QLineEdit(QSL("Config ") % QString::number(m_ui.tabConfigs->count()));
-        configNameDialog.layout()->addWidget(le);
-        QPushButton *pbV = new QPushButton(QSL("Ok"));
-        QPushButton *pbC = new QPushButton(QSL("Cancel"));
-        connect(pbV, &QPushButton::clicked, this, [&]{
-            configNameDialog.done(1);
-        });
-        connect(pbC, &QPushButton::clicked, this, [&]{
-            configNameDialog.done(0);
-        });
-        configNameDialog.layout()->addWidget(pbV);
-        configNameDialog.layout()->addWidget(pbC);
-        le->setFocus();
-
-        int res = configNameDialog.exec();
-        if(res == 1){ // if config validated
-            int id = m_ui.tabConfigs->currentIndex();
-            if(id == -1){
-                id = 0;
-            }
-            emit GSignals::get()->insert_config_signal(componentKey, RowId{id}, le->text());
-        }
-    });
-
-    connect(m_ui.pbDuplicate, &QPushButton::clicked, this, [&]{
-
-        // create a dialog for choosing the configuration name
-        QDialog configNameDialog;
-        configNameDialog.setWindowTitle(QSL("Duplicate selected config"));
-        configNameDialog.setModal(true);
-        configNameDialog.setLayout(new QHBoxLayout());
-        configNameDialog.layout()->addWidget(new QLabel(QSL("Name: ")));
-
-        QLineEdit *le = new QLineEdit(m_ui.tabConfigs->tabText(m_ui.tabConfigs->currentIndex()) % QSL("(copy)"));
-        configNameDialog.layout()->addWidget(le);
-        QPushButton *pbV = new QPushButton(QSL("Ok"));
-        QPushButton *pbC = new QPushButton(QSL("Cancel"));
-        connect(pbV, &QPushButton::clicked, this, [&]{
-            configNameDialog.done(1);
-        });
-        connect(pbC, &QPushButton::clicked, this, [&]{
-            configNameDialog.done(0);
-        });
-        configNameDialog.layout()->addWidget(pbV);
-        configNameDialog.layout()->addWidget(pbC);
-        le->setFocus();
-
-        int res = configNameDialog.exec();
-        if(res == 1){ // if config validated
-            int id = m_ui.tabConfigs->currentIndex();
-            if(id == -1){
-                id = 0;
-            }
-            emit GSignals::get()->copy_config_signal(componentKey, RowId{id}, le->text());
-        }
-    });
-
-    connect(m_ui.pbRenameConfig, &QPushButton::clicked, this, [&]{
-
-        // create a dialog for choosing the configuration name
-        QDialog configNameDialog;
-        configNameDialog.setWindowTitle(QSL("Rename config"));
-        configNameDialog.setModal(true);
-        configNameDialog.setLayout(new QHBoxLayout());
-        configNameDialog.layout()->addWidget(new QLabel(QSL("Name: ")));
-        QLineEdit *le = new QLineEdit(m_ui.tabConfigs->tabText(m_ui.tabConfigs->currentIndex()));
-        configNameDialog.layout()->addWidget(le);
-        QPushButton *pbV = new QPushButton(QSL("Ok"));
-        QPushButton *pbC = new QPushButton(QSL("Cancel"));
-        connect(pbV, &QPushButton::clicked, this, [&]{
-            configNameDialog.done(1);
-        });
-        connect(pbC, &QPushButton::clicked, this, [&]{
-            configNameDialog.done(0);
-        });
-        configNameDialog.layout()->addWidget(pbV);
-        configNameDialog.layout()->addWidget(pbC);
-        le->setFocus();
-
-        int res = configNameDialog.exec();
-        if(res == 1){ // if config validated
-            int id = m_ui.tabConfigs->currentIndex();
-            if(id == -1){
-                id = 0;
-            }
-            emit GSignals::get()->rename_config_signal(componentKey, RowId{id}, le->text());
-        }
-    });
-
-    connect(m_ui.pbHelp, &QPushButton::clicked, this, [=]{
-        emit GSignals::get()->display_component_help_window_signal(componentType);
-    });
-
+    // pin dialog
     connect(m_ui.pbPin, &QPushButton::clicked, this, [=] {
         if(!pinned){
             setParent(m_parent);
@@ -211,44 +104,11 @@ void ComponentConfigDialog::set_connections(){
         show();
     });
 
-    connect(m_ui.pbReset, &QPushButton::clicked, this, [&]{
-
-        const bool resetInitConfig  = m_ui.twAllConfigs->currentIndex() == 0;
-        const int idCurrentConfig   = m_ui.tabConfigs->currentIndex();
-        ConfigW *configW = nullptr;
-        if(resetInitConfig){
-            configW = get_init_config_widget();
-        }else{
-            configW = get_config_widget(idCurrentConfig);
-        }
-
-        QDialog resetConfigDialog;
-        resetConfigDialog.setWindowTitle(QSL("Reset config"));
-        resetConfigDialog.setModal(true);
-        resetConfigDialog.setLayout(new QHBoxLayout());
-        resetConfigDialog.layout()->addWidget(new QLabel(QSL("You are going to reset ") %
-                                                         QString(resetInitConfig ? QSL("init") : QSL("current selected")) % QSL(" config values.")));
-
-        QPushButton *pbV = new QPushButton(QSL("Ok"));
-        QPushButton *pbC = new QPushButton(QSL("Cancel"));
-        connect(pbV, &QPushButton::clicked, this, [&]{
-            resetConfigDialog.done(1);
-        });
-        connect(pbC, &QPushButton::clicked, this, [&]{
-            resetConfigDialog.done(0);
-        });
-        resetConfigDialog.layout()->addWidget(pbV);
-        resetConfigDialog.layout()->addWidget(pbC);
-
-        if(resetConfigDialog.exec() == 1){ // if validated
-            configW->reset_args();
-        }
-    });
-
     // move config
     connect(m_ui.tabConfigs->tabBar(), &QTabBar::tabMoved, this, [&](int from, int to){
         emit GSignals::get()->move_config_signal(componentKey, RowId{from}, RowId{to});
     });
+
     // select config
     connect(m_ui.tabConfigs->tabBar(), &QTabBar::currentChanged, this, [&](int id){
         m_ui.cbSelectedConfig->blockSignals(true);
@@ -262,6 +122,18 @@ void ComponentConfigDialog::set_connections(){
         m_ui.tabConfigs->blockSignals(false);
         emit GSignals::get()->select_config_signal(componentKey, RowId{id});
     });
+
+    // show help
+    connect(m_ui.pbHelp, &QPushButton::clicked, this, [=]{
+        emit GSignals::get()->display_component_help_window_signal(componentType);
+    });
+
+    // dialogs
+    connect(m_ui.pbInsertNewConfig, &QPushButton::clicked, this, &ComponentConfigDialog::show_insert_new_config_dialog);
+    connect(m_ui.pbDuplicate,       &QPushButton::clicked, this, &ComponentConfigDialog::show_duplicate_config_dialog);
+    connect(m_ui.pbRenameConfig,    &QPushButton::clicked, this, &ComponentConfigDialog::show_rename_config_dialog);
+    connect(m_ui.pbReset,           &QPushButton::clicked, this, &ComponentConfigDialog::show_reset_config_dialog);
+
 }
 
 
@@ -363,9 +235,167 @@ void ComponentConfigDialog::update_with_info(ConfigKey configKey, QStringView id
                 break;
             }
         }
-    }    
+    }
 }
 
+void ComponentConfigDialog::show_insert_new_config_dialog(){
+
+    m_modalDialog = std::make_unique<QDialog>();
+    m_modalDialog->setWindowTitle(QSL("Add new config"));
+    m_modalDialog->setModal(true);
+    m_modalDialog->setLayout(new QHBoxLayout());
+    m_modalDialog->layout()->addWidget(new QLabel(QSL("Name: ")));
+    m_modalDialog->setWindowFlags(Qt::Dialog | Qt::WindowTitleHint);
+    m_modalDialog->layout()->setSizeConstraint( QLayout::SetFixedSize );
+
+    QLineEdit *le = new QLineEdit(QSL("Config ") % QString::number(m_ui.tabConfigs->count()));
+    m_modalDialog->layout()->addWidget(le);
+    QPushButton *pbV = new QPushButton(QSL("Ok"));
+    QPushButton *pbC = new QPushButton(QSL("Cancel"));
+    connect(pbV, &QPushButton::clicked, this, [&]{
+        m_modalDialog->done(1);
+    });
+    connect(pbC, &QPushButton::clicked, this, [&]{
+        m_modalDialog->done(0);
+    });
+    m_modalDialog->layout()->addWidget(pbV);
+    m_modalDialog->layout()->addWidget(pbC);
+    le->setFocus();
+
+    connect(m_modalDialog.get(), &QDialog::finished, [&, le](int ret){
+
+        if(ret == 1){ // if config validated
+            int id = m_ui.tabConfigs->currentIndex();
+            if(id == -1){
+                id = 0;
+            }
+            emit GSignals::get()->insert_config_signal(componentKey, RowId{id}, le->text());
+        }
+        m_modalDialog = nullptr;
+    });
+
+    m_modalDialog->open();
+}
+
+void ComponentConfigDialog::show_duplicate_config_dialog(){
+
+    m_modalDialog = std::make_unique<QDialog>();
+    m_modalDialog->setWindowTitle(QSL("Duplicate selected config"));
+    m_modalDialog->setModal(true);
+    m_modalDialog->setLayout(new QHBoxLayout());
+    m_modalDialog->layout()->addWidget(new QLabel(QSL("Name: ")));
+    m_modalDialog->setWindowFlags(Qt::Dialog | Qt::WindowTitleHint);
+    m_modalDialog->layout()->setSizeConstraint( QLayout::SetFixedSize );
+
+    QLineEdit *le = new QLineEdit(m_ui.tabConfigs->tabText(m_ui.tabConfigs->currentIndex()) % QSL("(copy)"));
+    m_modalDialog->layout()->addWidget(le);
+    QPushButton *pbV = new QPushButton(QSL("Ok"));
+    QPushButton *pbC = new QPushButton(QSL("Cancel"));
+    connect(pbV, &QPushButton::clicked, this, [&]{
+        m_modalDialog->done(1);
+    });
+    connect(pbC, &QPushButton::clicked, this, [&]{
+        m_modalDialog->done(0);
+    });
+    m_modalDialog->layout()->addWidget(pbV);
+    m_modalDialog->layout()->addWidget(pbC);
+    le->setFocus();
+
+    connect(m_modalDialog.get(), &QDialog::finished, [&, le](int ret){
+
+        if(ret == 1){ // if config validated
+            int id = m_ui.tabConfigs->currentIndex();
+            if(id == -1){
+                id = 0;
+            }
+            emit GSignals::get()->copy_config_signal(componentKey, RowId{id}, le->text());
+        }
+        m_modalDialog = nullptr;
+    });
+
+    m_modalDialog->open();
+}
+
+void ComponentConfigDialog::show_rename_config_dialog(){
+
+    m_modalDialog = std::make_unique<QDialog>();
+    m_modalDialog->setWindowTitle(QSL("Rename config"));
+    m_modalDialog->setModal(true);
+    m_modalDialog->setLayout(new QHBoxLayout());
+    m_modalDialog->setWindowFlags(Qt::Dialog | Qt::WindowTitleHint);
+    m_modalDialog->layout()->setSizeConstraint( QLayout::SetFixedSize );
+
+    m_modalDialog->layout()->addWidget(new QLabel(QSL("Name: ")));
+    QLineEdit *le = new QLineEdit(m_ui.tabConfigs->tabText(m_ui.tabConfigs->currentIndex()));
+    m_modalDialog->layout()->addWidget(le);
+    QPushButton *pbV = new QPushButton(QSL("Ok"));
+    QPushButton *pbC = new QPushButton(QSL("Cancel"));
+    connect(pbV, &QPushButton::clicked, this, [&]{
+        m_modalDialog->done(1);
+    });
+    connect(pbC, &QPushButton::clicked, this, [&]{
+        m_modalDialog->done(0);
+    });
+    m_modalDialog->layout()->addWidget(pbV);
+    m_modalDialog->layout()->addWidget(pbC);
+    le->setFocus();
+
+    connect(m_modalDialog.get(), &QDialog::finished, [&, le](int ret){
+
+        if(ret == 1){ // if config validated
+            int id = m_ui.tabConfigs->currentIndex();
+            if(id == -1){
+                id = 0;
+            }
+            emit GSignals::get()->rename_config_signal(componentKey, RowId{id}, le->text());
+        }
+        m_modalDialog = nullptr;
+    });
+
+    m_modalDialog->open();
+}
+
+void ComponentConfigDialog::show_reset_config_dialog(){
+
+    const bool resetInitConfig  = m_ui.twAllConfigs->currentIndex() == 0;
+    const int idCurrentConfig   = m_ui.tabConfigs->currentIndex();
+    ConfigW *configW = nullptr;
+    if(resetInitConfig){
+        configW = get_init_config_widget();
+    }else{
+        configW = get_config_widget(idCurrentConfig);
+    }
+
+    m_modalDialog = std::make_unique<QDialog>();
+    m_modalDialog->setWindowTitle(QSL("Reset config"));
+    m_modalDialog->setModal(true);
+    m_modalDialog->setLayout(new QHBoxLayout());
+    m_modalDialog->setWindowFlags(Qt::Dialog | Qt::WindowTitleHint);
+    m_modalDialog->layout()->setSizeConstraint( QLayout::SetFixedSize );
+
+    m_modalDialog->layout()->addWidget(new QLabel(QSL("You are going to reset ") %
+            QString(resetInitConfig ? QSL("init") : QSL("current selected")) % QSL(" config values.")));
+
+    QPushButton *pbV = new QPushButton(QSL("Ok"));
+    QPushButton *pbC = new QPushButton(QSL("Cancel"));
+    connect(pbV, &QPushButton::clicked, this, [&]{
+        m_modalDialog->done(1);
+    });
+    connect(pbC, &QPushButton::clicked, this, [&]{
+        m_modalDialog->done(0);
+    });
+    m_modalDialog->layout()->addWidget(pbV);
+    m_modalDialog->layout()->addWidget(pbC);
+
+    connect(m_modalDialog.get(), &QDialog::finished, [&,configW](int ret){
+        if(ret == 1){ // if validated
+            configW->reset_args();
+        }
+        m_modalDialog = nullptr;
+    });
+
+    m_modalDialog->open();
+}
 
 
 #include "moc_component_config_dialog.cpp"

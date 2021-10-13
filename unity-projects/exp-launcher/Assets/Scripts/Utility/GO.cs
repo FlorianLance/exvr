@@ -11,6 +11,15 @@ namespace Ex{
 
     public static class GO{
 
+        static public int get_depth_level(Transform tr) {
+            int depth = 0;
+            while (tr.parent != null) {
+                tr = tr.parent;
+                depth++;
+            }
+            return depth;
+        }
+
         static public GameObject init_local_euler_rotation(GameObject go, Vector3 eulerRotation) {
             go.transform.localEulerAngles = eulerRotation;
             return go;

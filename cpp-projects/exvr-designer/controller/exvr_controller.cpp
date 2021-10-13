@@ -89,17 +89,14 @@ ExVrController::ExVrController(const QString &nVersion, bool lncoComponents){
     emit start_communication_signal();
 
     // dialogs
-    m_settingsD      = std::make_unique<SettingsDialog>();
-    m_copyToCondD    = std::make_unique<CopyToConditionDialog>();
-    m_resourcesD     = std::make_unique<ResourcesManagerDialog>();
-    m_documentationD = std::make_unique<DocumentationDialog>(lncoComponents);
+    m_documentationD.enable_lnco_components(lncoComponents);
+//    m_settingsD.setParent(ui());
     m_benchmarkD     = std::make_unique<BenchmarkDialog>();
 
     // connections
     QtLogger::message("[CONTROLLER] Generate connections", false, true);
     generate_global_signals_connections();
     generate_main_window_connections();
-    generate_components_manager_connections();
     generate_flow_diagram_connections();
     generate_controller_connections();
     generate_resources_manager_connections();
@@ -111,79 +108,23 @@ ExVrController::ExVrController(const QString &nVersion, bool lncoComponents){
     m_designerWindow->update_from_experiment(m_experiment.get(), UpdateAll);
     m_designerWindow->show();
 
-    connect(&experimentUpdateTimer, &QTimer::timeout, this, [&]{
-
-        Bench::start("[Update full UI]"sv, false);
-        if(exp()->update_flag() & UpdateSettings){
-            qDebug() << "UpdateSettings";
-            Bench::start("[Update dialogs]"sv, false);
-            m_settingsD->update_from_settings(exp()->settings());
-            Bench::stop();
-        }
-
-        if(exp()->update_flag() & UpdateResources){ // update experiment components
-            Bench::start("[Update resources]"sv, false);
-            m_resourcesD->update_from_resources_manager(ResourcesManager::get());
-            Bench::stop();
-        }
-
-        Bench::start("[Update designer window]"sv);
-        if(exp()->update_flag() != 0){
-            ui()->update_from_experiment(exp(), exp()->update_flag());
-        }
-        Bench::stop();
-
-        // infos
-        // # components
-        Bench::start("[Update components infos]"sv, false);
-        for(const auto &componentI : exp()->componentsInfo){
-            for(const auto &configI : componentI.second){
-                for(const auto &idI : configI.second){
-                    ui()->components_manager()->update_component_dialog_with_info(
-                        ComponentKey{componentI.first},
-                        ConfigKey{configI.first},
-                        idI.first,
-                        idI.second
-                    );
-                }
-            }
-        }
-        Bench::stop();
-        // # infos
-        Bench::start("[Update connectors infos]"sv, false);
-        for(const auto &elementI : exp()->connectorsInfo){
-            for(const auto &conditionI : elementI.second){
-                for(const auto &connectorI : conditionI.second){
-                    for(const auto &idI : connectorI.second){
-                        ui()->routines_manager()->update_connector_dialog_with_info(
-                            ElementKey{elementI.first},
-                            ConditionKey{conditionI.first},
-                            ConnectorKey{connectorI.first},
-                            idI.first,
-                            idI.second
-                        );
-                    }
-                }
-            }
-        }
-        Bench::stop();
-
-        exp()->componentsInfo.clear();
-        exp()->connectorsInfo.clear();
-        exp()->reset_update_flag();
-
-        Bench::stop();
-
-
-        m_benchmarkD->update();
-
-
-        Bench::display(BenchUnit::milliseconds, 0, true);
-        Bench::reset();
-
-        QCoreApplication::processEvents( QEventLoop::AllEvents, 5);
-    });
+    connect(&experimentUpdateTimer, &QTimer::timeout, this, &ExVrController::update_gui_from_experiment);
     experimentUpdateTimer.start(1000/30);
+}
+
+bool ExVrController::eventFilter(QObject *watched, QEvent *event){
+
+    Bench::start("ExVrController::Filter::ALL");
+    bool ret;
+    if(event->type() == QEvent::Paint){
+        Bench::start("ExVrController::Filter::Paint");
+        ret = QObject::eventFilter(watched, event);
+        Bench::stop();
+    }else{
+        ret = QObject::eventFilter(watched, event);
+    }
+    Bench::stop();
+    return ret;
 }
 
 
@@ -229,27 +170,15 @@ void ExVrController::close_exvr(){
         m_goToD->close();
         m_goToD = nullptr;
     }
-    if(m_playDelayD != nullptr){
-        m_playDelayD->close();
-        m_playDelayD = nullptr;
-    }
-    if(m_addActionDetailsD != nullptr){
-        m_addActionDetailsD->close();
-        m_addActionDetailsD = nullptr;
-    }
 
-    m_copyToCondD->close();
-    m_copyToCondD       = nullptr;
-    m_settingsD->close();
-    m_settingsD         = nullptr;
+
     m_benchmarkD->close();
     m_benchmarkD        = nullptr;
 
-    m_resourcesD->close();
-    m_resourcesD        = nullptr;
-
-    m_documentationD->close();
-    m_documentationD    = nullptr;
+    m_resourcesD.close();
+    m_documentationD.close();
+    m_copyToCondD.close();
+    m_instancesD.close();
 
     // clean
     QtLogger::message("[CONTROLLER] Destroy.");
@@ -262,35 +191,34 @@ void ExVrController::close_exvr(){
     QtLogger::clean();
 }
 
-void ExVrController::generate_instances(){
+void ExVrController::show_generate_instances_dialog(){
 
-    GenerateInstancesDialog instancesDialog;
-    instancesDialog.exec();
+    m_instancesD.show_dialog();
 
-    if(instancesDialog.directoryPath.size() > 0){
+    if(m_instancesD.directoryPath.size() > 0){
 
-        exp()->update_randomization_seed(instancesDialog.randomSeed);
+        exp()->update_randomization_seed(m_instancesD.randomSeed);
 
-        if(instancesDialog.useBaseName){
-            for(int ii = 0; ii < instancesDialog.nbInstances; ++ii){
+        if(m_instancesD.useBaseName){
+            for(int ii = 0; ii < m_instancesD.nbInstances; ++ii){
                 auto instance = Instance::generate_from_full_experiment(&exp()->randomizer, *exp(), ii);
                 if(!instance){
                     return;
                 }
 
                 const QString instanceFileName =
-                        instancesDialog.directoryPath % QSL("/") %
-                        instancesDialog.baseName %
-                        QString::number(ii+instancesDialog.startId) % QSL(".xml");
+                        m_instancesD.directoryPath % QSL("/") %
+                        m_instancesD.baseName %
+                        QString::number(ii+m_instancesD.startId) % QSL(".xml");
 
                 if(!xml()->save_instance_file(*instance, instanceFileName)){
                     return;
                 }
                 QtLogger::message(QSL("[CONTROLLER] Instance [") %  instanceFileName % QSL("] generated."));
             }
-        }else if(instancesDialog.useManual){
+        }else if(m_instancesD.useManual){
 
-            for(int ii = 0; ii < instancesDialog.manualNames.size(); ++ii){
+            for(int ii = 0; ii < m_instancesD.manualNames.size(); ++ii){
 
                 auto instance = Instance::generate_from_full_experiment(&exp()->randomizer, *exp(), ii);
                 if(!instance){
@@ -298,8 +226,8 @@ void ExVrController::generate_instances(){
                 }
 
                 const QString instanceFileName =
-                        instancesDialog.directoryPath % QSL("/") %
-                        instancesDialog.manualNames[ii] % QSL(".xml");
+                        m_instancesD.directoryPath % QSL("/") %
+                        m_instancesD.manualNames[ii] % QSL(".xml");
                 if(!xml()->save_instance_file(*instance, instanceFileName)){
                     return;
                 }
@@ -386,7 +314,7 @@ void ExVrController::go_to_current_specific_instance_element(){
     }
 }
 
-void ExVrController::got_to_specific_instance_element(){
+void ExVrController::show_got_to_specific_instance_element_dialog(){
 
     if(m_currentInstance == nullptr){
         QtLogger::error("[CONTROLLER] No current instance defined.");
@@ -566,7 +494,7 @@ void ExVrController::load_until_selected_routine_with_default_instance_to_unity(
     emit load_experiment_unity_signal(Paths::tempExp, Paths::tempInstance);
 }
 
-void ExVrController::show_component_informations(ComponentKey componentKey){
+void ExVrController::show_component_informations_dialog(ComponentKey componentKey){
 
     if(const auto component = exp()->get_component(componentKey); component != nullptr){
 
@@ -702,10 +630,328 @@ void ExVrController::show_component_informations(ComponentKey componentKey){
     }
 }
 
+void ExVrController::update_gui_from_experiment(){
+
+    Bench::start("[Update full UI]"sv, false);
+    if(exp()->update_flag() & UpdateSettings){
+        Bench::start("[Update dialogs]"sv, false);
+        m_settingsD.update_from_settings(exp()->settings());
+        Bench::stop();
+    }
+
+    if(exp()->update_flag() & UpdateResources){ // update experiment components
+        Bench::start("[Update resources]"sv, false);
+        m_resourcesD.update_from_resources_manager(ResourcesManager::get());
+        Bench::stop();
+    }
+
+    Bench::start("[Update designer window]"sv);
+    if(exp()->update_flag() != 0){
+        ui()->update_from_experiment(exp(), exp()->update_flag());
+    }
+    Bench::stop();
+
+    // infos
+    // # components
+    Bench::start("[Update components infos]"sv, false);
+    for(const auto &componentI : exp()->componentsInfo){
+        for(const auto &configI : componentI.second){
+            for(const auto &idI : configI.second){
+                ui()->components_manager()->update_component_dialog_with_info(
+                    ComponentKey{componentI.first},
+                    ConfigKey{configI.first},
+                    idI.first,
+                    idI.second
+                );
+            }
+        }
+    }
+    Bench::stop();
+    // # infos
+    Bench::start("[Update connectors infos]"sv, false);
+    for(const auto &elementI : exp()->connectorsInfo){
+        for(const auto &conditionI : elementI.second){
+            for(const auto &connectorI : conditionI.second){
+                for(const auto &idI : connectorI.second){
+                    ui()->routines_manager()->update_connector_dialog_with_info(
+                        ElementKey{elementI.first},
+                        ConditionKey{conditionI.first},
+                        ConnectorKey{connectorI.first},
+                        idI.first,
+                        idI.second
+                        );
+                }
+            }
+        }
+    }
+    Bench::stop();
+
+    exp()->componentsInfo.clear();
+    exp()->connectorsInfo.clear();
+    exp()->reset_update_flag();
+
+    Bench::stop();
+
+
+    m_benchmarkD->update();
+
+
+    Bench::display(BenchUnit::milliseconds, 0, true);
+    Bench::reset();
+
+    QCoreApplication::processEvents( QEventLoop::AllEvents, 5);
+}
+
+void ExVrController::show_add_action_detailed_dialog(ComponentKey componentKey){
+
+    modalDialog = std::make_unique<QDialog>();
+    modalDialog->setParent(ui());
+    modalDialog->setModal(true);
+    modalDialog->setWindowTitle("Specify details for adding component:");
+    modalDialog->setLayout(new QVBoxLayout());
+    modalDialog->setWindowFlags(Qt::Dialog | Qt::WindowTitleHint);
+    modalDialog->layout()->setSizeConstraint( QLayout::SetFixedSize );
+
+    auto rbCurrentCondition      = new QRadioButton("... current condition of selected routine");
+    auto rbAllRoutineConditions  = new QRadioButton("... all conditions of selected routine");
+    auto rbAllRoutinesConditions = new QRadioButton("... all conditions of every routine");
+    rbCurrentCondition->setChecked(true);
+    modalDialog->layout()->addWidget(ui::F::gen(ui::L::VB(),
+        {ui::W::txt("Add to ..."), rbCurrentCondition, rbAllRoutineConditions, rbAllRoutinesConditions}, LStretch{true}, LMargins{true}, QFrame::NoFrame));
+
+    modalDialog->layout()->addWidget(ui::W::horizontal_line());
+
+    auto component = exp()->get_component(componentKey);
+
+    auto cbConfigs = new QComboBox();
+    cbConfigs->addItems(component->get_configs_name());
+    modalDialog->layout()->addWidget(ui::F::gen(ui::L::HB(),
+        {ui::W::txt("Select config to use:"), cbConfigs}, LStretch{true}, LMargins{true}, QFrame::NoFrame));
+
+    modalDialog->layout()->addWidget(ui::W::horizontal_line());
+
+    QRadioButton *rbFillU = nullptr;
+    QRadioButton *rbEmptyU = nullptr;
+    QRadioButton *rbFillV = nullptr;
+    QRadioButton *rbEmptyV = nullptr;
+
+    auto to = Component::get_timeline_opt(component->type);
+    if (to == Component::TimelineO::Both || to == Component::TimelineO::Update){
+        modalDialog->layout()->addWidget(ui::F::gen(ui::L::HB(),
+                                                            {ui::W::txt("Update timeline: "), rbFillU = new QRadioButton("Fill"), rbEmptyU = new QRadioButton("Empty")}, LStretch{true}, LMargins{true}, QFrame::NoFrame));
+        rbFillU->setChecked(true);
+    }
+    if (to == Component::TimelineO::Both || to == Component::TimelineO::Visibility){
+        modalDialog->layout()->addWidget(ui::F::gen(ui::L::HB(),
+                                                            {ui::W::txt("Visibility timeline: "), rbFillV = new QRadioButton("Fill"), rbEmptyV = new QRadioButton("Empty")}, LStretch{true}, LMargins{true}, QFrame::NoFrame));
+            rbFillV->setChecked(true);
+    }
+
+    modalDialog->layout()->addWidget(ui::W::horizontal_line());
+
+    auto pbOk  = new QPushButton("Ok");
+    auto pbCancel = new QPushButton("Cancel");
+    modalDialog->layout()->addWidget(ui::F::gen(ui::L::HB(), {pbOk, pbCancel}, LStretch{true}, LMargins{true}, QFrame::NoFrame));
+    ui::L::stretch(modalDialog->layout());
+
+    connect(pbOk,   &QPushButton::clicked, this, [=]{
+        bool fillU = rbFillU == nullptr ? false : rbFillU->isChecked();
+        bool fillV = rbFillV == nullptr ? false : rbFillV->isChecked();
+
+        const auto idConfig = cbConfigs->currentIndex();
+        if(rbCurrentCondition->isChecked()){
+            if(auto cRoutineW = ui()->routines_manager()->current_routine_widget(); cRoutineW != nullptr){
+                if(auto cCondW = cRoutineW->current_condition_widget(); cCondW != nullptr){
+                    exp()->add_action(cRoutineW->routine_key(), cCondW->condition_key(), componentKey,
+                        ConfigKey{component->configs[idConfig]->key()}, fillU, fillV);
+                }
+            }
+        }else if(rbAllRoutineConditions->isChecked()){
+            if(auto cRoutineW = ui()->routines_manager()->current_routine_widget(); cRoutineW != nullptr){
+                exp()->add_action_to_all_conditions(cRoutineW->routine_key(), componentKey,
+                    ConfigKey{component->configs[idConfig]->key()}, fillU, fillV);
+            }
+        }else{
+            exp()->add_action_to_all_routines_conditions(componentKey,
+            ConfigKey{component->configs[idConfig]->key()}, fillU, fillV);
+        }
+    });
+    connect(pbOk,     &QPushButton::clicked, modalDialog.get(), &QDialog::accept);
+    connect(pbCancel, &QPushButton::clicked, modalDialog.get(), &QDialog::reject);
+    connect(modalDialog.get(), &QDialog::finished, this, [&]{
+        modalDialog = nullptr;
+    });
+
+    ui::L::stretch(modalDialog->layout());
+    modalDialog->open();
+}
+
+void ExVrController::show_modify_action_detailed_dialog(ComponentKey componentKey){
+
+    modalDialog = std::make_unique<QDialog>();
+    modalDialog->setParent(ui());
+    modalDialog->setModal(true);
+    modalDialog->setWindowTitle("Specify details for modifying component:");
+    modalDialog->setLayout(new QVBoxLayout());
+    modalDialog->setWindowFlags(Qt::Dialog | Qt::WindowTitleHint);
+
+    modalDialog->layout()->setSizeConstraint( QLayout::SetFixedSize );
+
+    auto rbCurrentCondition      = new QRadioButton("... current condition of selected routine");
+    auto rbAllRoutineConditions  = new QRadioButton("... all conditions of selected routine");
+    auto rbAllRoutinesConditions = new QRadioButton("... all conditions of every routine");
+    rbCurrentCondition->setChecked(true);
+    modalDialog->layout()->addWidget(ui::F::gen(ui::L::VB(),
+        {ui::W::txt("Modify from ..."), rbCurrentCondition, rbAllRoutineConditions, rbAllRoutinesConditions}, LStretch{false}, LMargins{true}, QFrame::NoFrame));
+
+    auto component = exp()->get_component(componentKey);
+
+    auto cbConfigs = new QComboBox();
+    cbConfigs->addItems(component->get_configs_name());
+
+    auto cbChangeConfig = new QCheckBox("Modify config");
+    modalDialog->layout()->addWidget(ui::F::gen(ui::L::HB(),
+        {cbChangeConfig}, LStretch{true}, LMargins{true}, QFrame::NoFrame));
+    modalDialog->layout()->addWidget(ui::F::gen(ui::L::HB(),
+        {ui::W::txt("Select config to apply:"), cbConfigs}, LStretch{true}, LMargins{true}, QFrame::NoFrame));
+
+    modalDialog->layout()->addWidget(ui::W::horizontal_line());
+
+    QRadioButton *rbFillU = nullptr;
+    QRadioButton *rbEmptyU = nullptr;
+    QRadioButton *rbFillV = nullptr;
+    QRadioButton *rbEmptyV = nullptr;
+
+    QCheckBox *cbChangeUpdateTimeline = nullptr;
+    QCheckBox *cbChangeVisibilityTimeline = nullptr;
+
+    auto to = Component::get_timeline_opt(component->type);
+    if (to == Component::TimelineO::Both || to == Component::TimelineO::Update){
+        modalDialog->layout()->addWidget(ui::F::gen(ui::L::HB(),
+            {cbChangeUpdateTimeline = new QCheckBox("Modify update timeline")}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
+
+        modalDialog->layout()->addWidget(ui::F::gen(ui::L::HB(),
+            {rbFillU = new QRadioButton("Fill"), rbEmptyU = new QRadioButton("Empty")}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
+        rbFillU->setChecked(true);
+    }
+    if (to == Component::TimelineO::Both || to == Component::TimelineO::Visibility){
+
+        modalDialog->layout()->addWidget(ui::F::gen(ui::L::HB(),
+            {cbChangeVisibilityTimeline = new QCheckBox("Modify visibility timeline")}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
+
+        modalDialog->layout()->addWidget(ui::F::gen(ui::L::HB(),
+            {rbFillV = new QRadioButton("Fill"), rbEmptyV = new QRadioButton("Empty")}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
+        rbFillV->setChecked(true);
+    }
+
+    modalDialog->layout()->addWidget(ui::W::horizontal_line());
+
+    auto pbOk  = new QPushButton("Ok");
+    auto pbCancel = new QPushButton("Cancel");
+    modalDialog->layout()->addWidget(ui::F::gen(ui::L::HB(), {pbOk, pbCancel}, LStretch{true}, LMargins{true}, QFrame::NoFrame));
+    ui::L::stretch(modalDialog->layout());
+
+    connect(pbOk,   &QPushButton::clicked, this, [=]{
+
+        bool modifyC = cbChangeConfig->isChecked();
+        bool modifyU = (cbChangeUpdateTimeline != nullptr) ? cbChangeUpdateTimeline->isChecked() : false;
+        bool modifyV = (cbChangeVisibilityTimeline != nullptr) ? cbChangeVisibilityTimeline->isChecked() : false;
+
+        bool fillU = rbFillU == nullptr ? false : rbFillU->isChecked();
+        bool fillV = rbFillV == nullptr ? false : rbFillV->isChecked();
+
+        const auto idConfig = cbConfigs->currentIndex();
+        if(rbCurrentCondition->isChecked()){
+            if(auto cRoutineW = ui()->routines_manager()->current_routine_widget(); cRoutineW != nullptr){
+                if(auto cCondW = cRoutineW->current_condition_widget(); cCondW != nullptr){
+                    exp()->modify_action(cRoutineW->routine_key(), cCondW->condition_key(), componentKey,
+                         modifyC, modifyU, modifyV,
+                         ConfigKey{component->configs[idConfig]->key()}, fillU, fillV);
+                }
+            }
+        }else if(rbAllRoutineConditions->isChecked()){
+            if(auto cRoutineW = ui()->routines_manager()->current_routine_widget(); cRoutineW != nullptr){
+                exp()->modify_action_to_all_conditions(cRoutineW->routine_key(), componentKey,
+                   modifyC, modifyU, modifyV,
+                   ConfigKey{component->configs[idConfig]->key()}, fillU, fillV);
+            }
+        }else{
+            exp()->modify_action_to_all_routines_conditions(componentKey,
+                modifyC, modifyU, modifyV,
+                ConfigKey{component->configs[idConfig]->key()}, fillU, fillV);
+        }
+    });
+    connect(pbOk,     &QPushButton::clicked, modalDialog.get(), &QDialog::accept);
+    connect(pbCancel, &QPushButton::clicked, modalDialog.get(), &QDialog::reject);
+    connect(modalDialog.get(), &QDialog::finished, this, [&]{
+        modalDialog = nullptr;
+    });
+
+    ui::L::stretch(modalDialog->layout());
+    modalDialog->open();
+}
+
+void ExVrController::show_copy_to_conditions_dialog(ElementKey routineKey, ConditionKey conditionKey){
+
+    m_copyToCondD.update_from_data(
+        routineKey,
+        conditionKey,
+        exp()->get_elements_from_type<Routine>()
+    );
+    m_copyToCondD.open();
+}
+
+void ExVrController::show_play_with_delay_dialog(){
+
+    modalDialog = std::make_unique<QDialog>();
+    modalDialog->setParent(ui());
+    modalDialog->setWindowTitle("Specify delay to wait before playing:");
+    modalDialog->setLayout(new QVBoxLayout());
+    modalDialog->setWindowFlags(Qt::Dialog | Qt::WindowTitleHint);
+    modalDialog->setModal(true);
+
+    QSpinBox *sbDelay = new QSpinBox();
+    sbDelay->setRange(0,500);
+    sbDelay->setValue(lastDelayS);
+
+    auto pbPlay = new QPushButton("Play");
+    auto pbCancel = new QPushButton("Cancel");
+
+    modalDialog->layout()->addWidget(ui::F::gen(ui::L::HB(), {ui::W::txt("Delay (s):"), sbDelay}, LStretch{true}, LMargins{true}, QFrame::NoFrame));
+    modalDialog->layout()->addWidget(ui::F::gen(ui::L::HB(), {pbPlay, pbCancel}, LStretch{true}, LMargins{true}, QFrame::NoFrame));
+    ui::L::stretch(modalDialog->layout());
+
+    connect(pbPlay,   &QPushButton::clicked, modalDialog.get(), &QDialog::accept);
+    connect(pbCancel, &QPushButton::clicked, modalDialog.get(), &QDialog::reject);
+    connect(modalDialog.get(), &QDialog::finished, this, [&,sbDelay](int ret){
+        if(ret == 1){
+            lastDelayS = sbDelay->value();
+            emit play_delay_experiment_signal(sbDelay->value());
+        }
+        modalDialog = nullptr;
+    });
+
+    modalDialog->open();
+}
+
+void ExVrController::show_about_dialog(){
+
+    Ui_AboutD about;
+    modalDialog = std::make_unique<QDialog>();
+    modalDialog->setWindowTitle("About ExVR");
+    modalDialog->setModal(true);
+    about.setupUi(modalDialog.get());
+    connect(about.pbClose, &QPushButton::clicked, modalDialog.get(), &QDialog::close);
+    connect(modalDialog.get(), &QDialog::finished, [&](int){
+        modalDialog = nullptr;
+    });
+    modalDialog->show();
+}
+
 
 void ExVrController::start_specific_instance(){
 
-    QString pathFile = QFileDialog::getOpenFileName(nullptr, "Select instance file", Paths::dataDir, "XML (*.xml)");
+    QString pathFile = QFileDialog::getOpenFileName(nullptr, "Select experiment associated instance file to start", Paths::dataDir, "XML (*.xml)");
     if(pathFile.length() == 0){
         return;
     }
@@ -735,21 +981,15 @@ void ExVrController::generate_global_signals_connections(){
     auto s = GSignals::get();
 
     // -> component infos
-    connect(s, &GSignals::show_component_informations_signal,  this, &CON::show_component_informations);
+    connect(s, &GSignals::show_component_informations_signal,  this, &CON::show_component_informations_dialog);
     // -> about
-    connect(s, &GSignals::show_about_signal, this, [&]{
-        Ui_AboutD about;
-        QDialog d;
-        d.setWindowTitle("About ExVR");
-        d.setModal(true);
-        about.setupUi(&d);
-        connect(about.pbClose, &QPushButton::clicked, &d, &QDialog::close);
-        d.exec();
-    });
+    connect(s, &GSignals::show_about_signal, this, &CON::show_about_dialog);
+    // -> copy to conditions
+    connect(s, &GSignals::copy_condition_to_signal, this, &CON::show_copy_to_conditions_dialog);
     // -> resources
     connect(s, &GSignals::show_resources_manager_dialog_signal, res(), &ResourcesManagerDialog::show_section);
     // -> settings
-    connect(s, &GSignals::show_settings_dialog_signal, set(), &SettingsDialog::show_dialog);
+    connect(s, &GSignals::show_settings_dialog_signal, set(), &SettingsDialog::show);
     // -> settings
     connect(s, &GSignals::show_benchmark_dialog_signal, benchmark(), &BenchmarkDialog::show_dialog);
 
@@ -847,16 +1087,8 @@ void ExVrController::generate_global_signals_connections(){
     connect(s, &GSignals::delete_action_signal, this, [&](ElementKey routineKey, ConditionKey conditionKey, ActionKey actionKey){
         exp()->remove_action_from_condition(routineKey, conditionKey, actionKey, true);
     });
-    connect(s, &GSignals::copy_condition_to_signal, this, [&](ElementKey routineKey, ConditionKey conditionKey){
 
-        m_copyToCondD->update_from_data(
-            routineKey,
-            conditionKey,
-            exp()->get_elements_from_type<Routine>()
-        );
-        m_copyToCondD->exec();
 
-    });
     connect(s, &GSignals::routine_selected_signal,                    this, [&](ElementKey elementKey){
         exp()->select_element(elementKey);}
     );
@@ -873,85 +1105,8 @@ void ExVrController::generate_global_signals_connections(){
         }
     });
 
-    connect(s, &GSignals::insert_action_with_details_signal, this, [&](ComponentKey componentKey){
-
-
-        m_addActionDetailsD = std::make_unique<QDialog>();
-        m_addActionDetailsD->setParent(ui());
-        m_addActionDetailsD->setWindowTitle("Specify details for adding component:");
-        m_addActionDetailsD->setLayout(new QVBoxLayout());
-        m_addActionDetailsD->setWindowFlags(Qt::Dialog | Qt::WindowTitleHint);
-        m_addActionDetailsD->setModal(true);
-
-        auto rbCurrentCondition      = new QRadioButton("... current condition of selected routine");
-        auto rbAllRoutineConditions  = new QRadioButton("... all conditions of selected routine");
-        auto rbAllRoutinesConditions = new QRadioButton("... all conditions of every routine");
-        rbCurrentCondition->setChecked(true);
-        m_addActionDetailsD->layout()->addWidget(ui::F::gen(ui::L::VB(),
-            {ui::W::txt("Add to ..."), rbCurrentCondition, rbAllRoutineConditions, rbAllRoutinesConditions}, LStretch{true}, LMargins{true}, QFrame::NoFrame));
-
-        m_addActionDetailsD->layout()->addWidget(ui::W::horizontal_line());
-
-        auto component = exp()->get_component(componentKey);
-
-        auto cbConfigs = new QComboBox();
-        cbConfigs->addItems(component->get_configs_name());
-        m_addActionDetailsD->layout()->addWidget(ui::F::gen(ui::L::HB(),
-            {ui::W::txt("Select config to use:"), cbConfigs}, LStretch{true}, LMargins{true}, QFrame::NoFrame));
-
-        m_addActionDetailsD->layout()->addWidget(ui::W::horizontal_line());
-
-        QRadioButton *rbFillU = nullptr;
-        QRadioButton *rbEmptyU = nullptr;
-        QRadioButton *rbFillV = nullptr;
-        QRadioButton *rbEmptyV = nullptr;
-
-        auto to = Component::get_timeline_opt(component->type);
-        if (to == Component::TimelineO::Both || to == Component::TimelineO::Update){
-            m_addActionDetailsD->layout()->addWidget(ui::F::gen(ui::L::HB(),
-                {ui::W::txt("Update timeline: "), rbFillU = new QRadioButton("Fill"), rbEmptyU = new QRadioButton("Empty")}, LStretch{true}, LMargins{true}, QFrame::NoFrame));
-            rbFillU->setChecked(true);
-        }
-        if (to == Component::TimelineO::Both || to == Component::TimelineO::Visibility){
-            m_addActionDetailsD->layout()->addWidget(ui::F::gen(ui::L::HB(),
-                {ui::W::txt("Visibility timeline: "), rbFillV = new QRadioButton("Fill"), rbEmptyV = new QRadioButton("Empty")}, LStretch{true}, LMargins{true}, QFrame::NoFrame));            
-            rbFillV->setChecked(true);
-        }
-
-        m_addActionDetailsD->layout()->addWidget(ui::W::horizontal_line());
-
-        auto pbOk  = new QPushButton("Ok");
-        auto pbCancel = new QPushButton("Cancel");
-        m_addActionDetailsD->layout()->addWidget(ui::F::gen(ui::L::HB(), {pbOk, pbCancel}, LStretch{true}, LMargins{true}, QFrame::NoFrame));
-        ui::L::stretch(m_addActionDetailsD->layout());
-
-        connect(pbOk,   &QPushButton::clicked, this, [=]{
-            bool fillU = rbFillU == nullptr ? false : rbFillU->isChecked();
-            bool fillV = rbFillV == nullptr ? false : rbFillV->isChecked();
-
-            const auto idConfig = cbConfigs->currentIndex();
-            if(rbCurrentCondition->isChecked()){
-                if(auto cRoutineW = ui()->routines_manager()->current_routine_widget(); cRoutineW != nullptr){
-                    if(auto cCondW = cRoutineW->current_condition_widget(); cCondW != nullptr){
-                        exp()->add_action(cRoutineW->routine_key(), cCondW->condition_key(), componentKey,
-                            ConfigKey{component->configs[idConfig]->key()}, fillU, fillV);
-                    }
-                }
-            }else if(rbAllRoutineConditions->isChecked()){
-                if(auto cRoutineW = ui()->routines_manager()->current_routine_widget(); cRoutineW != nullptr){
-                    exp()->add_action_to_all_conditions(cRoutineW->routine_key(), componentKey,
-                        ConfigKey{component->configs[idConfig]->key()}, fillU, fillV);
-                }
-            }else{
-                exp()->add_action_to_all_routines_conditions(componentKey,
-                    ConfigKey{component->configs[idConfig]->key()}, fillU, fillV);
-            }
-        });
-        connect(pbOk,     &QPushButton::clicked, m_addActionDetailsD.get(), &QDialog::accept);
-        connect(pbCancel, &QPushButton::clicked, m_addActionDetailsD.get(), &QDialog::reject);
-        m_addActionDetailsD->show();
-    });
-
+    connect(s, &GSignals::insert_action_with_details_signal, this, &ExVrController::show_add_action_detailed_dialog);
+    connect(s, &GSignals::modify_action_with_details_signal, this, &ExVrController::show_modify_action_detailed_dialog);
 
     connect(s, &GSignals::remove_action_from_all_selected_routine_conditions_signal, this, [&](ComponentKey componentKey){
         if(auto cRoutineW = ui()->routines_manager()->current_routine_widget(); cRoutineW != nullptr){
@@ -981,6 +1136,7 @@ void ExVrController::generate_main_window_connections(){
         xml()->save_experiment_file(tool::ex::Paths::tempDir % QSL("/deleted.xml"));
         exp()->new_experiment();
     });
+    connect(ui(), &DMW::play_delay_experiment_signal,   this, &ExVrController::show_play_with_delay_dialog);
     // -> xml manager
     connect(ui(), &DMW::save_experiment_signal,                     xml(), &XMLM::save_experiment);
     connect(ui(), &DMW::save_experiment_as_signal,                  xml(), &XMLM::save_experiment_as);
@@ -996,7 +1152,7 @@ void ExVrController::generate_main_window_connections(){
 
     // -> controller
     connect(ui(), &DMW::close_exvr_signal,                                          this, &CON::close_exvr);
-    connect(ui(), &DMW::generate_instances_signals,                                 this, &CON::generate_instances);
+    connect(ui(), &DMW::generate_instances_signals,                                 this, &CON::show_generate_instances_dialog);
     connect(ui(), &DMW::load_full_exp_wtih_default_instance_signal,                 this, &CON::load_full_exp_with_default_instance_to_unity);
     connect(ui(), &DMW::load_selected_routine_with_default_instance_signal,         this, &CON::load_selected_routine_with_default_instance_to_unity);
     connect(ui(), &DMW::load_from_selected_routine_with_default_instance_signal,    this, &CON::load_from_selected_routine_with_default_instance_to_unity);
@@ -1004,7 +1160,7 @@ void ExVrController::generate_main_window_connections(){
     connect(ui(), &DMW::load_full_exp_with_specific_instance_signal,                this, &CON::start_specific_instance);
     connect(ui(), &DMW::save_experiment_to_temp_signal,                             this, &CON::save_full_exp_with_default_instance);    
     connect(ui(), &DMW::go_to_current_element_signal,                               this, &CON::go_to_current_specific_instance_element);
-    connect(ui(), &DMW::go_to_specific_element_signal,                              this, &CON::got_to_specific_instance_element);
+    connect(ui(), &DMW::go_to_specific_element_signal,                              this, &CON::show_got_to_specific_instance_element_dialog);
     connect(ui(), &DMW::start_experiment_launcher_signal,                           this, [&](){
         emit start_experiment_launcher_signal(*exp()->settings());
     });
@@ -1018,41 +1174,10 @@ void ExVrController::generate_main_window_connections(){
     connect(ui(), &DMW::pause_experiment_signal,            exp_launcher(), &LAU::pause_experiment);
     connect(ui(), &DMW::stop_experiment_signal,             exp_launcher(), &LAU::stop_experiment);
     connect(ui(), &DMW::next_element_signal,                exp_launcher(), &LAU::next_element);
-    connect(ui(), &DMW::previous_element_signal,            exp_launcher(), &LAU::previous_element);
-    connect(ui(), &DMW::play_delay_experiment_signal,    [&]{
-
-        m_playDelayD = std::make_unique<QDialog>();
-        m_playDelayD->setParent(ui());
-        m_playDelayD->setWindowTitle("Specify delay to wait before playing:");
-        m_playDelayD->setLayout(new QVBoxLayout());
-        m_playDelayD->setWindowFlags(Qt::Dialog | Qt::WindowTitleHint);
-        m_playDelayD->setModal(true);
-
-        QSpinBox *sbDelay = new QSpinBox();
-        sbDelay->setRange(0,500);
-        sbDelay->setValue(lastDelayS);
-
-        auto pbPlay = new QPushButton("Play");
-        auto pbCancel = new QPushButton("Cancel");
-
-        m_playDelayD->layout()->addWidget(ui::F::gen(ui::L::HB(), {ui::W::txt("Delay (s):"), sbDelay}, LStretch{true}, LMargins{true}, QFrame::NoFrame));
-        m_playDelayD->layout()->addWidget(ui::F::gen(ui::L::HB(), {pbPlay, pbCancel}, LStretch{true}, LMargins{true}, QFrame::NoFrame));
-        ui::L::stretch(m_playDelayD->layout());
-
-        connect(pbPlay, &QPushButton::clicked, m_playDelayD.get(), &QDialog::accept);
-        connect(pbCancel, &QPushButton::clicked, m_playDelayD.get(), &QDialog::reject);
-
-        m_playDelayD->open();
-        connect(m_playDelayD.get(), &QDialog::accepted, this, [&,sbDelay]{
-            lastDelayS = sbDelay->value();
-            emit play_delay_experiment_signal(sbDelay->value());
-        });
-    });     
+    connect(ui(), &DMW::previous_element_signal,            exp_launcher(), &LAU::previous_element);    
 }
 
-void ExVrController::generate_components_manager_connections(){
 
-}
 
 void ExVrController::generate_flow_diagram_connections(){
 
@@ -1107,11 +1232,11 @@ void ExVrController::generate_dialogs_connections(){
     connect(set(), &SettingsDialog::reset_settings_signal,      exp(), &EXP::reset_settings);
     connect(set(), &SettingsDialog::settings_updated_signal,    exp(), &EXP::update_settings);
     connect(set(), &SettingsDialog::settings_canceled_signal,   this, [&]{
-        m_settingsD->update_from_settings(exp()->settings());
+        m_settingsD.update_from_settings(exp()->settings());
         exp()->add_to_update_flag(UpdateSettings);
     });
-    // -> copyt to condition dialog
-    connect(m_copyToCondD.get(), &CopyToConditionDialog::copy_to_conditions_signal, exp(), &Experiment::copy_to_conditions);
+
+    connect(&m_copyToCondD, &CopyToConditionDialog::copy_to_conditions_signal, exp(), &Experiment::copy_to_conditions);
 }
 
 

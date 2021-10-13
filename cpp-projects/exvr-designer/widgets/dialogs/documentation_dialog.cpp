@@ -23,8 +23,7 @@
 using namespace tool::ex;
 
 
-DocumentationDialog::DocumentationDialog(bool lncoComponents) :
-      m_lncoComponents(lncoComponents){
+DocumentationDialog::DocumentationDialog(){
 
     setWindowFlag(Qt::Window);
     setModal(false);

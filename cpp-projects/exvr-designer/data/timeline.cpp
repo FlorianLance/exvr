@@ -92,6 +92,7 @@ double Timeline::sum_intervals() const{
     return total;
 }
 
+
 void Timeline::fill(SecondsTS length){
     clean();
     intervals.emplace_back(Interval{SecondsTS{0.},length, IntervalKey{-1}});

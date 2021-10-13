@@ -42,6 +42,48 @@ public:
             update_ui_state();
         });
         connect(m_ui.cbFullscreen, &QCheckBox::clicked, this, &SettingsDialog::update_ui_state);
+
+        connect(this, &SettingsDialog::finished, this, [&](int result){
+            if(result != 1){
+                emit settings_canceled_signal();
+                qDebug() << "not finished";
+                return;
+            }
+
+            Settings settings;
+
+            // debug
+            settings.debug = m_ui.cbDebug->isChecked();
+            settings.csharpAddDebugInfo = m_ui.cbCsharpDebugInfo->isChecked();
+            settings.catchComponentsExceptions = m_ui.cbCatchComponentsExceptions->isChecked();
+
+            // camera
+            settings.neutralX = m_ui.cbNeutralX->isChecked();
+            settings.neutralY = m_ui.cbNeutralY->isChecked();
+            settings.neutralZ = m_ui.cbNeutralZ->isChecked();
+            settings.positionalTracking = m_ui.cbEnablePositionalTracking->isChecked();
+
+            // input
+            settings.catchExternalKeyboardKeysEvents = m_ui.cbCatchExternalKeyboardKeysEvents->isChecked();
+
+            // display
+            if(m_ui.rbVrMode->isChecked()){
+                settings.displayMode = Settings::ExpLauncherDisplayMode::OpenVR;
+            }else if(m_ui.rbFlatMode->isChecked()){
+                settings.displayMode = Settings::ExpLauncherDisplayMode::Flat;
+            }else{
+                settings.displayMode = Settings::ExpLauncherDisplayMode::FlatStereo;
+            }
+            settings.stereoCameraFOV = m_ui.sbStereoFOV->value();
+            settings.monitorId = m_ui.sbMonitorId->value();
+            settings.fullscreen = m_ui.cbFullscreen->isChecked();
+            settings.customWidth = m_ui.sbDefWidth->value();
+            settings.customHeight = m_ui.sbDefHeight->value();
+            settings.resolutionId = m_ui.cbDefinition->currentIndex();
+
+            emit settings_updated_signal(std::move(settings));
+
+        });
     }
 
 public slots:
@@ -78,48 +120,6 @@ public slots:
         m_ui.sbDefHeight->setValue(settings->customHeight);
 
         update_ui_state();
-    }
-
-    void show_dialog(){
-
-        int res = exec();
-        if(res == 1){
-
-            Settings settings;
-
-            // debug
-            settings.debug = m_ui.cbDebug->isChecked();
-            settings.csharpAddDebugInfo = m_ui.cbCsharpDebugInfo->isChecked();
-            settings.catchComponentsExceptions = m_ui.cbCatchComponentsExceptions->isChecked();
-
-            // camera
-            settings.neutralX = m_ui.cbNeutralX->isChecked();
-            settings.neutralY = m_ui.cbNeutralY->isChecked();
-            settings.neutralZ = m_ui.cbNeutralZ->isChecked();
-            settings.positionalTracking = m_ui.cbEnablePositionalTracking->isChecked();
-
-            // input
-            settings.catchExternalKeyboardKeysEvents = m_ui.cbCatchExternalKeyboardKeysEvents->isChecked();
-
-            // display
-            if(m_ui.rbVrMode->isChecked()){
-                settings.displayMode = Settings::ExpLauncherDisplayMode::OpenVR;
-            }else if(m_ui.rbFlatMode->isChecked()){
-                settings.displayMode = Settings::ExpLauncherDisplayMode::Flat;
-            }else{
-                settings.displayMode = Settings::ExpLauncherDisplayMode::FlatStereo;
-            }
-            settings.stereoCameraFOV = m_ui.sbStereoFOV->value();
-            settings.monitorId = m_ui.sbMonitorId->value();
-            settings.fullscreen = m_ui.cbFullscreen->isChecked();
-            settings.customWidth = m_ui.sbDefWidth->value();
-            settings.customHeight = m_ui.sbDefHeight->value();
-            settings.resolutionId = m_ui.cbDefinition->currentIndex();
-
-            emit settings_updated_signal(std::move(settings));
-        }else{
-            emit settings_canceled_signal();
-        }
     }
 
 private slots:

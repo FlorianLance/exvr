@@ -47,6 +47,13 @@ private :
 
     ConfigParametersW *generate_parameters(Component::Type type, bool initConfig);
 
+private slots:
+
+    void show_insert_new_config_dialog();
+    void show_duplicate_config_dialog();
+    void show_rename_config_dialog();
+    void show_reset_config_dialog();
+
 public:
 
     ComponentKey componentKey;
@@ -57,13 +64,12 @@ private:
     ConfigW *m_initConfigW = nullptr;
 
     // dialog
+    std::unique_ptr<QDialog> m_modalDialog = nullptr;
     Ui::BaseComponentConfigWidget m_ui;
 
     Qt::WindowFlags defaultFlags;
     bool pinned = false;
     QWidget *m_parent = nullptr;
-
-
 };
 
 

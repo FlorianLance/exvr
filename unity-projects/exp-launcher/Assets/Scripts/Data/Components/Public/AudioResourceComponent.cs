@@ -13,15 +13,21 @@ namespace Ex{
 
         public Texture2D m_texture = null;
 
+        #region ex_functions
+
         protected override bool initialize() {
             return true;
         }
 
+        #endregion
 
+        #region private_functions
         private void load_audio() {
 
             var audioData = currentC.get_resource_audio_data("audio");
-
+            // ...
         }
+
+        #endregion
     }
 }

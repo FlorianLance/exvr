@@ -21,27 +21,7 @@ namespace Ex{
         public GameObject bundle = null;
         private List<string> assembliesNames = null;
 
-        int get_depth_level(Transform tr) {
-            int depth = 0;
-            while(tr.parent != null) {
-                tr = tr.parent;
-                depth++;
-            }
-            return depth;
-        }
-
-        string components_info(Transform tr) {
-
-            StringBuilder sb = new StringBuilder();
-            foreach (var component in tr.GetComponents<Component>()) {
-                var type = component.GetType();
-                if (component != this && type != typeof(Transform)) {
-                    sb.AppendFormat("[{0}]", type.ToString().Replace("UnityEngine.", ""));
-                }
-            }
-            return sb.ToString();
-        }
-
+        #region ex_functions
         protected override bool initialize() {
 
             // slots
@@ -74,7 +54,7 @@ namespace Ex{
             if (initC.get<bool>("display_hierarchy")) {
                 StringBuilder sb = new StringBuilder();
                 foreach (var tr in bundle.GetComponentsInChildren<Transform>()) {
-                    int depth = get_depth_level(tr);
+                    int depth = GO.get_depth_level(tr);
                     sb.AppendFormat("{0}/{1} {2}\n", new String(' ', depth*5), tr.name, components_info(tr));
                 }
                 send_infos_to_gui_init_config("hierarchy", sb.ToString());
@@ -108,6 +88,10 @@ namespace Ex{
         protected override void update_parameter_from_gui(string updatedArgName) {
             update_from_current_config();
         }
+
+
+        #endregion
+        #region private_fuctions
 
         private void instantiate_sub_components() {
 
@@ -244,6 +228,23 @@ namespace Ex{
                 go.SetActive(true);
             }
         }
+
+        #endregion
+
+        #region private_functions
+        private string components_info(Transform tr) {
+
+            StringBuilder sb = new StringBuilder();
+            foreach (var component in tr.GetComponents<Component>()) {
+                var type = component.GetType();
+                if (component != this && type != typeof(Transform)) {
+                    sb.AppendFormat("[{0}]", type.ToString().Replace("UnityEngine.", ""));
+                }
+            }
+            return sb.ToString();
+        }
+
+        #endregion
     }
 
 }
