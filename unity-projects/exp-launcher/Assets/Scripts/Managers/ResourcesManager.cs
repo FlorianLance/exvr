@@ -368,9 +368,11 @@ namespace Ex {
             return ((CloudResource)m_aliasMappingResources[ResourceType.Cloud][alias]);
         }
 
-        public TextResource get_text_file_data(string alias) {
+        public TextResource get_text_file_data(string alias, bool showError = true) {
             if (!m_aliasMappingResources[ResourceType.Text].ContainsKey(alias)) {
-                log_error(String.Format("Cannot read text with alias [{0}] from resources.", alias));
+                if (showError) {
+                    log_error(String.Format("Cannot read text with alias [{0}] from resources.", alias));
+                }
                 return null;
             }
             return ((TextResource)m_aliasMappingResources[ResourceType.Text][alias]);

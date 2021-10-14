@@ -57,16 +57,21 @@ namespace Ex.DLL{
 
         public static void init_callbacks(){
 
+            UnityEngine.Debug.Log("init_callbacks");
             StrackTraceCB stackTraceCB = (trace) => {
+                UnityEngine.Debug.Log("0");
                 ExVR.ExpLog().push_to_strackTrace(new ComponentTrace(trace));
             };
             LogCB logCB = (message) => {
+                UnityEngine.Debug.Log("1");
                 ExVR.Log().message(message);
             };
             LogWarningCB logWarningCB = (warning) => {
+                UnityEngine.Debug.Log("2");
                 ExVR.Log().warning(warning);
             };            
             LogErrorCB logErrorCB = (error) => {
+                UnityEngine.Debug.Log("3");
                 ExVR.Log().error(error);
             };
             EllapsedTimeExpMsCB ellapsedTimeExpMsCB = () => {
@@ -79,6 +84,7 @@ namespace Ex.DLL{
                 return ExVR.Components().get_from_name(componentName).key;
             };
             IsInitializedCB isInitializedCB = (key) => {
+                UnityEngine.Debug.Log("5");
                 return 1;
                 //return ExComponent.get(key).is_initialized() ? 1 : 0;
             };
