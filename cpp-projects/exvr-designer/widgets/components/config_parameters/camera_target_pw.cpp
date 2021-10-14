@@ -48,6 +48,8 @@ struct CameraTargetConfigParametersW::Impl{
     QButtonGroup   buttonGroup4;
     ExRadioButtonW usingTime{"use_time"};
     ExRadioButtonW usingFactor{"use_factor"};
+    ExFloatSpinBoxW factorOffset{"factor_offset"};
+    ExFloatSpinBoxW factorFactor{"factor_factor"};
 
     // curves
     QTabWidget curves;
@@ -69,7 +71,8 @@ void CameraTargetConfigParametersW::insert_widgets(){
 
     add_widget(ui::W::txt("<b>Progress</b>"));
     add_widget(ui::F::gen(ui::L::HB(), {m_p->usingTime(), ui::W::txt("Movement duration: "), m_p->duration()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
-    add_widget(ui::F::gen(ui::L::HB(), {m_p->usingFactor()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
+    add_widget(ui::F::gen(ui::L::HB(), {m_p->usingFactor(),
+            ui::W::txt("add: "), m_p->factorOffset(), ui::W::txt("multiply by: "), m_p->factorFactor()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
 
     add_widget(ui::W::txt("<b>Interpolation</b>"));
     add_widget(ui::F::gen(ui::L::HB(), {m_p->sphericalInterpolation()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
@@ -143,6 +146,8 @@ void CameraTargetConfigParametersW::init_and_register_widgets(){
             {true, false}
         )
     );
+    add_input_ui(m_p->factorOffset.init_widget(MinV<qreal>{-100}, V<qreal>{0.}, MaxV<qreal>{100.}, StepV<qreal>{0.1}, 2, true));
+    add_input_ui(m_p->factorFactor.init_widget(MinV<qreal>{0}, V<qreal>{1.}, MaxV<qreal>{100.}, StepV<qreal>{0.1}, 2, true));
 
     // move to target
     add_input_ui(m_p->componentName.init_widget(""));
