@@ -128,7 +128,7 @@ struct Resource{
         if(extension.length() == 0){
             return alias;
         }else{
-            return QSL("[") % extension % QSL("]) ") % alias;
+            return QSL("[") % extension % QSL("] ") % alias;
         }
     }
 

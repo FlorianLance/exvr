@@ -62,11 +62,12 @@ namespace Ex{
         public Texture2D texture = null;
 
         public ImageResource(int key, string alias, string path) : base(key, alias, path) {
-            texture = new Texture2D(2, 2);
+            texture = new Texture2D(2, 2);//, TextureFormat.RGB24, false);
 
             // set textures parameters
-            texture.filterMode = FilterMode.Trilinear;
+            //texture.filterMode = FilterMode.Trilinear;
             texture.wrapMode = TextureWrapMode.Clamp;
+            texture.filterMode = FilterMode.Point;
         }
         public override void read_data() {
 

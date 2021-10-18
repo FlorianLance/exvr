@@ -5,13 +5,6 @@
 ** Copyright (c) [2018] [Florian Lance][EPFL-LNCO]                            **
 ********************************************************************************/
 
-// system
-using System.Collections.Generic;
-using System.IO;
-
-// unity
-using UnityEngine;
-
 namespace Ex {
 
     public class ConfigComponent : ExComponent {

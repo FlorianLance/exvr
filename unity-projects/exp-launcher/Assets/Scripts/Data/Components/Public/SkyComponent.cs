@@ -70,7 +70,7 @@ namespace Ex {
                     textures6Sided.Add(tex);
                 }
             }
-            texturePanoramic = new Texture2D(2, 2);
+            texturePanoramic = new Texture2D(2, 2, TextureFormat.RGB24, false);
             texturePanoramic.filterMode = FilterMode.Trilinear;
             texturePanoramic.wrapMode = TextureWrapMode.Clamp;
             //textureCubeMap = new Cubemap()
