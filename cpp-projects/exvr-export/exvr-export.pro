@@ -85,16 +85,16 @@ LIBS +=  \
 
 HEADERS += \
     # ex_components
-    ex_components/python_component_export.hpp \
     ex_components/ex_component_export.hpp \
+    ex_components/python_component_script_export.hpp \
     ex_components/video_saver_component_export.hpp \
     # utility
     utility/export_utility.hpp \
 
 SOURCES += \
     # ex_components
-    ex_components/python_component_export.cpp \
     ex_components/ex_component_export.cpp \
+    ex_components/python_component_script_export.cpp \
     ex_components/video_saver_component_export.cpp \
     # main
     main.cpp \

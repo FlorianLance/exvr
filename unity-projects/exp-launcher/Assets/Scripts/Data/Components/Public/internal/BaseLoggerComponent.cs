@@ -25,6 +25,37 @@ namespace Ex {
 
         protected List<string> m_lines = null;
 
+        #region ex_functions
+
+        protected override void start_experiment() {
+
+            string fileName = generate_file_name();
+            if (fileName.Length == 0) {
+                log_error("File is empty.");
+                return;
+            }
+            m_fileFullPath = string.Format("{0}/{1}", m_directoryPath, fileName);
+
+            if (!create_file(m_fileFullPath)) {
+                return;
+            }
+
+            if (initC.get<bool>("add_header_line")) {
+                write(initC.get<string>("header_line"), true);
+            }
+        }
+
+        protected override void stop_experiment() {
+
+            if (!m_streamToFile) {
+                write_to_file();
+            }
+        }
+
+        #endregion
+
+        #region private_functions
+
         protected bool read_common_init_parameters() {
 
             m_directoryPath = initC.get_resource_path(ResourcesManager.ResourceType.Directory, "directory");
@@ -33,12 +64,12 @@ namespace Ex {
                 return false;
             }
 
-            m_streamToFile          = initC.get<bool>("stream_to_file");            
+            m_streamToFile = initC.get<bool>("stream_to_file");
             m_dontWriteIfFileExists = initC.get<bool>("dont_write_if_file_exists");
-            m_addToEndIfFileExists  = initC.get<bool>("add_to_end_if_file_exists");
+            m_addToEndIfFileExists = initC.get<bool>("add_to_end_if_file_exists");
             m_addInstanceToFileName = initC.get<bool>("add_current_instance_to_file_name");
-            m_baseFileName          = initC.get<string>("base_file_name");            
-            m_fileExtension         = initC.get<string>("file_extension");
+            m_baseFileName = initC.get<string>("base_file_name");
+            m_fileExtension = initC.get<string>("file_extension");
 
             m_lines = new List<string>(); // todo add estimated length for reserving memory
 
@@ -79,30 +110,9 @@ namespace Ex {
         }
 
 
-        protected override void start_experiment() {
+        #endregion
 
-            string fileName = generate_file_name();
-            if (fileName.Length == 0) {
-                log_error("File is empty.");
-                return;
-            }
-            m_fileFullPath = string.Format("{0}/{1}", m_directoryPath, fileName);
-
-            if (!create_file(m_fileFullPath)) {
-                return;
-            }
-
-            if (initC.get<bool>("add_header_line")) {
-                write(initC.get<string>("header_line"), true);
-            }
-        }
-
-        protected override void stop_experiment() {
-
-            if (!m_streamToFile) {
-                write_to_file();
-            }
-        }
+        #region public_functions
 
         public string parent_directory_path() {
             return m_directoryPath;
@@ -159,5 +169,7 @@ namespace Ex {
             }
             m_lines.Clear();
         }
+
+        #endregion
     }
 }

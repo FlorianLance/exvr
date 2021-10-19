@@ -144,7 +144,7 @@ ResourcesManagerDialog::ResourcesManagerDialog(){
             });
         }
         connect(typeUi.pbOpenDir, &QPushButton::clicked, this, [=]{
-            auto currentPath = typeUi.laPath->text().remove('\n');
+            auto currentPath = typeUi.laPath->text().remove('\n');           
             if(currentPath.length() > 0){
                 if(QDir(currentPath).exists()){
                     QDesktopServices::openUrl(QUrl::fromLocalFile(currentPath));

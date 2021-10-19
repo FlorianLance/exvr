@@ -23,13 +23,13 @@
 
 // local
 //#include "kinect2.hpp"
-#include "python_component.hpp"
+#include "python_script_component.hpp"
 
 using namespace std::chrono_literals;
 
 void py_compot_test(){
     std::cout << "1\n";
-    tool::ex::PythonComponent component;
+    tool::ex::PythonScriptComponent component;
     component.initialize();
 //    std::cout << "2\n";
 ////    const auto pathScript = get<std::string>(ParametersContainer::InitConfig, "path_script");

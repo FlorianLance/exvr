@@ -26,7 +26,6 @@ namespace Ex {
         private List<int> poleCoeffs = new List<int>();
         private Dictionary<int, float> topCoeffs = new Dictionary<int, float>();
 
-
         private Material flagPoleMaterial = null;
 
         #region ex_functions
@@ -73,6 +72,8 @@ namespace Ex {
                 
                 var mesh = PrimitivesMesh.GridBuilder.generate(nbVerticesH, nbVerticesV, width, height, depth);
                 flagGO.AddComponent<MeshFilter>().mesh = mesh;
+                var collider = flagGO.AddComponent<SphereCollider>();
+                collider.radius = Mathf.Min(width, height);
                 smr = flagGO.AddComponent<SkinnedMeshRenderer>();
                 smr.material   = Instantiate(Resources.Load(string.Format("Materials/Procedural/Grid")) as Material);                   
                 smr.sharedMesh = mesh;
@@ -136,6 +137,18 @@ namespace Ex {
             update_image();
         }
 
+        protected override void update() {
+            var collider = flagGO.GetComponent<SphereCollider>();
+
+            var mean = Vector3.zero;
+            foreach(var vertex in flagCloth.vertices) {
+                mean += vertex;
+            }
+            mean /= flagCloth.vertices.Length;
+            collider.center = mean;            
+        }
+
+
         protected override void set_visibility(bool visibility) {
             flagGO.SetActive(visibility);
             poleGO.SetActive(visibility);
@@ -195,6 +208,10 @@ namespace Ex {
 
         public void set_pole_color(Color color) {
             flagPoleMaterial.color = color;
+        }
+
+        public SphereCollider flag_cloth_collider() {
+            return flagGO.GetComponent<SphereCollider>();
         }
 
         #endregion

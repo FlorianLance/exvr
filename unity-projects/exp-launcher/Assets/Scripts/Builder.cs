@@ -189,7 +189,6 @@ namespace Ex{
 
             // # scripting            
             pythonManager.initialize();
-            DLL.CppDllCallbacks.init_callbacks();
 
             // config
             ConfigUtility.initialize();

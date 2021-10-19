@@ -4,39 +4,24 @@
 ** Copyright (c) [2018] [Florian Lance][EPFL-LNCO]                            **
 ********************************************************************************/
 
-// system
-using System.IO;
 
-// unity
-using UnityEngine;
-using UnityEngine.UI;
 
 namespace Ex{
 
-    public class VideoSaverComponent : ExComponent{
-
-
-        private DLL.VideoSaver m_videoSaver = null;
+    public class VideoSaverComponent : CppComponent {
 
         protected override bool initialize() {
 
             // init dll
-            m_videoSaver = new DLL.VideoSaver();
+            cppDll = new DLL.VideoSaver();
+            cppDll.parent = this;
 
             // init slots
-            add_slot("add frame", (image) => {                
-                m_videoSaver.add_frame((ImageContainer)image);
+            add_slot("add frame", (image) => {
+                ((DLL.VideoSaver)cppDll).add_frame((ImageContainer)image);
             });
 
-            return m_videoSaver.initialize(initC, key);
-        }
-
-        protected override void start_experiment() {
-            m_videoSaver.start_experiment();
-        }
-
-        protected override void stop_experiment() {
-            m_videoSaver.stop_experiment();
+            return cppDll.initialize();
         }
     }
 }

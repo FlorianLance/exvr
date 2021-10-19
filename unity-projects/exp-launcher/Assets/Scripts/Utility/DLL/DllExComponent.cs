@@ -14,14 +14,22 @@ using System.Runtime.InteropServices;
 
 namespace Ex.DLL{
 
-    public static class CppDllCallbacks{
-        
+
+    public class Parameters {
+        public enum Container { InitConfig = 0, CurrentConfig = 1, Dynamic = 2 };
+    }
+
+    public abstract class ExComponentDLL : CppDllImport{
+
+        // parent component
+        public ExComponent parent = null;
+
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
         delegate void StrackTraceCB(string stackTraceMessage);
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
         delegate void LogCB(string message);
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-        delegate void LogWarningCB(string warningMessage);        
+        delegate void LogWarningCB(string warningMessage);
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
         delegate void LogErrorCB(string errorMessage);
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -55,74 +63,52 @@ namespace Ex.DLL{
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
         delegate void SignalStringCB(int key, int index, string value);
 
-        public static void init_callbacks(){
+        StrackTraceCB stackTraceCB = null;
+        LogCB logCB = null;
+        LogWarningCB logWarningCB = null;
+        LogErrorCB logErrorCB = null;
+        EllapsedTimeExpMsCB ellapsedTimeExpMsCB = null;
+        EllapsedTimeRoutineMsCB ellapsedTimeRoutineMsCB = null;
+        GetCB getCB = null;
+        IsInitializedCB isInitializedCB = null;
+        IsVisibleCB isVisibleCB = null;
+        IsUpdatingCB isUpdatingCB = null;
+        IsClosedCB isClosedCB = null;
+        NextCB nextCB = null;
+        PreviousCB previousCB = null;
+        CloseCB closeCB = null;
+        SignalBoolCB signalBoolCB = null;
+        SignalIntCB signalIntCB = null;
+        SignalFloatCB signalFloatCB = null;
+        SignalDoubleCB signalDoubleCB = null;
+        SignalStringCB signalStringCB = null;
 
-            UnityEngine.Debug.Log("init_callbacks");
-            StrackTraceCB stackTraceCB = (trace) => {
-                UnityEngine.Debug.Log("0");
-                ExVR.ExpLog().push_to_strackTrace(new ComponentTrace(trace));
-            };
-            LogCB logCB = (message) => {
-                UnityEngine.Debug.Log("1");
-                ExVR.Log().message(message);
-            };
-            LogWarningCB logWarningCB = (warning) => {
-                UnityEngine.Debug.Log("2");
-                ExVR.Log().warning(warning);
-            };            
-            LogErrorCB logErrorCB = (error) => {
-                UnityEngine.Debug.Log("3");
-                ExVR.Log().error(error);
-            };
-            EllapsedTimeExpMsCB ellapsedTimeExpMsCB = () => {
-                return (int)ExVR.Time().ellapsed_exp_ms();
-            };
-            EllapsedTimeRoutineMsCB ellapsedTimeRoutineMsCB = () => {
-                return (int)ExVR.Time().ellapsed_element_ms();
-            };
-            GetCB getCB = (string componentName) => {
-                return ExVR.Components().get_from_name(componentName).key;
-            };
-            IsInitializedCB isInitializedCB = (key) => {
-                UnityEngine.Debug.Log("5");
+        public void init_callbacks() {
+
+            stackTraceCB            = (trace) => {ExVR.ExpLog().push_to_strackTrace(new ComponentTrace(trace));};
+            logCB                   = (message) => {parent.log_message(message);};
+            logWarningCB            = (warning) => {parent.log_warning(warning);};
+            logErrorCB              = (error) => { parent.log_error(error);};
+            ellapsedTimeExpMsCB     = () => {return (int)ExVR.Time().ellapsed_exp_ms();};
+            ellapsedTimeRoutineMsCB = () => {return (int)ExVR.Time().ellapsed_element_ms();};
+            getCB                   = (string componentName) => {return ExVR.Components().get_from_name(componentName).key;};
+            isInitializedCB         = (key) => { // TODO: remove
                 return 1;
-                //return ExComponent.get(key).is_initialized() ? 1 : 0;
             };
-            IsVisibleCB isVisibleCB = (key) => {
-                return ExVR.Components().get_from_key(key).is_visible() ? 1 : 0;
-            };
-            IsUpdatingCB isUpdatingCB = (key) => {
-                return ExVR.Components().get_from_key(key).is_updating() ? 1 : 0;
-            };
-            IsClosedCB isClosedCB = (key) => {
-                return ExVR.Components().get_from_key(key).is_closed() ? 1 : 0;
-            };
-            NextCB nextCB = () => {
-                ExVR.Events().command.next();
-            };
-            PreviousCB previousCB = () => {
-                ExVR.Events().command.previous();
-            };
-            CloseCB closeCB = (key) => {
-                //ExComponent.get(key).close();
-            };
-            SignalBoolCB signalBoolCB = (key, index, value) => {
-                ExVR.Components().get_from_key(key).invoke_signal("signal" + (index + 1), (value==1));
-            };
-            SignalIntCB signalIntCB = (key, index, value) => {
-                ExVR.Components().get_from_key(key).invoke_signal("signal" + (index+1), value);
-            };
-            SignalFloatCB signalFloatCB = (key, index, value) => {
-                ExVR.Components().get_from_key(key).invoke_signal("signal" + (index + 1), value);
-            };
-            SignalDoubleCB signalDoubleCB = (key, index, value) => {
-                ExVR.Components().get_from_key(key).invoke_signal("signal" + (index + 1), value);
-            };
-            SignalStringCB signalStringCB = (key, index, value) => {
-                ExVR.Components().get_from_key(key).invoke_signal("signal" + (index + 1), value);
-            };
+            isVisibleCB             = (key) => {return parent.is_visible() ? 1 : 0;};
+            isUpdatingCB            = (key) => {return parent.is_updating() ? 1 : 0;};
+            isClosedCB              = (key) => {return parent.is_closed() ? 1 : 0;};
+            nextCB                  = () => {ExVR.Events().command.next();};
+            previousCB              = () => {ExVR.Events().command.previous();};
+            closeCB                 = (key) => {parent.close();};
+            signalBoolCB            = (key, index, value) => {parent.invoke_signal("signal" + (index + 1), (value == 1));};
+            signalIntCB             = (key, index, value) => {parent.invoke_signal("signal" + (index + 1), value);};
+            signalFloatCB           = (key, index, value) => {parent.invoke_signal("signal" + (index + 1), value);};
+            signalDoubleCB          = (key, index, value) => {parent.invoke_signal("signal" + (index + 1), value);};
+            signalStringCB          = (key, index, value) => {parent.invoke_signal("signal" + (index + 1), value);};
 
             init_callbacks_ex_component(
+                _handle,
                 stackTraceCB,
                 logCB,
                 logWarningCB,
@@ -145,56 +131,29 @@ namespace Ex.DLL{
             );
         }
 
-        [DllImport("exvr-export", EntryPoint = "init_callbacks_ex_component", CallingConvention = CallingConvention.Cdecl)]
-        static private extern void init_callbacks_ex_component(
-            [MarshalAs(UnmanagedType.FunctionPtr)] StrackTraceCB strackTraceCB,
-            [MarshalAs(UnmanagedType.FunctionPtr)] LogCB logCB,
-            [MarshalAs(UnmanagedType.FunctionPtr)] LogWarningCB logWarningCB,
-            [MarshalAs(UnmanagedType.FunctionPtr)] LogErrorCB logErrorCB,
-            [MarshalAs(UnmanagedType.FunctionPtr)] EllapsedTimeExpMsCB ellapsedTimeExpMsCB,
-            [MarshalAs(UnmanagedType.FunctionPtr)] EllapsedTimeRoutineMsCB ellapsedTimeRoutineMsCB,
-            [MarshalAs(UnmanagedType.FunctionPtr)] GetCB getCB,
-            [MarshalAs(UnmanagedType.FunctionPtr)] IsInitializedCB isInitializedCB,
-            [MarshalAs(UnmanagedType.FunctionPtr)] IsVisibleCB isVisibleCB,
-            [MarshalAs(UnmanagedType.FunctionPtr)] IsUpdatingCB isUpdatingCB,
-            [MarshalAs(UnmanagedType.FunctionPtr)] IsClosedCB isClosedCB,
-            [MarshalAs(UnmanagedType.FunctionPtr)] NextCB nextCB,
-            [MarshalAs(UnmanagedType.FunctionPtr)] PreviousCB previousCB,
-            [MarshalAs(UnmanagedType.FunctionPtr)] CloseCB closeCB,
-            [MarshalAs(UnmanagedType.FunctionPtr)] SignalBoolCB signalBoolCB,
-            [MarshalAs(UnmanagedType.FunctionPtr)] SignalIntCB signalIntCB,
-            [MarshalAs(UnmanagedType.FunctionPtr)] SignalFloatCB signalFloatCB,
-            [MarshalAs(UnmanagedType.FunctionPtr)] SignalDoubleCB signalDoubleCB,
-            [MarshalAs(UnmanagedType.FunctionPtr)] SignalStringCB signalStringCB
-        );
-    }
-
-    public abstract class ExComponentDLL : CppDllImport{
-
-        public enum ParametersContainer { InitConfig=0, CurrentConfig=1, Dynamic=2};
-
-        private ComponentInitConfig m_initConfig = null;
-        private ComponentConfig m_currentConfig = null;
-
 
         // dll management
         abstract protected override void create_DLL_class();
         protected override void delete_DLL_class() { delete_ex_component(_handle);}
 
         // once per loading
-        public virtual bool initialize(ComponentInitConfig initC, int componentKey) {
+        public virtual bool initialize() {
 
-            m_initConfig = initC;            
-            foreach (KeyValuePair<string, Argument> arg in m_initConfig.args) {
-                update_component_from_arg(ParametersContainer.InitConfig, arg.Value);
+            init_callbacks();
+
+            foreach (KeyValuePair<string, Argument> arg in parent.initC.args) {
+                update_component_from_arg(Parameters.Container.InitConfig, arg.Value);
             }
 
-            update_parameter_int_ex_component(_handle, (int)ParametersContainer.Dynamic, "key", componentKey);
+            update_parameter_int_ex_component(_handle, (int)Parameters.Container.Dynamic, "key", parent.key);
 
             return initialize_ex_component(_handle) == 1 ? true : false;
         }
 
-        public virtual void clean() { clean_ex_component(_handle); }
+        public virtual void clean() { 
+            clean_ex_component(_handle);
+            Dispose();
+        }
 
         // once per experiment
         public virtual void start_experiment() {start_experiment_ex_component(_handle);}
@@ -205,11 +164,10 @@ namespace Ex.DLL{
         public virtual void set_current_config(string configName) {set_current_config_ex_component(_handle, configName);}
         public virtual void update_from_current_config() {update_from_current_config_ex_component(_handle);} 
         public virtual void pre_start_routine() {pre_start_routine_ex_component(_handle);}
-        public virtual void start_routine(ComponentConfig config) {
+        public virtual void start_routine() {
 
-            m_currentConfig = config;
-            foreach (KeyValuePair<string, Argument> arg in m_currentConfig.args) {
-                update_component_from_arg(ParametersContainer.CurrentConfig, arg.Value);
+            foreach (KeyValuePair<string, Argument> arg in parent.currentC.args) {
+                update_component_from_arg(Parameters.Container.CurrentConfig, arg.Value);
             }
             start_routine_ex_component(_handle);
         }
@@ -232,19 +190,19 @@ namespace Ex.DLL{
 
         // gui
         public virtual void update_parameter_from_gui(string updatedArgName) {
-            update_component_from_arg(ParametersContainer.CurrentConfig, m_currentConfig.args[updatedArgName]);
+            update_component_from_arg(Parameters.Container.CurrentConfig, parent.currentC.args[updatedArgName]);
             update_parameter_from_gui_ex_component(_handle, updatedArgName);
         }
-        public virtual void action_from_gui(bool initConfig, string action) {action_from_gui_ex_component(_handle, initConfig ? 1 : 0, action);}
-
-
+        public virtual void action_from_gui(bool initConfig, string action) {
+            action_from_gui_ex_component(_handle, initConfig ? 1 : 0, action);
+        }
         public virtual void add_dynamic_parameter(string name, object value, TypeCode type) {
-            update_parameter(ParametersContainer.Dynamic, name, value, type);
+            update_parameter(Parameters.Container.Dynamic, name, value, type);
         }
 
         public virtual void call_slot(int index, object value) {
 
-            int idC = (int)ParametersContainer.Dynamic;
+            int idC = (int)Parameters.Container.Dynamic;
 
             string idSlot = string.Concat("slot", index);
             if (value is bool) {
@@ -266,11 +224,11 @@ namespace Ex.DLL{
             call_slot_ex_component(_handle, index);
         }
 
-        public bool contains(ParametersContainer container, string name) {
+        public bool contains(Parameters.Container container, string name) {
             return contains_ex_component(_handle, (int)container, name) == 1;
         }
 
-        public object get_parameter<T>(ParametersContainer container, string name) {
+        public object get_parameter<T>(Parameters.Container container, string name) {
             int idC = (int)container;
             switch (Type.GetTypeCode(typeof(T))) {
                 case TypeCode.Boolean:
@@ -291,7 +249,7 @@ namespace Ex.DLL{
             return default(T);
         }
 
-        public object get_parameter_1d(ParametersContainer container, string name, TypeCode t) {
+        public object get_parameter_1d(Parameters.Container container, string name, TypeCode t) {
 
             int idC = (int)container;
             int size = get_size_parameter_array_ex_component(_handle, idC, name);
@@ -330,7 +288,7 @@ namespace Ex.DLL{
             return null;
         }
 
-        public void update_parameter(ParametersContainer container, string name, object value, TypeCode t) {
+        public void update_parameter(Parameters.Container container, string name, object value, TypeCode t) {
 
             int idC = (int)container;
             switch (t) {
@@ -358,7 +316,7 @@ namespace Ex.DLL{
             }
         }
 
-        public void update_parameter_1d(ParametersContainer container, string name, List<object> value, int length, TypeCode t) {
+        public void update_parameter_1d(Parameters.Container container, string name, List<object> value, int length, TypeCode t) {
 
             int idC = (int)container;
             switch (t) {
@@ -386,7 +344,7 @@ namespace Ex.DLL{
             }
         }
 
-        private void update_component_from_arg(ParametersContainer container, Argument arg) {
+        private void update_component_from_arg(Parameters.Container container, Argument arg) {
 
 
             var tCode = Type.GetTypeCode(arg.type);
@@ -414,6 +372,30 @@ namespace Ex.DLL{
 
         [DllImport("exvr-export", EntryPoint = "clean_ex_component", CallingConvention = CallingConvention.Cdecl)]
         static public extern void clean_ex_component(HandleRef exComponent);
+
+        [DllImport("exvr-export", EntryPoint = "init_callbacks_ex_component", CallingConvention = CallingConvention.Cdecl)]
+        static private extern void init_callbacks_ex_component(
+            HandleRef exComponent,
+            [MarshalAs(UnmanagedType.FunctionPtr)] StrackTraceCB strackTraceCB,
+            [MarshalAs(UnmanagedType.FunctionPtr)] LogCB logCB,
+            [MarshalAs(UnmanagedType.FunctionPtr)] LogWarningCB logWarningCB,
+            [MarshalAs(UnmanagedType.FunctionPtr)] LogErrorCB logErrorCB,
+            [MarshalAs(UnmanagedType.FunctionPtr)] EllapsedTimeExpMsCB ellapsedTimeExpMsCB,
+            [MarshalAs(UnmanagedType.FunctionPtr)] EllapsedTimeRoutineMsCB ellapsedTimeRoutineMsCB,
+            [MarshalAs(UnmanagedType.FunctionPtr)] GetCB getCB,
+            [MarshalAs(UnmanagedType.FunctionPtr)] IsInitializedCB isInitializedCB,
+            [MarshalAs(UnmanagedType.FunctionPtr)] IsVisibleCB isVisibleCB,
+            [MarshalAs(UnmanagedType.FunctionPtr)] IsUpdatingCB isUpdatingCB,
+            [MarshalAs(UnmanagedType.FunctionPtr)] IsClosedCB isClosedCB,
+            [MarshalAs(UnmanagedType.FunctionPtr)] NextCB nextCB,
+            [MarshalAs(UnmanagedType.FunctionPtr)] PreviousCB previousCB,
+            [MarshalAs(UnmanagedType.FunctionPtr)] CloseCB closeCB,
+            [MarshalAs(UnmanagedType.FunctionPtr)] SignalBoolCB signalBoolCB,
+            [MarshalAs(UnmanagedType.FunctionPtr)] SignalIntCB signalIntCB,
+            [MarshalAs(UnmanagedType.FunctionPtr)] SignalFloatCB signalFloatCB,
+            [MarshalAs(UnmanagedType.FunctionPtr)] SignalDoubleCB signalDoubleCB,
+            [MarshalAs(UnmanagedType.FunctionPtr)] SignalStringCB signalStringCB
+        );
 
 
         [DllImport("exvr-export", EntryPoint = "start_experiment_ex_component", CallingConvention = CallingConvention.Cdecl)]

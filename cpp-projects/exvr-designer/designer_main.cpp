@@ -77,16 +77,15 @@ int main(int argc, char *argv[]){
     // build app
     QApplication a(argc, argv);
 
-
     QPixmap pixmap(":/splash/ex_vr_splash");
     QSplashScreen splash(pixmap, Qt::WindowStaysOnTopHint);
     splash.show();
-    QTimer::singleShot(1000, &splash, &QWidget::close);
 
     tool::ex::Paths::initialize_paths(QApplication::applicationDirPath());
     tool::ex::ExVrController controller(numVersion, lncoComponents);
-
     QCoreApplication::instance()->installEventFilter(&controller);
+
+    QTimer::singleShot(1000, &splash, &QWidget::close);
 
     int ret = a.exec();
     std::cout << "Quit with: " << ret << "\n";

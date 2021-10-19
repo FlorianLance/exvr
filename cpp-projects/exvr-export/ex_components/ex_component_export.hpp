@@ -69,6 +69,7 @@ extern "C"{
     DECL_EXPORT void update_parameter_array_double_ex_component(tool::ex::ExComponent*c, int containerId, const char* paramName, double* values, int size);
 
     DECL_EXPORT void init_callbacks_ex_component(
+        tool::ex::ExComponent*c,
         StrackTraceCB strackTraceCB,
         LogCB logCB,
         LogWarningCB logWarningCB,
@@ -90,3 +91,4 @@ extern "C"{
         SignalStringCB signalStringCB
     );
 }
+

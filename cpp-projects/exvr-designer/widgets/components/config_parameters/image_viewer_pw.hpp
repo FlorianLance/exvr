@@ -19,13 +19,6 @@
 namespace tool::ex {
 
 class ImageViewerInitConfigParametersW : public ConfigParametersW{
-
-public :
-
-    void insert_widgets() override;
-    void init_and_register_widgets() override;
-    void create_connections() override;
-    void late_update_ui() override;
 };
 
 
@@ -33,18 +26,19 @@ class ImageViewerConfigParametersW : public ConfigParametersW{
 
 public :
 
-    EyeRendererSubPart m_eye;
-    ExResourceW m_image{"image"};
-    WordSpaceCanvasSubPart m_cameraSettings;
-    ExCheckBoxW m_followEyeCamera{"use_eye_camera"};
-    ExCheckBoxW m_useImageSize{"use_original_size"};
-    ExVector2dW m_pivot{"pivot"};
-    ExFloatSpinBoxW m_distance{"distance"};
+    ImageViewerConfigParametersW();
+
+
 
     void insert_widgets() override;
     void init_and_register_widgets() override;
     void create_connections() override;
     void late_update_ui() override;
+
+
+private:
+    struct Impl;
+    std::unique_ptr<Impl> m_p = nullptr;
 };
 
 }

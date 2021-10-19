@@ -29,7 +29,7 @@ struct PyData{
 
 };
 
-class PythonComponent : public ExComponent{
+class PythonScriptComponent : public ExComponent{
 
 public :
 

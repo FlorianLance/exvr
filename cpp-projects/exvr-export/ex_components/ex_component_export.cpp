@@ -119,6 +119,7 @@ int contains_ex_component(ExComponent *c, int containerId, const char *paramName
 }
 
 void init_callbacks_ex_component(
+    tool::ex::ExComponent*c,
     StrackTraceCB strackTraceCB,
     LogCB logCB,
     LogWarningCB logWarningCB,
@@ -139,25 +140,25 @@ void init_callbacks_ex_component(
     SignalDoubleCB signalDoubleCB,
     SignalStringCB signalStringCB){
 
-    ExComponent::strackTraceCB            = std::make_unique<StrackTraceCB>(strackTraceCB);
-    ExComponent::logCB                    = std::make_unique<LogCB>(logCB);
-    ExComponent::logWarningCB             = std::make_unique<LogWarningCB>(logWarningCB);
-    ExComponent::logErrorCB               = std::make_unique<LogErrorCB>(logErrorCB);
-    ExComponent::ellapsedTimeExpMsCB      = std::make_unique<EllapsedTimeExpMsCB>(ellapsedTimeExpMsCB);
-    ExComponent::ellapsedTimeRoutineMsCB  = std::make_unique<EllapsedTimeRoutineMsCB>(ellapsedTimeRoutineMsCB);
-    ExComponent::getCB                    = std::make_unique<GetCB>(getCB);
-    ExComponent::isInitializedCB          = std::make_unique<IsInitializedCB>(isInitializedCB);
-    ExComponent::isVisibleCB              = std::make_unique<IsVisibleCB>(isVisibleCB);
-    ExComponent::isUpdatingCB             = std::make_unique<IsUpdatingCB>(isUpdatingCB);
-    ExComponent::isClosedCB               = std::make_unique<IsClosedCB>(isClosedCB);
-    ExComponent::nextCB                   = std::make_unique<NextCB>(nextCB);
-    ExComponent::previousCB               = std::make_unique<PreviousCB>(previousCB);
-    ExComponent::closeCB                  = std::make_unique<CloseCB>(closeCB);    
-    ExComponent::signalBoolCB             = std::make_unique<SignalBoolCB>(signalBoolCB);
-    ExComponent::signalIntCB              = std::make_unique<SignalIntCB>(signalIntCB);
-    ExComponent::signalFloatCB            = std::make_unique<SignalFloatCB>(signalFloatCB);
-    ExComponent::signalDoubleCB           = std::make_unique<SignalDoubleCB>(signalDoubleCB);
-    ExComponent::signalStringCB           = std::make_unique<SignalStringCB>(signalStringCB);
+    c->strackTraceCB            = std::make_unique<StrackTraceCB>(strackTraceCB);
+    c->logCB                    = std::make_unique<LogCB>(logCB);
+    c->logWarningCB             = std::make_unique<LogWarningCB>(logWarningCB);
+    c->logErrorCB               = std::make_unique<LogErrorCB>(logErrorCB);
+    c->ellapsedTimeExpMsCB      = std::make_unique<EllapsedTimeExpMsCB>(ellapsedTimeExpMsCB);
+    c->ellapsedTimeRoutineMsCB  = std::make_unique<EllapsedTimeRoutineMsCB>(ellapsedTimeRoutineMsCB);
+    c->getCB                    = std::make_unique<GetCB>(getCB);
+    c->isInitializedCB          = std::make_unique<IsInitializedCB>(isInitializedCB);
+    c->isVisibleCB              = std::make_unique<IsVisibleCB>(isVisibleCB);
+    c->isUpdatingCB             = std::make_unique<IsUpdatingCB>(isUpdatingCB);
+    c->isClosedCB               = std::make_unique<IsClosedCB>(isClosedCB);
+    c->nextCB                   = std::make_unique<NextCB>(nextCB);
+    c->previousCB               = std::make_unique<PreviousCB>(previousCB);
+    c->closeCB                  = std::make_unique<CloseCB>(closeCB);
+    c->signalBoolCB             = std::make_unique<SignalBoolCB>(signalBoolCB);
+    c->signalIntCB              = std::make_unique<SignalIntCB>(signalIntCB);
+    c->signalFloatCB            = std::make_unique<SignalFloatCB>(signalFloatCB);
+    c->signalDoubleCB           = std::make_unique<SignalDoubleCB>(signalDoubleCB);
+    c->signalStringCB           = std::make_unique<SignalStringCB>(signalStringCB);
 }
 
 

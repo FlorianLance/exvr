@@ -5,7 +5,7 @@
 ** Copyright (c) [2018] [Florian Lance][EPFL-LNCO]                            **
 ********************************************************************************/
 
-#include "python_component.hpp"
+#include "python_script_component.hpp"
 
 // std
 #include <iostream>
@@ -66,7 +66,7 @@ std::string extract_exception(){
     }
 }
 
-std::optional<bp::api::object> PythonComponent::call_function(const std::string &funcName){
+std::optional<bp::api::object> PythonScriptComponent::call_function(const std::string &funcName){
 
     try{
         return data->component.attr(funcName.c_str())();
@@ -77,7 +77,7 @@ std::optional<bp::api::object> PythonComponent::call_function(const std::string 
 }
 
 template<typename T>
-std::optional<bp::api::object> PythonComponent::call_function(const std::string &funcName, T arg){
+std::optional<bp::api::object> PythonScriptComponent::call_function(const std::string &funcName, T arg){
 
     try{
         return data->component.attr(funcName.c_str())(arg);
@@ -88,7 +88,7 @@ std::optional<bp::api::object> PythonComponent::call_function(const std::string 
 }
 
 template<typename T1, typename T2>
-std::optional<bp::api::object> PythonComponent::call_function(const std::string &funcName, T1 arg1, T2 arg2){
+std::optional<bp::api::object> PythonScriptComponent::call_function(const std::string &funcName, T1 arg1, T2 arg2){
 
     try{
         return data->component.attr(funcName.c_str())(arg1, arg2);
@@ -99,7 +99,7 @@ std::optional<bp::api::object> PythonComponent::call_function(const std::string 
 }
 
 
-bool PythonComponent::initialize(){
+bool PythonScriptComponent::initialize(){
 
     bool loadModuleSuccess = false;
     try{
@@ -164,49 +164,49 @@ bool PythonComponent::initialize(){
     return false;
 }
 
-void PythonComponent::start_experiment() {
+void PythonScriptComponent::start_experiment() {
     call_function("start_experiment");
 }
 
-void PythonComponent::stop_experiment() {
+void PythonScriptComponent::stop_experiment() {
     call_function("stop_experiment");
 }
 
-void PythonComponent::start_routine() {
+void PythonScriptComponent::start_routine() {
     call_function("start_routine");
 }
 
-void PythonComponent::stop_routine() {
+void PythonScriptComponent::stop_routine() {
     call_function("stop_routine");
 }
 
-void PythonComponent::set_visibility(bool visible){
+void PythonScriptComponent::set_visibility(bool visible){
     call_function("set_visibility", visible);
 }
 
-void PythonComponent::set_update_state(bool doUpdate){
+void PythonScriptComponent::set_update_state(bool doUpdate){
     call_function("set_update_state", doUpdate);
 }
 
-void PythonComponent::update() {
+void PythonScriptComponent::update() {
     call_function("update");
 }
 
-void PythonComponent::play() {
+void PythonScriptComponent::play() {
     call_function("play");
 }
 
-void PythonComponent::pause() {
+void PythonScriptComponent::pause() {
     call_function("pause");
 }
 
-void PythonComponent::clean() {
+void PythonScriptComponent::clean() {
     call_function("clean");
     remove_module();
     // Do not call Py_Finalize() with Boost.Python.
 }
 
-void PythonComponent::slot(int index){
+void PythonScriptComponent::slot(int index){
 
     std::string valueName = std::string("slot") + std::to_string(index);
 //    log("PyComponent::slot(int index) : " + valueName + " " + std::to_string(dynamic.count(valueName)));
@@ -244,7 +244,7 @@ void PythonComponent::slot(int index){
     log_error("No value with name " + valueName + " found.");
 }
 
-void PythonComponent::remove_module(){
+void PythonScriptComponent::remove_module(){
     PyRun_SimpleString(std::string("if '" + m_moduleName + "' in sys.modules:\n\tdel sys.modules[\"" + m_moduleName + "\"]").c_str());
     log("Module removed: " + m_moduleName);
 }
