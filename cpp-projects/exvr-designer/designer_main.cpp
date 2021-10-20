@@ -63,12 +63,10 @@ static bool comp2(const std::unique_ptr<int> &l, const std::unique_ptr<int> &r){
     return (*l) == (*r);
 }
 
-
 int main(int argc, char *argv[]){
 
-
     // build parameters
-    const QString numVersion = "0.99z62";
+    const QString numVersion = "0.99z63";
     bool lncoComponents = true;
 
     // compiler check
