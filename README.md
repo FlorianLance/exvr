@@ -62,9 +62,7 @@ The project has been developped at [EPFL LNCO laboratory](https://www.epfl.ch/la
 
 ## How to install
 
-Go to release
-
-(TODO)
+Go [here](https://github.com/FlorianLance/exvr/releases/tag/1.0a1) to download the last release.
 
 ## How to compile from code
 
