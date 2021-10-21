@@ -119,18 +119,18 @@ bool XmlIoManager::read_exp(){
     assign_attribute(m_experiment->states.currentMode, QSL("mode"), false);
     assign_attribute(m_experiment->states.designerPathUsedForLoadedExp, QSL("designer-used"), false);
 
-    auto split = m_experiment->states.loadedExpDesignerVersion.split(".");
-    if(split.size() == 2){
-        const auto major = split[0].toInt();
-        if(m_experiment->states.majorNumVersion != major){
-            QtLogger::error(QSL("[XML] Incompatible version of experiment file: software is ") %
-                    QString::number(m_experiment->states.majorNumVersion) % QSL(" and file is ") % m_experiment->states.loadedExpDesignerVersion);
-            return false;
-        }
-    }else{
-        QtLogger::error(QSL("[XML] Invalid version number."));
-        return false;
-    }
+//    auto split = m_experiment->states.loadedExpDesignerVersion.split(".");
+//    if(split.size() == 2){
+//        const auto major = split[0].toInt();
+//        if(m_experiment->states.majorNumVersion > major){
+//            QtLogger::error(QSL("[XML] Incompatible version of experiment file: software is ") %
+//                    QString::number(m_experiment->states.majorNumVersion) % QSL(" and file is ") % m_experiment->states.loadedExpDesignerVersion);
+//            return false;
+//        }
+//    }else{
+//        QtLogger::error(QSL("[XML] Invalid version number."));
+//        return false;
+//    }
 
     if(auto designerUsed = read_attribute<QString>(QSL("designer-used"), false); designerUsed.has_value()){
         QtLogger::message(QSL("[XML] Experiment previously saved by designer: ") % designerUsed.value() %

@@ -46,7 +46,6 @@ public:
         connect(this, &SettingsDialog::finished, this, [&](int result){
             if(result != 1){
                 emit settings_canceled_signal();
-                qDebug() << "not finished";
                 return;
             }
 

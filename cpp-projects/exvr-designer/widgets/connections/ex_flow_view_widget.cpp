@@ -15,7 +15,7 @@ using namespace tool::ex;
 
 
 void ExFlowView::paintEvent(QPaintEvent *event){
-    tool::Bench::start("ExFlowView::mouseMoveEvent");
+    tool::Bench::start("ExFlowView::paintEvent");
     QtNodes::FlowView::paintEvent(event);
     tool::Bench::stop();
 }

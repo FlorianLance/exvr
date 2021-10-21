@@ -66,7 +66,7 @@ void tool::ex::FPPAvatarCameraConfigParametersW::insert_widgets(){
         ui::F::gen(ui::L::HB(), {ui::W::txt("With offset from neutral camera:")}, LStretch{true}, LMargins{false}, QFrame::NoFrame),
         ui::F::gen(ui::L::HB(), {m_p->neutralCameraToHeadOffsetPos()}, LStretch{true}, LMargins{false}, QFrame::NoFrame),
         ui::F::gen(ui::L::HB(), {m_p->neutralCameraToHeadOffsetRot()}, LStretch{true}, LMargins{false}, QFrame::NoFrame)
-    }, LStretch{true}, LMargins{true}, QFrame::Box));
+    }, LStretch{false}, LMargins{true}, QFrame::Box));
 
 
     add_widget(ui::W::horizontal_line());
@@ -77,7 +77,7 @@ void tool::ex::FPPAvatarCameraConfigParametersW::insert_widgets(){
         ui::F::gen(ui::L::HB(), {ui::W::txt("With offset between avatar head position and neutral camera:")}, LStretch{true}, LMargins{false}, QFrame::NoFrame),
         ui::F::gen(ui::L::HB(), {m_p->headFromEyesOffsetPos()}, LStretch{true}, LMargins{false}, QFrame::NoFrame),
         ui::F::gen(ui::L::HB(), {m_p->headFromEyesOffsetRot()}, LStretch{true}, LMargins{false}, QFrame::NoFrame),
-    }, LStretch{true}, LMargins{true}, QFrame::Box));
+    }, LStretch{false}, LMargins{true}, QFrame::Box));
 }
 
 void tool::ex::FPPAvatarCameraConfigParametersW::init_and_register_widgets(){

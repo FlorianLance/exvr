@@ -27,7 +27,9 @@ equals(CFG, "release"){
 ####################################### TEMPLATE
 equals(EXVR_DESIGNER_TARGET, "app"){
     TEMPLATE = app
-    CONFIG += console precompile_header
+    CONFIG += precompile_header
+    CONFIG -= console
+    # console
     DEFINES += QT_MESSAGELOGCONTEXT
     PRECOMPILED_HEADER = stable.h
 }

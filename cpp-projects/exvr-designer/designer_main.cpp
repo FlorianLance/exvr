@@ -7,6 +7,7 @@
 
 // std
 #include <format>
+#include <algorithm>
 
 // Qt
 #include <QApplication>
@@ -23,50 +24,50 @@
 using namespace tool::ex;
 
 
-enum class testE : int {
-  A,B,C, SizeEnum
-};
+//enum class testE : int {
+//  A,B,C, SizeEnum
+//};
 
-using TupleT = std::tuple<testE, std::string_view>;
-static constexpr tool::TupleArray<4, TupleT> tt = {{
-    TupleT
-    {testE::A, "A"sv},
-    {testE::B, "B"sv},
-    {testE::C, "C"sv},
-    {testE::B, "B2"sv},
-}};
+//using TupleT = std::tuple<testE, std::string_view>;
+//static constexpr tool::TupleArray<4, TupleT> tt = {{
+//    TupleT
+//    {testE::A, "A"sv},
+//    {testE::B, "B"sv},
+//    {testE::C, "C"sv},
+//    {testE::B, "B2"sv},
+//}};
 
-template<typename T>
-constexpr auto generate(int size, T value){
-    T *a = new T[size];
-    std::fill(a, a + size, value);
-    return a;
-}
+//template<typename T>
+//constexpr auto generate(int size, T value){
+//    T *a = new T[size];
+//    std::fill(a, a + size, value);
+//    return a;
+//}
 
-template<typename T>
-constexpr void deallocate(T *a){
-    delete[] a;
-}
+//template<typename T>
+//constexpr void deallocate(T *a){
+//    delete[] a;
+//}
 
-constexpr int test(){
-    auto g = generate<int>(10, 1);
-    int total = std::accumulate(g, g + 10, 0);
-    deallocate(g);
-    return total;
-}
+//constexpr int test(){
+//    auto g = generate<int>(10, 1);
+//    int total = std::accumulate(g, g + 10, 0);
+//    deallocate(g);
+//    return total;
+//}
 
-static bool comp1(const std::unique_ptr<int> &l, const std::unique_ptr<int> &r){
-    return (*l)< (*r);
-}
+//static bool comp1(const std::unique_ptr<int> &l, const std::unique_ptr<int> &r){
+//    return (*l)< (*r);
+//}
 
-static bool comp2(const std::unique_ptr<int> &l, const std::unique_ptr<int> &r){
-    return (*l) == (*r);
-}
+//static bool comp2(const std::unique_ptr<int> &l, const std::unique_ptr<int> &r){
+//    return (*l) == (*r);
+//}
 
 int main(int argc, char *argv[]){
 
     // build parameters
-    const QString numVersion = "0.99z63";
+    const QString numVersion = "1.0a1";
     bool lncoComponents = true;
 
     // compiler check

@@ -28,15 +28,23 @@ BenchmarkDialog::BenchmarkDialog(){
     QString txt = "Select element to reach:";
     layout()->addWidget(new QLabel(txt));
 
-    sort  = new QCheckBox("Sort");
+    cbSort  = new QCheckBox("Sort");
     auto unit = new QComboBox();
     auto minT = new QDoubleSpinBox();
-    layout()->addWidget(ui::F::gen(ui::L::HB(), {sort, ui::W::txt("Unit:"), unit, ui::W::txt("Min T:"), minT}, LStretch{true}, LMargins{true}, QFrame::NoFrame));
+    pbClear = new QPushButton("Clear");
+    layout()->addWidget(ui::F::gen(ui::L::HB(), {cbSort, ui::W::txt("Unit:"), unit, ui::W::txt("Min T:"), minT, pbClear}, LStretch{true}, LMargins{true}, QFrame::NoFrame));
     layout()->addWidget(view);
+
+    connect(pbClear, &QPushButton::clicked, this, [=]{
+        qDebug() << "clear";
+        Bench::clear();
+        model->elements.clear();
+        model->elementsRow.clear();
+    });
 }
 
 void BenchmarkDialog::update(){
-    model->update(sort->isChecked());
+    model->update(cbSort->isChecked());
     view->viewport()->update();
 }
 
@@ -137,3 +145,107 @@ void Table::update(bool sort){
 
     endResetModel();
 }
+
+
+
+
+
+//class TorrentViewDelegate : public QItemDelegate
+//{
+//    Q_OBJECT
+//public:
+//    inline TorrentViewDelegate(MainWindow *mainWindow) : QItemDelegate(mainWindow) {}
+
+//    inline void paint(QPainter *painter, const QStyleOptionViewItem &option,
+//                      const QModelIndex &index ) const
+//    {
+//        if (index.column() != 2) {
+//            QItemDelegate::paint(painter, option, index);
+//            return;
+//        }
+
+//        // Set up a QStyleOptionProgressBar to precisely mimic the
+//        // environment of a progress bar.
+//        QStyleOptionProgressBar progressBarOption;
+//        progressBarOption.state = QStyle::State_Enabled;
+//        progressBarOption.direction = QApplication::layoutDirection();
+//        progressBarOption.rect = option.rect;
+//        progressBarOption.fontMetrics = QApplication::fontMetrics();
+//        progressBarOption.minimum = 0;
+//        progressBarOption.maximum = 100;
+//        progressBarOption.textAlignment = Qt::AlignCenter;
+//        progressBarOption.textVisible = true;
+
+//        // Set the progress and text values of the style option.
+//        int progress = qobject_cast<MainWindow *>(parent())->clientForRow(index.row())->progress();
+//        progressBarOption.progress = progress < 0 ? 0 : progress;
+//        progressBarOption.text = QString().sprintf("%d%%", progressBarOption.progress);
+
+//        // Draw the progress bar onto the view.
+//        QApplication::style()->drawControl(QStyle::CE_ProgressBar, &progressBarOption, painter);
+//    }
+//};
+
+//void Delegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
+//                     const QModelIndex &index) const
+//{
+//    QStyleOptionViewItem opt(option);
+//    initStyleOption(&opt, index);
+
+//    const QPalette &palette(opt.palette);
+//    const QRect &rect(opt.rect);
+//    const QRect &contentRect(rect.adjusted(m_ptr->margins.left(),
+//                                           m_ptr->margins.top(),
+//                                           -m_ptr->margins.right(),
+//                                           -m_ptr->margins.bottom()));
+//    const bool lastIndex = (index.model()->rowCount() - 1) == index.row();
+//    const bool hasIcon = !opt.icon.isNull();
+//    const int bottomEdge = rect.bottom();
+//    QFont f(opt.font);
+
+//    f.setPointSize(m_ptr->timestampFontPointSize(opt.font));
+
+//    painter->save();
+//    painter->setClipping(true);
+//    painter->setClipRect(rect);
+//    painter->setFont(opt.font);
+
+//    // Draw background
+//    painter->fillRect(rect, opt.state & QStyle::State_Selected ?
+//                                                               palette.highlight().color() :
+//                                                               palette.light().color());
+
+//    // Draw bottom line
+//    painter->setPen(lastIndex ? palette.dark().color()
+//                              : palette.mid().color());
+//    painter->drawLine(lastIndex ? rect.left() : m_ptr->margins.left(),
+//                      bottomEdge, rect.right(), bottomEdge);
+
+//    // Draw message icon
+//    if (hasIcon)
+//        painter->drawPixmap(contentRect.left(), contentRect.top(),
+//                            opt.icon.pixmap(m_ptr->iconSize));
+
+//    // Draw timestamp
+//    QRect timeStampRect(m_ptr->timestampBox(opt, index));
+
+//    timeStampRect.moveTo(m_ptr->margins.left() + m_ptr->iconSize.width()
+//                             + m_ptr->spacingHorizontal, contentRect.top());
+
+//    painter->setFont(f);
+//    painter->setPen(palette.text().color());
+//    painter->drawText(timeStampRect, Qt::TextSingleLine,
+//                      index.data(Qt::UserRole).toString());
+
+//    // Draw message text
+//    QRect messageRect(m_ptr->messageBox(opt));
+
+//    messageRect.moveTo(timeStampRect.left(), timeStampRect.bottom()
+//                                                 + m_ptr->spacingVertical);
+
+//    painter->setFont(opt.font);
+//    painter->setPen(palette.windowText().color());
+//    painter->drawText(messageRect, Qt::TextSingleLine, opt.text);
+
+//    painter->restore();
+//}

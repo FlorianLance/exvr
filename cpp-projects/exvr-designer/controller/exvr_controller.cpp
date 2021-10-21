@@ -939,8 +939,9 @@ void ExVrController::show_about_dialog(){
     Ui_AboutD about;
     modalDialog = std::make_unique<QDialog>();
     modalDialog->setWindowTitle("About ExVR");
-    modalDialog->setModal(true);
+    modalDialog->setModal(true);    
     about.setupUi(modalDialog.get());
+    about.textEdit->setTextInteractionFlags(Qt::TextBrowserInteraction);
     connect(about.pbClose, &QPushButton::clicked, modalDialog.get(), &QDialog::close);
     connect(modalDialog.get(), &QDialog::finished, [&](int){
         modalDialog = nullptr;

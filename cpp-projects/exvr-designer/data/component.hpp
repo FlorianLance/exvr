@@ -153,7 +153,7 @@ struct Component {
         {T::AudioSource,              C::Audio,       TO::B,     CO::B,   false,   R::OpenSource,   S::Sta, "AudioSource"sv, "Audio source"sv, "AudioSource"sv, ":/icons/Sound"sv},
         {T::Microphone,               C::Audio,       TO::B,     CO::B,   false,   R::OpenSource,   S::Exp, "Microphone"sv, "Microphone"sv, "Microphone"sv, ":/icons/Micro"sv},
         // Avatar
-        {T::Humanoid_avatar,          C::Avatar,      TO::B,     CO::B,   false,   R::ClosedSource, S::Exp, "Humanoid_avatar"sv, "Humanoid avatar"sv, "HumanoidAvatar"sv, ":/icons/Avatar"sv},
+        {T::Humanoid_avatar,          C::Avatar,      TO::B,     CO::B,   false,   R::ClosedSource, S::Sta, "Humanoid_avatar"sv, "Humanoid avatar"sv, "HumanoidAvatar"sv, ":/icons/Avatar"sv},
         {T::Humanoid_controller,      C::Avatar,      TO::B,     CO::B,   false,   R::ClosedSource, S::Leg, "Humanoid_controller"sv, "Humanoid controller"sv, "HumanoidController"sv, ":/icons/Avatar"sv},
         // Camera
         {T::Camera,                   C::Camera,      TO::U,     CO::B,   true,    R::OpenSource,   S::Sta, "Camera"sv, "Camera"sv, "Camera"sv, ":/icons/Camera"sv},
@@ -174,7 +174,7 @@ struct Component {
         {T::Keyboard,                 C::Input,       TO::U,     CO::I,   true,    R::OpenSource,   S::Sta, "Keyboard"sv, "Keyboard"sv, "Keyboard"sv, ":/icons/Keyboard"sv},
         {T::Mouse,                    C::Input,       TO::U,     CO::I,   true,    R::OpenSource,   S::Sta, "Mouse"sv, "Mouse"sv, "Mouse"sv, ":/icons/Mouse"sv},
         // Interaction
-        {T::Flag_pole,                C::Interaction, TO::B,     CO::B,   false,   R::OpenSource,   S::Exp, "Flag_pole"sv, "Flag pole"sv, "FlagPole"sv, ":/icons/Flag_pole"sv},
+        {T::Flag_pole,                C::Interaction, TO::B,     CO::B,   false,   R::OpenSource,   S::Sta, "Flag_pole"sv, "Flag pole"sv, "FlagPole"sv, ":/icons/Flag_pole"sv},
         {T::Mark_to_clean,            C::Interaction, TO::B,     CO::B,   false,   R::OpenSource,   S::Exp, "Mark_to_clean"sv, "Mark to clean"sv, "MarkToClean"sv, ":/icons/Mark_to_clean"sv},
         {T::Target_to_grab,           C::Interaction, TO::B,     CO::B,   false,   R::OpenSource,   S::Exp, "Target_to_grab"sv, "Target to grab"sv, "TargetToGrab"sv, ":/icons/Grab_target"sv},
         // Model
@@ -185,7 +185,7 @@ struct Component {
         {T::Sphere,                   C::Model,       TO::V,     CO::B,   false,   R::OpenSource,   S::Sta, "Sphere"sv, "Sphere"sv, "Sphere"sv,":/icons/Sphere"sv},
         {T::Torus,                    C::Model,       TO::V,     CO::B,   false,   R::OpenSource,   S::Sta, "Torus"sv, "Torus"sv, "Torus"sv,":/icons/Torus"sv},
         // Network
-        {T::Parallel_port_writer,     C::Network,     TO::U,     CO::B,   false,   R::OpenSource,   S::Sta, "Parallel_port_writer"sv, "Parallel port writer"sv, "ParallelPortWriter"sv, ":/icons/USB"sv},
+        {T::Parallel_port_writer,     C::Network,     TO::N,     CO::B,   false,   R::OpenSource,   S::Sta, "Parallel_port_writer"sv, "Parallel port writer"sv, "ParallelPortWriter"sv, ":/icons/USB"sv},
         {T::Serial_port_writer,       C::Network,     TO::U,     CO::B,   false,   R::OpenSource,   S::Sta, "Serial_port_writer"sv, "Serial port writer"sv, "SerialPortWriter"sv, ":/icons/USB"sv},
         {T::Udp_reader,               C::Network,     TO::U,     CO::I,   false,   R::OpenSource,   S::Sta, "Udp_reader"sv, "UDP reader"sv, "UdpReader"sv, ":/icons/UDP"sv},
         {T::Udp_writer,               C::Network,     TO::U,     CO::I,   false,   R::OpenSource,   S::Sta, "Udp_writer"sv, "UDP writer"sv, "UdpWriter"sv, ":/icons/UDP"sv},
@@ -211,17 +211,17 @@ struct Component {
         // Tracking
         {T::Attach_object_to_hand,    C::Tracking,    TO::B,     CO::B,   true,    R::OpenSource,   S::Exp, "Attach_object_to_hand"sv, "Attach object to hand"sv, "AttachObjectToHand"sv, ":/icons/Sponge"sv},
         {T::Biopac,                   C::Tracking,    TO::U,     CO::I,   true,    R::OpenSource,   S::Sta, "Biopac"sv, "Biopac device"sv, "Biopac"sv, ":/icons/Physio"sv},
-        {T::Fop_robot,                C::Tracking,    TO::U,     CO::B,   true,    R::LNCO,         S::Exp, "Fop_robot"sv, "FOP robot"sv, "FOPRobot"sv,":/icons/Fop_robot"sv},
-        {T::Kinect_manager,           C::Tracking,    TO::U,     CO::B,   true,    R::LNCO,         S::Exp, "Kinect_manager"sv, "Kinect manager"sv, "KinectManager"sv,":/icons/Kinect"sv},
+        {T::Fop_robot,                C::Tracking,    TO::U,     CO::B,   true,    R::LNCO,         S::Sta, "Fop_robot"sv, "FOP robot"sv, "FOPRobot"sv,":/icons/Fop_robot"sv},
+        {T::Kinect_manager,           C::Tracking,    TO::U,     CO::B,   true,    R::LNCO,         S::Sta, "Kinect_manager"sv, "Kinect manager"sv, "KinectManager"sv,":/icons/Kinect"sv},
         {T::Kinect_body_tracking,     C::Tracking,    TO::B,     CO::B,   true,    R::LNCO,         S::Exp, "Kinect_body_tracking"sv, "Kinect body tracking"sv, "KinectBodyTracking"sv,":/icons/Kinect"sv},
         {T::Leap_motion,              C::Tracking,    TO::U,     CO::N,   true,    R::OpenSource,   S::Sta, "Leap_motion"sv, "LeapMotion"sv, "LeapMotion"sv, ":/icons/Hand"sv},
         {T::Leap_motion_arms_display, C::Tracking,    TO::V,     CO::B,   true,    R::ClosedSource, S::Sta, "Leap_motion_arms_display"sv, "LeapMotion realistic arms"sv, "LeapMotionArmsDisplay"sv, ":/icons/Hand"sv},
         {T::Leap_motion_tracking,     C::Tracking,    TO::V,     CO::N,   true,    R::OpenSource,   S::Exp, "Leap_motion_tracking"sv, "LeapMotion tracking"sv, "LeapMotionTracking"sv, ":/icons/Hand"sv},
         {T::Qualisys,                 C::Tracking,    TO::B,     CO::B,   true,    R::OpenSource,   S::Sta, "Qualisys_tracking"sv, "Qualisys tracking"sv, "QualisysTracking"sv, ":/icons/Qualisys"sv},
-        {T::Scene_scaner,             C::Tracking,    TO::B,     CO::B,   true,    R::LNCO,         S::Exp, "Scene_scaner"sv, "Scene scaner"sv, "SceneScaner"sv,":/icons/Body_scanner"sv},
+        {T::Scene_scaner,             C::Tracking,    TO::B,     CO::B,   true,    R::LNCO,         S::Sta, "Scene_scaner"sv, "Scene scaner"sv, "SceneScaner"sv,":/icons/Body_scanner"sv},
         {T::Sonceboz_SG,              C::Tracking,    TO::U,     CO::B,   true,    R::LNCO,         S::Exp, "Sonceboz_SG"sv, "Sonceboz SG"sv, "SoncebozSG"sv,":/icons/Sonceboz"sv},
-        {T::Thera_trainer_tracking,   C::Tracking,    TO::U,     CO::I,   true,    R::OpenSource,   S::Exp, "Thera_trainer_tracking"sv, "Thera trainer tracking"sv, "TheraTrainerTracking"sv, ":/icons/Thera_trainer"sv},
-        {T::Thera_trainer_platform,   C::Tracking,    TO::B,     CO::C,   false,   R::OpenSource,   S::Exp, "Thera_trainer_platform"sv, "Thera trainer platform"sv, "TheraTrainerPlatform"sv, ":/icons/Thera_trainer"sv},
+        {T::Thera_trainer_tracking,   C::Tracking,    TO::U,     CO::I,   true,    R::LNCO,         S::Sta, "Thera_trainer_tracking"sv, "Thera trainer tracking"sv, "TheraTrainerTracking"sv, ":/icons/Thera_trainer"sv},
+        {T::Thera_trainer_platform,   C::Tracking,    TO::B,     CO::C,   false,   R::LNCO,         S::Sta, "Thera_trainer_platform"sv, "Thera trainer platform"sv, "TheraTrainerPlatform"sv, ":/icons/Thera_trainer"sv},
         // UI
         {T::Slider_ui,                C::UI,          TO::B,     CO::B,   false,   R::OpenSource,   S::Sta, "Slider_ui"sv, "Slider ui"sv, "SliderUI"sv, ":/icons/Slider_overlay"sv},
         // Video

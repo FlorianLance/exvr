@@ -31,7 +31,7 @@ ParallelPortWriterInitConfigParametersW::ParallelPortWriterInitConfigParametersW
 }
 
 void ParallelPortWriterInitConfigParametersW::insert_widgets(){
-    add_widget(ui::F::gen(ui::L::VB(),{m_p->x32Mode(), m_p->int16Mode()}, LStretch{true}, LMargins{true},QFrame::Box));
+    add_widget(ui::F::gen(ui::L::VB(),{m_p->x32Mode(), m_p->int16Mode()}, LStretch{false}, LMargins{true},QFrame::NoFrame));
 }
 
 void ParallelPortWriterInitConfigParametersW::init_and_register_widgets(){
