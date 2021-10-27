@@ -106,17 +106,26 @@ void ComponentConfigDialog::set_connections(){
 
     // move config
     connect(m_ui.tabConfigs->tabBar(), &QTabBar::tabMoved, this, [&](int from, int to){
+        if(m_isUpdating){
+            return;
+        }
         emit GSignals::get()->move_config_signal(componentKey, RowId{from}, RowId{to});
     });
 
     // select config
     connect(m_ui.tabConfigs->tabBar(), &QTabBar::currentChanged, this, [&](int id){
+        if(m_isUpdating){
+            return;
+        }
         m_ui.cbSelectedConfig->blockSignals(true);
         m_ui.cbSelectedConfig->setCurrentIndex(id);
         m_ui.cbSelectedConfig->blockSignals(false);
         emit GSignals::get()->select_config_signal(componentKey, RowId{id});
     });
     connect(m_ui.cbSelectedConfig, QOverload<int>::of(&QComboBox::currentIndexChanged), this, [&](int id){
+        if(m_isUpdating){
+            return;
+        }
         m_ui.tabConfigs->blockSignals(true);
         m_ui.tabConfigs->setCurrentIndex(id);
         m_ui.tabConfigs->blockSignals(false);
@@ -139,14 +148,14 @@ void ComponentConfigDialog::set_connections(){
 
 void ComponentConfigDialog::update_from_component(Component *component){
 
+    m_isUpdating = true;
+
     Bench::start("[ComponentsConfigDialog 0]"sv);
 
     get_init_config_widget()->update_from_config(component->initConfig.get());
 
     Bench::stop();
     Bench::start("[ComponentsConfigDialog 1]"sv);
-
-    m_ui.tabConfigs->tabBar()->blockSignals(true);
 
     // remove inused configs
     for(int ii = m_ui.tabConfigs->count()-1; ii >= 0; --ii){
@@ -211,15 +220,13 @@ void ComponentConfigDialog::update_from_component(Component *component){
 
     // update current config selection
     m_ui.tabConfigs->setCurrentIndex(component->selectedConfigId.v);
-    m_ui.tabConfigs->tabBar()->blockSignals(false);
 
     // update config combobox
-    m_ui.cbSelectedConfig->blockSignals(true);
     m_ui.cbSelectedConfig->clear();
     m_ui.cbSelectedConfig->addItems(items);
     m_ui.cbSelectedConfig->setCurrentIndex(component->selectedConfigId.v);
-    m_ui.cbSelectedConfig->blockSignals(false);
 
+    m_isUpdating = false;
 }
 
 void ComponentConfigDialog::update_with_info(ConfigKey configKey, QStringView id, QStringView value){

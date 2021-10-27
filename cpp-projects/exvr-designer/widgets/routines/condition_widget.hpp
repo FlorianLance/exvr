@@ -111,5 +111,6 @@ private:
     QVBoxLayout *lConnections = nullptr;
     QHBoxLayout *lBoth = nullptr;
 
+    bool m_isUpdating = false;
 };
 }

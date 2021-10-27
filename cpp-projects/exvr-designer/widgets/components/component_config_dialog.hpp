@@ -70,6 +70,8 @@ private:
     Qt::WindowFlags defaultFlags;
     bool pinned = false;
     QWidget *m_parent = nullptr;
+
+    bool m_isUpdating = false;
 };
 
 

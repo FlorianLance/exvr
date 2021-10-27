@@ -1556,8 +1556,11 @@ void Experiment::update_conditions(){
                 // log deleted conditions
                 if(routine->conditions.size() > 1){
                     for(size_t ii = 1; ii < routine->conditions.size(); ++ii){
-                        QtLogger::message(QSL("[EXP] Condition ") % routine->conditions[ii]->name % QSL(" from routine ") % routine->name() % QSL("(") %
-                                        QString::number(routine->key()) % QSL(") doesn't exist anymore and has been removed."));
+                        QtLogger::message(
+                            QSL("[EXP] Condition ") % routine->conditions[ii]->name %
+                            QSL(" from routine ") % routine->name() % QSL("(") %
+                            QString::number(routine->key()) % QSL(") doesn't exist anymore and has been removed.")
+                        );
                     }
                 }
 
@@ -1592,7 +1595,7 @@ void Experiment::update_conditions(){
             }
         }
 
-        // create all current conditions names
+        // mix new conditions keys
         std_v1<QString> newConditionsKeysStr;
         while(setsId.size() > 1){
             setsId[setsId.size()-2] = mix(setsId[setsId.size()-2],setsId[setsId.size()-1]);
@@ -1602,6 +1605,7 @@ void Experiment::update_conditions(){
             newConditionsKeysStr = std::move(setsId[0]);
         }
 
+        //  create all current conditions names
         std_v1<std_v1<int>> newConditionsKeys;
         std_v1<QString> newConditionsNames;
         for(const auto &conditionKeysStr : newConditionsKeysStr){
@@ -1630,6 +1634,32 @@ void Experiment::update_conditions(){
             newConditionsKeys.emplace_back(std::move(conditionKeys));
             newConditionsNames.emplace_back(conditionName.join("-"));
         }
+
+
+        // one old/new condition, just rename it
+        if(newConditionsKeysStr.size() == 1 && routine->conditions.size() == 1){
+            routine->conditions[0]->name = newConditionsNames[0];
+            continue;
+        }
+        // only one new condition, keep only one old and rename it
+        if(newConditionsKeysStr.size() == 1 && routine->conditions.size() > 1){
+
+            // log deleted conditions
+            for(size_t ii = 1; ii < routine->conditions.size(); ++ii){
+                QtLogger::message(
+                    QSL("[EXP] Condition ") % routine->conditions[ii]->name %
+                    QSL(" from routine ") % routine->name() % QSL("(") %
+                    QString::number(routine->key()) % QSL(") doesn't exist anymore and has been removed.")
+                );
+            }
+
+            routine->conditions.resize(1);
+            routine->conditions[0]->name = newConditionsNames[0];
+            continue;
+        }
+
+
+
 
         // rebuild routine conditions
         std_v1<ConditionUP> newConditions;
@@ -1800,6 +1830,7 @@ void Experiment::copy_config_from_component(ComponentKey componentKey, RowId id,
         component->configs.insert(component->configs.begin() + id.v + 1,
             Config::copy_with_new_element_id(*component->configs[id.v].get(), configName));
         component->selectedConfigId = {id.v + 1};
+
         add_to_update_flag(UpdateComponents | UpdateRoutines);
     }
 }

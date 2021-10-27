@@ -91,9 +91,7 @@ RoutineTabW *RoutinesManagerTW::current_routine_widget(){
 
 void RoutinesManagerTW::update_from_experiment(Experiment *exp){
 
-    const auto signalsState = GSignals::get()->signalsBlocked();
-    GSignals::get()->blockSignals(true);
-
+    BlockSignalsGuard guard;
     bool display = false;
 
     Bench::start("RoutinesManagerTW update_from_experiment 1"sv, display);
@@ -174,8 +172,6 @@ void RoutinesManagerTW::update_from_experiment(Experiment *exp){
         }
 
     Bench::stop();
-
-    GSignals::get()->blockSignals(signalsState);
 }
 
 RoutineTabW *RoutinesManagerTW::routine_widget(RowId tabId){

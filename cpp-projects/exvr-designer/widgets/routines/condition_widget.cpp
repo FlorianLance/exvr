@@ -122,14 +122,23 @@ ConditionW::ConditionW(ElementKey routineKey, Condition *condition) : m_routineK
     dsbUiFactorSize->setMaximum(10);
     dsbUiFactorSize->setValue(condition->uiFactorSize);
 
-
+    // connections
     connect(dsbScale, QOverload<double>::of(&ScaleSpinBox::valueChanged),     this, [&](double){
+        if(m_isUpdating){
+            return;
+        }
         update_timeline();
     });
     connect(dsbUiFactorSize, QOverload<double>::of(&ScaleSpinBox::valueChanged),     this, [&](double){
+        if(m_isUpdating){
+            return;
+        }
         update_timeline();
     });
     connect(dsbDuration, &ScaleSpinBox::editingFinished,     this, [&](){
+        if(m_isUpdating){
+            return;
+        }
         update_timeline();
     });
 
@@ -155,7 +164,7 @@ ConditionW::ConditionW(ElementKey routineKey, Condition *condition) : m_routineK
 
 void ConditionW::update_from_condition(GUI *gui, Condition *condition){
 
-    BlockSignalsGuard guard;
+    m_isUpdating = true;
 
     bool display = false;
     Bench::start("ConditionW update_from_condition 1"sv, display);
@@ -170,25 +179,16 @@ void ConditionW::update_from_condition(GUI *gui, Condition *condition){
 
         // actions
         // # update scale/length/size
-        dsbScale->blockSignals(true);
-            if(dsbScale->value() != condition->scale){
-                dsbScale->setValue(condition->scale);
-            }
-        dsbScale->blockSignals(false);
-
-        dsbUiFactorSize->blockSignals(true);
-            if(dsbUiFactorSize->value() != condition->uiFactorSize){
-                dsbUiFactorSize->setValue(condition->uiFactorSize);
-            }
-        dsbUiFactorSize->blockSignals(false);
-
-        dsbDuration->blockSignals(true);
-            if(dsbDuration->value() != condition->duration.v){
-                dsbDuration->setValue(condition->duration.v);
-            }
-            dsbDuration->setSingleStep(dsbScale->value());
-        dsbDuration->blockSignals(false);
-
+        if(dsbScale->value() != condition->scale){
+            dsbScale->setValue(condition->scale);
+        }
+        if(dsbUiFactorSize->value() != condition->uiFactorSize){
+            dsbUiFactorSize->setValue(condition->uiFactorSize);
+        }
+        if(dsbDuration->value() != condition->duration.v){
+            dsbDuration->setValue(condition->duration.v);
+        }
+        dsbDuration->setSingleStep(dsbScale->value());
 
         // # remove inused actions
         std::map<int,bool> mask;
@@ -237,6 +237,8 @@ void ConditionW::update_from_condition(GUI *gui, Condition *condition){
 
         update_ui_from_current_tab(m_ui.tabCondition->currentIndex());
         Bench::stop();
+
+    m_isUpdating = false;
 }
 
 void ConditionW::update_from_connector_info(ConnectorKey connectorKey, QStringView id, QStringView value){

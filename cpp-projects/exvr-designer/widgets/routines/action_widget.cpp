@@ -154,10 +154,8 @@ void ActionW::update_from_action(int id, Action *action, qreal scale, qreal fact
     m_ui.laId->setText(QString::number(id) % QSL("#"));
 
     // init config combobox
-    m_ui.cbConfig->blockSignals(true);
     m_ui.cbConfig->clear();
     m_ui.cbConfig->addItems(action->component->get_configs_name());
-    m_ui.cbConfig->blockSignals(false);
 
     for(size_t ii = 0; ii < action->component->configs.size(); ++ii){
         if(action->config->key() == action->component->configs[ii]->key()){

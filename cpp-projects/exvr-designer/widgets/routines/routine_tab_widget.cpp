@@ -78,8 +78,6 @@ void RoutineTabW::update_from_routine(GUI *gui, Routine *routine){
         setEnabled(true);
     }
 
-    BlockSignalsGuard guard;
-
     bool display = false;
     Bench::start("RoutineTabW update_from_routine 1"sv, display);
 

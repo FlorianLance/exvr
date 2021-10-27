@@ -435,8 +435,6 @@ QAction *ConnectionsW::generate_connector_action(std::pair<QString, QString> inf
 
 void ConnectionsW::update_from_condition(Condition *condition){
 
-    BlockSignalsGuard guard;
-
     // remove
     bool display = false;
     Bench::start("ConnectionsW update_from_condition 1"sv, display);
