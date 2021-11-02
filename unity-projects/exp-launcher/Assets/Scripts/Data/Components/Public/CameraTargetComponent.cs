@@ -139,6 +139,9 @@ namespace Ex{
         IEnumerator move_to_target(TargetSettings s) {
 
             Trajectory trajectory = new Trajectory();
+            if (!currentC.get<bool>("do_not_save_traj")) {
+                savedTrajectories.Enqueue(trajectory);
+            }
 
             if (s.useTime) {
                 doLoop = s.duration > 0f;
@@ -242,14 +245,24 @@ namespace Ex{
                 // save point to trajectory
                 trajectory.add_trajectory_point(pos, rot);
                 yield return new WaitForEndOfFrame();
-            }
-
-            savedTrajectories.Enqueue(trajectory);
+            }            
         }
   
         IEnumerator move_back(TargetSettings s) {
 
-            Trajectory previousTrajectory = savedTrajectories.Dequeue();
+            Trajectory previousTrajectory;
+
+            try {
+                previousTrajectory = savedTrajectories.Dequeue();
+            } catch (System.InvalidOperationException) {
+                previousTrajectory = null;                
+            }
+            
+            if(previousTrajectory == null) {
+                log_error("Cannot move back, no previous trajectory available.");
+                yield return null;
+            }
+
 
             if (s.useTime) {
                 doLoop = s.duration > 0f;
@@ -261,112 +274,58 @@ namespace Ex{
             float totalFactor = 0f;
             float previousFactor = 0f;
 
+            float value;
+
             while (doLoop) {
 
                 if (!continueMoving) {
                     break;
                 }
+                
 
-                //// update current value
-                //if (s.useTime) {
-                //    float percent = Time.deltaTime / s.duration;
-                //    totalPercent += percent;
+                // update current value
+                if (s.useTime) {
+                    float percent = Time.deltaTime / s.duration;
+                    totalPercent += percent;
 
-                //    if (totalPercent >= 1f) {
-                //        doLoop = false;
-                //    }
-                //} else {
+                    if (totalPercent >= 1f) {
+                        doLoop = false;
+                        value = 1f;
+                    } else {
+                        value = speedCurve.Evaluate(totalPercent);
+                    }
 
-                //    float deltaFactor = Mathf.Clamp01(speedCurve.Evaluate(movementFactor) - previousFactor);
-                //    totalFactor += deltaFactor;
-                //    previousFactor = movementFactor;
+                } else {
 
-                //    if (movementFactor >= 1f) {
-                //        doLoop = false;
-                //    } 
-                //}
+                    float deltaFactor = Mathf.Clamp01(speedCurve.Evaluate(movementFactor) - previousFactor);
+                    totalFactor += deltaFactor;
+                    previousFactor = movementFactor;
 
+                    if (movementFactor >= 1f) {
+                        doLoop = false;
+                        value = 1f;
+                    } else {
+                        value = speedCurve.Evaluate(totalFactor);
+                    }
+                }
 
-                //float percent;
-                //if (useTime) {
-                //    doLoop = journey < duration;
-                //    journey += Time.deltaTime;
-                //    percent = Mathf.Clamp01(journey / duration);
-                //} else {
-                //    doLoop = movementFactor < 1f;
-                //    percent = movementFactor;
-                //}
+                if (s.teleport) {
+                    value = 1f;
+                }
 
-                //float speedT = speedCurve.Evaluate(percent);
-                //var pos = previousTrajectory.get_position(1f-speedT);
-                //var rot = previousTrajectory.get_rotation(1f-speedT);
-                //if (s.neutral) {
-                //    CameraUtility.set_calibration_transform(pos + movementOffset, rot);
-                //} else {
-                //    CameraUtility.set_eye_camera_transform(pos + movementOffset, rot);
-                //}
+                
+
+                var pos = previousTrajectory.get_position(1f - value);
+                var rot = previousTrajectory.get_rotation(1f - value);
+
+                if (s.neutral) {
+                    CameraUtility.set_calibration_transform(pos, rot);
+                } else {
+                    CameraUtility.set_eye_camera_transform(pos, rot);
+                }
 
                 yield return null;
             }            
         }
     }
 }
-
-
-//IEnumerator move_to_target(bool useTime, bool neutral, bool sphericalInterpolation, float duration, List<Vector3> targetPositions, List<Quaternion> targetRotations) {
-
-//    Trajectory trajectory = new Trajectory();
-
-//    int size = targetPositions.Count;
-
-//    float journey = 0f;
-//    if (useTime) {
-//        doLoop = journey < duration;
-//    } else {
-//        doLoop = movementFactor < 1f;
-//    }
-
-//    while (doLoop) {
-
-//        if (!continueMoving) {
-//            break;
-//        }
-
-//        float percent;
-//        if (useTime) {
-//            doLoop = journey < duration;
-//            journey += Time.deltaTime;
-//            percent = Mathf.Clamp01(journey / duration);
-//        } else {
-//            doLoop = movementFactor < 1f;
-//            percent = movementFactor;
-//        }
-
-//        float speedT    = speedCurve.Evaluate(percent);
-//        float factor    = speedT * size;
-//        int integerPart = Mathf.FloorToInt(factor);
-//        float floatPart = speedT - Mathf.Floor(factor);
-
-//        Vector3 pos;
-//        Quaternion rot;
-//        if (integerPart < size - 1) {
-//            pos = Interpolate.vector(targetPositions[integerPart], targetPositions[integerPart + 1], floatPart, sphericalInterpolation);
-//            rot = Interpolate.rotation(targetRotations[integerPart], targetRotations[integerPart + 1], floatPart, sphericalInterpolation);
-//        } else {
-//            break;
-//        }
-
-//        if (neutral) {
-//            CameraUtility.set_calibration_transform(pos + movementOffset, rot);
-//        } else {
-//            CameraUtility.set_eye_camera_transform(pos + movementOffset, rot);
-//        }
-
-//        // save point to trajectory
-//        trajectory.add_trajectory_point(pos, rot);
-
-//        yield return null;
-//    }
-
-//    savedTrajectories.Enqueue(trajectory);
-//}

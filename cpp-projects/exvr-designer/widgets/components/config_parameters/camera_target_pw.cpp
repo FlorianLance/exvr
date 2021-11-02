@@ -22,6 +22,7 @@ struct CameraTargetConfigParametersW::Impl{
     ExFloatSpinBoxW duration{"duration"};
     ExCheckBoxW sphericalInterpolation{"spherical_linear_interpolation"};
 
+
     ExCheckBoxW pitch{"pitch"};
     ExCheckBoxW yaw{"yaw"};
     ExCheckBoxW roll{"roll"};
@@ -32,6 +33,7 @@ struct CameraTargetConfigParametersW::Impl{
     ExRadioButtonW moveBack{"move_back"};
     ExRadioButtonW doNothing{"do_nothing"};
     ExCheckBoxW teleport{"teleport"};
+    ExCheckBoxW doNotSaveTraj{"do_not_save_traj"};
 
     QButtonGroup   buttonGroup2;
     ExRadioButtonW useNeutralCamera {"use_neutral"};
@@ -63,7 +65,7 @@ void CameraTargetConfigParametersW::insert_widgets(){
 
     add_widget(ui::W::txt("<b>Action</b>"));
     add_widget(ui::F::gen(ui::L::HB(), {m_p->moveToTarget(), m_p->moveBack(), m_p->doNothing()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
-    add_widget(ui::F::gen(ui::L::HB(), {m_p->teleport()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
+    add_widget(ui::F::gen(ui::L::HB(), {m_p->teleport(), m_p->doNotSaveTraj()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
 
     add_widget(ui::W::txt("<b>Camera</b>"));
     add_widget(ui::F::gen(ui::L::HB(), {m_p->useNeutralCamera(), m_p->useEyeCamera()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
@@ -111,6 +113,7 @@ void CameraTargetConfigParametersW::init_and_register_widgets(){
         )
     );
     add_input_ui(m_p->teleport.init_widget("Teleport", false));
+    add_input_ui(m_p->doNotSaveTraj.init_widget("Do not save trajectory", false));
 
     add_inputs_ui(
         ExRadioButtonW::init_group_widgets(m_p->buttonGroup3,

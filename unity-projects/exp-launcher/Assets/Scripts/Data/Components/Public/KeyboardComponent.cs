@@ -54,6 +54,28 @@ namespace Ex{
             sendInfos = true;
         }
 
+        protected override void set_update_state(bool doUpdate) {
+
+            if (!doUpdate) {
+
+                // reset states
+                var currentTime = time().ellapsed_exp_ms();
+                foreach (KeyCode keyCode in Input.Keyboard.Codes) {
+                    var currentEvent = buttonsEvent[keyCode];
+                    var currentState = buttonsState[keyCode];
+                    currentEvent.update(false, currentTime);
+                    currentState.update(false, currentTime);
+                }
+
+                foreach (var codePair in Input.Keyboard.RawCodesCorrespondence) {
+                    var currentEvent = rawButtonsEvent[codePair.Key];
+                    var currentState = buttonsState[codePair.Value];
+                    currentEvent.update(false, currentTime);
+                    currentState.update(false, currentTime);
+                }
+            }
+        }
+
         protected override void on_gui() {
 
             var eventType = Event.current.type;

@@ -75,6 +75,28 @@ namespace Ex{
             sendInfos = true;
         }
 
+        protected override void set_update_state(bool doUpdate) {
+
+            if (!doUpdate) {
+
+                // reset states
+                var currentTime = time().ellapsed_exp_ms();
+                foreach (Input.JoypadButton.Code buttonCode in Input.JoypadButton.Codes) {
+                    var currentEvent = buttonsEvent[buttonCode];
+                    var currentState = buttonsState[buttonCode];
+                    currentEvent.update(false, currentTime);
+                    currentState.update(false, currentTime);
+                }
+
+                foreach (Input.JoypadAxis.Code axisCode in Input.JoypadAxis.Codes) {
+                    var currentEvent = axisEvent[axisCode];
+                    var currentState = axisState[axisCode];
+                    currentEvent.update(0f, currentTime);
+                    currentState.update(0f, currentTime);
+                }
+            }
+        }
+
         protected override void on_gui() {
 
             var eventType = Event.current.type;
