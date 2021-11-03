@@ -352,13 +352,16 @@ namespace Ex{
             ExVR.GuiSettings().read_from_xml(m_xmlExperiment.Settings);
 
             // read resources
-            experimentResourcesManager.generate_from_xml(m_xmlExperiment);            
+            experimentResourcesManager.generate_from_xml(m_xmlExperiment);
 
             // generate components and flow elements
+            log_message(string.Format("Load components: {0}", m_xmlExperiment.Components.Component.Count));
             if (!ExVR.Components().generate(m_xmlExperiment.Components)) {
                 log_error("Experiment loading failed. Please solve errors and start loading again.");
                 return false;
             }
+
+            log_message(string.Format("Load elements: {0}", (m_xmlExperiment.FlowElements.Routines.Routine.Count + m_xmlExperiment.FlowElements.ISIs.Isi.Count)));
             routines.generate_from_xml(m_xmlExperiment.FlowElements.Routines);
             ISIs.generate_from_xml(m_xmlExperiment.FlowElements.ISIs);            
 

@@ -63,7 +63,7 @@ namespace Ex{
         }
 
         // use_eye_camera
-        protected override void pre_update() {
+        protected override void post_update() {
             resize_image();
         }
 

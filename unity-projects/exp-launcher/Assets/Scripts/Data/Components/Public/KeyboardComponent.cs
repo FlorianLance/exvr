@@ -106,7 +106,7 @@ namespace Ex{
 
                     if (currentEvent.state != Input.Button.State.None) {
                         invoke_signal(buttonOnGuiSignal, currentEvent);
-                    }
+                    }                 
                 }
 
                 // send infos only once per frame

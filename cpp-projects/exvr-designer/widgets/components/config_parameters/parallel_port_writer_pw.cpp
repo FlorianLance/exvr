@@ -17,7 +17,6 @@
 using namespace tool::ex;
 
 struct ParallelPortWriterInitConfigParametersW::Impl{
-    ExCheckBoxW x32Mode{"x32_mode"};
     ExCheckBoxW int16Mode{"int16_mode"};
 };
 
@@ -31,11 +30,10 @@ ParallelPortWriterInitConfigParametersW::ParallelPortWriterInitConfigParametersW
 }
 
 void ParallelPortWriterInitConfigParametersW::insert_widgets(){
-    add_widget(ui::F::gen(ui::L::VB(),{m_p->x32Mode(), m_p->int16Mode()}, LStretch{false}, LMargins{true},QFrame::NoFrame));
+    add_widget(ui::F::gen(ui::L::VB(),{m_p->int16Mode()}, LStretch{false}, LMargins{true},QFrame::NoFrame));
 }
 
 void ParallelPortWriterInitConfigParametersW::init_and_register_widgets(){
-    add_input_ui(m_p->x32Mode.init_widget("Use x32 dll", false));
     add_input_ui(m_p->int16Mode.init_widget("Use 16 bits integers as sending values", false));
 }
 

@@ -24,7 +24,7 @@ namespace Ex{
         private bool sendInfos = false;        
 
         // signals
-        private static readonly string axisSignal = "axis";
+        private static readonly string axisOnGuiSignal = "axis";
         private static readonly string buttonOnGuiSignal = "button";
         // infos
         private static readonly string axisInfoSignal     = "axes_state_info";
@@ -44,7 +44,7 @@ namespace Ex{
 
         protected override bool initialize() {
 
-            add_signal(axisSignal);
+            add_signal(axisOnGuiSignal);
             add_signal(buttonOnGuiSignal);
 
             foreach(var code in Input.JoypadAxis.Codes) {
@@ -148,7 +148,7 @@ namespace Ex{
                 }
 
                 if (notNone) { 
-                    invoke_signal(axisSignal, currentState);
+                    invoke_signal(axisOnGuiSignal, currentState);
                 }
             }
 
@@ -196,7 +196,7 @@ namespace Ex{
                 }
             }
             if(ii == 0) {
-                log_error("No joystick detected.");
+                log_warning("No joystick detected.", false);
             }
             send_infos_to_gui_init_config(joypadInfoSignal, joystickInfos = joystickStr.ToString());
 

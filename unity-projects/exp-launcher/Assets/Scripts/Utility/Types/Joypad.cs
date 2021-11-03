@@ -72,7 +72,7 @@ namespace Ex.Input {
             if (pressed && !is_pressed()) {
                 ++nbTimesPressed;
                 lastTimeDown = currentTime;
-            } else {
+            } else if(!pressed){
                 lastTimeDown = -1.0;
             }
         }

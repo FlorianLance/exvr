@@ -487,8 +487,12 @@ namespace Ex
 
             // force disable/hide all component without logging
             foreach (var component in reverseSortedComponents) {
-                component.base_set_update_state(false);
-                component.base_set_visibility(false);
+                if (component.is_updating()) {
+                    component.base_set_update_state(false);
+                }
+                if (component.is_visible()) {
+                    component.base_set_visibility(false);
+                }
             }
         }        
 

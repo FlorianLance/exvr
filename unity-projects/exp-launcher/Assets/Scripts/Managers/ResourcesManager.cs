@@ -54,7 +54,7 @@ namespace Ex {
         };
 
         public void log_message(string message) {
-            ExVR.Log().message(string.Format("[RESOURCE] {0}", message));
+            ExVR.Log().message(string.Format("[RESOURCE] {0}", message), false);
         }
 
         public void log_warning(string warning) {
@@ -139,53 +139,49 @@ namespace Ex {
         }
 
 
-        private bool parallel_add_resources_from_xml(List<XML.Resource> resources) {
+        //private bool parallel_add_resources_from_xml(List<XML.Resource> resources) {
 
-            List<Resource> loadedResources = new List<Resource>();
+        //    List<Resource> loadedResources = new List<Resource>();
 
-            // init dictionnaries
-            foreach (var resource in resources) {
+        //    // init dictionnaries
+        //    foreach (var resource in resources) {
 
-                if (!Path.IsPathRooted(resource.Path)) {
-                    resource.Path = Path.GetFullPath(ExVR.Paths().designerDataTempDir + "/" + resource.Path);
-                }
+        //        if (!Path.IsPathRooted(resource.Path)) {
+        //            resource.Path = Path.GetFullPath(ExVR.Paths().designerDataTempDir + "/" + resource.Path);
+        //        }
 
-                var type = (ResourceType)Enum.Parse(typeof(ResourceType), resource.Type);
-                bool exists = (type == ResourceType.Directory) ? Directory.Exists(resource.Path) : File.Exists(resource.Path);
-                if (!exists) {
-                    log_error(String.Format("Cannot load resource file of type [{0}] with path: {1})", resource.Type, resource.Path));
-                    return false;
-                }
+        //        var type = (ResourceType)Enum.Parse(typeof(ResourceType), resource.Type);
+        //        bool exists = (type == ResourceType.Directory) ? Directory.Exists(resource.Path) : File.Exists(resource.Path);
+        //        if (!exists) {
+        //            log_error(String.Format("Cannot load resource file of type [{0}] with path: {1})", resource.Type, resource.Path));
+        //            return false;
+        //        }
 
-                // init resource if not mapped                
-                if (!m_pathMappingResources[type].ContainsKey(resource.Path)) {
-                    Resource resourceData = generate_resource(type, resource.Key, resource.Alias, resource.Path);
-                    m_pathMappingResources[type][resource.Path]   = resourceData;
-                    m_aliasMappingResources[type][resource.Alias] = resourceData;
-                    loadedResources.Add(resourceData);
-                }
-            }
+        //        // init resource if not mapped                
+        //        if (!m_pathMappingResources[type].ContainsKey(resource.Path)) {
+        //            Resource resourceData = generate_resource(type, resource.Key, resource.Alias, resource.Path);
+        //            m_pathMappingResources[type][resource.Path]   = resourceData;
+        //            m_aliasMappingResources[type][resource.Alias] = resourceData;
+        //            loadedResources.Add(resourceData);
+        //        }
+        //    }
 
-            // parallel resources loading
-            System.Threading.Tasks.Parallel.ForEach(loadedResources, resource => {
-                resource.read_data();
-            });
-            foreach(var resource in loadedResources) {
-                resource.initialize();
-            }
+        //    // parallel resources loading
+        //    System.Threading.Tasks.Parallel.ForEach(loadedResources, resource => {
+        //        resource.read_data();
+        //    });
+        //    foreach(var resource in loadedResources) {
+        //        resource.initialize();
+        //    }
 
-            return true;
-        }
+        //    return true;
+        //}
 
         private bool add_resource_from_xml(XML.Resource resource, ResourceType type) {
 
-            if (!Path.IsPathRooted(resource.Path)) {
-                resource.Path = Path.GetFullPath(ExVR.Paths().designerDataTempDir + "/" + resource.Path);
-            }
-
             bool exists = (type == ResourceType.Directory) ? Directory.Exists(resource.Path) : File.Exists(resource.Path);
             if (!exists) {
-                log_error(String.Format("Cannot load resource file of type [{0}] with path: {1})", resource.Type, resource.Path));
+                log_error(String.Format("Cannot load resource file of type [{0}] with path: {1}", resource.Type, resource.Path));
                 return false;
             }
 
@@ -199,6 +195,8 @@ namespace Ex {
                     resourceData.read_data();
                     resourceData.initialize();
                 }
+            } else {
+                log_error(String.Format("Resource file of type [{0}] with path: {1} already added.", resource.Type, resource.Path));
             }
 
             return true;
@@ -206,16 +204,24 @@ namespace Ex {
 
         public void generate_from_xml(XML.Experiment xmlExperiment) {
 
+
             XML.Resources xmlResources = xmlExperiment.Resources;
 
             // fill dictionnay for commodity
-            var resources = new Dictionary<ResourceType, Dictionary<string, XML.Resource>>();
+            var newResourcesPerPathPerType = new Dictionary<ResourceType, Dictionary<string, XML.Resource>>();
             foreach (var resource in xmlResources.Resource) {
+
                 var type = (ResourceType)Enum.Parse(typeof(ResourceType), resource.Type);
-                if (!resources.ContainsKey(type)) {
-                    resources[type] = new Dictionary<string, XML.Resource>();
+                if (!newResourcesPerPathPerType.ContainsKey(type)) {
+                    newResourcesPerPathPerType[type] = new Dictionary<string, XML.Resource>();
                 }
-                resources[type][resource.Path] = resource;
+
+                // set all path to absolute
+                if (!Path.IsPathRooted(resource.Path)) {
+                    resource.Path = Path.GetFullPath(ExVR.Paths().designerDataTempDir + "/" + resource.Path);
+                }
+
+                newResourcesPerPathPerType[type][resource.Path] = resource;
             }
 
             // look for resources not available anymore
@@ -225,8 +231,8 @@ namespace Ex {
 
                     // look for resource in dictionnaries
                     bool found = false;
-                    if (resources.ContainsKey(mappingPerType.Key)){
-                        if (resources[mappingPerType.Key].ContainsKey(resource.Key)) {
+                    if (newResourcesPerPathPerType.ContainsKey(mappingPerType.Key)){
+                        if (newResourcesPerPathPerType[mappingPerType.Key].ContainsKey(resource.Key)) {
                             found = true;
                         }
                     }
@@ -239,10 +245,14 @@ namespace Ex {
             }
 
             // remove theses resources
-            foreach(var resource in resourcesToRemove) {                
-                m_aliasMappingResources[resource.Item1].Remove(resource.Item3.alias);
-                m_pathMappingResources[resource.Item1].Remove(resource.Item2);
-                resource.Item3.clean();
+            if (resourcesToRemove.Count > 0) {
+
+                log_message(string.Format("Remove unused resources: {0}", resourcesToRemove.Count));
+                foreach (var resource in resourcesToRemove) {
+                    m_aliasMappingResources[resource.Item1].Remove(resource.Item3.alias);
+                    m_pathMappingResources[resource.Item1].Remove(resource.Item2);
+                    resource.Item3.clean();
+                }
             }
 
             // clean resources depending reload code
@@ -255,17 +265,20 @@ namespace Ex {
 
                 // clean data
                 List<Resource> resourcesToKeep = new List<Resource>();
-                foreach (var bundle in m_aliasMappingResources[type]) {
-                    if (!bundle.Value.doNotRemove) {
-                        bundle.Value.clean();
+                foreach (var resourcesPerType in m_aliasMappingResources[type]) {
+                    if (!resourcesPerType.Value.doNotRemove) {
+                        resourcesPerType.Value.clean();
                     } else {
-                        resourcesToKeep.Add(bundle.Value);
+                        resourcesToKeep.Add(resourcesPerType.Value);
                     }
-                }    
+                }
 
                 // remove from dictionnary
-                m_pathMappingResources[type].Clear();
-                m_aliasMappingResources[type].Clear();
+                if(m_pathMappingResources[type].Count > 0) {
+                    log_message(string.Format("Clean [{0}] [{1}]", m_pathMappingResources[type].Count, type));
+                    m_pathMappingResources[type].Clear();
+                    m_aliasMappingResources[type].Clear();
+                }
 
                 // add again non removables resources in dictionnaries
                 foreach(Resource resourceToKeep in resourcesToKeep) {
@@ -273,25 +286,43 @@ namespace Ex {
                 }
             }
 
-            // C# scripts resources
-            // ### retrieve c# scripts resources load them
-            List<XML.Resource> cSharpSriptResources = new List<XML.Resource>();
-            foreach (var resource in xmlResources.Resource) {
-                var type = (ResourceType)Enum.Parse(typeof(ResourceType), resource.Type);
-                if(type == ResourceType.CSharpScript) {
-                    cSharpSriptResources.Add(resource);
-                    add_resource_from_xml(resource, type);
-                }                
+            // remove already added resources
+            foreach(var currentResourcesPerType in m_pathMappingResources) {
+
+                if (!newResourcesPerPathPerType.ContainsKey(currentResourcesPerType.Key)) {
+                    continue;
+                }
+
+                var newResourcesPerPath = newResourcesPerPathPerType[currentResourcesPerType.Key];
+                foreach (var currentResourcesPerPath in currentResourcesPerType.Value) {
+                    if (newResourcesPerPath.ContainsKey(currentResourcesPerPath.Key)) {
+                        newResourcesPerPath.Remove(currentResourcesPerPath.Key);
+                    }
+                }
             }
 
-            // ###  remove c# scripts resources from main resources list
-            foreach (var resource in cSharpSriptResources) {
-                xmlResources.Resource.Remove(resource);
+            // generate C# script resource (we need to compile every C# script before generating others resources)
+            if (newResourcesPerPathPerType.ContainsKey(ResourceType.CSharpScript)) {
+                if (newResourcesPerPathPerType[ResourceType.CSharpScript].Count > 0) {
+                    log_message(string.Format("Generate [{0}] [{1}]", newResourcesPerPathPerType[ResourceType.CSharpScript].Count, ResourceType.CSharpScript));
+
+                    // ### retrieve c# scripts resources load them
+                    List<string> pathToRemove = new List<string>();
+                    foreach (var resource in newResourcesPerPathPerType[ResourceType.CSharpScript]) {
+                        add_resource_from_xml(resource.Value, ResourceType.CSharpScript);
+                        pathToRemove.Add(resource.Value.Path);
+                    }
+
+                    // remove c# scripts resources from main resources list
+                    foreach (var path in pathToRemove) {
+                        newResourcesPerPathPerType[ResourceType.CSharpScript].Remove(path);
+                    }
+                }
             }
 
             // ###  compile/recompile scripts
-            if ((xmlResources.ReloadCode & (int)ResourceType.CSharpScript) != 0) {
-
+            if ((xmlResources.ReloadCode & (int)ResourceType.CSharpScript) != 0 || CSharpScriptResource.get_compiled_assembly() == null) {
+                
                 List<string> scriptsFiles = new List<string>();
 
                 // retrieve resources scripts
@@ -305,16 +336,22 @@ namespace Ex {
                 }
 
                 // compile assembly from scripts
-                CSharpScriptResource.compile_assembly_from_scripts_files(scriptsFiles.ToArray());                    
+                if (scriptsFiles.Count > 0) {
+                    log_message(string.Format("Compile C# scripts [{0}]...", scriptsFiles.Count));                    
+                    CSharpScriptResource.compile_assembly_from_scripts_files(scriptsFiles.ToArray());
+                }
             }
 
-            // others resources
-            //parallel_add_resources_from_xml(xmlResources.Resource); // mostly useless
-            foreach (var resource in xmlResources.Resource) {
-                // get type from string
-                var type = (ResourceType)Enum.Parse(typeof(ResourceType), resource.Type);
-                if (!add_resource_from_xml(resource, type)) {
-                    continue;
+
+            // generate others resources
+            foreach (var resourcesPerPath in newResourcesPerPathPerType) {
+                if (resourcesPerPath.Value.Count > 0){
+                    log_message(string.Format("Generate [{0}] [{1}]", resourcesPerPath.Value.Count, resourcesPerPath.Key));
+                    foreach (var resource in resourcesPerPath.Value) {
+                        if (!add_resource_from_xml(resource.Value, resourcesPerPath.Key)) {
+                            continue;
+                        }
+                    }
                 }
             }
         }
@@ -427,7 +464,6 @@ namespace Ex {
 
             GameObject assets;
             if(nameSubObject.Length == 0) {
-                Debug.Log("-> " + assetBundle.bundle.GetAllAssetNames()[0]);
                 assets = assetBundle.bundle.LoadAsset<GameObject>(assetBundle.bundle.GetAllAssetNames()[0]);
             } else {
                 assets = assetBundle.bundle.LoadAsset<GameObject>(nameSubObject);                

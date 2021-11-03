@@ -10,6 +10,7 @@ using System.Collections.Generic;
 
 // unity
 using UnityEngine;
+using UnityEngine.Profiling;
 
 
 #if UNITY_EDITOR
@@ -423,32 +424,40 @@ namespace Ex{
 
         public void on_gui() {
 
-            UnityEngine.Profiling.Profiler.BeginSample("[ExVR][Condition] on_gui");
+            Profiler.BeginSample(string.Format("[ExVR][Condition][{0}] on_gui", name));
             foreach (var action in actions) {
+                Profiler.BeginSample(string.Format("[ExVR][Component][{0}] on_gui", action.component().name));
                 action.on_gui();
+                Profiler.EndSample();
             }
-            UnityEngine.Profiling.Profiler.EndSample();
+            Profiler.EndSample();
         }
 
         public void update() {
 
-            UnityEngine.Profiling.Profiler.BeginSample("[ExVR][Condition] pre_update");
+            Profiler.BeginSample(string.Format("[ExVR][Condition][{0}] pre_update", name));
             foreach (var action in actions) {
+                Profiler.BeginSample(string.Format("[ExVR][Component][{0}] pre_update", action.component().name));
                 action.pre_update();
+                Profiler.EndSample();
             }
-            UnityEngine.Profiling.Profiler.EndSample();
+            Profiler.EndSample();
 
-            UnityEngine.Profiling.Profiler.BeginSample("[ExVR][Condition] update");
+            Profiler.BeginSample(string.Format("[ExVR][Condition][{0}] update", name));
             foreach (var action in actions) {
+                Profiler.BeginSample(string.Format("[ExVR][Component][{0}] update", action.component().name));
                 action.update();
+                Profiler.EndSample();
             }
-            UnityEngine.Profiling.Profiler.EndSample();
+            Profiler.EndSample();
 
-            UnityEngine.Profiling.Profiler.BeginSample("[ExVR][Condition] post_update");
+            Profiler.BeginSample(string.Format("[ExVR][Condition][{0}] post_update", name));
             foreach (var action in actions) {
+                Profiler.BeginSample(string.Format("[ExVR][Component][{0}] post_update", action.component().name));
                 action.post_update();
+                Profiler.EndSample();
             }
-            UnityEngine.Profiling.Profiler.EndSample();
+            Profiler.EndSample();
         }
 
         public void play() {

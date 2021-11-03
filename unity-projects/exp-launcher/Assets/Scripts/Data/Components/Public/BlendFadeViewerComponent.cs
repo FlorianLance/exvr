@@ -43,16 +43,8 @@ namespace Ex{
             m_overlayGo.SetActive(visibility);
         }
 
-        protected override void pre_update() {
-            m_overlay.update();
-            m_overlayGo.transform.position = CameraUtility.eye_camera_position();
-        }
-
-        protected override void update() {
-            m_overlayGo.transform.position = CameraUtility.eye_camera_position();
-        }
-
         protected override void post_update() {
+            m_overlay.update();
             m_overlayGo.transform.position = CameraUtility.eye_camera_position();
         }
     }
