@@ -892,7 +892,7 @@ namespace Ex{
                 if (order == AxisOrder.PitchYawRoll) {
                     // pitch yaw roll (x y z)
                     
-                    tr.rotation = Quaternion.Euler(values[3], values[4], values[5]);
+                    tr.rotation = Quaternion.Euler(values[3], values[4], values[5]);                    
                 } else if( order == AxisOrder.YawRollPitch){
 
                     // yaw roll pitch (y z x)
