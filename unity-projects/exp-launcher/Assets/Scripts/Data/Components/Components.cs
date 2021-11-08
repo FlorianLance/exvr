@@ -1,8 +1,26 @@
-﻿/*******************************************************************************
-** exvr-exp                                                                   **
-** No license (to be defined)                                                 **
-** Copyright (c) [2018] [Florian Lance][EPFL-LNCO]                            **
-********************************************************************************/
+﻿
+/***********************************************************************************
+** exvr-exp                                                                       **
+** MIT License                                                                    **
+** Copyright (c) [2018] [Florian Lance][EPFL-LNCO]                                **
+** Permission is hereby granted, free of charge, to any person obtaining a copy   **
+** of this software and associated documentation files (the "Software"), to deal  **
+** in the Software without restriction, including without limitation the rights   **
+** to use, copy, modify, merge, publish, distribute, sublicense, and/or sell      **
+** copies of the Software, and to permit persons to whom the Software is          **
+** furnished to do so, subject to the following conditions:                       **
+**                                                                                **
+** The above copyright notice and this permission notice shall be included in all **
+** copies or substantial portions of the Software.                                **
+**                                                                                **
+** THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR     **
+** IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,       **
+** FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE    **
+** AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER         **
+** LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,  **
+** OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE  **
+** SOFTWARE.                                                                      **
+************************************************************************************/
 
 // system
 using System;
@@ -156,6 +174,7 @@ namespace Ex
             // network
             ["Ex.UdpReaderComponent"] = gen_info(Category.Network, Pritority.Hight, Reserved.Public),
             ["Ex.UdpWriterComponent"] = gen_info(Category.Network, Pritority.Hight, Reserved.Public),
+            ["Ex.SerialPortReaderComponent"] = gen_info(Category.Network, Pritority.Hight, Reserved.Public),
             ["Ex.SerialPortWriterComponent"] = gen_info(Category.Network, Pritority.Hight, Reserved.Public),
             ["Ex.ParallelPortWriterComponent"] = gen_info(Category.Network, Pritority.Hight, Reserved.Public),
             // output
@@ -195,6 +214,7 @@ namespace Ex
             ["Ex.QualisysTrackingComponent"] = gen_info(Category.Tracking, Pritority.Hight, Reserved.Public),
             ["Ex.SoncebozSGComponent"] = gen_info(Category.Tracking, Pritority.Hight, Reserved.LNCO),
             ["Ex.FOPRobotComponent"] = gen_info(Category.Tracking, Pritority.Hight, Reserved.LNCO),
+            ["Ex.ViveProEyeTrackingComponent"] = gen_info(Category.Tracking, Pritority.Hight, Reserved.Public),            
             // UI
             ["Ex.SliderUIComponent"] = gen_info(Category.UI, Pritority.Medium, Reserved.Public),
             // video

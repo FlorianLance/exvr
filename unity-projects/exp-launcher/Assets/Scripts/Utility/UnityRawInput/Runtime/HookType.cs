@@ -1,4 +1,5 @@
 ﻿
+
 namespace UnityRawInput
 {
     public enum HookType : int

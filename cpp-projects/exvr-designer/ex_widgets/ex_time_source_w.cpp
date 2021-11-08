@@ -11,14 +11,17 @@ using namespace tool::ex;
 
 ExTimeW::ExTimeW(QString name) : ExItemW<QWidget>(UiType::Time, name){
     connect(&typeT, &ExComboBoxTextW::ui_change_signal, this, &ExTimeW::ui_change_signal);
+    connect(&modeT, &ExComboBoxTextW::ui_change_signal, this, &ExTimeW::ui_change_signal);
     connect(&frequency, &ExSpinBoxW::ui_change_signal, this, &ExTimeW::ui_change_signal);
 }
 
 ExTimeW *ExTimeW::init_widget(bool enabled){
 
-    QStringList items = {"Time since exp", "Time since routine"};
-    typeT.init_widget(items, Index{0}, enabled);
+
+    typeT.init_widget({"Time since exp", "Time since routine"}, Index{0}, enabled);
     frequency.init_widget(MinV<int>{1}, V<int>{30}, MaxV<int>{90}, StepV<int>{1}, enabled);
+
+    modeT.init_widget({"When triggered", "At each frame"}, Index{0}, enabled);
 
     auto l = ui::L::VB();
     l->setContentsMargins(1,1,1,1);
@@ -28,6 +31,9 @@ ExTimeW *ExTimeW::init_widget(bool enabled){
     h1->setContentsMargins(1,1,1,1);
     h1->addWidget(ui::W::txt("Type: "));
     h1->addWidget(typeT());
+    h1->addWidget(ui::W::txt("Mode: "));
+    h1->addWidget(modeT());
+
     auto w1 = new QWidget();
     w1->setLayout(h1);
 
@@ -48,8 +54,8 @@ void ExTimeW::update_from_arg(const Arg &arg){
 
     ExItemW::update_from_arg(arg);
 
-    auto split = arg.value().split("|");
-    if(split.size() < 2){
+    auto split = arg.value().split("%");
+    if(split.size() < 3){
         return;
     }
 
@@ -57,12 +63,15 @@ void ExTimeW::update_from_arg(const Arg &arg){
 
     Arg typeA = arg;
     Arg freqA = arg;
+    Arg modeA = arg;
 
     typeA.init_from(split[0]);
     freqA.init_from_int_str(split[1]);
+    modeA.init_from(split[2]);
 
     typeT.update_from_arg(typeA);
     frequency.update_from_arg(freqA);
+    modeT.update_from_arg(modeA);
 
     w->blockSignals(false);
 }
@@ -71,17 +80,21 @@ Arg ExTimeW::convert_to_arg() const{
 
     auto typeA = typeT.convert_to_arg();
     auto freqA = frequency.convert_to_arg();
+    auto modeA = modeT.convert_to_arg();
 
     QStringList list;
     list << std::move(typeA.value());
     list << std::move(freqA.value());
+    list << std::move(modeA.value());
 
-    typeA.init_from(list, "|");
-    return typeA;
+    auto arg = ExItemW::convert_to_arg();
+    arg.init_from(list, "%");
+    return arg;
 }
 
 void ExTimeW::set_as_generator(){
     ExBaseW::set_as_generator();
     typeT.set_as_generator();
     frequency.set_as_generator();
+    modeT.set_as_generator();
 }

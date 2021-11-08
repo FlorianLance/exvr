@@ -32,6 +32,7 @@
 #include "config_parameters/mouse_pw.hpp"
 #include "config_parameters/text_resource_pw.hpp"
 #include "config_parameters/leap_motion_arms_display_pw.hpp"
+#include "config_parameters/serial_port_reader_pw.hpp"
 #include "config_parameters/serial_port_writer_pw.hpp"
 #include "config_parameters/falling_spheres_pw.hpp"
 #include "config_parameters/mirror_pw.hpp"
@@ -188,8 +189,10 @@ ConfigParametersW *ConfigW::generate_parameters(Component::Type type, bool initC
     // ############################# Network
     case CT::Parallel_port_writer:
         return gen_params_w<ParallelPortWriterInitConfigParametersW,ParallelPortWriterConfigParametersW>(initConfig);
+    case CT::Serial_port_reader:
+        return gen_params_w<SerialPortReaderInitParameterW,SerialPortReaderConfigParametersW>(initConfig);
     case CT::Serial_port_writer:
-        return gen_params_w<SerialPortWriteInitParameterW,SerialPortWriterConfigParametersW>(initConfig);
+        return gen_params_w<SerialPortWriterInitParameterW,SerialPortWriterConfigParametersW>(initConfig);
     case CT::Udp_reader:
         return gen_params_w<UdpReaderInitConfigParametersW,UdpReaderConfigParametersW>(initConfig);
     case CT::Udp_writer:

@@ -17,20 +17,20 @@
 
 using namespace tool::ex;
 
-struct SerialPortWriteInitParameterW::Impl{
+struct SerialPortWriterInitParameterW::Impl{
     ExLineEditW leWritingPort{"port_to_write"};
     ExSpinBoxW sbBaudRate{"baud_rate"};
 };
 
-SerialPortWriteInitParameterW::SerialPortWriteInitParameterW() :  ConfigParametersW(), m_p(std::make_unique<Impl>()){
+SerialPortWriterInitParameterW::SerialPortWriterInitParameterW() :  ConfigParametersW(), m_p(std::make_unique<Impl>()){
 }
 
-void SerialPortWriteInitParameterW::insert_widgets(){
+void SerialPortWriterInitParameterW::insert_widgets(){
     add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Writing port:"), m_p->leWritingPort()}, LStretch{true}, LMargins{false}));
     add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Baud rate:"), m_p->sbBaudRate()}, LStretch{true}, LMargins{false}));
 }
 
-void SerialPortWriteInitParameterW::init_and_register_widgets(){
+void SerialPortWriterInitParameterW::init_and_register_widgets(){
     add_input_ui(m_p->leWritingPort.init_widget("COM1"));
     add_input_ui(m_p->sbBaudRate.init_widget(MinV<int>{0}, V<int>{9600}, MaxV<int>{100000000}, StepV<int>{100}));
 }

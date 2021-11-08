@@ -81,7 +81,7 @@ struct Component {
     enum class Type : int {
         /** A */ AudioSource, Attach_object_to_hand,
         /** B */ Biopac, Blend_fade_viewer,
-        /** C */ Camera, Camera_trajectory, Camera_trajectory_file, Cloud, Config, CSharp_function, CSharp_script, Cube, Cylinder,
+        /** C */ Camera, Camera_target, Camera_trajectory, Camera_trajectory_file, Cloud, Config, CSharp_function, CSharp_script, Cube, Cylinder,
         /** F */ Falling_spheres, Fixation_cross_viewer, Flag_pole, Flashing_dot, Fop_robot, Fov_simulator_viewer, FPP_avatar_camera,
         /** H */ Humanoid_avatar, Humanoid_controller,
         /** I */ Image_resource, Image_viewer,
@@ -91,10 +91,10 @@ struct Component {
         /** M */ Mark_to_clean, Microphone, Mirror, Mouse, MRI, Multi_AB,
         /** P */ Parallel_port_writer, Plot_resource, Python_script,
         /** Q */ Qualisys,
-        /** S */ Scaner_video, Scene_scaner, Serial_port_writer, Sky, Slider_ui, Sonceboz_SG, Sphere,
+        /** S */ Scaner_video, Scene_scaner, Serial_port_reader, Serial_port_writer, Sky, Slider_ui, Sonceboz_SG, Sphere,
         /** T */ Target_to_grab, Text_resource, Text_viewer, Thera_trainer_tracking, Thera_trainer_platform, Torus, TPP_avatar_camera,
         /** U */ Unity_asset_bundle, Udp_reader, Udp_writer,
-        /** V */ Video_file, Video_file_camera_viewer, Video_saver, Camera_target,
+        /** V */ Video_file, Video_file_camera_viewer, Video_saver, Vive_pro_eye_tracking,
         /** W */ Webcam, Webcam_viewer,
         SizeEnum
     };
@@ -186,6 +186,7 @@ struct Component {
         {T::Torus,                    C::Model,       TO::V,     CO::B,   false,   R::OpenSource,   S::Sta, "Torus"sv, "Torus"sv, "Torus"sv,":/icons/Torus"sv},
         // Network
         {T::Parallel_port_writer,     C::Network,     TO::N,     CO::B,   false,   R::OpenSource,   S::Sta, "Parallel_port_writer"sv, "Parallel port writer"sv, "ParallelPortWriter"sv, ":/icons/USB"sv},
+        {T::Serial_port_reader,       C::Network,     TO::U,     CO::B,   false,   R::OpenSource,   S::Sta, "Serial_port_reader"sv, "Serial port reader"sv, "SerialPortReader"sv, ":/icons/USB"sv},
         {T::Serial_port_writer,       C::Network,     TO::U,     CO::B,   false,   R::OpenSource,   S::Sta, "Serial_port_writer"sv, "Serial port writer"sv, "SerialPortWriter"sv, ":/icons/USB"sv},
         {T::Udp_reader,               C::Network,     TO::U,     CO::I,   false,   R::OpenSource,   S::Sta, "Udp_reader"sv, "UDP reader"sv, "UdpReader"sv, ":/icons/UDP"sv},
         {T::Udp_writer,               C::Network,     TO::U,     CO::I,   false,   R::OpenSource,   S::Sta, "Udp_writer"sv, "UDP writer"sv, "UdpWriter"sv, ":/icons/UDP"sv},
@@ -222,6 +223,7 @@ struct Component {
         {T::Sonceboz_SG,              C::Tracking,    TO::U,     CO::B,   true,    R::LNCO,         S::Exp, "Sonceboz_SG"sv, "Sonceboz SG"sv, "SoncebozSG"sv,":/icons/Sonceboz"sv},
         {T::Thera_trainer_tracking,   C::Tracking,    TO::U,     CO::I,   true,    R::LNCO,         S::Sta, "Thera_trainer_tracking"sv, "Thera trainer tracking"sv, "TheraTrainerTracking"sv, ":/icons/Thera_trainer"sv},
         {T::Thera_trainer_platform,   C::Tracking,    TO::B,     CO::C,   false,   R::LNCO,         S::Sta, "Thera_trainer_platform"sv, "Thera trainer platform"sv, "TheraTrainerPlatform"sv, ":/icons/Thera_trainer"sv},
+        {T::Vive_pro_eye_tracking,    C::Tracking,    TO::B,     CO::C,   false,   R::OpenSource,   S::Exp, "Vive_pro_eye_tracking"sv, "Vive pro eye tracking"sv, "ViveProEyeTracking"sv, ":/icons/Thera_trainer"sv},
         // UI
         {T::Slider_ui,                C::UI,          TO::B,     CO::B,   false,   R::OpenSource,   S::Sta, "Slider_ui"sv, "Slider ui"sv, "SliderUI"sv, ":/icons/Slider_overlay"sv},
         // Video
@@ -421,7 +423,7 @@ struct Component {
 
     using TComponentSignals = std::tuple<
         CT,                             FunctionN,                     CNT,                            Doc>;
-    static constexpr TupleArray<58, TComponentSignals> componentsSignals = {{
+    static constexpr TupleArray<64, TComponentSignals> componentsSignals = {{
         TComponentSignals
         // Audio
         {T::AudioSource,               "sample value channel"sv,       CNT::id_any_t,                  "..."sv},
@@ -445,6 +447,8 @@ struct Component {
         {T::Torus,                     "visibility changed"sv,         CNT::boolean_t,                 "Is triggered if the visibility of the component changed"sv},
         {T::Sphere,                    "visibility changed"sv,         CNT::boolean_t,                 "Is triggered if the visibility of the component changed"sv},        
         // Network
+        {T::Serial_port_reader,        "integer message"sv,            CNT::integer_t,                 "..."sv},
+        {T::Serial_port_reader,        "string message"sv,             CNT::string_t,                  "..."sv},
         {T::Udp_reader,                "last message received"sv,      CNT::string_t,                  "..."sv},
         {T::Udp_writer,                "nb bytes sent"sv,              CNT::integer_t,                 "..."sv},                                                                                
         // Resource
@@ -489,6 +493,10 @@ struct Component {
         {T::Fop_robot,                 "slave force"sv,                CNT::float_t,                   "..."sv},
         {T::Fop_robot,                 "master force"sv,               CNT::float_t,                   "..."sv},
         {T::Sonceboz_SG,               "feedback"sv,                   CNT::transform_t,               "..."sv},
+        {T::Vive_pro_eye_tracking,     "gaze direction"sv,             CNT::vector3_t,                 "..."sv},
+        {T::Vive_pro_eye_tracking,     "eye openess"sv,                CNT::id_any_t,                  "..."sv},
+        {T::Vive_pro_eye_tracking,     "pupil position"sv,             CNT::id_any_t,                  "..."sv},
+        {T::Vive_pro_eye_tracking,     "pupil diameter"sv,             CNT::id_any_t,                  "..."sv},
         // UI
         {T::Slider_ui,                 "value updated"sv,              CNT::float_t,                   "Is triggered when slider value changes"sv},
         // Video

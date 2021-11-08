@@ -22,6 +22,7 @@ void StartRoutineNodeDataModel::init_ports_caption(){
     outPortsInfo[1].caption = QSL("condition (") % get_name(io.outTypes[1]) % QSL(")");
     outPortsInfo[2].caption = QSL("routine iter (") % get_name(io.outTypes[2]) % QSL(")");
     outPortsInfo[3].caption = QSL("condition iter (") % get_name(io.outTypes[3]) % QSL(")");
+    outPortsInfo[4].caption = QSL("exp time ms (") % get_name(io.outTypes[4]) % QSL(")");
 }
 
 void StopRoutineNodeDataModel::compute(){

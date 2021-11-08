@@ -1,8 +1,26 @@
-﻿/*******************************************************************************
-** exvr-exp                                                                   **
-** No license (to be defined)                                                 **
-** Copyright (c) [2018] [Florian Lance][EPFL-LNCO]                            **
-********************************************************************************/
+﻿
+/***********************************************************************************
+** exvr-exp                                                                       **
+** MIT License                                                                    **
+** Copyright (c) [2018] [Florian Lance][EPFL-LNCO]                                **
+** Permission is hereby granted, free of charge, to any person obtaining a copy   **
+** of this software and associated documentation files (the "Software"), to deal  **
+** in the Software without restriction, including without limitation the rights   **
+** to use, copy, modify, merge, publish, distribute, sublicense, and/or sell      **
+** copies of the Software, and to permit persons to whom the Software is          **
+** furnished to do so, subject to the following conditions:                       **
+**                                                                                **
+** The above copyright notice and this permission notice shall be included in all **
+** copies or substantial portions of the Software.                                **
+**                                                                                **
+** THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR     **
+** IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,       **
+** FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE    **
+** AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER         **
+** LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,  **
+** OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE  **
+** SOFTWARE.                                                                      **
+************************************************************************************/
 
 // system
 using System;
@@ -21,7 +39,7 @@ namespace Ex{
             xml  = xmlArg;
             type = Type.GetType(xmlArg.Type);
             if(type == null) {
-                ExVR.Log().error("Can't read type from argument with name " + xml.Name);
+                ExVR.Log().error(string.Format("Can't read type [{0}] from argument.", xmlArg.Type));
                 return false;
             }
 
@@ -44,7 +62,7 @@ namespace Ex{
                         var l = (List<object>)value;
                         if(l.Count != Converter.to_int(xmlArg.Sizes.Split(' ')[0])) {
                             value = new List<object>();
-                            ExVR.Log().error("List size invalid for arg: " + xmlArg.Name + " -> " + l.Count + " " + xmlArg.Sizes[0]);
+                            ExVR.Log().error(string.Format("List size invalid for arg: {0} -> {1} {2}", xmlArg.Name, l.Count, xmlArg.Sizes[0]));
                         }
                         return true;
                     }
@@ -55,7 +73,7 @@ namespace Ex{
 
                         string[] sizes = xmlArg.Sizes.Split(' ');
                         if(sizes.Length < 2) {
-                            ExVR.Log().error("List 2D sizes invalid for arg: " + xmlArg.Name);
+                            ExVR.Log().error(string.Format("List 2D sizes invalid for argument with name {0} and value {1}", xml.Name, xml.Value));
                             return false;
                         }
 
@@ -64,7 +82,7 @@ namespace Ex{
                         value = Converter.to_2D_list(xmlArg.Value, xmlArg.Separator, rows, cols, converter);
                         if(value == null) {
                             value = new List<List<object>>();
-                            ExVR.Log().error("List 2D sizes invalid for arg: " + xmlArg.Name);
+                            ExVR.Log().error(string.Format("List 2D sizes invalid for argument with name {0} and value {1}", xml.Name, xml.Value));
                             return false;
                         }
                                                

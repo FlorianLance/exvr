@@ -117,6 +117,7 @@
     <Compile Include="Assets\Scripts\Data\Components\Public\PlotResourceComponent.cs" />
     <Compile Include="Assets\Scripts\Data\Components\Public\PythonScriptComponent.cs" />
     <Compile Include="Assets\Scripts\Data\Components\Public\QualisysTrackingComponent.cs" />
+    <Compile Include="Assets\Scripts\Data\Components\Public\SerialPortReaderComponent.cs" />
     <Compile Include="Assets\Scripts\Data\Components\Public\SerialPortWriterComponent.cs" />
     <Compile Include="Assets\Scripts\Data\Components\Public\SkyComponent.cs" />
     <Compile Include="Assets\Scripts\Data\Components\Public\SliderUIComponent.cs" />
@@ -133,6 +134,7 @@
     <Compile Include="Assets\Scripts\Data\Components\Public\VideoFileCameraViewerComponent.cs" />
     <Compile Include="Assets\Scripts\Data\Components\Public\VideoFileComponent.cs" />
     <Compile Include="Assets\Scripts\Data\Components\Public\VideoResourceComponent.cs" />
+    <Compile Include="Assets\Scripts\Data\Components\Public\ViveProEyeTrackingComponent.cs" />
     <Compile Include="Assets\Scripts\Data\Components\Public\WebcamComponent.cs" />
     <Compile Include="Assets\Scripts\Data\Components\Public\WebcamViewerComponent.cs" />
     <Compile Include="Assets\Scripts\Data\Components\Public\internal\BaseCompiledCSharpComponent.cs" />

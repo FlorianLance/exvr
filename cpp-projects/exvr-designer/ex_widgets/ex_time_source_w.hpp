@@ -25,6 +25,7 @@ public:
     void set_as_generator() override;
 
     ExComboBoxTextW typeT = {"type"};
+    ExComboBoxTextW modeT = {"mode"};
     ExSpinBoxW frequency = {"frequency"};
 };
 }

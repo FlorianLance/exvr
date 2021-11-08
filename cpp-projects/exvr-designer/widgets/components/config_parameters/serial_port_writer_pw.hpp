@@ -12,11 +12,11 @@
 
 namespace tool::ex {
 
-class SerialPortWriteInitParameterW : public ConfigParametersW{
+class SerialPortWriterInitParameterW : public ConfigParametersW{
 
 public :
 
-    SerialPortWriteInitParameterW();
+    SerialPortWriterInitParameterW();
 
     void insert_widgets() override;
     void init_and_register_widgets() override;

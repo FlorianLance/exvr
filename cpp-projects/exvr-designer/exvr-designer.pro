@@ -136,6 +136,7 @@ HEADERS += \
     # widgets
     ## main
     widgets/components/config_parameters/csharp_pw.hpp \
+    widgets/components/config_parameters/serial_port_reader_pw.hpp \
     widgets/designer_window.hpp\
     ## elements
     widgets/dialogs/benchmark_dialog.hpp \
@@ -337,6 +338,7 @@ SOURCES += \
     widgets/components/config_parameters/biopac_pw.cpp \
     widgets/components/config_parameters/csharp_pw.cpp \
     widgets/components/config_parameters/parallel_port_writer_pw.cpp \
+    widgets/components/config_parameters/serial_port_reader_pw.cpp \
     widgets/components/config_parameters/serial_port_writer_pw.cpp \
     widgets/designer_window.cpp \
     ## components
