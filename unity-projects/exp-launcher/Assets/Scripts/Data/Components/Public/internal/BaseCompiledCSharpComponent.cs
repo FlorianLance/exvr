@@ -56,10 +56,9 @@ namespace Ex {
                 return ExVR.Instance().get_routine_conditions_names_order(routine);
             }
             log_error(string.Format("Routine with name {0} doesn't exist.", routineName));
-            return new List<string>();
-        }            
-
-
+            return new List<string>();            
+        }
+        
         // routines 
         public Routine current_routine() { return p.currentRoutine; }
         public Routine get_routine(string routineName) {return ExVR.Routines().get(routineName);}

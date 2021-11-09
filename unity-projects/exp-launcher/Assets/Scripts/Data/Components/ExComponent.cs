@@ -145,7 +145,7 @@ namespace Ex{
         public string component_name() {return name;}
 
         public string verbose_name() {
-
+            
             StringBuilder builder = new StringBuilder();
             builder.AppendFormat(" [From component: [{0}]({1})([{2}])", name, this.GetType().ToString(), currentFunction.ToString());
             if(currentRoutine != null) {

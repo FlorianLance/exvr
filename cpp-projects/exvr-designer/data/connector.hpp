@@ -256,7 +256,7 @@ namespace tool::ex {
         static constexpr auto PO = WM::Popup;
 
         using TConnector = std::tuple<
-            Type,                       Category,     P, IO,                                                          Style,                  I,  WM, Inter>;
+            Type,                       Category,     P, IO,                                                      Style,                  I,  WM, Inter>;
         static constexpr TupleArray<Type::SizeEnum,TConnector> connectors ={{
             TConnector
             // # Component
@@ -270,7 +270,7 @@ namespace tool::ex {
             {T::Transform_to_vectors,   C::Convertor, M, {1,{t_transform},             3,{t_vec3,t_vec3,t_vec3}}, {v,{v},       {v,v,v}}, LO, FO, 0},
             {T::Vectors_to_transform,   C::Convertor, M, {3,{t_vec3,t_vec3,t_vec3},    1,{t_transform}},          {v,{v,v,v},   {v}},     LO, FO, 0},
             // # Display
-            {T::Curve_x,                C::Display,   M, {1,{t_real_l},                0,{}},                     {i,{v},       {}},      IN, PO, 0},
+            {T::Curve_x,                C::Display,   M, {1,{t_real_l},                0,{}},                     {v,{v},       {}},      IN, PO, 0},
             {T::Logger,                 C::Display,   M, {1,{t_any},                   0,{}},                     {v,{v},       {}},      LO, FO, 0},
             // # Function
             {T::Decimal_trigonometry,   C::Function,  M, {1,{t_dec},                   1,{t_dec}},                {v,{v},       {v}},     IN, FO, 1},

@@ -551,7 +551,10 @@ void ConnectionsW::update_elements_from_condition(Condition *condition){
                 componentNode.second.second->update_name(action->component->name());
 
                 // update position
-                m_scene->setNodePosition(*componentNode.second.first, action->nodePosition);                
+                m_scene->setNodePosition(*componentNode.second.first, action->nodePosition);
+
+                // update selection
+                componentNode.second.first->nodeGraphicsObject().setSelected(action->nodeSelected);
 
                 found = true;
                 break;
@@ -579,6 +582,10 @@ void ConnectionsW::update_elements_from_condition(Condition *condition){
 
                 // update arg
                 connectorNode.second.second->update_from_connector(*connector);
+
+                // update selection
+                connectorNode.second.first->nodeGraphicsObject().setSelected(connector->selected);
+
                 break;
             }
         }
@@ -739,6 +746,11 @@ ConnectionsContextMenu::ConnectionsContextMenu(ElementKey routineKey, ConditionK
         emit delete_node_signal(currentHoveredConnectorModel->key, currentHoveredConnectorModel->type == BaseNodeDataModel::Type::Component);
     });
 
+    removeAllSelectedNodesA = new QAction("Remove all selection");
+    connect(removeAllSelectedNodesA, &QAction::triggered, this, [=](){
+        emit GSignals::get()->delete_selected_nodes_signal(m_routineKey, m_conditionKey);
+    });
+
     removeConnectionA = new QAction("Remove connection");
     connect(removeConnectionA, &QAction::triggered, this, [=](){
         emit delete_connection_signal(currentHoveredConnection->id());
@@ -777,9 +789,7 @@ void ConnectionsContextMenu::exec(
 
     currentHoveredConnectorModel = nullptr;
     if(nodeModelUnderMouse != nullptr){
-        if(nodeModelUnderMouse->type == BaseNodeDataModel::Type::Connector){
-            currentHoveredConnectorModel = nodeModelUnderMouse;
-        }
+        currentHoveredConnectorModel = nodeModelUnderMouse;
     }
     currentHoveredConnection = connectionUnderMouse;
 
@@ -820,7 +830,7 @@ void ConnectionsContextMenu::exec(
             canPastCopySelection = Condition::currentNodesCopySet;
         }else if(nodeModelUnderMouse){
             // hovering on node
-            canDuplicateHoveredNode = currentHoveredConnectorModel != nullptr;
+            canDuplicateHoveredNode = currentHoveredConnectorModel->type != BaseNodeDataModel::Type::Component;
             canRemoveHoveredNode    = true;
             canDisplayInfoAboutHoveredNode = true;
         }else if(connectionUnderMouse){
@@ -846,12 +856,12 @@ void ConnectionsContextMenu::exec(
         }
 
         if(canRemoveHoveredNode){
-            topMenu.addAction(removeNodeA);
+            topMenu.addAction(removeNodeA);            
         }
 
         if(canRemoveHoveredConnection){
             topMenu.addAction(removeConnectionA);
-        }
+        }        
     }
 
     if(displaySelectionMenu){
@@ -863,6 +873,8 @@ void ConnectionsContextMenu::exec(
         if(canUnselectSelection){
             topMenu.addAction(unselectSelectionA);
         }
+
+        topMenu.addAction(removeAllSelectedNodesA);
 
         if(canCopySelection){
 

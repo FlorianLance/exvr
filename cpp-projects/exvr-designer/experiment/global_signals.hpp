@@ -114,6 +114,7 @@ signals:
     void component_node_created_signal(ElementKey routineKey,ConditionKey conditionKey, ComponentKey componentKey, QPointF pos);
     void component_node_moved_signal(ElementKey routineKey,ConditionKey conditionKey, ComponentKey componentKey, QPointF pos);
     void unselect_nodes_and_connections_signal(ElementKey routineKey,ConditionKey conditionKey, bool doUpdate);
+    void delete_selected_nodes_signal(ElementKey routineKey,ConditionKey conditionKey);
     void delete_nodes_and_connections_signal(ElementKey routineKey, ConditionKey conditionKey,
         std_v1<ConnectorKey> connectorsKey, std_v1<ComponentKey> componentsKey, std_v1<ConnectionKey> connectionsKey, bool doUpdate);
     void select_nodes_and_connections_signal(ElementKey routineKey, ConditionKey conditionKey,

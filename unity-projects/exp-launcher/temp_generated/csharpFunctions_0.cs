@@ -1,14 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
- namespace Ex.CSharpFunctions { public class CSharp_function { 
-static KeyboardComponent keyboard = ExVR.Components().get_from_name<KeyboardComponent>("Keyboard");public class standard { 
+ namespace Ex.CSharpFunctions { public class Choose__cue { 
+
+static Routine wordsRoutine = ExVR.Routines().get("Words rand");
+static List<string> conditions = ExVR.Instance().get_routine_conditions_names_order(wordsRoutine);
+static string content = ExVR.Resources().get_text_file_data("words").content;
+static string[] words = content.Split(new string[] {
+	System.Environment.NewLine }, StringSplitOptions.None
+);
+
+public class standard { 
 
  public static object function(object input) {
 object output = null;
-//var k = (Input.KeyboardButtonEvent)input;
-var p = keyboard.buttonsState[KeyCode.Keypad4].is_pressed();
-//ExVR.Log().message("pressed " + p); 
+
+int id = Converter.to_int(conditions[(int)input]);
+output = words[id];
+
+
+// 40 words
+// 3x4 * 40
+
+ 
 return output;
 } 
 }

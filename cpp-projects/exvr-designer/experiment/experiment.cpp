@@ -791,6 +791,50 @@ void Experiment::set_connector_input_connection_validity(ElementKey routineKey, 
     }
 }
 
+void Experiment::delete_selected_nodes(ElementKey routineKey, ConditionKey conditionKey){
+
+    if(auto condition = get_condition(routineKey,conditionKey); condition != nullptr){
+
+        std::vector<ConnectionKey> connectionsKey;
+        for(auto &connection : condition->connections){
+            if(connection->selected){
+                connectionsKey.push_back({connection->key()});
+            }
+        }
+
+        std::vector<ComponentKey> componentsKey;
+        for(auto &action : condition->actions){
+            if(action->nodeSelected){
+                componentsKey.push_back({action->component->key()});
+            }
+        }
+
+        std::vector<ConnectorKey> connectorsKey;
+        for(auto &connector : condition->connectors){
+            if(connector->selected){
+                connectorsKey.push_back({connector->key()});
+            }
+        }
+
+        // remove connections
+        for(const auto &connectionKey : connectionsKey){
+            condition->remove_connection(connectionKey);
+        }
+
+        // remove connectors
+        for(const auto &connectorKey : connectorsKey){
+            condition->remove_connector(connectorKey);
+        }
+
+        // remove components
+        for(const auto &componentKey : componentsKey){
+            condition->remove_component_node(componentKey);
+        }
+
+        add_to_update_flag(UpdateRoutines);
+    }
+}
+
 void Experiment::create_component_node(ElementKey routineKey, ConditionKey conditionKey, ComponentKey componentKey, QPointF pos){
 
     if(auto condition = get_condition(routineKey, conditionKey); condition != nullptr){
@@ -814,6 +858,7 @@ void Experiment::move_component_node(ElementKey routineKey, ConditionKey conditi
 
 void Experiment::unselect_nodes_and_connections(ElementKey routineKey, ConditionKey conditionKey, bool doUpdate){
     if(auto condition = get_condition(routineKey,conditionKey); condition != nullptr){
+
         for(auto &connector : condition->connectors){
             connector->selected = false;
         }
@@ -821,7 +866,6 @@ void Experiment::unselect_nodes_and_connections(ElementKey routineKey, Condition
             connection->selected = false;
         }
         for(auto &action : condition->actions){
-
             action->nodeSelected = false;
         }
 

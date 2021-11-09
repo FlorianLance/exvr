@@ -49,7 +49,7 @@ namespace Ex {
             string className = name;
             foreach (var c in charsToRemove) {
                 className = className.Replace(c, "_");
-            }
+            }            
 
             // retrieve type
             var assembly = CSharpScriptResource.get_compiled_assembly();

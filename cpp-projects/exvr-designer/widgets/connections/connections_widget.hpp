@@ -87,6 +87,7 @@ public:
 private:
 
     QAction *removeNodeA = nullptr;
+    QAction *removeAllSelectedNodesA = nullptr;
     QAction *removeConnectionA = nullptr;
     QAction *duplicateConnectorNodeA = nullptr;
     QAction *displayNodeInfoA = nullptr;

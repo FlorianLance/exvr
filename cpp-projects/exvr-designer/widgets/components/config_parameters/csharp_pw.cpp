@@ -35,7 +35,7 @@ void CSharpFunctionInitConfigParametersW::insert_widgets(){
     add_widget(ui::F::gen(ui::L::VB(), {ui::W::txt("Define extra content accesible for each function of each config\n (ex: variables, enum, struct/class, functions...)"), m_p->extraContent()},
             LStretch{false},LMargins{true}, QFrame::NoFrame));
 
-        no_end_stretch();
+    no_end_stretch();
 }
 
 void CSharpFunctionInitConfigParametersW::init_and_register_widgets(){
@@ -46,6 +46,8 @@ void CSharpFunctionInitConfigParametersW::init_and_register_widgets(){
     }
 
     add_input_ui(m_p->extraContent.init_widget_as_csharp_editor(classNames, QColor(30,30,30), ""));
+
+    m_p->extraContent.w->setLineWrapMode(QPlainTextEdit::LineWrapMode::NoWrap);
 }
 
 struct CSharpFunctionConfigParametersW::Impl{
@@ -100,6 +102,9 @@ void CSharpFunctionConfigParametersW::init_and_register_widgets(){
 
     m_p->startFunction.w->setReadOnly(true);
     m_p->endFunction.w->setReadOnly(true);
+
+    m_p->contentFunction.w->setLineWrapMode(QPlainTextEdit::LineWrapMode::NoWrap);
+    m_p->extraContent.w->setLineWrapMode(QPlainTextEdit::LineWrapMode::NoWrap);
 }
 
 void CSharpFunctionConfigParametersW::create_connections(){

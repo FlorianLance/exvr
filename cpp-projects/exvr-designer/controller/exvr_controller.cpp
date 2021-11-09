@@ -1065,6 +1065,7 @@ void ExVrController::generate_global_signals_connections(){
     connect(s, &GSignals::component_node_created_signal,              exp(), &EXP::create_component_node);
     connect(s, &GSignals::component_node_moved_signal,                exp(), &EXP::move_component_node);
     connect(s, &GSignals::delete_nodes_and_connections_signal,        exp(), &EXP::delete_nodes_and_connections);
+    connect(s, &GSignals::delete_selected_nodes_signal,               exp(), &EXP::delete_selected_nodes);
     connect(s, &GSignals::delete_connections_signal,                  exp(), &EXP::delete_connections);    
     connect(s, &GSignals::unselect_nodes_and_connections_signal,      exp(), &EXP::unselect_nodes_and_connections);
     connect(s, &GSignals::select_nodes_and_connections_signal,        exp(), &EXP::select_nodes_and_connections);

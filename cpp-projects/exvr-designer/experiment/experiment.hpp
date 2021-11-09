@@ -294,6 +294,7 @@ public slots:
     void duplicate_connector_node(ElementKey routineKey,ConditionKey conditionKey, ConnectorKey connectorKey);
     void set_connector_input_connection_validity(ElementKey routineKey, ConditionKey conditionKey, ConnectorKey connectorKey, bool state);
     // ### connections / connectors / components
+    void delete_selected_nodes(ElementKey routineKey, ConditionKey conditionKey);
     void unselect_nodes_and_connections(ElementKey routineKey, ConditionKey conditionKey, bool doUpdate);
     void delete_nodes_and_connections(ElementKey routineKey, ConditionKey conditionKey,
         std_v1<ConnectorKey> connectorsKey, std_v1<ComponentKey> componentsKey, std_v1<ConnectionKey> connectionsKey, bool doUpdate);
