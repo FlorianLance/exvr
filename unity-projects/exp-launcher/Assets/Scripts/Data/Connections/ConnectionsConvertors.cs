@@ -164,8 +164,8 @@ namespace Ex{
             ["joypad_button:any"] = input => { return input; },
             ["joypad_button:trigger"] = input => { return null; },
             // # from joypad axis state
-            ["joypad_button:any"] = input => { return input; },
-            ["joypad_button:trigger"] = input => { return null; },
+            ["joypad_axis:any"] = input => { return input; },
+            ["joypad_axis:trigger"] = input => { return null; },
             // # from GameObject list
             ["game_object_list:any"] = input => { return input; },
             ["game_object_list:trigger"] = input => { return null; }

@@ -46,14 +46,7 @@ namespace Ex{
         protected override bool initialize() {
 
             add_slot("send byte pulse", (value) => {
-                int b = (int)value;
-                if(b < 0) {
-                    b = 0;
-                }
-                if(b > 255) {
-                    b = 255;
-                }
-                send_byte_pulse((byte)b);
+                send_byte_pulse((int)value);
             });
             add_slot("write byte", (value) => {
                 write_byte((byte)value);
@@ -231,7 +224,7 @@ namespace Ex{
             }
         }
 
-        public IEnumerator send_pulse(byte value) {
+        private IEnumerator send_pulse(byte value) {
             write_byte(value);
             yield return new WaitForSeconds((float)currentC.get<double>("pulse_time"));
             write_byte(0);
@@ -239,6 +232,16 @@ namespace Ex{
 
         #endregion
         #region public_functions
+
+        public void send_byte_pulse(int value) {
+            if (value < 0) {
+                value = 0;
+            }
+            if (value > 255) {
+                value = 255;
+            }
+            send_byte_pulse((byte)value);
+        }
 
         public void send_byte_pulse(byte value) {
             ExVR.Coroutines().start(send_pulse(value));

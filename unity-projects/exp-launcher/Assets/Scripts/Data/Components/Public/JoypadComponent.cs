@@ -150,6 +150,7 @@ namespace Ex{
             foreach (Input.JoypadAxis.Code axisCode in Input.JoypadAxis.Codes) {
 
                 float value = UnityEngine.Input.GetAxis(Input.JoypadAxis.CodesNames[axisCode]);
+
                 if (Math.Abs(value) < axisDeadZones[axisCode]) {
                     value = 0f;
                 }
