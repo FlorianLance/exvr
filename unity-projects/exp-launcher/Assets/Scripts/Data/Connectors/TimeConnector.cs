@@ -47,6 +47,10 @@ namespace Ex {
 
         protected override void update_from_gui() {
             var args  = m_config.get_list<string>(valueStr);
+            if(args.Count != 3) {
+                log_error("Invalid TimeConnector arg.");
+                return;
+            }
             sinceExp  = (args[0] == "Time since exp");
             frequency = Converter.to_int(args[1]);
             sendEveryUpdate = (args[2] == "At each frame");
