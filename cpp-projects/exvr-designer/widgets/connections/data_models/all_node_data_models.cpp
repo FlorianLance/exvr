@@ -505,6 +505,9 @@ std::unique_ptr<ConnectorNodeDataModel> DataNodeModels::generate_connector_data_
     case T::Post_update_routine:
         connectorDataModel = std::make_unique<PostUpdateRoutineNodeDataModel>();
         break;
+    case T::Routine_condition:
+        connectorDataModel = std::make_unique<RoutineConditionNodeDataModel>();
+        break;
     case T::Force_component_config:
         connectorDataModel = std::make_unique<ForceComponentConfigNodeDataModel>();
         break;

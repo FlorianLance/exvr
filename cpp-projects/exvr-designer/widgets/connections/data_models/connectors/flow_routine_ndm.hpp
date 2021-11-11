@@ -18,6 +18,7 @@ using QtNodes::PortType;
 
 // qt-utility
 #include "ex_widgets/ex_label_w.hpp"
+#include "ex_widgets/ex_line_edit_w.hpp"
 
 // local
 #include "widgets/connections/data_models/connectors/connector_node_data_model.hpp"
@@ -59,6 +60,20 @@ public:
 };
 
 class UpdateRoutineNodeDataModel : public TypedConnectorDataModel<Connector::Type::Update_routine, PlaceHolderEmbeddedW>{
+Q_OBJECT
+public slots:
+    void compute() override;
+public:
+    void init_ports_caption() override;
+};
+
+class RoutineConditionEmbeddedW : public NodeContainerW<ExLineEditW>{
+    Q_OBJECT
+public:
+    void initialize() override;
+};
+
+class RoutineConditionNodeDataModel : public TypedConnectorDataModel<Connector::Type::Routine_condition, RoutineConditionEmbeddedW>{
 Q_OBJECT
 public slots:
     void compute() override;

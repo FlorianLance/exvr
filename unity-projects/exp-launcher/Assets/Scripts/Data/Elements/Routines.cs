@@ -137,11 +137,13 @@ namespace Ex{
             return new List<Routine>(m_routines);
         }
 
-        public Routine get(string routineName) {
+        public Routine get(string routineName, bool displayError = true) {
             if (m_routinesPerName.ContainsKey(routineName)) {
                 return m_routinesPerName[routineName];
             }
-            ExVR.Log().error(string.Format("Cannot find routine with name {0}.", routineName));
+            if (displayError) {
+                ExVR.Log().error(string.Format("Cannot find routine with name {0}.", routineName));
+            }
             return null;
         }
 

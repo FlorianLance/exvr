@@ -1790,6 +1790,11 @@ bool XmlIoManager::save_experiment(){
         return false;
     }
 
+    if(!QFileInfo(m_experiment->states.currentExpfilePath).exists()){
+        QtLogger::error(QSL("[XML] Experiment ") % m_experiment->states.currentExpfilePath % QSL(" doesn't exist anymore, use \"Save as\" instead. "));
+        return false;
+    }
+
     return save_experiment_file(m_experiment->states.currentExpfilePath);
 }
 
@@ -1828,7 +1833,16 @@ void XmlIoManager::open_log_directory(){
 }
 
 void XmlIoManager::export_experiment_to(){
-    QString path = QFileDialog::getExistingDirectory(nullptr, "Export directory", "");
+
+    QFileInfo fileInfo(m_experiment->states.currentExpfilePath);
+    QString parentDirPath = "";
+    if(fileInfo.exists()){
+        parentDirPath = fileInfo.absoluteDir().path();
+    }else{
+        parentDirPath = Paths::exeDir;
+    }
+
+    QString path = QFileDialog::getExistingDirectory(nullptr, "Export directory", parentDirPath);
     if(path.length() > 0){
         QtLogger::message(QSL("[XML] Export experiment to directory: ") % path);
         QString expFilePath =  path % QSL("/") % m_experiment->states.currentName % QSL(".xml");
@@ -1842,7 +1856,15 @@ void XmlIoManager::export_experiment_to(){
 
 bool XmlIoManager::save_experiment_as(){
 
-    QString path = QFileDialog::getSaveFileName(nullptr, "Experiment file", "", "XML (*.xml)");
+    QFileInfo fileInfo(m_experiment->states.currentExpfilePath);
+    QString parentDirPath = "";
+    if(fileInfo.exists()){
+        parentDirPath = fileInfo.absoluteDir().path();
+    }else{
+        parentDirPath = Paths::exeDir;
+    }
+
+    QString path = QFileDialog::getSaveFileName(nullptr, "Experiment file", parentDirPath, "XML (*.xml)");
     if(path.length() > 0){
         QtLogger::message(QSL("[XML] Save experiment as: ") % path);
         m_experiment->states.currentExpfilePath = path;
@@ -1856,15 +1878,20 @@ bool XmlIoManager::save_experiment_as(){
 
 bool XmlIoManager::load_experiment(){
 
-    Bench::reset();
+    QFileInfo fileInfo(m_experiment->states.currentExpfilePath);
+    QString parentDirPath = "";
+    if(fileInfo.exists()){
+        parentDirPath = fileInfo.absoluteDir().path();
+    }else{
+        parentDirPath = Paths::expDir;
+    }
 
-    QString path = QFileDialog::getOpenFileName(nullptr, "Experiment file", Paths::expDir, "XML (*.xml)");
+    QString path = QFileDialog::getOpenFileName(nullptr, "Experiment file", parentDirPath, "XML (*.xml)");
     if(path.length() > 0){
         if(!load_experiment_file(path)){
             m_experiment->new_experiment();            
             return false;
         }
-        Bench::display();
         m_experiment->add_to_update_flag(UpdateAll | ResetUI);
         return true;
     }
@@ -1873,14 +1900,11 @@ bool XmlIoManager::load_experiment(){
 
 bool XmlIoManager::load_dropped_experiment_file(QString path){
 
-    Bench::reset();
-
     if(path.length() > 0){
         if(!load_experiment_file(path)){
             m_experiment->new_experiment();
             return false;
         }
-        Bench::display();
         m_experiment->add_to_update_flag(UpdateAll | ResetUI);
         return true;
     }

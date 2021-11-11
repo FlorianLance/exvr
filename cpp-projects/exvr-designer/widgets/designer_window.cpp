@@ -464,7 +464,7 @@ void DesignerWindow::create_actions(){
     m_openTempExpAct.setIcon(QIcon(":/icons/Open"));
     connect(&m_openTempExpAct, &QAction::triggered, this, &DesignerWindow::open_temp_experiment_file_signal);
 
-    m_openExpDirectoryAct.setText(tr("&Open experiments directory"));
+    m_openExpDirectoryAct.setText(tr("&Open exampples directory"));
     m_openExpDirectoryAct.setStatusTip(tr("Open default experiments directory"));
     m_openExpDirectoryAct.setIcon(QIcon(":/icons/Open"));
     connect(&m_openExpDirectoryAct, &QAction::triggered, this, &DesignerWindow::open_experiment_directory_signal);

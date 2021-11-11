@@ -66,5 +66,42 @@ void PostUpdateRoutineNodeDataModel::init_ports_caption(){
     outPortsInfo[0].caption = QSL("routine time ms (") % get_name(io.outTypes[0]) % QSL(")");
 }
 
+void RoutineConditionEmbeddedW::initialize(){
+    // init widget
+    w->init_widget("default name");
+
+    // set widget connections
+    connect(w.get(), &ExLineEditW::ui_change_signal, this, [=]{
+        emit update_internal_data_signal({0}, {std::make_shared<StringData>(w->w->text())});
+        emit compute_data_signal();
+    });
+
+    // add widget to ui
+    add_row_in_dialog(QSL("Routine name: "), w->w.get());
+}
+
+void RoutineConditionNodeDataModel::compute(){
+
+    if(check_infinity_loop()){
+        return;
+    }
+
+    auto inputs = get_inputs();
+    if(!inputs[0]){
+        set_invalid_state(QSL("Missing entree #1."));
+    }else{
+        set_valid_state();
+    }
+
+    set_embedded_widget_text(dcast<StringData>(interData[0])->value());
+    propagate_default_runtime({std::make_shared<StringData>()});
+}
+
+void RoutineConditionNodeDataModel::init_ports_caption(){
+    const auto io = Connector::get_io(m_type);
+    inPortsInfo[0].caption  = QSL("id (") % get_name(io.inTypes[0]) % QSL(")");
+    outPortsInfo[0].caption = QSL("condition (") % get_name(io.outTypes[0]) % QSL(")");
+}
 
 #include "moc_flow_routine_ndm.cpp"
+

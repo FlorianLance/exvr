@@ -146,6 +146,14 @@ namespace Ex{
             return infos;
         }
 
+        public Condition get_routine_condition_order(Routine routine, int id) {
+            var elements = routine.is_a_randomizer() ? randomizerElementsOrder : elementsOrder;
+            if (id < elements.Count && id >= 0) {
+                return ((RoutineInfo)elements[id]).condition();
+            }
+            return null;
+        }
+
         public List<Condition> get_routine_conditions_order(Routine routine) {
 
             List<Condition> conditions = new List<Condition>();

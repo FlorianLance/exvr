@@ -104,7 +104,7 @@ namespace tool::ex {
         QString loadedExpDesignerVersion = "unknow";
         QString designerPathUsedForLoadedExp = "unknow";
 
-        QString currentExpfilePath = "unknow";
+        QString currentExpfilePath;
         QString currentName = "unknow";
         QString currentMode = "designer";
         QString currentInstanceName = "debug-instance.xml";

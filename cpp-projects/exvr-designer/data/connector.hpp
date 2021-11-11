@@ -72,7 +72,7 @@ namespace tool::ex {
             Pass_value_trigger, Conditional_trigger, Pass_values, Conditional_gate, Check_id, Check_str, // Link
             Filter_keyboard_button, Check_joypad_button, Check_joypad_axis, Check_mouse_button, Check_keyboard_button, // Event
             Next, Previous, Stop, Pause, Next_with_name, Next_with_cond, Previous_with_name, Previous_with_cond, Force_component_config, // Action
-            Time, Start_routine, Stop_routine, Update_routine, Pre_update_routine, Post_update_routine,// Flow
+            Time, Start_routine, Stop_routine, Update_routine, Pre_update_routine, Post_update_routine, Routine_condition,// Flow
             SizeEnum};
 
 
@@ -115,6 +115,7 @@ namespace tool::ex {
             {T::Pre_update_routine,     "PreUpdateRoutine"sv,           "Pre-update routine"sv},
             {T::Update_routine,         "UpdateRoutine"sv,              "Update routine"sv},
             {T::Post_update_routine,    "PostUpdateRoutine"sv,          "Post-update routine"sv},
+            {T::Routine_condition,      "RoutineCondition"sv,           "Routine condition from id"sv},
             // # Function
             {T::Decimal_trigonometry,   "DecimalTrigonometry"sv,        "Trigonometry"sv},
             {T::Decimal_counter,        "DecimalCounter"sv,             "Counter"sv},
@@ -139,7 +140,7 @@ namespace tool::ex {
             // # Operator
             {T::Decimal_operation,      "DecimalOperation"sv,           "Decimal operation"sv},
             {T::Binary_operation,       "BinaryOperation"sv,            "Binary operation"sv},
-            {T::String_operation,       "StringOperation"sv,            "String operation"sv},
+            {T::String_operation,       "StringOperation"sv,            "String operation"sv},                                                          
             // # Component
             {T::Component,              "-"sv,                          "-"sv},
         }};
@@ -312,14 +313,15 @@ namespace tool::ex {
             {T::Previous_with_cond,     C::Action,    M, {1,{t_void},                  0,{}},                     {v,{v},       {}},      IN, FO, 0},
             {T::Stop,                   C::Action,    M, {1,{t_void},                  0,{}},                     {v,{v},       {}},      LO, FO, 0},
             {T::Pause,                  C::Action,    M, {1,{t_void},                  0,{}},                     {v,{v},       {}},      LO, FO, 0},
-            {T::Force_component_config, C::Action,    H, {1,{t_void},                  0,{}},                     {v,{v},       {}},      IN, FO, 0},
+            {T::Force_component_config, C::Action,    M, {1,{t_void},                  0,{}},                     {v,{v},       {}},      IN, FO, 0},
             // # Flow
-            {T::Time,                   C::Flow,      M, {1,{t_void},                  1,{t_real}},               {v,{v},        {v}},     IN, FO, 1},
+            {T::Time,                   C::Flow,      H, {1,{t_void},                  1,{t_real}},               {v,{v},        {v}},     IN, FO, 1},
             {T::Start_routine,          C::Flow,      H, {0,{},                        5,{t_str, t_str, t_int, t_int, t_real}}, {v,{},   {v,v,v,v,v}}, LO, FO, 0},
             {T::Stop_routine,           C::Flow,      H, {0,{},                        2,{t_str, t_str}},         {v,{},        {v,v}},   LO, FO, 0},
             {T::Pre_update_routine,     C::Flow,      H, {0,{},                        1,{t_real}},                {v,{},        {v}},     LO, FO, 0},
             {T::Update_routine,         C::Flow,      H, {0,{},                        1,{t_real}},                {v,{},        {v}},     LO, FO, 0},
             {T::Post_update_routine,    C::Flow,      H, {0,{},                        1,{t_real}},                {v,{},        {v}},     LO, FO, 0},
+            {T::Routine_condition,      C::Flow,      H, {1,{t_int},                   1,{t_str}},                 {v,{v},        {v}},    IN, FO, 1},
         }};
 
 

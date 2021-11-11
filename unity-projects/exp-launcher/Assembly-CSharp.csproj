@@ -196,6 +196,7 @@
     <Compile Include="Assets\Scripts\Data\Connectors\RealConnector.cs" />
     <Compile Include="Assets\Scripts\Data\Connectors\RealsToVector2Connector.cs" />
     <Compile Include="Assets\Scripts\Data\Connectors\RealsToVector3Connector.cs" />
+    <Compile Include="Assets\Scripts\Data\Connectors\RoutineConditionConnector.cs" />
     <Compile Include="Assets\Scripts\Data\Connectors\StartRoutineConnector.cs" />
     <Compile Include="Assets\Scripts\Data\Connectors\StopConnector.cs" />
     <Compile Include="Assets\Scripts\Data\Connectors\StopRoutineConnector.cs" />
