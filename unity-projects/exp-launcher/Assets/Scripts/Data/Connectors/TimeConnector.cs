@@ -31,9 +31,7 @@ namespace Ex {
         public int frequency = 30;
         private int count = 0;
 
-        protected override void initialize(XML.Connector connector) {
-
-            base.initialize(connector);
+        protected override bool initialize() {
             update_from_gui();
 
             add_slot(0, (arg) => {
@@ -43,6 +41,7 @@ namespace Ex {
             });
 
             add_signals(1);
+            return true;
         }
 
         protected override void update_from_gui() {

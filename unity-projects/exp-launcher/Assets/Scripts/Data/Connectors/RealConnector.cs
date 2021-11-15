@@ -29,13 +29,14 @@ namespace Ex {
         private object inputValue = null;
         private double uiValue = 0.0;
 
-        protected override void initialize(XML.Connector connector) {
+        protected override bool initialize() {
 
-            base.initialize(connector);
             uiValue = m_config.get<double>(valueStr);
 
             add_signals(1);            
             add_slot(0, (arg) => { base_slot1(arg); });
+
+            return true;
         }
 
         protected override void slot1(object arg) {
@@ -49,10 +50,10 @@ namespace Ex {
 
         protected override void update_from_gui() {
             uiValue = m_config.get<double>(valueStr);
-            start_routine();
+            pre_start_routine();
         }
 
-        protected override void start_routine() {
+        protected override void pre_start_routine() {
             if (inputGO.Count == 0) {
                 send_output(uiValue);
             }

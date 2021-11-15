@@ -30,10 +30,46 @@ using System.Text;
 // unity
 using UnityEngine;
 
-namespace Ex{
+namespace Ex {
 
-    public class ExConnector : MonoBehaviour{
+    public class ExConnector : MonoBehaviour {
 
+        // enums
+        public enum Function {
+            initialize,
+            update_from_gui,
+            pre_start_routine,
+            start_routine,
+            stop_routine,
+            pre_update,
+            update,
+            post_update,
+            slot1,
+            slot2,
+            slot3,
+            slot4,
+            slot5,
+            slot6,
+            slot7,
+            slot8,
+            slot9,
+            slot10,
+            undefined
+        }
+        public enum Category {
+            Generator,
+            Operator,
+            Function,
+            Convertor,
+            Action,
+            Flow,
+            Component,
+            Undefined
+        };
+
+        public enum Pritority { Low, Medium, Hight };
+
+        // signals / slots
         protected static readonly string valueStr = "value";
         private static readonly string uiId = "v";
 
@@ -59,74 +95,42 @@ namespace Ex{
             "output value 7",
         });
 
-        public enum Function{
-            initialize,
-            update_from_gui,
-            start_routine,
-            stop_routine,
-            pre_update,
-            update,
-            post_update,
-            slot1,
-            slot2,
-            slot3,
-            slot4,
-            slot5,
-            slot6,
-            slot7,
-            slot8,
-            slot9,
-            slot10,
-            undefined
-        }
-        public enum Category{
-            Generator,
-            Operator,
-            Function,
-            Convertor,
-            Action,
-            Flow,
-            Component,
-            Undefined
-        };
-
-        public enum Pritority { Low, Medium, Hight };
-
+        // state
         public int key = -1;
         public string keyStr;
         public Category category = Category.Undefined;
         public Pritority priority = Pritority.Medium;
         public Function currentFunction = Function.undefined;
+        private bool m_initialized = false;
+        private bool m_catchExceptions = false;
 
+        // associated to
         public Routine associatedRoutine = null;
         public Condition associatedCondition = null;
         protected Config m_config = null;
 
+        // connections
         private Events.Connections m_connections = null;
         public List<GameObject> inputGO = new List<GameObject>();
         public List<GameObject> outputGO = new List<GameObject>();
         public List<Connection> inputConnections = new List<Connection>();
         public List<Connection> outputConnections = new List<Connection>();
-       
-        private bool catchExceptions = false;        
 
         // access        
-        public Components components() {return ExVR.Components();}
-        public Log log() {return ExVR.Log();}
-        public TimeManager time() {return ExVR.Time();}
-        public EventsManager events() {return ExVR.Events();}
+        public Components components() { return ExVR.Components(); }
+        public Log log() { return ExVR.Log(); }
+        public TimeManager time() { return ExVR.Time(); }
+        public EventsManager events() { return ExVR.Events(); }
         public Events.Connections connections() { return m_connections; }
-        public Events.Command command() {return events().command;}
+        public Events.Command command() { return events().command; }
 
-
-        
 
         protected void send_connector_infos_to_gui(object value) {
             ExVR.Network().gui_ipc().send_connector_infos_to_GUI(
                 associatedRoutine.key_str(),
                 associatedCondition.key_str(),
                 keyStr,
-                uiId, 
+                uiId,
                 Converter.to_string(value)
             );
         }
@@ -134,14 +138,12 @@ namespace Ex{
         protected void send_connector_infos_to_gui(string value) {
             ExVR.Network().gui_ipc().send_connector_infos_to_GUI(
                 associatedRoutine.key_str(),
-                associatedCondition.key_str(), 
+                associatedCondition.key_str(),
                 keyStr,
-                uiId, 
+                uiId,
                 value
             );
         }
-
-
 
         public void add_slot(int id, System.Action<object> action) {
 
@@ -155,14 +157,14 @@ namespace Ex{
 
         protected void add_signals(int count) {
 
-            if(count <= 0 || count > 8) {
+            if (count <= 0 || count > 8) {
                 log_error(string.Format("Invalid number of slots {0}", count.ToString()));
                 return;
             }
 
-            for(int ii = 0; ii < count; ++ii) {
+            for (int ii = 0; ii < count; ++ii) {
                 m_connections.add_signal(signalsStr[ii]);
-            }            
+            }
         }
 
         protected void invoke_signal(int id, object arg = null) {
@@ -241,55 +243,41 @@ namespace Ex{
             log_error(builder.ToString(), true);
         }
 
-        static public ExConnector generate(XML.Connector xml){
-
-            // generate type
-            Type typeConnector = Type.GetType(string.Format("Ex.{0}Connector", xml.Name));
-            if (typeConnector == null) {
-                ExVR.Log().error(string.Format("Error when creating connector: {0}", xml.Name));
-                return null;
-            }
-
-            // genrate gameobject
-            var go = new GameObject(String.Format("{0} {1}", xml.Name, xml.Key.ToString()));
-            GO.init_local_transform(go, Vector3.zero, Vector3.zero, Vector3.one);
-            go.transform.SetParent(ExVR.GO().Connectors.transform);
-
-            // generate component
-            var connector = (ExConnector)go.AddComponent(typeConnector);
-            if (connector == null) {
-                ExVR.Log().error(String.Format("Cannot generate connector from type: {0}", typeConnector.ToString()));
-                return null;
-            }
-
-            // set priority & category
-            // ...
-
-            // init from xml
-            connector.initialize(xml);
-
-            return connector;
-        }
-
-        protected virtual void initialize(XML.Connector connector) {
+        public void setup_connector_object(XML.Connector xmlConnector) {
 
             m_connections = new Events.Connections(gameObject.name);
 
-            catchExceptions = ExVR.GuiSettings().catchComponentsExceptions;
+            m_catchExceptions = ExVR.GuiSettings().catchComponentsExceptions;
             currentFunction = Function.initialize;
 
-            key = connector.Key;
-            keyStr = Converter.to_string(connector.Key);
+            key = xmlConnector.Key;
+            keyStr = Converter.to_string(xmlConnector.Key);
             m_config = gameObject.AddComponent<Config>();
-            m_config.init_from_xml(connector.Arg);
+            m_config.init_from_xml(xmlConnector.Arg);
         }
+
+        public bool base_initialize() {
+
+            if (m_catchExceptions) {
+                try {
+                    m_initialized = initialize();
+                } catch (Exception e) {
+                    display_exception(e);
+                }
+            } else {
+                m_initialized = initialize();
+            }
+
+            return m_initialized;
+        }
+
 
         public void base_update_from_gui(XML.Arg arg) {
 
             m_config.init_from_xml(arg);
             currentFunction = Function.update_from_gui;
 
-            if (catchExceptions) {
+            if (m_catchExceptions) {
                 try {
                     update_from_gui();
                 } catch (Exception e) {
@@ -300,11 +288,26 @@ namespace Ex{
             }
         }
 
+        public void base_pre_start_routine() {
+
+            currentFunction = Function.pre_start_routine;
+
+            if (m_catchExceptions) {
+                try {
+                    pre_start_routine();
+                } catch (Exception e) {
+                    display_exception(e);
+                }
+            } else {
+                pre_start_routine();
+            }
+        }
+
         public void base_start_routine() {
 
             currentFunction = Function.start_routine;
 
-            if (catchExceptions) {
+            if (m_catchExceptions) {
                 try {
                     start_routine();
                 } catch (Exception e) {
@@ -320,7 +323,7 @@ namespace Ex{
 
             currentFunction = Function.pre_update;
 
-            if (catchExceptions) {
+            if (m_catchExceptions) {
                 try {
                     pre_update();
                 } catch (Exception e) {
@@ -333,8 +336,8 @@ namespace Ex{
         public void base_update() {
 
             currentFunction = Function.update;
-   
-            if (catchExceptions) {
+
+            if (m_catchExceptions) {
                 try {
                     update();
                 } catch (Exception e) {
@@ -348,7 +351,7 @@ namespace Ex{
 
             currentFunction = Function.post_update;
 
-            if (catchExceptions) {
+            if (m_catchExceptions) {
                 try {
                     post_update();
                 } catch (Exception e) {
@@ -362,8 +365,8 @@ namespace Ex{
         public void base_stop_routine() {
 
             currentFunction = Function.stop_routine;
-            
-            if (catchExceptions) {
+
+            if (m_catchExceptions) {
                 try {
                     stop_routine();
                 } catch (Exception e) {
@@ -378,7 +381,7 @@ namespace Ex{
 
             currentFunction = Function.slot1;
 
-            if (catchExceptions) {
+            if (m_catchExceptions) {
                 try {
                     slot1(arg);
                 } catch (Exception e) {
@@ -393,7 +396,7 @@ namespace Ex{
 
             currentFunction = Function.slot2;
 
-            if (catchExceptions) {
+            if (m_catchExceptions) {
                 try {
                     slot2(arg);
                 } catch (Exception e) {
@@ -408,7 +411,7 @@ namespace Ex{
 
             currentFunction = Function.slot3;
 
-            if (catchExceptions) {
+            if (m_catchExceptions) {
                 try {
                     slot3(arg);
                 } catch (Exception e) {
@@ -423,7 +426,7 @@ namespace Ex{
 
             currentFunction = Function.slot4;
 
-            if (catchExceptions) {
+            if (m_catchExceptions) {
                 try {
                     slot4(arg);
                 } catch (Exception e) {
@@ -438,7 +441,7 @@ namespace Ex{
 
             currentFunction = Function.slot5;
 
-            if (catchExceptions) {
+            if (m_catchExceptions) {
                 try {
                     slot5(arg);
                 } catch (Exception e) {
@@ -453,7 +456,7 @@ namespace Ex{
 
             currentFunction = Function.slot6;
 
-            if (catchExceptions) {
+            if (m_catchExceptions) {
                 try {
                     slot6(arg);
                 } catch (Exception e) {
@@ -468,7 +471,7 @@ namespace Ex{
 
             currentFunction = Function.slot7;
 
-            if (catchExceptions) {
+            if (m_catchExceptions) {
                 try {
                     slot7(arg);
                 } catch (Exception e) {
@@ -483,7 +486,7 @@ namespace Ex{
 
             currentFunction = Function.slot8;
 
-            if (catchExceptions) {
+            if (m_catchExceptions) {
                 try {
                     slot8(arg);
                 } catch (Exception e) {
@@ -494,36 +497,22 @@ namespace Ex{
             }
         }
 
-        protected virtual void slot1(object arg) {
-        }
-        protected virtual void slot2(object arg) {
-        }
-        protected virtual void slot3(object arg) {
-        }
-        protected virtual void slot4(object arg) {
-        }        
-        protected virtual void slot5(object arg) {
-        }
-        protected virtual void slot6(object arg) {
-        }
-        protected virtual void slot7(object arg) {
-        }
-        protected virtual void slot8(object arg) {
-        }
-        protected virtual void update_from_gui() {
-        }
+        protected virtual bool initialize() { return true; }
+        protected virtual void pre_start_routine() { }
+        protected virtual void start_routine() { }
+        protected virtual void update_from_gui() { }
+        protected virtual void pre_update() { }
+        protected virtual void update() { }
+        protected virtual void post_update() { }
+        protected virtual void stop_routine() { }
 
-        protected virtual void start_routine() {
-        }
-
-        protected virtual void pre_update() {
-        }
-        protected virtual void update() {
-        }
-        protected virtual void post_update() {
-        }
-
-        protected virtual void stop_routine() {
-        }
+        protected virtual void slot1(object arg) { }
+        protected virtual void slot2(object arg) { }
+        protected virtual void slot3(object arg) { }
+        protected virtual void slot4(object arg) { }
+        protected virtual void slot5(object arg) { }
+        protected virtual void slot6(object arg) { }
+        protected virtual void slot7(object arg) { }
+        protected virtual void slot8(object arg) { }
     }
 }

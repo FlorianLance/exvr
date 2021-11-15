@@ -195,7 +195,7 @@ struct Component {
         {T::LoggerColumns,            C::Output,      TO::N,     CO::I,   false,   R::OpenSource,   S::Sta, "Logger_columns"sv, "Logger columns"sv, "LoggerColumns"sv, ":/icons/Logger"sv},
         {T::LoggerCondition,          C::Output,      TO::N,     CO::I,   false,   R::OpenSource,   S::Sta, "Logger_condition"sv, "Logger condition"sv, "LoggerCondition"sv, ":/icons/Logger"sv},
         // Resource
-        {T::Image_resource,           C::Resource,    TO::N,     CO::C,   false,   R::OpenSource,   S::Sta, "Image_resource"sv, "Image resource"sv, "ImageResource"sv, ":/icons/Image"sv},
+        {T::Image_resource,           C::Resource,    TO::N,     CO::B,   false,   R::OpenSource,   S::Sta, "Image_resource"sv, "Image resource"sv, "ImageResource"sv, ":/icons/Image"sv},
         {T::Plot_resource,            C::Resource,    TO::N,     CO::C,   false,   R::OpenSource,   S::Sta, "Plot_resource"sv,  "Plot resource"sv, "PlotResource"sv, ":/icons/Plot"sv},
         {T::Text_resource,            C::Resource,    TO::N,     CO::C,   false,   R::OpenSource,   S::Sta, "Text_resource"sv,  "Text resource"sv, "TextResource"sv, ":/icons/Text"sv},
         // Scene
@@ -314,7 +314,7 @@ struct Component {
 
     using TComponentSlots = std::tuple<
         T,                             FunctionN,                      CNT,                    Doc>;
-    static constexpr TupleArray<89,TComponentSlots> componentsSlots = {{
+    static constexpr TupleArray<90,TComponentSlots> componentsSlots = {{
         TComponentSlots
         // Audio
         {T::AudioSource,               "play"sv,                       CNT::void_t,            "..."sv},
@@ -379,6 +379,7 @@ struct Component {
         {T::LoggerCondition,           "write lines"sv,                CNT::string_list_t,     ""sv},
         // Resource
         {T::Text_resource,             "read line"sv,                  CNT::void_t,            "Read next line"sv},
+        {T::Image_resource,            "update alias"sv,               CNT::string_t,          ""sv},
         // Scene
         {T::Unity_asset_bundle,        "visibility"sv,                 CNT::boolean_t,         "Set the visibility of the component"sv},
         {T::Unity_asset_bundle,        "position"sv,                   CNT::vector3_t,         "Set the position of the component"sv},
@@ -455,9 +456,9 @@ struct Component {
         {T::Plot_resource,             "plot loaded"sv,                CNT::plot_t,                    "Loaded plot (called at routine start)"sv},
         {T::Plot_resource,             "plot loaded alias"sv,          CNT::string_t,                  "Alias of the loaded plot (called at routine start)"sv},
         {T::Plot_resource,             "plot loaded path"sv,           CNT::string_t,                  "Path of the loaded plot (called at routine start)"sv},
-        {T::Image_resource,            "image loaded"sv,               CNT::image_t,                   "Loaded image (called at routine start)"sv},
-        {T::Image_resource,            "image loaded alias"sv,         CNT::string_t,                  "Alias of the loaded image (called at routine start)"sv},
-        {T::Image_resource,            "image loaded path"sv,          CNT::string_t,                  "Path of the loaded image (called at routine start)"sv},
+        {T::Image_resource,            "image"sv,                      CNT::image_t,                   "Loaded image (called at routine start)"sv},
+        {T::Image_resource,            "alias"sv,                      CNT::string_t,                  "Alias of the loaded image (called at routine start)"sv},
+        {T::Image_resource,            "path"sv,                       CNT::string_t,                  "Path of the loaded image (called at routine start)"sv},
         {T::Text_resource,             "full text"sv,                  CNT::string_t,                  "Loaded text (called at routine start)"sv},
         {T::Text_resource,             "alias"sv,                      CNT::string_t,                  "Alias of the loaded text (called at routine start)"sv},
         {T::Text_resource,             "path"sv,                       CNT::string_t,                  "Path of the loaded text (called at routine start)"sv},

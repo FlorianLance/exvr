@@ -41,14 +41,13 @@ namespace Ex{
         int maxNb = 10000;
         Queue<Tuple<double, double, object>> elements = new Queue<Tuple<double, double, object>>();
 
-        protected override void initialize(XML.Connector connector) {
-
-            base.initialize(connector);
+        protected override bool initialize() {
             update_from_gui();
 
             add_signals(1);            
             add_slot(0, (arg) => { base_slot1(arg); });
             add_slot(1, (arg) => { base_slot2(arg); });
+            return true;
         }
 
         protected override void slot1(object arg) {

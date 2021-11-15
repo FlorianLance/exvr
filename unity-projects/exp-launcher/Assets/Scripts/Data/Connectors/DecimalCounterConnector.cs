@@ -26,16 +26,15 @@ namespace Ex {
 
     public class DecimalCounterConnector : ExConnector{
 
-        DecimalValue current = null;
+        DecimalValue current = new DecimalValue(0);
 
-        protected override void initialize(XML.Connector connector) {
-
-            base.initialize(connector);
+        protected override bool initialize() {
 
             add_signals(1);
             add_slot(0, (arg) => { base_slot1(arg); });
             add_slot(1, (arg) => { base_slot2(arg); });
-            add_slot(2, (nullArg) => { base_slot3(null); });            
+            add_slot(2, (nullArg) => { base_slot3(null); });
+            return true;
         }
 
         protected override void slot1(object arg) {
@@ -56,7 +55,7 @@ namespace Ex {
             invoke_signal(0, current);
         }
 
-        protected override void start_routine() {
+        protected override void pre_start_routine() {
             current = new DecimalValue(0);
         }
 

@@ -32,13 +32,13 @@ namespace Ex{
         private object inputValue = null;
         private Vector3 uiValue = new Vector3();
 
-        protected override void initialize(XML.Connector connector) {
-            
-            base.initialize(connector);            
+        protected override bool initialize() {
+     
             uiValue = m_config.get_vector3(valueStr);
 
             add_signals(1);
             add_slot(0, (arg) => { base_slot1(arg); });
+            return true;
         }
 
         protected override void slot1(object arg) {
@@ -52,10 +52,10 @@ namespace Ex{
 
         protected override void update_from_gui() {
             uiValue = m_config.get_vector3(valueStr);
-            start_routine();
+            pre_start_routine();
         }
 
-        protected override void start_routine() {
+        protected override void pre_start_routine() {
             if (inputGO.Count == 0) {
                 send_output(uiValue);
             }

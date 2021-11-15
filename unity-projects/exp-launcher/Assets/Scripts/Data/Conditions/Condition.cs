@@ -97,6 +97,7 @@ namespace Ex{
         private string keyStr;
         private double m_durationS = 0.0;
         private int m_callsNb = 0;
+        private XML.Condition m_xmlCondition = null;
 
         // visual scripting
         private List<XML.Connection> m_connectionsXML = null;
@@ -197,29 +198,30 @@ namespace Ex{
             return transform.parent.GetComponent<Routine>();
         }
 
-        public void initialize(XML.Condition xmlCondition) {
+        public void setup_condition_object(XML.Condition xmlCondition) {
+
+            m_xmlCondition = xmlCondition;
 
             // save key
-            m_key = xmlCondition.Key;
-            keyStr = Converter.to_string(xmlCondition.Key);
+            m_key = m_xmlCondition.Key;
+            keyStr = Converter.to_string(m_xmlCondition.Key);
 
             // save connections
-            m_connectionsXML = xmlCondition.Connections;
+            m_connectionsXML = m_xmlCondition.Connections;
 
             // generate actions            
-            var unsortedActions = new List<Action>(xmlCondition.Actions.Count);
-            foreach (XML.Action actionXml in xmlCondition.Actions) {
+            var unsortedActions = new List<Action>(m_xmlCondition.Actions.Count);
+            foreach (XML.Action actionXml in m_xmlCondition.Actions) {
                 unsortedActions.Add(new Action(actionXml));
             }
 
-
             // store actions by priority
-            actions = new List<Action>(xmlCondition.Actions.Count);
-            reverseOrderActions = new List<Action>(xmlCondition.Actions.Count);
+            actions = new List<Action>(m_xmlCondition.Actions.Count);
+            reverseOrderActions = new List<Action>(m_xmlCondition.Actions.Count);
             foreach (var action in unsortedActions) {
                 if (action.component().priority == ExComponent.Pritority.Hight) {
                     actions.Add(action);
-                }else if (action.component().priority == ExComponent.Pritority.Low) {
+                } else if (action.component().priority == ExComponent.Pritority.Low) {
                     reverseOrderActions.Add(action);
                 }
             }
@@ -240,8 +242,8 @@ namespace Ex{
             // store actions in dictionnary
             actionsPerComponentCategory = new Dictionary<ExComponent.Category, List<Action>>();
             actionsPerComponentType = new Dictionary<Type, List<Action>>();
-            actionPerComponentName  = new Dictionary<string, Action>();
-            actionPerComponentKey   = new Dictionary<int, Action>();
+            actionPerComponentName = new Dictionary<string, Action>();
+            actionPerComponentKey = new Dictionary<int, Action>();
             foreach (var action in actions) {
 
                 var typeComponent = action.component().GetType();
@@ -263,20 +265,50 @@ namespace Ex{
 
 
             // find duration of the condition
-            m_durationS = xmlCondition.Duration;
+            m_durationS = m_xmlCondition.Duration;
 
             // generate connectors
-            connectors = new List<ExConnector>(xmlCondition.Connectors.Count);
-            connectorsPerKey = new Dictionary<int, ExConnector>(xmlCondition.Connectors.Count);
-            foreach (XML.Connector xmlConnector in xmlCondition.Connectors) {
-                var connector = ExConnector.generate(xmlConnector);
-                if (connector != null) {
-                    connector.associatedCondition = this;
-                    connector.associatedRoutine = parent_routine();
-                    connectors.Add(connector);
-                    connectorsPerKey[connector.key] = connector;
-                } 
+            connectors = new List<ExConnector>(m_xmlCondition.Connectors.Count);
+            connectorsPerKey = new Dictionary<int, ExConnector>(m_xmlCondition.Connectors.Count);
+            foreach (XML.Connector xmlConnector in m_xmlCondition.Connectors) {
+
+                // generate type
+                Type typeConnector = Type.GetType(string.Format("Ex.{0}Connector", xmlConnector.Name));
+                if (typeConnector == null) {
+                    ExVR.Log().error(string.Format("Error when creating connector: {0}", xmlConnector.Name));
+                    continue;
+                }
+
+                // generate gameobject
+                var go = new GameObject(String.Format("{0} {1}", xmlConnector.Name, xmlConnector.Key.ToString()));
+                GO.init_local_transform(go, Vector3.zero, Vector3.zero, Vector3.one);
+                go.transform.SetParent(ExVR.GO().Connectors.transform);
+
+                // generate connector
+                var connector = (ExConnector)go.AddComponent(typeConnector);
+                if (connector == null) {
+                    ExVR.Log().error(String.Format("Cannot generate connector from type: {0}", typeConnector.ToString()));
+                    continue;
+                }
+                connector.setup_connector_object(xmlConnector);
+
+                connector.associatedCondition = this;
+                connector.associatedRoutine = parent_routine();
+                connectors.Add(connector);
+                connectorsPerKey[connector.key] = connector;         
             }
+        }
+
+        public bool initialize() {
+
+            foreach (var connector in connectors) {
+                if (!connector.base_initialize()) {
+                    ExVR.Log().error(string.Format("Cannot initialize connector {0} with key {1}.", connector.name, connector.keyStr));
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         public void set_connections() {
@@ -430,7 +462,16 @@ namespace Ex{
             }
 
             // connectors
-            {
+            {                
+                // pre start routine
+                ExVR.ExpLog().condition(ExConnector.Function.pre_start_routine, true);
+                foreach (var connector in connectors) {
+                    set_current(connector);
+                    connector.base_pre_start_routine();
+                }
+                ExVR.ExpLog().condition(ExConnector.Function.pre_start_routine, false);
+
+                // start routine
                 ExVR.ExpLog().condition(ExConnector.Function.start_routine, true);
                 foreach (var connector in connectors) {
                     set_current(connector);

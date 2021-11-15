@@ -32,18 +32,14 @@ namespace Ex {
         private int idCondition = 0;
         private Routine routine = null;
 
-        protected override void initialize(XML.Connector connector) {
+        protected override bool initialize() {
 
-            base.initialize(connector);
             routine = ExVR.Routines().get(m_config.get<string>(valueStr), false);
 
             add_signals(1);
             add_slot(0, (arg) => { base_slot1(arg); });
-        }
 
-
-        protected override void start_routine() {
-            update_from_gui();
+            return true;
         }
 
         protected override void slot1(object arg) {

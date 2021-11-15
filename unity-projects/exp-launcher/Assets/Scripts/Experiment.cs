@@ -305,116 +305,133 @@ namespace Ex{
 
         IEnumerator load_full_experiment_c(string xmlExperimentPath, string xmlInstancePath) {
 
+            // init state
             ExVR.Network().set_launcher_loading_state(xmlExperimentPath, xmlInstancePath);
-            
-            // flow log
             ExVR.ExpLog().exp(string.Format("Load XML [{0} , {1}]", xmlExperimentPath, xmlInstancePath), true, false, false);
 
+            // clean
             destroy_experiment();
-            yield return new WaitForSeconds(1);
-             
-            // retrieve instance name
-            var split = xmlInstancePath.Split('.')[0].Split('/');
-            ExVR.Experiment().instanceName = split[split.Length - 1];
+            yield return new WaitForSeconds(0.5f);             
 
-            if (!load_experiment_file(xmlExperimentPath)) {
-                ExVR.Network().set_launcher_idle_state();
-                ExVR.Network().set_experiment_state_to_GUI(NetworkManager.ExpState.NotLoaded);
-                yield break;
-            }
-            if (!load_instance_file(xmlInstancePath)) {
+            if (!generate_experiment(xmlExperimentPath, xmlInstancePath)) {
+                // generation error
                 ExVR.Network().set_launcher_idle_state();
                 ExVR.Network().set_experiment_state_to_GUI(NetworkManager.ExpState.NotLoaded);
                 yield break;
             }
 
+            // update state
             m_experimentLoaded = true;
-
             ExVR.Network().set_launcher_idle_state();
             ExVR.Network().set_experiment_state_to_GUI(NetworkManager.ExpState.Loaded);
 
             yield return true;
         }
 
-        public bool load_experiment_file(string xmlExperimentPath) {
+        public bool generate_experiment(string xmlExperimentPath, string xmlInstancePath) {
 
             if (ExVR.Time().is_experiment_started()) {
                 log_error("Experiment must be stopped before loading a new one.");
                 return false;
             }
 
+            log_message("### Generate experiment ###");
+
             if (!File.Exists(xmlExperimentPath)) {
                 log_error(string.Format("Experiment file {0} doesn't exists.", xmlExperimentPath));
                 return false;
             }
+            if (!File.Exists(xmlInstancePath)) {
+                log_error(string.Format("Instance file {0} doesn't exists.", xmlInstancePath));
+                return false;
+            }
 
-            log_message(string.Format("Load experiment: {0}", xmlExperimentPath));
             Stopwatch generationTimer = new Stopwatch();
             generationTimer.Restart();
 
             // xml experiment
-            var serializer = new XmlSerializer(typeof(XML.Experiment));
-            var stream = new FileStream(xmlExperimentPath, FileMode.Open);
-            m_xmlExperiment = serializer.Deserialize(stream) as XML.Experiment;            
-            stream.Close();            
+            {
+                log_message(string.Format("Read XML experiment file: {0}", xmlExperimentPath));
+                var serializer = new XmlSerializer(typeof(XML.Experiment));
+                var stream = new FileStream(xmlExperimentPath, FileMode.Open);
+                m_xmlExperiment = serializer.Deserialize(stream) as XML.Experiment;
+                stream.Close();
+
+                // save experiment related infos
+                experimentName = m_xmlExperiment.Name;
+                designerVersion = m_xmlExperiment.Version;
+            }
+            // xml instance
+            {
+                log_message(string.Format("Read XML instance file: {0}", xmlInstancePath));
+                var serializer = new XmlSerializer(typeof(XML.ExperimentFlow));
+                var stream = new FileStream(xmlInstancePath, FileMode.Open);
+                m_xmlFlow = serializer.Deserialize(stream) as XML.ExperimentFlow;
+                stream.Close();
+
+                // rsave instance related infos
+                var split = xmlInstancePath.Split('.')[0].Split('/');
+                ExVR.Experiment().instanceName = split[split.Length - 1];
+            }
 
             ExVR.ExpLog().exp(string.Format("XML [{0}] loaded from designer {1} with version {2}.", m_xmlExperiment.Name, m_xmlExperiment.DesignerUsed, m_xmlExperiment.Version), true, false, false);
             ExVR.ExpLog().exp("Initialize experiment.", false, false ,false);
 
-            // save misc informations
-            experimentName = m_xmlExperiment.Name;
-            designerVersion = m_xmlExperiment.Version;
-
             // read settings
             ExVR.GuiSettings().read_from_xml(m_xmlExperiment.Settings);
 
-            // read resources
+            // generate resources
             experimentResourcesManager.generate_from_xml(m_xmlExperiment);
 
-            // generate components and flow elements
+            // generate components 
             log_message(string.Format("Load components: {0}", m_xmlExperiment.Components.Component.Count));
             if (!ExVR.Components().generate(m_xmlExperiment.Components)) {
                 log_error("Experiment loading failed. Please solve errors and start loading again.");
+                generationTimer.Stop();
                 return false;
             }
 
+            // generate flow elements 
             log_message(string.Format("Load elements: {0}", (m_xmlExperiment.FlowElements.Routines.Routine.Count + m_xmlExperiment.FlowElements.ISIs.Isi.Count)));
             routines.generate_from_xml(m_xmlExperiment.FlowElements.Routines);
-            ISIs.generate_from_xml(m_xmlExperiment.FlowElements.ISIs);            
+            ISIs.generate_from_xml(m_xmlExperiment.FlowElements.ISIs);
 
+            // generate schreduling
+            if (!schreduler.generate_instance(m_xmlFlow)) {
+                log_error("Instance loading failed. Please select a valid instance file and start loading again.");
+                generationTimer.Stop();
+                return false;
+            }
+
+            // init routines
+            if (!routines.initialize()) {
+                log_error("Experiment loading failed. Please solve errors and start loading again.");
+                generationTimer.Stop();
+                return false;
+            }
+
+            // init components
+            if (!ExVR.Components().initialize()) {
+                log_error("Experiment loading failed. Please solve errors and start loading again.");
+                generationTimer.Stop();
+                return false;
+            }
+
+
+            
             double generationTime = generationTimer.Elapsed.TotalMilliseconds * 0.001;
             generationTimer.Stop();
 
             // GUI log
             log_message(string.Format("Experiment loaded in {0}s", generationTime));
-
             // flow log
             ExVR.ExpLog().exp(string.Format("Experiment initialized in {0}s ", generationTime), true, false, false);
-
-            return true;
-        }
-
-        public bool load_instance_file(string xmlInstancePath) {
-
-            log_message(string.Format("Load instance: {0}", xmlInstancePath));
-
-            // xml instance
-            var serializer = new XmlSerializer(typeof(XML.ExperimentFlow));
-            var stream = new FileStream(xmlInstancePath, FileMode.Open);
-            m_xmlFlow = serializer.Deserialize(stream) as XML.ExperimentFlow;
-            stream.Close();
-
-            // generate schreduling
-            if (!schreduler.generate_instance(m_xmlFlow)) {
-                log_error("Instance loading failed. Please select a valid instance file and start loading again.");
-                return false;
-            }
-            log_message("Instance loaded.");
 
             ExVR.Paths().lastLoadedInstanceFile = xmlInstancePath;
 
             return true;
         }
+  
 
 #endregion load_experiment
 

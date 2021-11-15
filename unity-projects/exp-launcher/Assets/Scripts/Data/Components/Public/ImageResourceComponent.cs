@@ -22,6 +22,9 @@
 ** SOFTWARE.                                                                      **
 ************************************************************************************/
 
+// system
+using System.Collections.Generic;
+
 // unity
 using UnityEngine;
 
@@ -29,31 +32,68 @@ namespace Ex{
 
     public class ImageResourceComponent : ExComponent {
 
-        public Texture2D m_texture = null;
+        public ImageResource currentImage = null;
+        public Dictionary<string, ImageResource> images = null;
+        //(resources.Count);
 
         protected override bool initialize() {
-            add_signal("image loaded");
+            add_signal("image");
+            add_signal("alias");
+            add_signal("path");
+            add_slot("update alias", (value) => {
+                var alias = (string)value;
+                update_current_image(alias);
+                send_current_image();
+            });
+
+            var resources = initC.get_images_resources_list("images_list");
+            images = new Dictionary<string, ImageResource>(resources.Count);
+            foreach (var resource in resources) {
+
+                var imageResource = ExVR.Resources().get_image_file_data(resource.alias);
+                if(imageResource != null) {
+                    images[resource.alias] = imageResource;
+                } else {
+                    return false;
+                }                
+            }
+
             return true;
         }
 
-
         public override void update_from_current_config() {
-            load_image();
+            update_current_image(currentC.get<string>("alias"));
         }
 
         protected override void update_parameter_from_gui(string updatedArgName) {
             update_from_current_config();
+            send_current_image();
         }
 
-        private void load_image() {
-
-            var imageData = currentC.get_resource_image_data("image");
-            if(imageData != null) {
-                m_texture = imageData.texture;
-            } else {
-                m_texture = ExVR.Resources().get_image_file_data("default_texture").texture;
+        protected override void pre_start_routine() {
+            if(currentC.get<string>("alias").Length > 0) {
+                send_current_image();
             }
-            invoke_signal("image loaded", new ImageContainer(m_texture, false));
+        }
+
+        private void update_current_image(string alias) {
+
+            if (alias.Length != 0) {
+                if (images.ContainsKey(alias)) {
+                    currentImage = images[alias];
+
+                } else {
+                    log_error(string.Format("No alias {0} available in init config images resources list. ", alias));
+                }
+            }
+        }
+
+        private void send_current_image() {
+            if (currentImage != null) {
+                invoke_signal("image", new ImageContainer(currentImage.texture, false));
+                invoke_signal("alias", currentImage.alias);
+                invoke_signal("path", currentImage.path);                
+            }
         }
     }
 }

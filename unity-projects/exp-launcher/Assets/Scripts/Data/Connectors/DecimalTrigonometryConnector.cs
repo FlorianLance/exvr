@@ -30,15 +30,14 @@ namespace Ex {
 
         ConnectorsFunctions.TrigonometryFunction trigonometry;
 
-        protected override void initialize(XML.Connector connector) {
-
-            base.initialize(connector);
-
+        protected override bool initialize() {
             
             trigonometry = ConnectorsFunctions.get_trigonometry_function(m_config.get<string>(valueStr));
 
             add_signals(1);
             add_slot(0, (arg) => { base_slot1(arg); });
+
+            return true;
         }
 
         protected override void slot1(object arg) {

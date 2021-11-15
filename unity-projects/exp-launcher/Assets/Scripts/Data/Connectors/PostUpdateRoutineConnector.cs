@@ -26,10 +26,9 @@ namespace Ex {
 
     public class PostUpdateRoutineConnector : ExConnector {
 
-        protected override void initialize(XML.Connector connector) {
-
-            base.initialize(connector);
+        protected override bool initialize() {
             add_signals(1);
+            return true;
         }
 
         protected override void post_update() {

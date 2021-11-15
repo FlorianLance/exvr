@@ -125,11 +125,11 @@ namespace Ex{
         public double stop_timer_duration_ms() {return m_stopTimer.Elapsed.TotalMilliseconds;}
 
         // functions
-        public void initialize(XML.Routine routine) {
+        public void setup_element_object(XML.Routine routine) {
 
-            m_key    = routine.Key;
+            m_key = routine.Key;
             m_keyStr = Converter.to_string(routine.Key);
-            m_type  = FlowElementType.Routine;
+            m_type = FlowElementType.Routine;
             m_isARandomizer = routine.Randomizer;
 
             // generate conditions
@@ -137,14 +137,46 @@ namespace Ex{
             m_conditionsPerName = new Dictionary<string, Condition>(routine.Conditions.Count);
             m_conditionsPerKey = new Dictionary<int, Condition>(routine.Conditions.Count);
 
-            foreach (XML.Condition xmlCondition in routine.Conditions) {                
+            foreach (XML.Condition xmlCondition in routine.Conditions) {
                 var conditionGO = GO.generate_empty_object(xmlCondition.Name, transform, true);
                 var condition = conditionGO.AddComponent<Condition>();
-                condition.initialize(xmlCondition);
+                condition.setup_condition_object(xmlCondition);
+                //condition.initialize(xmlCondition);
                 m_conditions.Add(condition);
                 m_conditionsPerName[condition.name] = condition;
                 m_conditionsPerKey[condition.key()] = condition;
             }
+
+        }
+        public bool initialize() {
+
+            foreach(var condition in m_conditions) {
+                if (!condition.initialize()) {
+                    ExVR.Log().error(string.Format("Cannot initialize condition with name {0} and key {1}", condition.name, condition.key_str()));
+                    return false; 
+                }
+            }
+
+            return true;
+            //m_key    = routine.Key;
+            //m_keyStr = Converter.to_string(routine.Key);
+            //m_type  = FlowElementType.Routine;
+            //m_isARandomizer = routine.Randomizer;
+
+            //// generate conditions
+            //m_conditions = new List<Condition>(routine.Conditions.Count);
+            //m_conditionsPerName = new Dictionary<string, Condition>(routine.Conditions.Count);
+            //m_conditionsPerKey = new Dictionary<int, Condition>(routine.Conditions.Count);
+
+            //foreach (XML.Condition xmlCondition in routine.Conditions) {                
+            //    var conditionGO = GO.generate_empty_object(xmlCondition.Name, transform, true);
+            //    var condition = conditionGO.AddComponent<Condition>();
+            //    condition.setup_condition_object(xmlCondition);
+            //    condition.initialize();
+            //    m_conditions.Add(condition);
+            //    m_conditionsPerName[condition.name] = condition;
+            //    m_conditionsPerKey[condition.key()] = condition;
+            //}
         }
 
         public void start(RoutineInfo info) {

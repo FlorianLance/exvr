@@ -83,12 +83,23 @@ namespace Ex{
             m_routinesPerKey.Clear();
             foreach (XML.Routine xmlRoutine in xmlRoutines.Routine) {
                 var routine = GO.generate_empty_object(xmlRoutine.Name, ExVR.GO().Routines.transform).AddComponent<Routine>();
-                routine.initialize(xmlRoutine);
+                routine.setup_element_object(xmlRoutine);
                 m_routines.Add(routine);
                 m_routinesPerName[routine.name] = routine;
                 m_routinesPerKey[routine.key()] = routine;
             }            
         }
+
+        public bool initialize() {
+            foreach(var routine in m_routines) {
+                if (!routine.initialize()) {
+                    ExVR.Log().error(string.Format("Cannot initialize routine with name {0} and key {1}", routine.name, routine.key_str()));
+                    return false;
+                }
+            }
+            return true;
+        }
+
 
         public void display_last_info() {
 

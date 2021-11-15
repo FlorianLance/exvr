@@ -32,13 +32,13 @@ namespace Ex {
         private TransformValue uiValue = null;
         private TransformValue value = new TransformValue();
 
-        protected override void initialize(XML.Connector connector) {
-
-            base.initialize(connector);            
+        protected override bool initialize() {
+     
             uiValue = m_config.get_transform(valueStr);
 
             add_signals(1);
             add_slot(0, (arg) => { base_slot1(arg); });
+            return true;
         }
 
         protected override void slot1(object inputValue) {
@@ -51,16 +51,18 @@ namespace Ex {
 
         protected override void update_from_gui() {
             uiValue = m_config.get_transform(valueStr);
-            start_routine();
+            pre_start_routine();
         }
 
-        protected override void start_routine() {
+        protected override void pre_start_routine() {
+            if (inputGO.Count == 0) {
 
-            value.position = uiValue.position;
-            value.rotation = uiValue.rotation;
-            value.scale    = uiValue.scale;
+                value.position = uiValue.position;
+                value.rotation = uiValue.rotation;
+                value.scale    = uiValue.scale;
 
-            send_output();
+                send_output();
+            }
         }
 
         void send_output() {

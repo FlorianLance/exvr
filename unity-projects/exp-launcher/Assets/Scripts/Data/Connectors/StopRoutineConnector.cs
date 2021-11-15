@@ -26,10 +26,9 @@ namespace Ex {
 
     public class StopRoutineConnector : ExConnector {
 
-        protected override void initialize(XML.Connector connector) {
-
-            base.initialize(connector);
+        protected override bool initialize() {
             add_signals(2);
+            return true;
         }
 
         protected override void stop_routine() {

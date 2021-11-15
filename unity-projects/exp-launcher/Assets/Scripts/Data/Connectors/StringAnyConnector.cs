@@ -29,13 +29,14 @@ namespace Ex {
         private string str;
         private object value = null;
 
-        protected override void initialize(XML.Connector connector) {
+        protected override bool initialize() {
 
-            base.initialize(connector);
             str = m_config.get<string>(valueStr);
 
             add_signals(1);
             add_slot(0, (arg) => { base_slot1(arg); });
+
+            return true;
         }
 
         protected override void slot1(object arg) {

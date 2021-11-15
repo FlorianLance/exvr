@@ -56,7 +56,7 @@ namespace Ex {
             // signals
             add_signal("visibility changed");
 
-            var resources = initC.get_resources_asset_bundle_data_list("ab_list");
+            var resources = initC.get_asset_bundles_resources_list("ab_list");
             bundles = new Dictionary<string, GameObject>(resources.Count);
             foreach (var resource in resources) {
 

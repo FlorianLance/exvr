@@ -53,7 +53,7 @@ namespace Ex{
         private void load_plot() {
 
             if (currentC.get<bool>("random")) {
-                var plots = currentC.get_resources_plot_data_list("plots_list");
+                var plots = currentC.get_plots_resources_list("plots_list");
                 if (plots.Count > 0) {
                     data = plots[Random.Range(0, plots.Count - 1)];
                 }

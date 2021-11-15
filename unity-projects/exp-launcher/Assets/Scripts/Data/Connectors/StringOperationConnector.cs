@@ -32,15 +32,14 @@ namespace Ex{
         object input0 = null;
         object input1 = null;
         ConnectorsFunctions.StringOperator stringO;
-
-        protected override void initialize(XML.Connector connector) {
-
-            base.initialize(connector);
+        protected override bool initialize() {
             stringO = ConnectorsFunctions.get_string_operator(m_config.get<string>(valueStr));
 
             add_signals(1);
             add_slot(0, (arg) => { base_slot1(arg); });
             add_slot(1, (arg) => { base_slot2(arg); });
+
+            return true;
         }
 
         protected override void slot1(object arg) {

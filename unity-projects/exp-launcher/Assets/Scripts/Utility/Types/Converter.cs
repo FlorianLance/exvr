@@ -148,6 +148,8 @@ namespace Ex{
                 return to_string((Color)value);
             } else if (value is TransformValue) {
                 return to_string((TransformValue)value);
+            } else if (value is DecimalValue) {
+                return to_string((DecimalValue)value);
             }
 
             return null;

@@ -30,11 +30,12 @@ namespace Ex{
     public class Vector2ToRealsConnector : ExConnector{
 
 
-        protected override void initialize(XML.Connector connector){
+        protected override bool initialize() {
 
-            base.initialize(connector);
             add_signals(2);
             add_slot(0, (arg) => { base_slot1(arg); });
+
+            return true;
         }
 
         protected override void slot1(object arg) {

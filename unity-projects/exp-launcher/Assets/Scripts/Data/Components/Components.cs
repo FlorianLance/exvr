@@ -310,6 +310,10 @@ namespace Ex
                 componentPerName[component.name] = component;
             }
 
+            return true;
+        }
+
+        public bool initialize() {
 
             // initialize components
             ExVR.ExpLog().component_manager(Function.initialize, true);
@@ -318,12 +322,12 @@ namespace Ex
                 if (component.is_function_defined(Function.initialize)) {
                     ExVR.ExpLog().log_and_add_to_stacktrace(component, Function.initialize, true, true);
                 }
-                    
+
                 if (!component.base_initialize()) {
                     // if one component not initialized, we stop the experiment generation
                     return false;
-                }                    
-                          
+                }
+
             }
             ExVR.ExpLog().component_manager(Function.initialize, false);
 

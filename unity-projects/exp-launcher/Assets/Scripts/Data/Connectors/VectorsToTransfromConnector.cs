@@ -33,13 +33,13 @@ namespace Ex{
         object input1 = null;
         object input2 = null;
 
-        protected override void initialize(XML.Connector connector) {
+        protected override bool initialize() {
 
-            base.initialize(connector);
             add_signals(1);
             add_slot(0, (arg) => { base_slot1(arg); });
             add_slot(1, (arg) => { base_slot2(arg); });
             add_slot(2, (arg) => { base_slot3(arg); });
+            return true;
         }
 
         protected override void slot1(object arg) {

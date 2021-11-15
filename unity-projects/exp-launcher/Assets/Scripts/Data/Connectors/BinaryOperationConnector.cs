@@ -30,14 +30,15 @@ namespace Ex {
         object input1 = null;
         ConnectorsFunctions.BinaryOperator binary;
 
-        protected override void initialize(XML.Connector connector) {
+        protected override bool initialize() {
 
-            base.initialize(connector);
             binary = ConnectorsFunctions.get_binary_function(m_config.get<string>(valueStr));
 
             add_signals(1);
             add_slot(0, (arg) => { base_slot1(arg); });
             add_slot(1, (arg) => { base_slot2(arg); });
+
+            return true;
         }
 
         protected override void slot1(object arg) {

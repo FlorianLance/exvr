@@ -33,16 +33,16 @@ namespace Ex {
 
         ConnectorsFunctions.DecimalOperator ope;
 
-        protected override void initialize(XML.Connector connector) {
+        protected override bool initialize() {
 
-            base.initialize(connector);
-        
             functionStr = m_config.get<string>(valueStr);
             ope = ConnectorsFunctions.get_decimal_operator(functionStr);
 
             add_signals(1);
             add_slot(0, (arg) => { base_slot1(arg); });
             add_slot(1, (arg) => { base_slot2(arg); });
+
+            return true;
         }
 
         protected override void slot1(object arg) {

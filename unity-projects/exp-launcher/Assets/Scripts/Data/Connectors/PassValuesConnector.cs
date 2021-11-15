@@ -26,9 +26,7 @@ namespace Ex {
 
     public class PassValuesConnector : ExConnector{
 
-        protected override void initialize(XML.Connector connector) {
-
-            base.initialize(connector);
+        protected override bool initialize() {
 
             add_signals(1);
             add_slot(0, (arg) => { base_slot1(arg); });
@@ -39,6 +37,7 @@ namespace Ex {
             add_slot(5, (arg) => { base_slot1(arg); });
             add_slot(6, (arg) => { base_slot1(arg); });
             add_slot(7, (arg) => { base_slot1(arg); });
+            return true;
         }
 
         protected override void slot1(object arg) {

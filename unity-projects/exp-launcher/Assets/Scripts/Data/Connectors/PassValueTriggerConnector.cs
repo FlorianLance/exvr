@@ -28,13 +28,13 @@ namespace Ex {
 
         object input = null;
 
-        protected override void initialize(XML.Connector connector) {
-
-            base.initialize(connector);
+        protected override bool initialize() {
 
             add_signals(1);
             add_slot(0, (arg) => { base_slot1(arg); });
             add_slot(1, (nullArg) => { base_slot2(null); });
+
+            return true;
         }
 
         protected override void slot1(object arg) {

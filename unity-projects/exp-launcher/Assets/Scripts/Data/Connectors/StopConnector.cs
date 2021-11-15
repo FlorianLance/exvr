@@ -25,10 +25,9 @@
 namespace Ex {
 
     public class StopConnector : ExConnector{
-
-        protected override void initialize(XML.Connector connector) {
-            base.initialize(connector);
+        protected override bool initialize() {
             add_slot(0, (nullArg) => { base_slot1(null); });
+            return true;
         }
 
         protected override void slot1(object arg) {

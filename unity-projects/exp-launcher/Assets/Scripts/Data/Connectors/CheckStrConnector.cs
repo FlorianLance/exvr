@@ -27,13 +27,14 @@ namespace Ex {
     public class CheckStrConnector : ExConnector {
 
         private string str = "";
-        protected override void initialize(XML.Connector connector) {
+        protected override bool initialize() {
 
-            base.initialize(connector);
             update_from_gui();
 
             add_signals(1);
-            add_slot(0, (arg) => { base_slot1(arg); });            
+            add_slot(0, (arg) => { base_slot1(arg); });
+
+            return true;
         }
 
         protected override void update_from_gui() {

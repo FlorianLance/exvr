@@ -26,10 +26,10 @@ namespace Ex {
 
     public class LoggerConnector : ExConnector{
 
-        protected override void initialize(XML.Connector connector) {
+        protected override bool initialize() {
 
-            base.initialize(connector);
             add_slot(0, (arg) => { base_slot1(arg); });
+            return true;
         }
 
         protected override void slot1(object arg) {

@@ -235,7 +235,26 @@ namespace Ex {
 
 
         // resources    
-        public List<AssetBundleResource> get_resources_asset_bundle_data_list(string argName) {
+        public List<ImageResource> get_images_resources_list(string argName) {
+
+            List<ImageResource> resources = new List<ImageResource>();
+            if (!has(argName)) {
+                log_error(string.Format("Argument {0} of type image doesn't exist.", argName));
+                return resources;
+            }
+
+            var split = ((List<object>)args[argName].value);
+            foreach (var keyStr in split) {
+                int key = Converter.to_int((string)keyStr);
+                var resourceData = ExVR.Resources().get_resource_file_data(ResourcesManager.ResourceType.Image, key);
+                if (resourceData != null) {
+                    resources.Add((ImageResource)(resourceData));
+                }
+            }
+            return resources;
+        }
+
+        public List<AssetBundleResource> get_asset_bundles_resources_list(string argName) {
 
             List<AssetBundleResource> resources = new List<AssetBundleResource>();
             if (!has(argName)) {
@@ -255,7 +274,7 @@ namespace Ex {
         }
 
 
-        public List<PlotResource> get_resources_plot_data_list(string argName) {
+        public List<PlotResource> get_plots_resources_list(string argName) {
 
             List<PlotResource> resources = new List<PlotResource>();
             if (!has(argName)) {

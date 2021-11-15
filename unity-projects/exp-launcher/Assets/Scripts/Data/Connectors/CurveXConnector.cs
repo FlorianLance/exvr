@@ -33,10 +33,9 @@ namespace Ex{
         public int frequency = 30;
         private int count = 0;
 
-        protected override void initialize(XML.Connector connector) {
-
-            base.initialize(connector);
+        protected override bool initialize() {
             add_slot(0, (arg) => { base_slot1(arg); });
+            return true;
         }
         
         protected override void slot1(object arg) {
