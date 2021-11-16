@@ -63,14 +63,13 @@ namespace Ex{
             try {
                 m_port.Open();
             } catch (UnauthorizedAccessException e) {
-                log_error("Serial port open UnauthorizedAccessException::error: " + e.Message);
+                log_warning("Serial port open UnauthorizedAccessException::error: " + e.Message);
             } catch (IOException e) {
-                log_error("Serial port open IOException::error: " + e.Message);
+                log_warning("Serial port open IOException::error: " + e.Message);
             }
 
             if (!m_port.IsOpen) {
-                log_error(string.Format("Serial port {0} cannot be opened", initC.get<string>("port_to_write")));
-                return false;
+                log_warning(string.Format("Serial port {0} cannot be opened, no data will be sended.", initC.get<string>("port_to_write")));
             }
             return true;
         }
@@ -146,7 +145,9 @@ namespace Ex{
         }
 
         protected override void clean() {
-            m_port.Close();
+            if (m_port.IsOpen) {
+                m_port.Close();
+            }
         }
 
         #endregion
@@ -185,7 +186,7 @@ namespace Ex{
         private void write_bytes(byte[] buffer, int offset, int count) {
 
             if (!m_port.IsOpen) {
-                log_warning("Port not opened.");
+                log_warning("Cannot write, port not opened.");
                 return;
             }
 
@@ -205,7 +206,7 @@ namespace Ex{
         private void write_str(string text, bool line) {
 
             if (!m_port.IsOpen) {
-                log_warning("Port not opened.");
+                log_warning("Cannot write, port not opened.");
                 return;
             }
 

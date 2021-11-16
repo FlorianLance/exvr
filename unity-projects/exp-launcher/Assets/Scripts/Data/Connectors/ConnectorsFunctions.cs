@@ -93,12 +93,12 @@ namespace Ex{
         }
 
 
-        public static Action<object> get_logger(Type type) {
-            if (logger.ContainsKey(type)) {
-                return logger[type];
-            }
-            return input => { ExVR.Log().message(input); };
-        }
+        //public static Action<object> get_logger(Type type) {
+        //    if (logger.ContainsKey(type)) {
+        //        return logger[type];
+        //    }
+        //    return input => { ExVR.Log().message(input); };
+        //}
 
         public static readonly Dictionary<string, TrigonometryFunction> strToTrigonometryFunction = new Dictionary<string, TrigonometryFunction> {
             ["Cos"] = TrigonometryFunction.cos,
@@ -190,8 +190,8 @@ namespace Ex{
             [StringOperator.splits_with]     = (input1, input2) => { return new List<string>(((string)input1).Split(new string[] { (string)input2 }, StringSplitOptions.None)); }
         };
 
-        public static readonly Dictionary<Type, Action<object>> logger = new Dictionary<Type, Action<object>> {
-            [typeof(int)] = input => { ExVR.Log().message(input); }
-        };
+        //public static readonly Dictionary<Type, Action<object>> logger = new Dictionary<Type, Action<object>> {
+        //    [typeof(int)] = input => { ExVR.Log().message(input); }
+        //};
     }
 }

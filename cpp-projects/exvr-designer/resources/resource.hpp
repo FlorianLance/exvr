@@ -41,7 +41,7 @@ struct Resource{
     using CanOpen     = bool;
     using CanGenerate = bool;
     static constexpr Filters videoFilters   = "(*.avi *.dv *.m4v *.mov *.mp4 *.mpg *.mpeg *.ogv *.webm *.wmv)"sv;
-    static constexpr Filters txtFilters     = "(*.txt *.calib *.config *.xml *.json)"sv;
+    static constexpr Filters txtFilters     = "(*.txt *.calib *.config *.xml *.json *.csv)"sv;
     static constexpr Filters audioFilters   = "(*.ogg *.wav *.aiff *.aif)"sv;
     static constexpr Filters imageFilters   = "(*.jpg *.jpeg *.png *.PNG)"sv;
 

@@ -33,7 +33,8 @@ namespace Ex {
         }
 
         protected override void slot1(object arg) {
-            ConnectorsFunctions.get_logger(arg.GetType()).Invoke(arg);
+            log_message(arg);
         }
+        // TOOD: add warning and errors
     }
 }

@@ -104,9 +104,9 @@ namespace Ex.DLL{
         public void init_callbacks() {
 
             stackTraceCB            = (trace) => {ExVR.ExpLog().push_to_strackTrace(new ComponentTrace(trace));};
-            logCB                   = (message) => {parent.log_message(message);};
-            logWarningCB            = (warning) => {parent.log_warning(warning);};
-            logErrorCB              = (error) => { parent.log_error(error);};
+            logCB                   = (message) => {parent.log_message(message, false, false);};
+            logWarningCB            = (warning) => {parent.log_warning(warning, true, false);};
+            logErrorCB              = (error) => { parent.log_error(error, true, false);};
             ellapsedTimeExpMsCB     = () => {return (int)ExVR.Time().ellapsed_exp_ms();};
             ellapsedTimeRoutineMsCB = () => {return (int)ExVR.Time().ellapsed_element_ms();};
             getCB                   = (string componentName) => {return ExVR.Components().get_from_name(componentName).key;};

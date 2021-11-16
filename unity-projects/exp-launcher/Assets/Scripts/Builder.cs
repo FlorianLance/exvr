@@ -162,7 +162,7 @@ namespace Ex{
         [Rename("Experiment")]
         public Experiment experiment = null;
 
-        void Awake() {
+        public void Awake() {
             
 #if EXVR
             Debug.Log("[EXVR-EXP]");
@@ -221,7 +221,7 @@ namespace Ex{
 
         void OnApplicationQuit() {
 
-            ExVR.Log().message(string.Format("Application ending after {0} seconds -> {1}", Time.time, GlobalVariables.wantToLeave), false);
+            ExVR.Log().message(string.Format("Application ending after {0} seconds -> {1}", Time.time, GlobalVariables.wantToLeave));
 
             // force destroy experiment (mostly for C++DLL component to be clean correctly in Editor mode)
             ExVR.ExpLog().builder("Quit application");

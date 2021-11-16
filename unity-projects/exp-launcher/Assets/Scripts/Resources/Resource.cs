@@ -24,10 +24,11 @@
 
 // system
 using System.IO;
+using System.Runtime.CompilerServices;
 
-namespace Ex{
+namespace Ex {
 
-    public class Resource{
+    public class Resource {
 
         public int key;
         public string alias;
@@ -53,32 +54,41 @@ namespace Ex{
             return string.Format(" [From resource of type {0} with alias {1}]", this.GetType().ToString(), alias);
         }
 
-        public void log_message(string message, bool verbose = false) {
+        public void log_message(object message, bool verbose = false, bool extra = false,
+            [CallerMemberName] string memberName = "",
+            [CallerFilePath] string sourceFilePath = "",
+            [CallerLineNumber] int sourceLineNumber = 0) {
             if (verbose) {
-                ExVR.Log().message(string.Concat(message, verbose_name()));
+                ExVR.Log().message(string.Concat(Converter.to_string(message), verbose_name()), extra, memberName, sourceFilePath, sourceLineNumber);
             } else {
-                ExVR.Log().message(message);
+                ExVR.Log().message(message, extra, memberName, sourceFilePath, sourceLineNumber);
             }
         }
 
-        public void log_warning(string warning, bool verbose = true) {
+        public void log_warning(object warning, bool verbose = true, bool extra = false,
+            [CallerMemberName] string memberName = "",
+            [CallerFilePath] string sourceFilePath = "",
+            [CallerLineNumber] int sourceLineNumber = 0) {
             if (verbose) {
-                ExVR.Log().warning(string.Concat(warning, verbose_name()));
+                ExVR.Log().warning(string.Concat(Converter.to_string(warning), verbose_name()), extra, memberName, sourceFilePath, sourceLineNumber);
             } else {
-                ExVR.Log().warning(warning);
+                ExVR.Log().warning(warning, extra, memberName, sourceFilePath, sourceLineNumber);
             }
         }
 
-        public void log_error(string error, bool verbose = true) {
+        public void log_error(object error, bool verbose = true, bool extra = true,
+            [CallerMemberName] string memberName = "",
+            [CallerFilePath] string sourceFilePath = "",
+            [CallerLineNumber] int sourceLineNumber = 0) {
             if (verbose) {
-                ExVR.Log().error(string.Concat(error, verbose_name()));
+                ExVR.Log().error(string.Concat(Converter.to_string(error), verbose_name()), extra, memberName, sourceFilePath, sourceLineNumber);
             } else {
-                ExVR.Log().error(error);
+                ExVR.Log().error(error, extra, memberName, sourceFilePath, sourceLineNumber);
             }
         }
     }
 
-    public class ResourceFile : Resource{
+    public class ResourceFile : Resource {
 
         public string extension;
 

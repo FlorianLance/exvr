@@ -1790,11 +1790,6 @@ bool XmlIoManager::save_experiment(){
         return false;
     }
 
-    if(!QFileInfo(m_experiment->states.currentExpfilePath).exists()){
-        QtLogger::error(QSL("[XML] Experiment ") % m_experiment->states.currentExpfilePath % QSL(" doesn't exist anymore, use \"Save as\" instead. "));
-        return false;
-    }
-
     return save_experiment_file(m_experiment->states.currentExpfilePath);
 }
 
@@ -1869,6 +1864,7 @@ bool XmlIoManager::save_experiment_as(){
         QtLogger::message(QSL("[XML] Save experiment as: ") % path);
         m_experiment->states.currentExpfilePath = path;
         m_experiment->states.currentName = m_experiment->states.currentExpfilePath.split('/').last().split('.').first();
+        qDebug() << "m_experiment->states.currentExpfilePath " << m_experiment->states.currentExpfilePath;
         save_experiment();
         m_experiment->add_to_update_flag(UpdateUI);
         return true;

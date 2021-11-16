@@ -217,8 +217,8 @@ namespace Ex {
             // initialize data
             bpd = new BiopacData(bps);
 
-            ExVR.Log().message(string.Format("Number of point asked per call per chanel: {0}", bpd.nbDataPointsPerFrame.ToString()), false);
-            ExVR.Log().message(string.Format("Number of point per call to receiveMPData: {0}", bpd.numberOfDataPoints.ToString()), false);
+            ExVR.Log().message(string.Format("Number of point asked per call per chanel: {0}", bpd.nbDataPointsPerFrame.ToString()));
+            ExVR.Log().message(string.Format("Number of point per call to receiveMPData: {0}", bpd.numberOfDataPoints.ToString()));
 
             // start reading loop
             while (doLoop) {

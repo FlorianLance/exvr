@@ -25,6 +25,7 @@
 // system
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 // unity
 using UnityEngine;
@@ -89,9 +90,24 @@ namespace Ex {
         public double ellapsed_time_frame_ms() {return p.time().ellapsed_frame_ms();}
 
         // logs
-        public void log_message(string message, bool verbose = false) {p.log_message(message, verbose);}
-        public void log_warning(string warning, bool verbose = true) {p.log_warning(warning, verbose);}
-        public void log_error(string error, bool verbose = true) {p.log_error(error, verbose);}
+        public void log_message(string message, bool verbose = false, bool addExtraInfo = false,
+            [CallerMemberName] string memberName = "",
+            [CallerFilePath] string sourceFilePath = "",
+            [CallerLineNumber] int sourceLineNumber = 0) {
+            p.log_message(message, verbose, addExtraInfo, memberName, sourceFilePath, sourceLineNumber);
+        }
+        public void log_warning(string warning, bool verbose = true, bool addExtraInfo = true,
+            [CallerMemberName] string memberName = "",
+            [CallerFilePath] string sourceFilePath = "",
+            [CallerLineNumber] int sourceLineNumber = 0) {
+            p.log_warning(warning, verbose, addExtraInfo, memberName, sourceFilePath, sourceLineNumber);
+        }
+        public void log_error(string error, bool verbose = true, bool addExtraInfo = true,
+            [CallerMemberName] string memberName = "",
+            [CallerFilePath] string sourceFilePath = "",
+            [CallerLineNumber] int sourceLineNumber = 0) {
+            p.log_error(error, verbose, addExtraInfo, memberName, sourceFilePath, sourceLineNumber);
+        }
 
         // signals
         public void invoke_signal1(object value) {p.invoke_signal(signal1Str, value);}

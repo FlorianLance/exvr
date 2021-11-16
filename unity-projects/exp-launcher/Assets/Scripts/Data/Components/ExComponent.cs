@@ -26,6 +26,7 @@
 using System;
 using System.Text;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 // unity
 using UnityEngine;
@@ -205,27 +206,36 @@ namespace Ex{
 
 
         // logs
-        public void log_message(string message, bool verbose = false) {
+        public void log_message(object message, bool verbose = false, bool extra = false,
+            [CallerMemberName] string memberName = "",
+            [CallerFilePath] string sourceFilePath = "",
+            [CallerLineNumber] int sourceLineNumber = 0) {
             if (verbose) {
-                log().message(string.Concat(message, verbose_name()), true);
+                log().message(string.Concat(Converter.to_string(message), verbose_name()), extra, memberName, sourceFilePath, sourceLineNumber);
             } else {
-                log().message(message, false);
+                log().message(message, extra, memberName, sourceFilePath, sourceLineNumber);
             }            
         }
 
-        public void log_warning(string warning, bool verbose = true) {
+        public void log_warning(object warning, bool verbose = true, bool extra = false,
+            [CallerMemberName] string memberName = "",
+            [CallerFilePath] string sourceFilePath = "",
+            [CallerLineNumber] int sourceLineNumber = 0) {
             if (verbose) {
-                log().warning(string.Concat(warning, verbose_name()), true);
+                log().warning(string.Concat(Converter.to_string(warning), verbose_name()), extra, memberName, sourceFilePath, sourceLineNumber);
             } else {
-                log().warning(warning, false);
+                log().warning(warning, extra, memberName, sourceFilePath, sourceLineNumber);
             }
         }
 
-        public void log_error(string error, bool verbose = true) {
+        public void log_error(object error, bool verbose = true, bool extra = true,
+            [CallerMemberName] string memberName = "",
+            [CallerFilePath] string sourceFilePath = "",
+            [CallerLineNumber] int sourceLineNumber = 0) {
             if (verbose) {
-                log().error(string.Concat(error, verbose_name()), true);
+                log().error(string.Concat(Converter.to_string(error), verbose_name()), extra, memberName, sourceFilePath, sourceLineNumber);
             } else {
-                log().error(error, false);
+                log().error(error, extra, memberName, sourceFilePath, sourceLineNumber);
             }
         }
 

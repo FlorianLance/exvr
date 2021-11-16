@@ -64,7 +64,6 @@ namespace Ex{
 
         protected override void start_routine() {
             if (!currentC.get<bool>("do_not_load")) {
-                log_message("start_routine !do_not_load");
                 load_image_from_resource(currentC.get_resource_alias("image"));
             }
             resize_image();

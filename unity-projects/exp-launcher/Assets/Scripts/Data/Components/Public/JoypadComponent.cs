@@ -167,7 +167,7 @@ namespace Ex{
                 }
 
                 if (notNone) { 
-                    invoke_signal(axisOnGuiSignal, currentState);
+                    invoke_signal(axisOnGuiSignal, currentEvent);
                 }
             }
 
