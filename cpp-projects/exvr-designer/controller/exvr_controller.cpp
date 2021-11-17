@@ -1,9 +1,26 @@
 
-/*******************************************************************************
-** exvr-designer                                                              **
-** No license (to be defined)                                                 **
-** Copyright (c) [2018] [Florian Lance][EPFL-LNCO]                            **
-********************************************************************************/
+/***********************************************************************************
+** exvr-designer                                                                  **
+** MIT License                                                                    **
+** Copyright (c) [2018] [Florian Lance][EPFL-LNCO]                                **
+** Permission is hereby granted, free of charge, to any person obtaining a copy   **
+** of this software and associated documentation files (the "Software"), to deal  **
+** in the Software without restriction, including without limitation the rights   **
+** to use, copy, modify, merge, publish, distribute, sublicense, and/or sell      **
+** copies of the Software, and to permit persons to whom the Software is          **
+** furnished to do so, subject to the following conditions:                       **
+**                                                                                **
+** The above copyright notice and this permission notice shall be included in all **
+** copies or substantial portions of the Software.                                **
+**                                                                                **
+** THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR     **
+** IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,       **
+** FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE    **
+** AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER         **
+** LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,  **
+** OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE  **
+** SOFTWARE.                                                                      **
+************************************************************************************/
 
 #include "exvr_controller.hpp"
 
@@ -13,6 +30,7 @@
 
 // local
 #include "qt_str.hpp"
+#include "utility/script_utility.hpp"
 
 // ui
 #include "ui_about_dialog.h"
@@ -63,6 +81,10 @@ ExVrController::ExVrController(const QString &nVersion, bool lncoComponents){
     QtLogger::set_html_ui_type_message_color(QtLogger::MessageType::warning, QColor(243, 158, 3));
     QtLogger::set_html_ui_type_message_color(QtLogger::MessageType::error,   QColor(244,4,4));
     QtLogger::set_html_ui_type_message_color(QtLogger::MessageType::unknow,  Qt::white);
+
+    // init scripting
+    CSharpScript::initialize();
+
 
     Bench::disable_display();
 
@@ -1116,9 +1138,21 @@ void ExVrController::generate_global_signals_connections(){
         }
     });
     // -> exp launcher
-    connect(s, &GSignals::connector_node_modified_signal,             exp_launcher(), &LAU::update_connector_node);
-    connect(s, &GSignals::arg_updated_signal,                         exp_launcher(), &LAU::update_component_config_argument);
-    connect(s, &GSignals::action_signal,                              exp_launcher(), &LAU::trigger_component_config_action);
+    connect(s, &GSignals::connector_node_modified_signal, [&](ElementKey routineKey, ConditionKey conditionKey, ConnectorKey connectorKey, QString name, Arg arg){
+        if(!exp()->states.neverLoaded){
+            exp_launcher()->update_connector_node(routineKey, conditionKey, connectorKey, std::move(name), std::move(arg));
+        }
+    });
+    connect(s, &GSignals::arg_updated_signal, [&](ComponentKey componentKey, ConfigKey configKey, Arg arg, bool initConfig){
+        if(!exp()->states.neverLoaded){
+            exp_launcher()->update_component_config_argument(componentKey, configKey, std::move(arg), initConfig);
+        }
+    });
+    connect(s, &GSignals::action_signal, [&](ComponentKey componentKey, ConfigKey configKey, QStringView actionName, bool initConfig){
+        if(!exp()->states.neverLoaded){
+            exp_launcher()->trigger_component_config_action(componentKey, configKey, actionName, initConfig);
+        }
+    });
 
     // -> components manager
     auto componentsM = ui()->components_manager();
@@ -1136,6 +1170,8 @@ void ExVrController::generate_main_window_connections(){
     // -> this
     connect(ui(), &DMW::new_experiment_signal,      this, [&]{
         xml()->save_experiment_file(tool::ex::Paths::tempDir % QSL("/deleted.xml"));
+        exp_launcher()->stop_experiment();
+        exp_launcher()->clean_experiment();
         exp()->new_experiment();
     });
     connect(ui(), &DMW::play_delay_experiment_signal,   this, &ExVrController::show_play_with_delay_dialog);
@@ -1146,8 +1182,41 @@ void ExVrController::generate_main_window_connections(){
     connect(ui(), &DMW::open_temp_experiment_file_signal,           xml(), &XMLM::open_temp_experiment_file);
     connect(ui(), &DMW::open_experiment_directory_signal,           xml(), &XMLM::open_experiment_directory);
     connect(ui(), &DMW::open_temp_instance_file_signal,             xml(), &XMLM::open_temp_instance_file);
-    connect(ui(), &DMW::load_experiment_signal,                     xml(), &XMLM::load_experiment);
-    connect(ui(), &DMW::load_dropped_experiment_signal,             xml(), &XMLM::load_dropped_experiment_file);
+
+    connect(ui(), &DMW::load_experiment_signal,        this, [&](){
+
+        QFileInfo fileInfo(exp()->states.currentExpfilePath);
+        QString parentDirPath = "";
+        if(fileInfo.exists()){
+            parentDirPath = fileInfo.absoluteDir().path();
+        }else{
+            parentDirPath = Paths::expDir;
+        }
+
+        QString path = QFileDialog::getOpenFileName(nullptr, "Experiment file", parentDirPath, "XML (*.xml)");
+        if(path.length() > 0){
+            if(!exp()->states.neverLoaded){
+                exp_launcher()->stop_experiment();
+                exp_launcher()->clean_experiment();
+            }
+            exp()->clean_experiment();
+            xml()->load_experiment_file(path);
+            exp()->add_to_update_flag(UpdateAll | ResetUI);
+        }
+    });
+
+    connect(ui(), &DMW::load_dropped_experiment_signal,        this, [&](QString path){
+        if(path.length() > 0){
+            if(!exp()->states.neverLoaded){
+                exp_launcher()->stop_experiment();
+                exp_launcher()->clean_experiment();
+            }
+            exp()->clean_experiment();
+            xml()->load_experiment_file(path);
+            exp()->add_to_update_flag(UpdateAll | ResetUI);
+        }
+    });
+
     connect(ui(), &DMW::open_current_exp_launcher_log_file_signal,  xml(), &XMLM::open_current_exp_launcher_log_file);
     connect(ui(), &DMW::open_current_designer_log_file_signal,      xml(), &XMLM::open_current_designer_log_file);
     connect(ui(), &DMW::open_log_directory_signal,                  xml(), &XMLM::open_log_directory);

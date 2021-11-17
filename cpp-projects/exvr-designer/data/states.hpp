@@ -1,9 +1,26 @@
 
-/*******************************************************************************
-** exvr-designer                                                              **
-** No license (to be defined)                                                 **
-** Copyright (c) [2018] [Florian Lance][EPFL-LNCO]                            **
-********************************************************************************/
+/***********************************************************************************
+** exvr-designer                                                                  **
+** MIT License                                                                    **
+** Copyright (c) [2018] [Florian Lance][EPFL-LNCO]                                **
+** Permission is hereby granted, free of charge, to any person obtaining a copy   **
+** of this software and associated documentation files (the "Software"), to deal  **
+** in the Software without restriction, including without limitation the rights   **
+** to use, copy, modify, merge, publish, distribute, sublicense, and/or sell      **
+** copies of the Software, and to permit persons to whom the Software is          **
+** furnished to do so, subject to the following conditions:                       **
+**                                                                                **
+** The above copyright notice and this permission notice shall be included in all **
+** copies or substantial portions of the Software.                                **
+**                                                                                **
+** THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR     **
+** IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,       **
+** FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE    **
+** AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER         **
+** LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,  **
+** OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE  **
+** SOFTWARE.                                                                      **
+************************************************************************************/
 
 #pragma once
 
@@ -22,7 +39,7 @@ namespace tool::ex {
 
     enum class ExpLauncherCommand : int{
         Load=0, Play, Pause, Stop, Next, Previous, UpdateComponent, UpdateConnector, Quit,
-        Action, GoToSpecificInstanceElement, PlayPause, PlayDelay, Error,
+        Action, GoToSpecificInstanceElement, PlayPause, PlayDelay, Error, Clean,
         SizeEnum
     };
 
@@ -96,13 +113,28 @@ namespace tool::ex {
             minorNumVersion = split[1].toInt();
         }
 
+        void reset(){
+            neverLoaded         = true;
+            currentElementKey   = -1;
+            currentConditionKey = -1;
+            currentElementName  = "";
+            currentTypeSpecificInfo = "";
+            experimentTimeS = 0.0;
+            currentElementTimeS = 0.0;
+            currentIntervalEndTimeS = 0.0;
+            currentOrder = "";
+            nbCalls = "";
+        }
+
         const QString numVersion;
         int majorNumVersion;
         int minorNumVersion;
         int maximumDeepLevel = -1;
+        unsigned int randomizationSeed = 0;
 
         QString loadedExpDesignerVersion = "unknow";
         QString designerPathUsedForLoadedExp = "unknow";
+
 
         QString currentExpfilePath;
         QString currentName = "unknow";
@@ -112,7 +144,9 @@ namespace tool::ex {
         ExpLauncherState explauncherState = ExpLauncherState::NotStarted;
         ExpState expState = ExpState::NotLoaded;
 
+        bool followsCurrentCondition = false;
 
+        bool neverLoaded = true;
         int currentElementKey=-1;
         int currentConditionKey=-1;
         Element::Type currentElementType;
@@ -125,9 +159,7 @@ namespace tool::ex {
         QString currentOrder = "";
         QString nbCalls = "";
 
-        unsigned int randomizationSeed = 0;
 
-        bool followsCurrentCondition = false;
     };
 
 }

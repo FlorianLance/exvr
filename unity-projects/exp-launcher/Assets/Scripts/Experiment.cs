@@ -52,6 +52,7 @@ namespace Ex{
             UpdateComponentParameter,
             UpdateConnectorParameter,
             ComponentActionFromGui,
+            Clean
         }
 
         public ScheduledAction(Source source, Type type) {
@@ -310,8 +311,10 @@ namespace Ex{
             ExVR.ExpLog().exp(string.Format("Load XML [{0} , {1}]", xmlExperimentPath, xmlInstancePath), true, false, false);
 
             // clean
-            destroy_experiment();
-            yield return new WaitForSeconds(0.5f);             
+            if (m_experimentLoaded) {
+                destroy_experiment();
+                yield return new WaitForSeconds(0.5f);
+            }            
 
             if (!generate_experiment(xmlExperimentPath, xmlInstancePath)) {
                 // generation error
@@ -552,6 +555,9 @@ namespace Ex{
                 }case NetworkManager.Command.Next: {                    
                     schedule_go_to_next_element(ScheduledAction.Source.Gui);
                     return;
+                }case NetworkManager.Command.Clean: {
+                    schedule_clean(ScheduledAction.Source.Gui);
+                    return;
                 }case NetworkManager.Command.Previous: {
                     schedule_go_to_previous_element(ScheduledAction.Source.Gui);
                     return;
@@ -703,6 +709,10 @@ namespace Ex{
             m_scheduledActions.Add(new ScheduledAction(source, ScheduledAction.Type.Stop));
         }
 
+        public void schedule_clean(ScheduledAction.Source source) {
+            m_scheduledActions.Add(new ScheduledAction(source, ScheduledAction.Type.Clean));
+        }
+
         public void schedule_quit(ScheduledAction.Source source) {
             m_scheduledActions.Add(new ScheduledAction(source, ScheduledAction.Type.Quit));
         }
@@ -762,10 +772,13 @@ namespace Ex{
             int countGoto = 0;
             ScheduledAction lastGotoAction = null;
             ScheduledAction stopAction = null;
+            ScheduledAction cleanAction = null;
             ScheduledAction quitAction = null;
             foreach (var action in actions) {
 
-                if (action.type == ScheduledAction.Type.Stop) {
+                if (action.type == ScheduledAction.Type.Clean) {
+                    cleanAction = action;
+                } else if (action.type == ScheduledAction.Type.Stop) {
                     stopAction = action;
                 } else if (action.type == ScheduledAction.Type.Quit) {
                     quitAction = action;
@@ -794,7 +807,7 @@ namespace Ex{
 
                     exp_log(action.source, "modify_action_config");
                     if (!routines.modify_action_config(action.elementName, action.conditionName, action.componentName, action.configName)) {
-                        log_error(string.Format("Cannot apply config {0} from condition {1} in routine {2} with component {3}.", 
+                        log_error(string.Format("Cannot apply config {0} from condition {1} in routine {2} with component {3}.",
                             action.configName,
                             action.conditionName,
                             action.elementName,
@@ -818,7 +831,7 @@ namespace Ex{
                     var connector = condition.get_connector(action.connectorKey);
                     if (connector != null) {
                         connector.base_update_from_gui(action.arg);
-                    }                                        
+                    }
 
                 } else if (action.type == ScheduledAction.Type.ComponentActionFromGui) {
 
@@ -827,10 +840,10 @@ namespace Ex{
                 } else if (action.type == ScheduledAction.Type.Start) {
                     exp_log(action.source, "start");
                     start_experiment();
-                }else if (action.type == ScheduledAction.Type.Play) {
+                } else if (action.type == ScheduledAction.Type.Play) {
                     exp_log(action.source, "play");
                     play_experiment();
-                }else if (action.type == ScheduledAction.Type.Pause) {
+                } else if (action.type == ScheduledAction.Type.Pause) {
                     exp_log(action.source, "pause");
                     pause_experiment();
                 }
@@ -842,8 +855,13 @@ namespace Ex{
                 stop_experiment();
             }
 
-            // quit the program
-            if (quitAction != null) {
+            if (cleanAction != null) {
+                exp_log(cleanAction.source, "clean_experiment");
+                destroy_experiment();
+            }
+
+                // quit the program
+                if (quitAction != null) {
                 exp_log(quitAction.source, "quit");
                 GlobalVariables.wantToLeave = true;
 #if UNITY_EDITOR

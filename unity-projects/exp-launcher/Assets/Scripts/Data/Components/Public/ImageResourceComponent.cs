@@ -32,27 +32,31 @@ namespace Ex{
 
     public class ImageResourceComponent : ExComponent {
 
-        public ImageResource currentImage = null;
-        public Dictionary<string, ImageResource> images = null;
-        //(resources.Count);
+        private bool sentWhenExpStarted = false;
+        public List<ImageResource> images = null;
+        public Dictionary<string, ImageResource> imagesPerAlias = null;
 
+        #region ex_functions
         protected override bool initialize() {
             add_signal("image");
             add_signal("alias");
             add_signal("path");
-            add_slot("update alias", (value) => {
+            add_slot("image from alias", (value) => {
                 var alias = (string)value;
-                update_current_image(alias);
-                send_current_image();
+                send_image(alias);
+            });
+            add_slot("image from id", (value) => {
+                var id = (int)value;
+                send_image(id);
             });
 
-            var resources = initC.get_images_resources_list("images_list");
-            images = new Dictionary<string, ImageResource>(resources.Count);
-            foreach (var resource in resources) {
+            images = initC.get_images_resources_list("images_list");
+            imagesPerAlias = new Dictionary<string, ImageResource>(images.Count);
+            foreach (var image in images) {
 
-                var imageResource = ExVR.Resources().get_image_file_data(resource.alias);
+                var imageResource = ExVR.Resources().get_image_file_data(image.alias);
                 if(imageResource != null) {
-                    images[resource.alias] = imageResource;
+                    imagesPerAlias[image.alias] = imageResource;
                 } else {
                     return false;
                 }                
@@ -61,39 +65,88 @@ namespace Ex{
             return true;
         }
 
-        public override void update_from_current_config() {
-            update_current_image(currentC.get<string>("alias"));
-        }
-
         protected override void update_parameter_from_gui(string updatedArgName) {
             update_from_current_config();
-            send_current_image();
+            send_image();
+        }
+
+        protected override void start_experiment() {
+            sentWhenExpStarted = false;  
         }
 
         protected override void pre_start_routine() {
-            if(currentC.get<string>("alias").Length > 0) {
-                send_current_image();
+
+            if (!sentWhenExpStarted && currentC.get<bool>("start_exp")) {
+                send_image();
+            }
+            sentWhenExpStarted = true;
+
+
+            if (currentC.get<bool>("start_routine")) {
+                send_image();
             }
         }
 
-        private void update_current_image(string alias) {
-
-            if (alias.Length != 0) {
-                if (images.ContainsKey(alias)) {
-                    currentImage = images[alias];
-
-                } else {
-                    log_error(string.Format("No alias {0} available in init config images resources list. ", alias));
-                }
+        protected override void stop_routine() {
+            if (currentC.get<bool>("stop_routine")) {
+                send_image();
             }
         }
 
-        private void send_current_image() {
-            if (currentImage != null) {
-                invoke_signal("image", new ImageContainer(currentImage.texture, false));
-                invoke_signal("alias", currentImage.alias);
-                invoke_signal("path", currentImage.path);                
+        #endregion ex_functions
+        #region private_functions
+
+        private void send_image(ImageResource image) {
+            if (image != null) {
+                invoke_signal("image", new ImageContainer(image.texture, false));
+                invoke_signal("alias", image.alias);
+                invoke_signal("path", image.path);
             }
         }
+
+        #endregion
+        #region public_functions
+
+        public void send_image() {
+            if (currentC.get<bool>("use_alias")) {
+                send_image(currentC.get<string>("alias"));
+            } else {
+                send_image(currentC.get<int>("id"));
+            }
+        }
+
+        public void send_image(int id) {
+            var img = image(id);
+            if (img != null) {
+                send_image(img);
+            }
+        }
+
+        public void send_image(string alias) {
+            var img = image(alias);
+            if (img != null) {
+                send_image(img);
+            }
+        }
+
+
+        ImageResource image(int id) {
+            if (id < images.Count) {
+                return images[id];
+            } 
+            log_error(string.Format("No image with id {0} available in init config images resources list. ", id));
+            return null;
+        }
+
+        ImageResource image(string alias) {
+            if (imagesPerAlias.ContainsKey(alias)) {
+                return imagesPerAlias[alias];
+            } 
+            log_error(string.Format("No alias {0} available in init config images resources list. ", alias));
+            return null;
+        }
+
+
+        #endregion
     }
 }

@@ -1,9 +1,26 @@
 
-/*******************************************************************************
-** exvr-designer                                                              **
-** No license (to be defined)                                                 **
-** Copyright (c) [2018] [Florian Lance][EPFL-LNCO]                            **
-********************************************************************************/
+/***********************************************************************************
+** exvr-designer                                                                  **
+** MIT License                                                                    **
+** Copyright (c) [2018] [Florian Lance][EPFL-LNCO]                                **
+** Permission is hereby granted, free of charge, to any person obtaining a copy   **
+** of this software and associated documentation files (the "Software"), to deal  **
+** in the Software without restriction, including without limitation the rights   **
+** to use, copy, modify, merge, publish, distribute, sublicense, and/or sell      **
+** copies of the Software, and to permit persons to whom the Software is          **
+** furnished to do so, subject to the following conditions:                       **
+**                                                                                **
+** The above copyright notice and this permission notice shall be included in all **
+** copies or substantial portions of the Software.                                **
+**                                                                                **
+** THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR     **
+** IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,       **
+** FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE    **
+** AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER         **
+** LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,  **
+** OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE  **
+** SOFTWARE.                                                                      **
+************************************************************************************/
 
 #include "xml_io_manager.hpp"
 
@@ -52,14 +69,21 @@ bool XmlIoManager::load_experiment_file(QString expFilePath){
     // set current file to load
     expFileToLoad = expFilePath;
 
-    QFile file(expFileToLoad);
-    if(!file.open(QFile::ReadOnly | QFile::Text)){
-        QtLogger::error(QSL("[XML] Can't load experiment file, invalid path: ") % expFileToLoad);
+    if(expFileToLoad.length() == 0){
+        QtLogger::error(QSL("[XML] Can't load experiment file, empty path. "));
         return false;
     }
 
-    // file valid, clean experiment
-    m_experiment->clean_experiment();
+    if(!QFileInfo(expFileToLoad).exists()){
+        QtLogger::error(QSL("[XML] Can't load experiment file, file doesn't exists at path: ") % expFileToLoad);
+        return false;
+    }
+
+    QFile file(expFileToLoad);
+    if(!file.open(QFile::ReadOnly | QFile::Text)){
+        QtLogger::error(QSL("[XML] Can't open experiment file with path: ") % expFileToLoad);
+        return false;
+    }
 
     // unpile xml
     r = std::make_unique<QXmlStreamReader>();
@@ -1872,40 +1896,16 @@ bool XmlIoManager::save_experiment_as(){
     return false;
 }
 
-bool XmlIoManager::load_experiment(){
 
-    QFileInfo fileInfo(m_experiment->states.currentExpfilePath);
-    QString parentDirPath = "";
-    if(fileInfo.exists()){
-        parentDirPath = fileInfo.absoluteDir().path();
-    }else{
-        parentDirPath = Paths::expDir;
-    }
+//bool XmlIoManager::load_dropped_experiment_file(QString path){
 
-    QString path = QFileDialog::getOpenFileName(nullptr, "Experiment file", parentDirPath, "XML (*.xml)");
-    if(path.length() > 0){
-        if(!load_experiment_file(path)){
-            m_experiment->new_experiment();            
-            return false;
-        }
-        m_experiment->add_to_update_flag(UpdateAll | ResetUI);
-        return true;
-    }
-    return false;
-}
-
-bool XmlIoManager::load_dropped_experiment_file(QString path){
-
-    if(path.length() > 0){
-        if(!load_experiment_file(path)){
-            m_experiment->new_experiment();
-            return false;
-        }
-        m_experiment->add_to_update_flag(UpdateAll | ResetUI);
-        return true;
-    }
-    return false;
-}
+//    if(path.length() > 0){
+//        bool success = load_experiment_file(path);
+//        m_experiment->add_to_update_flag(UpdateAll | ResetUI);
+//        return success;
+//    }
+//    return false;
+//}
 
 
 #include "moc_xml_io_manager.cpp"

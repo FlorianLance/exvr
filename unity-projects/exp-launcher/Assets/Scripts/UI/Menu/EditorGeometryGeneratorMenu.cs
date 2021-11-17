@@ -22,11 +22,13 @@
 ** SOFTWARE.                                                                      **
 ************************************************************************************/
 
-#if UNITY_EDITOR
+
 
 // unity
 using UnityEngine;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 
 namespace Ex{
 
@@ -95,6 +97,8 @@ namespace Ex{
             }
         }
     }
+
+#if UNITY_EDITOR
     public class EditorGeometryGeneratorMenu : EditorWindow{
 
         bool displayGrid = false;
@@ -229,6 +233,6 @@ namespace Ex{
             GUILayout.EndVertical();
         }
     }
+#endif
 }
 
-#endif

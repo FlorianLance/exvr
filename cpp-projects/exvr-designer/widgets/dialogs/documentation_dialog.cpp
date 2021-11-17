@@ -1,10 +1,26 @@
 
-
-/*******************************************************************************
-** exvr-designer                                                              **
-** No license (to be defined)                                                 **
-** Copyright (c) [2018] [Florian Lance][EPFL-LNCO]                            **
-********************************************************************************/
+/***********************************************************************************
+** exvr-designer                                                                  **
+** MIT License                                                                    **
+** Copyright (c) [2018] [Florian Lance][EPFL-LNCO]                                **
+** Permission is hereby granted, free of charge, to any person obtaining a copy   **
+** of this software and associated documentation files (the "Software"), to deal  **
+** in the Software without restriction, including without limitation the rights   **
+** to use, copy, modify, merge, publish, distribute, sublicense, and/or sell      **
+** copies of the Software, and to permit persons to whom the Software is          **
+** furnished to do so, subject to the following conditions:                       **
+**                                                                                **
+** The above copyright notice and this permission notice shall be included in all **
+** copies or substantial portions of the Software.                                **
+**                                                                                **
+** THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR     **
+** IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,       **
+** FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE    **
+** AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER         **
+** LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,  **
+** OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE  **
+** SOFTWARE.                                                                      **
+************************************************************************************/
 
 #include "documentation_dialog.hpp"
 
@@ -140,30 +156,20 @@ void DocumentationDialog::init_components_doc(){
     componentsConnectionsW->setSearchPaths({path, ".", "./connections_images"});
     componentsConnectionsW->setReadOnly(true);
 
-
+    componentsCsharpScriptingW.init_widget_as_csharp_editor(QColor(30,30,30), "");
+    componentsCsharpScriptingW.w->setReadOnly(true);
+    componentsCsharpScriptingW.w->setLineWrapMode(QPlainTextEdit::LineWrapMode::NoWrap);
 
 //    componentsCsharpScriptingW->setOpenExternalLinks(true);
 //    componentsCsharpScriptingW->setStyleSheet("background-color: rgb(30,30,30);");
 //    componentsCsharpScriptingW->zoomIn(3);
 //    componentsCsharpScriptingW->setSearchPaths({path, ".", "./csharp_images"});
 //    componentsCsharpScriptingW->setReadOnly(true);
-
 //    componentsPythonScriptingW->setOpenExternalLinks(true);
 //    componentsPythonScriptingW->setSearchPaths({Paths::componentsDocDir});
 //    componentsPythonScriptingW->setReadOnly(true);
-
-//    auto csharpHighlighter = new tool::ui::CSharpHighlighter(componentsCsharpScriptingW->document());
-    QStringList classNames;
-    for(const auto &unityStr : Component::components.tuple_column<Component::ColUnityStr>()){
-        classNames << QString(from_view(unityStr) % QSL("Component"));
-    }
-//    csharpHighlighter->add_classes(classNames);
-
-    componentsCsharpScriptingW.init_widget_as_csharp_editor(classNames, QColor(30,30,30), "");
-    componentsCsharpScriptingW.w->setReadOnly(true);
 //    componentsCsharpScriptingW.w->setOpenExternalLinks(true);
 //    componentsCsharpScriptingW.w->setSearchPaths({path, ".", "./csharp_images"});
-
 }
 
 void DocumentationDialog::init_connectors_doc(){

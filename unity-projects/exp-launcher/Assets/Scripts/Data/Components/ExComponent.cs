@@ -158,39 +158,40 @@ namespace Ex{
 
         protected void display_exception(Exception e) {
 
-            var stack = new System.Diagnostics.StackTrace(e, true);
-            System.Diagnostics.StackFrame frame = stack.GetFrame(0);
+            //var stack = new System.Diagnostics.StackTrace(e, true);
+            //System.Diagnostics.StackFrame frame = stack.GetFrame(0);
 
-            string className = "Unknow";
-            string functionName = "Unknow";
+            //string className = "Unknow";
+            //string functionName = "Unknow";
 
-            int lineNb = 0;
-            int columnNb = 0;
-            string fileName = null;
-            if (frame != null) {
+            //int lineNb = 0;
+            //int columnNb = 0;
+            //string fileName = null;
+            //if (frame != null) {
 
-                var method = frame.GetMethod();
-                if (method != null) {
-                    className = method.ReflectedType.Name;
-                    functionName = method.ToString();
-                }
+            //    var method = frame.GetMethod();
+            //    if (method != null) {
+            //        className = method.ReflectedType.Name;
+            //        functionName = method.ToString();
+            //    }
 
-                lineNb   = frame.GetFileLineNumber();
-                columnNb = frame.GetFileColumnNumber();
-                fileName = frame.GetFileName();
-            }
+            //    lineNb   = frame.GetFileLineNumber();
+            //    columnNb = frame.GetFileColumnNumber();
+            //    fileName = frame.GetFileName();
+            //}
 
-            var builder = new StringBuilder();
-            builder.Append("[EX_COMPONENT ERROR]");
-            if(fileName != null) {
-                builder.AppendFormat("  [LOCATION] from class [{0}] in function [{1}] in file [{2}] at line ({3}) and column ({4})\n",
-                    className, functionName, fileName, lineNb.ToString(), columnNb.ToString());
-            } else {
-                builder.AppendFormat("  [LOCATION] from class [{0}] in function [{1}]\n",
-                    className, functionName);
-            }
-            builder.AppendFormat("  [MESSAGE] {0}", e.Message);
-            log_error(builder.ToString(), true);            
+            //var builder = new StringBuilder();
+            //builder.Append("[EX_COMPONENT ERROR]");
+            //if(fileName != null) {
+            //    builder.AppendFormat("  [LOCATION] from class [{0}] in function [{1}] in file [{2}] at line ({3}) and column ({4})\n",
+            //        className, functionName, fileName, lineNb.ToString(), columnNb.ToString());
+            //} else {
+            //    builder.AppendFormat("  [LOCATION] from class [{0}] in function [{1}]\n",
+            //        className, functionName);
+            //}
+            //builder.AppendFormat("[EX_COMPONENT EXCEPTION] {0} ", e.Message);
+            //log_error(builder.ToString(), true);
+            log_error(string.Format("[EX_COMPONENT EXCEPTION] {0} ", e.Message), true);
         }
 
         protected void send_infos_to_gui_init_config(string id, string infos) {

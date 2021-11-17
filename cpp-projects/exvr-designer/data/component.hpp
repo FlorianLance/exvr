@@ -1,9 +1,26 @@
 
-/*******************************************************************************
-** exvr-designer                                                              **
-** No license (to be defined)                                                 **
-** Copyright (c) [2018] [Florian Lance][EPFL-LNCO]                            **
-********************************************************************************/
+/***********************************************************************************
+** exvr-designer                                                                  **
+** MIT License                                                                    **
+** Copyright (c) [2018] [Florian Lance][EPFL-LNCO]                                **
+** Permission is hereby granted, free of charge, to any person obtaining a copy   **
+** of this software and associated documentation files (the "Software"), to deal  **
+** in the Software without restriction, including without limitation the rights   **
+** to use, copy, modify, merge, publish, distribute, sublicense, and/or sell      **
+** copies of the Software, and to permit persons to whom the Software is          **
+** furnished to do so, subject to the following conditions:                       **
+**                                                                                **
+** The above copyright notice and this permission notice shall be included in all **
+** copies or substantial portions of the Software.                                **
+**                                                                                **
+** THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR     **
+** IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,       **
+** FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE    **
+** AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER         **
+** LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,  **
+** OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE  **
+** SOFTWARE.                                                                      **
+************************************************************************************/
 
 #pragma once
 
@@ -32,6 +49,7 @@ using ComponentUP = std::unique_ptr<Component>;
 
 
 struct Component {
+
 
     enum class Category : int {
         Audio, Avatar, Camera, Cloud, Environment, Flow,
@@ -215,9 +233,9 @@ struct Component {
         {T::Fop_robot,                C::Tracking,    TO::U,     CO::B,   true,    R::LNCO,         S::Sta, "Fop_robot"sv, "FOP robot"sv, "FOPRobot"sv,":/icons/Fop_robot"sv},
         {T::Kinect_manager,           C::Tracking,    TO::U,     CO::B,   true,    R::LNCO,         S::Sta, "Kinect_manager"sv, "Kinect manager"sv, "KinectManager"sv,":/icons/Kinect"sv},
         {T::Kinect_body_tracking,     C::Tracking,    TO::B,     CO::B,   true,    R::LNCO,         S::Exp, "Kinect_body_tracking"sv, "Kinect body tracking"sv, "KinectBodyTracking"sv,":/icons/Kinect"sv},
-        {T::Leap_motion,              C::Tracking,    TO::U,     CO::N,   true,    R::OpenSource,   S::Sta, "Leap_motion"sv, "LeapMotion"sv, "LeapMotion"sv, ":/icons/Hand"sv},
-        {T::Leap_motion_arms_display, C::Tracking,    TO::V,     CO::B,   true,    R::ClosedSource, S::Sta, "Leap_motion_arms_display"sv, "LeapMotion realistic arms"sv, "LeapMotionArmsDisplay"sv, ":/icons/Hand"sv},
-        {T::Leap_motion_tracking,     C::Tracking,    TO::V,     CO::N,   true,    R::OpenSource,   S::Exp, "Leap_motion_tracking"sv, "LeapMotion tracking"sv, "LeapMotionTracking"sv, ":/icons/Hand"sv},
+        {T::Leap_motion,              C::Tracking,    TO::U,     CO::N,   true,    R::OpenSource,   S::Leg, "Leap_motion"sv, "LeapMotion"sv, "LeapMotion"sv, ":/icons/Hand"sv},
+        {T::Leap_motion_arms_display, C::Tracking,    TO::V,     CO::B,   true,    R::ClosedSource, S::Leg, "Leap_motion_arms_display"sv, "LeapMotion realistic arms"sv, "LeapMotionArmsDisplay"sv, ":/icons/Hand"sv},
+        {T::Leap_motion_tracking,     C::Tracking,    TO::V,     CO::N,   true,    R::OpenSource,   S::Leg, "Leap_motion_tracking"sv, "LeapMotion tracking"sv, "LeapMotionTracking"sv, ":/icons/Hand"sv},
         {T::Qualisys,                 C::Tracking,    TO::B,     CO::B,   true,    R::OpenSource,   S::Sta, "Qualisys_tracking"sv, "Qualisys tracking"sv, "QualisysTracking"sv, ":/icons/Qualisys"sv},
         {T::Scene_scaner,             C::Tracking,    TO::B,     CO::B,   true,    R::LNCO,         S::Sta, "Scene_scaner"sv, "Scene scaner"sv, "SceneScaner"sv,":/icons/Body_scanner"sv},
         {T::Sonceboz_SG,              C::Tracking,    TO::U,     CO::B,   true,    R::LNCO,         S::Exp, "Sonceboz_SG"sv, "Sonceboz SG"sv, "SoncebozSG"sv,":/icons/Sonceboz"sv},
@@ -314,7 +332,7 @@ struct Component {
 
     using TComponentSlots = std::tuple<
         T,                             FunctionN,                      CNT,                    Doc>;
-    static constexpr TupleArray<90,TComponentSlots> componentsSlots = {{
+    static constexpr TupleArray<91,TComponentSlots> componentsSlots = {{
         TComponentSlots
         // Audio
         {T::AudioSource,               "play"sv,                       CNT::void_t,            "..."sv},
@@ -379,7 +397,8 @@ struct Component {
         {T::LoggerCondition,           "write lines"sv,                CNT::string_list_t,     ""sv},
         // Resource
         {T::Text_resource,             "read line"sv,                  CNT::void_t,            "Read next line"sv},
-        {T::Image_resource,            "update alias"sv,               CNT::string_t,          ""sv},
+        {T::Image_resource,            "image from alias"sv,           CNT::string_t,          ""sv},
+        {T::Image_resource,            "image from id"sv,              CNT::integer_t,         ""sv},
         // Scene
         {T::Unity_asset_bundle,        "visibility"sv,                 CNT::boolean_t,         "Set the visibility of the component"sv},
         {T::Unity_asset_bundle,        "position"sv,                   CNT::vector3_t,         "Set the position of the component"sv},
