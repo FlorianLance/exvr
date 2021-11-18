@@ -99,6 +99,7 @@ public:
     QMenu linkM;
     QMenu flowM;
     QMenu displayM;
+    QMenu resourcesM;
     QMenu componentM;
 
 private:

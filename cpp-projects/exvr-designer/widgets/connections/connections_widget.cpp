@@ -116,6 +116,9 @@ ConnectionsW::ConnectionsW(ElementKey routineKey, ConditionKey conditionKey) : m
     for(const auto &info : DataNodeModels::get_connectors<Connector::Category::Flow>()){
         m_contextMenu.flowM.addAction(generate_connector_action(info));
     }
+    for(const auto &info : DataNodeModels::get_connectors<Connector::Category::Resource>()){
+        m_contextMenu.resourcesM.addAction(generate_connector_action(info));
+    }
 
     // context menu node
     connect(&m_contextMenu, &ConnectionsContextMenu::delete_node_signal, this, [&](int nodeKey, bool isComponentNode){
@@ -741,6 +744,7 @@ ConnectionsContextMenu::ConnectionsContextMenu(ElementKey routineKey, ConditionK
     linkM.setTitle("Link");
     flowM.setTitle("Flow");
     displayM.setTitle("Display");
+    resourcesM.setTitle("Resources");
     componentM.setTitle("Component");
 
     addNode.addMenu(&generatorM);
@@ -750,6 +754,7 @@ ConnectionsContextMenu::ConnectionsContextMenu(ElementKey routineKey, ConditionK
     addNode.addMenu(&linkM);
     addNode.addMenu(&eventM);
     addNode.addMenu(&displayM);
+    addNode.addMenu(&resourcesM);
     addNode.addSeparator();
     addNode.addMenu(&flowM);
     addNode.addMenu(&actionM);

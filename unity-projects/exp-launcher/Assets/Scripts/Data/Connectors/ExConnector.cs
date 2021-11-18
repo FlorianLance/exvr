@@ -64,7 +64,8 @@ namespace Ex {
             Convertor,
             Action,
             Flow,
-            Component,
+            Resource,
+            Component,            
             Undefined
         };
 

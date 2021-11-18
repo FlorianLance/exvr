@@ -40,7 +40,7 @@ namespace tool::ex {
 
         // # Connector categories
         enum class Category : int {
-            Convertor=0, Function, Generator, Operator, Component, Action, Flow, Link, Event, Display,
+            Convertor=0, Function, Generator, Operator, Component, Action, Flow, Link, Event, Display, Resource,
             SizeEnum
         };
 
@@ -59,6 +59,7 @@ namespace tool::ex {
             {C::Link,      "Link"sv        },
             {C::Operator,  "Operator"sv    },
             {C::Component, "Component"sv   },
+            {C::Resource,  "Resource"sv    }
         }};
 
         static auto get_name(C c) {
@@ -90,6 +91,7 @@ namespace tool::ex {
             Filter_keyboard_button, Check_joypad_button, Check_joypad_axis, Check_mouse_button, Check_keyboard_button, // Event
             Next, Previous, Stop, Pause, Next_with_name, Next_with_cond, Previous_with_name, Previous_with_cond, Force_component_config, // Action
             Time, Start_routine, Stop_routine, Update_routine, Pre_update_routine, Post_update_routine, Routine_condition,// Flow
+            Image_resource,Text_resource, // Resource
             SizeEnum};
 
 
@@ -157,7 +159,10 @@ namespace tool::ex {
             // # Operator
             {T::Decimal_operation,      "DecimalOperation"sv,           "Decimal operation"sv},
             {T::Binary_operation,       "BinaryOperation"sv,            "Binary operation"sv},
-            {T::String_operation,       "StringOperation"sv,            "String operation"sv},                                                          
+            {T::String_operation,       "StringOperation"sv,            "String operation"sv},
+            // # Resource
+            {T::Image_resource,         "ImageResource"sv,              "Image resource"sv},
+            {T::Text_resource,          "TextResource"sv,               "Text resource"sv},
             // # Component
             {T::Component,              "-"sv,                          "-"sv},
         }};
@@ -244,7 +249,7 @@ namespace tool::ex {
         static constexpr auto t_vec3        = CNT::vector3_t;
         static constexpr auto t_transform   = CNT::transform_t;
         static constexpr auto t_str         = CNT::string_t;
-
+        static constexpr auto t_img         = CNT::image_t;
 
         static constexpr auto t_str_l       = CNT::string_list_t;
         static constexpr auto t_real_l      = CNT::real_list_t;
@@ -339,6 +344,9 @@ namespace tool::ex {
             {T::Update_routine,         C::Flow,      H, {0,{},                        1,{t_real}},                {v,{},        {v}},     LO, FO, 0},
             {T::Post_update_routine,    C::Flow,      H, {0,{},                        1,{t_real}},                {v,{},        {v}},     LO, FO, 0},
             {T::Routine_condition,      C::Flow,      H, {1,{t_int},                   1,{t_str}},                 {v,{v},        {v}},    IN, FO, 1},
+            // # Resource
+            {T::Image_resource,         C::Resource,  M, {1,{t_str},                   1,{t_img}},                  {v,{v},       {v}},   LO, FO, 1},
+            {T::Text_resource,          C::Resource,  M, {1,{t_str},                   1,{t_str}},                  {v,{v},       {v}},   LO, FO, 1},
         }};
 
 

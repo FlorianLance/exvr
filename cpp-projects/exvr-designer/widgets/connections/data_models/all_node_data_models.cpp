@@ -72,6 +72,7 @@
 #include "connectors/transform_to_vectors_ndm.hpp"
 #include "connectors/vectors_to_transform_ndm.hpp"
 #include "connectors/basic_ndm.hpp"
+#include "connectors/resources_ndm.hpp"
 
 using namespace tool;
 using namespace tool::ex;
@@ -374,6 +375,14 @@ void DataNodeModels::initialize(){
     linkStyle.GradientColor2  = linkColor;
     linkStyle.GradientColor3  = linkColor;
     linkStyle.FontColorFaded  = Qt::black;
+
+    resourceStyle = generatorStyle;
+    const auto resourceColor = QColor(200,180,100);
+    resourceStyle.GradientColor0  = resourceColor;
+    resourceStyle.GradientColor1  = resourceColor;
+    resourceStyle.GradientColor2  = resourceColor;
+    resourceStyle.GradientColor3  = resourceColor;
+    resourceStyle.FontColorFaded  = Qt::black;
 }
 
 std::unique_ptr<ConnectorNodeDataModel> DataNodeModels::generate_connector_data_model(Connector *connector){
@@ -534,6 +543,14 @@ std::unique_ptr<ConnectorNodeDataModel> DataNodeModels::generate_connector_data_
     case T::Conditional_gate:
         connectorDataModel = std::make_unique<ConditionalGateNodeDataModel>();
         break;
+    // # Resource
+    case T::Image_resource:
+        connectorDataModel = std::make_unique<ImageResourceNodeDataModel>();
+        break;
+    case T::Text_resource:
+        connectorDataModel = std::make_unique<TextResourceNodeDataModel>();
+        break;
+    // # Component
     case T::Component:
         // error
         return nullptr;
@@ -571,6 +588,9 @@ std::unique_ptr<ConnectorNodeDataModel> DataNodeModels::generate_connector_data_
         break;
         case Connector::Category::Link:
             style = linkStyle;
+            break;
+        case Connector::Category::Resource:
+            style = resourceStyle;
             break;
         default:
         break;

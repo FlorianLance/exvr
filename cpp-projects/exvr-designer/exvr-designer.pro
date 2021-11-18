@@ -156,6 +156,7 @@ HEADERS += \
     utility/script_utility.hpp \
     widgets/components/config_parameters/csharp_pw.hpp \
     widgets/components/config_parameters/serial_port_reader_pw.hpp \
+    widgets/connections/data_models/connectors/resources_ndm.hpp \
     widgets/designer_window.hpp\
     ## elements
     widgets/dialogs/benchmark_dialog.hpp \
@@ -360,6 +361,7 @@ SOURCES += \
     widgets/components/config_parameters/parallel_port_writer_pw.cpp \
     widgets/components/config_parameters/serial_port_reader_pw.cpp \
     widgets/components/config_parameters/serial_port_writer_pw.cpp \
+    widgets/connections/data_models/connectors/resources_ndm.cpp \
     widgets/designer_window.cpp \
     ## components
     widgets/components/config_widget.cpp \
