@@ -119,6 +119,9 @@ ConnectionsW::ConnectionsW(ElementKey routineKey, ConditionKey conditionKey) : m
     for(const auto &info : DataNodeModels::get_connectors<Connector::Category::Resource>()){
         m_contextMenu.resourcesM.addAction(generate_connector_action(info));
     }
+    for(const auto &info : DataNodeModels::get_connectors<Connector::Category::Legacy>()){
+        m_contextMenu.legacyM.addAction(generate_connector_action(info));
+    }
 
     // context menu node
     connect(&m_contextMenu, &ConnectionsContextMenu::delete_node_signal, this, [&](int nodeKey, bool isComponentNode){
@@ -745,6 +748,7 @@ ConnectionsContextMenu::ConnectionsContextMenu(ElementKey routineKey, ConditionK
     flowM.setTitle("Flow");
     displayM.setTitle("Display");
     resourcesM.setTitle("Resources");
+    legacyM.setTitle("Legacy");
     componentM.setTitle("Component");
 
     addNode.addMenu(&generatorM);
@@ -760,7 +764,8 @@ ConnectionsContextMenu::ConnectionsContextMenu(ElementKey routineKey, ConditionK
     addNode.addMenu(&actionM);
     addNode.addSeparator();
     addNode.addMenu(&componentM);
-
+    addNode.addSeparator();
+    addNode.addMenu(&legacyM);
 
     // generate context menu node action
     removeNodeA = new QAction("Remove node");

@@ -71,9 +71,8 @@ void CheckKeyboardButtonNodeDataModel::compute(){
     if(check_if_runtime_inputs(inputs)){
         propagate_default_runtime(
             {
-                std::make_shared<VoidData>(),
-                std::make_shared<VoidData>(),
-                std::make_shared<VoidData>(),
+                std::make_shared<RealData>(),
+                std::make_shared<RealData>(),
                 std::make_shared<RealData>()
             });
         set_embedded_widget_text(embedded_w()->w->w->currentText());
@@ -99,19 +98,14 @@ void CheckKeyboardButtonNodeDataModel::compute(){
         std::vector<std::shared_ptr<BaseNodeData>> outputs;
         if(down){
             indices.emplace_back(0);
-            outputs.emplace_back(std::make_shared<VoidData>());
+            outputs.emplace_back(std::make_shared<RealData>());
         }
         if(up){
             indices.emplace_back(1);
-            outputs.emplace_back(std::make_shared<VoidData>());
+            outputs.emplace_back(std::make_shared<RealData>());
         }
         if(pressed){
             indices.emplace_back(2);
-            outputs.emplace_back(std::make_shared<VoidData>());
-        }
-
-        if(down || up || pressed){
-            indices.emplace_back(3);
             outputs.emplace_back(std::make_shared<RealData>());
         }
 
@@ -126,10 +120,9 @@ void CheckKeyboardButtonNodeDataModel::init_ports_caption(){
     for(size_t ii = 0; ii < io.inNb; ++ii){
         inPortsInfo[ii].caption = QSL("in (") % get_name(io.inTypes[ii]) % QSL(")");
     }
-    outPortsInfo[0].caption = QSL("down (") % get_name(io.outTypes[0]) % QSL(")");
-    outPortsInfo[1].caption = QSL("up (") % get_name(io.outTypes[1]) % QSL(")");
-    outPortsInfo[2].caption = QSL("pressed (") % get_name(io.outTypes[2]) % QSL(")");
-    outPortsInfo[3].caption = QSL("trigger exp time ms (") % get_name(io.outTypes[3]) % QSL(")");
+    outPortsInfo[0].caption = QSL("down ms (") % get_name(io.outTypes[0]) % QSL(")");
+    outPortsInfo[1].caption = QSL("up ms (") % get_name(io.outTypes[1]) % QSL(")");
+    outPortsInfo[2].caption = QSL("pressed ms (") % get_name(io.outTypes[2]) % QSL(")");
 }
 
 void FilterKeyboardButtonNodeDataModel::compute(){

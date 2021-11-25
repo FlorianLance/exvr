@@ -25,104 +25,6 @@
 // unity
 using UnityEngine;
 
-namespace Ex {
-
-    public class ExVR {
-
-        static public GoExplorer GO() {
-            return Builder.autoRef.GO();
-        }
-        static public GuiSettingsManager GuiSettings() {
-            return Builder.autoRef.guiSettingsManager;
-        }
-
-        static public DisplayManager Display() {            
-            return Builder.autoRef.displayManager;
-        }
-
-        static public TimeManager Time() {
-            return Builder.autoRef.timeManager;
-        }
-
-        static public PathsManager Paths(){
-            return Builder.autoRef.pathsManager;
-        }
-
-        static public CoroutinesManager Coroutines() {
-            return Builder.autoRef.coroutinesManager;
-        }
-
-        static public EventsManager Events() {
-            return Builder.autoRef.eventsManager;
-        }
-
-        static public GlobalResourcesManager GlobalResources() {
-            return Builder.autoRef.globalResourcesManager;
-        }
-
-        static public NetworkManager Network() {
-            return Builder.autoRef.networkManager;
-        }
-
-        static public LoggerManager Logger() {
-            return Builder.autoRef.loggerManager;
-        }
-
-        static public Log Log() {
-            return Logger().log;
-        }
-
-        static public ExperimentLogger ExpLog() {
-            return Logger().exp;
-        }
-
-        static public PythonManager Python() {
-            return Builder.autoRef.pythonManager;
-        }
-
-        static public MemoryManager Memory() {
-            return Builder.autoRef.memoryManager;
-        }
-
-        static public DebugManager Debug() {
-            return Builder.autoRef.debugManager;
-        }
-
-        static public Experiment Experiment() {
-            return Builder.autoRef.experiment;
-        }
-
-        static public Scheduler Scheduler() {
-            return Experiment().schreduler;
-        }
-
-        static public Instance Instance() {
-            return Scheduler().instance;
-        }
-
-        static public ResourcesManager Resources() {
-            return Experiment().experimentResourcesManager;
-        }        
-
-        static public Components Components() {
-            return Experiment().components;
-        }
-
-        static public Routines Routines() {
-            return Experiment().routines;
-        }
-
-        static public ISIs ISIs() {
-            return Experiment().ISIs;
-        }
-    }
-}
-
-
-
-
-
-
 namespace Ex{
 
     public class Builder : MonoBehaviour{
@@ -225,7 +127,7 @@ namespace Ex{
 
             // force destroy experiment (mostly for C++DLL component to be clean correctly in Editor mode)
             ExVR.ExpLog().builder("Quit application");
-            experiment.destroy_experiment();
+            experiment.clean_experiment();
                    
             ExVR.ExpLog().builder("Clean resources");
             ExVR.Resources().clean();

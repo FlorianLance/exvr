@@ -40,7 +40,7 @@ namespace tool::ex {
 
         // # Connector categories
         enum class Category : int {
-            Convertor=0, Function, Generator, Operator, Component, Action, Flow, Link, Event, Display, Resource,
+            Convertor=0, Function, Generator, Operator, Component, Action, Flow, Link, Event, Display, Resource, Legacy,
             SizeEnum
         };
 
@@ -59,7 +59,8 @@ namespace tool::ex {
             {C::Link,      "Link"sv        },
             {C::Operator,  "Operator"sv    },
             {C::Component, "Component"sv   },
-            {C::Resource,  "Resource"sv    }
+            {C::Resource,  "Resource"sv    },
+            {C::Legacy,    "Legacy"sv      },
         }};
 
         static auto get_name(C c) {
@@ -121,7 +122,7 @@ namespace tool::ex {
             // # Display
             {T::Curve_x,                "CurveX"sv,                     "Curve X"sv},
             {T::Logger,                 "Logger"sv,                     "Logger"sv},
-            // # Event            
+            // # Event
             {T::Check_keyboard_button,  "CheckKeyboardButton"sv,        "Check keyboard button"sv},
             {T::Filter_keyboard_button, "FilterKeyboardButton"sv,       "Filter keyboard button"sv},
             {T::Check_joypad_button,    "CheckJoypadButton"sv,          "Check joypad button"sv},
@@ -321,7 +322,7 @@ namespace tool::ex {
             {T::Conditional_trigger,    C::Link,      M, {1,{t_bool},                  1,{t_void}},               {v,{v},       {v}},     LO, FO, 1},
             {T::Conditional_gate,       C::Link,      M, {2,{t_any, t_bool},           1,{t_any}},                {v,{v,v},     {v}},     IN, FO, 1},
             // # Event
-            {T::Check_keyboard_button,  C::Event,     M, {1,{t_key_but_s},             4,{t_void,t_void,t_void, t_real}},  {v,{v},       {v,v,v,v}}, IN, FO, 1},
+            {T::Check_keyboard_button,  C::Event,     M, {1,{t_key_but_s},             3,{t_real,t_real,t_real}},  {v,{v},       {v,v,v}}, IN, FO, 1},
             {T::Filter_keyboard_button, C::Event,     M, {1,{t_key_but_s},             1,{t_key_but_s}},                   {v,{v},       {v}},       IN, FO, 1},
             {T::Check_joypad_button,    C::Event,     M, {1,{t_joy_but_s},             4,{t_void,t_void,t_void, t_real}},  {v,{v},       {v,v,v,v}}, IN, FO, 1},
             {T::Check_joypad_axis,      C::Event,     M, {1,{t_joy_ax_s},              2,{t_float,t_real}},                {v,{v},       {v,v}},     IN, FO, 1},

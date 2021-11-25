@@ -100,6 +100,7 @@ public:
     QMenu flowM;
     QMenu displayM;
     QMenu resourcesM;
+    QMenu legacyM;
     QMenu componentM;
 
 private:
