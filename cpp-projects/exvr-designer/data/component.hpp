@@ -100,7 +100,7 @@ struct Component {
         /** A */ AudioSource, Attach_object_to_hand,
         /** B */ Biopac, Blend_fade_viewer,
         /** C */ Camera, Camera_target, Camera_trajectory, Camera_trajectory_file, Cloud, Config, CSharp_function, CSharp_script, Cube, Cylinder,
-        /** F */ Falling_spheres, Fixation_cross_viewer, Flag_pole, Flashing_dot, Fop_robot, Fov_simulator_viewer, FPP_avatar_camera,
+        /** F */ Falling_spheres, Fixation_cross_viewer, Flag_pole, Flashing_dot, Fop_robot, Fov_simulator_viewer, FPP_avatar_camera, FPP_camera,
         /** H */ Humanoid_avatar, Humanoid_controller,
         /** I */ Image_resource, Image_viewer,
         /** J */ Joypad,
@@ -180,6 +180,7 @@ struct Component {
         {T::Camera_trajectory_file,   C::Camera,      TO::B,     CO::C,   false,   R::OpenSource,   S::Leg, "Camera_trajectory_file"sv, "Camera trajectory file"sv, "CameraTrajectoryFile"sv, ":/icons/Camera"sv},
         {T::FPP_avatar_camera,        C::Camera,      TO::U,     CO::B,   false,   R::ClosedSource, S::Sta, "FPP_avatar_camera"sv, "First person perspective avatar camera"sv, "FPPAvatarCamera"sv, ":/icons/Camera"sv},
         {T::TPP_avatar_camera,        C::Camera,      TO::U,     CO::B,   false,   R::ClosedSource, S::Sta, "TPP_avatar_camera"sv, "Third persond perspective avatar camera"sv, "TPPAvatarCamera"sv, ":/icons/Camera"sv},
+        {T::FPP_camera,               C::Camera,      TO::U,     CO::B,   false,   R::OpenSource,   S::Sta, "FPP_camera"sv, "First person perspective camera"sv, "FPPCamera"sv, ":/icons/Camera"sv},
         // Cloud
         {T::Cloud,                    C::Cloud,       TO::V,     CO::B,   false,   R::OpenSource,   S::Sta, "Cloud"sv, "Cloud"sv, "Cloud"sv, ":/icons/Cloud"sv},
         {T::Scaner_video,             C::Cloud,       TO::B,     CO::B,   false,   R::LNCO,         S::Exp, "Scaner_video"sv, "Scaner video"sv, "ScanerVideo"sv, ":/icons/Video_cloud"sv},                                                                          

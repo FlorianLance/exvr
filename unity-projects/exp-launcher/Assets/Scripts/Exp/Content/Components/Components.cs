@@ -144,6 +144,7 @@ namespace Ex
             ["Ex.HumanoidControllerComponent"] = gen_info(Category.Avatar, Pritority.Low, Reserved.Closed),
             // camera
             ["Ex.CameraTargetComponent"] = gen_info(Category.Camera, Pritority.Low, Reserved.Public),
+            ["Ex.FPPCameraComponent"]   = gen_info(Category.Camera, Pritority.Low, Reserved.Public),
             ["Ex.CameraTrajectoryComponent"] = gen_info(Category.Camera, Pritority.Low, Reserved.Public),
             ["Ex.CameraTrajectoryFileComponent"] = gen_info(Category.Camera, Pritority.Low, Reserved.Public),
             ["Ex.CameraComponent"] = gen_info(Category.Camera, Pritority.Low, Reserved.Public),

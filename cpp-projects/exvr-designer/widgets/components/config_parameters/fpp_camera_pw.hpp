@@ -24,59 +24,44 @@
 
 #pragma once
 
-// qt-utility
-#include "ex_widgets/ex_radio_button_w.hpp"
-#include "ex_widgets/ex_vector3d_w.hpp"
-#include "ex_widgets/ex_checkbox_w.hpp"
-
 // local
-#include "config_pw.hpp"
+#include "widgets/components/config_parameters/config_pw.hpp"
 
 namespace tool::ex {
 
-class CameraInitConfigParametersW : public ConfigParametersW{
+class FPPCameraInitConfigParametersW : public ConfigParametersW{
 
 public :
 
-    QButtonGroup group1;
-    ExRadioButtonW useEye {"use_eye"};
-    ExRadioButtonW useNeutral {"use_neutral"};
-    ExCheckBoxW cbStartExperiment {"start_experiment"};
-    ExVector3dW position {"position"};
-    ExVector3dW rotation {"rotation"};
+    FPPCameraInitConfigParametersW();
 
     void insert_widgets() override;
     void init_and_register_widgets() override;
     void create_connections() override;
     void late_update_ui() override;
+
+
+private:
+    struct Impl;
+    std::unique_ptr<Impl> m_p = nullptr;
 };
 
-class CameraConfigParametersW : public ConfigParametersW{
+class FPPCameraConfigParametersW : public ConfigParametersW{
 
 public :
 
-    ExCheckBoxW enableDebugMouseCameraMovements {"debug_camera"};
-
-    QButtonGroup group1;
-    ExRadioButtonW useEye {"use_eye"};
-    ExRadioButtonW useNeutral {"use_neutral"};
-    ExCheckBoxW cbStartRoutine {"start_routine"};
-    ExCheckBoxW cbUpdateOn {"update_on"};
-
-    QPushButton *copyNeutralToCurrentConfig  = nullptr;
-    QPushButton *copyEyeToCurrentConfig = nullptr;
-    ExVector3dW position {"position"};
-    ExVector3dW rotation {"rotation"};
-    ExVector3dW currentNeutralPosition {"neutral_position"};
-    ExVector3dW currentNeutralRotation {"neutral_rotation"};
-    ExVector3dW currentEyePosition {"eye_rotation"};
-    ExVector3dW currentEyeRotation {"eye_rotation"};
+    FPPCameraConfigParametersW();
 
     void insert_widgets() override;
     void init_and_register_widgets() override;
-    void update_with_info(QStringView id, QStringView value) override;
     void create_connections() override;
     void late_update_ui() override;
+    void update_with_info(QStringView id, QStringView value) override;
+
+private:
+    struct Impl;
+    std::unique_ptr<Impl> m_p = nullptr;
+
 };
 
 }

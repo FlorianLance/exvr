@@ -89,8 +89,9 @@
 #include "config_parameters/blend_fade_viewer_pw.hpp"
 #include "config_parameters/flag_pole_pw.hpp"
 #include "config_parameters/humanoid_avatar_pw.hpp"
+#include "config_parameters/fpp_camera_pw.hpp"
 #include "config_parameters/fpp_avatar_camera_pw.hpp"
-#include "config_parameters/Tpp_avatar_camera_pw.hpp"
+#include "config_parameters/tpp_avatar_camera_pw.hpp"
 
 using namespace tool::ex;
 
@@ -163,6 +164,8 @@ ConfigParametersW *ConfigW::generate_parameters(Component::Type type, bool initC
         return gen_params_w<CameraTargetInitConfigParametersW,CameraTargetConfigParametersW>(initConfig);
     case CT::FPP_avatar_camera:
         return gen_params_w<FPPAvatarCameraInitConfigParametersW,FPPAvatarCameraConfigParametersW>(initConfig);
+    case CT::FPP_camera:
+        return gen_params_w<FPPCameraInitConfigParametersW,FPPCameraConfigParametersW>(initConfig);
     case CT::TPP_avatar_camera:
         return gen_params_w<TPPAvatarCameraInitConfigParametersW,TPPAvatarCameraConfigParametersW>(initConfig);
     // ############################# Cloud
