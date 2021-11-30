@@ -76,7 +76,7 @@ ExVrController::ExVrController(const QString &nVersion, bool lncoComponents){
     qRegisterMetaType<QProcess::ExitStatus>("QProcess::ExitStatus");
 
     // init logging system
-    QtLogger::init(QApplication::applicationDirPath() % QSL("/logs/"), QSL("designer_log.html"));
+    QtLogger::init(QApplication::applicationDirPath() % QSL("/logs"), QSL("designer_log.html"));
     QtLogger::set_html_ui_type_message_color(QtLogger::MessageType::normal,  QColor(189,189,189));
     QtLogger::set_html_ui_type_message_color(QtLogger::MessageType::warning, QColor(243, 158, 3));
     QtLogger::set_html_ui_type_message_color(QtLogger::MessageType::error,   QColor(244,4,4));
