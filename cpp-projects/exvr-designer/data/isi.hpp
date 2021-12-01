@@ -28,7 +28,7 @@
 #include <deque>
 
 // base
-#include "utility/types_utility.hpp"
+#include "utility/types.hpp"
 
 // qt-utility
 #include "qt_str.hpp"

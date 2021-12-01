@@ -32,7 +32,7 @@
 #include <QMessageBox>
 
 // base
-#include "utility/types_utility.hpp"
+#include "utility/types.hpp"
 #include "utility/benchmark.hpp"
 
 // local

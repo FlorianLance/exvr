@@ -34,7 +34,7 @@
 #include <QVector>
 
 // base
-#include "utility/vector_utility.hpp"
+#include "utility/vector.hpp"
 #include "utility/tuple_array.hpp"
 
 // qt-utility

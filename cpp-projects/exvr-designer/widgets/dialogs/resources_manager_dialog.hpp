@@ -31,7 +31,7 @@
 #include <QFileDialog>
 
 // base
-#include "utility/vector_utility.hpp"
+#include "utility/vector.hpp"
 
 // local
 #include "resources/resources_manager.hpp"

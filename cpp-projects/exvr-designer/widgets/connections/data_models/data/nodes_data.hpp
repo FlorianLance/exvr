@@ -38,10 +38,10 @@ using QtNodes::NodeData;
 using QtNodes::NodeDataType;
 
 // base
-#include "utility/keyboard_utility.hpp"
-#include "utility/joypad_utility.hpp"
-#include "utility/maths_utility.hpp"
-#include "utility/vector_utility.hpp"
+#include "input/keyboard.hpp"
+#include "input/joypad.hpp"
+#include "utility/math.hpp"
+#include "utility/vector.hpp"
 #include "geometry/point2.hpp"
 
 // qt-utility

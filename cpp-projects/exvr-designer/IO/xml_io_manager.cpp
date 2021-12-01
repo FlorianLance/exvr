@@ -34,10 +34,10 @@
 
 // base
 #include "utility/benchmark.hpp"
+#include "utility/math.hpp"
 
 // local
 #include "data/node_flow.hpp"
-#include "utility/maths_utility.hpp"
 
 
 using namespace tool;

@@ -32,8 +32,8 @@
 #include <QStringBuilder>
 
 // base
-#include "utility/types_utility.hpp"
-#include "utility/vector_utility.hpp"
+#include "utility/types.hpp"
+#include "utility/vector.hpp"
 #include "utility/tuple_array.hpp"
 
 // qt-utility

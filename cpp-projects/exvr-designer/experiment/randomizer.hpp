@@ -35,7 +35,7 @@
 #include <QVector>
 
 // base
-#include "utility/vector_utility.hpp"
+#include "utility/vector.hpp"
 
 namespace tool::ex {
 

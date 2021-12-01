@@ -31,7 +31,7 @@
 #include <QMouseEvent>
 
 // base
-#include "utility/vector_utility.hpp"
+#include "utility/vector.hpp"
 
 #include "data/id_key.hpp"
 

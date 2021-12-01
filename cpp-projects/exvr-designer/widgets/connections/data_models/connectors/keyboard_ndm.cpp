@@ -25,7 +25,7 @@
 #include "keyboard_ndm.hpp"
 
 // base
-#include "utility/keyboard_utility.hpp"
+#include "input/keyboard.hpp"
 
 using namespace tool::ex;
 

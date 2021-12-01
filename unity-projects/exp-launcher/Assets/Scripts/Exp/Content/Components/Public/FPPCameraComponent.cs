@@ -120,10 +120,7 @@ namespace Ex {
             return CameraUtility.calibration_rotation();
         }
 
-        public void rotate_around_y(float value) {            
-            //CameraUtility.calibration_position()
-            CameraUtility.rotate_camera_rig_around(CameraUtility.calibration_position(), Vector3.up, value);
-        }
+
 
         public void snap_around_y(float value, int delayMS) {
             if (m_snapTimer.ElapsedMilliseconds > delayMS) {
@@ -132,17 +129,34 @@ namespace Ex {
             }
         }
 
-        public void translate(Vector3 value) {
+        public void translate_calibration(Vector3 value) {
             CameraUtility.translate_camera_rig(value);
         }
 
-        public void move(Vector3 position) {
+        public void move_calibration_to(Vector3 position) {
             CameraUtility.translate_camera_rig(position - CameraUtility.calibration_position());
+        }  
+
+        public void move_camera_forward(float value) {
+
         }
 
-        public void rotate_around_y_towards(Vector3 target) {            
-            rotate_around_y(Vector3.SignedAngle(CameraUtility.calibration_forward(), target - CameraUtility.calibration_position(), Vector3.up));
+
+
+        public void rotate_camera_around_y(float value) {
+            CameraUtility.rotate_camera_rig_around(CameraUtility.eye_camera_position(), Vector3.up, value);
         }
+        public void rotate_camera_around_y_towards(Vector3 target) {
+            rotate_camera_around_y(Vector3.SignedAngle(CameraUtility.eye_camera_forward(), target - CameraUtility.eye_camera_position(), Vector3.up));
+        }
+
+        public void rotate_calibration_around_y(float value) {
+            CameraUtility.rotate_camera_rig_around(CameraUtility.calibration_position(), Vector3.up, value);
+        }
+        public void rotate_calibration_around_y_towards(Vector3 target) {
+            rotate_calibration_around_y(Vector3.SignedAngle(CameraUtility.calibration_forward(), target - CameraUtility.calibration_position(), Vector3.up));
+        }
+
 
         #endregion
     }

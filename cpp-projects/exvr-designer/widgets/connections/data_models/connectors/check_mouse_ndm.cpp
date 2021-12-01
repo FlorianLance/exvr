@@ -25,7 +25,7 @@
 #include "check_mouse_ndm.hpp"
 
 // base
-#include "utility/mouse_utility.hpp"
+#include "input/mouse.hpp"
 
 using namespace tool::ex;
 

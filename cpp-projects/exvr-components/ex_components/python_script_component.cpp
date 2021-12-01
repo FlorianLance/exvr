@@ -15,7 +15,7 @@
 #include <boost/python/suite/indexing/vector_indexing_suite.hpp>
 
 // local
-#include "utility/string_utility.hpp"
+#include "utility/string.hpp"
 
 
 using namespace tool::ex;

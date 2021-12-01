@@ -25,7 +25,7 @@
 #include "nodes_data_converters.hpp"
 
 // base
-#include "utility/maths_utility.hpp"
+#include "utility/math.hpp"
 
 using namespace tool::str;
 using namespace tool::ex;

@@ -33,7 +33,7 @@
 #include <QDebug>
 
 // base
-#include "utility/vector_utility.hpp"
+#include "utility/vector.hpp"
 
 // qt-utility
 #include "qt_logger.hpp"

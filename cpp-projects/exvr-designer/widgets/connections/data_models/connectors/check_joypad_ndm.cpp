@@ -25,7 +25,7 @@
 #include "check_joypad_ndm.hpp"
 
 // base
-#include "utility/joypad_utility.hpp"
+#include "input/joypad.hpp"
 
 using namespace tool::ex;
 

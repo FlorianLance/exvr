@@ -25,7 +25,7 @@
 #include "joypad_pw.hpp"
 
 // base
-#include "utility/joypad_utility.hpp"
+#include "input/joypad.hpp"
 
 // qt-utility
 #include "ex_widgets/ex_list_labels_w.hpp"

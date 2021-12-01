@@ -25,7 +25,7 @@
 #pragma once
 
 // base
-#include "utility/mouse_utility.hpp"
+#include "input/mouse.hpp"
 
 // local
 #include "config_pw.hpp"
