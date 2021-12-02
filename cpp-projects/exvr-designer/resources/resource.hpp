@@ -48,6 +48,7 @@ struct Resource{
 
     enum class Type : std::uint8_t {
         Image, Video, Audio, Text, AssetBundle, Mesh, PythonScript, CSharpScript, Cloud, ScanerVideo, Plot, Directory,
+        VolumetricVideo,
         SizeEnum
     };
 
@@ -63,21 +64,22 @@ struct Resource{
     static constexpr Filters imageFilters   = "(*.jpg *.jpeg *.png *.PNG)"sv;
 
     using TResource = std::tuple<
-        Type,                Filters,          Name,                 IconPath,                       DisplayName,              CanOpen, CanGenerate>;
+        Type,                  Filters,          Name,                 IconPath,                       DisplayName,              CanOpen, CanGenerate>;
     static constexpr TupleArray<Type::SizeEnum,TResource> resources{{
         TResource
-        {Type::Image,        imageFilters,     "Image"sv,            ":/icons/Image"sv,              "Images"sv,               true,    false},
-        {Type::Video,        videoFilters,     "Video"sv,            ":/icons/Video"sv,              "Videos"sv,               true,    false},
-        {Type::Audio,        audioFilters,     "Audio"sv,            ":/icons/Sound"sv,              "Audio"sv,                true,    false},
-        {Type::Text,         txtFilters,       "Text"sv,             ":/icons/Text"sv,               "Textes"sv,               true,    false},
-        {Type::AssetBundle,  "(*.unity3d)"sv,  "UnityAssetBundle"sv, ":/icons/Unity_scene_bundle"sv, "Unity assets bundles"sv, false,   false},
-        {Type::Mesh,         "(*.obj)"sv,      "Mesh"sv,             ":/icons/Cube"sv,               "Meshes"sv,               true,    false},
-        {Type::PythonScript, "(*.py)"sv,       "PythonScript"sv,     ":/icons/Python_script"sv,      "Python scripts"sv,       true,    true},
-        {Type::CSharpScript, "(*.cs)"sv,       "CSharpScript"sv,     ":/icons/CSharp"sv,             "C# scripts"sv,           true,    true},
-        {Type::Cloud,        "(*.asc)"sv,      "Cloud"sv,            ":/icons/Sphere"sv,             "Clouds points"sv,        false,   false},
-        {Type::ScanerVideo,  "(*.kvid)"sv,     "ScanerVideo"sv,      ":/icons/Video"sv,              "Scaner videos"sv,        false,   false},
-        {Type::Plot,         "(*.csv)"sv,      "Plot"sv,             ":/icons/Plot"sv,               "Plots"sv,                true,    false},
-        {Type::Directory,    ""sv,             "Directory"sv,        ":/icons/Folder"sv,             "Directories"sv,          true,    false},
+        {Type::Image,          imageFilters,     "Image"sv,            ":/icons/Image"sv,              "Images"sv,               true,    false},
+        {Type::Video,          videoFilters,     "Video"sv,            ":/icons/Video"sv,              "Videos"sv,               true,    false},
+        {Type::Audio,          audioFilters,     "Audio"sv,            ":/icons/Sound"sv,              "Audio"sv,                true,    false},
+        {Type::Text,           txtFilters,       "Text"sv,             ":/icons/Text"sv,               "Textes"sv,               true,    false},
+        {Type::AssetBundle,    "(*.unity3d)"sv,  "UnityAssetBundle"sv, ":/icons/Unity_scene_bundle"sv, "Unity assets bundles"sv, false,   false},
+        {Type::Mesh,           "(*.obj)"sv,      "Mesh"sv,             ":/icons/Cube"sv,               "Meshes"sv,               true,    false},
+        {Type::PythonScript,   "(*.py)"sv,       "PythonScript"sv,     ":/icons/Python_script"sv,      "Python scripts"sv,       true,    true},
+        {Type::CSharpScript,   "(*.cs)"sv,       "CSharpScript"sv,     ":/icons/CSharp"sv,             "C# scripts"sv,           true,    true},
+        {Type::Cloud,          "(*.asc)"sv,      "Cloud"sv,            ":/icons/Sphere"sv,             "Clouds points"sv,        false,   false},
+        {Type::ScanerVideo,    "(*.kvid)"sv,     "ScanerVideo"sv,      ":/icons/Video"sv,              "Scaner videos"sv,        false,   false},
+        {Type::Plot,           "(*.csv)"sv,      "Plot"sv,             ":/icons/Plot"sv,               "Plots"sv,                true,    false},
+        {Type::Directory,      ""sv,             "Directory"sv,        ":/icons/Folder"sv,             "Directories"sv,          true,    false},
+        {Type::VolumetricVideo,"(*.kvid)"sv,     "VolumetricVideo"sv,  ":/icons/Video_cloud"sv,        "Volumetric video"sv,     false,    false},
     }};
 
     static auto get_types() {

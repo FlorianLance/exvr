@@ -92,6 +92,7 @@
 #include "config_parameters/fpp_camera_pw.hpp"
 #include "config_parameters/fpp_avatar_camera_pw.hpp"
 #include "config_parameters/tpp_avatar_camera_pw.hpp"
+#include "config_parameters/volumetric_video_resource_pw.hpp"
 
 using namespace tool::ex;
 
@@ -231,6 +232,8 @@ ConfigParametersW *ConfigW::generate_parameters(Component::Type type, bool initC
         return gen_params_w<PlotResourceInitConfigParametersW,PlotResourceConfigParametersW>(initConfig);
     case CT::Text_resource:
         return gen_params_w<TextResourceInitConfigParametersW,TextResourceConfigParametersW>(initConfig);
+    case CT::Volumetric_video_resource:
+        return gen_params_w<VolumetricVideoResourceInitConfigParametersW,VolumetricVideoResourceConfigParametersW>(initConfig);
     // ############################# Scene
     case CT::Falling_spheres:
         return gen_params_w<FallingSpheresInitConfigParametersW,FallingSpheresConfigParametersW>(initConfig);

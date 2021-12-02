@@ -67,7 +67,7 @@ namespace Ex {
         public enum ResourceType : int {  
             Audio = 1, Image = 2, Mesh = 4, Text = 8, Video = 16, 
             UnityAssetBundle = 32, CSharpScript = 64, PythonScript = 128, Cloud = 256,
-            ScanerVideo = 512, Plot = 1024, Directory = 2048
+            ScanerVideo = 512, Plot = 1024, Directory = 2048, VolumetricVideo = 4096
         };
 
         public void log_message(string message) {
@@ -151,48 +151,11 @@ namespace Ex {
                     return new PlotResource(key, alias, path);
                 case ResourceType.Directory:
                     return new DirectoryResource(key, alias, path);
+                case ResourceType.VolumetricVideo:
+                    return new VolumetricVideoResource(key, alias, path);
             }
             return null;
         }
-
-
-        //private bool parallel_add_resources_from_xml(List<XML.Resource> resources) {
-
-        //    List<Resource> loadedResources = new List<Resource>();
-
-        //    // init dictionnaries
-        //    foreach (var resource in resources) {
-
-        //        if (!Path.IsPathRooted(resource.Path)) {
-        //            resource.Path = Path.GetFullPath(ExVR.Paths().designerDataTempDir + "/" + resource.Path);
-        //        }
-
-        //        var type = (ResourceType)Enum.Parse(typeof(ResourceType), resource.Type);
-        //        bool exists = (type == ResourceType.Directory) ? Directory.Exists(resource.Path) : File.Exists(resource.Path);
-        //        if (!exists) {
-        //            log_error(String.Format("Cannot load resource file of type [{0}] with path: {1})", resource.Type, resource.Path));
-        //            return false;
-        //        }
-
-        //        // init resource if not mapped                
-        //        if (!m_pathMappingResources[type].ContainsKey(resource.Path)) {
-        //            Resource resourceData = generate_resource(type, resource.Key, resource.Alias, resource.Path);
-        //            m_pathMappingResources[type][resource.Path]   = resourceData;
-        //            m_aliasMappingResources[type][resource.Alias] = resourceData;
-        //            loadedResources.Add(resourceData);
-        //        }
-        //    }
-
-        //    // parallel resources loading
-        //    System.Threading.Tasks.Parallel.ForEach(loadedResources, resource => {
-        //        resource.read_data();
-        //    });
-        //    foreach(var resource in loadedResources) {
-        //        resource.initialize();
-        //    }
-
-        //    return true;
-        //}
 
         private bool add_resource_from_xml(XML.Resource resource, ResourceType type) {
 
@@ -469,6 +432,14 @@ namespace Ex {
                 return null;
             }
             return ((AssetBundleResource)m_aliasMappingResources[ResourceType.UnityAssetBundle][alias]);
+        }
+
+        public VolumetricVideoResource get_volumetric_video_file_data(string alias) {
+            if (!m_aliasMappingResources[ResourceType.VolumetricVideo].ContainsKey(alias)) {
+                log_error(String.Format("Cannot read volumetric video with alias [{0}] from resources.", alias));
+                return null;
+            }
+            return ((VolumetricVideoResource)m_aliasMappingResources[ResourceType.VolumetricVideo][alias]);
         }
 
 

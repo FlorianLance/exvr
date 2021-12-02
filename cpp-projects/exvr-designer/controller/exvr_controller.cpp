@@ -1114,8 +1114,8 @@ void ExVrController::generate_global_signals_connections(){
 
 
     connect(s, &GSignals::routine_selected_signal,                    this, [&](ElementKey elementKey){
-        exp()->select_element(elementKey);}
-    );
+        exp()->select_element(elementKey);
+    });
     connect(s, &GSignals::insert_action_to_selected_routine_signal, this, [&](ComponentKey componentKey){
         if(auto cRoutineW = ui()->routines_manager()->current_routine_widget(); cRoutineW != nullptr){
             if(auto cCondW = cRoutineW->current_condition_widget(); cCondW != nullptr){
@@ -1254,7 +1254,9 @@ void ExVrController::generate_flow_diagram_connections(){
 
     auto flowDiagram = ui()->flow_diagram();
     // -> experiment
-    connect(flowDiagram, &FlowDiagramW::select_element_signal,          this, [&](ElementKey elementKey){exp()->select_element(elementKey);});
+    connect(flowDiagram, &FlowDiagramW::select_element_signal,          this, [&](ElementKey elementKey){
+        exp()->select_element(elementKey);}
+    );
     connect(flowDiagram, &FlowDiagramW::unselect_element_signal,        this, [&](){exp()->unselect_all_elements();});
     connect(flowDiagram, &FlowDiagramW::add_element_signal,             exp(), &EXP::add_element);
     connect(flowDiagram, &FlowDiagramW::remove_selected_element_signal, exp(), &EXP::remove_selected_element);

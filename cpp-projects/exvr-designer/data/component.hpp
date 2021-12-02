@@ -112,7 +112,7 @@ struct Component {
         /** S */ Scaner_video, Scene_scaner, Serial_port_reader, Serial_port_writer, Sky, Slider_ui, Sonceboz_SG, Sphere,
         /** T */ Target_to_grab, Text_resource, Text_viewer, Thera_trainer_tracking, Thera_trainer_platform, Torus, TPP_avatar_camera,
         /** U */ Unity_asset_bundle, Udp_reader, Udp_writer,
-        /** V */ Video_file, Video_file_camera_viewer, Video_saver, Vive_pro_eye_tracking,
+        /** V */ Video_file, Video_file_camera_viewer, Video_saver, Vive_pro_eye_tracking, Volumetric_video_resource,
         /** W */ Webcam, Webcam_viewer,
         SizeEnum
     };
@@ -217,6 +217,7 @@ struct Component {
         {T::Image_resource,           C::Resource,    TO::N,     CO::B,   false,   R::OpenSource,   S::Sta, "Image_resource"sv, "Image resource"sv, "ImageResource"sv, ":/icons/Image"sv},
         {T::Plot_resource,            C::Resource,    TO::N,     CO::C,   false,   R::OpenSource,   S::Sta, "Plot_resource"sv,  "Plot resource"sv, "PlotResource"sv, ":/icons/Plot"sv},
         {T::Text_resource,            C::Resource,    TO::N,     CO::C,   false,   R::OpenSource,   S::Sta, "Text_resource"sv,  "Text resource"sv, "TextResource"sv, ":/icons/Text"sv},
+        {T::Volumetric_video_resource,C::Resource,    TO::U,     CO::B,   false,   R::LNCO,         S::Exp, "Volumetric_video_resource"sv,  "Volumetric video resource"sv, "VolumetricVideoResource"sv, ":/icons/Video_cloud"sv},
         // Scene
         {T::Falling_spheres,          C::Scene,       TO::B,     CO::B,   false,   R::OpenSource,   S::Exp, "Falling_spheres"sv, "Falling spheres"sv, "FallingSpheres"sv, ":/icons/Falling_spheres"sv},
         {T::Flashing_dot,             C::Scene,       TO::B,     CO::B,   false,   R::OpenSource,   S::Exp, "Flashing_dot"sv, "Flashing dot"sv, "FlashingDot"sv,":/icons/Dot"sv},

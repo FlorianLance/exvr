@@ -90,21 +90,35 @@ namespace Ex {
         #endregion
         #region public_functions
 
-        //public Vector3 eye_position() {
-        //    return CameraUtility.eye_camera_position();
-        //}
+        // eye camera
+        public Vector3 eye_position() {
+            return CameraUtility.eye_camera_position();
+        }
 
-        //public Vector3 eye_direction() {
-        //    return CameraUtility.eye_camera_forward();
-        //}
+        public Vector3 eye_direction() {
+            return CameraUtility.eye_camera_forward();
+        }
 
-        //public Vector3 eye_euler_angles() {
-        //    return CameraUtility.eye_camera_rotation().eulerAngles;
-        //}
-        //public Quaternion eye_rotation() {
-        //    return CameraUtility.eye_camera_rotation();
-        //}
+        public Vector3 eye_euler_angles() {
+            return CameraUtility.eye_camera_rotation().eulerAngles;
+        }
+        public Quaternion eye_rotation() {
+            return CameraUtility.eye_camera_rotation();
+        }
 
+        public void move_camera_forward_xz(float value) {
+            var d = eye_direction();
+            CameraUtility.translate_camera_rig(new Vector3(d.x, 0, d.z * value));
+        }
+
+        public void rotate_camera_around_y(float value) {
+            CameraUtility.rotate_camera_rig_around(eye_position(), Vector3.up, value);
+        }
+        public void rotate_camera_around_y_towards(Vector3 target) {
+            rotate_camera_around_y(Vector3.SignedAngle(eye_direction(), target - CameraUtility.eye_camera_position(), Vector3.up));
+        }
+
+        // calibration
         public Vector3 calibration_position() {
             return CameraUtility.calibration_position();
         }
@@ -120,41 +134,25 @@ namespace Ex {
             return CameraUtility.calibration_rotation();
         }
 
-
-
-        public void snap_around_y(float value, int delayMS) {
-            if (m_snapTimer.ElapsedMilliseconds > delayMS) {
-                rotate_around_y(value);
-                m_snapTimer.Restart();
-            }
-        }
-
         public void translate_calibration(Vector3 value) {
             CameraUtility.translate_camera_rig(value);
         }
 
         public void move_calibration_to(Vector3 position) {
-            CameraUtility.translate_camera_rig(position - CameraUtility.calibration_position());
-        }  
-
-        public void move_camera_forward(float value) {
-
+            CameraUtility.translate_camera_rig(position - calibration_position());
         }
-
-
-
-        public void rotate_camera_around_y(float value) {
-            CameraUtility.rotate_camera_rig_around(CameraUtility.eye_camera_position(), Vector3.up, value);
-        }
-        public void rotate_camera_around_y_towards(Vector3 target) {
-            rotate_camera_around_y(Vector3.SignedAngle(CameraUtility.eye_camera_forward(), target - CameraUtility.eye_camera_position(), Vector3.up));
-        }
-
         public void rotate_calibration_around_y(float value) {
-            CameraUtility.rotate_camera_rig_around(CameraUtility.calibration_position(), Vector3.up, value);
+            CameraUtility.rotate_camera_rig_around(calibration_position(), Vector3.up, value);
         }
+        public void snap_rotate_calibration_around_y(float value, int delayMS) {
+            if (m_snapTimer.ElapsedMilliseconds > delayMS) {
+                rotate_calibration_around_y(value);
+                m_snapTimer.Restart();
+            }
+        }
+
         public void rotate_calibration_around_y_towards(Vector3 target) {
-            rotate_calibration_around_y(Vector3.SignedAngle(CameraUtility.calibration_forward(), target - CameraUtility.calibration_position(), Vector3.up));
+            rotate_calibration_around_y(Vector3.SignedAngle(calibration_direction(), target - calibration_position(), Vector3.up));
         }
 
 

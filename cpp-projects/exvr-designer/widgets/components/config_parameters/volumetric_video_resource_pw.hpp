@@ -29,32 +29,30 @@
 
 namespace tool::ex {
 
-class KinectManagerInitConfigParametersW : public ConfigParametersW{
+class VolumetricVideoResourceInitConfigParametersW : public ConfigParametersW{
 
 public :
 
-    KinectManagerInitConfigParametersW();
+    VolumetricVideoResourceInitConfigParametersW();
 
     void insert_widgets() override;
     void init_and_register_widgets() override;
-    void create_connections() override{}
-    void late_update_ui() override{}
+
 private:
     struct Impl;
     std::unique_ptr<Impl> m_p = nullptr;
 };
 
 
-class KinectManagerConfigParametersW : public ConfigParametersW{
+class VolumetricVideoResourceConfigParametersW : public ConfigParametersW{
 
 public :
 
-    KinectManagerConfigParametersW();
+    VolumetricVideoResourceConfigParametersW();
 
     void insert_widgets() override;
     void init_and_register_widgets() override;
-    void create_connections() override{}
-    void late_update_ui() override{}
+
 private:
     struct Impl;
     std::unique_ptr<Impl> m_p = nullptr;

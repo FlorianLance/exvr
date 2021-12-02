@@ -189,6 +189,7 @@ namespace Ex
             ["Ex.VideoResourceComponent"] = gen_info(Category.Resource, Pritority.Hight, Reserved.Public),
             ["Ex.AudioResourceComponent"] = gen_info(Category.Resource, Pritority.Hight, Reserved.Public),
             ["Ex.DirectoryResourceComponent"] = gen_info(Category.Resource, Pritority.Hight, Reserved.Public),
+            ["Ex.VolumetricVideoResourceComponent"] = gen_info(Category.Resource, Pritority.Hight, Reserved.LNCO),
             // scene
             ["Ex.AssetBundleComponent"] = gen_info(Category.Scene, Pritority.Hight, Reserved.Public),
             ["Ex.MultiABComponent"] = gen_info(Category.Scene, Pritority.Hight, Reserved.Public),

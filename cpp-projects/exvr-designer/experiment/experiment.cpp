@@ -103,7 +103,10 @@ void Experiment::select_element(ElementKey elementKey, bool updateSignal){
         }else{
 
             if(elem->type == Element::Type::Routine){
-                lastRoutineSelected = dynamic_cast<Routine*>(elem);
+                lastRoutineSelected = dynamic_cast<Routine*>(elem);                
+                if(lastRoutineSelected->conditions.size() > 0){
+                    lastRoutineSelected->select_condition(ConditionKey{lastRoutineSelected->conditions[0]->key()});
+                }
             }else if(elem->type == Element::Type::Isi){
                 lastIsiSelected = dynamic_cast<Isi*>(elem);
             }
