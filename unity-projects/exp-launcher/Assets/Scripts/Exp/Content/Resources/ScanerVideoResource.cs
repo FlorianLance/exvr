@@ -34,13 +34,13 @@ namespace Ex{
 
     namespace DLL{
 
-        public class ScanerVideoFile : CppDllImport{
+        public class ScanerVideoResource : CppDllImport{
 
             private float[] jointsPositions         = new float[Kinect2.nbJoints * 3];
             private float[] jointsEulerRotations    = new float[Kinect2.nbJoints * 3];
             private int[] jointsStates              = new int[Kinect2.nbJoints];
 
-            public ScanerVideoFile() : base() {
+            public ScanerVideoResource() : base() {
             }
 
             public bool load(string path) {
@@ -178,15 +178,17 @@ namespace Ex{
 
     public class ScanerVideoResource : ResourceFile{
 
-        public DLL.ScanerVideoFile videoFile = null;
+        public DLL.ScanerVideoResource video = null;
 
         public ScanerVideoResource(int key, string alias, string path) : base(key, alias, path) {
-            videoFile = new DLL.ScanerVideoFile();
-            videoFile.load(path);
+            video = new DLL.ScanerVideoResource();
+            if (!video.load(path)) {
+                log_error(string.Format("Cannot load scaner video from path {0}.", path)); 
+            }
         }
 
         public override void clean() {
-            videoFile.Dispose();
+            video.Dispose();
         }
     }
 }

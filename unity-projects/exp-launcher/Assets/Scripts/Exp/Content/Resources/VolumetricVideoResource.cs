@@ -47,66 +47,50 @@ namespace Ex {
                 return load_volumetric_video_resource(_handle, path) == 1;
             }
 
-            //public int nb_cameras() {
-            //    return get_camera_nb_scaner_video_resource(_handle);
-            //}
+            public int nb_cameras() {
+                return get_cameras_nb_volumetric_video_resource(_handle);
+            }
 
-            //public int camera_cloud_size(int idCamera) {
-            //    return get_camera_cloud_size_video_resource(_handle, idCamera);
-            //}
+            public int nb_frames(int idCamera) {
+                return get_nb_frames_volumetric_video_resource(_handle, idCamera);
+            }
 
-            //public int duration_ms() {
-            //    return get_duration_ms_scaner_video_resource(_handle);
-            //}
+            public float duration_ms(int idCamera) {
+                return get_duration_ms_volumetric_video_resource(_handle, idCamera);
+            }
 
-            //public int nb_bodies(int idCamera) {
-            //    return get_nb_bodies_scaner_video_resource(_handle, idCamera);
-            //}
+            public Matrix4x4 model(int idCamera) {
 
-            //public bool is_body_tracked(int idCamera, int idBody) {
-            //    return is_body_tracked_scaner_video_resource(_handle, idCamera, idBody) == 1;
-            //}
-            //public bool is_body_restricted(int idCamera, int idBody) {
-            //    return is_body_restricted_scaner_video_resource(_handle, idCamera, idBody) == 1;
-            //}
+                float[] t = new float[16];
+                get_camera_transform_volumetric_video_resource(_handle, idCamera, t);
+                return new Matrix4x4(new Vector4(t[0], t[1], t[2], 0),     // c0
+                                     new Vector4(t[4], t[5], t[6], 0),     // c1
+                                     new Vector4(t[8], t[9], t[10], 0),    // c2
+                                     new Vector4(t[12], t[13], t[14], 1)); // c3
+            }
 
-            //public bool is_hand_detected(int idCamera, int idBody, bool leftHand) {
-            //    return is_body_hand_detected_scaner_video_resource(_handle, idCamera, idBody, leftHand ? 1 : 0) == 1;
-            //}
+            public int id_frame_from_time(int idCamera, float timeMs) {
+                return get_id_frame_from_time_ms_volumetric_video_resource(_handle, idCamera, timeMs);
+            }
 
-            //public bool is_hand_confident(int idCamera, int idBody, bool leftHand) {
-            //    return is_body_hand_confident_scaner_video_resource(_handle, idCamera, idBody, leftHand ? 1 : 0) == 1;
-            //}
+            public int uncompress_frame(int idCamera, int idFrame) {
+                return uncompress_frame_volumetric_video_resource(_handle, idCamera, idFrame);
+            }
 
-            //public void update_joints(int idCamera, int idBody, Dictionary<Kinect2.BodyJointType, JointInfo> bodyJoints) {
+            public void copy_uncompressed_data(int idCamera, IntPtr vertices, IntPtr colors) {
+                copy_uncompressed_data_volumetric_video_resource(_handle, idCamera, vertices, colors);
+            }
 
-            //    body_joints_positions_scaner_video_resource(_handle, idCamera, idBody, jointsPositions);
-            //    body_joints_rotations_scaner_video_resource(_handle, idCamera, idBody, jointsEulerRotations);
-            //    body_joints_states_scaner_video_resource(_handle, idCamera, idBody, jointsStates);
-
-            //    for (int ii = 0; ii < Kinect2.nbJoints; ++ii) {
-            //        var type = (Kinect2.BodyJointType)ii;
-            //        bodyJoints[type].position = new Vector3(jointsPositions[ii * 3], jointsPositions[ii * 3 + 1], jointsPositions[ii * 3 + 2]);
-            //        bodyJoints[type].rotation = Quaternion.Euler(jointsEulerRotations[ii * 3], jointsEulerRotations[ii * 3 + 1], jointsEulerRotations[ii * 3 + 2]);
-            //        bodyJoints[type].state = (Kinect2.TrackingState)jointsStates[ii];
-            //    }
-            //}
-
-
-            //public Matrix4x4 camera_model(int idCamera) {
-
-            //    float[] t = new float[16];
-            //    get_cloud_model_transform_scaner_video_resource(_handle, idCamera, t);
-            //    return new Matrix4x4(new Vector4(t[0], t[1], t[2], 0),  // c0
-            //                         new Vector4(t[4], t[5], t[6], 0),  // c1
-            //                         new Vector4(t[8], t[9], t[10], 0),  // c2
-            //                         new Vector4(t[12], t[13], t[14], 1)); // c3
-
-            //}
-
-            //public int update_cloud_data(int idCamera, int timeMs, int maxDiffTimeMs, bool loop, IntPtr vertices, IntPtr colors) {
-            //    return update_cloud_data_scaner_video_resource(_handle, idCamera, timeMs, maxDiffTimeMs, loop ? 1 : 0, vertices, colors);
-            //}
+            public void process_audio() {
+                process_audio_volumetric_video_resource(_handle);
+            }
+   
+            public int audio_channel_samples_size(int idCamera, int idChannel) {
+                return get_audio_channel_size_volumetric_video_resource(_handle, idCamera, idChannel);
+            }
+            public void copy_audio_samples(int idCamera, int idChannel, IntPtr audioSamples) {
+                copy_audio_samples_volumetric_video_resource(_handle, idCamera, idChannel, audioSamples);
+            }
 
 
             #region memory_management
@@ -133,44 +117,37 @@ namespace Ex {
             [DllImport("lnco-exvr-export", EntryPoint = "load_volumetric_video_resource", CallingConvention = CallingConvention.Cdecl)]
             static private extern int load_volumetric_video_resource(HandleRef volumetricVideoResource, string pathResource);
 
-            //[DllImport("lnco-exvr-export", EntryPoint = "get_duration_ms_scaner_video_resource", CallingConvention = CallingConvention.Cdecl)]
-            //static private extern int get_duration_ms_scaner_video_resource(HandleRef scanerVideoResource);
+            [DllImport("lnco-exvr-export", EntryPoint = "get_cameras_nb_volumetric_video_resource", CallingConvention = CallingConvention.Cdecl)]
+            static private extern int get_cameras_nb_volumetric_video_resource(HandleRef volumetricVideoResource);
 
-            //[DllImport("lnco-exvr-export", EntryPoint = "get_camera_nb_scaner_video_resource", CallingConvention = CallingConvention.Cdecl)]
-            //static private extern int get_camera_nb_scaner_video_resource(HandleRef scanerVideoResource);
+            [DllImport("lnco-exvr-export", EntryPoint = "get_nb_frames_volumetric_video_resource", CallingConvention = CallingConvention.Cdecl)]
+            static private extern int get_nb_frames_volumetric_video_resource(HandleRef volumetricVideoResource, int idCamera);
 
-            //[DllImport("lnco-exvr-export", EntryPoint = "get_camera_cloud_size_video_resource", CallingConvention = CallingConvention.Cdecl)]
-            //static private extern int get_camera_cloud_size_video_resource(HandleRef scanerVideoResource, int idC);
+            [DllImport("lnco-exvr-export", EntryPoint = "get_duration_ms_volumetric_video_resource", CallingConvention = CallingConvention.Cdecl)]
+            static private extern float get_duration_ms_volumetric_video_resource(HandleRef volumetricVideoResource, int idCamera);
 
-            //[DllImport("lnco-exvr-export", EntryPoint = "get_cloud_model_transform_scaner_video_resource", CallingConvention = CallingConvention.Cdecl)]
-            //static private extern void get_cloud_model_transform_scaner_video_resource(HandleRef scanerVideoResource, int idC, float[] model);
+            [DllImport("lnco-exvr-export", EntryPoint = "get_camera_transform_volumetric_video_resource", CallingConvention = CallingConvention.Cdecl)]
+            static private extern void get_camera_transform_volumetric_video_resource(HandleRef volumetricVideoResource, int idCamera, float[] model);
 
-            //[DllImport("lnco-exvr-export", EntryPoint = "update_cloud_data_scaner_video_resource", CallingConvention = CallingConvention.Cdecl)]
-            //static private extern int update_cloud_data_scaner_video_resource(HandleRef scanerVideoResource, int idC, int timeMs, int maxDiffTimeMs, int loop, IntPtr vertices, IntPtr colors);
 
-            //[DllImport("lnco-exvr-export", EntryPoint = "get_nb_bodies_scaner_video_resource", CallingConvention = CallingConvention.Cdecl)]
-            //static private extern int get_nb_bodies_scaner_video_resource(HandleRef scanerVideoResource, int idC);
+            [DllImport("lnco-exvr-export", EntryPoint = "get_id_frame_from_time_ms_volumetric_video_resource", CallingConvention = CallingConvention.Cdecl)]
+            static private extern int get_id_frame_from_time_ms_volumetric_video_resource(HandleRef volumetricVideoResource, int idCamera, float timeMs);
 
-            //[DllImport("lnco-exvr-export", EntryPoint = "is_body_tracked_scaner_video_resource", CallingConvention = CallingConvention.Cdecl)]
-            //static private extern int is_body_tracked_scaner_video_resource(HandleRef scanerVideoResource, int idC, int idBody);
+            [DllImport("lnco-exvr-export", EntryPoint = "uncompress_frame_volumetric_video_resource", CallingConvention = CallingConvention.Cdecl)]
+            static private extern int uncompress_frame_volumetric_video_resource(HandleRef volumetricVideoResource, int idCamera, int idFrame);
 
-            //[DllImport("lnco-exvr-export", EntryPoint = "is_body_restricted_scaner_video_resource", CallingConvention = CallingConvention.Cdecl)]
-            //static private extern int is_body_restricted_scaner_video_resource(HandleRef scanerVideoResource, int idC, int idBody);
+            [DllImport("lnco-exvr-export", EntryPoint = "copy_uncompressed_data_volumetric_video_resource", CallingConvention = CallingConvention.Cdecl)]
+            static private extern void copy_uncompressed_data_volumetric_video_resource(HandleRef volumetricVideoResource, int idCamera, IntPtr vertices, IntPtr colors);
 
-            //[DllImport("lnco-exvr-export", EntryPoint = "is_body_hand_detected_scaner_video_resource", CallingConvention = CallingConvention.Cdecl)]
-            //static private extern int is_body_hand_detected_scaner_video_resource(HandleRef scanerVideoResource, int idC, int idBody, int leftHand);
+            [DllImport("lnco-exvr-export", EntryPoint = "process_audio_volumetric_video_resource", CallingConvention = CallingConvention.Cdecl)]
+            static private extern void process_audio_volumetric_video_resource(HandleRef volumetricVideoResource);
 
-            //[DllImport("lnco-exvr-export", EntryPoint = "is_body_hand_confident_scaner_video_resource", CallingConvention = CallingConvention.Cdecl)]
-            //static private extern int is_body_hand_confident_scaner_video_resource(HandleRef scanerVideoResource, int idC, int idBody, int leftHand);
+            [DllImport("lnco-exvr-export", EntryPoint = "get_audio_channel_size_volumetric_video_resource", CallingConvention = CallingConvention.Cdecl)]
+            static private extern int get_audio_channel_size_volumetric_video_resource(HandleRef volumetricVideoResource, int idCamera, int idChannel);
 
-            //[DllImport("lnco-exvr-export", EntryPoint = "body_joints_positions_scaner_video_resource", CallingConvention = CallingConvention.Cdecl)]
-            //static private extern void body_joints_positions_scaner_video_resource(HandleRef scanerVideoResource, int idC, int idBody, float[] positions);
+            [DllImport("lnco-exvr-export", EntryPoint = "copy_audio_samples_volumetric_video_resource", CallingConvention = CallingConvention.Cdecl)]
+            static private extern void copy_audio_samples_volumetric_video_resource(HandleRef volumetricVideoResource, int idCamera, int idChannel, IntPtr audioSamples);
 
-            //[DllImport("lnco-exvr-export", EntryPoint = "body_joints_rotations_scaner_video_resource", CallingConvention = CallingConvention.Cdecl)]
-            //static private extern void body_joints_rotations_scaner_video_resource(HandleRef scanerVideoResource, int idC, int idBody, float[] rotations);
-
-            //[DllImport("lnco-exvr-export", EntryPoint = "body_joints_states_scaner_video_resource", CallingConvention = CallingConvention.Cdecl)]
-            //static private extern void body_joints_states_scaner_video_resource(HandleRef scanerVideoResource, int idC, int idBody, int[] states);
 
             #endregion DllImport        
         }
@@ -178,15 +155,17 @@ namespace Ex {
 
     public class VolumetricVideoResource : ResourceFile {
 
-        public DLL.VolumetricVideoResource volumetricVideo = null;
+        public DLL.VolumetricVideoResource video = null;
 
         public VolumetricVideoResource(int key, string alias, string path) : base(key, alias, path) {
-            volumetricVideo = new DLL.VolumetricVideoResource();
-            volumetricVideo.load(path);
+            video = new DLL.VolumetricVideoResource();
+            if (!video.load(path)) {
+                log_error(string.Format("Cannot load volumetric video from path {0}.", path));
+            }
         }
 
         public override void clean() {
-            volumetricVideo.Dispose();
+            video.Dispose();
         }
     }
 }

@@ -297,6 +297,15 @@ namespace Ex {
             return ExVR.Resources().get_asset_bundle_file_data(assetBundleAlias);
         }
 
+        public VolumetricVideoResource get_volumetric_video_data(string argName) {
+            string volumetricVideoAlias = get_resource_alias(argName);
+            if (volumetricVideoAlias.Length == 0) {
+                return null;
+            }
+            return ExVR.Resources().get_volumetric_video_file_data(volumetricVideoAlias);
+        }
+
+
         // # resource sub data
         public string get_resource_path(ResourcesManager.ResourceType type, string argName) {
             string alias = get_resource_alias(argName);
