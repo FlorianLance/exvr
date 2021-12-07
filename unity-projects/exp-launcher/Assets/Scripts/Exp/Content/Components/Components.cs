@@ -591,16 +591,20 @@ namespace Ex
         }
 
         public T get_first<T>() where T : ExComponent {
-            if(componentsPerType[typeof(T)].Count > 0) {
-                return (T)componentsPerType[typeof(T)][0];
+            if (componentsPerType.ContainsKey(typeof(T))) {
+                if (componentsPerType[typeof(T)].Count > 0) {
+                    return (T)componentsPerType[typeof(T)][0];
+                }
             }
             return null;
         }
 
         // set
         public void set_first<T>(ref T component) where T : ExComponent {
-            if (componentsPerType[typeof(T)].Count > 0) {
-                component = (T)componentsPerType[typeof(T)][0];
+            if (componentsPerType.ContainsKey(typeof(T))){
+                if (componentsPerType[typeof(T)].Count > 0) {
+                    component = (T)componentsPerType[typeof(T)][0];
+                }
             }
         }
 
