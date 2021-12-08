@@ -28,7 +28,7 @@ using UnityEngine;
 namespace Ex{
     public class AssetBundleResource : ResourceFile{
 
-        public AssetBundle bundle;
+        public AssetBundle bundle = null;
 
         public AssetBundleResource(int key, string alias, string path) : base(key, alias, path) {
 
@@ -39,7 +39,9 @@ namespace Ex{
         }
 
         public override void clean() {
-            bundle.Unload(true);
+            if (bundle != null) {
+                bundle.Unload(true);
+            }
         }
     }
 }

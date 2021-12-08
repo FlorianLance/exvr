@@ -41,10 +41,12 @@ namespace Ex {
             this.path = path;
         }
 
-        public virtual void read_data() {
+        public virtual bool read_data() {
+            return true;
         }
 
-        public virtual void initialize() {
+        public virtual bool initialize() {
+            return true;
         }
 
         public virtual void clean() {

@@ -86,11 +86,11 @@ namespace Ex{
             texture.wrapMode = TextureWrapMode.Clamp;
             texture.filterMode = FilterMode.Point;
         }
-        public override void read_data() {
+        public override bool read_data() {
 
             if (path.Length == 0) {
                 bytes = null;
-                return;
+                return false;
             }
 
             try {
@@ -98,10 +98,12 @@ namespace Ex{
             } catch (System.Exception ex) {
                 log_error(string.Format("Cannot read image file {0}, error: {1}", path, ex.Message));
                 bytes = null;
+                return false;
             }
+            return true;
         }
 
-        public override void initialize() {
+        public override bool initialize() {
             
             bool loaded = false;
             if (bytes != null) {
@@ -122,11 +124,15 @@ namespace Ex{
                 texture.SetPixels(colors);
                 texture.Apply();
             }
+
+            return true;
         }
 
 
         public override void clean() {
-            ExVR.Memory().delete_texture(texture);
+            if (texture != null) {
+                ExVR.Memory().delete_texture(texture);
+            }
         }
     }
 }

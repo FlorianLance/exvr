@@ -172,8 +172,16 @@ namespace Ex {
                 if (resourceData != null) {
                     m_pathMappingResources[type][resource.Path] = resourceData;
                     m_aliasMappingResources[type][resource.Alias] = resourceData;
-                    resourceData.read_data();
-                    resourceData.initialize();
+                    if (!resourceData.read_data()) {
+                        log_error(String.Format("Cannot read data from resource file of type [{0}] with path: {1}.", resource.Type, resource.Path));
+                        resourceData.clean();
+                        return false;
+                    }
+                    if (!resourceData.initialize()) {
+                        log_error(String.Format("Cannot initialize resource file of type [{0}] with path: {1}.", resource.Type, resource.Path));
+                        resourceData.clean();
+                        return false;
+                    }
                 }
             } else {
                 log_error(String.Format("Resource file of type [{0}] with path: {1} already added.", resource.Type, resource.Path));

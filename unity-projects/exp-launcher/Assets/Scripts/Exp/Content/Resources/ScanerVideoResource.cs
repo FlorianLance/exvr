@@ -180,11 +180,15 @@ namespace Ex{
 
         public DLL.ScanerVideoResource video = null;
 
-        public ScanerVideoResource(int key, string alias, string path) : base(key, alias, path) {
+        public ScanerVideoResource(int key, string alias, string path) : base(key, alias, path) {}
+
+        public override bool read_data() {
             video = new DLL.ScanerVideoResource();
             if (!video.load(path)) {
-                log_error(string.Format("Cannot load scaner video from path {0}.", path)); 
+                log_error(string.Format("Cannot load scaner video from path {0}.", path));
+                return false;
             }
+            return true;
         }
 
         public override void clean() {

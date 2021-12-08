@@ -150,6 +150,25 @@ namespace Ex{
             audioSource.clip = m_audioClip;
             m_audioData = new AudioData(audioSource.clip);
 
+            //float[] samples = new float[audioSource.clip.samples * audioSource.clip.channels];
+            //audioSource.clip.GetData(samples, 0);
+
+            //float minA = 1000f;
+            //float maxA = -1000f;
+            //float averageA = 0f;
+            //for (int jj = 0; jj < samples.Length; ++jj) {
+            //    var v = samples[jj];
+            //    averageA += v;
+            //    if (v < minA) {
+            //        minA = v;
+            //    }
+            //    if (v > maxA) {
+            //        maxA = v;
+            //    }
+            //}
+            //averageA /= samples.Length;
+            //log_message(string.Format("aa audio min {0} max {1} average {2}", minA, maxA, averageA));
+
             return true;
         }
 

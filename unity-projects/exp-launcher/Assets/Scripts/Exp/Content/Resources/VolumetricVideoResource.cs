@@ -36,9 +36,6 @@ namespace Ex {
 
         public class VolumetricVideoResource : CppDllImport {
 
-            //private float[] jointsPositions = new float[Kinect2.nbJoints * 3];
-            //private float[] jointsEulerRotations = new float[Kinect2.nbJoints * 3];
-            //private int[] jointsStates = new int[Kinect2.nbJoints];
 
             public VolumetricVideoResource() : base() {
             }
@@ -81,15 +78,16 @@ namespace Ex {
                 copy_uncompressed_data_volumetric_video_resource(_handle, idCamera, vertices, colors);
             }
 
-            public void process_audio() {
-                process_audio_volumetric_video_resource(_handle);
+            public int process_audio(int idCamera) {
+                return process_audio_volumetric_video_resource(_handle, idCamera);
             }
-   
-            public int audio_channel_samples_size(int idCamera, int idChannel) {
-                return get_audio_channel_size_volumetric_video_resource(_handle, idCamera, idChannel);
+  
+            public void copy_audio_samples(int idCamera, IntPtr audioSamples) {
+                copy_audio_samples_volumetric_video_resource(_handle, idCamera, audioSamples);
             }
-            public void copy_audio_samples(int idCamera, int idChannel, IntPtr audioSamples) {
-                copy_audio_samples_volumetric_video_resource(_handle, idCamera, idChannel, audioSamples);
+
+            public int valid_vertices_count(int idCamera, int idFrame) {
+                return get_valid_vertices_count_volumetric_video_resource(_handle, idCamera, idFrame);
             }
 
 
@@ -140,29 +138,161 @@ namespace Ex {
             static private extern void copy_uncompressed_data_volumetric_video_resource(HandleRef volumetricVideoResource, int idCamera, IntPtr vertices, IntPtr colors);
 
             [DllImport("lnco-exvr-export", EntryPoint = "process_audio_volumetric_video_resource", CallingConvention = CallingConvention.Cdecl)]
-            static private extern void process_audio_volumetric_video_resource(HandleRef volumetricVideoResource);
-
-            [DllImport("lnco-exvr-export", EntryPoint = "get_audio_channel_size_volumetric_video_resource", CallingConvention = CallingConvention.Cdecl)]
-            static private extern int get_audio_channel_size_volumetric_video_resource(HandleRef volumetricVideoResource, int idCamera, int idChannel);
+            static private extern int process_audio_volumetric_video_resource(HandleRef volumetricVideoResourc, int idCamera);
 
             [DllImport("lnco-exvr-export", EntryPoint = "copy_audio_samples_volumetric_video_resource", CallingConvention = CallingConvention.Cdecl)]
-            static private extern void copy_audio_samples_volumetric_video_resource(HandleRef volumetricVideoResource, int idCamera, int idChannel, IntPtr audioSamples);
+            static private extern void copy_audio_samples_volumetric_video_resource(HandleRef volumetricVideoResource, int idCamera, IntPtr audioSamples);
 
+            [DllImport("lnco-exvr-export", EntryPoint = "get_valid_vertices_count_volumetric_video_resource", CallingConvention = CallingConvention.Cdecl)]
+            static private extern int get_valid_vertices_count_volumetric_video_resource(HandleRef volumetricVideoResource, int idCamera, int idFrame);
 
+            
             #endregion DllImport        
         }
+    }
+
+    public class VolumetricVideoCameraData {
+        public VolumetricVideoCameraData(int maxNbVertices, int sizeAudioBuffer) {
+            this.maxNbVertices   = maxNbVertices;
+            this.sizeAudioBuffer = sizeAudioBuffer;
+            vertices = new Vector3[maxNbVertices];
+            colors = new Color[maxNbVertices];
+            audio = new float[sizeAudioBuffer];
+
+            Debug.LogError("maxNbVertices " + maxNbVertices);
+            gcVertices = GCHandle.Alloc(vertices, GCHandleType.Pinned);
+            gcColors = GCHandle.Alloc(colors, GCHandleType.Pinned);
+            gcAudio = GCHandle.Alloc(audio, GCHandleType.Pinned);
+
+            Debug.LogError("allocated " + gcVertices.IsAllocated);
+            //audioClip
+        }
+
+        ~VolumetricVideoCameraData() {
+            gcVertices.Free();
+            gcColors.Free();
+            gcAudio.Free();
+        }
+
+        public int lastFrameId = -1;
+
+        public int maxNbVertices=0;
+        public int sizeAudioBuffer = 0;
+        public int nbFrames = 0;
+        public Matrix4x4 model = Matrix4x4.identity;
+        public float duration = 0f;
+
+        public GCHandle gcVertices;
+        public GCHandle gcColors;
+        public GCHandle gcAudio;
+        public Vector3[] vertices = null;
+        public Color[] colors = null;
+        public float[] audio = null;
+
+        public AudioClip audioClip = null;
     }
 
     public class VolumetricVideoResource : ResourceFile {
 
         public DLL.VolumetricVideoResource video = null;
 
-        public VolumetricVideoResource(int key, string alias, string path) : base(key, alias, path) {
+        public int nbCameras = 0;
+        public float duration = 0f;
+        public List<VolumetricVideoCameraData> cameraData = null;
+        public List<int> commonIndices = null;
+
+        public VolumetricVideoResource(int key, string alias, string path) : base(key, alias, path) {}
+  
+        public override bool read_data() {
             video = new DLL.VolumetricVideoResource();
             if (!video.load(path)) {
                 log_error(string.Format("Cannot load volumetric video from path {0}.", path));
+                return false;
             }
+            return true;
         }
+
+        public override bool initialize() {
+
+            // retrieve infos
+            nbCameras = video.nb_cameras();
+            List<int> nbFramesPerCamera = new List<int>(nbCameras);
+            List<Matrix4x4> modelPerCamera = new List<Matrix4x4>(nbCameras);
+            List<float> durationPerCamera = new List<float>(nbCameras);
+
+            for (int ii = 0; ii < nbCameras; ++ii) {
+                nbFramesPerCamera.Add(video.nb_frames(ii));
+                modelPerCamera.Add(video.model(ii));
+                durationPerCamera.Add(video.duration_ms(ii));
+                if (durationPerCamera[ii] > duration) {
+                    duration = durationPerCamera[ii];
+                }
+            }
+
+            // check number of frames
+            for (int ii = 1; ii < nbFramesPerCamera.Count; ++ii) {
+                if (nbFramesPerCamera[0] != nbFramesPerCamera[ii]) {
+                    log_error(string.Format("Invalid number of frames from camera {1}, {2} instead of {3}",
+                        ii, nbFramesPerCamera[ii], nbFramesPerCamera[0]));
+                    return false;
+                }
+            }
+
+            var nbFrames = nbFramesPerCamera[0];
+            cameraData = new List<VolumetricVideoCameraData>(nbCameras);
+            int maxNbVerticesAllCameras = 0;
+            for (int ii = 0; ii < nbCameras; ++ii) {
+
+                // count valid vertices 
+                int maxNb = 0;
+                for (int jj = 0; jj < nbFrames; ++jj) {
+                    var currentNb = video.valid_vertices_count(ii, jj);
+                    if (maxNb < currentNb) {
+                        maxNb = currentNb;
+                    }
+                }
+                if(maxNbVerticesAllCameras < maxNb) {
+                    maxNbVerticesAllCameras = maxNb;
+                }
+
+                // generate camera data
+                int sizeSamples = video.process_audio(ii);
+                log_message("init volu " + ii + " " + maxNb + " " + sizeSamples);
+                cameraData.Add(new VolumetricVideoCameraData(maxNb, sizeSamples));
+                cameraData[ii].model = modelPerCamera[ii];
+                cameraData[ii].nbFrames = nbFramesPerCamera[ii];
+                cameraData[ii].duration = durationPerCamera[ii];
+
+                video.copy_audio_samples(ii, cameraData[ii].gcAudio.AddrOfPinnedObject());
+                cameraData[ii].audioClip = AudioClip.Create("camera_" + ii, sizeSamples/7, 7, 48000, false);
+                cameraData[ii].audioClip.SetData(cameraData[ii].audio, 0);
+            }
+
+            // generate indices
+            commonIndices = new List<int>(maxNbVerticesAllCameras);
+            for(int ii = 0; ii < maxNbVerticesAllCameras; ++ii) {
+                commonIndices.Add(ii);
+            }
+
+            return true;
+        }
+
+        public int update_time(float timeMs) {            
+
+            int currentFrameId = video.id_frame_from_time(0, timeMs);
+            if(currentFrameId != cameraData[0].lastFrameId) {
+                int nbVertices = video.uncompress_frame(0, currentFrameId);
+                video.copy_uncompressed_data(0, 
+                    cameraData[0].gcVertices.AddrOfPinnedObject(), 
+                    cameraData[0].gcColors.AddrOfPinnedObject()
+                );
+                //log_message("currentFrameId " + currentFrameId + " "+ nbVertices);
+                cameraData[0].lastFrameId = currentFrameId;
+                return nbVertices;
+            }
+            return -1;
+        }
+
 
         public override void clean() {
             video.Dispose();
