@@ -77,6 +77,21 @@ namespace Ex.DLL{
 
         #region members
 
+        [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+        protected delegate void StrackTraceCB(string stackTraceMessage);
+        [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+        protected delegate void LogCB(string message);
+        [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+        protected delegate void LogWarningCB(string warningMessage);
+        [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+        protected delegate void LogErrorCB(string errorMessage);
+
+        protected StrackTraceCB stackTraceCB = null;
+        protected LogCB logCB = null;
+        protected LogWarningCB logWarningCB = null;
+        protected LogErrorCB logErrorCB = null;
+
+
         /// <summary>
         /// pointer to C+ dll class
         /// </summary>

@@ -42,14 +42,7 @@ namespace Ex.DLL{
         // parent component
         public ExComponent parent = null;
 
-        [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-        delegate void StrackTraceCB(string stackTraceMessage);
-        [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-        delegate void LogCB(string message);
-        [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-        delegate void LogWarningCB(string warningMessage);
-        [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-        delegate void LogErrorCB(string errorMessage);
+
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
         delegate long EllapsedTimeExpMsCB();
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
@@ -81,10 +74,6 @@ namespace Ex.DLL{
         [UnmanagedFunctionPointer(CallingConvention.StdCall)]
         delegate void SignalStringCB(int key, int index, string value);
 
-        StrackTraceCB stackTraceCB = null;
-        LogCB logCB = null;
-        LogWarningCB logWarningCB = null;
-        LogErrorCB logErrorCB = null;
         EllapsedTimeExpMsCB ellapsedTimeExpMsCB = null;
         EllapsedTimeRoutineMsCB ellapsedTimeRoutineMsCB = null;
         GetCB getCB = null;
