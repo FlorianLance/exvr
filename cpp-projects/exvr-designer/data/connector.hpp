@@ -323,10 +323,10 @@ namespace tool::ex {
             {T::Conditional_gate,       C::Link,      M, {2,{t_any, t_bool},           1,{t_any}},                {v,{v,v},     {v}},     IN, FO, 1},
             // # Event
             {T::Check_keyboard_button,  C::Event,     M, {1,{t_key_but_s},             3,{t_real,t_real,t_real}},  {v,{v},       {v,v,v}}, IN, FO, 1},
-            {T::Filter_keyboard_button, C::Event,     M, {1,{t_key_but_s},             1,{t_key_but_s}},                   {v,{v},       {v}},       IN, FO, 1},
-            {T::Check_joypad_button,    C::Event,     M, {1,{t_joy_but_s},             4,{t_void,t_void,t_void, t_real}},  {v,{v},       {v,v,v,v}}, IN, FO, 1},
-            {T::Check_joypad_axis,      C::Event,     M, {1,{t_joy_ax_s},              2,{t_float,t_real}},                {v,{v},       {v,v}},     IN, FO, 1},
-            {T::Check_mouse_button,     C::Event,     M, {1,{t_mou_but_s},             4,{t_void,t_void,t_void, t_real}},  {v,{v},       {v,v,v,v}}, IN, FO, 1},
+            {T::Filter_keyboard_button, C::Event,     M, {1,{t_key_but_s},             1,{t_key_but_s}},           {v,{v},       {v}},     IN, FO, 1},
+            {T::Check_joypad_button,    C::Event,     M, {1,{t_joy_but_s},             3,{t_real,t_real,t_real}},  {v,{v},       {v,v,v}}, IN, FO, 1},
+            {T::Check_joypad_axis,      C::Event,     M, {1,{t_joy_ax_s},              2,{t_float,t_real}},        {v,{v},       {v,v}},   IN, FO, 1},
+            {T::Check_mouse_button,     C::Event,     M, {1,{t_mou_but_s},             3,{t_real,t_real,t_real}},  {v,{v},       {v,v,v}}, IN, FO, 1},
             // # Action
             {T::Next,                   C::Action,    M, {1,{t_void},                  0,{}},                     {v,{v},       {}},      LO, FO, 0},
             {T::Next_with_name,         C::Action,    M, {1,{t_void},                  0,{}},                     {v,{v},       {}},      IN, FO, 0},

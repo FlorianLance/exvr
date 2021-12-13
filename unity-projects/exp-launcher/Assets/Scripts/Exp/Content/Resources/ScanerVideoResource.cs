@@ -176,7 +176,7 @@ namespace Ex{
         }
     }
 
-    public class ScanerVideoResource : ResourceFile{
+    public class ScanerVideoResource : ExResourceFile{
 
         public DLL.ScanerVideoResource video = null;
 

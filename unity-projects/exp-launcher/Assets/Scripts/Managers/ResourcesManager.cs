@@ -82,11 +82,11 @@ namespace Ex {
             ExVR.Log().error(string.Format("[RESOURCE] {0}", error));
         }
 
-        private Dictionary<ResourceType, Dictionary<string, Resource>> m_pathMappingResources = null; // type - path -> resource        
-        private Dictionary<ResourceType, Dictionary<string, Resource>> m_aliasMappingResources = null; // type - alias -> resource
+        private Dictionary<ResourceType, Dictionary<string, ExResource>> m_pathMappingResources = null; // type - path -> resource        
+        private Dictionary<ResourceType, Dictionary<string, ExResource>> m_aliasMappingResources = null; // type - alias -> resource
 
-        public List<Resource> get_resources_from_type(ResourceType type) {
-            List<Resource> resources = new List<Resource>(m_pathMappingResources[type].Count);
+        public List<ExResource> get_resources_from_type(ResourceType type) {
+            List<ExResource> resources = new List<ExResource>(m_pathMappingResources[type].Count);
             foreach(var resource in m_pathMappingResources[type]) {
                 resources.Add(resource.Value);
             }
@@ -96,11 +96,11 @@ namespace Ex {
         public void initialize() {
 
             // init dictionnaries
-            m_pathMappingResources = new Dictionary<ResourceType, Dictionary<string, Resource>>();
-            m_aliasMappingResources = new Dictionary<ResourceType, Dictionary<string, Resource>>();
+            m_pathMappingResources = new Dictionary<ResourceType, Dictionary<string, ExResource>>();
+            m_aliasMappingResources = new Dictionary<ResourceType, Dictionary<string, ExResource>>();
             foreach (ResourceType type in Enum.GetValues(typeof(ResourceType))) {
-                m_pathMappingResources[type]    = new Dictionary<string, Resource>();
-                m_aliasMappingResources[type]   = new Dictionary<string, Resource>();
+                m_pathMappingResources[type]    = new Dictionary<string, ExResource>();
+                m_aliasMappingResources[type]   = new Dictionary<string, ExResource>();
             }
 
             // add defaults
@@ -127,7 +127,7 @@ namespace Ex {
             }
         }
 
-        private Resource generate_resource(ResourceType type, int key, string alias, string path) {
+        private ExResource generate_resource(ResourceType type, int key, string alias, string path) {
 
             // resource file exists
             switch (type) {
@@ -168,7 +168,7 @@ namespace Ex {
             // load resource if not mapped
             if (!m_pathMappingResources[type].ContainsKey(resource.Path)) {                
 
-                Resource resourceData = generate_resource(type, resource.Key, resource.Alias, resource.Path);
+                ExResource resourceData = generate_resource(type, resource.Key, resource.Alias, resource.Path);
                 if (resourceData != null) {
                     m_pathMappingResources[type][resource.Path] = resourceData;
                     m_aliasMappingResources[type][resource.Alias] = resourceData;
@@ -213,7 +213,7 @@ namespace Ex {
             }
 
             // look for resources not available anymore
-            List<Tuple<ResourceType, string, Resource>> resourcesToRemove = new List<Tuple<ResourceType, string, Resource>>();
+            List<Tuple<ResourceType, string, ExResource>> resourcesToRemove = new List<Tuple<ResourceType, string, ExResource>>();
             foreach(var mappingPerType in m_pathMappingResources) {
                 foreach(var resource in mappingPerType.Value) {
 
@@ -227,7 +227,7 @@ namespace Ex {
                     
                     // if not found remove from it
                     if (!found) {
-                        resourcesToRemove.Add(new Tuple<ResourceType, string, Resource>(mappingPerType.Key, resource.Key, resource.Value));
+                        resourcesToRemove.Add(new Tuple<ResourceType, string, ExResource>(mappingPerType.Key, resource.Key, resource.Value));
                     }
                 }
             }
@@ -252,7 +252,7 @@ namespace Ex {
                 }
 
                 // clean data
-                List<Resource> resourcesToKeep = new List<Resource>();
+                List<ExResource> resourcesToKeep = new List<ExResource>();
                 foreach (var resourcesPerType in m_aliasMappingResources[type]) {
                     if (!resourcesPerType.Value.doNotRemove) {
                         resourcesPerType.Value.clean();
@@ -269,7 +269,7 @@ namespace Ex {
                 }
 
                 // add again non removables resources in dictionnaries
-                foreach(Resource resourceToKeep in resourcesToKeep) {
+                foreach(ExResource resourceToKeep in resourcesToKeep) {
                     m_aliasMappingResources[type][resourceToKeep.alias] = resourceToKeep;
                 }
             }
@@ -344,7 +344,7 @@ namespace Ex {
             }
         }
 
-        public Resource get_resource_file_data(int key) {
+        public ExResource get_resource_file_data(int key) {
 
             foreach(var resourcesPerType in m_aliasMappingResources) {
                 foreach(var resource in resourcesPerType.Value) {
@@ -358,7 +358,7 @@ namespace Ex {
             return null;
         }
 
-        public Resource get_resource_file_data(ResourceType type, int key) {
+        public ExResource get_resource_file_data(ResourceType type, int key) {
 
             foreach (var resource in m_aliasMappingResources[type]) {
                 if(resource.Value.key == key) {
@@ -369,7 +369,7 @@ namespace Ex {
             return null;
         }
 
-        public Resource get_resource_file_data(ResourceType type, string alias) {
+        public ExResource get_resource_file_data(ResourceType type, string alias) {
             if (!m_aliasMappingResources[type].ContainsKey(alias)) {
                 log_error(String.Format("Cannot read resource with alias [{0}] and type [{1}] from resources.", alias, type.ToString()));
                 return null;

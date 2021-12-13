@@ -36,7 +36,7 @@ namespace Ex {
 
         public class VolumetricVideoResource : CppDllImport {
 
-            public VolumetricVideoResource(Resource parent) : base() {
+            public VolumetricVideoResource(ExResource parent) : base() {
                 stackTraceCB  = (trace) => { ExVR.ExpLog().push_to_strackTrace(new ComponentTrace(trace)); };
                 logCB         = (message) => { parent.log_message(message, false, false); };
                 logWarningCB  = (warning) => { parent.log_warning(warning, true, false); };
@@ -74,37 +74,6 @@ namespace Ex {
                 return get_id_frame_from_time_ms_volumetric_video_resource(_handle, idCamera, timeMs);
             }
 
-            public int uncompress_frame(int idCamera, int idFrame) {
-                return uncompress_frame_volumetric_video_resource(_handle, idCamera, idFrame);
-            }
-
-            //public void copy_uncompressed_data(int idCamera, IntPtr vertices, IntPtr colors) {
-            //    copy_uncompressed_data_volumetric_video_resource(_handle, idCamera, vertices, colors);
-            //}
-            public void copy_uncompressed_data(int idCamera, Vector3[] vertices, Color[] colors) {
-
-                unsafe {
-                    fixed (Vector3* verticesP = vertices) {
-                        fixed(Color* colorsP = colors) {
-                            copy_uncompressed_data_volumetric_video_resource(_handle, idCamera, verticesP, colorsP);
-                        }
-                    }
-                }
-
-                //copy_uncompressed_data_volumetric_video_resource(_handle, idCamera, vertices, colors);
-            }
-
-            public int process_audio(int idCamera) {
-                return process_audio_volumetric_video_resource(_handle, idCamera);
-            }
-  
-            public void copy_audio_samples(int idCamera, float[] audio) {
-                unsafe {
-                    fixed (float* audioP = audio) {
-                        copy_audio_samples_volumetric_video_resource(_handle, idCamera, audioP);
-                    }
-                }
-            }
 
             public int valid_vertices_count(int idCamera, int idFrame) {
                 return get_valid_vertices_count_volumetric_video_resource(_handle, idCamera, idFrame);
@@ -151,17 +120,7 @@ namespace Ex {
             [DllImport("lnco-exvr-export", EntryPoint = "get_id_frame_from_time_ms_volumetric_video_resource", CallingConvention = CallingConvention.Cdecl)]
             static private extern int get_id_frame_from_time_ms_volumetric_video_resource(HandleRef volumetricVideoResource, int idCamera, float timeMs);
 
-            [DllImport("lnco-exvr-export", EntryPoint = "uncompress_frame_volumetric_video_resource", CallingConvention = CallingConvention.Cdecl)]
-            static private extern int uncompress_frame_volumetric_video_resource(HandleRef volumetricVideoResource, int idCamera, int idFrame);
 
-            [DllImport("lnco-exvr-export", EntryPoint = "copy_uncompressed_data_volumetric_video_resource", CallingConvention = CallingConvention.Cdecl)]
-            static unsafe private extern void copy_uncompressed_data_volumetric_video_resource(HandleRef volumetricVideoResource, int idCamera, Vector3 *vertices, Color *colors);
-
-            [DllImport("lnco-exvr-export", EntryPoint = "process_audio_volumetric_video_resource", CallingConvention = CallingConvention.Cdecl)]
-            static private extern int process_audio_volumetric_video_resource(HandleRef volumetricVideoResourc, int idCamera);
-
-            [DllImport("lnco-exvr-export", EntryPoint = "copy_audio_samples_volumetric_video_resource", CallingConvention = CallingConvention.Cdecl)]
-            static unsafe private extern void copy_audio_samples_volumetric_video_resource(HandleRef volumetricVideoResource, int idCamera, float *audioSamples);
 
             [DllImport("lnco-exvr-export", EntryPoint = "get_valid_vertices_count_volumetric_video_resource", CallingConvention = CallingConvention.Cdecl)]
             static private extern int get_valid_vertices_count_volumetric_video_resource(HandleRef volumetricVideoResource, int idCamera, int idFrame);
@@ -209,7 +168,7 @@ namespace Ex {
         public AudioClip audioClip = null;
     }
 
-    public class VolumetricVideoResource : ResourceFile {
+    public class VolumetricVideoResource : ExResourceFile {
 
         public DLL.VolumetricVideoResource video = null;
 

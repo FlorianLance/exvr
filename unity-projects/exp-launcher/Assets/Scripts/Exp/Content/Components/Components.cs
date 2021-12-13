@@ -153,6 +153,7 @@ namespace Ex
             // cloud
             ["Ex.CloudComponent"] = gen_info(Category.Cloud, Pritority.Medium, Reserved.Public),
             ["Ex.ScanerVideoComponent"] = gen_info(Category.Cloud, Pritority.Medium, Reserved.LNCO),
+            ["Ex.VolumetricVideoComponent"] = gen_info(Category.Resource, Pritority.Hight, Reserved.LNCO),
             // environment
             ["Ex.SkyComponent"] = gen_info(Category.Environment, Pritority.Hight, Reserved.Public),
             // environment
@@ -188,8 +189,7 @@ namespace Ex
             ["Ex.TextResourceComponent"] = gen_info(Category.Resource, Pritority.Hight, Reserved.Public),
             ["Ex.VideoResourceComponent"] = gen_info(Category.Resource, Pritority.Hight, Reserved.Public),
             ["Ex.AudioResourceComponent"] = gen_info(Category.Resource, Pritority.Hight, Reserved.Public),
-            ["Ex.DirectoryResourceComponent"] = gen_info(Category.Resource, Pritority.Hight, Reserved.Public),
-            ["Ex.VolumetricVideoResourceComponent"] = gen_info(Category.Resource, Pritority.Hight, Reserved.LNCO),
+            ["Ex.DirectoryResourceComponent"] = gen_info(Category.Resource, Pritority.Hight, Reserved.Public),            
             // scene
             ["Ex.AssetBundleComponent"] = gen_info(Category.Scene, Pritority.Hight, Reserved.Public),
             ["Ex.MultiABComponent"] = gen_info(Category.Scene, Pritority.Hight, Reserved.Public),

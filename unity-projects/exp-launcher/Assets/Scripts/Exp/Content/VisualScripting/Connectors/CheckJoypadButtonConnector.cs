@@ -35,7 +35,7 @@ namespace Ex{
 
             update_from_gui();
 
-            add_signals(4);
+            add_signals(3);
             add_slot(0, (arg) => { base_slot1(arg); });
             return true;
         }
@@ -49,17 +49,17 @@ namespace Ex{
             var state = (Input.JoypadButtonEvent)arg;
             if(state.code == codeToCompare) {
 
-                invoke_signal(3, state.triggeredExperimentTime);
+                var triggerExpTime = state.triggeredExperimentTime;
                 switch (state.state) {
                     case Input.Button.State.Down:
-                        invoke_signal(0);
-                        invoke_signal(2);
+                        invoke_signal(0, triggerExpTime);
+                        invoke_signal(2, triggerExpTime);
                         break;
                     case Input.Button.State.Up:
-                        invoke_signal(1);
+                        invoke_signal(1, triggerExpTime);
                         break;
                     case Input.Button.State.Pressed:
-                        invoke_signal(2);
+                        invoke_signal(2, triggerExpTime);
                         break;
                 }                
             }

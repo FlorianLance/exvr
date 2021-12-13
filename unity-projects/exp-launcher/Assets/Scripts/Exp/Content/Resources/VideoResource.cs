@@ -24,7 +24,7 @@
 
 namespace Ex {
 
-    public class VideoResource : ResourceFile{
+    public class VideoResource : ExResourceFile{
 
         public VideoResource(int key, string alias, string path) : base(key, alias, path) {
 

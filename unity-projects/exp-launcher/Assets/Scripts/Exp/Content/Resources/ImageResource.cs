@@ -73,7 +73,7 @@ namespace Ex{
         }
     }
 
-    public class ImageResource : ResourceFile{
+    public class ImageResource : ExResourceFile{
 
         public byte[] bytes = null;
         public Texture2D texture = null;

@@ -28,7 +28,7 @@ using System.IO;
 
 namespace Ex{
 
-    public class TextResource : ResourceFile{
+    public class TextResource : ExResourceFile{
 
         public string content;
 

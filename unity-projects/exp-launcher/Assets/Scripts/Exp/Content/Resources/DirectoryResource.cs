@@ -24,7 +24,7 @@
 
 namespace Ex {
 
-    public class DirectoryResource : Resource{
+    public class DirectoryResource : ExResource{
         public DirectoryResource(int key, string alias, string path) : base(key, alias, path) {
         }
     }

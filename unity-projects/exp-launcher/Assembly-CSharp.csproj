@@ -8,7 +8,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <RootNamespace></RootNamespace>
+    <RootNamespace>
+    </RootNamespace>
     <ProjectGuid>{BC9AE42B-1140-03D2-9518-F5626462E5BB}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -57,6 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\Builder.cs" />
+    <Compile Include="Assets\Scripts\Exp\Content\Components\LNCO\internal\VolumetricVideoComponentDLL.cs" />
     <Compile Include="Assets\Scripts\ExVR.cs" />
     <Compile Include="Assets\Scripts\Exp\Content\Components\Closed\FPPAvatarCameraComponent.cs" />
     <Compile Include="Assets\Scripts\Exp\Content\Components\Closed\HumanoidAvatarComponent.cs" />
@@ -73,7 +75,7 @@
     <Compile Include="Assets\Scripts\Exp\Content\Components\LNCO\ScanerVideoComponent.cs" />
     <Compile Include="Assets\Scripts\Exp\Content\Components\LNCO\SceneScanerComponent.cs" />
     <Compile Include="Assets\Scripts\Exp\Content\Components\LNCO\SoncebozSGComponent.cs" />
-    <Compile Include="Assets\Scripts\Exp\Content\Components\LNCO\VolumetricVideoResourceComponent.cs" />
+    <Compile Include="Assets\Scripts\Exp\Content\Components\LNCO\VolumetricVideoComponent.cs" />
     <Compile Include="Assets\Scripts\Exp\Content\Components\LNCO\internal\KinectManagerComponentDLL.cs" />
     <Compile Include="Assets\Scripts\Exp\Content\Components\Public\AssetBundleComponent.cs" />
     <Compile Include="Assets\Scripts\Exp\Content\Components\Public\AttachObjectToHandComponent.cs" />
@@ -169,9 +171,9 @@
     <Compile Include="Assets\Scripts\Exp\Content\Resources\CSharpScriptResource.cs" />
     <Compile Include="Assets\Scripts\Exp\Content\Resources\CloudResource.cs" />
     <Compile Include="Assets\Scripts\Exp\Content\Resources\DirectoryResource.cs" />
+    <Compile Include="Assets\Scripts\Exp\Content\Resources\ExResource.cs" />
     <Compile Include="Assets\Scripts\Exp\Content\Resources\ImageResource.cs" />
     <Compile Include="Assets\Scripts\Exp\Content\Resources\PlotResource.cs" />
-    <Compile Include="Assets\Scripts\Exp\Content\Resources\Resource.cs" />
     <Compile Include="Assets\Scripts\Exp\Content\Resources\ScanerVideoResource.cs" />
     <Compile Include="Assets\Scripts\Exp\Content\Resources\TextResource.cs" />
     <Compile Include="Assets\Scripts\Exp\Content\Resources\VideoResource.cs" />

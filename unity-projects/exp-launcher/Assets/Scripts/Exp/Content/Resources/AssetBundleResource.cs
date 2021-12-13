@@ -26,7 +26,7 @@
 using UnityEngine;
 
 namespace Ex{
-    public class AssetBundleResource : ResourceFile{
+    public class AssetBundleResource : ExResourceFile{
 
         public AssetBundle bundle = null;
 

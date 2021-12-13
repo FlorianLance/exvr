@@ -32,7 +32,7 @@ using UnityEngine;
 namespace Ex{
 
 
-    public class PlotResource : ResourceFile{
+    public class PlotResource : ExResourceFile{
 
         public List<AnimationCurve> curves = null;
 

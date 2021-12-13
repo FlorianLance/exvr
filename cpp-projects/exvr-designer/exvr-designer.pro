@@ -157,7 +157,7 @@ HEADERS += \
     widgets/components/config_parameters/csharp_pw.hpp \
     widgets/components/config_parameters/fpp_camera_pw.hpp \
     widgets/components/config_parameters/serial_port_reader_pw.hpp \
-    widgets/components/config_parameters/volumetric_video_resource_pw.hpp \
+    widgets/components/config_parameters/volumetric_video_pw.hpp \
     widgets/connections/data_models/connectors/resources_ndm.hpp \
     widgets/designer_window.hpp\
     ## elements
@@ -364,7 +364,7 @@ SOURCES += \
     widgets/components/config_parameters/parallel_port_writer_pw.cpp \
     widgets/components/config_parameters/serial_port_reader_pw.cpp \
     widgets/components/config_parameters/serial_port_writer_pw.cpp \
-    widgets/components/config_parameters/volumetric_video_resource_pw.cpp \
+    widgets/components/config_parameters/volumetric_video_pw.cpp \
     widgets/connections/data_models/connectors/resources_ndm.cpp \
     widgets/designer_window.cpp \
     ## components

@@ -24,7 +24,7 @@
 
 namespace Ex {
 
-    public class CloudResource : ResourceFile
+    public class CloudResource : ExResourceFile
     {
         public CloudResource(int key, string alias, string path) : base(key, alias, path) {
         }

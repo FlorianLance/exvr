@@ -44,6 +44,7 @@ namespace Ex{
             return true;
         }
 
+
         protected override void update_from_gui() {
             codeToCompare = (KeyCode)Enum.Parse(typeof(KeyCode), m_config.get<string>(valueStr));
         }
@@ -52,17 +53,17 @@ namespace Ex{
             
             var state = (Input.KeyboardButtonEvent)arg;
             if (state.code == codeToCompare) {
-                var triggerEexpTime = state.triggeredExperimentTime;
+                var triggerExpTime = state.triggeredExperimentTime;
                 switch (state.state) {
                     case Input.Button.State.Down:
-                        invoke_signal(0, triggerEexpTime);
-                        invoke_signal(2, triggerEexpTime);
+                        invoke_signal(0, triggerExpTime);
+                        invoke_signal(2, triggerExpTime);
                         break;
                     case Input.Button.State.Up:
-                        invoke_signal(1, triggerEexpTime);
+                        invoke_signal(1, triggerExpTime);
                         break;
                     case Input.Button.State.Pressed:
-                        invoke_signal(2, triggerEexpTime);
+                        invoke_signal(2, triggerExpTime);
                         break;
                 }                
             }

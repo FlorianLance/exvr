@@ -30,7 +30,7 @@ using UnityEngine;
 
 namespace Ex{
 
-    public class AudioResource : ResourceFile{
+    public class AudioResource : ExResourceFile{
 
         public AudioType type;
         public AudioClip clip = null;
