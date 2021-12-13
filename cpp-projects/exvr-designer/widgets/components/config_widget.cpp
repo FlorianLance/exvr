@@ -232,7 +232,7 @@ ConfigParametersW *ConfigW::generate_parameters(Component::Type type, bool initC
         return gen_params_w<PlotResourceInitConfigParametersW,PlotResourceConfigParametersW>(initConfig);
     case CT::Text_resource:
         return gen_params_w<TextResourceInitConfigParametersW,TextResourceConfigParametersW>(initConfig);
-    case CT::Volumetric_video_resource:
+    case CT::Volumetric_video:
         return gen_params_w<VolumetricVideoInitConfigParametersW,VolumetricVideoConfigParametersW>(initConfig);
     // ############################# Scene
     case CT::Falling_spheres:

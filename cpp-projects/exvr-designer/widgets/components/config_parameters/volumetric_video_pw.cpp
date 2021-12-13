@@ -22,7 +22,7 @@
 ** SOFTWARE.                                                                      **
 ************************************************************************************/
 
-#include "volumetric_video_resource_pw.hpp"
+#include "volumetric_video_pw.hpp"
 
 // qt-utility
 #include "ex_widgets/ex_line_edit_w.hpp"

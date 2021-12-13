@@ -143,129 +143,129 @@ namespace Ex {
         public Color32 col;
     }
 
-    public class VolumetricVideoCameraData {
-        public VolumetricVideoCameraData(int maxNbVertices, int sizeAudioBuffer) {
-            this.maxNbVertices   = maxNbVertices;
-            this.sizeAudioBuffer = sizeAudioBuffer;
-            vertices = new Vector3[maxNbVertices];
-            colors = new Color[maxNbVertices];
-            audio = new float[sizeAudioBuffer];
-        }
+    //public class VolumetricVideoCameraData {
+    //    public VolumetricVideoCameraData(int maxNbVertices, int sizeAudioBuffer) {
+    //        this.maxNbVertices   = maxNbVertices;
+    //        this.sizeAudioBuffer = sizeAudioBuffer;
+    //        vertices = new Vector3[maxNbVertices];
+    //        colors = new Color[maxNbVertices];
+    //        audio = new float[sizeAudioBuffer];
+    //    }
 
-        public int lastFrameId = -1;
+    //    public int lastFrameId = -1;
 
-        public int maxNbVertices=0;
-        public int sizeAudioBuffer = 0;
-        public int nbFrames = 0;
-        public Matrix4x4 model = Matrix4x4.identity;
-        public float duration = 0f;
+    //    public int maxNbVertices=0;
+    //    public int sizeAudioBuffer = 0;
+    //    public int nbFrames = 0;
+    //    public Matrix4x4 model = Matrix4x4.identity;
+    //    public float duration = 0f;
 
-        public Vector3[] vertices = null;
-        public Color[] colors = null;
-        public float[] audio = null;
+    //    public Vector3[] vertices = null;
+    //    public Color[] colors = null;
+    //    public float[] audio = null;
 
 
-        public AudioClip audioClip = null;
-    }
+    //    public AudioClip audioClip = null;
+    //}
 
     public class VolumetricVideoResource : ExResourceFile {
 
         public DLL.VolumetricVideoResource video = null;
 
-        public int nbCameras = 0;
-        public float duration = 0f;
-        public List<VolumetricVideoCameraData> cameraData = null;
-        public List<int> commonIndices = null;
+        //public int nbCameras = 0;
+        //public float duration = 0f;
+        //public List<VolumetricVideoCameraData> cameraData = null;
+        //public List<int> commonIndices = null;
 
         public VolumetricVideoResource(int key, string alias, string path) : base(key, alias, path) {}
   
-        public override bool read_data() {
-            video = new DLL.VolumetricVideoResource(this);
-            if (!video.load(path)) {
-                log_error(string.Format("Cannot load volumetric video from path {0}.", path));
-                return false;
-            }
-            return true;
-        }
+        //public override bool read_data() {
+        //    video = new DLL.VolumetricVideoResource(this);
+        //    if (!video.load(path)) {
+        //        log_error(string.Format("Cannot load volumetric video from path {0}.", path));
+        //        return false;
+        //    }
+        //    return true;
+        //}
 
         public override bool initialize() {
 
-            // retrieve infos
-            nbCameras = video.nb_cameras();
-            List<int> nbFramesPerCamera = new List<int>(nbCameras);
-            List<Matrix4x4> modelPerCamera = new List<Matrix4x4>(nbCameras);
-            List<float> durationPerCamera = new List<float>(nbCameras);
+            //// retrieve infos
+            //nbCameras = video.nb_cameras();
+            //List<int> nbFramesPerCamera = new List<int>(nbCameras);
+            //List<Matrix4x4> modelPerCamera = new List<Matrix4x4>(nbCameras);
+            //List<float> durationPerCamera = new List<float>(nbCameras);
 
-            for (int ii = 0; ii < nbCameras; ++ii) {
-                nbFramesPerCamera.Add(video.nb_frames(ii));
-                modelPerCamera.Add(Matrix4x4.identity);
-                //modelPerCamera.Add(video.model(ii));
-                Debug.Log("ii  " + ii + " " + modelPerCamera[ii]);
-                durationPerCamera.Add(video.duration_ms(ii));
-                if (durationPerCamera[ii] > duration) {
-                    duration = durationPerCamera[ii];
-                }
-            }
+            //for (int ii = 0; ii < nbCameras; ++ii) {
+            //    nbFramesPerCamera.Add(video.nb_frames(ii));
+            //    modelPerCamera.Add(Matrix4x4.identity);
+            //    //modelPerCamera.Add(video.model(ii));
+            //    Debug.Log("ii  " + ii + " " + modelPerCamera[ii]);
+            //    durationPerCamera.Add(video.duration_ms(ii));
+            //    if (durationPerCamera[ii] > duration) {
+            //        duration = durationPerCamera[ii];
+            //    }
+            //}
 
-            // check number of frames
-            for (int ii = 1; ii < nbFramesPerCamera.Count; ++ii) {
-                if (nbFramesPerCamera[0] != nbFramesPerCamera[ii]) {
-                    log_error(string.Format("Invalid number of frames from camera {1}, {2} instead of {3}",
-                        ii, nbFramesPerCamera[ii], nbFramesPerCamera[0]));
-                    return false;
-                }
-            }
+            //// check number of frames
+            //for (int ii = 1; ii < nbFramesPerCamera.Count; ++ii) {
+            //    if (nbFramesPerCamera[0] != nbFramesPerCamera[ii]) {
+            //        log_error(string.Format("Invalid number of frames from camera {1}, {2} instead of {3}",
+            //            ii, nbFramesPerCamera[ii], nbFramesPerCamera[0]));
+            //        return false;
+            //    }
+            //}
 
-            var nbFrames = nbFramesPerCamera[0];
-            cameraData = new List<VolumetricVideoCameraData>(nbCameras);
-            int maxNbVerticesAllCameras = 0;
-            for (int ii = 0; ii < nbCameras; ++ii) {
+            //var nbFrames = nbFramesPerCamera[0];
+            //cameraData = new List<VolumetricVideoCameraData>(nbCameras);
+            //int maxNbVerticesAllCameras = 0;
+            //for (int ii = 0; ii < nbCameras; ++ii) {
 
-                // count valid vertices 
-                int maxNb = 0;
-                for (int jj = 0; jj < nbFrames; ++jj) {
-                    var currentNb = video.valid_vertices_count(ii, jj);
-                    if (maxNb < currentNb) {
-                        maxNb = currentNb;
-                    }
-                }
-                if(maxNbVerticesAllCameras < maxNb) {
-                    maxNbVerticesAllCameras = maxNb;
-                }
+            //    // count valid vertices 
+            //    int maxNb = 0;
+            //    for (int jj = 0; jj < nbFrames; ++jj) {
+            //        var currentNb = video.valid_vertices_count(ii, jj);
+            //        if (maxNb < currentNb) {
+            //            maxNb = currentNb;
+            //        }
+            //    }
+            //    if(maxNbVerticesAllCameras < maxNb) {
+            //        maxNbVerticesAllCameras = maxNb;
+            //    }
 
-                // generate camera data
-                int sizeSamples = video.process_audio(ii);
-                cameraData.Add(new VolumetricVideoCameraData(maxNb, sizeSamples));
-                cameraData[ii].model = modelPerCamera[ii];
-                cameraData[ii].nbFrames = nbFramesPerCamera[ii];
-                cameraData[ii].duration = durationPerCamera[ii];
+            //    // generate camera data
+            //    int sizeSamples = video.process_audio(ii);
+            //    cameraData.Add(new VolumetricVideoCameraData(maxNb, sizeSamples));
+            //    cameraData[ii].model = modelPerCamera[ii];
+            //    cameraData[ii].nbFrames = nbFramesPerCamera[ii];
+            //    cameraData[ii].duration = durationPerCamera[ii];
 
-                video.copy_audio_samples(ii, cameraData[ii].audio);
-                cameraData[ii].audioClip = AudioClip.Create("camera_" + ii, sizeSamples/7, 7, 48000, false);
-                cameraData[ii].audioClip.SetData(cameraData[ii].audio, 0);
-            }
+            //    video.copy_audio_samples(ii, cameraData[ii].audio);
+            //    cameraData[ii].audioClip = AudioClip.Create("camera_" + ii, sizeSamples/7, 7, 48000, false);
+            //    cameraData[ii].audioClip.SetData(cameraData[ii].audio, 0);
+            //}
 
-            // generate indices
-            commonIndices = new List<int>(maxNbVerticesAllCameras);
-            for(int ii = 0; ii < maxNbVerticesAllCameras; ++ii) {
-                commonIndices.Add(ii);
-            }
+            //// generate indices
+            //commonIndices = new List<int>(maxNbVerticesAllCameras);
+            //for(int ii = 0; ii < maxNbVerticesAllCameras; ++ii) {
+            //    commonIndices.Add(ii);
+            //}
 
             return true;
         }
 
         public int update_time(float timeMs) {            
 
-            int currentFrameId = video.id_frame_from_time(0, timeMs);
-            if(currentFrameId != cameraData[0].lastFrameId) {
-                int nbVertices = video.uncompress_frame(0, currentFrameId);
-                video.copy_uncompressed_data(0,
-                    cameraData[0].vertices,
-                    cameraData[0].colors
-                );
-                cameraData[0].lastFrameId = currentFrameId;
-                return nbVertices;
-            }
+            //int currentFrameId = video.id_frame_from_time(0, timeMs);
+            //if(currentFrameId != cameraData[0].lastFrameId) {
+            //    int nbVertices = video.uncompress_frame(0, currentFrameId);
+            //    video.copy_uncompressed_data(0,
+            //        cameraData[0].vertices,
+            //        cameraData[0].colors
+            //    );
+            //    cameraData[0].lastFrameId = currentFrameId;
+            //    return nbVertices;
+            //}
             return -1;
         }
 

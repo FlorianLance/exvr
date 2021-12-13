@@ -250,7 +250,7 @@ struct Component {
         {T::Video_file_camera_viewer, C::Video,       TO::B,     CO::B,   false,   R::OpenSource,   S::Exp, "Video_file_camera_viewer"sv, "Video file camera viewer"sv, "VideoFileCameraViewer"sv,":/icons/Video_file"sv},
         {T::Video_saver,              C::Video,       TO::B,     CO::B,   false,   R::OpenSource,   S::Exp, "Video_saver"sv, "Video saver"sv, "VideoSaver"sv,":/icons/Video_record"sv},
         {T::Webcam,                   C::Video,       TO::U,     CO::I,   false,   R::OpenSource,   S::Sta, "Webcam"sv, "Webcam"sv, "Webcam"sv,":/icons/Webcam"sv},
-        {T::Volumetric_video,         C::Video,       TO::U,     CO::B,   false,   R::LNCO,         S::Exp, "Volumetric_video"sv,  "Volumetric videoe"sv, "VolumetricVideo"sv, ":/icons/Video_cloud"sv},
+        {T::Volumetric_video,         C::Video,       TO::U,     CO::B,   false,   R::LNCO,         S::Exp, "Volumetric_video"sv,  "Volumetric video"sv, "VolumetricVideo"sv, ":/icons/Video_cloud"sv},
         // Viewer
         {T::Blend_fade_viewer,        C::Viewer,      TO::B,     CO::C,   false,   R::OpenSource,   S::Sta, "Blend_fade_viewer"sv, "Blend fade viewer"sv, "BlendFadeViewer"sv, ":/icons/Blend"sv},
         {T::Fixation_cross_viewer,    C::Viewer,      TO::B,     CO::C,   false,   R::OpenSource,   S::Sta, "Fixation_cross_viewer"sv, "Fixation cross viewer"sv, "FixationCrossViewer"sv, ":/icons/Fixation_cross"sv},
