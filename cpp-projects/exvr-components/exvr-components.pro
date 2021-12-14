@@ -85,13 +85,11 @@ LIBS +=  \
 
 HEADERS += \
     # ex_components
-    ex_components/duo_camera_component.hpp \
     ex_components/python_script_component.hpp \
     ex_components/video_saver_component.hpp \
 
 SOURCES += \
     # ex_components
-    ex_components/duo_camera_component.cpp \
     ex_components/python_script_component.cpp \
     ex_components/video_saver_component.cpp \
     # main

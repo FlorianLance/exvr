@@ -24,11 +24,12 @@
 
 #pragma once
 
+// base
+#include "utility/export.hpp"
+
 // components
 #include "ex_components/python_script_component.hpp"
 
-// local
-#include "export_utility.hpp"
 
 extern "C"{
 

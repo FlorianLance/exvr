@@ -31,12 +31,15 @@
 
 #include <iostream>
 #include <vector>
+#include <map>
+#include <any>
 
 //#include "socket_communication_export.hpp"
 
 //#include "scaner_video_file_export.hpp"
 
 int main(int argc, char *argv[]){
+
 
 
 //    auto scaner = create_scaner_video_file();

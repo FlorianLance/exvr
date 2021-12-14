@@ -1,6 +1,6 @@
-
+﻿
 /***********************************************************************************
-** exvr-export                                                                    **
+** exvr-exp                                                                       **
 ** MIT License                                                                    **
 ** Copyright (c) [2018] [Florian Lance][EPFL-LNCO]                                **
 ** Permission is hereby granted, free of charge, to any person obtaining a copy   **
@@ -22,17 +22,20 @@
 ** SOFTWARE.                                                                      **
 ************************************************************************************/
 
-#pragma once
+// system
+using System.Runtime.InteropServices;
 
-// base
-#include "utility/export.hpp"
+namespace Ex {
 
-// components
-#include "ex_components/video_saver_component.hpp"
+    public class CppResource : ExResourceFile {
 
-extern "C"{
+        protected DLL.ExResourceDll cppDll = null;
 
-    DECL_EXPORT tool::ex::VideoSaverComponent* create_video_saver_component();
-    DECL_EXPORT void delete_video_saver_component(tool::ex::VideoSaverComponent *videoGeneratorComponent);
-    DECL_EXPORT int add_frame_video_saver_component(tool::ex::VideoSaverComponent *videoGeneratorComponent, int width, int height, char *data, const char *format, int dataType);
+        public CppResource(int key, string alias, string path) : base(key, alias, path) {
+        }
+
+        public HandleRef get_dll_handle() {
+            return cppDll.getHandle();
+        }
+    }
 }

@@ -24,11 +24,9 @@
 
 #pragma once
 
-// components
+// local
 #include "exvr/ex_component.hpp"
-
-// export
-#include "export_utility.hpp"
+#include "utility/export.hpp"
 
 extern "C"{
 
@@ -87,7 +85,7 @@ extern "C"{
 
     DECL_EXPORT void init_callbacks_ex_component(
         tool::ex::ExComponent*c,
-        StrackTraceCB strackTraceCB,
+        StackTraceCB stackTraceCB,
         LogCB logCB,
         LogWarningCB logWarningCB,
         LogErrorCB logErrorCB,

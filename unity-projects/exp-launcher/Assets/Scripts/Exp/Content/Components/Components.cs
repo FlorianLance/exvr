@@ -152,8 +152,7 @@ namespace Ex
             ["Ex.TPPAvatarCameraComponent"] = gen_info(Category.Camera, Pritority.Low, Reserved.Closed),
             // cloud
             ["Ex.CloudComponent"] = gen_info(Category.Cloud, Pritority.Medium, Reserved.Public),
-            ["Ex.ScanerVideoComponent"] = gen_info(Category.Cloud, Pritority.Medium, Reserved.LNCO),
-            ["Ex.VolumetricVideoComponent"] = gen_info(Category.Resource, Pritority.Hight, Reserved.LNCO),
+            ["Ex.ScanerVideoComponent"] = gen_info(Category.Cloud, Pritority.Medium, Reserved.LNCO),            
             // environment
             ["Ex.SkyComponent"] = gen_info(Category.Environment, Pritority.Hight, Reserved.Public),
             // environment
@@ -224,6 +223,7 @@ namespace Ex
             ["Ex.VideoFileCameraViewerComponent"] = gen_info(Category.Video, Pritority.Medium, Reserved.Public),
             ["Ex.WebcamComponent"] = gen_info(Category.Video, Pritority.Medium, Reserved.Public),
             ["Ex.VideoSaverComponent"] = gen_info(Category.Video, Pritority.Medium, Reserved.Public),
+            ["Ex.VolumetricVideoComponent"] = gen_info(Category.Video, Pritority.Hight, Reserved.LNCO),
             // viewer
             ["Ex.FixationCrossViewerComponent"] = gen_info(Category.Viewer, Pritority.Low, Reserved.Public),
             ["Ex.ImageViewerComponent"] = gen_info(Category.Viewer, Pritority.Low, Reserved.Public),

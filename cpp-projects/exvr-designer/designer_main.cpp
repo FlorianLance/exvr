@@ -82,7 +82,12 @@ using namespace tool::ex;
 //    return (*l) == (*r);
 //}
 
+
+
+
 int main(int argc, char *argv[]){
+
+
 
     // build parameters
     const QString numVersion = "1.0a16";

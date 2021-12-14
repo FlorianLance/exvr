@@ -58,8 +58,8 @@ void action_from_gui_ex_component(ExComponent *c, int initConfig, const char *ac
 
 void call_slot_ex_component(ExComponent *c, int index){c->slot(index);}
 
-ExComponent::ParametersContainer to_container(int containerId){
-    return static_cast<ExComponent::ParametersContainer>(containerId);
+ParametersContainer to_container(int containerId){
+    return static_cast<ParametersContainer>(containerId);
 }
 
 void update_parameter_bool_ex_component(ExComponent *c, int containerId, const char* paramName, int value){
@@ -137,7 +137,7 @@ int contains_ex_component(ExComponent *c, int containerId, const char *paramName
 
 void init_callbacks_ex_component(
     tool::ex::ExComponent*c,
-    StrackTraceCB strackTraceCB,
+    StackTraceCB stackTraceCB,
     LogCB logCB,
     LogWarningCB logWarningCB,
     LogErrorCB logErrorCB,
@@ -157,7 +157,7 @@ void init_callbacks_ex_component(
     SignalDoubleCB signalDoubleCB,
     SignalStringCB signalStringCB){
 
-    c->strackTraceCB            = std::make_unique<StrackTraceCB>(strackTraceCB);
+    c->stackTraceCB             = std::make_unique<StackTraceCB>(stackTraceCB);
     c->logCB                    = std::make_unique<LogCB>(logCB);
     c->logWarningCB             = std::make_unique<LogWarningCB>(logWarningCB);
     c->logErrorCB               = std::make_unique<LogErrorCB>(logErrorCB);

@@ -65,18 +65,18 @@ void VolumetricVideoInitConfigParametersW::init_and_register_widgets(){
 
 void VolumetricVideoInitConfigParametersW::update_with_info(QStringView id, QStringView value){
     if(id == QSL("infos")){
-        m_p->infoText.w->setText("");
+        m_p->infoText.w->setText(value.toString());
     }
 }
 
 struct VolumetricVideoConfigParametersW::Impl{
     TransformSubPart transfo{"transform"};
-    ExCheckBoxW loop;
-    ExFloatSpinBoxW startTime;
-    ExFloatSpinBoxW endTime;
-    ExCheckBoxW enableAudio;
-    ExSpinBoxW audioCameraId;
-    ExSpinBoxW volume;
+    ExCheckBoxW loop{"loop"};
+    ExFloatSpinBoxW startTime{"start_time"};
+    ExFloatSpinBoxW endTime{"end_time"};
+    ExCheckBoxW enableAudio{"enable_audio"};
+    ExSpinBoxW audioCameraId{"audio_id"};
+    ExFloatSpinBoxW volume{"volume"};
 };
 
 VolumetricVideoConfigParametersW::VolumetricVideoConfigParametersW() :  ConfigParametersW(), m_p(std::make_unique<Impl>()){
@@ -95,6 +95,8 @@ void VolumetricVideoConfigParametersW::init_and_register_widgets(){
     add_input_ui(m_p->startTime.init_widget(MinV<qreal>{0.0}, V<qreal>{0.0}, MaxV<qreal>{1000.}, StepV<qreal>{0.1}, 2));
     add_input_ui(m_p->endTime.init_widget(MinV<qreal>{0.0}, V<qreal>{10.0}, MaxV<qreal>{1000.}, StepV<qreal>{0.1}, 2));
     add_input_ui(m_p->enableAudio.init_widget("Enable audio", true));
-    add_input_ui(m_p->volume.init_widget(MinV<int>{0}, V<int>{100}, MaxV<int>{100}, StepV<int>{1}));
+    add_input_ui(m_p->loop.init_widget("Loop video", true));
+    add_input_ui(m_p->volume.init_widget(MinV<qreal>{0}, V<qreal>{1.f}, MaxV<qreal>{1.f}, StepV<qreal>{0.01}, 2));
+    add_input_ui(m_p->audioCameraId.init_widget(MinV<int>{0}, V<int>{0}, MaxV<int>{100}, StepV<int>{1}));
 }
 
