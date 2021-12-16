@@ -82,11 +82,56 @@ using namespace tool::ex;
 //    return (*l) == (*r);
 //}
 
-
+//#include "geometry/point3.hpp"
+//#include "geometry/point4.hpp"
 
 
 int main(int argc, char *argv[]){
 
+
+//    auto max = std::numeric_limits<int16_t>::max(); // 32767
+//    auto min = std::numeric_limits<int16_t>::min(); // -32768
+//    // -8192 / +8191
+//    // -4096 / +4095
+//    // -16384 / 16385
+
+//    std::cout << min << " " << max << "\n";
+
+//    // convert in mm
+//    // * 1000.f
+
+//    // check if depth < 8192
+//    // substract 4096
+
+//    // [-4096 / +4095]
+//    //
+
+//    tool::geo::Pt3<std::int16_t> p{4095, -4095, 7000};
+//    tool::geo::Pt4<std::uint8_t> c{255, 0, 122, 254};
+
+//    T1 t;
+//    t.pack(p, c);
+
+
+//    auto p1 = t.unpack_pos_f();
+//    auto p2 = t.unpack_pos_i16();
+
+//    auto c1 = t.unpack_col_3ui8();
+//    auto c2 = t.unpack_col_4ui8();
+//    auto c3 = t.unpack_col_3f();
+//    auto c4 = t.unpack_col_4f();
+
+//    std::cout << p1 << " " << p2 << "\n";
+//    std::cout << c3 << " " << c4 << "\n";
+
+////    tool::geo::Pt3f res;
+
+////    std::cout << p << " " << t.x << " " << t.y << " " << t.z << "\n" <<
+////        (int)t.r << " " << (int)t.g << " " << (int)t.b << "\n" <<
+////        res <<  "\n";
+
+
+//    return 0;
 
 
     // build parameters
