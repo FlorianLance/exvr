@@ -129,6 +129,10 @@ namespace Ex {
             }
         }
 
+        public int nb_valid_vertices(int idCamera, int idFrame) {
+            return ((DLL.VolumetricVideoResourceDLL)cppDll).valid_vertices_count(idCamera, idFrame);
+        }
+
         public int id_frame_from_time(int idCamera, float timeMs) {
             return ((DLL.VolumetricVideoResourceDLL)cppDll).id_frame_from_time(idCamera, timeMs);
         }
