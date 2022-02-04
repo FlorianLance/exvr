@@ -115,7 +115,11 @@ namespace Ex {
             CameraUtility.rotate_camera_rig_around(eye_position(), Vector3.up, value);
         }
         public void rotate_camera_around_y_towards(Vector3 target) {
-            rotate_camera_around_y(Vector3.SignedAngle(eye_direction(), target - CameraUtility.eye_camera_position(), Vector3.up));
+            var cd = eye_direction();
+            var cp = (target - CameraUtility.eye_camera_position()).normalized;
+            cp.y = cd.y;
+            cp.Normalize();
+            rotate_camera_around_y(Vector3.SignedAngle(cd, cp, Vector3.up));
         }
 
         // calibration
@@ -152,7 +156,11 @@ namespace Ex {
         }
 
         public void rotate_calibration_around_y_towards(Vector3 target) {
-            rotate_calibration_around_y(Vector3.SignedAngle(calibration_direction(), target - calibration_position(), Vector3.up));
+            var cd = CameraUtility.calibration_forward();
+            var cp = (target - CameraUtility.calibration_position()).normalized;
+            cp.y = cd.y;
+            cp.Normalize();
+            rotate_calibration_around_y(Vector3.SignedAngle(cd, cp, Vector3.up));
         }
 
 

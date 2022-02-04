@@ -22,6 +22,8 @@
 ** SOFTWARE.                                                                      **
 ************************************************************************************/
 
+using UnityEngine;
+
 #if UNITY_EDITOR
 
 // unity
@@ -74,6 +76,14 @@ namespace Ex{
         static void quit() {
             ExVR.Network().send_command_from_exp_launcher(NetworkManager.Command.Quit);
             
+        }
+
+        [MenuItem("Experiment/Look calibration at 0")]
+        static void look_calibration_at_0() {
+            var target = new Vector3(0,0,0);
+            var cd = CameraUtility.calibration_forward();
+            var cp = (target - CameraUtility.calibration_position()).normalized;
+            CameraUtility.rotate_camera_rig_around(CameraUtility.calibration_position(), Vector3.up, Vector3.SignedAngle(cd,cp, Vector3.up));
         }
     }
 }
