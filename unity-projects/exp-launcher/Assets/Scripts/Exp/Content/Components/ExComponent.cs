@@ -292,7 +292,7 @@ namespace Ex {
         }
 
         // setup component, parent, layer, configurations...
-        public void setup_component_object(XML.Component xmlComponent) {
+        public bool setup_component_object(XML.Component xmlComponent) {
 
             // set members
             gameObject.name = xmlComponent.Name;
@@ -302,8 +302,27 @@ namespace Ex {
 
             typeStr = string.Format("Ex.{0}Component", xmlComponent.Type);
             if (Components.Names2Info.ContainsKey(typeStr)) {
-                category = Components.Names2Info[typeStr].category;
-                priority = Components.Names2Info[typeStr].priority;
+                var infos = Components.Names2Info[typeStr];
+
+                bool valid = false;
+                if (infos.reserved == Reserved.Public) {
+                    valid = true;
+                }else if (infos.reserved == Reserved.Closed) {
+#if CLOSED_COMPONENTS
+                    valid = true;
+#endif
+                }else if (infos.reserved == Reserved.LNCO) {
+#if LNCO_COMPONENTS
+                    valid = true;
+#endif
+                }
+                if (!valid) {
+                    log_error("Component is restricted and not available for this ExVR build.");
+                    return false;
+                }
+                
+                category = infos.category;
+                priority = infos.priority;
             } else {
                 category = Category.Scene;
                 log_error("Component doesn't belong to a category.");
@@ -387,6 +406,8 @@ namespace Ex {
             
             // init events
             m_connections = new Events.Connections(name);
+
+            return true;
         }
 
 

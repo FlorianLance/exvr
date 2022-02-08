@@ -261,8 +261,11 @@ namespace Ex
                 }
 
                 var component = (ExComponent)GO.generate_empty_object(xmlComponent.Name, null, true).AddComponent(typeComponent);
-                component.setup_component_object(xmlComponent);
+                if (!component.setup_component_object(xmlComponent)) {
+                    return false;
+                }
                 components.Add(component);
+                
             }
 
             // sort components by priority

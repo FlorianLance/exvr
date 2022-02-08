@@ -1,28 +1,80 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
- namespace Ex.CSharpFunctions { public class Choose__cue { 
-
-static Routine wordsRoutine = ExVR.Routines().get("Words rand");
-static List<string> conditions = ExVR.Instance().get_routine_conditions_names_order(wordsRoutine);
-static string content = ExVR.Resources().get_text_file_data("words").content;
-static string[] words = content.Split(new string[] {
-	System.Environment.NewLine }, StringSplitOptions.None
-);
-
-public class standard { 
+ namespace Ex.CSharpFunctions { public class Sound_tuner { 
+public class increase_5s { 
 
  public static object function(object input) {
 object output = null;
+	float timeMs = Converter.to_float(input);//(float)((double)input);
 
-int id = Converter.to_int(conditions[(int)input]);
-output = words[id];
+	float duration = 5000f;
+	float maxVolume = 0.5f;
+	if(timeMs < duration){
+		output = maxVolume * timeMs / duration;
+	}else{
+		output = maxVolume;
+	} 
+return output;
+} 
+}public class increase_3s { 
 
+ public static object function(object input) {
+object output = null;
+	float timeMs = Converter.to_float(input);//(float)((double)input);
 
-// 40 words
-// 3x4 * 40
+	float duration = 3000f;
+	float maxVolume = 0.5f;
+	if(timeMs < duration){
+		output = maxVolume * timeMs / duration;
+	}else{
+		output = maxVolume;
+	} 
+return output;
+} 
+}public class decrease_8s { 
 
- 
+ public static object function(object input) {
+object output = null;
+	float timeMs = Converter.to_float(input);
+
+	float duration = 8000f;
+	float maxVolume = 0.5f;
+	if(timeMs < duration){
+		output = maxVolume - maxVolume * timeMs / duration;
+	}else{
+		output = 0f;
+	} 
+return output;
+} 
+}public class decrease_5s { 
+
+ public static object function(object input) {
+object output = null;
+	float timeMs = Converter.to_float(input);
+
+	float duration = 5000f;
+	float maxVolume = 0.5f;
+	if(timeMs < duration){
+		output = maxVolume - maxVolume * timeMs / duration;
+	}else{
+		output = 0f;
+	} 
+return output;
+} 
+}public class decrease_3s { 
+
+ public static object function(object input) {
+object output = null;
+	float timeMs = Converter.to_float(input);
+
+	float duration = 3000f;
+	float maxVolume = 0.5f;
+	if(timeMs < duration){
+		output = maxVolume - maxVolume * timeMs / duration;
+	}else{
+		output = 0f;
+	} 
 return output;
 } 
 }
