@@ -22,28 +22,24 @@ var i = (IdAny)input;
 
 if(i.id == 0){ // word
 	logger.update_column_value(0, Converter.to_string(i.value));
-}else if(i.id == 1){ // reaction time bip
-	logger.update_column_value(1, Converter.to_string(i.value));
-}else if(i.id == 2){ // questions
+}else if(i.id == 1){ // questions
 	var cn = logger.currentCondition.name;
 	if(cn.Contains("q1")){
-		logger.update_column_value(2, Converter.to_string(i.value));
+		logger.update_column_value(1, Converter.to_string(i.value));
 	}else if(cn.Contains("q2")){
-		logger.update_column_value(3, Converter.to_string(i.value));
+		logger.update_column_value(2, Converter.to_string(i.value));
 	}else if(cn.Contains("q3")){
-		logger.update_column_value(4, Converter.to_string(i.value));
+		logger.update_column_value(3, Converter.to_string(i.value));
 	}else if(cn.Contains("q4")){
-		logger.update_column_value(5, Converter.to_string(i.value));
+		logger.update_column_value(4, Converter.to_string(i.value));
 	}else{
-		logger.update_column_value(6, Converter.to_string(i.value));
+		logger.update_column_value(5, Converter.to_string(i.value));
 	}
 
-}else if(i.id == 3){ // object 
+}else if(i.id == 2){ // word
+	logger.update_column_value(6, Converter.to_string(i.value));
+}else if(i.id == 3){ // foot/nofoot
 	logger.update_column_value(7, Converter.to_string(i.value));
-}else if(i.id == 4){ // context
-	logger.update_column_value(8, Converter.to_string(i.value));
-}else if(i.id == 5){ // perspective
-	logger.update_column_value(9, Converter.to_string(i.value));
 	logger.write_current_colums();
 }
 

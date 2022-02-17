@@ -29,6 +29,7 @@
 #include "ex_widgets/ex_checkbox_w.hpp"
 #include "ex_widgets/ex_double_spin_box_w.hpp"
 #include "ex_widgets/ex_spin_box_w.hpp"
+#include "ex_widgets/ex_line_edit_w.hpp"
 
 using namespace tool::ex;
 
@@ -37,7 +38,7 @@ struct ParallelPortWriterInitConfigParametersW::Impl{
 };
 
 struct ParallelPortWriterConfigParametersW::Impl{
-    ExSpinBoxW port{"port"};
+    ExLineEditW port{"port"};
     ExDoubleSpinBoxW pulseTime{"pulse_time"};
 };
 
@@ -57,11 +58,11 @@ ParallelPortWriterConfigParametersW::ParallelPortWriterConfigParametersW():  Con
 }
 
 void ParallelPortWriterConfigParametersW::insert_widgets(){
-    add_widget(ui::F::gen(ui::L::HB(),{ui::W::txt("Port:"), m_p->port()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
-    add_widget(ui::F::gen(ui::L::HB(),{ui::W::txt("Pulse time:"), m_p->pulseTime()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
+    add_widget(ui::F::gen(ui::L::HB(),{ui::W::txt("Port (hex): "), m_p->port()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
+    add_widget(ui::F::gen(ui::L::HB(),{ui::W::txt("Pulse time: "), m_p->pulseTime()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
 }
 
 void ParallelPortWriterConfigParametersW::init_and_register_widgets(){
-    add_input_ui(m_p->port.init_widget(MinV<int>{0}, V<int>{50000}, MaxV<int>{65535}, StepV<int>{1}));
+    add_input_ui(m_p->port.init_widget("0x378"));
     add_input_ui(m_p->pulseTime.init_widget(MinV<qreal>{0.00}, V<qreal>{1.0}, MaxV<qreal>{10.}, StepV<qreal>{0.01}, 2));
 }

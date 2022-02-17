@@ -29,11 +29,10 @@ using System.Collections;
 // unity
 using UnityEngine;
 
-
 namespace Ex{
 
-    public class ParallelPortWriterComponent : ExComponent{
 
+    public class ParallelPortWriterComponent : ExComponent{
 
         [DllImport("inpoutx64.dll", EntryPoint = "IsInpOutDriverOpen")]
         private static extern UInt32 is_inpout_driver_opened_x64();
@@ -52,7 +51,7 @@ namespace Ex{
         private bool m_available = false;
 
         private float m_pulseTime = 1f;
-        private int m_port = 888;
+        private string m_port = "0x378";
 
         protected override bool initialize() {
 
@@ -70,9 +69,8 @@ namespace Ex{
                 if (!m_available) {
                     log_warning("Inpout driver not opened. No signal can be sent.", false);
                 }
-
             } catch (DllNotFoundException) {
-                log_warning("Inpoutx64.dll not found. No signal can be sent.", false);                   
+                log_warning("Inpoutx64.dll not found. No signal can be sent.", false);
             }
 
             return true;
@@ -87,7 +85,7 @@ namespace Ex{
 
         public override void update_from_current_config() {
             m_pulseTime = (float)currentC.get<double>("pulse_time");
-            m_port      = currentC.get<int>("port");
+            m_port      = currentC.get<string>("port");
         }
 
         protected override void update_parameter_from_gui(string updatedArgName) {
@@ -95,7 +93,7 @@ namespace Ex{
         }
 
 
-        private void write(int value, int port) {
+        private void write(int value, string port) {
 
             if (!m_available) {
                 return;
@@ -103,17 +101,11 @@ namespace Ex{
        
             if (m_int16Mode) {
 
-                dl_port_write_port_ushort_x64(
-                    (ushort)Mathf.Clamp(port, 0, 65535),
-                    (ushort)Mathf.Clamp(value, 0, 65535)
-                );
+                dl_port_write_port_ushort_x64(Convert.ToUInt16(m_port, 16), (ushort)value);
 
             } else {
 
-                dl_port_write_port_ulong_x64(
-                    (uint)port,
-                    (uint)value
-                );
+                dl_port_write_port_ulong_x64(Convert.ToUInt32(m_port, 16), (uint)value);
             }
 
         }

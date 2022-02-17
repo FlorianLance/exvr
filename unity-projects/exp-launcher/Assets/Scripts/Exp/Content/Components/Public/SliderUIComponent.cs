@@ -98,8 +98,8 @@ namespace Ex{
 
             float currentValue;
             if (currentC.get<bool>("random_start")) { // random value
-                if (currentC.get<bool>("whole")) {
-                    currentValue = (float)Random.Range((int)currentC.get<float>("min"), (int)currentC.get<float>("max"));
+                if (currentC.get<bool>("whole")) {     
+                    currentValue = (float)Random.Range((int)currentC.get<float>("min"), (int)currentC.get<float>("max") + 1);
                 } else {
                     currentValue = Random.Range(currentC.get<float>("min"), currentC.get<float>("max"));
                 }

@@ -29,6 +29,7 @@ namespace Ex{
 
     public class Builder : MonoBehaviour{
 
+
         public static Builder autoRef = null;
         public GoExplorer GO() { return go; }
         private GoExplorer go = null;
@@ -65,7 +66,7 @@ namespace Ex{
         public Experiment experiment = null;
 
         public void Awake() {
-            
+
 #if EXVR
             Debug.Log("[EXVR-EXP]");
 #else
