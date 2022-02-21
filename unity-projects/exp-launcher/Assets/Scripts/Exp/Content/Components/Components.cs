@@ -139,6 +139,7 @@ namespace Ex
             // audio
             ["Ex.MicrophoneComponent"] = gen_info(Category.Audio, Pritority.Medium, Reserved.Public),
             ["Ex.AudioSourceComponent"] = gen_info(Category.Audio, Pritority.Medium, Reserved.Public),
+            ["Ex.AudioListenerComponent"] = gen_info(Category.Audio, Pritority.Medium, Reserved.Public),
             // avatar
             ["Ex.HumanoidAvatarComponent"] = gen_info(Category.Avatar, Pritority.Medium, Reserved.Closed),
             ["Ex.HumanoidControllerComponent"] = gen_info(Category.Avatar, Pritority.Low, Reserved.Closed),

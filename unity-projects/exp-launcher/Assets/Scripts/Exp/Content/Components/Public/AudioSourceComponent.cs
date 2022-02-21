@@ -46,6 +46,7 @@ namespace Ex{
 
         public GameObject audioSourceGO = null;
         public AudioSource audioSource = null;
+        public SteamAudio.SteamAudioAmbisonicSource ambiSource = null;
 
         #region ex_functions
         protected override bool initialize() {
@@ -76,19 +77,55 @@ namespace Ex{
             audioSourceGO.GetComponent<MeshFilter>().mesh = null;            
 
             audioSource             = audioSourceGO.GetComponent<AudioSource>();
+            ambiSource              = audioSourceGO.GetComponent<SteamAudio.SteamAudioAmbisonicSource>();
             audioSource.clip        = null;
             audioSource.playOnAwake = false;            
             audioSource.loop        = false;
             audioSource.spatialize  = false;
 
-            var audioFileData = initC.get_resource_audio_data("sound"); 
-            if(audioFileData == null) {
-                log_error("Cannot load audio file.");
+
+            var audioFileData    = initC.get_resource_audio_data("sound");
+            var assetBundleAlias = initC.get_resource_alias("asset_bundle");
+
+            if (audioFileData == null && assetBundleAlias.Length == 0) {
+                log_error("No resource file defined as a source.");
                 return false;
             }
 
-            m_audioClip = audioFileData.clip;
-            if(m_audioClip == null) {
+            if (audioFileData != null) {
+
+                m_audioClip = audioFileData.clip;
+
+            }else if(assetBundleAlias.Length != 0) {
+
+                // instantiate asset bundle
+                var assetBundleGO = ExVR.Resources().instantiate_asset_bundle(assetBundleAlias, "", transform);
+                if (assetBundleGO == null) {
+                    log_error(string.Format("Cannot instantiate audio asset bundle with alias [{0}]", assetBundleAlias));
+                    return false;
+                }
+                //assetBundleGO.transform.SetParent(audioSourceGO.transform);
+
+                // retrieve audio sources
+                var subComponents = assetBundleGO.transform.GetComponents(typeof(Behaviour));
+                var audioSources = new List<AudioSource>();
+                foreach (Behaviour component in subComponents) {
+                    if(component.GetType() == typeof(AudioSource)) {
+                        audioSources.Add((AudioSource)component);
+                    }         
+                }
+
+                if(audioSources.Count == 0) {
+                    log_error("No audio source found in audio asset bundle.");
+                    return false;
+                }
+
+                // set first found audio source
+                m_audioClip = audioSources[0].clip;
+                Destroy(assetBundleGO);
+            }
+
+            if (m_audioClip == null) {
                 log_error("No audio file resource defined as a source.");
                 return false;
             }
@@ -105,83 +142,47 @@ namespace Ex{
             send_infos_to_gui_init_config("input_sound_info", String.Join("?", infos.ToArray()));
 
             if (initC.get<bool>("generate_new_sound")) {
-                int newNbChannels = initC.get<int>("new_sound_channel") + 1;
-
-                var newClip = AudioClip.Create(m_audioClip.name + "_modified", m_audioClip.samples, newNbChannels, m_audioClip.frequency, false);
-
-                float[] currentSamples = new float[m_audioClip.samples * m_audioClip.channels];
-                m_audioClip.GetData(currentSamples, 0);
-
-                float[] newSamples = new float[m_audioClip.samples * newNbChannels];
-                for(int ii = 0; ii < newSamples.Length; ++ii) {
-                    newSamples[ii] = 0f;
+                if (!generate_new_sound_from_input()) {
+                    return false;
                 }
-
-                for (int originChannel = 0; originChannel < newNbChannels; ++originChannel) {
-
-                    var copyTo = initC.get<string>("channel_" + originChannel + "_copy_destination");
-                    var destinationChannelsStr = copyTo.Split(' ');
-
-                    foreach (var destinationChannelStr in destinationChannelsStr) {
-
-                        if (destinationChannelStr.Length == 0) {
-                            break;
-                        }
-
-                        var destinationChannel = Converter.to_int(destinationChannelStr);
-                        if (destinationChannel < 1 || destinationChannel > 8) {
-                            log_error("Bad channel value: " + destinationChannel);
-                            return false;
-                        }
-                        destinationChannel--;                        
-
-                        for (int sampleId = 0; sampleId < m_audioClip.samples; ++sampleId) {
-                            newSamples[sampleId * newNbChannels + destinationChannel] = currentSamples[sampleId * m_audioClip.channels + originChannel];
-                            //newSamples[audioClip.samples * newNbChannels + sampleId + destinationChannel] = currentSamples[audioClip.samples * audioClip.channels + sampleId + originChannel];
-                            //newSamples[destinationChannel * audioClip.samples + sampleId] = currentSamples[originChannel * audioClip.samples + sampleId];
-                        }
-                    }
-                }
-
-                newClip.SetData(newSamples,0);
-                m_audioClip = newClip;
             }
 
             audioSource.clip = m_audioClip;
             m_audioData = new AudioData(audioSource.clip);
 
-            //float[] samples = new float[audioSource.clip.samples * audioSource.clip.channels];
-            //audioSource.clip.GetData(samples, 0);
 
-            //float minA = 1000f;
-            //float maxA = -1000f;
-            //float averageA = 0f;
-            //for (int jj = 0; jj < samples.Length; ++jj) {
-            //    var v = samples[jj];
-            //    averageA += v;
-            //    if (v < minA) {
-            //        minA = v;
-            //    }
-            //    if (v > maxA) {
-            //        maxA = v;
-            //    }
-            //}
-            //averageA /= samples.Length;
-            //log_message(string.Format("aa audio min {0} max {1} average {2}", minA, maxA, averageA));
+            float[] samples = new float[audioSource.clip.samples * audioSource.clip.channels];
+            audioSource.clip.GetData(samples, 0);
+
+            float minA = 1000f;
+            float maxA = -1000f;
+            float averageA = 0f;
+            for (int jj = 0; jj < samples.Length; ++jj) {
+                var v = samples[jj];
+                averageA += v;
+                if (v < minA) {
+                    minA = v;
+                }
+                if (v > maxA) {
+                    maxA = v;
+                }
+            }
+            averageA /= samples.Length;
+            log_message(string.Format("aa audio min {0} max {1} average {2}", minA, maxA, averageA));
 
             return true;
         }
 
         public override void update_from_current_config() {
 
-            audioSource.spatialBlend = 0;
-            audioSource.loop         = currentC.get<bool>("loop");
-            audioSource.minDistance  = currentC.get<float>("min_distance");
-            audioSource.maxDistance  = currentC.get<float>("max_distance");
-            audioSource.spatialize   = currentC.get<bool>("spatialized");            
-            audioSource.pitch        = currentC.get<float>("pitch");
-            audioSource.panStereo    = currentC.get<float>("stereo");
-            audioSource.spatialBlend = currentC.get<float>("spatial_blend");
+            audioSource.spatialBlend   = 0;
+            audioSource.loop           = currentC.get<bool>("loop");
+            audioSource.minDistance    = currentC.get<float>("min_distance");
+            audioSource.maxDistance    = currentC.get<float>("max_distance");
+            audioSource.spatialize     = currentC.get<bool>("spatialized");            
+            audioSource.pitch          = currentC.get<float>("pitch");
+            audioSource.panStereo      = currentC.get<float>("stereo");
+            audioSource.spatialBlend   = currentC.get<float>("spatial_blend");
             m_playNewBlock             = currentC.get<bool>("play_new_block");
             m_stopEndBlock             = currentC.get<bool>("stop_end_block");
             m_pauseEndBlock            = currentC.get<bool>("pause_end_block");
@@ -224,6 +225,54 @@ namespace Ex{
             }
         }
 
+
+        #endregion
+
+        #region private_functions
+
+        private bool generate_new_sound_from_input() {
+
+            int newNbChannels = initC.get<int>("new_sound_channel") + 1;
+
+            var newClip = AudioClip.Create(string.Format("{}_modified", m_audioClip.name), m_audioClip.samples, newNbChannels, m_audioClip.frequency, false);
+
+            float[] currentSamples = new float[m_audioClip.samples * m_audioClip.channels];
+            m_audioClip.GetData(currentSamples, 0);
+
+            float[] newSamples = new float[m_audioClip.samples * newNbChannels];
+            for (int ii = 0; ii < newSamples.Length; ++ii) {
+                newSamples[ii] = 0f;
+            }
+
+            for (int originChannel = 0; originChannel < newNbChannels; ++originChannel) {
+
+                var copyTo = initC.get<string>(string.Format("channel_{}_copy_destination", originChannel));
+                var destinationChannelsStr = copyTo.Split(' ');
+
+                foreach (var destinationChannelStr in destinationChannelsStr) {
+
+                    if (destinationChannelStr.Length == 0) {
+                        break;
+                    }
+
+                    var destinationChannel = Converter.to_int(destinationChannelStr);
+                    if (destinationChannel < 1 || destinationChannel > 8) {
+                        log_error("Bad channel value: " + destinationChannel);
+                        return false;
+                    }
+                    destinationChannel--;
+
+                    for (int sampleId = 0; sampleId < m_audioClip.samples; ++sampleId) {
+                        newSamples[sampleId * newNbChannels + destinationChannel] = currentSamples[sampleId * m_audioClip.channels + originChannel];
+                    }
+                }
+            }
+
+            newClip.SetData(newSamples, 0);
+            m_audioClip = newClip;
+
+            return true;
+        }
 
         #endregion
 

@@ -97,7 +97,7 @@ struct Component {
     }
 
     enum class Type : int {
-        /** A */ AudioSource, Attach_object_to_hand,
+        /** A */ AudioListener, AudioSource, Attach_object_to_hand,
         /** B */ Biopac, Blend_fade_viewer,
         /** C */ Camera, Camera_target, Camera_trajectory, Camera_trajectory_file, Cloud, Config, CSharp_function, CSharp_script, Cube, Cylinder,
         /** F */ Falling_spheres, Fixation_cross_viewer, Flag_pole, Flashing_dot, Fop_robot, Fov_simulator_viewer, FPP_avatar_camera, FPP_camera,
@@ -168,6 +168,7 @@ struct Component {
     static constexpr TupleArray<T::SizeEnum, TComponent> components ={{
         TComponent
         // Audio
+        {T::AudioListener,            C::Audio,       TO::U,     CO::B,   true,    R::OpenSource,   S::Exp, "AudioListener"sv, "Audio listener"sv, "AudioListener"sv, ":/icons/Sound"sv},
         {T::AudioSource,              C::Audio,       TO::B,     CO::B,   false,   R::OpenSource,   S::Sta, "AudioSource"sv, "Audio source"sv, "AudioSource"sv, ":/icons/Sound"sv},
         {T::Microphone,               C::Audio,       TO::B,     CO::B,   false,   R::OpenSource,   S::Exp, "Microphone"sv, "Microphone"sv, "Microphone"sv, ":/icons/Micro"sv},
         // Avatar

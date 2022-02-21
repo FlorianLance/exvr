@@ -24,12 +24,6 @@
 
 #include "audio_source_pw.hpp"
 
-// Qt
-#include <QDesktopServices>
-#include <QDirIterator>
-#include <QDir>
-#include <QListWidget>
-
 // qt-utility
 #include "ex_widgets/ex_checkbox_w.hpp"
 #include "ex_widgets/ex_combo_box_index_w.hpp"
@@ -45,6 +39,7 @@ using namespace tool::ex;
 
 struct AudioSourceInitConfigParametersW::Impl{
     ExResourceW sound = {"sound"};
+    ExResourceW assetBundle = {"asset_bundle"};
     ExCheckBoxW generateNewSound = {"generate_new_sound"};
     ExComboBoxIndexW newSoundChannels = {"new_sound_channel"};
     ExTextEditW infoText;
@@ -67,6 +62,11 @@ struct AudioSourceConfigParametersW::Impl{
     ExSliderFloatW minDistance = {"min_distance"};
     ExSliderFloatW maxDistance = {"max_distance"};
     TransformSubPart transfo = {"transform"};
+
+    // rollof
+    //  linear
+    //  logarithmic
+    // spread 0 - 360
 };
 
 AudioSourceInitConfigParametersW::AudioSourceInitConfigParametersW() :  ConfigParametersW(), m_p(std::make_unique<Impl>()){
@@ -77,7 +77,7 @@ void AudioSourceInitConfigParametersW::insert_widgets(){
 
 
     // top
-    add_widget(ui::F::gen(ui::L::HB(), {m_p->sound()}, LStretch{false}, LMargins{true}, QFrame::Box));
+    add_widget(ui::F::gen(ui::L::VB(), {m_p->sound(), m_p->assetBundle()}, LStretch{false}, LMargins{true}, QFrame::Box));
 
     for(int ii = 0; ii < 8; ++ ii){
         m_p->channelsToCopy.emplace_back(std::make_unique<ExLineEditW>("channel_" + QString::number(ii) + "_copy_destination"));
@@ -112,6 +112,7 @@ void AudioSourceInitConfigParametersW::insert_widgets(){
 void AudioSourceInitConfigParametersW::init_and_register_widgets(){
 
     add_input_ui(m_p->sound.init_widget(Resource::Type::Audio, "Audio resource: "));
+    add_input_ui(m_p->assetBundle.init_widget(Resource::Type::AssetBundle, "Audio asset bundle (mandatory for ambisonic): "));
     add_input_ui(m_p->generateNewSound.init_widget("Generate new sound", false));
     add_input_ui(m_p->newSoundChannels.init_widget({"1", "2", "3", "4", "5", "6", "7", "8"}, 0, true));
 
