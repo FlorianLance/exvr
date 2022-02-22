@@ -219,6 +219,7 @@ namespace Ex
             ["Ex.ViveProEyeTrackingComponent"] = gen_info(Category.Tracking, Pritority.Hight, Reserved.Public),            
             // UI
             ["Ex.SliderUIComponent"] = gen_info(Category.UI, Pritority.Medium, Reserved.Public),
+            ["Ex.ButtonsUIComponent"] = gen_info(Category.UI, Pritority.Medium, Reserved.Public),            
             // video
             ["Ex.VideoFileComponent"] = gen_info(Category.Video, Pritority.Medium, Reserved.Public),
             ["Ex.VideoFileCameraViewerComponent"] = gen_info(Category.Video, Pritority.Medium, Reserved.Public),

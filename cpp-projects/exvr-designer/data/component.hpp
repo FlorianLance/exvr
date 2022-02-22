@@ -98,7 +98,7 @@ struct Component {
 
     enum class Type : int {
         /** A */ AudioListener, AudioSource, Attach_object_to_hand,
-        /** B */ Biopac, Blend_fade_viewer,
+        /** B */ Biopac, Blend_fade_viewer, Buttons_ui,
         /** C */ Camera, Camera_target, Camera_trajectory, Camera_trajectory_file, Cloud, Config, CSharp_function, CSharp_script, Cube, Cylinder,
         /** F */ Falling_spheres, Fixation_cross_viewer, Flag_pole, Flashing_dot, Fop_robot, Fov_simulator_viewer, FPP_avatar_camera, FPP_camera,
         /** H */ Humanoid_avatar, Humanoid_controller,
@@ -246,6 +246,7 @@ struct Component {
         {T::Vive_pro_eye_tracking,    C::Tracking,    TO::B,     CO::C,   false,   R::OpenSource,   S::Exp, "Vive_pro_eye_tracking"sv, "Vive pro eye tracking"sv, "ViveProEyeTracking"sv, ":/icons/Thera_trainer"sv},
         // UI
         {T::Slider_ui,                C::UI,          TO::B,     CO::B,   false,   R::OpenSource,   S::Sta, "Slider_ui"sv, "Slider ui"sv, "SliderUI"sv, ":/icons/Slider_overlay"sv},
+        {T::Buttons_ui,               C::UI,          TO::B,     CO::B,   false,   R::OpenSource,   S::Exp, "Buttons_ui"sv, "Buttons ui"sv, "ButtonsUI"sv, ":/icons/Slider_overlay"sv},
         // Video
         {T::Video_file,               C::Video,       TO::U,     CO::I,   false,   R::OpenSource,   S::Sta, "Video_file"sv, "Video file"sv, "VideoFile"sv,":/icons/Video_file"sv},
         {T::Video_file_camera_viewer, C::Video,       TO::B,     CO::B,   false,   R::OpenSource,   S::Exp, "Video_file_camera_viewer"sv, "Video file camera viewer"sv, "VideoFileCameraViewer"sv,":/icons/Video_file"sv},

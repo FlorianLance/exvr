@@ -36,6 +36,7 @@ namespace Ex {
 
         public ConcurrentQueue<List<float>> dataReceived = new ConcurrentQueue<List<float>>();
         public ConcurrentQueue<int> channelsReceived = new ConcurrentQueue<int>();
+        //AudioClip clip;
 
         public bool running = false;
 
@@ -43,6 +44,7 @@ namespace Ex {
             Debug.LogError("START");
             running = true;
             enabled = false;
+
         }   
 
         private void OnAudioFilterRead(float[] data, int channels) {
@@ -51,10 +53,13 @@ namespace Ex {
             }
             dataReceived.Enqueue(new List<float>(data));
             channelsReceived.Enqueue(channels);
-            Debug.LogError("AudioRecorder -> " + dataReceived.Count + " " + channels);
+            //Debug.LogError("AudioRecorder -> " + dataReceived.Count + " " + channels);
         }
 
         private void OnApplicationQuit() {
+
+            //AudioClip clip;
+
             Debug.LogError("QUIt");
             enabled = true;
         }
