@@ -26,28 +26,55 @@
 
 using namespace tool::ex;
 
+
+struct SceneScanerInitConfigParametersW::Impl{
+    ExComponentW kinectManager{"kinect_manager"};
+};
+
+SceneScanerInitConfigParametersW::SceneScanerInitConfigParametersW() :  ConfigParametersW(), m_p(std::make_unique<Impl>()){
+}
+
+
 void SceneScanerInitConfigParametersW::insert_widgets(){
-    add_widget(ui::F::gen(ui::L::HB(), {m_kinectManager()}, LStretch{false}, LMargins{true}, QFrame::Box));
+    add_widget(ui::F::gen(ui::L::HB(), {m_p->kinectManager()}, LStretch{false}, LMargins{true}, QFrame::Box));
 }
 
 void SceneScanerInitConfigParametersW::init_and_register_widgets(){
-    add_input_ui(m_kinectManager.init_widget(Component::Type::Kinect_manager, "Kinect manager component: "));
+    add_input_ui(m_p->kinectManager.init_widget(Component::Type::Kinect_manager, "Kinect manager component: "));
 }
 
+
+struct SceneScanerConfigParametersW::Impl{
+    TransformSubPart tr{"global_transform"};
+    ExFloatSpinBoxW sizePoints{"size_points"};
+    ExCheckBoxW displayClouds{"display_clouds"};
+    ExCheckBoxW displayColliders{"display_colliders"};
+
+    ExCheckBoxW displayHidePointsShape{"display_hide_points_shape"};
+    ExCheckBoxW hidePoints{"hide_points"};
+    TransformSubPart removePtTr{"hide_points_shape_tr"};
+};
+
+SceneScanerConfigParametersW::SceneScanerConfigParametersW() :  ConfigParametersW(), m_p(std::make_unique<Impl>()){
+}
+
+
 void SceneScanerConfigParametersW::insert_widgets(){
-    add_sub_part_widget(m_tr);
-    add_widget(ui::F::gen(ui::L::HB(),{ui::W::txt("Size points: "),m_sizePoints()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
-    add_widget(ui::F::gen(ui::L::HB(),{m_displayClouds()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
-    add_widget(ui::F::gen(ui::L::HB(),{m_displayColliders()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
-    add_widget(ui::F::gen(ui::L::HB(),{m_moveEyeToHeadPosition()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
+    add_sub_part_widget(m_p->tr);
+
+    auto spw = ui::F::gen(ui::L::HB(),{ui::W::txt("Size points: "),m_p->sizePoints()}, LStretch{true}, LMargins{false},QFrame::NoFrame);
+    add_widget(ui::F::gen(ui::L::VB(),{ui::W::txt("<b>Display: </b>"), spw, m_p->displayClouds(), m_p->displayColliders()}, LStretch{false}, LMargins{true},QFrame::Box));
+    add_widget(ui::F::gen(ui::L::VB(),{ui::W::txt("<b>Remove points inside shape: </b>"), m_p->hidePoints(), m_p->displayHidePointsShape(), m_p->removePtTr.frame}, LStretch{false}, LMargins{true},QFrame::Box));
 }
 
 void SceneScanerConfigParametersW::init_and_register_widgets(){
 
-    map_sub_part(m_tr.init_widget("Global model transform"));
-    add_input_ui(m_sizePoints.init_widget(MinV<qreal>{0.0001}, V<qreal>{0.0030}, MaxV<qreal>{0.05}, StepV<qreal>{0.0001},4));
-    add_input_ui(m_displayClouds.init_widget("Display clouds ", true));
-    add_input_ui(m_displayColliders.init_widget("Display colliders ", false));
-    add_action_ui(m_moveEyeToHeadPosition.init_widget("Move eye camera to fit tracked head"));
+    map_sub_part(m_p->tr.init_widget("Global model transform"));
+    add_input_ui(m_p->sizePoints.init_widget(MinV<qreal>{0.0001}, V<qreal>{0.0030}, MaxV<qreal>{0.05}, StepV<qreal>{0.0001},4));
+    add_input_ui(m_p->displayClouds.init_widget("Display clouds ", true));
+    add_input_ui(m_p->displayColliders.init_widget("Display colliders ", false));
 
+    add_input_ui(m_p->hidePoints.init_widget("Remove points", false));
+    add_input_ui(m_p->displayHidePointsShape.init_widget("Display shape", false));
+    map_sub_part(m_p->removePtTr.init_widget("Shape transform"));
 }

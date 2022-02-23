@@ -39,12 +39,16 @@ class SceneScanerInitConfigParametersW : public ConfigParametersW{
 
 public :
 
-    ExComponentW m_kinectManager{"kinect_manager"};
+    SceneScanerInitConfigParametersW();
 
     void insert_widgets() override;
     void init_and_register_widgets() override;
     void create_connections() override{}
     void late_update_ui() override{}
+
+private:
+    struct Impl;
+    std::unique_ptr<Impl> m_p = nullptr;
 };
 
 
@@ -52,16 +56,16 @@ class SceneScanerConfigParametersW : public ConfigParametersW{
 
 public :
 
-    TransformSubPart m_tr{"global_transform"};
-    ExFloatSpinBoxW m_sizePoints{"size_points"};
-    ExCheckBoxW m_displayClouds{"display_clouds"};
-    ExCheckBoxW m_displayColliders{"display_colliders"};
-    ExPushButtonW m_moveEyeToHeadPosition{"move_eye_to_head"};
+    SceneScanerConfigParametersW();
 
     void insert_widgets() override;
     void init_and_register_widgets() override;
     void create_connections() override{}
     void late_update_ui() override{}
+
+private:
+    struct Impl;
+    std::unique_ptr<Impl> m_p = nullptr;
 };
 
 }

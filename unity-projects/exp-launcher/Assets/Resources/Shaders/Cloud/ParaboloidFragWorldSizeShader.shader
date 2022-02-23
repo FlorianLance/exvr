@@ -1,5 +1,5 @@
 ﻿
-Shader "Custom/ParaboloidFragWorldSizeShader"
+Shader "Custom/Cloud/ParaboloidFragWorldSizeShader"
 {
 	
 	/*
@@ -12,7 +12,7 @@ Shader "Custom/ParaboloidFragWorldSizeShader"
 		_PointSize("Point Size", Float) = 5
 		[Toggle] _Circles("Circles", Int) = 0
 		[Toggle] _Cones("Cones", Int) = 0
-		_Tint("Tint", Color) = (0.5, 0.5, 0.5, 1)		
+		_Tint("Tint", Color) = (0.5, 0.5, 0.5, 1)
 	}
 
 	SubShader
@@ -64,9 +64,33 @@ Shader "Custom/ParaboloidFragWorldSizeShader"
 			int _Cones;
 			float4 _Tint;
 
+			float3 _ObbPos;
+			float3 _ObbSize;
+			float4x4 _ObbOrientation;
+
+
+			float4 valid_vertex(float4 p) {
+
+				float3 dir = p.xyz - _ObbPos;
+				for (int ii = 0; ii < 3; ++ii) {
+
+					float d = dot(dir, _ObbOrientation[ii].xyz);
+					if (d > _ObbSize[ii]) {
+						return float4(p.x, p.y, p.z, 1.0);
+					}
+
+					if (d < -_ObbSize[ii]) {
+						return float4(p.x, p.y, p.z, 1.0);
+					}
+				}
+
+				return float4(p.x, p.y, p.z, 0.0);
+			}
+
+
 			VertexMiddle vert(VertexInput v) {
 				VertexMiddle o;
-				o.position = v.position;
+				o.position = valid_vertex(v.position);
 
 				float4 col = v.color;
 				float3 cc =  LinearToGammaSpace(_Tint.rgb) * float3(col.r,col.g,col.b);
@@ -78,11 +102,17 @@ Shader "Custom/ParaboloidFragWorldSizeShader"
 				float3 R = normalize(cross(view, upvec));
 				o.U = float4(upvec * _PointSize, 0);
 				o.R = -float4(R * _PointSize, 0);
+
 				return o;
 			}
 
 			[maxvertexcount(4)]
 			void geom(point VertexMiddle input[1], inout TriangleStream<VertexOutput> outputStream) {
+
+				if (input[0].position.w < 0.5) {
+					return;
+				}
+
 				VertexOutput out1;
 				out1.position = input[0].position;
 				out1.color = input[0].color;

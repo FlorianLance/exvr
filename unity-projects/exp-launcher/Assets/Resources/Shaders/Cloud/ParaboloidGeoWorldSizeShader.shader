@@ -2,7 +2,7 @@
 
 // Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
 
-Shader "Custom/ParaboloidGeoWorldSizeShader"
+Shader "Custom/Cloud/ParaboloidGeoWorldSizeShader"
 {
 	/*
 	This shader renders the given vertices as circles with the given color.
@@ -13,6 +13,7 @@ Shader "Custom/ParaboloidGeoWorldSizeShader"
 		_PointSize("Point Size", Float) = 5
 		[Toggle] _Circles("Circles", Int) = 0
 		_Details("DetailLevel", Int) = 2
+		_Tint("Tint", Color) = (0.5, 0.5, 0.5, 1)
 	}
 
 	SubShader
@@ -30,6 +31,8 @@ Shader "Custom/ParaboloidGeoWorldSizeShader"
 			#pragma vertex vert
 			#pragma geometry geom
 			#pragma fragment frag
+
+			#include "UnityCG.cginc"
 
 			struct VertexInput
 			{
@@ -55,19 +58,49 @@ Shader "Custom/ParaboloidGeoWorldSizeShader"
 			float _PointSize;
 			int _Circles;
 			int _Details; //1, 2 or 3
+			float4 _Tint;
+
+
+			float3 _ObbPos;
+			float3 _ObbSize;
+			float4x4 _ObbOrientation;
+
+			float4 valid_vertex(float4 p) {
+
+				float3 dir = p.xyz - _ObbPos;
+				for (int ii = 0; ii < 3; ++ii) {
+
+					float d = dot(dir, _ObbOrientation[ii].xyz);
+					if (d > _ObbSize[ii]) {
+						return float4(p.x, p.y, p.z, 1.0);
+					}
+
+					if (d < -_ObbSize[ii]) {
+						return float4(p.x, p.y, p.z, 1.0);
+					}
+				}
+
+				return float4(p.x, p.y, p.z, 0.0);
+			}
+
 
 			VertexMiddle vert(VertexInput v) {
+
 				VertexMiddle o;
 				o.position = mul(unity_ObjectToWorld, v.position);
-				o.color = v.color;
+				o.position = valid_vertex(o.position);
+	
+				float4 col = v.color;
+				float3 cc = LinearToGammaSpace(_Tint.rgb) * float3(col.r, col.g, col.b);
+				cc = GammaToLinearSpace(cc);
+				o.color = float4(cc, 1);
 
 				float3 view = normalize(UNITY_MATRIX_IT_MV[2].xyz);
 				float3 upvec = normalize(UNITY_MATRIX_IT_MV[1].xyz);
 				float3 R = normalize(cross(view, upvec));
-
-
 				o.U = float4(upvec * _PointSize, 0);
 				o.R = -float4(R * _PointSize, 0);
+
 				return o;
 			}
 
@@ -86,10 +119,16 @@ Shader "Custom/ParaboloidGeoWorldSizeShader"
 
 			[maxvertexcount(68)]
 			void geom(point VertexMiddle input[1], inout TriangleStream<VertexOutput> outputStream) {
+
+				if (input[0].position.w < 0.5) {
+					return;
+				}
+
 				float sqr = sqrt(2) / 2;
 				float ringpositions[3] = { 0.25, 0.5, 1 };
 
 				VertexOutput middle = createParaboloidPoint(input[0], 0, 0);
+		
 
 				//edges
 				VertexOutput e11 = createParaboloidPoint(input[0], 1, 1);

@@ -1,4 +1,4 @@
-﻿Shader "Custom/ParaboloidFragScreenSizeShader"
+﻿Shader "Custom/Cloud/ParaboloidFragScreenSizeShader"
 {
 	/*
 	This shader renders the given vertices as circles with the given color.

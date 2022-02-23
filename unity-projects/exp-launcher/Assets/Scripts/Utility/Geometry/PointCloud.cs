@@ -28,26 +28,75 @@ namespace Ex{
 
     [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
     public class PointCloud : MonoBehaviour{
+        public enum RenderingType {
+            ParabloidFrag, ParabloidGeo
+        };
 
-        public Mesh mesh = null;
+        public enum ParabloidDetails {
+            None = 0, Low = 1, Medium = 2, Hight = 3
+        };
+
+        Shader pointShader = null;
+        Shader paraboloidFrag = null;
+        Shader paraboloidGeoWorld = null;
+
+        Material material = null;
+        RenderingType currentRendering = RenderingType.ParabloidGeo;
 
         void Start() {
 
-            mesh = new Mesh();
+            Mesh mesh = new Mesh();
             mesh.triangles = new int[0];
             GetComponent<MeshFilter>().mesh = mesh;
-            var renderer = GetComponent<MeshRenderer>();
-            renderer.material = ExVR.GlobalResources().instantiate_mat("pointCloud");
 
-            renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-            renderer.receiveShadows = false;
-
-            renderer.lightProbeUsage = UnityEngine.Rendering.LightProbeUsage.Off;
+            var renderer                  = GetComponent<MeshRenderer>();
+            renderer.material             = (material = ExVR.GlobalResources().instantiate_mat("pointCloud"));
+            renderer.shadowCastingMode    = UnityEngine.Rendering.ShadowCastingMode.Off;
+            renderer.receiveShadows       = false;
+            renderer.lightProbeUsage      = UnityEngine.Rendering.LightProbeUsage.Off;
             renderer.reflectionProbeUsage = UnityEngine.Rendering.ReflectionProbeUsage.Off;
+
+            paraboloidFrag     = Shader.Find("Custom/Cloud/ParaboloidFragWorldSizeShader");
+            paraboloidGeoWorld = Shader.Find("Custom/Cloud/ParaboloidGeoWorldSizeShader");
+
+            set_rendering(currentRendering);
+        }
+
+        public void set_rendering(RenderingType rendering) {
+
+            var renderer = GetComponent<MeshRenderer>();
+            switch (currentRendering = rendering) {
+                case RenderingType.ParabloidFrag:
+                    renderer.material.shader = paraboloidFrag;
+                    break;
+                case RenderingType.ParabloidGeo:
+                    renderer.material.shader = paraboloidGeoWorld;
+                    break;
+            }
+        }
+
+        public void set_paraboloid_circle_state(bool circle) {
+            material.SetInt("_Circle", circle ? 1 : 0);
+        }
+
+        public void set_paraboloid_frag_cone_state(bool cone) {
+            if (currentRendering == RenderingType.ParabloidFrag) {
+                material.SetInt("_Cones", cone ? 1 : 0);
+            }
+        }
+
+        public void set_paraboloid_geo_details(ParabloidDetails details) {
+            if(currentRendering == RenderingType.ParabloidGeo) {
+                material.SetInt("_Details", (int)details);
+            }
+        }
+
+        public void set_tint(Color color) {
+            material.SetColor("_Tint", color);
         }
 
         public void set_pt_size(float size) {
-            //GetComponent<MeshRenderer>().material.SetFloat("_PointSize", size);
+            material.SetFloat("_PointSize", size);
         }
     }
 

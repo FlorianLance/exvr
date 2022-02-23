@@ -1,5 +1,5 @@
 ﻿
-Shader "Custom/ParaboloidGeoScreenSizeShader"
+Shader "Custom/Cloud/ParaboloidGeoScreenSizeShader"
 {
 	/*
 	This shader renders the given vertices as circles with the given color.

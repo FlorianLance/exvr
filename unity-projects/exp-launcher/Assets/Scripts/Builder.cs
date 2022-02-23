@@ -29,6 +29,11 @@ namespace Ex{
 
     public class Builder : MonoBehaviour{
 
+        bool cloudInit = false;
+        //public Vector4 obbSize = new Vector4(1, 1, 1, 1);
+        //public Vector4 obbPos = new Vector4(1, 1, 1, 1);
+        //public Matrix4x4 obbOrientation = Matrix4x4.identity;
+
 
         public static Builder autoRef = null;
         public GoExplorer GO() { return go; }
@@ -120,6 +125,58 @@ namespace Ex{
             // indicates to the GUI that unity is ready
             ExVR.ExpLog().builder("Send ready signal to GUI.");
             networkManager.set_launcher_idle_state();
+
+
+            // tests
+            var pc = gameObject.AddComponent<PointCloud>();
+
+            Mesh mesh = gameObject.GetComponent<MeshFilter>().mesh;
+            mesh.MarkDynamic();
+
+
+        }
+        void Update() {
+
+            if(!cloudInit){
+                Mesh mesh = gameObject.GetComponent<MeshFilter>().mesh;
+                mesh.Clear();
+                mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+
+                int sizePts = 100000;
+                Vector3[] vertices = new Vector3[sizePts];
+                Color[] colors = new Color[sizePts];
+                System.Collections.Generic.List<int> commonIndices = new System.Collections.Generic.List<int>(sizePts);
+                for (int ii = 0; ii < sizePts; ++ii) {
+                    var x = UnityEngine.Random.Range(-0.5f, 0.5f);
+                    var y = UnityEngine.Random.Range(-0.5f, 0.5f);
+                    var z = UnityEngine.Random.Range(-0.5f, 0.5f);
+                    vertices[ii] = new Vector3(x, y, z);
+
+                    var r = UnityEngine.Random.Range(0f, 1f);
+                    var g = UnityEngine.Random.Range(0f, 1f);
+                    var b = UnityEngine.Random.Range(0f, 1f);
+                    colors[ii] = new Color(r, g, b);
+
+                    commonIndices.Add(ii);
+                }
+                mesh.SetVertices(vertices, 0, sizePts);
+                mesh.SetColors(colors, 0, sizePts);
+                mesh.SetIndices(commonIndices, 0, sizePts, MeshTopology.Points, 0, true);
+
+                cloudInit = true;
+            }
+
+
+
+
+            var m = gameObject.GetComponent<MeshRenderer>().material;
+
+            var tr = transform.Find("Cube");
+            
+
+            m.SetVector("_ObbPos", tr.position);
+            m.SetVector("_ObbSize", tr.localScale*0.5f);
+            m.SetMatrix("_ObbOrientation", tr.worldToLocalMatrix);
         }
 
         void OnApplicationQuit() {
