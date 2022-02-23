@@ -106,17 +106,30 @@ namespace Ex{
             return go;
         }
 
-        static public GameObject generate_sphere(string name = "sphere", Transform parent = null, float ray = 0.05f, Color? color = null, int layer = -1) {
+        static private GameObject generate_geometry_object(string name, Transform parent, Color? color = null, int layer = -1, Material material = null) {
 
             var coTypes = new System.Type[] { typeof(MeshRenderer), typeof(MeshFilter) };
-            var sphere = generate_scene_object(name, coTypes, parent, true, layer);
+            var geoObject = generate_scene_object(name, coTypes, parent, true, layer);
 
-            var sphereMat = ExVR.GlobalResources().instantiate_default_mat();
-            sphereMat.color = (color == null) ? Color.white : color.Value;
-            sphere.GetComponent<MeshRenderer>().material = sphereMat;
+            if (material == null) {
+                material = ExVR.GlobalResources().instantiate_default_mat();
+            }
 
+            material.color = (color == null) ? Color.white : color.Value;
+            geoObject.GetComponent<MeshRenderer>().material = material;
+
+            return geoObject;
+        }
+
+        static public GameObject generate_cube(string name = "cube", Transform parent = null, float size = 0.05f, Color? color = null, int layer = -1, Material material = null) {
+            var cube = generate_geometry_object(name, parent, color, layer, material);
+            cube.GetComponent<MeshFilter>().mesh = PrimitivesMesh.CubeBuilder.generate(size);
+            return cube;
+        }
+
+        static public GameObject generate_sphere(string name = "sphere", Transform parent = null, float ray = 0.05f, Color? color = null, int layer = -1, Material material = null) {
+            var sphere = generate_geometry_object(name, parent, color, layer, material);
             sphere.GetComponent<MeshFilter>().mesh = PrimitivesMesh.SphereBuilder.generate(ray);
-
             return sphere;
         }
 

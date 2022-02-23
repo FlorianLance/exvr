@@ -50,9 +50,9 @@ struct SceneScanerConfigParametersW::Impl{
     ExCheckBoxW displayClouds{"display_clouds"};
     ExCheckBoxW displayColliders{"display_colliders"};
 
-    ExCheckBoxW displayHidePointsShape{"display_hide_points_shape"};
-    ExCheckBoxW hidePoints{"hide_points"};
-    TransformSubPart removePtTr{"hide_points_shape_tr"};
+    ExCheckBoxW filterPointsOutsideOBB{"filter_points_outside_obb"};
+    ExCheckBoxW displayFilteringOBB{"display_filtering_obb"};
+    TransformSubPart filteringObbTr{"hide_points_shape_tr"};
 };
 
 SceneScanerConfigParametersW::SceneScanerConfigParametersW() :  ConfigParametersW(), m_p(std::make_unique<Impl>()){
@@ -64,7 +64,7 @@ void SceneScanerConfigParametersW::insert_widgets(){
 
     auto spw = ui::F::gen(ui::L::HB(),{ui::W::txt("Size points: "),m_p->sizePoints()}, LStretch{true}, LMargins{false},QFrame::NoFrame);
     add_widget(ui::F::gen(ui::L::VB(),{ui::W::txt("<b>Display: </b>"), spw, m_p->displayClouds(), m_p->displayColliders()}, LStretch{false}, LMargins{true},QFrame::Box));
-    add_widget(ui::F::gen(ui::L::VB(),{ui::W::txt("<b>Remove points inside shape: </b>"), m_p->hidePoints(), m_p->displayHidePointsShape(), m_p->removePtTr.frame}, LStretch{false}, LMargins{true},QFrame::Box));
+    add_widget(ui::F::gen(ui::L::VB(),{ui::W::txt("<b>Filtering oriented bounding box: </b>"), m_p->filterPointsOutsideOBB(), m_p->displayFilteringOBB(), m_p->filteringObbTr.frame}, LStretch{false}, LMargins{true},QFrame::Box));
 }
 
 void SceneScanerConfigParametersW::init_and_register_widgets(){
@@ -74,7 +74,7 @@ void SceneScanerConfigParametersW::init_and_register_widgets(){
     add_input_ui(m_p->displayClouds.init_widget("Display clouds ", true));
     add_input_ui(m_p->displayColliders.init_widget("Display colliders ", false));
 
-    add_input_ui(m_p->hidePoints.init_widget("Remove points", false));
-    add_input_ui(m_p->displayHidePointsShape.init_widget("Display shape", false));
-    map_sub_part(m_p->removePtTr.init_widget("Shape transform"));
+    add_input_ui(m_p->filterPointsOutsideOBB.init_widget("Remove points outside", false));
+    add_input_ui(m_p->displayFilteringOBB.init_widget("Display", false));
+    map_sub_part(m_p->filteringObbTr.init_widget("Transform"));
 }

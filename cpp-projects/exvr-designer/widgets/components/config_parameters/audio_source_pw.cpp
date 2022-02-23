@@ -75,7 +75,6 @@ AudioSourceInitConfigParametersW::AudioSourceInitConfigParametersW() :  ConfigPa
 
 void AudioSourceInitConfigParametersW::insert_widgets(){
 
-
     // top
     add_widget(ui::F::gen(ui::L::VB(), {m_p->sound(), m_p->assetBundle()}, LStretch{false}, LMargins{true}, QFrame::Box));
 

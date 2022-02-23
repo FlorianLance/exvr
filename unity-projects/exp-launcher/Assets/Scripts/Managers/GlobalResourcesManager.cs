@@ -82,7 +82,7 @@ namespace Ex
         }
 
         public Material instantiate_default_transparent_mat() {
-            return instantiate_mat("DefaultTransparentModel");
+            return instantiate_mat("DefaultTransparent");
         }
 
         public Material instantiate_unlit_color_mat() {
