@@ -39,7 +39,7 @@ using RoutineUP = std::unique_ptr<Routine>;
 
 struct Routine : public Element {
 
-    Routine(QString n, int id);
+    Routine(QString n, int id, QString infos = "");
 
     static RoutineUP copy_with_new_element_id(const Routine &routineToCopy, const QString &newName);
 
@@ -71,6 +71,7 @@ struct Routine : public Element {
 
     bool isARandomizer = false;
     std_v1<ConditionUP> conditions;
+
 //    std_v1<ConditionUP> ghostsConditions; // condition that could be restored
 };
 

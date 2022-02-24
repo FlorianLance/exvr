@@ -559,6 +559,13 @@ void Experiment::set_routine_as_randomizer(ElementKey routineKey, bool isARandom
     }
 }
 
+void Experiment::update_element_informations(ElementKey elementKey, QString informations){
+    if(auto element = get_element(elementKey); element != nullptr){
+        selectedElement->informations = std::move(informations);
+        add_to_update_flag(UpdateFlow);
+    }
+}
+
 void Experiment::update_condition_timeline(ElementKey routineKey, ConditionKey conditionKey, double duration, double scale, double uiFactorSize){
 
     if(auto condition = get_condition(routineKey, conditionKey); condition != nullptr){

@@ -34,7 +34,7 @@ namespace Ex{
 
         protected override bool initialize() {
 
-            m_overlayGo = ExVR.GlobalResources().instantiate_prebab("Components/BlendFadeOverlay", transform, "Blend fade overlay");
+            m_overlayGo = ExVR.GlobalResources().instantiate_prebab("Components/BlendFadeViewer", transform, "Blend fade overlay");
             if(m_overlayGo == null) {
                 return false;
             }

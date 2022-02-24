@@ -64,9 +64,7 @@ public:
 
     virtual void draw(QPainter &painter, qreal zoomLevel);
 
-    inline QString name() const noexcept{return m_name;}
     inline bool is_selected() const noexcept{return m_selected;}
-    inline Element::Type type() const noexcept{return m_type;}
 
     // ui       
     static inline qreal areaHeight = 0.;
@@ -77,14 +75,14 @@ public:
     display::Colors::FlowElement colors;
 
     ElementKey key;
+    QString name;
+    Element::Type type;
+    QString informations;
 
 protected:
 
-    QString m_name;
-    Element::Type m_type;
     bool m_selected;
-    std_v1<int> m_insideLoopsID;
-
+    std_v1<int> m_insideLoopsID;    
 };
 
 }

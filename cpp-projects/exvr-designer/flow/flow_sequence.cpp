@@ -175,7 +175,7 @@ void FlowSequence::update_from_experiment(Experiment *exp){
 
     // active move elements
     for(auto &element : elements){
-        if(element->type() == Element::Type::Node){
+        if(element->type == Element::Type::Node){
             continue;
         }
 
@@ -191,40 +191,58 @@ void FlowSequence::update_from_experiment(Experiment *exp){
         auto nextElem     = moveElem->canMoveToRight ? dynamic_cast<MovableFlowElement*>(elements[id+2].get()) : nullptr;
 
         if(previousElem){
-            if(previousElem->type() == Element::Type::LoopStart && moveElem->type() == Element::Type::LoopEnd){
+            if(previousElem->type == Element::Type::LoopStart && moveElem->type == Element::Type::LoopEnd){
                 moveElem->canMoveToLeft = false;
             }
-            if(previousElem->type() == Element::Type::LoopStart && moveElem->type() == Element::Type::LoopStart){
+            if(previousElem->type == Element::Type::LoopStart && moveElem->type == Element::Type::LoopStart){
                 moveElem->canMoveToLeft = false;
             }
         }
         if(nextElem){
-            if(nextElem->type() == Element::Type::LoopEnd && moveElem->type() == Element::Type::LoopStart){
+            if(nextElem->type == Element::Type::LoopEnd && moveElem->type == Element::Type::LoopStart){
                 moveElem->canMoveToRight = false;
             }
-            if(nextElem->type() == Element::Type::LoopEnd && moveElem->type() == Element::Type::LoopEnd){
+            if(nextElem->type == Element::Type::LoopEnd && moveElem->type == Element::Type::LoopEnd){
                 moveElem->canMoveToRight = false;
             }
         }
     }
 }
 
+FlowElement *FlowSequence::mouse_on_element(const QPoint &mousePos){
+
+    for(auto& elem : elements){
+        if(elem->uiElemRect.contains(mousePos)){
+            return elem.get();
+        }
+    }
+    return nullptr;
+}
+
+LoopFlowElement *FlowSequence::mouse_on_loop(const QPoint &mousePos){
+
+    for(auto& elem : loopsElements){
+        if(elem->uiElemRect.contains(mousePos)){
+            return elem.get();
+        }
+    }
+    return nullptr;
+}
+
 void FlowSequence::check_click_on_elements(QPoint clickPos) noexcept{
 
     // check in elements
-    for(auto& elem : elements){
-        if(elem->uiElemRect.contains(clickPos)){
-            emit select_element_signal(elem->key);
-            return;
-        }
+    if(auto selectedElement = mouse_on_element(clickPos); selectedElement != nullptr){
+        qDebug() << "element";
+        emit select_element_signal(selectedElement->key);
+        return;
     }
 
     // check in loops
-    for(const auto& loop : loopsElements){
-        if(loop->uiElemRect.contains(clickPos)){
-            emit select_element_signal(loop->key);
-            return;
-        }
+    if(auto selectedLoop = mouse_on_loop(clickPos); selectedLoop != nullptr){
+        qDebug() << "loop";
+        emit select_element_signal(selectedLoop->key);
+        return;
     }
 
     // check in add elements
@@ -252,7 +270,7 @@ void FlowSequence::check_click_on_elements(QPoint clickPos) noexcept{
     // check in remove and move elements
     for(const auto& element : elements){
 
-        if(element->type() == Element::Type::Node || !element->is_selected()){
+        if(element->type == Element::Type::Node || !element->is_selected()){
             continue;
         }
         const auto moveElem =  dynamic_cast<MovableFlowElement*>(element.get());

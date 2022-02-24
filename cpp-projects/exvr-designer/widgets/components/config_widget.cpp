@@ -276,7 +276,7 @@ ConfigParametersW *ConfigW::generate_parameters(Component::Type type, bool initC
     case CT::Thera_trainer_tracking:
         return gen_params_w<TheraTrainerTrackingInitConfigParametersW,TheraTrainerTrackingConfigParametersW>(initConfig);
     case CT::Thera_trainer_platform:
-        return gen_params_w<TheraTrainerPlatformConfigParametersW,AudioSourceConfigParametersW>(initConfig);
+        return gen_params_w<TheraTrainerPlatformInitConfigParametersW,TheraTrainerPlatformConfigParametersW>(initConfig);
     // ############################# UI
     case CT::Slider_ui:
         return gen_params_w<SliderUiInitConfigParametersW,SliderUiConfigParametersW>(initConfig);

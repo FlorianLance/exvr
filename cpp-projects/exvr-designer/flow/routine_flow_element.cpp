@@ -65,7 +65,7 @@ void RoutineFlowElement::draw(QPainter &painter, qreal zoomLevel){
     // draw name
     pen.setColor(is_selected() ? colors.selectedTextColor : colors.unselectedTextColor);
     painter.setPen(pen);
-    painter.drawText(uiElemRect,  Qt::AlignCenter, m_name);
+    painter.drawText(uiElemRect,  Qt::AlignCenter, name);
 }
 
 void RoutineFlowElement::update(Element *element){

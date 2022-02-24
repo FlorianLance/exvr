@@ -146,6 +146,11 @@ void ElementViewerW::init_routine_ui(){
 
         emit GSignals::get()->set_routine_as_randomizer_signal(m_currentElementId, isARandomizer);
     });
+
+    auto teI = ui->teInformations;
+    connect(teI, &QTextEdit::textChanged, this, [=]{
+        emit GSignals::get()->update_element_informations_signal(m_currentElementId, teI->toPlainText());
+    });
 }
 
 class Delegate : public QItemDelegate {
@@ -293,8 +298,10 @@ void ElementViewerW::init_loop_ui(){
         emit GSignals::get()->reload_loop_sets_file_signal(m_currentElementId);
     });
 
-
-
+    auto teI = ui->teInformations;
+    connect(teI, &QTextEdit::textChanged, this, [=]{
+        emit GSignals::get()->update_element_informations_signal(m_currentElementId, teI->toPlainText());
+    });
 }
 
 void ElementViewerW::init_isi_ui(){
@@ -345,6 +352,11 @@ void ElementViewerW::init_isi_ui(){
     connect(ui->pbDown, &QPushButton::clicked, this, [=]{
         int id = lw->currentRow();
         emit GSignals::get()->move_isi_interval_down_signal(m_currentElementId, RowId{id});
+    });
+
+    auto teI = ui->teInformations;
+    connect(teI, &QTextEdit::textChanged, this, [=]{
+        emit GSignals::get()->update_element_informations_signal(m_currentElementId, teI->toPlainText());
     });
 }
 
@@ -434,7 +446,10 @@ void ElementViewerW::update_loop_ui(Loop *loop){
     ui->laName->setText(loop->name());
 
     // labels
-    ui->laSetList->setText("Set List (" + QString::number(tw->rowCount()) + " elements)");
+    ui->laSetList->setText(QSL("Set List (") % QString::number(tw->rowCount()) % QSL(" elements)"));
+
+    // informations
+    ui->teInformations->setText(loop->informations);
 }
 
 void ElementViewerW::update_routine_ui(Routine *routine){
@@ -475,8 +490,11 @@ void ElementViewerW::update_routine_ui(Routine *routine){
     ui->pbDown->setEnabled(lw->currentRow() >= 0 && lw->currentRow() < lw->count()-1 && lw->count() > 0);
 
     // labels
-    ui->laConditions->setText("Conditions (" + QString::number(lw->count()) + " elements)");    
+    ui->laConditions->setText(QSL("Conditions (") % QString::number(lw->count()) % QSL(" elements)"));
     lw->blockSignals(false);
+
+    // informations
+    ui->teInformations->setText(routine->informations);
 }
 
 void ElementViewerW::update_isi_ui(Isi *isi){
@@ -523,6 +541,9 @@ void ElementViewerW::update_isi_ui(Isi *isi){
 
     // labels
     ui->laIsi->setText("Interstimulus state interval list (" + QString::number(lw->count()) + " elements)");
+
+    // informations
+    ui->teInformations->setText(isi->informations);
 }
 
 #include "moc_element_viewer_widget.cpp"

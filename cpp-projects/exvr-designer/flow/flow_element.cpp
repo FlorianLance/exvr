@@ -38,7 +38,7 @@ void FlowElement::define_stretch(qreal stretch){
 
 void FlowElement::adapt_size_from_name(QFontMetrics fontMetrics){
 
-    QRect rect = fontMetrics.boundingRect(name());
+    QRect rect = fontMetrics.boundingRect(name);
     qreal minAreaWidth = 1.2*rect.width();
     qreal maxAreaWidth = 1.7*rect.width();
     qreal areaWidth = minAreaWidth + areaStretch*(maxAreaWidth - minAreaWidth);
@@ -60,16 +60,17 @@ void FlowElement::draw(QPainter &painter, qreal zoomLevel){
 
 
 FlowElement::FlowElement(Element *element) :
-    key(ElementKey{element->key()}), m_name(element->name()), m_type(element->type),
+    key(ElementKey{element->key()}), name(element->name()), type(element->type),
     m_selected(element->is_selected()), m_insideLoopsID(element->insideLoopsID){
 
-    colors = display::Colors::flowElements.at(m_type);
+    colors = display::Colors::flowElements.at(type);
 }
 
 void FlowElement::update(Element *element){
     key             = ElementKey{element->key()};
-    m_name          = element->name();
-    m_type          = element->type;       
+    name            = element->name();
+    type            = element->type;
+    informations    = element->informations;
     m_selected      = element->is_selected();
-    m_insideLoopsID = element->insideLoopsID;
+    m_insideLoopsID = element->insideLoopsID;    
 }

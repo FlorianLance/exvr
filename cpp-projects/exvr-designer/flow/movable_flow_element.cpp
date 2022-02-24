@@ -47,7 +47,7 @@ void MovableFlowElement::adapt_size_from_name(QFontMetrics fontMetrics){
 void MovableFlowElement::compute_position(QPointF topLeft, int loopMaxDeepLevel){
 
     FlowElement::compute_position(topLeft, loopMaxDeepLevel);
-    qreal offset = type() == Element::Type::LoopEnd ? 0.8*areaHeight : 0.;
+    qreal offset = type == Element::Type::LoopEnd ? 0.8*areaHeight : 0.;
     qreal heightButtons = uiAreaRect.size().height() / 1.5;
     QSizeF removeSize(removeElement->uiElemRect.width()*0.8, heightButtons);
     removeElement->uiElemRect = QRectF(uiElemRect.center()      + QPointF(-removeSize.width()*0.5, 0.8*areaHeight + 1.2*removeSize.height() + offset),removeSize);

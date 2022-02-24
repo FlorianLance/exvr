@@ -31,11 +31,14 @@
 #include "ex_widgets/ex_float_spin_box_w.hpp"
 #include "ex_widgets/ex_checkbox_w.hpp"
 #include "ex_widgets/ex_text_edit_w.hpp"
+#include "ex_widgets/ex_combo_box_index_w.hpp"
+#include "ex_widgets/ex_select_color_w.hpp"
 
 // local
 #include "ex_widgets/ex_resources_list_w.hpp"
 
 using namespace tool::ex;
+using namespace tool::ui;
 
 struct VolumetricVideoInitConfigParametersW::Impl{
     TransformSubPart transfo{"init_transform"};
@@ -48,10 +51,10 @@ VolumetricVideoInitConfigParametersW::VolumetricVideoInitConfigParametersW() :  
 
 void VolumetricVideoInitConfigParametersW::insert_widgets(){
 
-    add_widget(ui::F::gen(ui::L::VB(), {m_p->volumetricVideo()}, LStretch{false}, LMargins{true}, QFrame::NoFrame));
+    add_widget(F::gen(L::VB(), {m_p->volumetricVideo()}, LStretch{false}, LMargins{true}, QFrame::NoFrame));
 
     // infos
-    add_widget(ui::F::gen(ui::L::VB(), {ui::W::txt("Infos"), m_p->infoText()}, LStretch{true}, LMargins{true}, QFrame::Box));
+    add_widget(F::gen(L::VB(), {W::txt("Infos"), m_p->infoText()}, LStretch{true}, LMargins{true}, QFrame::Box));
     m_p->infoText.w->setMinimumHeight(100);
 
     add_sub_part_widget(m_p->transfo);
@@ -70,33 +73,71 @@ void VolumetricVideoInitConfigParametersW::update_with_info(QStringView id, QStr
 }
 
 struct VolumetricVideoConfigParametersW::Impl{
+
     TransformSubPart transfo{"transform"};
+
+    // video
     ExCheckBoxW loop{"loop"};
     ExFloatSpinBoxW startTime{"start_time"};
     ExFloatSpinBoxW endTime{"end_time"};
+
+    // audio
     ExCheckBoxW enableAudio{"enable_audio"};
     ExSpinBoxW audioCameraId{"audio_id"};
     ExFloatSpinBoxW volume{"volume"};
+
+    // rendering
+    ExFloatSpinBoxW sizePoints{"size_points"};
+    ExComboBoxIndexW rendering{"rendering"};
+    ExSelectColorW tint{"tint"};
+    ExCheckBoxW renderCircles{"circles"};
+    ExCheckBoxW parabloidFragCones{"cones"};
+    ExComboBoxIndexW parabloidGeoDetails{"details"};
 };
 
 VolumetricVideoConfigParametersW::VolumetricVideoConfigParametersW() :  ConfigParametersW(), m_p(std::make_unique<Impl>()){
 }
 
 void VolumetricVideoConfigParametersW::insert_widgets(){
+
     add_sub_part_widget(m_p->transfo);
-    add_widget(ui::F::gen(ui::L::HB(), {m_p->loop()}, LStretch{true}, LMargins{true}, QFrame::NoFrame));
-    add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Duration (s), from: "), m_p->startTime(),ui::W::txt(" to: "),m_p->endTime()}, LStretch{true}, LMargins{true}, QFrame::NoFrame));
-    add_widget(ui::F::gen(ui::L::HB(), {m_p->enableAudio(), ui::W::txt("Audio id: "), m_p->audioCameraId()}, LStretch{true}, LMargins{true}, QFrame::NoFrame));
-    add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Volume: "), m_p->volume()}, LStretch{false}, LMargins{true}, QFrame::NoFrame));
+    add_widget(F::gen(L::VB(),{W::txt("<b>Video: </b>"),
+        m_p->loop(),
+        F::gen(L::HB(), {W::txt("Duration (s), from: "), m_p->startTime(),W::txt(" to: "), m_p->endTime()}, LStretch{true}, LMargins{false}, QFrame::NoFrame)
+    }, LStretch{false}, LMargins{true},QFrame::Box));
+
+    add_widget(F::gen(L::VB(),{W::txt("<b>Audio: </b>"),
+        m_p->enableAudio(),
+        F::gen(L::HB(), {m_p->enableAudio(), W::txt("Audio id: "), m_p->audioCameraId()}, LStretch{true}, LMargins{false}, QFrame::NoFrame),
+        F::gen(L::HB(), {W::txt("Volume: "), m_p->volume()}, LStretch{false}, LMargins{false}, QFrame::NoFrame)
+    },LStretch{false}, LMargins{true},QFrame::Box));
+
+
+    add_widget(F::gen(L::VB(),{W::txt("<b>Rendering: </b>"),
+        F::gen(L::HB(),{W::txt("Size points: "),m_p->sizePoints()}, LStretch{true}, LMargins{false},QFrame::NoFrame),
+        F::gen(L::HB(),{W::txt("Rendering: "), m_p->rendering()}, LStretch{true}, LMargins{false},QFrame::NoFrame),
+        F::gen(L::HB(),{W::txt("Points color tint: "), m_p->tint()}, LStretch{true}, LMargins{false},QFrame::NoFrame),
+        m_p->renderCircles(), m_p->parabloidFragCones(),
+        F::gen(L::HB(),{W::txt("Parbloid geo details: "), m_p->parabloidGeoDetails()}, LStretch{true}, LMargins{false},QFrame::NoFrame)
+    }, LStretch{false}, LMargins{true},QFrame::Box));
 }
 
 void VolumetricVideoConfigParametersW::init_and_register_widgets(){
     map_sub_part(m_p->transfo.init_widget(QSL("Config transform</b> (applied when routine starts)<b>")));
+    // video
+    add_input_ui(m_p->loop.init_widget("Loop video", true));
     add_input_ui(m_p->startTime.init_widget(MinV<qreal>{0.0}, V<qreal>{0.0}, MaxV<qreal>{1000.}, StepV<qreal>{0.1}, 2));
     add_input_ui(m_p->endTime.init_widget(MinV<qreal>{0.0}, V<qreal>{10.0}, MaxV<qreal>{1000.}, StepV<qreal>{0.1}, 2));
-    add_input_ui(m_p->enableAudio.init_widget("Enable audio", true));
-    add_input_ui(m_p->loop.init_widget("Loop video", true));
+    // audio
+    add_input_ui(m_p->enableAudio.init_widget("Enable audio", true));    
     add_input_ui(m_p->volume.init_widget(MinV<qreal>{0}, V<qreal>{1.f}, MaxV<qreal>{1.f}, StepV<qreal>{0.01}, 2));
     add_input_ui(m_p->audioCameraId.init_widget(MinV<int>{0}, V<int>{0}, MaxV<int>{100}, StepV<int>{1}));
+    // rendering
+    add_input_ui(m_p->sizePoints.init_widget(MinV<qreal>{0.0001}, V<qreal>{0.0025}, MaxV<qreal>{0.05}, StepV<qreal>{0.0001},4));
+    add_input_ui(m_p->rendering.init_widget({"Quad", "ParabloidFrag", "ParabloidGeo"}, 2));
+    add_input_ui(m_p->parabloidGeoDetails.init_widget({"None", "Low", "Middle", "Hight"}, 3));
+    add_input_ui(m_p->tint.init_widget("Points tint", QColor(255,255,255,0)));
+    add_input_ui(m_p->renderCircles.init_widget("Use circles", true));
+    add_input_ui(m_p->parabloidFragCones.init_widget("Parabloid frag cones", true));
 }
 

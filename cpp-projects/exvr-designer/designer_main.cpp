@@ -37,7 +37,6 @@ using namespace tool::ex;
 
 int main(int argc, char *argv[]){
 
-
     // build parameters
     const QString numVersion = "1.0a18";
     bool lncoComponents = true;

@@ -28,17 +28,13 @@ using System.Collections.Generic;
 // unity
 using UnityEngine;
 
-namespace Ex
-{
+namespace Ex{
 
-    public class GlobalResourcesManager : MonoBehaviour
-    {
+    public class GlobalResourcesManager : MonoBehaviour{
 
         public enum ResourceType { Prefabs, Materials };
-
         private Dictionary<string, Material> m_loadedMaterials = null;
         private Dictionary<string, GameObject> m_loadedPrefabs = null;
-
 
         #region materials
 
@@ -64,6 +60,7 @@ namespace Ex
         }
 
         public Material get_material(string pathMat) {
+
             if (!material_exist(pathMat)) {
 
                 if (load_material(pathMat)) {
@@ -77,22 +74,6 @@ namespace Ex
             return m_loadedMaterials[pathMat] as Material;
         }
 
-        public Material instantiate_default_mat() {
-            return instantiate_mat("DefaultModel");
-        }
-
-        public Material instantiate_default_transparent_mat() {
-            return instantiate_mat("DefaultTransparent");
-        }
-
-        public Material instantiate_unlit_color_mat() {
-            return instantiate_mat("UnlitColor");
-        }
-
-        public Material instantiate_unlit_transparent_color_mat() {
-            return instantiate_mat("UnlitTransparentColor");
-        }
-
         public Material instantiate_mat(string pathMat) {
 
             var material = get_material(pathMat);
@@ -101,13 +82,28 @@ namespace Ex
             }
             return null;
         }
-
         public Material instantiate_mat(Material material) {
             if (material == null) {
                 Debug.LogError("Input material is null, cannot copy.");
                 return null;
             }
             return Instantiate(material);
+        }
+
+        public Material instantiate_default_mat() {
+            return instantiate_mat("Common/DefaultModel");
+        }
+
+        public Material instantiate_default_transparent_mat() {
+            return instantiate_mat("Common/DefaultTransparent");
+        }
+
+        public Material instantiate_unlit_color_mat() {
+            return instantiate_mat("Common/UnlitColor");
+        }
+
+        public Material instantiate_unlit_transparent_color_mat() {
+            return instantiate_mat("Common/UnlitTransparentColor");
         }
 
         #endregion
@@ -196,20 +192,13 @@ namespace Ex
 
             // materials
             m_loadedMaterials = new Dictionary<string, Material>();
-            load_material("DefaultModel");
-            load_material("DefaultTransparentModel");
-            load_material("UnlitColor");   
+            load_material("Common/DefaultModel");
+            load_material("Common/DefaultTransparent");
+            load_material("Common/UnlitColor");
+            load_material("Common/UnlitTransparentColor");
 
             // prefabs
             m_loadedPrefabs = new Dictionary<string, GameObject>();
         }
-
-        //public void clean() {
-        //    m_loadedMaterials.Clear();
-        //    m_loadedPrefabs.Clear();
-        //    load_material("DefaultModel");
-        //    load_material("DefaultTransparentModel");
-        //    load_material("UnlitColor");
-        //}
     }
 }

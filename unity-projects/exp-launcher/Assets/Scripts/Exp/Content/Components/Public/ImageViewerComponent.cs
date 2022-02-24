@@ -46,7 +46,7 @@ namespace Ex{
             });
 
             // init gameObjects
-            m_imageGO = ExVR.GlobalResources().instantiate_prebab("Components/ImageRect", transform);
+            m_imageGO = ExVR.GlobalResources().instantiate_prebab("Common/Image", transform);
             m_imageGO.name = "ImageRect";
 
             // init default 

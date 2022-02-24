@@ -29,74 +29,94 @@ namespace Ex{
     [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
     public class PointCloud : MonoBehaviour{
         public enum RenderingType {
-            ParabloidFrag, ParabloidGeo
+            Quad=0, ParabloidFrag, ParabloidGeo
         };
 
-        public enum ParabloidDetails {
-            None = 0, Low = 1, Medium = 2, Hight = 3
+        public enum ParabloidGeoDetails {
+            None = 0, Low, Medium, Hight
         };
 
-        Shader pointShader = null;
+        Shader quadShader = null;
         Shader paraboloidFrag = null;
         Shader paraboloidGeoWorld = null;
 
-        Material material = null;
         RenderingType currentRendering = RenderingType.ParabloidGeo;
 
-        void Start() {
+        public void Start() {
 
             Mesh mesh = new Mesh();
             mesh.triangles = new int[0];
             GetComponent<MeshFilter>().mesh = mesh;
 
             var renderer                  = GetComponent<MeshRenderer>();
-            renderer.material             = (material = ExVR.GlobalResources().instantiate_mat("pointCloud"));
+            renderer.material             = ExVR.GlobalResources().instantiate_mat("Common/PointCloud");
             renderer.shadowCastingMode    = UnityEngine.Rendering.ShadowCastingMode.Off;
             renderer.receiveShadows       = false;
             renderer.lightProbeUsage      = UnityEngine.Rendering.LightProbeUsage.Off;
             renderer.reflectionProbeUsage = UnityEngine.Rendering.ReflectionProbeUsage.Off;
-
+            
+            quadShader         = Shader.Find("Custom/Cloud/QuadGeoWorldSizeShader");
             paraboloidFrag     = Shader.Find("Custom/Cloud/ParaboloidFragWorldSizeShader");
             paraboloidGeoWorld = Shader.Find("Custom/Cloud/ParaboloidGeoWorldSizeShader");
+
+            Debug.LogError("- " + (quadShader != null));
 
             set_rendering(currentRendering);
         }
 
         public void set_rendering(RenderingType rendering) {
 
-            var renderer = GetComponent<MeshRenderer>();
+            if(currentRendering == rendering) {
+                return;
+            }
+
+            var material = GetComponent<MeshRenderer>().material;
             switch (currentRendering = rendering) {
+                case RenderingType.Quad:
+                    material.shader = quadShader;
+                    break;
                 case RenderingType.ParabloidFrag:
-                    renderer.material.shader = paraboloidFrag;
+                    material.shader = paraboloidFrag;
                     break;
                 case RenderingType.ParabloidGeo:
-                    renderer.material.shader = paraboloidGeoWorld;
+                    material.shader = paraboloidGeoWorld;
                     break;
             }
         }
 
-        public void set_paraboloid_circle_state(bool circle) {
-            material.SetInt("_Circle", circle ? 1 : 0);
+        public void set_circles_state(bool circle) {
+            GetComponent<MeshRenderer>().material.SetInt("_Circles", circle ? 1 : 0);
         }
 
-        public void set_paraboloid_frag_cone_state(bool cone) {
+        public void set_paraboloid_frag_cones_state(bool cone) {
             if (currentRendering == RenderingType.ParabloidFrag) {
-                material.SetInt("_Cones", cone ? 1 : 0);
+                GetComponent<MeshRenderer>().material.SetInt("_Cones", cone ? 1 : 0);
             }
         }
 
-        public void set_paraboloid_geo_details(ParabloidDetails details) {
+        public void set_paraboloid_geo_details(ParabloidGeoDetails details) {
             if(currentRendering == RenderingType.ParabloidGeo) {
-                material.SetInt("_Details", (int)details);
+                GetComponent<MeshRenderer>().material.SetInt("_Details", (int)details);
             }
+        }
+
+        public void set_obb_filtering_state(bool enabled) {
+            GetComponent<MeshRenderer>().material.SetInt("_OBBFiltering", enabled ? 1 : 0);
         }
 
         public void set_tint(Color color) {
-            material.SetColor("_Tint", color);
+            GetComponent<MeshRenderer>().material.SetColor("_Tint", color);
         }
 
         public void set_pt_size(float size) {
-            material.SetFloat("_PointSize", size);
+            GetComponent<MeshRenderer>().material.SetFloat("_PointSize", size);
+        }
+
+        public void set_filtering_obb_transform(Transform obbTr) {
+            var material = GetComponent<MeshRenderer>().material;
+            material.SetVector("_ObbPos", obbTr.position);
+            material.SetVector("_ObbSize", obbTr.localScale*0.5f);
+            material.SetMatrix("_ObbOrientation", Matrix4x4.Rotate(obbTr.rotation).inverse);
         }
     }
 

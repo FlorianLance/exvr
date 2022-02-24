@@ -47,7 +47,7 @@ namespace Ex {
             });
 
             // init gameObject
-            m_textViewerGO = ExVR.GlobalResources().instantiate_prebab("Components/TextViewer", transform);
+            m_textViewerGO = ExVR.GlobalResources().instantiate_prebab("Components/TextViewer2", transform);
             m_text         = m_textViewerGO.transform.Find("Text").GetComponent<TMPro.TextMeshProUGUI>();
             m_panelGO      = m_textViewerGO.transform.Find("Panel").gameObject;
 

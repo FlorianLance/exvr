@@ -24,13 +24,7 @@
 
 #pragma once
 
-// qt-utility
-#include "ex_widgets/ex_pushbutton_w.hpp"
-#include "ex_widgets/ex_float_spin_box_w.hpp"
-#include "ex_widgets/ex_checkbox_w.hpp"
-
 // local
-#include "ex_widgets/ex_component_w.hpp"
 #include "config_pw.hpp"
 
 namespace tool::ex {

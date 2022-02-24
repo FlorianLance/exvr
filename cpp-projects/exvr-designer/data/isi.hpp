@@ -51,7 +51,7 @@ struct Isi : public Element  {
     Isi() : Element(Type::Isi, "isi"){
     }
 
-    Isi(QString n, ElementKey id) : Element(Type::Isi, n, id.v){
+    Isi(QString n, ElementKey id, QString infos ="") : Element(Type::Isi, n, id.v, infos){
     }
 
     inline QString to_string() const{return QSL("Isi(") % name() % QSL("|") % QString::number(key()) % QSL(")");}

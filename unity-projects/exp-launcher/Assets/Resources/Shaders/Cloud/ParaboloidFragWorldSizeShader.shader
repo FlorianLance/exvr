@@ -9,8 +9,9 @@ Shader "Custom/Cloud/ParaboloidFragWorldSizeShader"
 	Interpolation is done by creating screen facing paraboloids in the fragment shader!
 	*/
 	Properties{
-		_PointSize("Point Size", Float) = 5
-		[Toggle] _Circles("Circles", Int) = 0
+		_PointSize("Point Size", Float) = 0.0025
+		[Toggle] _Circles("Circles", Int) = 1
+		[Toggle] _OBBFiltering("OBBFiltering", Int) = 0
 		[Toggle] _Cones("Cones", Int) = 0
 		_Tint("Tint", Color) = (0.5, 0.5, 0.5, 1)
 	}
@@ -26,6 +27,7 @@ Shader "Custom/Cloud/ParaboloidFragWorldSizeShader"
 		{
 	
 			Tags{ "LightMode" = "ForwardBase" }
+
 			CGPROGRAM
 			#pragma vertex vert
 			#pragma geometry geom
@@ -64,10 +66,10 @@ Shader "Custom/Cloud/ParaboloidFragWorldSizeShader"
 			int _Cones;
 			float4 _Tint;
 
+			int _OBBFiltering;
 			float3 _ObbPos;
 			float3 _ObbSize;
 			float4x4 _ObbOrientation;
-
 
 			float4 valid_vertex(float4 p) {
 
@@ -76,21 +78,27 @@ Shader "Custom/Cloud/ParaboloidFragWorldSizeShader"
 
 					float d = dot(dir, _ObbOrientation[ii].xyz);
 					if (d > _ObbSize[ii]) {
-						return float4(p.x, p.y, p.z, 1.0);
+						return float4(p.x, p.y, p.z, 0.0);
 					}
 
 					if (d < -_ObbSize[ii]) {
-						return float4(p.x, p.y, p.z, 1.0);
+						return float4(p.x, p.y, p.z, 0.0);
 					}
 				}
 
-				return float4(p.x, p.y, p.z, 0.0);
+				return float4(p.x, p.y, p.z, 1.0);
 			}
 
 
 			VertexMiddle vert(VertexInput v) {
+
 				VertexMiddle o;
-				o.position = valid_vertex(v.position);
+				if (_OBBFiltering == 1) {
+					o.position = float4(v.position.xyz, valid_vertex(mul(unity_ObjectToWorld, v.position)).w);
+				}
+				else {
+					o.position = float4(v.position.xyz, 1);
+				}
 
 				float4 col = v.color;
 				float3 cc =  LinearToGammaSpace(_Tint.rgb) * float3(col.r,col.g,col.b);

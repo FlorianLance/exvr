@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>245</width>
-    <height>306</height>
+    <width>298</width>
+    <height>397</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -198,6 +198,23 @@ QListWidget::item:hover {
       </item>
      </layout>
     </widget>
+   </item>
+   <item>
+    <widget class="Line" name="line_2">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Infomations:</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QTextEdit" name="teInformations"/>
    </item>
   </layout>
  </widget>

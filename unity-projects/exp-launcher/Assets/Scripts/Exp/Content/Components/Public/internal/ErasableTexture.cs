@@ -82,7 +82,7 @@ namespace Ex{
             var mc = gameObject.AddComponent<MeshCollider>();
             mf.sharedMesh = m_mesh;
             mc.sharedMesh = m_mesh;
-            mr.material = ExVR.GlobalResources().instantiate_mat("alpha_mark");
+            mr.material = ExVR.GlobalResources().instantiate_mat("Components/MarkToClean/AlphaMark");
 
             // generate textures and colors
             m_alphaTexture = new Texture2D(m_widthColliderDef, m_heightColliderDef);

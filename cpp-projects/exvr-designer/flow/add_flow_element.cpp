@@ -29,10 +29,10 @@ using namespace tool::ex;
 AddFlowElement::AddFlowElement(Element::Type typeToAdd) : add(std::make_unique<Element>(Element::Type::AddElement, "add")){
 
     this->typeToAdd = typeToAdd;
-    m_name      = add->name();
-    m_type      = add->type;
+    name      = add->name();
+    type      = add->type;
     key         = ElementKey{add->key()};
     m_selected  = add->is_selected();
     m_insideLoopsID = add->insideLoopsID;
-    colors = display::Colors::flowElements.at(m_type);
+    colors = display::Colors::flowElements.at(type);
 }

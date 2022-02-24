@@ -71,7 +71,7 @@ namespace Ex {
 
         protected override bool initialize() {
 
-            bounceMaterial = Instantiate(Resources.Load<PhysicMaterial>("Materials/bounce_ball")) as PhysicMaterial;
+            bounceMaterial = Instantiate(Resources.Load<PhysicMaterial>("Materials/Components/FallingSpheres/bounce_ball")) as PhysicMaterial;
 
             innerC = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
             innerC.transform.SetParent(transform);

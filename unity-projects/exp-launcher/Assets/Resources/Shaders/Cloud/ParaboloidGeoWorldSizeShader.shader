@@ -10,9 +10,10 @@ Shader "Custom/Cloud/ParaboloidGeoWorldSizeShader"
 	Implemented using geometry shader
 	*/
 	Properties{
-		_PointSize("Point Size", Float) = 5
-		[Toggle] _Circles("Circles", Int) = 0
-		_Details("DetailLevel", Int) = 2
+		_PointSize("Point Size", Float) = 0.025
+		[Toggle] _Circles("Circles", Int) = 1
+		[Toggle] _OBBFiltering("OBBFiltering", Int) = 0
+		_Details("DetailLevel", Int) = 3
 		_Tint("Tint", Color) = (0.5, 0.5, 0.5, 1)
 	}
 
@@ -60,7 +61,7 @@ Shader "Custom/Cloud/ParaboloidGeoWorldSizeShader"
 			int _Details; //1, 2 or 3
 			float4 _Tint;
 
-
+			int _OBBFiltering;
 			float3 _ObbPos;
 			float3 _ObbSize;
 			float4x4 _ObbOrientation;
@@ -72,23 +73,27 @@ Shader "Custom/Cloud/ParaboloidGeoWorldSizeShader"
 
 					float d = dot(dir, _ObbOrientation[ii].xyz);
 					if (d > _ObbSize[ii]) {
-						return float4(p.x, p.y, p.z, 1.0);
+						return float4(p.x, p.y, p.z, 0.0);
 					}
 
 					if (d < -_ObbSize[ii]) {
-						return float4(p.x, p.y, p.z, 1.0);
+						return float4(p.x, p.y, p.z, 0.0);
 					}
 				}
 
-				return float4(p.x, p.y, p.z, 0.0);
+				return float4(p.x, p.y, p.z, 1.0);
 			}
 
 
 			VertexMiddle vert(VertexInput v) {
 
 				VertexMiddle o;
-				o.position = mul(unity_ObjectToWorld, v.position);
-				o.position = valid_vertex(o.position);
+				if (_OBBFiltering == 1) {
+					o.position = valid_vertex(mul(unity_ObjectToWorld, v.position));
+				}
+				else {
+					o.position = float4(mul(unity_ObjectToWorld, v.position).xyz, 1);
+				}		
 	
 				float4 col = v.color;
 				float3 cc = LinearToGammaSpace(_Tint.rgb) * float3(col.r, col.g, col.b);
@@ -130,11 +135,11 @@ Shader "Custom/Cloud/ParaboloidGeoWorldSizeShader"
 				VertexOutput middle = createParaboloidPoint(input[0], 0, 0);
 		
 
-				//edges
-				VertexOutput e11 = createParaboloidPoint(input[0], 1, 1);
-				VertexOutput em11 = createParaboloidPoint(input[0], -1, 1);
-				VertexOutput em1m1 = createParaboloidPoint(input[0], -1, -1);
-				VertexOutput e1m1 = createParaboloidPoint(input[0], 1, -1);
+				// edges
+				VertexOutput e11	= createParaboloidPoint(input[0], 1, 1);
+				VertexOutput em11	= createParaboloidPoint(input[0], -1, 1);
+				VertexOutput em1m1	= createParaboloidPoint(input[0], -1, -1);
+				VertexOutput e1m1	= createParaboloidPoint(input[0], 1, -1);
 
 				if (_Details > 0) {
 					float ringval = ringpositions[3 - _Details];
@@ -146,7 +151,7 @@ Shader "Custom/Cloud/ParaboloidGeoWorldSizeShader"
 					VertexOutput ir6 = createParaboloidPoint(input[0], -sqr*ringval, -sqr*ringval);
 					VertexOutput ir7 = createParaboloidPoint(input[0], 0, -ringval);
 					VertexOutput ir8 = createParaboloidPoint(input[0], sqr*ringval, -sqr*ringval);
-					//Inner Circle
+					// Inner Circle
 					outputStream.Append(ir1);
 					outputStream.Append(middle);
 					outputStream.Append(ir2);

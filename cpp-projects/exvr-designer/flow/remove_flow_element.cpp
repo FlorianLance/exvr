@@ -27,12 +27,12 @@
 using namespace tool::ex;
 
 RemoveFlowElement::RemoveFlowElement() : remove(std::make_unique<Element>(Element::Type::RemoveElement, "remove")) {
-    m_name    = remove->name();
-    m_type    = remove->type;
-    key       = ElementKey{remove->key()};
-    m_selected = remove->is_selected();
+    name        = remove->name();
+    type        = remove->type;
+    key         = ElementKey{remove->key()};
+    m_selected  = remove->is_selected();
     m_insideLoopsID = remove->insideLoopsID;
-    colors = display::Colors::flowElements.at(m_type);
+    colors      = display::Colors::flowElements.at(type);
 }
 
 void RemoveFlowElement::draw(QPainter &painter, qreal zoomLevel){

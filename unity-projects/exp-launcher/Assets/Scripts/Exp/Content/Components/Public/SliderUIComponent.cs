@@ -60,10 +60,10 @@ namespace Ex{
 
             // init gameObjects            
             if (initC.get<bool>("horizontal_slider")) {
-                m_sliderGO = ExVR.GlobalResources().instantiate_prebab("Components/HorizontalSliderCamera", transform); 
+                m_sliderGO = ExVR.GlobalResources().instantiate_prebab("Components/SliderUI/Horizontal", transform); 
                 m_sliderGO.name = "Horizontal slider";
             } else {
-                m_sliderGO = ExVR.GlobalResources().instantiate_prebab("Components/VerticalSliderCamera", transform);
+                m_sliderGO = ExVR.GlobalResources().instantiate_prebab("Components/SliderUI/Vertical", transform);
                 m_sliderGO.name = "Vertical slider";
             }
 

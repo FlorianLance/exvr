@@ -49,6 +49,10 @@ public:
 
     void reset();
     void update_from_experiment(Experiment *exp);
+
+    FlowElement *mouse_on_element(const QPoint &mousePos);
+    LoopFlowElement *mouse_on_loop(const QPoint &mousePos);
+
     void check_click_on_elements(QPoint clickPos) noexcept;    
     void draw(QPainter &painter, qreal zoomLevel);
 

@@ -37,7 +37,7 @@ NodeFlowElement::NodeFlowElement(NodeFlow *node) : FlowElement(node){
 
 void NodeFlowElement::adapt_size_from_name(QFontMetrics fontMetrics){
 
-    QRect rect = fontMetrics.boundingRect(name());
+    QRect rect = fontMetrics.boundingRect(name);
     qreal minAreaWidth = 0.4*rect.width();
     qreal maxAreaWidth = 0.8*rect.width();
     qreal areaWidth = minAreaWidth + areaStretch*(maxAreaWidth - minAreaWidth);

@@ -74,7 +74,7 @@ namespace Ex{
             m_debugFullZoneLR.positionCount = 5;
 
             // generate zone
-            m_fullZoneGO = ExVR.GlobalResources().instantiate_prebab("Components/MarkFullZone", transform, "Mark full zone");
+            m_fullZoneGO = ExVR.GlobalResources().instantiate_prebab("Components/MarkToClean/Zone", transform, "Mark full zone");
             m_fullZoneGO.GetComponent<MeshRenderer>().enabled = false;
 
             // generate mark

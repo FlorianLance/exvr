@@ -99,6 +99,7 @@ protected:
     void resizeEvent(QResizeEvent *event) override;
     void paintEvent(QPaintEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
     void keyPressEvent(QKeyEvent *event) override;
 
 private:
@@ -113,10 +114,6 @@ private:
 
     FlowSequence m_flowSequence;
 
-//    QAction *duplicateElementA  = nullptr;
-//    QAction *removeElementA     = nullptr;
-//    QAction *moveLeftElementA   = nullptr;
-//    QAction *moveRightElementA  = nullptr;
 };
 }
 

@@ -31,7 +31,7 @@ using namespace tool::ex;
 
 IsiUP Isi::copy_with_new_element_id(const Isi &isiToCopy, const QString &newName){
 
-    IsiUP isi = std::make_unique<Isi>(newName, ElementKey{-1});
+    IsiUP isi = std::make_unique<Isi>(newName, ElementKey{-1}, isiToCopy.informations);
     isi->randomized = isiToCopy.randomized;
     isi->intervals = isiToCopy.intervals;
     isi->currentIntervalId = isiToCopy.currentIntervalId;

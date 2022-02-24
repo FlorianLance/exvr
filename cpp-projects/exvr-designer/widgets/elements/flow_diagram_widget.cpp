@@ -28,6 +28,7 @@
 #include <QScrollArea>
 #include <QScrollBar>
 #include <QInputDialog>
+#include <QToolTip>
 
 using namespace tool::ex;
 
@@ -36,6 +37,7 @@ FlowDiagramW::FlowDiagramW(QSlider *zoomSlider, QPushButton *resizeButton){
 
     setFocusPolicy(Qt::StrongFocus);
     setObjectName("FlowDiagram");
+    setMouseTracking(true);
 
     // connections
     // # ui
@@ -84,10 +86,10 @@ void FlowDiagramW::contextMenuEvent(QContextMenuEvent *event) {
     auto exec_element_menu = [this, event](FlowElement *element) {
 
         bool mouseOnElement = false;
-        const bool isNode    = element->type() == Element::Type::Node;
-        const bool isRoutine = element->type() == Element::Type::Routine;
-        const bool isIsi     = element->type() == Element::Type::Isi;
-        const bool isLoop    = element->type() == Element::Type::Loop;
+        const bool isNode    = element->type == Element::Type::Node;
+        const bool isRoutine = element->type == Element::Type::Routine;
+        const bool isIsi     = element->type == Element::Type::Isi;
+        const bool isLoop    = element->type == Element::Type::Loop;
 
 
 
@@ -315,9 +317,26 @@ void FlowDiagramW::draw_arrow_line(QPainter &painter, const QLineF &line, qreal 
 }
 
 void FlowDiagramW::mousePressEvent(QMouseEvent *event){
-    Q_UNUSED(event)
     if(event->button() == Qt::LeftButton){
         m_flowSequence.check_click_on_elements(event->pos());
+    }
+}
+
+void FlowDiagramW::mouseMoveEvent(QMouseEvent *event){
+    if(auto element = m_flowSequence.mouse_on_element(event->pos()); element != nullptr){
+        if(element->informations.length() == 0){
+            return;
+        }
+        if(element->type == Element::Type::Routine || element->type == Element::Type::Isi){
+            QToolTip::showText(event->globalPos(), element->informations, this, element->uiElemRect.toRect());
+        }
+    }
+
+    if(auto loop = m_flowSequence.mouse_on_loop(event->pos()); loop != nullptr){
+        if(loop->informations.length() == 0){
+            return;
+        }
+        QToolTip::showText(event->globalPos(), loop->informations, this, loop->uiElemRect.toRect());
     }
 }
 

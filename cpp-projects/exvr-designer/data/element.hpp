@@ -86,9 +86,9 @@ public:
     }
 
     Element() = delete;
-    Element(Type t, QString n, int id = -1) :
+    Element(Type t, QString n, int id = -1, QString infos = "") :
           key(is_button(t) ? IdKey::Type::ButtonElement :
-                             IdKey::Type::Element, id), type(t), m_name(n){
+            IdKey::Type::Element, id), type(t), informations(infos), m_name(n){
     }
 
     virtual ~Element() = default;
@@ -124,6 +124,7 @@ public:
 
     std_v1<int> insideLoopsID;       /**< all loop id containing the element */
     std_v1<Element*> insideLoops;
+    QString informations;
 
 private:
 

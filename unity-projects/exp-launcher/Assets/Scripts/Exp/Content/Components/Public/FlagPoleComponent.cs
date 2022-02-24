@@ -64,7 +64,7 @@ namespace Ex {
 
             // pole
             {
-                flagPoleMaterial = Instantiate(Resources.Load(string.Format("Materials/Procedural/Pole")) as Material);
+                flagPoleMaterial = ExVR.GlobalResources().instantiate_mat("Components/FlagPole/Pole");
 
                 poleGO = new GameObject("Pole");
                 poleGO.transform.SetParent(transform);                
@@ -92,8 +92,8 @@ namespace Ex {
                 flagGO.AddComponent<MeshFilter>().mesh = mesh;
                 var collider = flagGO.AddComponent<SphereCollider>();
                 collider.radius = Mathf.Min(width, height);
-                smr = flagGO.AddComponent<SkinnedMeshRenderer>();
-                smr.material   = Instantiate(Resources.Load(string.Format("Materials/Procedural/Grid")) as Material);                   
+                smr          = flagGO.AddComponent<SkinnedMeshRenderer>();
+                smr.material = ExVR.GlobalResources().instantiate_mat("Components/FlagPole/Grid");                
                 smr.sharedMesh = mesh;
 
                 flagCloth = flagGO.AddComponent<Cloth>();

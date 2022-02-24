@@ -35,7 +35,7 @@ Loop::Loop() : Element(Type::Loop, QSL("loop")){
     fileSets = {Set{QSL("file_default"),SetKey{-1}}};
 }
 
-Loop::Loop(QString n, ElementKey id) : Element(Type::Loop, n, id.v){
+Loop::Loop(QString n, ElementKey id, QString infos) : Element(Type::Loop, n, id.v, infos){
 
     if(id.v == -1){
         sets = {Set{QSL("default"), SetKey{-1}}};
@@ -45,7 +45,7 @@ Loop::Loop(QString n, ElementKey id) : Element(Type::Loop, n, id.v){
 
 LoopUP Loop::copy_with_new_element_id(const Loop &loopToCopy, const QString &newName){
 
-    LoopUP loop = std::make_unique<Loop>(newName, ElementKey{-1});
+    LoopUP loop = std::make_unique<Loop>(newName, ElementKey{-1}, loopToCopy.informations);
 
     loop->nbReps = loopToCopy.nbReps;
     loop->mode = loopToCopy.mode;

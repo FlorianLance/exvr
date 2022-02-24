@@ -86,7 +86,7 @@ void LoopFlowElement::draw(QPainter &painter, qreal zoomLevel){
     textPen.setWidthF(zoomLevel*1.1);
     textPen.setColor(is_selected() ?  colors.selectedTextColor : colors.unselectedTextColor);
     painter.setPen(textPen);
-    painter.drawText(uiElemRect,     Qt::AlignCenter, name());
+    painter.drawText(uiElemRect, Qt::AlignCenter, name);
 }
 
 LoopNodeFlowElement::LoopNodeFlowElement(LoopNode *loopNode) : MovableFlowElement(loopNode){

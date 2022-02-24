@@ -74,10 +74,10 @@ namespace Ex {
             // skyboxes
             defaultSkyboxMat    = RenderSettings.skybox;
             // # get materials
-            skybox6Sided        = Instantiate(ExVR.GlobalResources().get_material("Skybox/skybox_6sided"));
-            skyboxCubeMap       = Instantiate(ExVR.GlobalResources().get_material("Skybox/skybox_cubemap"));
-            skyboxPanoramic     = Instantiate(ExVR.GlobalResources().get_material("Skybox/skybox_panoramic"));
-            skyboxProcedural    = Instantiate(ExVR.GlobalResources().get_material("Skybox/skybox_procedural"));
+            skybox6Sided        = ExVR.GlobalResources().instantiate_mat("Components/Sky/skybox_6sided");
+            skyboxCubeMap       = ExVR.GlobalResources().instantiate_mat("Components/Sky/skybox_cubemap");
+            skyboxPanoramic     = ExVR.GlobalResources().instantiate_mat("Components/Sky/skybox_panoramic");
+            skyboxProcedural    = ExVR.GlobalResources().instantiate_mat("Components/Sky/skybox_procedural");
             // # init textures
             if (textures6Sided.Count == 0) {
                 for (int ii = 0; ii < 6; ++ii) {

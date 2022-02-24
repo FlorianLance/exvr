@@ -26,12 +26,12 @@
 
 using namespace tool::ex;
 
-Routine::Routine(QString n, int id) : Element(Type::Routine, n, id){
+Routine::Routine(QString n, int id, QString infos) : Element(Type::Routine, n, id, infos){
 }
 
 RoutineUP Routine::copy_with_new_element_id(const Routine &routineToCopy, const QString &newName){
 
-    RoutineUP routine = std::make_unique<Routine>(newName, -1);
+    RoutineUP routine = std::make_unique<Routine>(newName, -1, routineToCopy.informations);
 
     routine->conditions.reserve(routineToCopy.conditions.size());
     for(const auto &conditionToCopy : routineToCopy.conditions){

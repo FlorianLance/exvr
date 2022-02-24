@@ -1142,6 +1142,7 @@ void XmlIoManager::write_loop(const Loop *loop) {
     w->writeAttribute(QSL("type"), from_view(Loop::get_name(loop->mode)));
     w->writeAttribute(QSL("nbReps"), QString::number(loop->nbReps));
     w->writeAttribute(QSL("N"), QString::number(loop->N));
+    w->writeAttribute(QSL("informations"), loop->informations);
 
     if(loop->mode == Loop::Mode::File){
         w->writeAttribute(QSL("path"), loop->filePath);
@@ -1170,7 +1171,11 @@ std::tuple<LoopNodeUP, LoopUP, LoopNodeUP> XmlIoManager::read_loop(){
         return std::make_tuple(nullptr,nullptr,nullptr);
     }
 
-    LoopUP loop = std::make_unique<Loop>(name.value(), ElementKey{key.value()});
+    LoopUP loop = std::make_unique<Loop>(name.value(), ElementKey{key.value()});    
+    if(auto informations  = read_attribute<QString>(QSL("informations"), false); informations.has_value()){
+        loop->informations = std::move(informations.value());
+    }
+
     if(auto mode = Loop::get_mode(type.value().toStdString()); mode.has_value()){
         loop->mode = mode.value();
     }else{
@@ -1241,6 +1246,7 @@ void XmlIoManager::write_routine(const Routine *routine){
     w->writeAttribute(QSL("key"), QString::number(routine->key()));
     w->writeAttribute(QSL("name"), routine->name());
     w->writeAttribute(QSL("randomizer"), routine->isARandomizer ? "1" : "0");
+    w->writeAttribute(QSL("informations"), routine->informations);
 
     for(const auto &cond : routine->conditions){
         write_condition(cond.get());
@@ -1511,14 +1517,17 @@ RoutineUP XmlIoManager::read_routine(){
 
     const auto key      = read_attribute<int>(QSL("key"), true);
     const auto name     = read_attribute<QString>(QSL("name"), true);
-    const auto randomizer = read_attribute<bool>(QSL("randomizer"), false);
+
     if(!key.has_value() || !name.has_value() ){
         QtLogger::error(QSL("[XML] Invalid routine at line: ") % QString::number(r->lineNumber()));
         return nullptr;
     }
 
     RoutineUP routine = std::make_unique<Routine>(name.value(), key.value());
-    if(randomizer.has_value()){
+    if(auto informations  = read_attribute<QString>(QSL("informations"), false); informations.has_value()){
+        routine->informations = std::move(informations.value());
+    }
+    if(auto randomizer = read_attribute<bool>(QSL("randomizer"), false); randomizer.has_value()){
         routine->isARandomizer = randomizer.value();
     }
 
@@ -1623,6 +1632,7 @@ void XmlIoManager::write_isi(const Isi *isi){
     w->writeAttribute(QSL("name"), isi->name());
     w->writeAttribute(QSL("set"), isi->str_intervals());
     w->writeAttribute(QSL("randomized"), (isi->randomized ? "1" : "0"));
+    w->writeAttribute(QSL("informations"), isi->informations);
     w->writeEndElement(); // /Isi
 }
 
@@ -1636,6 +1646,10 @@ IsiUP XmlIoManager::read_isi(){
     }
 
     IsiUP isi = std::make_unique<Isi>(name.value(), ElementKey{key.value()});
+    if(auto informations  = read_attribute<QString>(QSL("informations"), false); informations.has_value()){
+        isi->informations = std::move(informations.value());
+    }
+
     isi->intervals.clear();
     if(auto set = read_attribute<QString>(QSL("set"), true); set.has_value()){
         for(const auto &split : set.value().split(" ")){

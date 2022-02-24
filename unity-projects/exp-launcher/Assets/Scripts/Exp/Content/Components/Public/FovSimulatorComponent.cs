@@ -44,7 +44,7 @@ namespace Ex{
             // generate cube
             // # mesh rendering
             mr = gameObject.AddComponent<MeshRenderer>();
-            mr.material = Instantiate(ExVR.GlobalResources().get_material("Screen/transparent_screen"));
+            mr.material = ExVR.GlobalResources().instantiate_mat("Components/FovSimulator/TransparentScreen");
             mr.enabled = false;
             
             // #mesh filtering

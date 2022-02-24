@@ -231,6 +231,7 @@ public slots:
     void move_left(size_t id);
     void move_right(size_t id);
     void update_element_name(ElementKey elementKey, QString elemName);
+    void update_element_informations(ElementKey elementKey, QString informations);
 
     // # loop
     void select_loop_set(ElementKey loopKey, QString setName);
@@ -260,7 +261,7 @@ public slots:
     void select_routine_condition(ElementKey routineKey, RowId  conditionTabId);
     void move_routine_condition_down(ElementKey routineKey, RowId id);
     void move_routine_condition_up(ElementKey routineKey, RowId id);
-    void set_routine_as_randomizer(ElementKey routineKey, bool isARandomizer);
+    void set_routine_as_randomizer(ElementKey routineKey, bool isARandomizer);    
     // ## condition
     void update_condition_timeline(ElementKey routineKey, ConditionKey conditionKey, double duration, double scale, double uiFactorSize);
     void copy_to_conditions(ElementKey routineKey, ConditionKey conditionKey, std_v1<std::pair<ElementKey,ConditionKey>> conditionsToBeEcrased, bool copyActions, bool copyConnections);

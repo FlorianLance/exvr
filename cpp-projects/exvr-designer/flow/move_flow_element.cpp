@@ -29,12 +29,12 @@ using namespace tool::ex;
 
 MoveFlowElement::MoveFlowElement(bool left)  : isLeft(left), move(std::make_unique<Element>(Element::Type::MoveElement, "move")) {
 
-    m_name          = move->name();
-    m_type          = move->type;
+    name            = move->name();
+    type            = move->type;
     key             = ElementKey{move->key()};
     m_selected      = move->is_selected();
     m_insideLoopsID = move->insideLoopsID;
-    colors = display::Colors::flowElements.at(m_type);
+    colors          = display::Colors::flowElements.at(type);
 }
 
 void MoveFlowElement::draw(QPainter &painter, qreal zoomLevel){

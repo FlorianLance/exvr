@@ -97,7 +97,7 @@ struct Loop : public Element {
     }
 
     Loop();
-    Loop(QString n, ElementKey id);
+    Loop(QString n, ElementKey id, QString infos = "");
 
     inline QString to_string() const{return QSL("Loop(") % name() % QSL("|") % QString::number(key()) % QSL(")");}
 

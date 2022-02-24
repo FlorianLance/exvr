@@ -1062,6 +1062,7 @@ void ExVrController::generate_global_signals_connections(){
     connect(s, &GSignals::move_isi_interval_up_signal,                exp(), &EXP::move_isi_interval_up);
     connect(s, &GSignals::move_isi_interval_down_signal,              exp(), &EXP::move_isi_interval_down);
     connect(s, &GSignals::set_routine_as_randomizer_signal,           exp(), &EXP::set_routine_as_randomizer);
+    connect(s, &GSignals::update_element_informations_signal,         exp(), &EXP::update_element_informations);
     connect(s, &GSignals::toggle_mode_signal,                         exp(), &EXP::toggle_design_mode);
     connect(s, &GSignals::routine_selected_signal,                    [&]{});
     connect(s, &GSignals::delete_actions_signal,                      exp(), &EXP::delete_actions_from_condition);
