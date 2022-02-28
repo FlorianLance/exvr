@@ -51,23 +51,23 @@ ExVrController::ExVrController(const QString &nVersion, bool lncoComponents){
     QThread::currentThread()->setObjectName("main");
 
     // signal/slots/types
-    qRegisterMetaType<Arg>("Arg");
-    qRegisterMetaType<RowId>("RowId");
-    qRegisterMetaType<UiElementKey>("UiElementKey");
-    qRegisterMetaType<SetKey>("SetKey");
-    qRegisterMetaType<ActionKey>("ActionKey");
-    qRegisterMetaType<ConfigKey>("ConfigKey");
-    qRegisterMetaType<std::optional<ConfigKey>>("std::optional<ConfigKey>");
-    qRegisterMetaType<IntervalKey>("IntervalKey");
-    qRegisterMetaType<TimelineKey>("TimelineKey");
-    qRegisterMetaType<ConditionKey>("ConditionKey");
-    qRegisterMetaType<ElementKey>("ElementKey");
-    qRegisterMetaType<ComponentKey>("ComponentKey");
-    qRegisterMetaType<ConnectionKey>("ConnectionKey");
-    qRegisterMetaType<ConnectorKey>("ConnectorKey");
-    qRegisterMetaType<ExpLauncherState>("ExpLauncherState");
-    qRegisterMetaType<ExpState>("ExpState");
-    qRegisterMetaType<Settings>("Settings");
+    qRegisterMetaType<Arg>("tool::ex::Arg");
+    qRegisterMetaType<RowId>("tool::ex::RowId");
+    qRegisterMetaType<UiElementKey>("tool::ex::UiElementKey");
+    qRegisterMetaType<SetKey>("tool::ex::SetKey");
+    qRegisterMetaType<ActionKey>("tool::ex::ActionKey");
+    qRegisterMetaType<ConfigKey>("tool::ex::ConfigKey");
+    qRegisterMetaType<std::optional<ConfigKey>>("std::optional<tool::ex::ConfigKey>");
+    qRegisterMetaType<IntervalKey>("tool::ex::IntervalKey");
+    qRegisterMetaType<TimelineKey>("tool::ex::TimelineKey");
+    qRegisterMetaType<ConditionKey>("tool::ex::ConditionKey");
+    qRegisterMetaType<ElementKey>("tool::ex::ElementKey");
+    qRegisterMetaType<ComponentKey>("tool::ex::ComponentKey");
+    qRegisterMetaType<ConnectionKey>("tool::ex::ConnectionKey");
+    qRegisterMetaType<ConnectorKey>("tool::ex::ConnectorKey");
+    qRegisterMetaType<ExpLauncherState>("tool::ex::ExpLauncherState");
+    qRegisterMetaType<ExpState>("tool::ex::ExpState");
+    qRegisterMetaType<Settings>("tool::ex::Settings");
 
     qRegisterMetaType<QStringView>("QStringView");
 

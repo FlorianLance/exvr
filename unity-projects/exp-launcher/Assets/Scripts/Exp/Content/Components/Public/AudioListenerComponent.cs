@@ -99,16 +99,6 @@ namespace Ex {
         #region ex_functions
         protected override bool initialize() {
 
-            Debug.LogError("AudioSettings.dspTime: " + AudioSettings.dspTime);
-            Debug.LogError("AudioSettings.driverCapabilities: " + AudioSettings.driverCapabilities);
-            Debug.LogError("AudioSettings.outputSampleRate: " + AudioSettings.outputSampleRate);
-            Debug.LogError("AudioSettings.speakerMode: " + AudioSettings.speakerMode);
-            Debug.LogError("AudioSettings.GetSpatializerPluginName: " + AudioSettings.GetSpatializerPluginName());
-
-            int bl, nb;
-            AudioSettings.GetDSPBufferSize(out bl, out nb);
-            Debug.LogError("AudioSettings.GetDSPBufferSize: " + bl + " " + nb);
-            Debug.LogError("AudioSettings.GetConfiguration: " + AudioSettings.GetConfiguration());
 
 
 
