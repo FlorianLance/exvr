@@ -150,48 +150,59 @@ namespace Ex{
             audioSource.clip = m_audioClip;
             m_audioData = new AudioData(audioSource.clip);
 
+            //float[] samples = new float[audioSource.clip.samples * audioSource.clip.channels];
+            //audioSource.clip.GetData(samples, 0);
 
-            float[] samples = new float[audioSource.clip.samples * audioSource.clip.channels];
-            audioSource.clip.GetData(samples, 0);
-
-            float minA = 1000f;
-            float maxA = -1000f;
-            float averageA = 0f;
-            for (int jj = 0; jj < samples.Length; ++jj) {
-                var v = samples[jj];
-                averageA += v;
-                if (v < minA) {
-                    minA = v;
-                }
-                if (v > maxA) {
-                    maxA = v;
-                }
-            }
-            averageA /= samples.Length;
-            log_message(string.Format("aa audio min {0} max {1} average {2}", minA, maxA, averageA));
+            //float minA = 1000f;
+            //float maxA = -1000f;
+            //float averageA = 0f;
+            //for (int jj = 0; jj < samples.Length; ++jj) {
+            //    var v = samples[jj];
+            //    averageA += v;
+            //    if (v < minA) {
+            //        minA = v;
+            //    }
+            //    if (v > maxA) {
+            //        maxA = v;
+            //    }
+            //}
+            //averageA /= samples.Length;
+            //log_message(string.Format("aa audio min {0} max {1} average {2}", minA, maxA, averageA));
 
             return true;
         }
 
         public override void update_from_current_config() {
 
-            audioSource.spatialBlend   = 0;
-            audioSource.loop           = currentC.get<bool>("loop");
-            audioSource.minDistance    = currentC.get<float>("min_distance");
-            audioSource.maxDistance    = currentC.get<float>("max_distance");
-            audioSource.spatialize     = currentC.get<bool>("spatialized");            
-            audioSource.pitch          = currentC.get<float>("pitch");
-            audioSource.panStereo      = currentC.get<float>("stereo");
-            audioSource.spatialBlend   = currentC.get<float>("spatial_blend");
-            m_playNewBlock             = currentC.get<bool>("play_new_block");
-            m_stopEndBlock             = currentC.get<bool>("stop_end_block");
-            m_pauseEndBlock            = currentC.get<bool>("pause_end_block");
+            //audioSource.spatialBlend   = 0;
+            m_playNewBlock = currentC.get<bool>("play_new_block");
+            m_stopEndBlock = currentC.get<bool>("stop_end_block");
+            m_pauseEndBlock = currentC.get<bool>("pause_end_block");
 
             set_volume(currentC.get<float>("volume"));
+            audioSource.mute           = currentC.get<bool>("mute");
+            audioSource.loop           = currentC.get<bool>("loop");
+            audioSource.pitch          = currentC.get<float>("pitch");
+            audioSource.panStereo      = currentC.get<float>("stereo");            
+
+            audioSource.spatialize     = currentC.get<bool>("spatialized");
+            audioSource.spatialBlend   = currentC.get<float>("spatial_blend");
+            audioSource.dopplerLevel   = currentC.get<float>("doppler_level");
+            audioSource.spread         = currentC.get<int>("spread");
+            audioSource.rolloffMode    = (AudioRolloffMode)currentC.get<int>("rollof_mode");
+            audioSource.minDistance    = currentC.get<float>("min_distance");
+            audioSource.maxDistance    = currentC.get<float>("max_distance");
+
+
+
+
+            
 
             if (!currentC.get<bool>("transform_do_not_apply")) {
                 currentC.update_transform("transform", transform);
             }
+
+            set_visibility(is_visible());
         }
 
         protected override void update_parameter_from_gui(string updatedArgName) {
@@ -200,14 +211,14 @@ namespace Ex{
 
 
         protected override void set_visibility(bool visibility) {
-            audioSourceGO.GetComponent<MeshFilter>().mesh = (visibility && currentC.get<bool>("display"))? m_audioMesh : null;
+            audioSourceGO.GetComponent<MeshFilter>().mesh = (visibility && currentC.get<bool>("display")) ? m_audioMesh : null;
         }
 
         protected override void set_update_state(bool doUpdate) {
 
             if (doUpdate) {
                 if (m_playNewBlock) {
-                    audioSource.Play();
+                    audioSource.Play();                    
                 }
             } else {
                 if (m_stopEndBlock) {

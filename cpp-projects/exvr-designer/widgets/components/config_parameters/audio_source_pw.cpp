@@ -47,26 +47,30 @@ struct AudioSourceInitConfigParametersW::Impl{
 };
 
 struct AudioSourceConfigParametersW::Impl{
+
     ExCheckBoxW displaySoundOrigin = {"display"};
     ExCheckBoxW playNewBlock = {"play_new_block"};
     QButtonGroup group1;
     ExRadioButtonW pauseEndBlock = {"pause_end_block"};
     ExRadioButtonW stopEndBlock = {"stop_end_block"};
     ExRadioButtonW nothingEndBlock = {"nothing_end_block"};
+
+    ExCheckBoxW doMute = {"mute"};
     ExCheckBoxW doLoop = {"loop"};
-    ExCheckBoxW isSpatialized = {"spatialized"};
     ExSliderFloatW volume = {"volume"};
-    ExSliderFloatW stereo = {"stereo"};
-    ExSliderFloatW spatialBlend = {"spatial_blend"};
+    ExSliderFloatW stereo = {"stereo"};    
     ExSliderFloatW pitch = {"pitch"};
+
+    ExCheckBoxW isSpatialized = {"spatialized"};
+    ExSliderFloatW spatialBlend = {"spatial_blend"};
+    ExSliderFloatW dopplerLevel = {"doppler_level"}; // 0 - 5
+    ExSliderIntegerW spread = {"spread"}; // 0 - 360
+    ExComboBoxIndexW rolloffMode = {"rollof_mode"};
     ExSliderFloatW minDistance = {"min_distance"};
     ExSliderFloatW maxDistance = {"max_distance"};
+
     TransformSubPart transfo = {"transform"};
 
-    // rollof
-    //  linear
-    //  logarithmic
-    // spread 0 - 360
 };
 
 AudioSourceInitConfigParametersW::AudioSourceInitConfigParametersW() :  ConfigParametersW(), m_p(std::make_unique<Impl>()){
@@ -151,43 +155,86 @@ void AudioSourceConfigParametersW::insert_widgets(){
     add_sub_part_widget(m_p->transfo);
 
     add_widget(ui::F::gen(ui::L::VB(), {
-        m_p->playNewBlock(), m_p->pauseEndBlock(), m_p->stopEndBlock(),
-        m_p->nothingEndBlock(), m_p->doLoop(), m_p->isSpatialized(), m_p->displaySoundOrigin()},
+        m_p->playNewBlock(), m_p->pauseEndBlock(), m_p->stopEndBlock(),m_p->nothingEndBlock()},
         LStretch{false}, LMargins{true}, QFrame::Box)
     );
 
-    auto gl = new QGridLayout();
-    gl->addWidget(m_p->volume.title,    0, 0, 1, 1);
-    gl->addWidget(m_p->volume.minMax,   0, 1, 1, 1);
-    gl->addWidget(m_p->volume.value,    0, 2, 1, 1);
-    gl->addWidget(m_p->volume.valueTxt, 0, 3, 1, 1);
 
-    gl->addWidget(m_p->stereo.title,    1, 0, 1, 1);
-    gl->addWidget(m_p->stereo.minMax,   1, 1, 1, 1);
-    gl->addWidget(m_p->stereo.value,    1, 2, 1, 1);
-    gl->addWidget(m_p->stereo.valueTxt, 1, 3, 1, 1);
 
-    gl->addWidget(m_p->spatialBlend.title,    2, 0, 1, 1);
-    gl->addWidget(m_p->spatialBlend.minMax,   2, 1, 1, 1);
-    gl->addWidget(m_p->spatialBlend.value,    2, 2, 1, 1);
-    gl->addWidget(m_p->spatialBlend.valueTxt, 2, 3, 1, 1);
+    {
+        auto gl = new QGridLayout();
 
-    gl->addWidget(m_p->pitch.title,    3, 0, 1, 1);
-    gl->addWidget(m_p->pitch.minMax,   3, 1, 1, 1);
-    gl->addWidget(m_p->pitch.value,    3, 2, 1, 1);
-    gl->addWidget(m_p->pitch.valueTxt, 3, 3, 1, 1);
+        int rowId = 0;
 
-    gl->addWidget(m_p->minDistance.title,    4, 0, 1, 1);
-    gl->addWidget(m_p->minDistance.minMax,   4, 1, 1, 1);
-    gl->addWidget(m_p->minDistance.value,    4, 2, 1, 1);
-    gl->addWidget(m_p->minDistance.valueTxt, 4, 3, 1, 1);
+        gl->addWidget(ui::W::txt("<b>Global</b>"), rowId,   0, 2, 1);
+        rowId+=2;
+        gl->addWidget(ui::F::gen(ui::L::HB(), {m_p->doMute(), m_p->doLoop()}, LStretch{true}, LMargins{false}, QFrame::NoFrame),rowId++, 0, 1, 6);
 
-    gl->addWidget(m_p->maxDistance.title,    5, 0, 1, 1);
-    gl->addWidget(m_p->maxDistance.minMax,   5, 1, 1, 1);
-    gl->addWidget(m_p->maxDistance.value,    5, 2, 1, 1);
-    gl->addWidget(m_p->maxDistance.valueTxt, 5, 3, 1, 1);
+        gl->addWidget(m_p->volume.title,    rowId, 0, 1, 1);
+        gl->addWidget(m_p->volume.minMax,   rowId, 1, 1, 1);
+        gl->addWidget(m_p->volume.value,    rowId, 2, 1, 1);
+        gl->addWidget(m_p->volume.valueTxt, rowId, 3, 1, 1);
+        gl->addWidget(m_p->volume.less,     rowId, 4, 1, 1);
+        gl->addWidget(m_p->volume.more,     rowId++, 5, 1, 1);
 
-    add_widget(ui::F::gen_frame(gl, {}, 0, LMarginsD{4,2,4,2,2}, QFrame::Shape::Box));
+        gl->addWidget(m_p->pitch.title,    rowId, 0, 1, 1);
+        gl->addWidget(m_p->pitch.minMax,   rowId, 1, 1, 1);
+        gl->addWidget(m_p->pitch.value,    rowId, 2, 1, 1);
+        gl->addWidget(m_p->pitch.valueTxt, rowId, 3, 1, 1);
+        gl->addWidget(m_p->pitch.less,     rowId, 4, 1, 1);
+        gl->addWidget(m_p->pitch.more,     rowId++, 5, 1, 1);
+
+        gl->addWidget(m_p->stereo.title,    rowId, 0, 1, 1);
+        gl->addWidget(m_p->stereo.minMax,   rowId, 1, 1, 1);
+        gl->addWidget(m_p->stereo.value,    rowId, 2, 1, 1);
+        gl->addWidget(m_p->stereo.valueTxt, rowId, 3, 1, 1);
+        gl->addWidget(m_p->stereo.less,     rowId, 4, 1, 1);
+        gl->addWidget(m_p->stereo.more,     rowId++, 5, 1, 1);
+
+        gl->addWidget(ui::W::txt("<b>3D sound</b>"), rowId,   0, 2, 1);
+        rowId+=2;
+        gl->addWidget(ui::F::gen(ui::L::HB(), {m_p->isSpatialized(), m_p->displaySoundOrigin()}, LStretch{true}, LMargins{false}, QFrame::NoFrame),rowId++, 0, 1, 6);
+
+        gl->addWidget(m_p->spatialBlend.title,    rowId, 0, 1, 1);
+        gl->addWidget(m_p->spatialBlend.minMax,   rowId, 1, 1, 1);
+        gl->addWidget(m_p->spatialBlend.value,    rowId, 2, 1, 1);
+        gl->addWidget(m_p->spatialBlend.valueTxt, rowId, 3, 1, 1);
+        gl->addWidget(m_p->spatialBlend.less,     rowId, 4, 1, 1);
+        gl->addWidget(m_p->spatialBlend.more,     rowId++, 5, 1, 1);
+
+        gl->addWidget(m_p->dopplerLevel.title,    rowId, 0, 1, 1);
+        gl->addWidget(m_p->dopplerLevel.minMax,   rowId, 1, 1, 1);
+        gl->addWidget(m_p->dopplerLevel.value,    rowId, 2, 1, 1);
+        gl->addWidget(m_p->dopplerLevel.valueTxt, rowId, 3, 1, 1);
+        gl->addWidget(m_p->dopplerLevel.less,     rowId, 4, 1, 1);
+        gl->addWidget(m_p->dopplerLevel.more,     rowId++, 5, 1, 1);
+
+        gl->addWidget(m_p->spread.title,    rowId, 0, 1, 1);
+        gl->addWidget(m_p->spread.minMax,   rowId, 1, 1, 1);
+        gl->addWidget(m_p->spread.value,    rowId, 2, 1, 1);
+        gl->addWidget(m_p->spread.valueTxt, rowId, 3, 1, 1);
+        gl->addWidget(m_p->spread.less,     rowId, 4, 1, 1);
+        gl->addWidget(m_p->spread.more,     rowId++, 5, 1, 1);
+
+        gl->addWidget(ui::W::txt("Rollof mode"), rowId,   0, 1, 1);
+        gl->addWidget(m_p->rolloffMode(),        rowId++, 2, 1, 1);
+
+        gl->addWidget(m_p->minDistance.title,    rowId, 0, 1, 1);
+        gl->addWidget(m_p->minDistance.minMax,   rowId, 1, 1, 1);
+        gl->addWidget(m_p->minDistance.value,    rowId, 2, 1, 1);
+        gl->addWidget(m_p->minDistance.valueTxt, rowId, 3, 1, 1);
+        gl->addWidget(m_p->minDistance.less,     rowId, 4, 1, 1);
+        gl->addWidget(m_p->minDistance.more,     rowId++, 5, 1, 1);
+
+        gl->addWidget(m_p->maxDistance.title,    rowId, 0, 1, 1);
+        gl->addWidget(m_p->maxDistance.minMax,   rowId, 1, 1, 1);
+        gl->addWidget(m_p->maxDistance.value,    rowId, 2, 1, 1);
+        gl->addWidget(m_p->maxDistance.valueTxt, rowId, 3, 1, 1);
+        gl->addWidget(m_p->maxDistance.less,     rowId, 4, 1, 1);
+        gl->addWidget(m_p->maxDistance.more,     rowId++, 5, 1, 1);
+
+        add_widget(ui::F::gen_frame(gl, {}, 0, LMarginsD{4,2,4,2,2}, QFrame::Shape::Box));
+    }
 }
 
 void AudioSourceConfigParametersW::init_and_register_widgets(){
@@ -203,12 +250,16 @@ void AudioSourceConfigParametersW::init_and_register_widgets(){
     );
 
     add_input_ui(m_p->displaySoundOrigin.init_widget("Display sound origin", false));
-    add_input_ui(m_p->doLoop.init_widget("Loop", false));
-    add_input_ui(m_p->isSpatialized.init_widget("Spatialized", false));
+    add_input_ui(m_p->doLoop.init_widget("Loop", true));
+    add_input_ui(m_p->doMute.init_widget("Mute", false));
+    add_input_ui(m_p->isSpatialized.init_widget("Spatialized", true));
     add_input_ui(m_p->volume.init_widget("Volume", MinV<qreal>{0.}, V<qreal>{1.}, MaxV<qreal>{1.}, StepV<qreal>{0.01}));
     add_input_ui(m_p->stereo.init_widget("Stereo", MinV<qreal>{-1.}, V<qreal>{0.0}, MaxV<qreal>{1.}, StepV<qreal>{0.01}));
-    add_input_ui(m_p->spatialBlend.init_widget("Spatial blend", MinV<qreal>{0.}, V<qreal>{0.5}, MaxV<qreal>{1.}, StepV<qreal>{0.01}));
-    add_input_ui(m_p->pitch.init_widget("Pitch", MinV<qreal>{0.}, V<qreal>{1.}, MaxV<qreal>{5.}, StepV<qreal>{0.01}));
+    add_input_ui(m_p->spatialBlend.init_widget("Spatial blend", MinV<qreal>{0.}, V<qreal>{1.}, MaxV<qreal>{1.}, StepV<qreal>{0.01}));
+    add_input_ui(m_p->pitch.init_widget("Pitch", MinV<qreal>{-3.}, V<qreal>{1.}, MaxV<qreal>{3.}, StepV<qreal>{0.01}));
+    add_input_ui(m_p->dopplerLevel.init_widget("Doppler level", MinV<qreal>{0.}, V<qreal>{1.}, MaxV<qreal>{5.}, StepV<qreal>{0.01}));
+    add_input_ui(m_p->spread.init_widget("Spread", MinV<int>{0}, V<int>{0}, MaxV<int>{360}, StepV<int>{1}));
+    add_input_ui(m_p->rolloffMode.init_widget({"Logarithmic", "Linear"}, 1));
     add_input_ui(m_p->minDistance.init_widget("Min distance", MinV<qreal>{0.}, V<qreal>{0.01}, MaxV<qreal>{10.}, StepV<qreal>{0.01}));
     add_input_ui(m_p->maxDistance.init_widget("Max distance", MinV<qreal>{0.}, V<qreal>{5.}, MaxV<qreal>{10.}, StepV<qreal>{0.01}));
     map_sub_part(m_p->transfo.init_widget());

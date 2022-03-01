@@ -41,23 +41,23 @@ namespace Ex {
         public bool running = false;
 
         private void Start() {
-            Debug.LogError("START");
+            //Debug.LogError("START");
 
-            Debug.LogError("AudioSettings.dspTime: " + AudioSettings.dspTime);
-            Debug.LogError("AudioSettings.driverCapabilities: " + AudioSettings.driverCapabilities);
-            Debug.LogError("AudioSettings.outputSampleRate: " + AudioSettings.outputSampleRate);
-            Debug.LogError("AudioSettings.speakerMode: " + AudioSettings.speakerMode);
-            Debug.LogError("AudioSettings.GetSpatializerPluginName: " + AudioSettings.GetSpatializerPluginName());
+            //Debug.LogError("AudioSettings.dspTime: " + AudioSettings.dspTime);
+            //Debug.LogError("AudioSettings.driverCapabilities: " + AudioSettings.driverCapabilities);
+            //Debug.LogError("AudioSettings.outputSampleRate: " + AudioSettings.outputSampleRate);
+            //Debug.LogError("AudioSettings.speakerMode: " + AudioSettings.speakerMode);
+            //Debug.LogError("AudioSettings.GetSpatializerPluginName: " + AudioSettings.GetSpatializerPluginName());
 
-            int bl, nb;
-            AudioSettings.GetDSPBufferSize(out bl, out nb);
-            Debug.LogError("AudioSettings.GetDSPBufferSize: " + bl + " " + nb);
-            var config = AudioSettings.GetConfiguration();
-            Debug.LogError("speakerMode: " + config.speakerMode);
-            Debug.LogError("dspBufferSize: " + config.dspBufferSize);
-            Debug.LogError("consampleRatefig: " + config.sampleRate);
-            Debug.LogError("numRealVoices: " + config.numRealVoices);
-            Debug.LogError("numVirtualVoices: " + config.numVirtualVoices);
+            //int bl, nb;
+            //AudioSettings.GetDSPBufferSize(out bl, out nb);
+            //Debug.LogError("AudioSettings.GetDSPBufferSize: " + bl + " " + nb);
+            //var config = AudioSettings.GetConfiguration();
+            //Debug.LogError("speakerMode: " + config.speakerMode);
+            //Debug.LogError("dspBufferSize: " + config.dspBufferSize);
+            //Debug.LogError("consampleRatefig: " + config.sampleRate);
+            //Debug.LogError("numRealVoices: " + config.numRealVoices);
+            //Debug.LogError("numVirtualVoices: " + config.numVirtualVoices);
 
 
 
@@ -79,7 +79,7 @@ namespace Ex {
 
             //AudioClip clip;
 
-            Debug.LogError("QUIt");
+
             enabled = true;
         }
 
