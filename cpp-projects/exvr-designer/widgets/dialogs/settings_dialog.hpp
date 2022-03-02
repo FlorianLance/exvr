@@ -165,7 +165,7 @@ private slots:
 
 signals:
 
-    void settings_updated_signal(Settings settings);
+    void settings_updated_signal(tool::ex::Settings settings);
     void reset_settings_signal();
     void settings_canceled_signal();
 

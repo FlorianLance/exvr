@@ -128,7 +128,7 @@ signals:
 
     // exp launcher
     // # start
-    void start_experiment_launcher_signal(Settings settings);
+    void start_experiment_launcher_signal(tool::ex::Settings settings);
     // # IPC
     void start_communication_signal();
     void stop_communication_signal();

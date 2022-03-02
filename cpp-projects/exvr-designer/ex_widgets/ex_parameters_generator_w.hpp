@@ -58,7 +58,7 @@ public :
 private:
 
     std::pair<QWidget*,ExBaseW*> gen_ui_element(UiType uiType);
-    void add_ui_element_from_dialog(UiType uiType);
+    void add_ui_element_from_dialog(UiType uiType, int order);
     void add_ui_element_from_arg(Arg arg);
 
 private:
@@ -70,7 +70,7 @@ private:
     QPushButton m_pbRemoveParam;
     ui::ListWidget m_lwParameters;
 
-    int currentId = 0;
+//    int currentId = 0;
     QVector<QStringView> elementsOrder;
     std::unordered_map<QStringView, ExBaseW*> generatorElements;
     std::unordered_map<QStringView, ExBaseW*> *m_inputUiElements = nullptr;

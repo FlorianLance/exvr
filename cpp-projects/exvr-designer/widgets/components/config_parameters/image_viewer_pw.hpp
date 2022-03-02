@@ -24,13 +24,7 @@
 
 #pragma once
 
-// qt-utility
-#include "ex_widgets/ex_vector2d_w.hpp"
-#include "ex_widgets/ex_double_spin_box_w.hpp"
-#include "ex_widgets/ex_checkbox_w.hpp"
-
 // local
-#include "ex_widgets/ex_resource_w.hpp"
 #include "config_pw.hpp"
 
 namespace tool::ex {
@@ -44,8 +38,6 @@ class ImageViewerConfigParametersW : public ConfigParametersW{
 public :
 
     ImageViewerConfigParametersW();
-
-
 
     void insert_widgets() override;
     void init_and_register_widgets() override;

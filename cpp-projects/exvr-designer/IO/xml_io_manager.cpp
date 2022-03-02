@@ -452,6 +452,7 @@ ConfigUP XmlIoManager::read_config(){
         }
 
         if(check_end_node(QSL("Config")) || check_end_node(QSL("InitConfig"))){
+            config->fix();
             return config;
         }
 
@@ -468,7 +469,7 @@ void XmlIoManager::write_config(const Config *config, bool initConfig){
 
     for(const auto &arg : config->args){
         write_argument(arg.second);
-    }
+    }    
 
     w->writeEndElement(); // /InitConfig or /Config
 }

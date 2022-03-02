@@ -93,10 +93,11 @@
 #include "config_parameters/fpp_avatar_camera_pw.hpp"
 #include "config_parameters/tpp_avatar_camera_pw.hpp"
 #include "config_parameters/volumetric_video_pw.hpp"
+#include "config_parameters/buttons_ui_pw.hpp"
 
 using namespace tool::ex;
 
-ConfigW::ConfigW(Config *config, Component *component, bool initConfig, std::unordered_map<QStringView,Arg> &args) :
+ConfigW::ConfigW(Config *config, Component *component, bool initConfig, std::map<QStringView,Arg> &args) :
       configKey(ConfigKey{config->key()}), componentKey(ComponentKey{component->key()}), name(config->name){
 
     Bench::start("[ConfigW generate widget]"sv, false);
@@ -278,6 +279,8 @@ ConfigParametersW *ConfigW::generate_parameters(Component::Type type, bool initC
     case CT::Thera_trainer_platform:
         return gen_params_w<TheraTrainerPlatformInitConfigParametersW,TheraTrainerPlatformConfigParametersW>(initConfig);
     // ############################# UI
+    case CT::Buttons_ui:
+        return gen_params_w<ButtonsUiInitConfigParametersW,ButtonsUiConfigParametersW>(initConfig);
     case CT::Slider_ui:
         return gen_params_w<SliderUiInitConfigParametersW,SliderUiConfigParametersW>(initConfig);
     // ############################# Video

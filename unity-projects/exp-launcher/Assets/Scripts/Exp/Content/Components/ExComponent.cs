@@ -417,15 +417,15 @@ namespace Ex {
 
             currentFunction = Function.initialize;
             m_initialized = false;
-            try {
+            //try {
                 if (!initialize()) {
                     log_error("Initialization failed.");
                     return m_initialized;
                 }
-            } catch (Exception e) {
-                display_exception(e);
-                return m_initialized;
-            }
+            //} catch (Exception e) {
+            //    display_exception(e);
+            //    return m_initialized;
+            //}
 
             return m_initialized = true;
         }

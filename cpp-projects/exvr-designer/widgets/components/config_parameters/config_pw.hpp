@@ -66,7 +66,7 @@ public :
     void map_sub_part(ConfigParametersSubPart *subPart);
 
     // # update
-    void init_from_args(std::unordered_map<QStringView,Arg> &args);
+    void init_from_args(std::map<QStringView,Arg> &args);
     void update_from_resources();
     void update_from_components();
     void reset_args();

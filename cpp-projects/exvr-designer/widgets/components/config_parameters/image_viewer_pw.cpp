@@ -25,6 +25,14 @@
 #include "image_viewer_pw.hpp"
 
 
+// qt-utility
+#include "ex_widgets/ex_vector2d_w.hpp"
+#include "ex_widgets/ex_double_spin_box_w.hpp"
+#include "ex_widgets/ex_checkbox_w.hpp"
+
+// local
+#include "ex_widgets/ex_resource_w.hpp"
+
 using namespace tool::ex;
 
 struct ImageViewerConfigParametersW::Impl{

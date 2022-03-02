@@ -45,6 +45,38 @@ void Config::swap_arg(QStringView arg1Name, QStringView arg2Name){
     std::swap(item1.generator->order, item2.generator->order);
 }
 
+void Config::fix(){
+
+//    for(auto &arg : args){
+//        if(arg.second.generator->order != -1){
+
+//            int nbToRemove = 0;
+//            for(int c = 0; c < arg.second.generator->order; ++c){
+
+//                bool found = false;
+//                for(auto &arg2 : args){
+//                    if(arg2.second.generator->order == -1){
+//                        continue;
+//                    }
+//                    if(arg.first == arg2.first){
+//                        continue;
+//                    }
+//                    if(arg2.second.generator->order == c){
+//                        found = true;
+//                        break;
+//                    }
+//                }
+
+//                if(found){
+//                    ++nbToRemove;
+//                }
+
+//            }
+//            arg.second.generator->order -= nbToRemove;
+//        }
+//    }
+}
+
 void Config::update_arg(Arg arg){
 
     QStringView aName = arg.name;
@@ -55,17 +87,37 @@ void Config::update_arg(Arg arg){
     QtLogger::error(QSL("Arg with name ") % name % QSL(" doesn't exists: ") % arg.name % QSL(" ") % arg.value() % QSL(" ") % arg.separator());
 }
 
-void Config::add_arg(Arg arg){
+void Config::add_arg(Arg newArg){
 
-    QStringView aName = arg.name;
-    if(args.count(aName)==0){
-        args[aName] = std::move(arg);
-    }else{
-        qWarning() << "Config::error: arg " << arg.name << " already added.";
+    QStringView aName = newArg.name;
+
+    if(args.count(aName) !=0){
+        QtLogger::warning(QSL("Config::error: arg ") % newArg.name % QSL(" already added."));
+        return;
     }
+
+    if(newArg.generator->order != -1){
+        for(auto &arg : args){
+            if(arg.second.generator->order != -1){
+                if(arg.second.generator->order >= newArg.generator->order){
+                    ++arg.second.generator->order;
+                }
+            }
+        }
+    }
+
+    args[aName] = std::move(newArg);
 }
 
 void Config::remove_arg(QStringView argName){
+    int orderToRemove = args[argName].generator->order;
+    if(orderToRemove != -1){
+        for(auto &arg : args){
+            if(arg.second.generator->order > orderToRemove){
+                arg.second.generator->order--;
+            }
+        }
+    }
     args.erase(argName);
 }
 

@@ -51,23 +51,23 @@ ExVrController::ExVrController(const QString &nVersion, bool lncoComponents){
     QThread::currentThread()->setObjectName("main");
 
     // signal/slots/types
-    qRegisterMetaType<Arg>("tool::ex::Arg");
-    qRegisterMetaType<RowId>("tool::ex::RowId");
-    qRegisterMetaType<UiElementKey>("tool::ex::UiElementKey");
-    qRegisterMetaType<SetKey>("tool::ex::SetKey");
-    qRegisterMetaType<ActionKey>("tool::ex::ActionKey");
-    qRegisterMetaType<ConfigKey>("tool::ex::ConfigKey");
-    qRegisterMetaType<std::optional<ConfigKey>>("std::optional<tool::ex::ConfigKey>");
-    qRegisterMetaType<IntervalKey>("tool::ex::IntervalKey");
-    qRegisterMetaType<TimelineKey>("tool::ex::TimelineKey");
-    qRegisterMetaType<ConditionKey>("tool::ex::ConditionKey");
-    qRegisterMetaType<ElementKey>("tool::ex::ElementKey");
-    qRegisterMetaType<ComponentKey>("tool::ex::ComponentKey");
-    qRegisterMetaType<ConnectionKey>("tool::ex::ConnectionKey");
-    qRegisterMetaType<ConnectorKey>("tool::ex::ConnectorKey");
-    qRegisterMetaType<ExpLauncherState>("tool::ex::ExpLauncherState");
-    qRegisterMetaType<ExpState>("tool::ex::ExpState");
-    qRegisterMetaType<Settings>("tool::ex::Settings");
+    qRegisterMetaType<tool::ex::Arg>("tool::ex::Arg");
+    qRegisterMetaType<tool::ex::RowId>("tool::ex::RowId");
+    qRegisterMetaType<tool::ex::UiElementKey>("tool::ex::UiElementKey");
+    qRegisterMetaType<tool::ex::SetKey>("tool::ex::SetKey");
+    qRegisterMetaType<tool::ex::ActionKey>("tool::ex::ActionKey");
+    qRegisterMetaType<tool::ex::ConfigKey>("tool::ex::ConfigKey");
+    qRegisterMetaType<std::optional<tool::ex::ConfigKey>>("std::optional<tool::ex::ConfigKey>");
+    qRegisterMetaType<tool::ex::IntervalKey>("tool::ex::IntervalKey");
+    qRegisterMetaType<tool::ex::TimelineKey>("tool::ex::TimelineKey");
+    qRegisterMetaType<tool::ex::ConditionKey>("tool::ex::ConditionKey");
+    qRegisterMetaType<tool::ex::ElementKey>("tool::ex::ElementKey");
+    qRegisterMetaType<tool::ex::ComponentKey>("tool::ex::ComponentKey");
+    qRegisterMetaType<tool::ex::ConnectionKey>("tool::ex::ConnectionKey");
+    qRegisterMetaType<tool::ex::ConnectorKey>("tool::ex::ConnectorKey");
+    qRegisterMetaType<tool::ex::ExpLauncherState>("tool::ex::ExpLauncherState");
+    qRegisterMetaType<tool::ex::ExpState>("tool::ex::ExpState");
+    qRegisterMetaType<tool::ex::Settings>("tool::ex::Settings");
 
     qRegisterMetaType<QStringView>("QStringView");
 

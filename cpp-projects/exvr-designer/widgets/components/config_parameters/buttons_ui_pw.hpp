@@ -24,38 +24,30 @@
 
 #pragma once
 
-// Qt
-#include <QString>
-#include <QVector>
-#include <QDebug>
 
-// qt-utility
-#include "data/argument.hpp"
+// local
+#include "config_pw.hpp"
 
 namespace tool::ex {
 
-
-struct Config;
-using ConfigUP = std::unique_ptr<Config>;
-
-struct Config{
-
-    Config() = delete;
-    Config(const QString &n, ConfigKey id) : name(n), key(IdKey::Type::Config, id.v){}
-
-    static ConfigUP copy_with_new_element_id(const Config &configToCopy, const QString &newName);
-
-    void update_arg(Arg arg);
-    void add_arg(Arg arg);
-    void remove_arg(QStringView argName);
-    void swap_arg(QStringView arg1Name, QStringView arg2Name);
-    void fix();
-
-    inline QString to_string() const{return QSL("Config(") % name % QSL("|") % QString::number(key()) % QSL(")");}
-
-    QString name{QSL("standard")};
-    IdKey key;
-
-    std::map<QStringView, Arg> args;
+class ButtonsUiInitConfigParametersW : public ConfigParametersW{
 };
+
+
+class ButtonsUiConfigParametersW : public ConfigParametersW{
+
+public :
+
+    ButtonsUiConfigParametersW();
+
+    void insert_widgets() override;
+    void init_and_register_widgets() override;
+    void create_connections() override;
+    void late_update_ui() override;
+
+private:
+    struct Impl;
+    std::unique_ptr<Impl> m_p = nullptr;
+};
+
 }

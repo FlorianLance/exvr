@@ -154,6 +154,7 @@ HEADERS += \
     # widgets
     ## main
     utility/script_utility.hpp \
+    widgets/components/config_parameters/buttons_ui_pw.hpp \
     widgets/components/config_parameters/csharp_pw.hpp \
     widgets/components/config_parameters/fpp_camera_pw.hpp \
     widgets/components/config_parameters/serial_port_reader_pw.hpp \
@@ -359,6 +360,7 @@ SOURCES += \
     # widgets
     utility/script_utility.cpp \
     widgets/components/config_parameters/biopac_pw.cpp \
+    widgets/components/config_parameters/buttons_ui_pw.cpp \
     widgets/components/config_parameters/csharp_pw.cpp \
     widgets/components/config_parameters/fpp_camera_pw.cpp \
     widgets/components/config_parameters/parallel_port_writer_pw.cpp \

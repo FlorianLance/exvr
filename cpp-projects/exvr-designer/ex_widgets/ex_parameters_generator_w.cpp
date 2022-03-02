@@ -81,8 +81,13 @@ ExParametersGeneratorWidgetW::ExParametersGeneratorWidgetW(QString name) : ExIte
     w->layout()->addWidget(&m_lwParameters);
 
     connect(&m_pbAddParam, &QPushButton::clicked, this, [&]{
-        auto txt = m_cbTypeParam.currentText().toStdString();
-        add_ui_element_from_dialog(get_ui_type(txt).value());
+        int id = m_lwParameters.current_selected_widget_id();
+        auto txt = m_cbTypeParam.currentText().toStdString();        
+        if(id == -1){
+            id = m_lwParameters.count();
+        }
+        qDebug() << "id " << id << " " << m_lwParameters.current_selected_widget_id();
+        add_ui_element_from_dialog(get_ui_type(txt).value(), id);
     });
 
     connect(&m_pbMoveUp, &QPushButton::clicked, this, [&]{
@@ -172,7 +177,7 @@ Arg ExParametersGeneratorWidgetW::convert_to_arg() const{
 }
 
 
-void ExParametersGeneratorWidgetW::add_ui_element_from_dialog(UiType uiType){
+void ExParametersGeneratorWidgetW::add_ui_element_from_dialog(UiType uiType, int order){
 
     auto [wElem, exW] =  gen_ui_element(uiType);
     if(exW == nullptr){
@@ -262,7 +267,7 @@ void ExParametersGeneratorWidgetW::add_ui_element_from_dialog(UiType uiType){
     }
 
     // set order
-    exW->update_from_arg(genD.generate_arg(++currentId));
+    exW->update_from_arg(genD.generate_arg(order));
 
     // add widget to input ui elements
     (*m_inputUiElements)[exW->itemName] = exW;
@@ -277,7 +282,7 @@ void ExParametersGeneratorWidgetW::add_ui_element_from_dialog(UiType uiType){
     // add item name to generator list
     bool added = false;
     for(int ii = 0; ii < elementsOrder.size(); ++ii){
-        if(currentId < generatorElements[elementsOrder[ii]]->generatorOrder){
+        if(order <= generatorElements[elementsOrder[ii]]->generatorOrder){
             elementsOrder.insert(ii, exW->itemName);
             m_lwParameters.insert_widget(ii, f);
             added = true;
@@ -309,11 +314,12 @@ void ExParametersGeneratorWidgetW::add_ui_element_from_arg(Arg arg){
     exW->itemName = arg.name;
 
     // set order
-    if(arg.generator->order >= 0 ){
-        currentId = arg.generator->order;
-    }else{
-        currentId++;
-    }
+    int currentId = arg.generator->order;
+//    if(arg.generator->order >= 0 ){
+//        currentId = arg.generator->order;
+//    }else{
+//        currentId++;
+//    }
     exW->generatorOrder = currentId;
 
     // add widget to input ui elements

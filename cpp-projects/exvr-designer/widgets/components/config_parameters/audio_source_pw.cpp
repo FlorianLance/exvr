@@ -249,6 +249,7 @@ void AudioSourceConfigParametersW::init_and_register_widgets(){
         )
     );
 
+
     add_input_ui(m_p->displaySoundOrigin.init_widget("Display sound origin", false));
     add_input_ui(m_p->doLoop.init_widget("Loop", true));
     add_input_ui(m_p->doMute.init_widget("Mute", false));
@@ -264,6 +265,20 @@ void AudioSourceConfigParametersW::init_and_register_widgets(){
     add_input_ui(m_p->maxDistance.init_widget("Max distance", MinV<qreal>{0.}, V<qreal>{5.}, MaxV<qreal>{10.}, StepV<qreal>{0.01}));
     map_sub_part(m_p->transfo.init_widget());
     m_p->transfo.set_scale_values({0.3,0.3,0.3});
+
+    m_p->dopplerLevel.set_information("Sets the Doppler scale for this AudioSource.");
+    m_p->spread.set_information(
+        "Sets the spread angle (in degrees) of a 3d stereo or multichannel sound in speaker space.\n"
+        "   0 = all sound channels are located at the same speaker location and is 'mono'\n"
+        "   360 = all subchannels are located at the opposite speaker location to the speaker location that it should be according to 3D position. Default = 0."
+    );
+    m_p->rolloffMode.set_information(
+        "Sets/Gets how the AudioSource attenuates over distance.\n"
+        "   Logarithmic: Use this mode when you want a real-world rolloff.\n"
+        "   Linear: Use this mode when you want to lower the volume of your sound over the distance."
+    );
+    m_p->minDistance.set_information("Within the Min distance the AudioSource will cease to grow louder in volume.");
+    m_p->maxDistance.set_information("(Logarithmic rolloff) MaxDistance is the distance a sound stops attenuating at.");
 }
 
 void AudioSourceConfigParametersW::create_connections(){}
