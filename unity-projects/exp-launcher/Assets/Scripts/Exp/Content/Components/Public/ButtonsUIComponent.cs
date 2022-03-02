@@ -197,11 +197,16 @@ namespace Ex {
             // # background            
             m_buttonsUiGO.GetComponent<UnityEngine.UI.Image>().material.color = currentC.get_color("background_color");
 
-            // textes
+            // textes                        
             currentC.update_text("left_t", m_leftText);
             currentC.update_text("right_t", m_rightText);
             currentC.update_text("top_t", m_topText);
             currentC.update_text("bottom_t", m_bottomText);
+
+            m_leftText.gameObject.SetActive(m_leftText.text.Length > 0);
+            m_rightText.gameObject.SetActive(m_rightText.text.Length > 0);
+            m_topText.gameObject.SetActive(m_topText.text.Length > 0);
+            m_bottomText.gameObject.SetActive(m_bottomText.text.Length > 0);
         }
     }
 }
