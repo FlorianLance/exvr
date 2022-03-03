@@ -246,7 +246,7 @@ struct Component {
         {T::Vive_pro_eye_tracking,    C::Tracking,    TO::B,     CO::C,   false,   R::OpenSource,   S::Exp, "Vive_pro_eye_tracking"sv, "Vive pro eye tracking"sv, "ViveProEyeTracking"sv, ":/icons/Thera_trainer"sv},
         // UI
         {T::Slider_ui,                C::UI,          TO::B,     CO::B,   false,   R::OpenSource,   S::Sta, "Slider_ui"sv, "Slider ui"sv, "SliderUI"sv, ":/icons/Slider_overlay"sv},
-        {T::Buttons_ui,               C::UI,          TO::B,     CO::B,   false,   R::OpenSource,   S::Exp, "Buttons_ui"sv, "Buttons ui"sv, "ButtonsUI"sv, ":/icons/Slider_overlay"sv},
+        {T::Buttons_ui,               C::UI,          TO::B,     CO::B,   false,   R::OpenSource,   S::Sta, "Buttons_ui"sv, "Buttons ui"sv, "ButtonsUI"sv, ":/icons/Slider_overlay"sv},
         // Video
         {T::Video_file,               C::Video,       TO::U,     CO::I,   false,   R::OpenSource,   S::Sta, "Video_file"sv, "Video file"sv, "VideoFile"sv,":/icons/Video_file"sv},
         {T::Video_file_camera_viewer, C::Video,       TO::B,     CO::B,   false,   R::OpenSource,   S::Exp, "Video_file_camera_viewer"sv, "Video file camera viewer"sv, "VideoFileCameraViewer"sv,":/icons/Video_file"sv},
@@ -302,10 +302,6 @@ struct Component {
         return components.at<0,10>(type);
     }
 
-//    static QString get_icon_path(Type type) {
-//        return QSL(":/icons/") % from_view(components.at<0,9>(type));
-//    }
-
     static size_t components_nb_per_category(Category category) {
         return components.count_equal<1>(category);
     }
@@ -336,7 +332,7 @@ struct Component {
 
     using TComponentSlots = std::tuple<
         T,                             FunctionN,                      CNT,                    Doc>;
-    static constexpr TupleArray<91,TComponentSlots> componentsSlots = {{
+    static constexpr TupleArray<95,TComponentSlots> componentsSlots = {{
         TComponentSlots
         // Audio
         {T::AudioSource,               "play"sv,                       CNT::void_t,            "..."sv},
@@ -431,6 +427,10 @@ struct Component {
         {T::Fop_robot,                 "set delay"sv,                  CNT::integer_t,         "..."sv},
         {T::Fop_robot,                 "set force ratio"sv,            CNT::float_t,           "..."sv},
         // UI
+        {T::Buttons_ui,                "set id"sv,                     CNT::integer_t,         "Set the current button with id"sv},
+        {T::Buttons_ui,                "next id"sv,                    CNT::void_t,            "Select the new button"sv},
+        {T::Buttons_ui,                "previous id"sv,                CNT::void_t,            "Select the previous button"sv},
+        {T::Buttons_ui,                "validate"sv,                   CNT::void_t,            "Validate current button"sv},
         {T::Slider_ui,                 "set value"sv,                  CNT::float_t,           "Set the current value of the slider"sv},
         {T::Slider_ui,                 "increase"sv,                   CNT::float_t,           "Increase the slider current value by input amount"sv},
         {T::Slider_ui,                 "decrease"sv,                   CNT::float_t,           "Decrease the slider current value by input amount"sv},
@@ -447,7 +447,7 @@ struct Component {
 
     using TComponentSignals = std::tuple<
         CT,                             FunctionN,                     CNT,                            Doc>;
-    static constexpr TupleArray<64, TComponentSignals> componentsSignals = {{
+    static constexpr TupleArray<65, TComponentSignals> componentsSignals = {{
         TComponentSignals
         // Audio
         {T::AudioSource,               "sample value channel"sv,       CNT::id_any_t,                  "..."sv},
@@ -522,6 +522,7 @@ struct Component {
         {T::Vive_pro_eye_tracking,     "pupil position"sv,             CNT::id_any_t,                  "..."sv},
         {T::Vive_pro_eye_tracking,     "pupil diameter"sv,             CNT::id_any_t,                  "..."sv},
         // UI
+        {T::Buttons_ui,                "validated"sv,                  CNT::integer_t,                 "Current selected button has been validated"sv},
         {T::Slider_ui,                 "value updated"sv,              CNT::float_t,                   "Is triggered when slider value changes"sv},
         // Video
         {T::Video_file,                "new frame"sv,                  CNT::image_t,                   "..."sv},

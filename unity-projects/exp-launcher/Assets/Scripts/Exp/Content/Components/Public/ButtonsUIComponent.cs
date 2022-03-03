@@ -35,110 +35,60 @@ using TMPro;
 namespace Ex {
 
     public class ButtonsUIComponent : CanvasWorldSpaceComponent {
-        
-        public GameObject m_buttonsUiGO = null;
 
-        public TextMeshProUGUI m_topText    = null;
-        public TextMeshProUGUI m_bottomText = null;
-        public TextMeshProUGUI m_leftText   = null;
-        public TextMeshProUGUI m_rightText  = null;
-        public Transform m_buttonsParent = null;
-        public List<GameObject> m_buttonsLine = null;
+        private GameObject m_buttonsUiGO = null;
+        private TextMeshProUGUI m_topText    = null;
+        private TextMeshProUGUI m_bottomText = null;
+        private TextMeshProUGUI m_leftText   = null;
+        private TextMeshProUGUI m_rightText  = null;
+        private Transform m_buttonsParent = null;
+        private List<GameObject> m_buttonsLine = null;
 
-        public Dictionary<int, Dictionary<int, Button>> m_buttons = null;
-        public Dictionary<int, Dictionary<int, TextMeshProUGUI>> m_buttonsText = null;
+        private Dictionary<int, Dictionary<int, Button>> m_buttons = null;
+        private Dictionary<int, Dictionary<int, TextMeshProUGUI>> m_buttonsText = null;
+        private List<Button> m_buttonsL = null;
+        private List<int> m_buttonsNb = null;
 
-        //private float currentRandValue = 0f;
+        private Material m_buttonsMat = null;
 
-        //private static Dictionary<string, TextAlignmentOptions> m_alignment = null;
+        public int selectedButtonId = -1;
+
+        #region ex_functions
 
         protected override bool initialize() {
 
-    
             // signals
-            //add_signal("button updated");
+            add_signal("validated");
             // slots            
-            //add_slot("set button", (buttonId) => { });
-            //add_slot("next",    (nullArg) => { });
-            //add_slot("previous", (nullArg) => {});
+            add_slot("set id", (buttonId) => {
+                select_button((int)buttonId);
+            });
+            add_slot("next id", (nullArg) => {
+                select_next_button();
+            });
+            add_slot("previous id", (nullArg) => {
+                select_previous_button();
+            });
+            add_slot("validate", (nullArg) => {
+                validate_button();
+            });
 
             m_buttonsUiGO = ExVR.GlobalResources().instantiate_prebab("Components/ButtonsUI", transform);            
             m_buttonsUiGO.name = "Buttons UI";
             m_buttonsUiGO.GetComponent<UnityEngine.UI.Image>().material = ExVR.GlobalResources().instantiate_default_transparent_mat();
+            m_buttonsMat = ExVR.GlobalResources().instantiate_default_ui_mat();
 
             m_topText       = m_buttonsUiGO.transform.Find("Top text").GetComponent<TextMeshProUGUI>();
-            m_topText.text = "...";
-
             m_bottomText = m_buttonsUiGO.transform.Find("Bottom text").GetComponent<TextMeshProUGUI>();
-            m_bottomText.text = "...";
-
-            m_leftText = m_buttonsUiGO.transform.Find("Middle/Left text").GetComponent<TextMeshProUGUI>();
-            m_leftText.text = "...";
-
+            m_leftText = m_buttonsUiGO.transform.Find("Middle/Left text").GetComponent<TextMeshProUGUI>();       
             m_rightText = m_buttonsUiGO.transform.Find("Middle/Right text").GetComponent<TextMeshProUGUI>();
-            m_rightText.text = "...";
-
             m_buttonsParent = m_buttonsUiGO.transform.Find("Middle/Buttons");
-
-
-
-            int nbButtonsH = 2;
-            int nbButtonsV = 2;
-
-            m_buttons = new Dictionary<int, Dictionary<int, Button>>(nbButtonsV);
-            m_buttonsText = new Dictionary<int, Dictionary<int, TextMeshProUGUI>>(nbButtonsV);
-            m_buttonsLine = new List<GameObject>(nbButtonsV);
-            for (int ii = 0; ii < nbButtonsV; ++ii) {
-
-                var lineGO = GO.generate_empty_scene_object(string.Format("Line{0}", ii), m_buttonsParent, true);
-                lineGO.transform.localPosition = new Vector3(0, 0, -0.01f);
-                lineGO.transform.localScale = new Vector3(1, 1, 1);
-                var le = lineGO.AddComponent<LayoutElement>();
-                le.flexibleWidth = 1f;
-                le.flexibleHeight = 1f;
-
-                var hlg = lineGO.AddComponent<HorizontalLayoutGroup>();
-                hlg.childControlWidth = true;
-                hlg.childControlHeight = true;
-                hlg.childScaleWidth = false;
-                hlg.childScaleHeight = false;
-                hlg.childForceExpandWidth = true;
-                hlg.childForceExpandHeight = true;
-
-                m_buttonsLine.Add(lineGO);
-
-                var lineButtons = new Dictionary<int, Button>(nbButtonsH);
-                var lineButtonsText = new Dictionary<int, TextMeshProUGUI>(nbButtonsH);
-                for (int jj = 0; jj < nbButtonsH; ++jj) {
-                    var buttonGO = ExVR.GlobalResources().instantiate_prebab("Common/Button", lineGO.transform, "Button");
-                    buttonGO.SetActive(true);
-                    buttonGO.transform.localPosition = Vector3.zero;
-                    buttonGO.transform.localScale = new Vector3(1, 1, 1);
-
-                    var button = buttonGO.GetComponent<Button>();
-
-                    button.interactable = false;
-                    if (jj == 0) {
-                        button.interactable = true;
-                    }
-
-                    lineButtons.Add(jj, button);
-                    lineButtonsText.Add(jj, buttonGO.transform.Find("Text (TMP)").gameObject.GetComponent<TextMeshProUGUI>());
-                }
-                m_buttons.Add(ii, lineButtons);
-                m_buttonsText.Add(ii, lineButtonsText);
-            }
-
-
 
 
             return true;
         }
 
-        protected override void start_routine() {
 
-
-        }
 
         protected override void set_visibility(bool visibility) {
             m_buttonsUiGO.SetActive(visibility);
@@ -151,15 +101,30 @@ namespace Ex {
 
         protected override void update_parameter_from_gui(string updatedArgName) {
             update_from_current_config();
+            if (updatedArgName == "id") {
+                if (currentC.get<bool>("update_id")) {
+                    select_button(currentC.get<int>("id"));
+                }
+            }
         }
 
+        protected override void start_routine() {
+            if (currentC.get<bool>("update_id")){
+                select_button(currentC.get<int>("id"));
+            } else if (currentC.get<bool>("randomize_id")) {
+                select_button(Random.Range(0, m_buttonsL.Count));
+            }
+        }
 
         protected override void post_update() {
             resize_container();
         }
 
 
-        public void resize_container() {
+        #endregion
+
+        #region private_functions
+        private void resize_container() {
 
             m_buttonsUiGO.transform.position = Vector3.zero;
             m_buttonsUiGO.transform.rotation = Quaternion.identity;
@@ -207,6 +172,178 @@ namespace Ex {
             m_rightText.gameObject.SetActive(m_rightText.text.Length > 0);
             m_topText.gameObject.SetActive(m_topText.text.Length > 0);
             m_bottomText.gameObject.SetActive(m_bottomText.text.Length > 0);
+
+
+            // buttons
+            string buttonsText = currentC.get<string>("buttons_text");
+            var lines = buttonsText.Split(new char[] { '\n' }, System.StringSplitOptions.None);
+
+            bool reset = false;
+            if (m_buttonsNb == null) {
+                reset = true;
+            } else if (m_buttonsNb.Count != lines.Length) {
+                reset = true;
+            } else {
+
+                for (int ii = 0; ii < lines.Length; ++ii) {
+                    if (lines[ii].Length != m_buttonsNb[ii]) {
+                        reset = true;
+                        break;
+                    }
+                }
+            }
+            
+            // reconstruct buttons           
+            if (reset) {
+
+                if (m_buttonsLine != null) {
+                    foreach(var go in m_buttonsLine) {
+                        Destroy(go);
+                    }
+                }
+
+                m_buttons     = new Dictionary<int, Dictionary<int, Button>>(lines.Length);
+                m_buttonsText = new Dictionary<int, Dictionary<int, TextMeshProUGUI>>(lines.Length);
+                m_buttonsLine = new List<GameObject>(lines.Length);
+
+                m_buttonsL    = new List<Button>();
+                m_buttonsNb   = new List<int>(lines.Length);
+                selectedButtonId = -1;
+
+                for (int ii = 0; ii < lines.Length; ++ii) {
+
+                    var lineGO = GO.generate_empty_scene_object(string.Format("Line{0}", ii), m_buttonsParent, true);
+                    lineGO.transform.localPosition = new Vector3(0, 0, -0.01f);
+                    lineGO.transform.localScale = new Vector3(1, 1, 1);
+                    var le = lineGO.AddComponent<LayoutElement>();
+                    le.flexibleWidth = 1f;
+                    le.flexibleHeight = 1f;
+
+                    var hlg = lineGO.AddComponent<HorizontalLayoutGroup>();
+                    hlg.childControlWidth = true;
+                    hlg.childControlHeight = true;
+                    hlg.childScaleWidth = false;
+                    hlg.childScaleHeight = false;
+                    hlg.childForceExpandWidth = true;
+                    hlg.childForceExpandHeight = true;
+
+                    m_buttonsLine.Add(lineGO);
+
+                    if (lines[ii].Length == 0) {
+                        m_buttonsNb.Add(0);
+                    } else {
+
+                        var buttonsName = lines[ii].Split(new char[] { '_' }, System.StringSplitOptions.None); ;
+                        var lineButtons = new Dictionary<int, Button>(buttonsName.Length);
+                        var lineButtonsText = new Dictionary<int, TextMeshProUGUI>(buttonsName.Length);
+                        for (int jj = 0; jj < buttonsName.Length; ++jj) {
+
+                            if (buttonsName[jj].Length == 0) {
+                                continue;
+                            }
+
+                            var buttonGO = ExVR.GlobalResources().instantiate_prebab("Common/Button", lineGO.transform, "Button");
+                            
+                            buttonGO.transform.localPosition = Vector3.zero;
+                            buttonGO.transform.localScale = new Vector3(1, 1, 1);
+
+                            var button = buttonGO.GetComponent<Button>();
+                            button.GetComponent<UnityEngine.UI.Image>().material = m_buttonsMat;
+                            button.interactable = false;
+                            buttonGO.SetActive(true);
+
+                            lineButtons.Add(jj, button);
+                            lineButtonsText.Add(jj, buttonGO.transform.Find("Text (TMP)").gameObject.GetComponent<TextMeshProUGUI>());
+
+                            m_buttonsL.Add(button);
+                            if (selectedButtonId == -1) {
+                                selectedButtonId = 0;
+                            }
+
+                        }
+                        m_buttons.Add(ii, lineButtons);
+                        m_buttonsText.Add(ii, lineButtonsText);
+                        m_buttonsNb.Add(lineButtons.Count);
+                    }
+                }
+            }
+
+            // update text
+            for (int ii = 0; ii < lines.Length; ++ii) {
+                var buttonsName = lines[ii].Split(new char[] { '_' }, System.StringSplitOptions.None);
+                for (int jj = 0; jj < buttonsName.Length; ++jj) {
+                    if (buttonsName[jj].Length > 0) {
+                        currentC.update_text("buttons_ts", m_buttonsText[ii][jj]);
+                        m_buttonsText[ii][jj].text = buttonsName[jj];
+                    }
+                }
+            }
+            m_buttonsMat.color = currentC.get_color("buttons_color");
+
+            // select button
+            select_button(selectedButtonId);
         }
+
+        #endregion
+
+        #region public_functions
+
+        public void select_next_button() {
+
+            if (m_buttonsL.Count == 0) {
+                return;
+            }
+
+            if (selectedButtonId == -1) {
+                selectedButtonId = 0;
+            }
+
+            if(selectedButtonId == m_buttonsL.Count - 1) {
+                select_button(0);
+            } else {
+                select_button(selectedButtonId + 1);
+            }
+        }
+
+        public void select_previous_button() {
+
+            if(m_buttonsL.Count == 0) {
+                return;
+            }
+
+            if (selectedButtonId == -1) {
+                selectedButtonId = 0;
+            }
+
+            if (selectedButtonId == 0) {
+                select_button(m_buttonsL.Count - 1);
+            } else {
+                select_button(selectedButtonId - 1);
+            }
+        }
+
+        public void select_button(int id) {
+
+            if (m_buttonsL.Count == 0) {
+                return;
+            }
+            if(id == selectedButtonId) {
+                return;
+            }
+
+            for (int ii = 0; ii < m_buttonsL.Count; ++ii) {
+                m_buttonsL[ii].interactable = (ii == id);
+            }
+            selectedButtonId = id;
+        }
+
+        public void validate_button() {
+            if (selectedButtonId >= 0 && selectedButtonId < m_buttonsL.Count) {
+                invoke_signal("validated", selectedButtonId);
+            }
+        }
+
+
+        #endregion
     }
 }

@@ -98,6 +98,11 @@ namespace Ex{
             return instantiate_mat("Common/DefaultTransparent");
         }
 
+        public Material instantiate_default_ui_mat() {
+            return instantiate_mat("Common/DefaultUI");
+        }
+
+
         public Material instantiate_unlit_color_mat() {
             return instantiate_mat("Common/UnlitColor");
         }
@@ -194,8 +199,10 @@ namespace Ex{
             m_loadedMaterials = new Dictionary<string, Material>();
             load_material("Common/DefaultModel");
             load_material("Common/DefaultTransparent");
+            load_material("Common/DefaultUI");
             load_material("Common/UnlitColor");
             load_material("Common/UnlitTransparentColor");
+            
 
             // prefabs
             m_loadedPrefabs = new Dictionary<string, GameObject>();
