@@ -59,8 +59,6 @@ namespace Ex{
             paraboloidFrag     = Shader.Find("Custom/Cloud/ParaboloidFragWorldSizeShader");
             paraboloidGeoWorld = Shader.Find("Custom/Cloud/ParaboloidGeoWorldSizeShader");
 
-            Debug.LogError("- " + (quadShader != null));
-
             set_rendering(currentRendering);
         }
 

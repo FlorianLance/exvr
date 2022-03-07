@@ -585,10 +585,22 @@ std::unique_ptr<Resource> XmlIoManager::read_resource(){
         // if relative
         auto expDir = QFileInfo(expFileToLoad).absoluteDir();
         fileInfo = QFileInfo(expDir.path() % QSL("/") % path.value());
+
         if(fileInfo.exists()){
             fileInfo.makeAbsolute();
             resource->path = fileInfo.canonicalFilePath();
         }else{
+
+
+            if(type.value() == Resource::Type::Directory){
+                QDir d;
+                if(d.mkpath(expDir.path() % QSL("/") % path.value())){
+                    fileInfo.makeAbsolute();
+                    resource->path = fileInfo.canonicalFilePath();
+                    return resource;
+                }
+            }
+
             QtLogger::error(QSL("[XML] Cannot create resource path from ") % path.value());
             // doesn't exist, keep loaded path
             resource->path  = path.value();
@@ -610,9 +622,6 @@ void XmlIoManager::write_component(const Component *component) {
     w->writeAttribute(QSL("key"),                QString::number(component->key()));
     w->writeAttribute(QSL("name"),               component->name());
     w->writeAttribute(QSL("type"),               from_view(Component::get_unity_name(component->type)));
-//    w->writeAttribute(QSL("static"),             component->isStatic ? "1" : "0");
-//    w->writeAttribute(QSL("static_update"),      component->staticUpdate ? "1" : "0");
-//    w->writeAttribute(QSL("static_visibility"),  component->staticVisibility ? "1" : "0");
     write_config(component->initConfig.get(), true);
     w->writeStartElement(QSL("Configs"));
     for(const auto &config : component->configs){

@@ -188,7 +188,7 @@ struct Component {
         // Environment
         {T::Sky,                      C::Environment, TO::N,     CO::C,   true,    R::OpenSource,   S::Sta, "Sky"sv, "Sky"sv, "Sky"sv, ":/icons/Sky"sv},
         // Flow
-        {T::Config,                   C::Flow,        TO::N,     CO::C,   false,   R::OpenSource,   S::Sta, "Config"sv, "Config"sv, "Config"sv, ":/icons/Sky"sv},
+        {T::Config,                   C::Flow,        TO::N,     CO::C,   false,   R::OpenSource,   S::Sta, "Config"sv, "Config"sv, "Config"sv, ":/icons/Config"sv},
         // Input
         {T::Joypad,                   C::Input,       TO::U,     CO::I,   true,    R::OpenSource,   S::Sta, "Joypad"sv, "Joypad"sv, "Joypad"sv,":/icons/Joypad"sv},
         {T::Keyboard,                 C::Input,       TO::U,     CO::I,   true,    R::OpenSource,   S::Sta, "Keyboard"sv, "Keyboard"sv, "Keyboard"sv, ":/icons/Keyboard"sv},
@@ -205,7 +205,7 @@ struct Component {
         {T::Sphere,                   C::Model,       TO::V,     CO::B,   false,   R::OpenSource,   S::Sta, "Sphere"sv, "Sphere"sv, "Sphere"sv,":/icons/Sphere"sv},
         {T::Torus,                    C::Model,       TO::V,     CO::B,   false,   R::OpenSource,   S::Sta, "Torus"sv, "Torus"sv, "Torus"sv,":/icons/Torus"sv},
         // Network
-        {T::Parallel_port_writer,     C::Network,     TO::N,     CO::B,   false,   R::OpenSource,   S::Sta, "Parallel_port_writer"sv, "Parallel port writer"sv, "ParallelPortWriter"sv, ":/icons/USB"sv},
+        {T::Parallel_port_writer,     C::Network,     TO::N,     CO::B,   false,   R::OpenSource,   S::Sta, "Parallel_port_writer"sv, "Parallel port writer"sv, "ParallelPortWriter"sv, ":/icons/Parallel_port"sv},
         {T::Serial_port_reader,       C::Network,     TO::U,     CO::B,   false,   R::OpenSource,   S::Sta, "Serial_port_reader"sv, "Serial port reader"sv, "SerialPortReader"sv, ":/icons/USB"sv},
         {T::Serial_port_writer,       C::Network,     TO::U,     CO::B,   false,   R::OpenSource,   S::Sta, "Serial_port_writer"sv, "Serial port writer"sv, "SerialPortWriter"sv, ":/icons/USB"sv},
         {T::Udp_reader,               C::Network,     TO::U,     CO::I,   false,   R::OpenSource,   S::Sta, "Udp_reader"sv, "UDP reader"sv, "UdpReader"sv, ":/icons/UDP"sv},
@@ -246,7 +246,7 @@ struct Component {
         {T::Vive_pro_eye_tracking,    C::Tracking,    TO::B,     CO::C,   false,   R::OpenSource,   S::Exp, "Vive_pro_eye_tracking"sv, "Vive pro eye tracking"sv, "ViveProEyeTracking"sv, ":/icons/Thera_trainer"sv},
         // UI
         {T::Slider_ui,                C::UI,          TO::B,     CO::B,   false,   R::OpenSource,   S::Sta, "Slider_ui"sv, "Slider ui"sv, "SliderUI"sv, ":/icons/Slider_overlay"sv},
-        {T::Buttons_ui,               C::UI,          TO::B,     CO::B,   false,   R::OpenSource,   S::Sta, "Buttons_ui"sv, "Buttons ui"sv, "ButtonsUI"sv, ":/icons/Slider_overlay"sv},
+        {T::Buttons_ui,               C::UI,          TO::B,     CO::B,   false,   R::OpenSource,   S::Sta, "Buttons_ui"sv, "Buttons ui"sv, "ButtonsUI"sv, ":/icons/Buttons"sv},
         // Video
         {T::Video_file,               C::Video,       TO::U,     CO::I,   false,   R::OpenSource,   S::Sta, "Video_file"sv, "Video file"sv, "VideoFile"sv,":/icons/Video_file"sv},
         {T::Video_file_camera_viewer, C::Video,       TO::B,     CO::B,   false,   R::OpenSource,   S::Exp, "Video_file_camera_viewer"sv, "Video file camera viewer"sv, "VideoFileCameraViewer"sv,":/icons/Video_file"sv},

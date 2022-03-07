@@ -93,6 +93,11 @@ struct VolumetricVideoConfigParametersW::Impl{
     ExCheckBoxW renderCircles{"circles"};
     ExCheckBoxW parabloidFragCones{"cones"};
     ExComboBoxIndexW parabloidGeoDetails{"details"};
+
+    // filtering obb
+    ExCheckBoxW filterPointsOutsideOBB{"filter_points_outside_obb"};
+    ExCheckBoxW displayFilteringOBB{"display_filtering_obb"};
+    TransformSubPart filteringObbTr{"filtering_obb_tr"};
 };
 
 VolumetricVideoConfigParametersW::VolumetricVideoConfigParametersW() :  ConfigParametersW(), m_p(std::make_unique<Impl>()){
@@ -120,6 +125,9 @@ void VolumetricVideoConfigParametersW::insert_widgets(){
         m_p->renderCircles(), m_p->parabloidFragCones(),
         F::gen(L::HB(),{W::txt("Parbloid geo details: "), m_p->parabloidGeoDetails()}, LStretch{true}, LMargins{false},QFrame::NoFrame)
     }, LStretch{false}, LMargins{true},QFrame::Box));
+
+    add_widget(F::gen(L::VB(),{W::txt("<b>Filtering oriented bounding box: </b>"),
+        m_p->filterPointsOutsideOBB(), m_p->displayFilteringOBB(), m_p->filteringObbTr.frame}, LStretch{false}, LMargins{true},QFrame::Box));
 }
 
 void VolumetricVideoConfigParametersW::init_and_register_widgets(){
@@ -139,5 +147,9 @@ void VolumetricVideoConfigParametersW::init_and_register_widgets(){
     add_input_ui(m_p->tint.init_widget("Points tint", QColor(255,255,255,0)));
     add_input_ui(m_p->renderCircles.init_widget("Use circles", true));
     add_input_ui(m_p->parabloidFragCones.init_widget("Parabloid frag cones", true));
+    // filtering obb
+    add_input_ui(m_p->filterPointsOutsideOBB.init_widget("Remove points outside", false));
+    add_input_ui(m_p->displayFilteringOBB.init_widget("Display", false));
+    map_sub_part(m_p->filteringObbTr.init_widget("Transform"));
 }
 

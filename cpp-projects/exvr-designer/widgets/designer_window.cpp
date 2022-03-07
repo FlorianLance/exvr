@@ -180,6 +180,7 @@ void DesignerWindow::display_status(QString status, int ms){
 
 void DesignerWindow::insert_log_from_ui(QStringView log){
     logs.append(log.toUtf8());
+    qDebug() << log;
 }
 
 void DesignerWindow::update_main_ui(Experiment *experiment){
