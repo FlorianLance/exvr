@@ -33,7 +33,7 @@ namespace Ex.DLL{
 
         byte[] m_byteData = null;
 
-        ExComponent m_component = null;
+        //ExComponent m_component = null;
         public void add_frame(ImageContainer image) {
 
             //Profiler.BeginSample("[ExVR][VideoSaver] add_frame 1");

@@ -44,21 +44,21 @@
 
 namespace tool::ex {
 
-constexpr static int reloadAudioCode          = 0b1;
-constexpr static int reloadImagesCode         = 0b10;
-constexpr static int reloadMeshesCode         = 0b100;
-constexpr static int reloadTextesCode         = 0b1000;
-constexpr static int reloadVideosCode         = 0b10000;
-constexpr static int reloadAssetBundlesCode   = 0b100000;
-constexpr static int reloadCSharpScriptsCode  = 0b1000000;
-constexpr static int reloadPythonScriptsCode  = 0b10000000;
-constexpr static int reloadCloudsCode         = 0b100000000;
-constexpr static int reloadScanerVideosCode   = 0b1000000000;
-constexpr static int reloadPlotsCode          = 0b10000000000;
-constexpr static int reloadVolumetricVideoCode= 0b100000000000;
-//constexpr static int reloadDirectories         = 0b100000000000;
+[[maybe_unused]] constexpr static int reloadAudioCode          = 0b1;
+[[maybe_unused]] constexpr static int reloadImagesCode         = 0b10;
+[[maybe_unused]] constexpr static int reloadMeshesCode         = 0b100;
+[[maybe_unused]] constexpr static int reloadTextesCode         = 0b1000;
+[[maybe_unused]] constexpr static int reloadVideosCode         = 0b10000;
+[[maybe_unused]] constexpr static int reloadAssetBundlesCode   = 0b100000;
+[[maybe_unused]] constexpr static int reloadCSharpScriptsCode  = 0b1000000;
+[[maybe_unused]] constexpr static int reloadPythonScriptsCode  = 0b10000000;
+[[maybe_unused]] constexpr static int reloadCloudsCode         = 0b100000000;
+[[maybe_unused]] constexpr static int reloadScanerVideosCode   = 0b1000000000;
+[[maybe_unused]] constexpr static int reloadPlotsCode          = 0b10000000000;
+[[maybe_unused]] constexpr static int reloadVolumetricVideoCode= 0b100000000000;
+[[maybe_unused]] //constexpr static int reloadDirectories         = 0b100000000000;
 
-constexpr static int reloadDefaultCode = reloadTextesCode | reloadCSharpScriptsCode | reloadPythonScriptsCode;
+[[maybe_unused]] constexpr static int reloadDefaultCode = reloadTextesCode | reloadCSharpScriptsCode | reloadPythonScriptsCode;
 
 class ResourcesManager;
 using ResourcesManagerUP = std::unique_ptr<ResourcesManager>;

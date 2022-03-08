@@ -33,9 +33,9 @@ namespace Ex{
         public float speedRH = 3f;
         public float speedRV = 3f;
         public float speedRR = 3f;
-        private float yaw   = 0.0f;
-        private float pitch = 0.0f;
-        private float roll = 0.0f;
+        //private float yaw   = 0.0f;
+        //private float pitch = 0.0f;
+        //private float roll = 0.0f;
         public bool outside = true;
 
         Camera cameraC = null;

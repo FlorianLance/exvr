@@ -78,6 +78,7 @@ namespace Ex {
 
         // commands
         public void next() { p.command().next(); }
+        public void next_with_name(string componentName) { p.command().next_element_with_name(componentName); }
         public void schedule_next(int milliseconds) { p.command().schedule_next(milliseconds); }
         public void previous() { p.command().previous(); }
         public void close() { p.components().close(p); }

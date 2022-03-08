@@ -715,7 +715,6 @@ void XmlIoManager::write_action(const Action *action) {
     w->writeAttribute(QSL("key_config"),    QString::number(action->config->key()));
     w->writeAttribute(QSL("node_used"),     action->nodeUsed ? QSL("1") : QSL("0"));
     w->writeAttribute(QSL("node_position"), QString::number(action->nodePosition.x()) % QSL(" ") % QString::number(action->nodePosition.y()));
-    //w->writeAttribute(QSL("node_size"),     QString::number(action->nodeSize.width()) % QSL(" ") % QString::number(action->nodeSize.height()));
 
     w->writeComment(QSL("Component ") % action->component->name() % QSL(" with config ") % action->config->name % QSL(" "));
     write_timeline(action->timelineUpdate.get());
@@ -791,8 +790,7 @@ void XmlIoManager::write_connector(const Connector *connector){
     w->writeStartElement(QSL("Connector"));
     w->writeAttribute(QSL("key"), QString::number(connector->key()));
     w->writeAttribute(QSL("name"), connector->name);
-    w->writeAttribute(QSL("node_position"), QString::number(connector->pos.x()) % QSL(" ") % QString::number(connector->pos.y()));
-    w->writeAttribute(QSL("node_size"),     QString::number(connector->size.width()) % QSL(" ") % QString::number(connector->size.height()));
+    w->writeAttribute(QSL("node_position"), QString::number(connector->pos.x()) % QSL(" ") % QString::number(connector->pos.y()));   
     write_argument(connector->arg);
     w->writeEndElement(); // /Connector
 }
@@ -824,11 +822,6 @@ std::tuple<ActionUP, QString> XmlIoManager::read_action(){
         const auto split = nodePositionStr.value().split(" ");
         action->nodePosition = QPointF(split[0].toDouble(), split[1].toDouble());
     }
-
-//    if(auto nodeSizeStr = read_attribute<QString>(QSL("node_size"), false); nodeSizeStr.has_value()){
-//        const auto split = nodeSizeStr.value().split(" ");
-//        action->nodeSize = QSize(split[0].toInt(), split[1].toInt());
-//    }
 
     r->readNext();
     while(!r->atEnd()){
@@ -946,12 +939,10 @@ std::tuple<ConnectorUP, QString> XmlIoManager::read_connector(){
     const auto key         = read_attribute<int>(QSL("key"), true);
     auto name              = read_attribute<QString>(QSL("name"), true);
     const auto nodePosStr  = read_attribute<QString>(QSL("node_position"), true);
-    const auto nodeSizeStr = read_attribute<QString>(QSL("node_size"), false);
 
     if(!key.has_value()          ||
        !name.has_value()         ||
-       !nodePosStr.has_value()   ||
-       !nodeSizeStr.has_value()){
+       !nodePosStr.has_value()){
         return {nullptr,QSL("invalid connector at line: ") % QString::number(r->lineNumber())};
     }
 
@@ -984,9 +975,6 @@ std::tuple<ConnectorUP, QString> XmlIoManager::read_connector(){
 
     auto split               = nodePosStr.value().split(" ");
     const auto nodePosition  = QPointF(split[0].toDouble(), split[1].toDouble());
-    split                    = nodeSizeStr.value().split(" ");
-    const auto nodeSize      = QSize(split[0].toInt(), split[1].toInt());
-    Q_UNUSED(nodeSize)
 
     while(!r->atEnd()){
 

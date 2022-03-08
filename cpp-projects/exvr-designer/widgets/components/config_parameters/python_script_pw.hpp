@@ -37,28 +37,16 @@ class PythonScriptInitConfigParametersW : public ConfigParametersW{
 
 public :
 
-    QPushButton m_pbGenerateFile;
-
-    ExLineEditW m_leModulePath{"path_module"};
-    QPushButton m_pbSetModulePath;
-
-    ExLineEditW m_lePythonLibPath{"path_lib"};
-    QPushButton m_pbSetPythonLibPath;
-
-    ExLineEditW m_leClassName{"class_name"};
-
-    QPushButton m_pbOpenScript;
-
-    ExParametersGeneratorWidgetW m_pgGenerator{"generator"};
-
-    QTabWidget *m_tab = nullptr;
-    QWidget *m_pySettings = nullptr;
-    QWidget *m_pyParameters = nullptr;
+    PythonScriptInitConfigParametersW();
 
     void insert_widgets() override;
     void init_and_register_widgets() override;
     void create_connections() override;
     void late_update_ui() override;
+
+private:
+    struct Impl;
+    std::unique_ptr<Impl> m_p = nullptr;
 };
 
 
@@ -66,12 +54,16 @@ class PythonScriptConfigParametersW : public ConfigParametersW{
 
 public :
 
-    ExParametersGeneratorWidgetW m_pgGenerator{"generator"};
+    PythonScriptConfigParametersW();
 
     void insert_widgets() override;
     void init_and_register_widgets() override;
-    void create_connections() override{}
-    void late_update_ui() override{}
+    void create_connections() override;
+    void late_update_ui() override;
+
+private:
+    struct Impl;
+    std::unique_ptr<Impl> m_p = nullptr;
 };
 
 }

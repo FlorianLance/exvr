@@ -53,6 +53,8 @@ public :
     void late_update_ui() override{}
 
     virtual void update_with_info(QStringView id, QStringView value) override{
+        static_cast<void>(id);
+        static_cast<void>(value);
 
 //        if(id == "buttons_state_info"){
 //            if(value.length() == 0){

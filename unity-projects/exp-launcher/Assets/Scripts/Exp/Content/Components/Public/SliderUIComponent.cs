@@ -47,7 +47,7 @@ namespace Ex{
 
         //private float currentRandValue = 0f;
 
-        private static Dictionary<string, TextAlignmentOptions> m_alignment = null;
+        //private static Dictionary<string, TextAlignmentOptions> m_alignment = null;
 
         protected override bool initialize() {
 

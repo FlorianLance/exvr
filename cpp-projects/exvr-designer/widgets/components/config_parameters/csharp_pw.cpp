@@ -159,7 +159,7 @@ void CSharpScriptInitConfigParametersW::insert_widgets(){
 
 void CSharpScriptInitConfigParametersW::init_and_register_widgets(){
     add_generator_ui(m_p->generator.init_widget(input_ui_widgets()));
-    add_input_ui(m_p->className.init_widget("TemplateComponent"));
+    add_input_ui(m_p->className.init_widget("DefaultComponent"));
 }
 
 
@@ -173,7 +173,7 @@ CSharpScriptConfigParametersW::CSharpScriptConfigParametersW():  ConfigParameter
 
 void CSharpScriptConfigParametersW::insert_widgets(){
     m_layout->addWidget(ui::F::gen(ui::L::HB(), {m_p->generator()},  LStretch{false},LMargins{false}, QFrame::Box));
-    m_layout->setStretch(0,10);
+    no_end_stretch();
 }
 
 void CSharpScriptConfigParametersW::init_and_register_widgets(){

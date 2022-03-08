@@ -22,7 +22,7 @@
 ** SOFTWARE.                                                                      **
 ************************************************************************************/
 
-#include "python_component_script_export.hpp"
+#include "python_script_component_export.hpp"
 
 
 using namespace tool::ex;

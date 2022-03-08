@@ -56,8 +56,8 @@ namespace Ex{
 
         private static readonly string cancat2 = "{0}|{1}";
         private static readonly string cancat3 = "{0}|{1}|{2}";
-        private static readonly string cancat4 = "{0}|{1}|{2}|{3}";
-        private static readonly string cancat5 = "{0}|{1}|{2}|{3}|{4}";
+        //private static readonly string cancat4 = "{0}|{1}|{2}|{3}";
+        //private static readonly string cancat5 = "{0}|{1}|{2}|{3}|{4}";
 
         private ExpLauncherState m_lastExpLauncherState = ExpLauncherState.NotStarted;
         private ExpState m_lastExpState = ExpState.NotLoaded;

@@ -196,8 +196,7 @@ ResourcesManagerDialog::ResourcesManagerDialog(){
         m_ui.twCategories->setTabIcon(m_ui.twCategories->count()-1, QIcon(iconPath));
 
         if(
-            type == Resource::Type::Mesh ||
-            type == Resource::Type::PythonScript){
+            type == Resource::Type::Mesh ){
             tabW->setEnabled(false);
         }
     }

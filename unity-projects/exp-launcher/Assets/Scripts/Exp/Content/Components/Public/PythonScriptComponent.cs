@@ -58,7 +58,7 @@ namespace Ex{
             add_signal("signal3");
             add_signal("signal4");
 
-            List<string> pathsPython = initC.get_list<string>("paths_python");
+            //List<string> pathsPython = initC.get_list<string>("paths_python");
             // ...
      
             return cppDll.initialize();

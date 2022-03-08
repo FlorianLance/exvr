@@ -55,12 +55,11 @@ void Action::select_config(RowId  configTabId){
 }
 
 ActionUP Action::copy_with_new_element_id(const Action &actionToCopy){
-    ActionUP action = std::make_unique<Action>(actionToCopy.component, actionToCopy.config, ActionKey{-1});
+    ActionUP action            = std::make_unique<Action>(actionToCopy.component, actionToCopy.config, ActionKey{-1});
     action->timelineUpdate     = Timeline::copy_with_new_element_id(*actionToCopy.timelineUpdate);
     action->timelineVisibility = Timeline::copy_with_new_element_id(*actionToCopy.timelineVisibility);
-    action->nodePosition = actionToCopy.nodePosition;
-    action->nodeUsed = actionToCopy.nodeUsed;
-    //action->nodeSize = actionToCopy.nodeSize; // not used
+    action->nodePosition       = actionToCopy.nodePosition;
+    action->nodeUsed           = actionToCopy.nodeUsed;
     return action;
 }
 

@@ -176,7 +176,7 @@ void ExComponentsListW::update_from_components(){
             }
 
             if(!found){
-                elemsToRemove.push_back(ii);
+                elemsToRemove.push_back(static_cast<int>(ii));
             }
         }
         if(elemsToRemove.size() > 0){

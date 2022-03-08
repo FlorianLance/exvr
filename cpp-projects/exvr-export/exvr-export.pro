@@ -105,7 +105,7 @@ LIBS +=  \
 HEADERS += \
     # ex_components
     ex_components/ex_component_export.hpp \
-    ex_components/python_component_script_export.hpp \
+    ex_components/python_script_component_export.hpp \
     ex_components/video_saver_component_export.hpp \
     # ex_resources
     ex_resources/ex_resource_export.hpp \
@@ -113,7 +113,7 @@ HEADERS += \
 SOURCES += \
     # ex_components
     ex_components/ex_component_export.cpp \
-    ex_components/python_component_script_export.cpp \
+    ex_components/python_script_component_export.cpp \
     ex_components/video_saver_component_export.cpp \
     # ex_resources
     ex_resources/ex_resource_export.cpp \

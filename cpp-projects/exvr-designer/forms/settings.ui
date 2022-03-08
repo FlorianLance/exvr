@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>577</width>
-    <height>237</height>
+    <height>251</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,7 +18,7 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QWidget" name="widget_3" native="true">
+    <widget class="QWidget" name="content" native="true">
      <layout class="QGridLayout" name="gridLayout_2">
       <property name="leftMargin">
        <number>2</number>
@@ -625,7 +625,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QFrame" name="frame_2">
+    <widget class="QFrame" name="bottomButttons">
      <property name="frameShape">
       <enum>QFrame::StyledPanel</enum>
      </property>

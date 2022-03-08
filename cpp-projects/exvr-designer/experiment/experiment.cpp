@@ -1366,7 +1366,7 @@ void Experiment::modify_loop_nb_reps(ElementKey loopKey, int nbReps){
 void Experiment::modify_loop_N(ElementKey loopKey, int N){
 
     if(auto loop = get_loop(loopKey); loop != nullptr){
-        loop->set_N(to_unsigned(N));
+        loop->set_N(N);
         update_conditions();
         //add_to_update_flag(UpdateSelection);
     }

@@ -113,6 +113,7 @@ bool PythonScriptComponent::initialize(){
 
         // Read data from initConfig
         m_modulePath = get<std::string>(ParametersContainer::InitConfig, "path_module");
+
         auto [moduleDirectoryPath, moduleName] = tool::str::split_path_and_filename(m_modulePath);
         tool::str::remove_from_right(moduleName, '.');
         m_moduleName = moduleName;
@@ -120,7 +121,9 @@ bool PythonScriptComponent::initialize(){
         m_className    = get<std::string>(ParametersContainer::InitConfig, "class_name");
         m_pythonLibPath= get<std::string>(ParametersContainer::InitConfig, "path_lib");
 
-        // Add paths to sys.path
+        // Add paths to sys.path        
+        PyRun_SimpleString(componentStr); // TEST
+
         PyRun_SimpleString("import sys;");
         PyRun_SimpleString(std::string("sys.path.append(\"" + m_moduleDirectoryPath + "\");").c_str());
         PyRun_SimpleString(std::string("sys.path.append(\"" + m_pythonLibPath + "\");").c_str());

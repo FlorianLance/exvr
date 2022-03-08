@@ -47,7 +47,7 @@
   <PropertyGroup>
     <ProjectTypeGuids>{E097FAD1-6243-4DAD-9C02-E9B9EFC3FFC1};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <UnityProjectGenerator>Package</UnityProjectGenerator>
-    <UnityProjectGeneratorVersion>2.0.14</UnityProjectGeneratorVersion>
+    <UnityProjectGeneratorVersion>2.0.8</UnityProjectGeneratorVersion>
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>StandaloneWindows64:19</UnityBuildTarget>
     <UnityVersion>2019.4.36f1</UnityVersion>
@@ -60,11 +60,11 @@
     <Compile Include="Assets\Scripts\ExVR.cs" />
     <Compile Include="Assets\Scripts\Exp\Content\Components\Closed\FPPAvatarCameraComponent.cs" />
     <Compile Include="Assets\Scripts\Exp\Content\Components\Closed\HumanoidAvatarComponent.cs" />
-    <Compile Include="Assets\Scripts\Exp\Content\Components\Closed\HumanoidControllerComponent.cs" />
-    <Compile Include="Assets\Scripts\Exp\Content\Components\Closed\LeapMotionArmsDisplayComponent.cs" />
     <Compile Include="Assets\Scripts\Exp\Content\Components\Closed\TPPAvatarCameraComponent.cs" />
     <Compile Include="Assets\Scripts\Exp\Content\Components\Closed\internal\LeapMotionHandModelManager.cs" />
     <Compile Include="Assets\Scripts\Exp\Content\Components\Closed\internal\VRIkHelper.cs" />
+    <Compile Include="Assets\Scripts\Exp\Content\Components\Closed\legacy\HumanoidControllerComponent.cs" />
+    <Compile Include="Assets\Scripts\Exp\Content\Components\Closed\legacy\LeapMotionArmsDisplayComponent.cs" />
     <Compile Include="Assets\Scripts\Exp\Content\Components\Components.cs" />
     <Compile Include="Assets\Scripts\Exp\Content\Components\ExComponent.cs" />
     <Compile Include="Assets\Scripts\Exp\Content\Components\LNCO\FOPRobotComponent.cs" />
@@ -144,10 +144,10 @@
     <Compile Include="Assets\Scripts\Exp\Content\Components\Public\internal\BiopacAcquisitionThread.cs" />
     <Compile Include="Assets\Scripts\Exp\Content\Components\Public\internal\BlendFadeOverlay.cs" />
     <Compile Include="Assets\Scripts\Exp\Content\Components\Public\internal\CppComponent.cs" />
-    <Compile Include="Assets\Scripts\Exp\Content\Components\Public\internal\DLLPythonScript.cs" />
-    <Compile Include="Assets\Scripts\Exp\Content\Components\Public\internal\DllExComponent.cs" />
     <Compile Include="Assets\Scripts\Exp\Content\Components\Public\internal\ErasableTexture.cs" />
+    <Compile Include="Assets\Scripts\Exp\Content\Components\Public\internal\ExComponentDLL.cs" />
     <Compile Include="Assets\Scripts\Exp\Content\Components\Public\internal\KinectData.cs" />
+    <Compile Include="Assets\Scripts\Exp\Content\Components\Public\internal\PythonScriptComponentDLL.cs" />
     <Compile Include="Assets\Scripts\Exp\Content\Components\Public\internal\QualisysTrackedBody.cs" />
     <Compile Include="Assets\Scripts\Exp\Content\Components\Public\internal\VideoSaver\DllVideoSaver.cs" />
     <Compile Include="Assets\Scripts\Exp\Content\Components\Public\internal\VideoSaver\VideoSaverComponent.cs" />
@@ -1433,17 +1433,29 @@
     <Reference Include="Unity.Timeline.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.Timeline.Editor.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEditor.CacheServer">
+      <HintPath>Library\ScriptAssemblies\UnityEditor.CacheServer.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.ScriptableBuildPipeline.Editor">
+      <HintPath>Library\ScriptAssemblies\Unity.ScriptableBuildPipeline.Editor.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.VSCode.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.VSCode.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.TextMeshPro.Editor.dll</HintPath>
     </Reference>
+    <Reference Include="Unity.ResourceManager">
+      <HintPath>Library\ScriptAssemblies\Unity.ResourceManager.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.UI">
       <HintPath>Library\ScriptAssemblies\UnityEngine.UI.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Timeline">
       <HintPath>Library\ScriptAssemblies\Unity.Timeline.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Addressables.Editor">
+      <HintPath>Library\ScriptAssemblies\Unity.Addressables.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Postprocessing.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.Postprocessing.Editor.dll</HintPath>
@@ -1456,6 +1468,12 @@
     </Reference>
     <Reference Include="Unity.VisualStudio.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.VisualStudio.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Addressables">
+      <HintPath>Library\ScriptAssemblies\Unity.Addressables.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.ScriptableBuildPipeline">
+      <HintPath>Library\ScriptAssemblies\Unity.ScriptableBuildPipeline.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro">
       <HintPath>Library\ScriptAssemblies\Unity.TextMeshPro.dll</HintPath>

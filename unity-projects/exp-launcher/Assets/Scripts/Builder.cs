@@ -29,10 +29,6 @@ namespace Ex{
 
     public class Builder : MonoBehaviour{
 
-        bool cloudInit = false;
-        //public Vector4 obbSize = new Vector4(1, 1, 1, 1);
-        //public Vector4 obbPos = new Vector4(1, 1, 1, 1);
-        //public Matrix4x4 obbOrientation = Matrix4x4.identity;
 
 
         public static Builder autoRef = null;

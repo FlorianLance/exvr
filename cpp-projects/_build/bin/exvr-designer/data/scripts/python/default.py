@@ -11,8 +11,6 @@ import numpy as np
 
 class Component(object):
 
-
-
     def initialize(self):        
         ex.log("From python: initialize ")    
         ex.log(sys.path[0])

@@ -72,7 +72,7 @@ void BenchmarkDialog::update(){
 }
 
 int Table::rowCount(const QModelIndex &) const{
-    return elements.size();
+    return static_cast<int>(elements.size());
 }
 
 int Table::columnCount(const QModelIndex &) const{

@@ -46,7 +46,7 @@ namespace Ex{
         [DllImport("inpoutx64.dll", EntryPoint = "DlPortWritePortUlong")]
         private static extern void dl_port_write_port_ulong_x64(uint port, uint Data);
 
-        private bool m_x32Mode = false;
+        //private bool m_x32Mode = false;
         private bool m_int16Mode = false;
         private bool m_available = false;
 
