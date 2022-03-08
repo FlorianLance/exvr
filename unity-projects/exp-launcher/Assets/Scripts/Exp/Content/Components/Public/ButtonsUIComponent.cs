@@ -214,6 +214,7 @@ namespace Ex {
 
                     var lineGO = GO.generate_empty_scene_object(string.Format("Line{0}", ii), m_buttonsParent, true);
                     lineGO.transform.localPosition = new Vector3(0, 0, -0.01f);
+                    lineGO.transform.localRotation = Quaternion.identity;
                     lineGO.transform.localScale = new Vector3(1, 1, 1);
                     var le = lineGO.AddComponent<LayoutElement>();
                     le.flexibleWidth = 1f;
@@ -246,6 +247,7 @@ namespace Ex {
                             
                             buttonGO.transform.localPosition = Vector3.zero;
                             buttonGO.transform.localScale = new Vector3(1, 1, 1);
+                            buttonGO.transform.localRotation = Quaternion.identity;
 
                             var button = buttonGO.GetComponent<Button>();
                             button.GetComponent<UnityEngine.UI.Image>().material = m_buttonsMat;

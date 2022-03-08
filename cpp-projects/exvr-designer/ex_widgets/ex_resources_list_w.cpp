@@ -183,7 +183,7 @@ void ExResourcesListW::update_from_resources(){
             }
 
             if(!found){
-                elemsToRemove.emplace_back(ii);
+                elemsToRemove.push_back(ii);
             }
         }
 

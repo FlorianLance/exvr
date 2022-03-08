@@ -92,7 +92,7 @@ void HumanoidAvatarInitConfigParametersW::init_and_register_widgets(){
     QPixmap p(25,25);
     for(size_t ii = 0; ii < colors.size(); ++ii){
         p.fill(colors[ii]);
-        skinColor.w->setItemIcon(ii, QIcon(p));
+        skinColor.w->setItemIcon(static_cast<int>(ii), QIcon(p));
     }
 
     add_input_ui(shirtColor.init_widget("Choose shirt color to apply on texture", QColor(255,255,255,255)));

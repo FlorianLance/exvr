@@ -909,7 +909,7 @@ CodeEditorGen::CodeEditorGen(){
 
 }
 
-void CodeEditorGen::update_arg(Arg &arg) const{
+void CodeEditorGen::update_arg(Arg &) const{
 
 }
 
@@ -917,10 +917,11 @@ ColorPickGen::ColorPickGen(){
 
 }
 
-void ColorPickGen::update_arg(Arg &arg) const{
+void ColorPickGen::update_arg(Arg &
+                              ) const{
 
 }
 
 CheckBoxGen::CheckBoxGen(){}
 
-void CheckBoxGen::update_arg(Arg &arg) const{}
+void CheckBoxGen::update_arg(Arg &) const{}
