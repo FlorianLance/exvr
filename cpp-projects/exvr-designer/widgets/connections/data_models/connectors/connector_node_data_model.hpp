@@ -144,7 +144,7 @@ class TypedConnectorDataModel : public ConnectorNodeDataModel{
 public:
 
     TypedConnectorDataModel() : ConnectorNodeDataModel(T, new ExW()) {
-        embedded_w()->initialize_container(caption(), Connector::get_widget_mode(T) == Connector::WidgetMode::Focus);
+        embedded_w()->initialize_container(caption(), Connector::get_widget_mode(T) == Connector::WidgetMode::Focus, Connector::get_text_format(T));
         embedded_w()->initialize();
     }
 

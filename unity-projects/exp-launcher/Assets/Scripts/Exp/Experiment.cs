@@ -102,7 +102,7 @@ namespace Ex{
         // states
         private bool m_experimentCleaned = false;
         private bool m_experimentLoaded = false;
-
+        private int m_onGuiCanceled = 0;
 
         // xml
         private XML.Experiment m_xmlExperiment = null;
@@ -153,7 +153,7 @@ namespace Ex{
                 }else if (elementInfo.type() == FlowElement.FlowElementType.Isi){
                     ExVR.Components().set_every_component_states_to_false();
                 }
-                Profiler.EndSample();
+                Profiler.EndSample();                
             }
 
             {   // update all components
@@ -161,6 +161,12 @@ namespace Ex{
                 routines.update_current_routine();
                 Profiler.EndSample();
             }
+
+            // when switching to new element, we wait until we reach the end the update before allowing calls to OnGui
+            if (ExVR.Time().onGuiWait) {
+                m_onGuiCanceled = 0;
+                ExVR.Time().onGuiWait = false;
+            }            
 
             {   // trigger each time
                 Profiler.BeginSample("[ExVR][Experiment] trigger_update_signals");
@@ -184,6 +190,11 @@ namespace Ex{
         private void OnGUI() {
 
             if (!ExVR.Time().is_experiment_running()) {
+                return;
+            }            
+
+            if (ExVR.Time().onGuiWait) {
+                m_onGuiCanceled++;
                 return;
             }
 

@@ -110,7 +110,7 @@ void SerialPortWriterConfigParametersW::init_and_register_widgets(){
         )
     );
 
-    add_input_ui(m_p->teMessage.init_widget(""));
+    add_input_ui(m_p->teMessage.init_widget("", Qt::TextFormat::PlainText));
     add_input_ui(m_p->cbSendWhendRoutineStarts.init_widget("... when routine starts ", false));
     add_input_ui(m_p->cbSendWhenNewTimelineBlock.init_widget("... when new update timeline block starts ", false));
     add_input_ui(m_p->cbSendWhenEndTimelineBlock.init_widget("... when update timeline block ends", false));

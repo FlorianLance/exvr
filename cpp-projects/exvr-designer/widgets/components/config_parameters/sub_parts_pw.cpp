@@ -384,7 +384,7 @@ TextSubPart *TextSubPart::init_widget(QString defaultText){
 
     if(!m_p->noInputText){
         add_input_ui(m_p->richtext.init_widget("Use rich text", true));
-        add_input_ui(m_p->text.init_widget(defaultText));
+        add_input_ui(m_p->text.init_widget(defaultText, Qt::TextFormat::PlainText));
         add_input_ui(m_p->resourceText.init_widget(Resource::Type::Text, "Text resource: "));
     }
 

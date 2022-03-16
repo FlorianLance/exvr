@@ -54,6 +54,7 @@ cpp-projects/_build/bin/exvr-designer/exp-launcher/**/*.browser
 cpp-projects/_build/bin/exvr-designer/exp-launcher/**/*.aspx
 cpp-projects/_build/bin/exvr-designer/exp-launcher/temp_generated/*.cs
 
+
 ## temp
 cpp-projects/_build/temp/**/*.obj
 cpp-projects/_build/temp/**/*.cpp
@@ -84,7 +85,7 @@ unity-projects/exp-launcher/obj
 unity-projects/exp-launcher/Temp
 unity-projects/exp-launcher/Assets/AssetBundles
 unity-projects/exp-launcher/Assets/Thirdparty/private
-
+unity-projects/exp-launcher/temp_generated
 
 
 ## thirdparty

@@ -85,7 +85,7 @@ namespace tool::ex {
             Component, // Component
             Boolean, Integer,Real, String, Vector3, Transform, Id_any, String_any,  // Generator
             Reals_to_vec2, Reals_to_vec3, Vec2_to_reals, Vec3_to_reals, String_list_to_id_any, Transform_to_vectors, Vectors_to_transform,// Convertor
-            Curve_x, Logger, // Display
+            Curve_x, Logger, Post_it, // Display
             Decimal_trigonometry, Decimal_counter, Delay, Variable_delay, // Function
             Binary_operation, Decimal_operation, String_operation, // Operator
             Pass_value_trigger, Conditional_trigger, Pass_values, Conditional_gate, Check_id, Check_str, // Link
@@ -122,6 +122,7 @@ namespace tool::ex {
             // # Display
             {T::Curve_x,                "CurveX"sv,                     "Curve X"sv},
             {T::Logger,                 "Logger"sv,                     "Logger"sv},
+            {T::Post_it,                "PostIt"sv,                     "Post-it"sv},
             // # Event
             {T::Check_keyboard_button,  "CheckKeyboardButton"sv,        "Check keyboard button"sv},
             {T::Filter_keyboard_button, "FilterKeyboardButton"sv,       "Filter keyboard button"sv},
@@ -239,6 +240,7 @@ namespace tool::ex {
         using S   = Style;
         using I   = Interactivity;
         using WM  = WidgetMode;
+        using TF  = Qt::TextFormat;
 
         using CNT = ConnectionNode::Type;
         static constexpr auto t_void        = CNT::void_t;
@@ -279,75 +281,80 @@ namespace tool::ex {
         static constexpr auto FO = WM::Focus;
         static constexpr auto PO = WM::Popup;
 
+        static constexpr auto PT = TF::PlainText;
+        static constexpr auto RT = TF::RichText;
+        static constexpr auto MT = TF::MarkdownText;
+
         using TConnector = std::tuple<
-            Type,                       Category,     P, IO,                                                      Style,                  I,  WM, Inter>;
+            Type,                       Category,     P, IO,                                                      Style,                  I,  WM, Inter, TF>;
         static constexpr TupleArray<Type::SizeEnum,TConnector> connectors ={{
             TConnector
             // # Component
-            {T::Component,              C::Component, M, {0,{},                        0,{}},                     {i,{},        {}},      LO, FO, 0},
+            {T::Component,              C::Component, M, {0,{},                        0,{}},                     {i,{},        {}},      LO, FO, 0, PT},
             // # Convertor
-            {T::Reals_to_vec2,          C::Convertor, M, {2,{t_real,t_real},           1,{t_vec2}},               {v,{v,v},     {v}},     LO, FO, 0},
-            {T::Vec2_to_reals,          C::Convertor, M, {1,{t_vec2},                  2,{t_real,t_real}},        {v,{v},       {v,v}},   LO, FO, 0},
-            {T::Reals_to_vec3,          C::Convertor, M, {3,{t_real,t_real,t_real},    1,{t_vec3}},               {v,{v,v,v},   {v}},     LO, FO, 0},
-            {T::Vec3_to_reals,          C::Convertor, M, {1,{t_vec3},                  3,{t_real,t_real,t_real}}, {v,{v},       {v,v,v}}, LO, FO, 0},
-            {T::String_list_to_id_any,  C::Convertor, M, {1,{t_str_l},                 1,{t_id_any}},             {v,{v},       {v,}},    LO, FO, 0},
-            {T::Transform_to_vectors,   C::Convertor, M, {1,{t_transform},             3,{t_vec3,t_vec3,t_vec3}}, {v,{v},       {v,v,v}}, LO, FO, 0},
-            {T::Vectors_to_transform,   C::Convertor, M, {3,{t_vec3,t_vec3,t_vec3},    1,{t_transform}},          {v,{v,v,v},   {v}},     LO, FO, 0},
+            {T::Reals_to_vec2,          C::Convertor, M, {2,{t_real,t_real},           1,{t_vec2}},               {v,{v,v},     {v}},     LO, FO, 0, PT},
+            {T::Vec2_to_reals,          C::Convertor, M, {1,{t_vec2},                  2,{t_real,t_real}},        {v,{v},       {v,v}},   LO, FO, 0, PT},
+            {T::Reals_to_vec3,          C::Convertor, M, {3,{t_real,t_real,t_real},    1,{t_vec3}},               {v,{v,v,v},   {v}},     LO, FO, 0, PT},
+            {T::Vec3_to_reals,          C::Convertor, M, {1,{t_vec3},                  3,{t_real,t_real,t_real}}, {v,{v},       {v,v,v}}, LO, FO, 0, PT},
+            {T::String_list_to_id_any,  C::Convertor, M, {1,{t_str_l},                 1,{t_id_any}},             {v,{v},       {v,}},    LO, FO, 0, PT},
+            {T::Transform_to_vectors,   C::Convertor, M, {1,{t_transform},             3,{t_vec3,t_vec3,t_vec3}}, {v,{v},       {v,v,v}}, LO, FO, 0, PT},
+            {T::Vectors_to_transform,   C::Convertor, M, {3,{t_vec3,t_vec3,t_vec3},    1,{t_transform}},          {v,{v,v,v},   {v}},     LO, FO, 0, PT},
             // # Display
-            {T::Curve_x,                C::Display,   M, {1,{t_real_l},                0,{}},                     {v,{v},       {}},      IN, PO, 0},
-            {T::Logger,                 C::Display,   M, {1,{t_any},                   0,{}},                     {v,{v},       {}},      LO, FO, 0},
+            {T::Curve_x,                C::Display,   M, {1,{t_real_l},                0,{}},                     {v,{v},       {}},      IN, PO, 0, PT},
+            {T::Logger,                 C::Display,   M, {1,{t_any},                   0,{}},                     {v,{v},       {}},      LO, FO, 0, PT},
+            {T::Post_it,                C::Display,   M, {0,{},                        0,{}},                     {i,{},        {}},      IN, PO, 0, RT},
             // # Function
-            {T::Decimal_trigonometry,   C::Function,  M, {1,{t_dec},                   1,{t_dec}},                {v,{v},       {v}},     IN, FO, 1},
-            {T::Decimal_counter,        C::Function,  M, {3,{t_dec,t_dec,t_void},      1,{t_dec}},                {v,{v,v,v},   {v}},     LO, FO, 1},
-            {T::Delay,                  C::Function,  M, {1,{t_any},                   1,{t_any}},                {v,{v},       {v}},     IN, FO, 1},
-            {T::Variable_delay,         C::Function,  M, {2,{t_plot,t_any},            1,{t_any}},                {v,{v},       {v}},     IN, FO, 1},
+            {T::Decimal_trigonometry,   C::Function,  M, {1,{t_dec},                   1,{t_dec}},                {v,{v},       {v}},     IN, FO, 1, PT},
+            {T::Decimal_counter,        C::Function,  M, {3,{t_dec,t_dec,t_void},      1,{t_dec}},                {v,{v,v,v},   {v}},     LO, FO, 1, PT},
+            {T::Delay,                  C::Function,  M, {1,{t_any},                   1,{t_any}},                {v,{v},       {v}},     IN, FO, 1, PT},
+            {T::Variable_delay,         C::Function,  M, {2,{t_plot,t_any},            1,{t_any}},                {v,{v},       {v}},     IN, FO, 1, PT},
             // # Generator
-            {T::Boolean,                C::Generator, M, {2,{t_bool,t_void},           1,{t_bool}},               {v,{v,v},     {v}},     IN, FO, 1},
-            {T::Integer,                C::Generator, M, {1,{t_int},                   1,{t_int}},                {v,{v},       {v}},     IN, FO, 1},
-            {T::Real,                   C::Generator, M, {1,{t_real},                  1,{t_real}},               {v,{v},       {v}},     IN, FO, 1},
-            {T::String,                 C::Generator, M, {1,{t_str},                   1,{t_str}},                {v,{v},       {v}},     IN, FO, 1},
-            {T::Vector3,                C::Generator, M, {1,{t_vec3},                  1,{t_vec3}},               {v,{v},       {v}},     IN, FO, 1},
-            {T::Transform,              C::Generator, M, {1,{t_transform},             1,{t_transform}},          {v,{v},       {v}},     IN, PO, 1},
-            {T::Id_any,                 C::Generator, M, {1,{t_any},                   1,{t_id_any}},             {v,{v},       {v}},     IN, FO, 1},
-            {T::String_any,             C::Generator, M, {1,{t_any},                   1,{t_str_any}},            {v,{v},       {v}},     IN, FO, 1},
+            {T::Boolean,                C::Generator, M, {2,{t_bool,t_void},           1,{t_bool}},               {v,{v,v},     {v}},     IN, FO, 1, PT},
+            {T::Integer,                C::Generator, M, {1,{t_int},                   1,{t_int}},                {v,{v},       {v}},     IN, FO, 1, PT},
+            {T::Real,                   C::Generator, M, {1,{t_real},                  1,{t_real}},               {v,{v},       {v}},     IN, FO, 1, PT},
+            {T::String,                 C::Generator, M, {1,{t_str},                   1,{t_str}},                {v,{v},       {v}},     IN, FO, 1, PT},
+            {T::Vector3,                C::Generator, M, {1,{t_vec3},                  1,{t_vec3}},               {v,{v},       {v}},     IN, FO, 1, PT},
+            {T::Transform,              C::Generator, M, {1,{t_transform},             1,{t_transform}},          {v,{v},       {v}},     IN, PO, 1, PT},
+            {T::Id_any,                 C::Generator, M, {1,{t_any},                   1,{t_id_any}},             {v,{v},       {v}},     IN, FO, 1, PT},
+            {T::String_any,             C::Generator, M, {1,{t_any},                   1,{t_str_any}},            {v,{v},       {v}},     IN, FO, 1, PT},
             // # Operator
-            {T::Decimal_operation,      C::Operator,  M, {2,{t_dec,t_dec},             1,{t_variant}},            {v,{v,v},     {v}},     IN, FO, 1},
-            {T::Binary_operation,       C::Operator,  M, {2,{t_bool,t_bool},           1,{t_bool}},               {v,{v,v},     {v}},     IN, FO, 1},
-            {T::String_operation,       C::Operator,  M, {2,{t_str,t_str},             1,{t_variant}},            {v,{v,v},     {v}},     IN, FO, 1},
+            {T::Decimal_operation,      C::Operator,  M, {2,{t_dec,t_dec},             1,{t_variant}},            {v,{v,v},     {v}},     IN, FO, 1, PT},
+            {T::Binary_operation,       C::Operator,  M, {2,{t_bool,t_bool},           1,{t_bool}},               {v,{v,v},     {v}},     IN, FO, 1, PT},
+            {T::String_operation,       C::Operator,  M, {2,{t_str,t_str},             1,{t_variant}},            {v,{v,v},     {v}},     IN, FO, 1, PT},
             // # Link
-            {T::Check_id,               C::Link,      M, {1,{t_id_any},                1,{t_any}},                {v,{v},       {v}},     IN, FO, 1},
-            {T::Check_str,              C::Link,      M, {1,{t_str_any},               1,{t_any}},                {v,{v},       {v}},     IN, FO, 1},
-            {T::Pass_values,            C::Link,      M, {4,{t_any,t_any,t_any,t_any}, 1,{t_any}},                {v,{v,v,v,v}, {v}},     LO, FO, 1},
-            {T::Pass_value_trigger,     C::Link,      M, {2,{t_any, t_void},           1,{t_any}},                {v,{v,v},     {v}},     LO, FO, 1},
-            {T::Conditional_trigger,    C::Link,      M, {1,{t_bool},                  1,{t_void}},               {v,{v},       {v}},     LO, FO, 1},
-            {T::Conditional_gate,       C::Link,      M, {2,{t_any, t_bool},           1,{t_any}},                {v,{v,v},     {v}},     IN, FO, 1},
+            {T::Check_id,               C::Link,      M, {1,{t_id_any},                1,{t_any}},                {v,{v},       {v}},     IN, FO, 1, PT},
+            {T::Check_str,              C::Link,      M, {1,{t_str_any},               1,{t_any}},                {v,{v},       {v}},     IN, FO, 1, PT},
+            {T::Pass_values,            C::Link,      M, {4,{t_any,t_any,t_any,t_any}, 1,{t_any}},                {v,{v,v,v,v}, {v}},     LO, FO, 1, PT},
+            {T::Pass_value_trigger,     C::Link,      M, {2,{t_any, t_void},           1,{t_any}},                {v,{v,v},     {v}},     LO, FO, 1, PT},
+            {T::Conditional_trigger,    C::Link,      M, {1,{t_bool},                  1,{t_void}},               {v,{v},       {v}},     LO, FO, 1, PT},
+            {T::Conditional_gate,       C::Link,      M, {2,{t_any, t_bool},           1,{t_any}},                {v,{v,v},     {v}},     IN, FO, 1, PT},
             // # Event
-            {T::Check_keyboard_button,  C::Event,     M, {1,{t_key_but_s},             3,{t_real,t_real,t_real}},  {v,{v},       {v,v,v}}, IN, FO, 1},
-            {T::Filter_keyboard_button, C::Event,     M, {1,{t_key_but_s},             1,{t_key_but_s}},           {v,{v},       {v}},     IN, FO, 1},
-            {T::Check_joypad_button,    C::Event,     M, {1,{t_joy_but_s},             3,{t_real,t_real,t_real}},  {v,{v},       {v,v,v}}, IN, FO, 1},
-            {T::Check_joypad_axis,      C::Event,     M, {1,{t_joy_ax_s},              2,{t_float,t_real}},        {v,{v},       {v,v}},   IN, FO, 1},
-            {T::Check_mouse_button,     C::Event,     M, {1,{t_mou_but_s},             3,{t_real,t_real,t_real}},  {v,{v},       {v,v,v}}, IN, FO, 1},
+            {T::Check_keyboard_button,  C::Event,     M, {1,{t_key_but_s},             3,{t_real,t_real,t_real}},  {v,{v},       {v,v,v}}, IN, FO, 1, PT},
+            {T::Filter_keyboard_button, C::Event,     M, {1,{t_key_but_s},             1,{t_key_but_s}},           {v,{v},       {v}},     IN, FO, 1, PT},
+            {T::Check_joypad_button,    C::Event,     M, {1,{t_joy_but_s},             3,{t_real,t_real,t_real}},  {v,{v},       {v,v,v}}, IN, FO, 1, PT},
+            {T::Check_joypad_axis,      C::Event,     M, {1,{t_joy_ax_s},              2,{t_float,t_real}},        {v,{v},       {v,v}},   IN, FO, 1, PT},
+            {T::Check_mouse_button,     C::Event,     M, {1,{t_mou_but_s},             3,{t_real,t_real,t_real}},  {v,{v},       {v,v,v}}, IN, FO, 1, PT},
             // # Action
-            {T::Next,                   C::Action,    M, {1,{t_void},                  0,{}},                     {v,{v},       {}},      LO, FO, 0},
-            {T::Next_with_name,         C::Action,    M, {1,{t_void},                  0,{}},                     {v,{v},       {}},      IN, FO, 0},
-            {T::Next_with_cond,         C::Action,    M, {1,{t_void},                  0,{}},                     {v,{v},       {}},      IN, FO, 0},
-            {T::Previous,               C::Action,    M, {1,{t_void},                  0,{}},                     {v,{v},       {}},      LO, FO, 0},
-            {T::Previous_with_name,     C::Action,    M, {1,{t_void},                  0,{}},                     {v,{v},       {}},      IN, FO, 0},
-            {T::Previous_with_cond,     C::Action,    M, {1,{t_void},                  0,{}},                     {v,{v},       {}},      IN, FO, 0},
-            {T::Stop,                   C::Action,    M, {1,{t_void},                  0,{}},                     {v,{v},       {}},      LO, FO, 0},
-            {T::Pause,                  C::Action,    M, {1,{t_void},                  0,{}},                     {v,{v},       {}},      LO, FO, 0},
-            {T::Force_component_config, C::Action,    M, {1,{t_void},                  0,{}},                     {v,{v},       {}},      IN, FO, 0},
+            {T::Next,                   C::Action,    M, {1,{t_void},                  0,{}},                     {v,{v},       {}},      LO, FO, 0, PT},
+            {T::Next_with_name,         C::Action,    M, {1,{t_void},                  0,{}},                     {v,{v},       {}},      IN, FO, 0, PT},
+            {T::Next_with_cond,         C::Action,    M, {1,{t_void},                  0,{}},                     {v,{v},       {}},      IN, FO, 0, PT},
+            {T::Previous,               C::Action,    M, {1,{t_void},                  0,{}},                     {v,{v},       {}},      LO, FO, 0, PT},
+            {T::Previous_with_name,     C::Action,    M, {1,{t_void},                  0,{}},                     {v,{v},       {}},      IN, FO, 0, PT},
+            {T::Previous_with_cond,     C::Action,    M, {1,{t_void},                  0,{}},                     {v,{v},       {}},      IN, FO, 0, PT},
+            {T::Stop,                   C::Action,    M, {1,{t_void},                  0,{}},                     {v,{v},       {}},      LO, FO, 0, PT},
+            {T::Pause,                  C::Action,    M, {1,{t_void},                  0,{}},                     {v,{v},       {}},      LO, FO, 0, PT},
+            {T::Force_component_config, C::Action,    M, {1,{t_void},                  0,{}},                     {v,{v},       {}},      IN, FO, 0, PT},
             // # Flow
-            {T::Time,                   C::Flow,      H, {1,{t_void},                  1,{t_real}},               {v,{v},        {v}},     IN, FO, 1},
-            {T::Start_routine,          C::Flow,      H, {0,{},                        5,{t_str, t_str, t_int, t_int, t_real}}, {v,{},   {v,v,v,v,v}}, LO, FO, 0},
-            {T::Stop_routine,           C::Flow,      H, {0,{},                        2,{t_str, t_str}},         {v,{},        {v,v}},   LO, FO, 0},
-            {T::Pre_update_routine,     C::Flow,      H, {0,{},                        1,{t_real}},                {v,{},        {v}},     LO, FO, 0},
-            {T::Update_routine,         C::Flow,      H, {0,{},                        1,{t_real}},                {v,{},        {v}},     LO, FO, 0},
-            {T::Post_update_routine,    C::Flow,      H, {0,{},                        1,{t_real}},                {v,{},        {v}},     LO, FO, 0},
-            {T::Routine_condition,      C::Flow,      H, {1,{t_int},                   1,{t_str}},                 {v,{v},        {v}},    IN, FO, 1},
+            {T::Time,                   C::Flow,      H, {1,{t_void},                  1,{t_real}},               {v,{v},        {v}},     IN, FO, 1, PT},
+            {T::Start_routine,          C::Flow,      H, {0,{},                        5,{t_str, t_str, t_int, t_int, t_real}}, {v,{},   {v,v,v,v,v}}, LO, FO, 0, PT},
+            {T::Stop_routine,           C::Flow,      H, {0,{},                        2,{t_str, t_str}},         {v,{},        {v,v}},   LO, FO, 0, PT},
+            {T::Pre_update_routine,     C::Flow,      H, {0,{},                        1,{t_real}},                {v,{},        {v}},     LO, FO, 0, PT},
+            {T::Update_routine,         C::Flow,      H, {0,{},                        1,{t_real}},                {v,{},        {v}},     LO, FO, 0, PT},
+            {T::Post_update_routine,    C::Flow,      H, {0,{},                        1,{t_real}},                {v,{},        {v}},     LO, FO, 0, PT},
+            {T::Routine_condition,      C::Flow,      H, {1,{t_int},                   1,{t_str}},                 {v,{v},        {v}},    IN, FO, 1, PT},
             // # Resource
-            {T::Image_resource,         C::Resource,  M, {1,{t_str},                   1,{t_img}},                  {v,{v},       {v}},   LO, FO, 1},
-            {T::Text_resource,          C::Resource,  M, {1,{t_str},                   1,{t_str}},                  {v,{v},       {v}},   LO, FO, 1},
+            {T::Image_resource,         C::Resource,  M, {1,{t_str},                   1,{t_img}},                  {v,{v},       {v}},   LO, FO, 1, PT},
+            {T::Text_resource,          C::Resource,  M, {1,{t_str},                   1,{t_str}},                  {v,{v},       {v}},   LO, FO, 1, PT},
         }};
 
 
@@ -397,6 +404,10 @@ namespace tool::ex {
             return connectors.at<0,7>(t);
         }
 
+        static auto get_text_format(Type t) {
+            return connectors.at<0,8>(t);
+        }
+
         explicit Connector(ConnectorKey id, Type t, QString n, QPointF p)
             : key(IdKey::Type::Connector, id.v), name(n), pos(p), type(t){
         }
@@ -428,7 +439,7 @@ namespace tool::ex {
         return true;
     }
 
-    static bool operator==(const ConnectorUP &l, const ConnectorUP &r){
+    [[maybe_unused]] static bool operator==(const ConnectorUP &l, const ConnectorUP &r){
         return !(l < r) && !(r < l);
     }
 

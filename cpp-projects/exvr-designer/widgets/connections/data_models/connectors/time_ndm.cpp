@@ -42,11 +42,11 @@ void TimeEmbeddedW::initialize(){
 }
 
 
-bool TimeEmbeddedW::set_text_value(QStringView value){
+bool TimeEmbeddedW::set_text_value(const QString &value){
 
     //bool askForResize = m_valueText.text().size() != value.size();
     m_valueText.blockSignals(true);
-    m_valueText.setText(value.toString() % QSL("ms"));
+    m_valueText.setText(value % QSL("ms"));
     m_valueText.blockSignals(false);
     //return askForResize;
     return false;

@@ -66,6 +66,7 @@ namespace Ex{
             triggerCode = (KeyCode)System.Enum.Parse(typeof(KeyCode), initC.get<string>("trigger_key"));
 
             add_slot("keyboard button", (button) => {
+
                 var b = (Input.KeyboardButtonEvent)button;
                 if (b.code == triggerCode) {
                     string triggerLine = string.Format("TRIGGER,{0},{1},{2},{3}",
@@ -113,12 +114,12 @@ namespace Ex{
 
             // retrieve scene elements
             var tr = m_mriGO.transform;
-            m_movingTableGO = tr.Find("moving_table").gameObject;
-
             var roomTr = tr.Find("room");
+            m_movingTableGO = roomTr.Find("MRI/MovingTable").gameObject;            
             // magnet
             m_magnetElementsGO = new List<GameObject>();
-            m_magnetElementsGO.Add(roomTr.Find("MRI/Table").gameObject);
+            m_magnetElementsGO.Add(roomTr.Find("MRI/Table").gameObject);            
+            m_magnetElementsGO.Add(m_movingTableGO);            
             //m_magnetElementsGO.Add(roomTr.Find("MRI/Magnet").gameObject);
             // room
             // # elements
@@ -190,6 +191,7 @@ namespace Ex{
 
             foreach (var light in m_lights) {
                 light.gameObject.SetActive(true);
+                light.intensity = 0.51f;
             }
             foreach (var emissiveLight in m_emissiveLights) {
                 emissiveLight.SetActive(true);
@@ -315,6 +317,11 @@ namespace Ex{
 
                 normalizedTime = timer.ElapsedMilliseconds * 0.001f / duration;
 
+                foreach (var light in m_lights) {
+                    light.intensity = (1f - normalizedTime) * 0.51f;
+                }
+
+
                 foreach (var go in objectsGO) {
                     go.GetComponent<Renderer>().material.SetFloat("_SliceAmount", normalizedTime);
                 }
@@ -345,6 +352,10 @@ namespace Ex{
 
         private IEnumerator solve_process(List<GameObject> objectsGO, float duration) {
 
+            foreach (var light in m_lights) {
+                light.gameObject.SetActive(true);
+            }
+
             processSolving = true;
             float normalizedTime = 0;
             Stopwatch timer = new Stopwatch();
@@ -352,6 +363,10 @@ namespace Ex{
             while (normalizedTime <= 1f) {
 
                 normalizedTime = timer.ElapsedMilliseconds * 0.001f / duration;
+
+                foreach (var light in m_lights) {
+                    light.intensity = 0.51f*normalizedTime;
+                }                      
 
                 foreach (var go in objectsGO) {
                     go.GetComponent<Renderer>().material.SetFloat("_SliceAmount", 1 - normalizedTime);
@@ -371,9 +386,6 @@ namespace Ex{
                 go.GetComponent<Renderer>().receiveShadows = true;
             }
 
-            foreach (var light in m_lights) {
-                light.gameObject.SetActive(true);
-            }
             foreach (var emissiveLight in m_emissiveLights) {
                 emissiveLight.SetActive(true);
             }

@@ -83,6 +83,13 @@ namespace Ex{
             audioSource.loop        = false;
             audioSource.spatialize  = false;
 
+            //audioSource.spatialBlend = 1f;
+            //audioSource.spatialize = true;
+            //audioSource.rolloffMode = AudioRolloffMode.Logarithmic;
+            //audioSource.minDistance = 0.01f;
+            //audioSource.maxDistance = 10f;
+
+
 
             var audioFileData    = initC.get_resource_audio_data("sound");
             var assetBundleAlias = initC.get_resource_alias("asset_bundle");
@@ -174,32 +181,47 @@ namespace Ex{
 
         public override void update_from_current_config() {
 
-            //audioSource.spatialBlend   = 0;
+            //audioSource.spatialBlend = 0;
+            bool loop = currentC.get<bool>("loop");
+            if (loop != audioSource.loop) {
+                audioSource.loop = loop;
+            }
+
+            bool spatialize = currentC.get<bool>("spatialized");
+            if (spatialize != audioSource.spatialize) {
+                audioSource.spatialize = spatialize;
+            }
+
+            audioSource.pitch = currentC.get<float>("pitch");
+            audioSource.panStereo = currentC.get<float>("stereo");
+            audioSource.spatialBlend = currentC.get<float>("spatial_blend");
+
             m_playNewBlock = currentC.get<bool>("play_new_block");
             m_stopEndBlock = currentC.get<bool>("stop_end_block");
             m_pauseEndBlock = currentC.get<bool>("pause_end_block");
 
             set_volume(currentC.get<float>("volume"));
-            audioSource.mute           = currentC.get<bool>("mute");
-            audioSource.loop           = currentC.get<bool>("loop");
-            audioSource.pitch          = currentC.get<float>("pitch");
-            audioSource.panStereo      = currentC.get<float>("stereo");            
-
-            audioSource.spatialize     = currentC.get<bool>("spatialized");
-            audioSource.spatialBlend   = currentC.get<float>("spatial_blend");
-            audioSource.dopplerLevel   = currentC.get<float>("doppler_level");
-            audioSource.spread         = currentC.get<int>("spread");
-            audioSource.rolloffMode    = (AudioRolloffMode)currentC.get<int>("rollof_mode");
-            audioSource.minDistance    = currentC.get<float>("min_distance");
-            audioSource.maxDistance    = currentC.get<float>("max_distance");
-
-
-
-
-            
 
             if (!currentC.get<bool>("transform_do_not_apply")) {
                 currentC.update_transform("transform", transform);
+            }
+
+            audioSource.mute = currentC.get<bool>("mute");
+            audioSource.dopplerLevel = currentC.get<float>("doppler_level");
+            audioSource.spread = currentC.get<int>("spread");
+
+            var rollof = (AudioRolloffMode)currentC.get<int>("rollof_mode");
+            if (rollof != audioSource.rolloffMode) {
+                audioSource.rolloffMode = rollof;
+            }
+
+            var minDistance = currentC.get<float>("min_distance");
+            if (minDistance != audioSource.minDistance) {
+                audioSource.minDistance = minDistance;
+            }
+            var maxDistance = currentC.get<float>("max_distance");
+            if (maxDistance != audioSource.maxDistance) {
+                audioSource.maxDistance = maxDistance;
             }
 
             set_visibility(is_visible());
@@ -217,11 +239,11 @@ namespace Ex{
         protected override void set_update_state(bool doUpdate) {
 
             if (doUpdate) {
-                if (m_playNewBlock) {
-                    audioSource.Play();                    
+                if (!audioSource.isPlaying && m_playNewBlock) {
+                    audioSource.Play();
                 }
             } else {
-                if (m_stopEndBlock) {
+                if (m_stopEndBlock && audioSource.isPlaying) {
                     audioSource.Stop();
                 } else if (m_pauseEndBlock) {
                     audioSource.Pause();

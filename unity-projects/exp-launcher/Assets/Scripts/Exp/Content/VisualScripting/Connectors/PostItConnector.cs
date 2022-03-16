@@ -1,6 +1,6 @@
-
+﻿
 /***********************************************************************************
-** exvr-designer                                                                  **
+** exvr-exp                                                                       **
 ** MIT License                                                                    **
 ** Copyright (c) [2018] [Florian Lance][EPFL-LNCO]                                **
 ** Permission is hereby granted, free of charge, to any person obtaining a copy   **
@@ -22,29 +22,11 @@
 ** SOFTWARE.                                                                      **
 ************************************************************************************/
 
-#pragma once
+namespace Ex {
 
-// local
-#include "ex_widgets/ex_time_source_w.hpp"
-#include "widgets/connections/data_models/connectors/connector_node_data_model.hpp"
-#include "widgets/connections/data_models/data/nodes_data.hpp"
-
-namespace tool::ex {
-
-class TimeEmbeddedW  : public NodeContainerW<ExTimeW>{
-Q_OBJECT
-public:
-    void initialize() override;
-    bool set_text_value(const QString &value) override;
-};
-
-class TimeNodeDataModel : public TypedConnectorDataModel<Connector::Type::Time, TimeEmbeddedW>{
-Q_OBJECT
-public slots:
-    void compute() override;
-public:
-    void init_ports_caption() override;
-};
-
+    public class PostItConnector : ExConnector {
+        protected override bool initialize() {
+            return true;
+        }
+    }
 }
-

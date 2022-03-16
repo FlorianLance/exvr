@@ -125,7 +125,7 @@ void ButtonsUiConfigParametersW::init_and_register_widgets(){
     add_input_ui(m_p->followEyeCamera.init_widget("Text always in front of the eyes camera", true));
     add_input_ui(m_p->backgroundColor.init_widget("Select background color", QColor(255,255,255,0)));
     add_input_ui(m_p->buttonsColor.init_widget("Select button color", QColor(255,255,255,255)));
-    add_input_ui(m_p->buttonsText.init_widget("Button1_Button2_Button3\nButton4_Button5_Button6"));
+    add_input_ui(m_p->buttonsText.init_widget("Button1_Button2_Button3\nButton4_Button5_Button6", Qt::TextFormat::PlainText));
     m_p->buttonsText.set_information("Separe buttons text of the same line by using '_' and separe between lines by using return line.");
 
     add_inputs_ui(

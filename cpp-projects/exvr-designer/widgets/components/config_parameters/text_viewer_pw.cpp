@@ -36,6 +36,7 @@
 
 using namespace tool::ex;
 
+
 struct TextViewerConfigParametersW::Impl{
 
     EyeRendererSubPart eye;

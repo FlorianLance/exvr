@@ -64,7 +64,7 @@ void tool::ex::QualisysTrackingConfigParametersW::insert_widgets(){
 
 void tool::ex::QualisysTrackingConfigParametersW::init_and_register_widgets(){
     map_sub_part(transform.init_widget());
-    add_input_ui(objects.init_widget("6DOF object name 1\n6DOF object name 2"));
+    add_input_ui(objects.init_widget("6DOF object name 1\n6DOF object name 2", Qt::TextFormat::PlainText));
 }
 
 void tool::ex::QualisysTrackingConfigParametersW::create_connections(){

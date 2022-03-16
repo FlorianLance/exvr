@@ -70,12 +70,12 @@ public:
 
     ~BaseNodeContainerW();
 
-    void initialize_container(const QString &caption, bool popup);
+    void initialize_container(const QString &caption, bool popup, Qt::TextFormat textFormat = Qt::PlainText);
 
     void close();
     void add_row_in_dialog(QString name, QWidget *w, bool horizontalLayout = true);
 
-    virtual bool set_text_value(QStringView value);
+    virtual bool set_text_value(const QString &value);
     void disable();
     void enable();
     void set_title(QString title);

@@ -109,6 +109,8 @@ bool XmlIoManager::load_experiment_file(QString expFilePath){
     // xml has been fully loaded, update path
     m_experiment->states.currentExpfilePath = expFileToLoad;
 
+
+
 //    m_experiment->check_elements();
     m_experiment->compute_loops_levels();    
     m_experiment->check_legacy_conditions(); // due to previous used xml format
@@ -1112,6 +1114,7 @@ ConditionUP XmlIoManager::read_condition(Routine *routine){
             }
 
         }else if(check_end_node(QSL("Condition"))){
+//            std::reverse(condition->actions.begin(), condition->actions.end());
             return condition;
         }
         r->readNext();
@@ -1900,7 +1903,6 @@ bool XmlIoManager::save_experiment_as(){
         QtLogger::message(QSL("[XML] Save experiment as: ") % path);
         m_experiment->states.currentExpfilePath = path;
         m_experiment->states.currentName = m_experiment->states.currentExpfilePath.split('/').last().split('.').first();
-        qDebug() << "m_experiment->states.currentExpfilePath " << m_experiment->states.currentExpfilePath;
         save_experiment();
         m_experiment->add_to_update_flag(UpdateUI);
         return true;

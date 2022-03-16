@@ -24,6 +24,9 @@
 
 #include "basic_ndm.hpp"
 
+// qt-utility
+#include "qt_logger.hpp"
+
 using namespace tool::ex;
 
 void NextNodeDataModel::init_ports_caption(){
@@ -169,4 +172,28 @@ void ForceComponentConfigNodeDataModel::init_ports_caption(){
 }
 
 
+void PostItConfigW::initialize(){
+
+    // init widget
+    w->init_widget("...", Qt::TextFormat::RichText);
+    set_title("Post-it");
+
+    // set widget connections
+    connect(w.get(), &ExNotepadW::ui_change_signal, this, [&]{
+        m_valueText.setTextFormat(w->selected_format());
+        emit compute_data_signal();
+    });
+
+    // add widget to ui
+    add_row_in_dialog("", w->w.get());
+}
+
+void PostItNodeDataModel::compute(){
+    set_embedded_widget_text(embedded_w()->w->text.get_text());
+}
+
+
+
 #include "moc_basic_ndm.cpp"
+
+

@@ -51,6 +51,10 @@ namespace Ex {
             10,25,50,100,200,250,500,1000,2000,2500,5000,10000,20000,25000
         });
 
+
+        private List<System.Tuple<double, List<double>>> debugData = null;
+        private int currentDebugId = 0;
+
         private bool addHeaderLine = false;
 
         // debug
@@ -207,6 +211,34 @@ namespace Ex {
 
             // debug
             if (debugBypass = initC.get<bool>("debug_bypass")) {
+                if (initC.get_resource_alias("debug_log_file").Length > 0) {
+                    
+                    var content = initC.get_resource_text_data("debug_log_file").content.Split('\n');
+                    log_error("content: " + content.Length);
+                    debugData = new List<System.Tuple<double, List<double>>>(content.Length);
+                    int nbCols = 0;
+                    foreach(var line in content) {
+                        if (line.StartsWith("[Routine")) {
+                            continue;
+                        }
+                        if(line.StartsWith("[Timestamp(ms)]	")) {
+                            nbCols = line.Split('\t').Length;
+                        }
+                        if(nbCols == 0) {
+                            continue;
+                        }
+                        var split = line.Split('\t');
+                        if(split.Length != nbCols) {
+                            continue;
+                        }
+                        var lineValues = new System.Tuple<double, List<double>>(Converter.to_double(split[0]), new List<double>(nbCols));
+                        for(int ii = 1; ii < nbCols; ++ii) {
+                            lineValues.Item2.Add(Converter.to_double(split[ii]));
+                        }
+                        debugData.Add(lineValues);
+                    }
+                }
+                
                 return true;
             }
 
@@ -304,7 +336,8 @@ namespace Ex {
 
         protected override void start_experiment() {
             addHeaderLine = true;
-            if (debugBypass) {
+            currentDebugId = 0;
+            if (debugBypass) {                
                 return;
             }
             acquisitionThread.bpd.reset_settings(bps);
@@ -327,29 +360,46 @@ namespace Ex {
         public void trigger_channels() {
 
             if (debugBypass) {
-                return;
-            }
+                if(debugData != null) {
+                    var currTime = ExVR.Time().ellapsed_exp_ms();
+                    for(int ii = currentDebugId; ii < debugData.Count; ++ii) {
+                        if(currentDebugId >= debugData.Count) {
+                            return;
+                        }
+                        if(debugData[currentDebugId].Item1 < currTime) {
+                            ++currentDebugId;
+                        } else {
+                            break;
+                        }
+                    }
 
-            var values = acquisitionThread.get_last_values();
-            if (values == null) {
-                return;
-            }
-
-            List<FrameTimestamp> times = values.Item1;
-            List<List<double>> data    = values.Item2;
-
-            for (int ii = 0; ii < bps.enabledChannelsNb; ++ii) {
-                List<double> channelData = data[ii];
-                if (channelData.Count > 0) {
-                    invoke_signal(lastValueChannelStr,       new IdAny(bps.channelsId[ii] + 1, channelData[channelData.Count - 1]));
-                    invoke_signal(lastRangeValuesChannelStr, new IdAny(bps.channelsId[ii] + 1, channelData));
+                    for(int ii = 0; ii < debugData[currentDebugId].Item2.Count; ++ii) {
+                        invoke_signal(lastValueChannelStr, new IdAny(ii + 1, debugData[currentDebugId].Item2[ii]));
+                    }
                 }
-            }
+                return;
+            } else {
 
-            // send last latency
-            if (times.Count > 0) {
-                var lastFrameTimestamp = times[times.Count - 1];
-                invoke_signal(channelsLatencyStr, TimeManager.ticks_to_ms(System.Diagnostics.Stopwatch.GetTimestamp() - lastFrameTimestamp.startingTick));
+                var values = acquisitionThread.get_last_values();
+                if (values == null) {
+                    return;
+                }
+
+                List<List<double>> data = values.Item2;
+                for (int ii = 0; ii < bps.enabledChannelsNb; ++ii) {
+                    List<double> channelData = data[ii];
+                    if (channelData.Count > 0) {
+                        invoke_signal(lastValueChannelStr, new IdAny(bps.channelsId[ii] + 1, channelData[channelData.Count - 1]));
+                        invoke_signal(lastRangeValuesChannelStr, new IdAny(bps.channelsId[ii] + 1, channelData));
+                    }
+                }
+
+                // send last latency
+                List<FrameTimestamp> times = values.Item1;
+                if (times.Count > 0) {
+                    var lastFrameTimestamp = times[times.Count - 1];
+                    invoke_signal(channelsLatencyStr, TimeManager.ticks_to_ms(System.Diagnostics.Stopwatch.GetTimestamp() - lastFrameTimestamp.startingTick));
+                }
             }
         }
     }

@@ -141,10 +141,17 @@ void Routine::delete_actions_from_condition(ConditionKey conditionKey){
 void Routine::check_integrity(){
 
     size_t countBefore = conditions.size();
-
-    std::sort(conditions.begin(), conditions.end());
-    conditions.erase(std::unique(conditions.begin(), conditions.end()), conditions.end());
-
+    {
+        std::unordered_set<int> seen;
+        auto newEnd = std::remove_if(conditions.begin(), conditions.end(), [&seen](const ConditionUP &condition){
+            if (seen.find(condition->key()) != std::end(seen)){
+                return true;
+            }
+            seen.insert(condition->key());
+            return false;
+        });
+        conditions.erase(newEnd, conditions.end());
+    }
     size_t countAfter = conditions.size();
     if(countBefore > countAfter){
         QtLogger::warning(

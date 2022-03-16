@@ -35,6 +35,7 @@ using QtNodes::PortType;
 // qt-utility
 #include "ex_widgets/ex_label_w.hpp"
 #include "ex_widgets/ex_line_edit_w.hpp"
+#include "ex_widgets/ex_notepad_w.hpp"
 
 // local
 #include "ex_widgets/ex_config_w.hpp"
@@ -128,6 +129,20 @@ public slots:
 public:
     void init_ports_caption() override;
 };
+
+
+class PostItConfigW  : public NodeContainerW<ExNotepadW>{
+    Q_OBJECT
+ public:
+    void initialize() override;
+};
+
+class PostItNodeDataModel : public TypedConnectorDataModel<Connector::Type::Post_it, PostItConfigW>{
+    Q_OBJECT
+public slots:
+    void compute() override;
+};
+
 
 }
 

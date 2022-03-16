@@ -228,6 +228,7 @@ void ConditionW::update_from_condition(GUI *gui, Condition *condition){
         // # add new actions
         for(const auto &action : condition->actions){
             if(!mask[action->key()]){
+                qDebug() << "add action " << action->component->name();
                 m_actionsListW.add_widget(new ActionW(routine_key(), condition_key(), action.get()));
             }
         }

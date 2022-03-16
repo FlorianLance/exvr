@@ -81,5 +81,5 @@ void SoncebozSgConfigParametersW::insert_widgets(){
 void SoncebozSgConfigParametersW::init_and_register_widgets(){
     add_input_ui(m_p->applyCommand.init_widget("Send commands", false));
     add_input_ui(m_p->commandListFile.init_widget(Resource::Type::Text, "Commands list text file"));
-    add_input_ui(m_p->commandListText.init_widget(""));
+    add_input_ui(m_p->commandListText.init_widget("", Qt::TextFormat::PlainText));
 }

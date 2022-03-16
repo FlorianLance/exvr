@@ -25,7 +25,8 @@
 // unity
 using UnityEngine;
 
-namespace Ex{
+
+namespace Ex {
 
     public class Builder : MonoBehaviour{
 
@@ -67,6 +68,9 @@ namespace Ex{
         public Experiment experiment = null;
 
         public void Awake() {
+
+
+
 
 #if EXVR
             Debug.Log("[EXVR-EXP]");
@@ -130,8 +134,10 @@ namespace Ex{
             //Mesh mesh = gameObject.GetComponent<MeshFilter>().mesh;
             //mesh.MarkDynamic();
 
-
+    
         }
+
+
         //void Update() {
 
         //    if (!cloudInit) {

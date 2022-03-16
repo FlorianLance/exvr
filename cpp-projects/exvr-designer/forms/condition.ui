@@ -6,9 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>812</width>
-    <height>354</height>
+    <width>674</width>
+    <height>356</height>
    </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>0</width>
+    <height>0</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>Form</string>
@@ -112,7 +118,7 @@
              <height>0</height>
             </size>
            </property>
-           <layout class="QHBoxLayout" name="hlLeftOptions" stretch="1,1,1,1,1,1">
+           <layout class="QHBoxLayout" name="hlLeftOptions" stretch="1,2,1,2,1,1">
             <property name="spacing">
              <number>2</number>
             </property>
@@ -198,7 +204,7 @@
             <item>
              <widget class="QLabel" name="laSize">
               <property name="text">
-               <string>UI factor size</string>
+               <string>UI size</string>
               </property>
              </widget>
             </item>
@@ -212,7 +218,7 @@
               </property>
               <property name="minimumSize">
                <size>
-                <width>75</width>
+                <width>50</width>
                 <height>18</height>
                </size>
               </property>
@@ -297,7 +303,7 @@
                <string/>
               </property>
               <property name="icon">
-               <iconset resource="../../../resources/resources.qrc">
+               <iconset resource="../../_resources/resources.qrc">
                 <normaloff>:/icons/fill_all</normaloff>:/icons/fill_all</iconset>
               </property>
               <property name="iconSize">
@@ -335,7 +341,7 @@
                <string/>
               </property>
               <property name="icon">
-               <iconset resource="../../../resources/resources.qrc">
+               <iconset resource="../../_resources/resources.qrc">
                 <normaloff>:/icons/empty_all</normaloff>:/icons/empty_all</iconset>
               </property>
               <property name="iconSize">
@@ -373,7 +379,7 @@
                <string/>
               </property>
               <property name="icon">
-               <iconset resource="../../../resources/resources.qrc">
+               <iconset resource="../../_resources/resources.qrc">
                 <normaloff>:/icons/remove_all</normaloff>:/icons/remove_all</iconset>
               </property>
               <property name="iconSize">
@@ -507,7 +513,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="../../../resources/resources.qrc"/>
+  <include location="../../_resources/resources.qrc"/>
  </resources>
  <connections/>
 </ui>

@@ -35,6 +35,8 @@ namespace Ex{
         private bool m_isPaused = false;
         private bool m_isExperimentStarted = false;
 
+        public bool onGuiWait = false;
+
         // timers        
         private Stopwatch m_programTimer = new Stopwatch();
         private Stopwatch m_experimentTimer = new Stopwatch();
@@ -218,7 +220,7 @@ namespace Ex{
             endFrameTimeMs = ellapsed_exp_ms();
 
             // increment id frame
-            ++idFrame;
+            ++idFrame;            
         }
 
         public long to_ticks(Stopwatch timer) {

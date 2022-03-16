@@ -38,6 +38,7 @@ using namespace tool::ex;
 struct BiopacInitConfigParametersW::Impl{
 
     ExCheckBoxW debugBypassDevice{"debug_bypass"};
+    ExResourceW debugLog{"debug_log_file"};
     ExComboBoxIndexW device{"device_type"};
     ExComboBoxIndexW connection{"device_connection"};
     ExComboBoxIndexW readIoMode{"read_digital_mode"};
@@ -104,7 +105,7 @@ void BiopacInitConfigParametersW::insert_widgets(){
         m_p->channelsParentWidgets.emplace_back(pw);
     }
 
-    add_widget(m_p->debugBypassDevice());
+    add_widget(ui::F::gen(ui::L::VB(),{m_p->debugBypassDevice(), m_p->debugLog()}, LStretch{false}, LMargins{true},QFrame::Box));
 }
 
 void BiopacInitConfigParametersW::init_and_register_widgets(){
@@ -128,6 +129,7 @@ void BiopacInitConfigParametersW::init_and_register_widgets(){
         add_input_ui(m_p->channelsPresetUid[ii].init_widget(""));
     }
     add_input_ui(m_p->debugBypassDevice.init_widget("Enable it for testing the experiment without the device", false));
+    add_input_ui(m_p->debugLog.init_widget(Resource::Type::Text, "Use log file as debug input"));
 }
 
 void BiopacInitConfigParametersW::create_connections(){

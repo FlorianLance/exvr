@@ -232,10 +232,19 @@ void Condition::check_integrity(){
 
     // connections
     size_t countBefore = connections.size();
-    std::sort(connections.begin(), connections.end());
-    connections.erase(std::unique(connections.begin(), connections.end()), connections.end());
-
+    {
+        std::unordered_set<int> seen;
+        auto newEnd = std::remove_if(connections.begin(), connections.end(), [&seen](const ConnectionUP &connection){
+            if (seen.find(connection->key()) != std::end(seen)){
+                return true;
+            }
+            seen.insert(connection->key());
+            return false;
+        });
+        connections.erase(newEnd, connections.end());
+    }
     size_t countAfter = connections.size();
+
     if(countBefore > countAfter){
         QtLogger::warning(
             QSL("Remove ") % QString::number(countBefore - countAfter) % QSL(" duplicated connections from condition ") %
@@ -245,8 +254,17 @@ void Condition::check_integrity(){
 
     // connectors
     countBefore = connectors.size();
-    std::sort( connectors.begin(), connectors.end() );
-    connectors.erase( std::unique( connectors.begin(), connectors.end() ), connectors.end() );
+    {
+        std::unordered_set<int> seen;
+        auto newEnd = std::remove_if(connectors.begin(), connectors.end(), [&seen](const ConnectorUP &connector){
+            if (seen.find(connector->key()) != std::end(seen)){
+                return true;
+            }
+            seen.insert(connector->key());
+            return false;
+        });
+        connectors.erase(newEnd, connectors.end());
+    }
     countAfter = connectors.size();
     if(countBefore > countAfter){
         QtLogger::warning(
@@ -257,8 +275,17 @@ void Condition::check_integrity(){
 
     // actions
     countBefore = actions.size();
-    std::sort( actions.begin(), actions.end() );
-    actions.erase( std::unique( actions.begin(), actions.end() ), actions.end() );
+    {
+        std::unordered_set<int> seen;
+        auto newEnd = std::remove_if(actions.begin(), actions.end(), [&seen](const ActionUP &action){
+            if (seen.find(action->key()) != std::end(seen)){
+                return true;
+            }
+            seen.insert(action->key());
+            return false;
+        });
+        actions.erase(newEnd, actions.end());
+    }
     countAfter = actions.size();
     if(countBefore > countAfter){
         QtLogger::warning(

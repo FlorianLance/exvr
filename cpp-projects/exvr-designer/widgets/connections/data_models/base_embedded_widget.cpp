@@ -26,6 +26,8 @@
 
 // base
 #include "utility/benchmark.hpp"
+// qt-utility
+#include "qt_logger.hpp"
 
 using namespace tool::ex;
 
@@ -119,7 +121,7 @@ bool NodeDataDisplayDialog::node_settings_execute(QPoint pos){
 }
 
 
-void BaseNodeContainerW::initialize_container(const QString &caption, bool popup){
+void BaseNodeContainerW::initialize_container(const QString &caption, bool popup, Qt::TextFormat textFormat){
 
     setContentsMargins(0,0,0,0);
     setObjectName("parent-widget");
@@ -127,21 +129,16 @@ void BaseNodeContainerW::initialize_container(const QString &caption, bool popup
 
     m_dataDisplayD = std::make_unique<NodeDataDisplayDialog>(caption, popup);
 
-    m_valueText.setTextFormat(Qt::PlainText);
-    //m_valueText.setFrameStyle(QFrame::Panel | QFrame::Sunken);
-
-    // test
-//    m_valueText.setReadOnly(true);
-//    QFontMetrics metrics(m_valueText.font());
-//    int lineHeight = metrics.lineSpacing();
-//    m_valueText.setFixedHeight(lineHeight*2);
-//    m_valueText.setFixedWidth(100);
+    m_valueText.setTextFormat(textFormat);
+    QtLogger::message("init format " + QString::number((int)textFormat ));
 
     // layout
-    setLayout(new QHBoxLayout());
-    layout()->addWidget(&m_openDialogButton);
-    layout()->addWidget(&m_valueText);
-    layout()->setContentsMargins(0,0,0,0);
+    auto l = new QHBoxLayout();
+    setLayout(l);
+    l->addWidget(&m_openDialogButton);
+    l->addWidget(&m_valueText);
+    l->setContentsMargins(0,0,0,0);
+//    l->addStretch();
 
     m_openDialogButton.setText("");
     m_helpButton.setText("");
@@ -155,15 +152,6 @@ void BaseNodeContainerW::initialize_container(const QString &caption, bool popup
     m_openDialogButton.setObjectName("settingButton");
     m_openDialogButton.setStyleSheet(buttonStyle1);
     connect(&m_openDialogButton, &QPushButton::clicked, this, [&]{
-//        if(m_dataDisplayD == nullptr){
-//            Bench::start("BaseNodeContainerW_1"sv);
-//            m_dataDisplayD = std::make_unique<NodeDataDisplayDialog>(caption, popup);
-//            for(auto &row : m_dialogWidgetsRows){
-//                m_dataDisplayD->add_row_in_dialog(std::get<0>(row),std::get<1>(row),std::get<2>(row));
-//            }
-//            Bench::stop();
-//        }
-
         m_dataDisplayD->node_settings_execute(QCursor::pos()+ QPoint(0,10));
     });
 }
@@ -183,13 +171,13 @@ void BaseNodeContainerW::add_row_in_dialog(QString name, QWidget *w, bool horizo
     m_dataDisplayD->add_row_in_dialog(name,w, horizontalLayout);
 }
 
-bool BaseNodeContainerW::set_text_value(QStringView value){
+bool BaseNodeContainerW::set_text_value(const QString &value){
 
 //    bool askForResize = m_valueText.text().size() != value.size();
 //    m_valueText.blockSignals(true);
 
     Bench::start("BaseNodeContainerW::set_text_value");
-    m_valueText.setText(value.toString());
+    m_valueText.setText(value);
     Bench::stop();
 //    m_valueText.blockSignals(false);
     return true;
@@ -212,7 +200,7 @@ void BaseNodeContainerW::set_title(QString title){
 }
 
 bool BaseNodeContainerW::update_with_info(QStringView value){
-    return set_text_value(value);
+    return set_text_value(value.toString());
 }
 
 void BaseNodeContainerW::paintEvent(QPaintEvent *event){

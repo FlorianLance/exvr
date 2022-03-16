@@ -1729,9 +1729,6 @@ void Experiment::update_conditions(){
             continue;
         }
 
-
-
-
         // rebuild routine conditions
         std_v1<ConditionUP> newConditions;
         for(size_t ii = 0; ii < newConditionsKeys.size(); ++ii){

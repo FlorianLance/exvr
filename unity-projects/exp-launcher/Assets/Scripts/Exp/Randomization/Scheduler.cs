@@ -142,6 +142,8 @@ namespace Ex {
 
         public bool next_element() {
 
+            ExVR.Time().onGuiWait = true;
+
             if (m_currentElementId < instance.total_number_of_elements() - 1) { // enable next element
                 m_currentElementId++;
                 start_current_flow_element();
@@ -256,11 +258,12 @@ namespace Ex {
             if (instance.total_number_of_elements() == 0) { // no flow element
                 return null;
             }
-       
+
             // check if still inside interval
             if (!current_interval().is_in_interval(ExVR.Time().ellapsed_element_s())) {
+
                 // go  for next element
-                if(!next_element()) {
+                if (!next_element()) {
                     // no elemen remaining, end of experiment
                     return null; 
                 }

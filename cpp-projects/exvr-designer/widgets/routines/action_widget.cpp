@@ -58,7 +58,9 @@ ActionW::ActionW(ElementKey routineKey, ConditionKey conditionKey, Action *actio
     m_ui.cbConfig->setFocusPolicy(Qt::StrongFocus);
     delete m_ui.cbConfig;
     m_ui.cbConfig = new ui::NoScrollFocusWidget<QComboBox>(nullptr);
-    m_ui.hlTop->insertWidget(5, m_ui.cbConfig);
+    m_ui.hlTop->insertWidget(6, m_ui.cbConfig);
+
+
 
     setObjectName(QSL("action"));
     setStyleSheet(QSL("QWidget[objectName=\"action\"] {background-color:white;}"));
@@ -88,6 +90,12 @@ ActionW::ActionW(ElementKey routineKey, ConditionKey conditionKey, Action *actio
         emit GSignals::get()->move_action_up_signal(routine_key(), condition_key(),action_key());
     });
     connect(m_ui.pbDown, &QPushButton::clicked, this, [&](){
+        emit GSignals::get()->move_action_down_signal(routine_key(), condition_key(),action_key());
+    });
+    connect(m_ui.pbUpTop, &QPushButton::clicked, this, [&](){
+        emit GSignals::get()->move_action_up_signal(routine_key(), condition_key(),action_key());
+    });
+    connect(m_ui.pbDownTop, &QPushButton::clicked, this, [&](){
         emit GSignals::get()->move_action_down_signal(routine_key(), condition_key(),action_key());
     });
     connect(m_ui.cbConfig, QOverload<int>::of(&QComboBox::currentIndexChanged), this, [=](int index){
@@ -121,6 +129,8 @@ ActionW::ActionW(ElementKey routineKey, ConditionKey conditionKey, Action *actio
         set_minimized_state(!m_minimized);
     });
     m_ui.pbMinimizedIcon->setVisible(false);
+    m_ui.pbUpTop->setVisible(false);
+    m_ui.pbDownTop->setVisible(false);
 
     // set stretch
     m_ui.hlTop->setStretch(0, 1);
@@ -128,15 +138,21 @@ ActionW::ActionW(ElementKey routineKey, ConditionKey conditionKey, Action *actio
     m_ui.hlTop->setStretch(2, 1);
     m_ui.hlTop->setStretch(3, 1);
     m_ui.hlTop->setStretch(4, 1);
-    m_ui.hlTop->setStretch(5, 100);
-    m_ui.hlTop->setStretch(6, 100);
-    m_ui.hlTop->setStretch(7, 1);
+    m_ui.hlTop->setStretch(5, 1);
+    m_ui.hlTop->setStretch(6, 80);
+    m_ui.hlTop->setStretch(7, 80);
     m_ui.hlTop->setStretch(8, 1);
     m_ui.hlTop->setStretch(9, 1);
     m_ui.hlTop->setStretch(10, 1);
     m_ui.hlTop->setStretch(11, 1);
     m_ui.hlTop->setStretch(12, 1);
-    m_ui.hlTop->setStretch(613, 1);
+    m_ui.hlTop->setStretch(13, 1);
+    m_ui.hlTop->setStretch(14, 1);
+    m_ui.hlTop->setStretch(15, 1);
+
+
+//    1,1,1,1,5,20,1,20,1,1,1,1,1,1,1,1
+
 }
 
 void ActionW::mousePressEvent(QMouseEvent *event){
@@ -158,6 +174,8 @@ void ActionW::set_minimized_state(bool state){
     m_minimized = state;
     m_ui.pbMinimizeExtend->setText(m_minimized ? QSL("+") : QSL("-"));
     m_ui.wBottom->setVisible(!m_minimized);
+    m_ui.pbUpTop->setVisible(m_minimized);
+    m_ui.pbDownTop->setVisible(m_minimized);
     m_ui.pbMinimizedIcon->setVisible(m_minimized);
     m_ui.pbFill->setVisible(!m_minimized);
     m_ui.pbClean->setVisible(!m_minimized);

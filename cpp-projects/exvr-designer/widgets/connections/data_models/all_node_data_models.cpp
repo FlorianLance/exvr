@@ -345,7 +345,7 @@ void DataNodeModels::initialize(){
     actionStyle.FontColorFaded  = Qt::black;
 
     displayStyle = generatorStyle;
-    const auto disColor = QColor(206,206,255);
+    const auto disColor = QColor(255, 247, 209);//QColor(206,206,255);
     displayStyle.GradientColor0  = disColor;
     displayStyle.GradientColor1  = disColor;
     displayStyle.GradientColor2  = disColor;
@@ -450,12 +450,6 @@ std::unique_ptr<ConnectorNodeDataModel> DataNodeModels::generate_connector_data_
     case T::Decimal_trigonometry:
         connectorDataModel = std::make_unique<DecimalTrigoNodeDataModel>();
         break;
-    case T::Logger:
-        connectorDataModel = std::make_unique<LoggerNodeDataModel>();
-        break;        
-    case T::Curve_x:
-        connectorDataModel = std::make_unique<CurveXNodeDataModel>();
-        break;
     case T::Delay:
         connectorDataModel = std::make_unique<DelayNodeDataModel>();
         break;
@@ -542,6 +536,16 @@ std::unique_ptr<ConnectorNodeDataModel> DataNodeModels::generate_connector_data_
         break;
     case T::Conditional_gate:
         connectorDataModel = std::make_unique<ConditionalGateNodeDataModel>();
+        break;
+    // # Display
+    case T::Logger:
+        connectorDataModel = std::make_unique<LoggerNodeDataModel>();
+        break;
+    case T::Curve_x:
+        connectorDataModel = std::make_unique<CurveXNodeDataModel>();
+        break;
+    case T::Post_it:
+        connectorDataModel = std::make_unique<PostItNodeDataModel>();
         break;
     // # Resource
     case T::Image_resource:
