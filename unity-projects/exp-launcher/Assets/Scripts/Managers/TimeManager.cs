@@ -238,7 +238,6 @@ namespace Ex{
             return ns_since_start_experiment(startElementTimestamp);
         }
 
-
         public long remove_pause_intervals_from_tick(List<TimestampInterval> intervals, long ticks) {
 
             long currentOffset = 0;

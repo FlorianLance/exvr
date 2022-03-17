@@ -23,6 +23,7 @@
 ************************************************************************************/
 
 #include "ex_time_source_w.hpp"
+#include "qt_logger.hpp"
 
 using namespace tool::ex;
 
@@ -71,41 +72,30 @@ void ExTimeW::update_from_arg(const Arg &arg){
 
     ExItemW::update_from_arg(arg);
 
-    auto split = arg.value().split("%");
-    if(split.size() < 3){
+    auto args = arg.split_value_to_atoms_args();
+    if(args.size() != 2){
+        QtLogger::error("ExTimeW::Invalid arg.");
         return;
     }
 
-    w->blockSignals(true);
-
-    Arg typeA = arg;
-    Arg freqA = arg;
-    Arg modeA = arg;
-
-    typeA.init_from(split[0]);
-    freqA.init_from_int_str(split[1]);
-    modeA.init_from(split[2]);
-
-    typeT.update_from_arg(typeA);
-    frequency.update_from_arg(freqA);
-    modeT.update_from_arg(modeA);
-
-    w->blockSignals(false);
+    typeT.update_from_arg(args[0]);
+    frequency.update_from_arg(args[1]);
+    modeT.update_from_arg(args[2]);
 }
 
 Arg ExTimeW::convert_to_arg() const{
 
-    auto typeA = typeT.convert_to_arg();
-    auto freqA = frequency.convert_to_arg();
-    auto modeA = modeT.convert_to_arg();
-
-    QStringList list;
-    list << std::move(typeA.value());
-    list << std::move(freqA.value());
-    list << std::move(modeA.value());
 
     auto arg = ExItemW::convert_to_arg();
-    arg.init_from(list, "%");
+    arg.init_from(
+        {
+            typeT.convert_to_arg().value(),
+            frequency.convert_to_arg().value(),
+            modeT.convert_to_arg().value()
+        },
+        "%"
+    );
+
     return arg;
 }
 

@@ -183,6 +183,7 @@ namespace Ex
             ["Ex.LoggerComponent"] = gen_info(Category.Output, Pritority.Hight, Reserved.Public),
             ["Ex.LoggerConditionComponent"] = gen_info(Category.Output, Pritority.Hight, Reserved.Public),
             ["Ex.LoggerColumnsComponent"] = gen_info(Category.Output, Pritority.Hight, Reserved.Public),
+            ["Ex.LoggerExperimentComponent"] = gen_info(Category.Output, Pritority.Hight, Reserved.Public),
             // resource
             ["Ex.ImageResourceComponent"] = gen_info(Category.Resource, Pritority.Hight, Reserved.Public),
             ["Ex.PlotResourceComponent"] = gen_info(Category.Resource, Pritority.Hight, Reserved.Public),

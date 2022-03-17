@@ -48,7 +48,7 @@ ExResourceW::ExResourceW(QString name) : ExItemW<QFrame>(UiType::Resource, name)
     l->addWidget(m_resourcesAlias = new QComboBox());    
     l->addWidget(m_resources = new QPushButton());
     l->setStretch(0,1);
-    l->setStretch(1,10);
+    l->setStretch(1,1);
     l->setStretch(2,50);
     l->setStretch(3,1);
     l->setContentsMargins(2,2,2,2);

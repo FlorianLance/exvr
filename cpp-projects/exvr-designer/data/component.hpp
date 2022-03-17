@@ -105,7 +105,7 @@ struct Component {
         /** I */ Image_resource, Image_viewer,
         /** J */ Joypad,
         /** K */ Keyboard, Kinect_manager, Kinect_body_tracking,
-        /** L */ Landmark, Leap_motion, Leap_motion_arms_display, Leap_motion_tracking, Lines, Logger, LoggerColumns, LoggerCondition,
+        /** L */ Landmark, Leap_motion, Leap_motion_arms_display, Leap_motion_tracking, Lines, Logger, LoggerColumns, LoggerCondition, LoggerExperiment,
         /** M */ Mark_to_clean, Microphone, Mirror, Mouse, MRI, Multi_AB,
         /** P */ Parallel_port_writer, Plot_resource, Python_script,
         /** Q */ Qualisys,
@@ -214,6 +214,7 @@ struct Component {
         {T::Logger,                   C::Output,      TO::N,     CO::I,   false,   R::OpenSource,   S::Sta, "Logger"sv, "Logger"sv, "Logger"sv, ":/icons/Logger"sv},
         {T::LoggerColumns,            C::Output,      TO::N,     CO::I,   false,   R::OpenSource,   S::Sta, "Logger_columns"sv, "Logger columns"sv, "LoggerColumns"sv, ":/icons/Logger"sv},
         {T::LoggerCondition,          C::Output,      TO::N,     CO::I,   false,   R::OpenSource,   S::Sta, "Logger_condition"sv, "Logger condition"sv, "LoggerCondition"sv, ":/icons/Logger"sv},
+        {T::LoggerExperiment,         C::Output,      TO::N,     CO::I,   false,   R::OpenSource,   S::Sta, "Logger_experiment"sv, "Logger experiment"sv, "LoggerExperiment"sv, ":/icons/Logger"sv},
         // Resource
         {T::Image_resource,           C::Resource,    TO::N,     CO::B,   false,   R::OpenSource,   S::Sta, "Image_resource"sv, "Image resource"sv, "ImageResource"sv, ":/icons/Image"sv},
         {T::Plot_resource,            C::Resource,    TO::N,     CO::C,   false,   R::OpenSource,   S::Sta, "Plot_resource"sv,  "Plot resource"sv, "PlotResource"sv, ":/icons/Plot"sv},

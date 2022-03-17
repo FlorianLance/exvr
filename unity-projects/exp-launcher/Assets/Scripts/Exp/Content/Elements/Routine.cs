@@ -125,25 +125,6 @@ namespace Ex{
             }
 
             return true;
-            //m_key    = routine.Key;
-            //m_keyStr = Converter.to_string(routine.Key);
-            //m_type  = FlowElementType.Routine;
-            //m_isARandomizer = routine.Randomizer;
-
-            //// generate conditions
-            //m_conditions = new List<Condition>(routine.Conditions.Count);
-            //m_conditionsPerName = new Dictionary<string, Condition>(routine.Conditions.Count);
-            //m_conditionsPerKey = new Dictionary<int, Condition>(routine.Conditions.Count);
-
-            //foreach (XML.Condition xmlCondition in routine.Conditions) {                
-            //    var conditionGO = GO.generate_empty_object(xmlCondition.Name, transform, true);
-            //    var condition = conditionGO.AddComponent<Condition>();
-            //    condition.setup_condition_object(xmlCondition);
-            //    condition.initialize();
-            //    m_conditions.Add(condition);
-            //    m_conditionsPerName[condition.name] = condition;
-            //    m_conditionsPerKey[condition.key()] = condition;
-            //}
         }
 
         public void start(RoutineInfo info) {

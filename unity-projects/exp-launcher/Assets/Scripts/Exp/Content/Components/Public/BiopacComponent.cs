@@ -46,19 +46,15 @@ namespace Ex {
         private static readonly string endRoutineDataLogStr      = "end routine data log";
         private static readonly string channelsLatencyStr        = "channels latency";
         private static readonly string triggerChannelsStr        = "trigger channels";
-
         private static readonly List<int> samplingRateValues = new List<int>(new int[] {
             10,25,50,100,200,250,500,1000,2000,2500,5000,10000,20000,25000
         });
 
-
-        private List<System.Tuple<double, List<double>>> debugData = null;
-        private int currentDebugId = 0;
-
-        private bool addHeaderLine = false;
-
-        // debug
-        private bool debugBypass = false;
+        private List<System.Tuple<double, List<double>>> m_debugData = null;
+        private int m_currentDebugId = 0;
+        private bool m_addHeaderLine = false;
+        private LoggerComponent m_logger = null;
+        private bool m_debugBypass = false;
 
         private bool connect_device() {
 
@@ -209,13 +205,16 @@ namespace Ex {
             add_signal(endRoutineDataLogStr);
             add_signal(channelsLatencyStr);
 
+            // retrieve components
+            m_logger = initC.get_component<LoggerComponent>("logger");
+
             // debug
-            if (debugBypass = initC.get<bool>("debug_bypass")) {
+            if (m_debugBypass = initC.get<bool>("debug_bypass")) {
                 if (initC.get_resource_alias("debug_log_file").Length > 0) {
                     
                     var content = initC.get_resource_text_data("debug_log_file").content.Split('\n');
                     log_error("content: " + content.Length);
-                    debugData = new List<System.Tuple<double, List<double>>>(content.Length);
+                    m_debugData = new List<System.Tuple<double, List<double>>>(content.Length);
                     int nbCols = 0;
                     foreach(var line in content) {
                         if (line.StartsWith("[Routine")) {
@@ -235,7 +234,7 @@ namespace Ex {
                         for(int ii = 1; ii < nbCols; ++ii) {
                             lineValues.Item2.Add(Converter.to_double(split[ii]));
                         }
-                        debugData.Add(lineValues);
+                        m_debugData.Add(lineValues);
                     }
                 }
                 
@@ -318,7 +317,7 @@ namespace Ex {
 
         protected override void set_update_state(bool doUpdate) {
 
-            if (debugBypass) {
+            if (m_debugBypass) {
                 return;
             }
 
@@ -327,7 +326,7 @@ namespace Ex {
        
         protected override void clean() {
 
-            if (debugBypass) {
+            if (m_debugBypass) {
                 return;
             }
 
@@ -335,9 +334,9 @@ namespace Ex {
         }
 
         protected override void start_experiment() {
-            addHeaderLine = true;
-            currentDebugId = 0;
-            if (debugBypass) {                
+            m_addHeaderLine = true;
+            m_currentDebugId = 0;
+            if (m_debugBypass) {                
                 return;
             }
             acquisitionThread.bpd.reset_settings(bps);
@@ -345,36 +344,43 @@ namespace Ex {
 
         protected override void stop_routine() {
 
-            if (debugBypass) {
+            if (m_debugBypass) {
+                if (m_logger != null) {
+                    m_logger.write("Generated-biopac-debug-line");
+                }
                 return;
             }
 
-            var strData = acquisitionThread.data_to_string(addHeaderLine);
-            addHeaderLine = false;
+            var strData = acquisitionThread.data_to_string(m_addHeaderLine);
+            m_addHeaderLine = false;
 
             if (strData != null) {
                 invoke_signal(endRoutineDataLogStr, strData);
+
+                if(m_logger != null) {
+                    m_logger.write(endRoutineDataLogStr);                    
+                }
             }
         }
 
         public void trigger_channels() {
 
-            if (debugBypass) {
-                if(debugData != null) {
+            if (m_debugBypass) {
+                if(m_debugData != null) {
                     var currTime = ExVR.Time().ellapsed_exp_ms();
-                    for(int ii = currentDebugId; ii < debugData.Count; ++ii) {
-                        if(currentDebugId >= debugData.Count) {
+                    for(int ii = m_currentDebugId; ii < m_debugData.Count; ++ii) {
+                        if(m_currentDebugId >= m_debugData.Count) {
                             return;
                         }
-                        if(debugData[currentDebugId].Item1 < currTime) {
-                            ++currentDebugId;
+                        if(m_debugData[m_currentDebugId].Item1 < currTime) {
+                            ++m_currentDebugId;
                         } else {
                             break;
                         }
                     }
 
-                    for(int ii = 0; ii < debugData[currentDebugId].Item2.Count; ++ii) {
-                        invoke_signal(lastValueChannelStr, new IdAny(ii + 1, debugData[currentDebugId].Item2[ii]));
+                    for(int ii = 0; ii < m_debugData[m_currentDebugId].Item2.Count; ++ii) {
+                        invoke_signal(lastValueChannelStr, new IdAny(ii + 1, m_debugData[m_currentDebugId].Item2[ii]));
                     }
                 }
                 return;

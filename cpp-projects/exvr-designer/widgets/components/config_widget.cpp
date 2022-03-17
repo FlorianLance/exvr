@@ -226,6 +226,8 @@ ConfigParametersW *ConfigW::generate_parameters(Component::Type type, bool initC
         return gen_params_w<LoggerColumnsInitConfigParametersW,LoggerColumnsConfigParametersW>(initConfig);
     case CT::LoggerCondition:
         return gen_params_w<LoggerConditionInitConfigParametersW,LoggerConditionConfigParametersW>(initConfig);
+    case CT::LoggerExperiment:
+        return gen_params_w<LoggerExperimentInitConfigParametersW,LoggerExperimentConfigParametersW>(initConfig);
     // ############################# Resource
     case CT::Image_resource:
         return gen_params_w<ImageResourceInitConfigParametersW,ImageResourceConfigParametersW>(initConfig);

@@ -85,4 +85,23 @@ private:
 
 class LoggerConditionConfigParametersW : public ConfigParametersW{};
 
+
+class LoggerExperimentInitConfigParametersW : public ConfigParametersW{
+
+public :
+
+    LoggerExperimentInitConfigParametersW();
+
+    void insert_widgets() override;
+    void init_and_register_widgets() override;
+    void create_connections() override;
+    void late_update_ui() override;
+
+private:
+    struct Impl;
+    std::unique_ptr<Impl> m_p = nullptr;
+};
+
+class LoggerExperimentConfigParametersW : public ConfigParametersW{};
+
 }

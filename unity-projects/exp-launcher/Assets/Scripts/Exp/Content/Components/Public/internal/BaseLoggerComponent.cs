@@ -57,10 +57,6 @@ namespace Ex {
             if (!create_file(m_fileFullPath)) {
                 return;
             }
-
-            if (initC.get<bool>("add_header_line")) {
-                write(initC.get<string>("header_line"), true);
-            }
         }
 
         protected override void stop_experiment() {

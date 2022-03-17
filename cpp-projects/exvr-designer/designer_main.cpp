@@ -32,14 +32,13 @@
 
 // local
 #include "controller/exvr_controller.hpp"
-//#include "utility/path_utility.hpp"
 
 using namespace tool::ex;
 
 int main(int argc, char *argv[]){
 
     // build parameters
-    const QString numVersion = "1.0a22";
+    const QString numVersion = "1.0a23";
     bool lncoComponents = true;
 
     // compiler check

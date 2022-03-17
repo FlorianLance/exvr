@@ -42,6 +42,8 @@ ExComponentW::ExComponentW(QString name) : ExItemW<QFrame>(UiType::Component, na
     l->setStretch(0,1);
     l->setStretch(1,1);
     l->setStretch(2,50);
+    l->setContentsMargins(2,2,2,2);
+    l->setSpacing(5);
 
     connect(m_componentNames, QOverload<int>::of(&QComboBox::currentIndexChanged), this,[&](int index){
 
