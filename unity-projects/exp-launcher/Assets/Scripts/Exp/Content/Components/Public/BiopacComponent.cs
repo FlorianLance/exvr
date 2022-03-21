@@ -297,7 +297,7 @@ namespace Ex {
 
             // initialize thread
             bps.nbSamplesPerCall          = initC.get<int>("nb_samples_per_call");
-            bps.samplingRate              = initC.get<int>("sampling_rate");
+            bps.samplingRate              = samplingRateValues[initC.get<int>("sampling_rate_id")];// initC.get<int>("sampling_rate");
             bps.sizeMaxChannelSeconds     = initC.get<int>("max_nb_seconds_to_save");
             if(initC.get<int>("read_digital_mode") != 0) {
                 bps.readDigitalMode = initC.get<int>("read_digital_mode") == 1 ? MP.DIGITALOPT.READ_LOW_BITS : MP.DIGITALOPT.READ_HIGH_BITS;
