@@ -25,7 +25,7 @@
 #include "ex_components_list_w.hpp"
 
 // local
-#include "data/components_manager.hpp"
+#include "experiment/experiment.hpp"
 
 
 using namespace tool::ex;
@@ -62,7 +62,7 @@ ExComponentsListW::ExComponentsListW(QString name) : ExItemW<QFrame>(UiType::Com
         }
 
         const auto currTxt = m_componentNames->currentText();
-        if(auto component = ComponentsManager::get()->get_component(m_componentType.value(), currTxt); component != nullptr){
+        if(auto component = ExperimentManager::get()->current()->compM.get_component(m_componentType.value(), currTxt); component != nullptr){
             m_componentsKeys.emplace_back(component->key());
             m_list->add_widget(ui::W::txt(component->name()));
             update_from_components();
@@ -119,7 +119,7 @@ void ExComponentsListW::update_from_arg(const Arg &arg){
         for(const auto &keyStr : split){
 
             int key = keyStr.toInt();
-            if(auto component = ComponentsManager::get()->get_component(ComponentKey{key}); component != nullptr){
+            if(auto component = ExperimentManager::get()->current()->compM.get_component(ComponentKey{key}); component != nullptr){
                 m_componentsKeys.emplace_back(keyStr.toInt());
                 m_list->add_widget(ui::W::txt(component->name()));
             }
@@ -155,13 +155,11 @@ void ExComponentsListW::update_from_components(){
 
     m_componentNames->blockSignals(true);
 
-    ComponentsManager *componentsM = ComponentsManager::get();
-
     QString currentText = m_componentNames->currentText();
     m_componentNames->clear();
 
     QStringList names;    
-    if(auto components = componentsM->get_components(m_componentType.value()); components.size() > 0){
+    if(auto components = ExperimentManager::get()->current()->compM.get_components(m_componentType.value()); components.size() > 0){
 
         // remove component keys not existing anymore
         std_v1<int> elemsToRemove;

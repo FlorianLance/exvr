@@ -43,7 +43,6 @@
 // # experiment
 #include "randomizer.hpp"
 
-
 namespace tool::ex{
 
 // ############################################################################### CONSTANTS
@@ -55,36 +54,8 @@ constexpr static int UpdateRoutines    = 0b1000;
 constexpr static int UpdateUI          = 0b10000;
 constexpr static int UpdateResources   = 0b100000;
 constexpr static int UpdateSettings    = 0b1000000;
-constexpr static int ResetUI           = 0b10000000;
+[[maybe_unused]] constexpr static int ResetUI           = 0b10000000;
 constexpr static int UpdateAll         = UpdateComponents | UpdateFlow | UpdateSelection | UpdateUI | UpdateRoutines | UpdateResources | UpdateSettings;
-
-//enum class Update{
-//    ELEMENT, select_element,unselect_elements, add_element, remove_element, move_element, modify_element_name,
-//    ROUTINE, select_condition, move_condition,
-//    CONDITION, modify_condition,
-//    ACTION, fill_action, remove_actions,
-//};
-
-
-//struct Up{
-
-//    Up(bool all) : m_all(all){
-//    }
-
-//    Up(std_v1<Update> updates){
-//        for(auto &update : updates){
-//            m_updates.emplace(update);
-//        }
-//    }
-
-//    bool check(Update u) const{
-//        return m_all ? true : (m_updates.count(u) != 0);
-//    }
-
-//private:
-//    bool m_all = false;
-//    std::unordered_set<Update> m_updates;
-//};
 
 
 class Experiment;
@@ -326,6 +297,7 @@ private :
 
 public :
 
+    States states;
     Randomizer randomizer;
 
     // elements
@@ -335,8 +307,8 @@ public :
     Routine *lastRoutineSelected = nullptr;
     Isi *lastIsiSelected = nullptr;
 
-    // states
-    States states;
+    // components
+    ComponentsManager compM;
 
     // infos
     using UiKey   = QStringView;
@@ -346,8 +318,6 @@ public :
     umap<int, umap<int, umap<int, umap<UiKey, UiValue>>>> connectorsInfo;
     umap<int, umap<int, umap<UiKey, UiValue>>>  componentsInfo;
 
-
-
 private :
 
     // update
@@ -356,11 +326,55 @@ private :
     GUI m_gui;
     Settings m_settings;
 
-    // components
-    ComponentsManager *m_compM = nullptr;
-
     // resources
     ResourcesManager *m_resM = nullptr;
+};
+
+class ExperimentManager{
+public:
+
+    static void init(){
+        if(m_expManager == nullptr){
+            m_expManager = std::make_unique<ExperimentManager>();
+        }
+    }
+    static ExperimentManager *get(){
+        if(m_expManager != nullptr){
+            return m_expManager.get();
+        }
+        return nullptr;
+    }
+
+    inline void init_current(const QString &numVersion){
+        m_experiment = std::make_unique<Experiment>(numVersion);
+    }
+
+    inline void init_imported(const QString &numVersion){
+        m_importedExperiment = std::make_unique<Experiment>(numVersion);
+    }
+
+    inline Experiment *current(){
+        return m_experiment.get();
+    }
+    inline Experiment *imported(){
+        return m_importedExperiment.get();
+    }
+
+    inline void clean_imported(){
+        m_importedExperiment = nullptr;
+    }
+
+    inline void clean(){
+        m_experiment         = nullptr;
+        clean_imported();
+    }
+
+
+private:
+
+    std::unique_ptr<Experiment> m_experiment = nullptr;
+    std::unique_ptr<Experiment> m_importedExperiment = nullptr;
+    static inline std::unique_ptr<ExperimentManager> m_expManager = nullptr;
 };
 }
 

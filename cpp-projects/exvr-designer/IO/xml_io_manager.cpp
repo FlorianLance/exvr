@@ -1323,7 +1323,7 @@ void XmlIoManager::write_resources(){
 void XmlIoManager::write_components(){
 
     w->writeStartElement(QSL("Components"));{
-        for(const auto &component : ComponentsManager::get()->components){
+        for(const auto &component : m_experiment->compM.components){
             write_component(component.get());
         }
     }w->writeEndElement(); // /Components
@@ -1607,8 +1607,8 @@ bool XmlIoManager::read_components(){
     while(!r->atEnd()){
 
         if(check_start_node(QSL("Component"))){
-            if(auto component = read_component(); component != nullptr){
-                ComponentsManager::get()->components.emplace_back(std::move(component));
+            if(auto component = read_component(); component != nullptr){                
+                m_experiment->compM.components.emplace_back(std::move(component));
             }            
         }
 

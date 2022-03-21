@@ -24,25 +24,12 @@
 
 #include "components_manager.hpp"
 
-// Qt
-#include <QStringBuilder>
+// qt-utility
+#include "qt_str.hpp"
 
 using namespace tool;
 using namespace tool::ex;
 
-
-void ComponentsManager::init(){
-    if(m_componentsManager == nullptr){
-        m_componentsManager = std::make_unique<ComponentsManager>();
-    }
-}
-
-ComponentsManager *ComponentsManager::get(){
-    if(m_componentsManager != nullptr){
-        return m_componentsManager.get();
-    }
-    return nullptr;
-}
 
 void ComponentsManager::clean_components(){
     components.clear();

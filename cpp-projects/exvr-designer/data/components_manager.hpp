@@ -43,15 +43,9 @@
 
 namespace tool::ex {
 
-class ComponentsManager;
-using ComponentsManagerUP = std::unique_ptr<ComponentsManager>;
-
 class ComponentsManager{
 
 public:
-
-    static void init();
-    static ComponentsManager *get();
 
     void clean_components();
     void sort_by_category();
@@ -69,12 +63,5 @@ public:
     std_v1<Component*> get_components(Component::Type type) const;    
 
     std_v1<ComponentUP> components;
-
-
-private:
-
-    static inline ComponentsManagerUP m_componentsManager = nullptr;
-
-    // TODO: add map (for quick access to types)
 };
 }

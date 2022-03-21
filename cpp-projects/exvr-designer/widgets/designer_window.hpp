@@ -115,6 +115,7 @@ signals :
     void open_temp_instance_file_signal();
     void open_experiment_directory_signal();    
     void export_experiment_as_signal();
+    void import_experiment_subparts_signal();
     void open_current_exp_launcher_log_file_signal();
     void open_current_designer_log_file_signal();
     void open_log_directory_signal();
@@ -222,6 +223,7 @@ private:
     QAction m_saveAsExperimentAct;
     QAction m_exportExperimentAct;
     QAction m_loadExperimentAct;
+    QAction m_importSubExperimentAct;
     // ## control from unity
     QAction m_playExperimentAct;
     QAction m_playDelayAct;

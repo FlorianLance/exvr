@@ -68,7 +68,7 @@ public :
 
     ExVrController(const QString &nVersion, bool lncoComponents);
 
-    inline Experiment *exp(){return m_experiment.get();}
+    inline Experiment *exp(){return ExperimentManager::get()->current();}
     inline DesignerWindow *ui(){return m_designerWindow.get();}
     inline ExpLauncher *exp_launcher(){return m_expLauncher.get();}
     inline XmlIoManager *xml(){return m_xmlManager.get();}
@@ -110,6 +110,7 @@ private slots:
     void show_generate_instances_dialog();
     void show_got_to_specific_instance_element_dialog();
     void show_component_informations_dialog(ComponentKey componentKey);
+    void show_import_dialog();
 
     // data
     void update_gui_from_experiment();
@@ -146,8 +147,7 @@ private:
 
 private :
 
-    // data
-    std::unique_ptr<Experiment> m_experiment = nullptr;
+    // data    
     std::unique_ptr<Instance> m_currentInstance = nullptr;
 
     // I/O
@@ -159,6 +159,7 @@ private :
     // # dialogs
     // ## non modal
     std::unique_ptr<QDialog> m_componentsInfoD              = nullptr;
+    std::unique_ptr<QDialog> m_importD                      = nullptr;
     std::unique_ptr<QDialog> m_goToD                        = nullptr;
     std::unique_ptr<BenchmarkDialog> m_benchmarkD           = nullptr;
     ResourcesManagerDialog m_resourcesD;
@@ -170,7 +171,6 @@ private :
     SettingsDialog m_settingsD;
 
     std::unordered_map<QEvent::Type, std::unordered_map<QString, int>> countEvents;
-
 
 
     // experiment launcher

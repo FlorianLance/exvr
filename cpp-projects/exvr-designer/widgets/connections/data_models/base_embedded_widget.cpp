@@ -128,9 +128,7 @@ void BaseNodeContainerW::initialize_container(const QString &caption, bool popup
     setStyleSheet("#parent-widget {background-color: rgba(0,0,0,0)}");
 
     m_dataDisplayD = std::make_unique<NodeDataDisplayDialog>(caption, popup);
-
     m_valueText.setTextFormat(textFormat);
-    QtLogger::message("init format " + QString::number((int)textFormat ));
 
     // layout
     auto l = new QHBoxLayout();

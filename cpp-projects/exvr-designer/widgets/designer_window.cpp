@@ -141,7 +141,7 @@ void DesignerWindow::update_from_experiment(Experiment *experiment, int update){
 
     if(update & UpdateComponents){ // update experiment components
         Bench::start("[Update components]"sv, display);
-        m_componentsW->update_from_components_manager(ComponentsManager::get());
+        m_componentsW->update_from_components_manager(&experiment->compM);
         Bench::stop();
     }
 
@@ -347,6 +347,11 @@ void DesignerWindow::create_actions(){
     m_exportExperimentAct.setText(tr("&Export experiment"));
     m_exportExperimentAct.setIcon(QIcon(":/icons/Save"));
     connect(&m_exportExperimentAct, &QAction::triggered, this, &DesignerWindow::export_experiment_as_signal);
+
+    m_importSubExperimentAct.setStatusTip(tr("Import parts of an another experiment"));
+    m_importSubExperimentAct.setText(tr("&Import experiment sub-parts"));
+    m_importSubExperimentAct.setIcon(QIcon(":/icons/Open"));
+    connect(&m_importSubExperimentAct, &QAction::triggered, this, &DesignerWindow::import_experiment_subparts_signal);
 
     m_loadExperimentAct.setShortcuts(QKeySequence::Open);
     m_loadExperimentAct.setStatusTip(tr("Open experiment file"));
@@ -585,6 +590,7 @@ void DesignerWindow::create_menu(){
     menu->addAction(&m_openExpDirectoryAct);
     menu->addSeparator();
     menu->addAction(&m_exportExperimentAct);
+    menu->addAction(&m_importSubExperimentAct);
     menu->addSeparator();
     menu->addAction(&m_exitExVRAct);
     // experiment

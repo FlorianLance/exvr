@@ -25,7 +25,7 @@
 #include "ex_component_w.hpp"
 
 // local
-#include "data/components_manager.hpp"
+#include "experiment/experiment.hpp"
 
 using namespace tool::ex;
 
@@ -50,8 +50,7 @@ ExComponentW::ExComponentW(QString name) : ExItemW<QFrame>(UiType::Component, na
         m_currentKey = -1;
         if(index > 0){
             const size_t id = to_unsigned(index-1);
-            ComponentsManager *componentsM = ComponentsManager::get();
-            if(auto components = componentsM->get_components(m_componentType.value()); id < components.size()){
+            if(auto components = ExperimentManager::get()->current()->compM.get_components(m_componentType.value()); id < components.size()){
                 m_currentKey =  components[id]->key();
             }
         }
@@ -115,8 +114,7 @@ void ExComponentW::update_from_components(){
     m_componentNames->blockSignals(true);
 
     // retrieve components names list
-    ComponentsManager *componentsM = ComponentsManager::get();
-    auto components = componentsM->get_components(m_componentType.value());
+    auto components = ExperimentManager::get()->current()->compM.get_components(m_componentType.value());
 
     bool rebuildList = false;
     if(m_componentNames->count() != static_cast<int>((components.size()+1))){

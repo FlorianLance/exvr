@@ -44,13 +44,14 @@
 using namespace tool;
 using namespace tool::ex;
 
+
 Experiment::Experiment(QString nVersion) : states(nVersion), randomizer(Randomizer(states.randomizationSeed)) {
 
     ResourcesManager::init();
     m_resM = ResourcesManager::get();
 
-    ComponentsManager::init();
-    m_compM = ComponentsManager::get();
+//    ComponentsManager::init();
+//    m_compM = ComponentsManager::get();
 
     new_experiment();
 }
@@ -618,9 +619,8 @@ void Experiment::check_integrity(){
 
     // check validity
     // # components
-    auto cm = ComponentsManager::get();
     std::unordered_map<int, Component*> checkComponents;
-    for(auto &component : cm->components){
+    for(auto &component : ExperimentManager::get()->current()->compM.components){
         if(checkComponents.count(component->key()) != 0){
             QtLogger::error(QSL("[EXP] ") % component->to_string() % QSL(" already exists."));
         }else{
@@ -963,7 +963,7 @@ void Experiment::select_nodes_and_connections(ElementKey routineKey, ConditionKe
 void Experiment::add_action(ElementKey routineKey, ConditionKey conditionKey, ComponentKey componentKey,
     std::optional<ConfigKey> configKey, bool fillUpdateTimeline, bool fillVisibilityTimeline){
 
-    auto component = m_compM->get_component(componentKey);
+    auto component = compM.get_component(componentKey);
     if(component == nullptr){
         return;
     }
@@ -993,7 +993,7 @@ void Experiment::add_action(ElementKey routineKey, ConditionKey conditionKey, Co
 void Experiment::add_action_to_all_conditions(ElementKey routineKey, ComponentKey componentKey,
     std::optional<ConfigKey> configKey, bool fillUpdateTimeline, bool fillVisibilityTimeline){
 
-    auto component = m_compM->get_component(componentKey);
+    auto component = compM.get_component(componentKey);
     if(component == nullptr){
         return;
     }
@@ -1020,7 +1020,7 @@ void Experiment::add_action_to_all_conditions(ElementKey routineKey, ComponentKe
 void Experiment::add_action_to_all_routines_conditions(ComponentKey componentKey,
     std::optional<ConfigKey> configKey, bool fillUpdateTimeline, bool fillVisibilityTimeline){
 
-    auto component = m_compM->get_component(componentKey);
+    auto component = compM.get_component(componentKey);
     if(component == nullptr){
         return;
     }
@@ -1047,7 +1047,7 @@ void Experiment::add_action_to_all_routines_conditions(ComponentKey componentKey
 void Experiment::modify_action(ElementKey routineKey, ConditionKey conditionKey, ComponentKey componentKey,
     bool changeConfig, bool changeUpdateTimeline, bool changeVisibilityTimeline, ConfigKey configKey, bool fillUpdateTimeline, bool fillVisibilityTimeline){
 
-    auto component = m_compM->get_component(componentKey);
+    auto component = compM.get_component(componentKey);
     if(component == nullptr){
         return;
     }
@@ -1094,7 +1094,7 @@ void Experiment::modify_action_to_all_conditions(ElementKey routineKey, Componen
     bool changeConfig, bool changeUpdateTimeline, bool changeVisibilityTimeline, ConfigKey configKey, bool fillUpdateTimeline, bool fillVisibilityTimeline){
 
 
-    auto component = m_compM->get_component(componentKey);
+    auto component = compM.get_component(componentKey);
     if(component == nullptr){
         return;
     }
@@ -1140,7 +1140,7 @@ void Experiment::modify_action_to_all_conditions(ElementKey routineKey, Componen
 void Experiment::modify_action_to_all_routines_conditions(ComponentKey componentKey,
     bool changeConfig, bool changeUpdateTimeline, bool changeVisibilityTimeline, ConfigKey configKey, bool fillUpdateTimeline, bool fillVisibilityTimeline){
 
-    auto component = m_compM->get_component(componentKey);
+    auto component = compM.get_component(componentKey);
     if(component == nullptr){
         return;
     }
@@ -1777,10 +1777,10 @@ void Experiment::update_conditions(){
 
 void Experiment::update_component_position(ComponentKey componentKey, RowId id){
 
-    if(const auto compoInfo = m_compM->get_component_and_position(componentKey); compoInfo.second != nullptr){
-        auto compoToMove = std::move(m_compM->components[compoInfo.first]);
-        m_compM->components.erase(m_compM->components.begin() + static_cast<std_v1<ComponentUP>::difference_type>(compoInfo.first));
-        m_compM->components.insert(m_compM->components.begin() + id.v, std::move(compoToMove));
+    if(const auto compoInfo = compM.get_component_and_position(componentKey); compoInfo.second != nullptr){
+        auto compoToMove = std::move(compM.components[compoInfo.first]);
+        compM.components.erase(compM.components.begin() + static_cast<std_v1<ComponentUP>::difference_type>(compoInfo.first));
+        compM.components.insert(compM.components.begin() + id.v, std::move(compoToMove));
         add_to_update_flag(UpdateComponents);
     }
 }
@@ -1808,10 +1808,10 @@ void Experiment::remove_component(ComponentKey componentKey){
 //            }
         }
 
-        for(size_t id = 0; id < m_compM->components.size(); ++id){
-            if(m_compM->components[id]->key() == componentToRemove->key()){
-                QtLogger::message(QSL("[EXP] Remove ") % m_compM->components[id]->to_string());
-                m_compM->components.erase(m_compM->components.begin() + static_cast<int>(id));
+        for(size_t id = 0; id < compM.components.size(); ++id){
+            if(compM.components[id]->key() == componentToRemove->key()){
+                QtLogger::message(QSL("[EXP] Remove ") % compM.components[id]->to_string());
+                compM.components.erase(compM.components.begin() + static_cast<int>(id));
                 break;
             }
         }
@@ -1822,12 +1822,12 @@ void Experiment::remove_component(ComponentKey componentKey){
 
 void Experiment::duplicate_component(ComponentKey componentKey){
 
-    if(const auto compoInfo = m_compM->get_component_and_position(componentKey); compoInfo.second != nullptr){
+    if(const auto compoInfo = compM.get_component_and_position(componentKey); compoInfo.second != nullptr){
         if(Component::get_unicity(compoInfo.second->type)){
             QtLogger::error(QSL("[EXP] You can only have one component of type [") % from_view(Component::get_type_name(compoInfo.second->type)) % QSL("] in the experiment."));
         }else{
-            m_compM->components.insert(
-                m_compM->components.begin() + static_cast<std_v1<ComponentUP>::difference_type>(compoInfo.first + 1),
+            compM.components.insert(
+                compM.components.begin() + static_cast<std_v1<ComponentUP>::difference_type>(compoInfo.first + 1),
                 Component::copy_with_new_element_id(*compoInfo.second, compoInfo.second->name() % QSL("(copy)"))
             );
             add_to_update_flag(UpdateComponents | UpdateRoutines);
@@ -1836,29 +1836,29 @@ void Experiment::duplicate_component(ComponentKey componentKey){
 }
 
 void Experiment::add_component(Component::Type type, RowId id){
-    m_compM->insert_new_component(type, id);
+    compM.insert_new_component(type, id);
     add_to_update_flag(UpdateComponents | UpdateRoutines);
 }
 
 void Experiment::update_component_name(ComponentKey componentKey, QString name){
 
-    if(m_compM->update_component_name(componentKey, name)){
+    if(compM.update_component_name(componentKey, name)){
         add_to_update_flag(UpdateComponents | UpdateRoutines);
     }
 }
 
 void Experiment::sort_components_by_category(){
-    m_compM->sort_by_category();
+    compM.sort_by_category();
     add_to_update_flag(UpdateComponents);
 }
 
 void Experiment::sort_components_by_type(){
-    m_compM->sort_by_type();
+    compM.sort_by_type();
     add_to_update_flag(UpdateComponents);
 }
 
 void Experiment::sort_components_by_name(){
-    m_compM->sort_by_name();
+    compM.sort_by_name();
     add_to_update_flag(UpdateComponents);
 }
 
@@ -2047,7 +2047,7 @@ void Experiment::update_reload_resource_code(int reloadCode){
 }
 
 Component *Experiment::get_component(ComponentKey componentKey) const{
-    return m_compM->get_component(componentKey);
+    return compM.get_component(componentKey);
 }
 
 Config *Experiment::get_config(ComponentKey componentKey, ConfigKey configKey) const{
@@ -2146,7 +2146,7 @@ void Experiment::clean_experiment(){
     loops.clear();
 
     // remove components
-    m_compM->clean_components();
+    compM.clean_components();
 
     // reset settings
     m_settings.reset();

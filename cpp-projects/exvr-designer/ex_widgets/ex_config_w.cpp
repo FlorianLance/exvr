@@ -25,7 +25,7 @@
 #include "ex_config_w.hpp"
 
 // local
-#include "data/components_manager.hpp"
+#include "experiment/experiment.hpp"
 
 using namespace tool::ex;
 
@@ -81,8 +81,7 @@ ExConfigW::ExConfigW(QString name) : ExItemW<QFrame>(UiType::Component_config, n
         m_currentComponentKey.v = -1;
         if(m_componentNames->currentIndex() > 0){
             const size_t id = to_unsigned(m_componentNames->currentIndex()-1);
-            ComponentsManager *componentsM = ComponentsManager::get();
-            m_currentComponentKey.v = componentsM->components[id]->key();
+            m_currentComponentKey.v = ExperimentManager::get()->current()->compM.components[id]->key();
         }
         update_configs_list_widget();
         trigger_ui_change();
@@ -94,8 +93,7 @@ ExConfigW::ExConfigW(QString name) : ExItemW<QFrame>(UiType::Component_config, n
         if(m_currentComponentKey.v != -1){
             if(m_configNames->currentIndex() > 0){
                 const size_t id = to_unsigned(m_configNames->currentIndex()-1);
-                ComponentsManager *componentsM = ComponentsManager::get();
-                if(auto currentComponent = componentsM->get_component(m_currentComponentKey); currentComponent != nullptr){
+                if(auto currentComponent = ExperimentManager::get()->current()->compM.get_component(m_currentComponentKey); currentComponent != nullptr){
                     m_currentConfigKey.v = currentComponent->configs[id]->key();
                 }
             }
@@ -188,7 +186,7 @@ void ExConfigW::update_components_list_widget(){
     m_componentNames->blockSignals(true);
 
     // retrieve components names list
-    ComponentsManager *componentsM = ComponentsManager::get();
+    ComponentsManager *componentsM = &ExperimentManager::get()->current()->compM;
 
     bool rebuildList = false;
     if(m_componentNames->count() != static_cast<int>((componentsM->components.size()+1))){
@@ -246,7 +244,7 @@ void ExConfigW::update_configs_list_widget(){
 
     m_configNames->blockSignals(true);
 
-    ComponentsManager *componentsM = ComponentsManager::get();
+    ComponentsManager *componentsM = &ExperimentManager::get()->current()->compM;
 
     // check if no current component or no component
     if(m_currentComponentKey.v == -1 || m_componentNames->count() == 1){

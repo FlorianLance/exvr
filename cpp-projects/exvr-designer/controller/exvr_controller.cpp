@@ -24,12 +24,11 @@
 
 #include "exvr_controller.hpp"
 
-// Qt
-#include <QTime>
-#include <QStringBuilder>
+// qt-utility
+#include "qt_str.hpp"
+#include "widgets/list_widget.hpp"
 
 // local
-#include "qt_str.hpp"
 #include "utility/script_utility.hpp"
 
 // ui
@@ -85,14 +84,14 @@ ExVrController::ExVrController(const QString &nVersion, bool lncoComponents){
     // init scripting
     CSharpScript::initialize();
 
-
     Bench::disable_display();
 
     QtLogger::message("[CONTROLLER] Generate signals");
     GSignals::init();
 
     QtLogger::message("[CONTROLLER] Initialize experiment");
-    m_experiment = std::make_unique<Experiment>(nVersion);
+    ExperimentManager::init();
+    ExperimentManager::get()->init_current(nVersion);
 
     QtLogger::message("[CONTROLLER] Read XML manager");
     m_xmlManager = std::make_unique<XmlIoManager>(exp());
@@ -127,7 +126,7 @@ ExVrController::ExVrController(const QString &nVersion, bool lncoComponents){
 
     // update ui
     QtLogger::message("[CONTROLLER] Update UI from default experiment", false, true);
-    m_designerWindow->update_from_experiment(m_experiment.get(), UpdateAll);
+    m_designerWindow->update_from_experiment(exp(), UpdateAll);
     m_designerWindow->show();
 
     connect(&experimentUpdateTimer, &QTimer::timeout, this, &ExVrController::update_gui_from_experiment);
@@ -192,6 +191,10 @@ void ExVrController::close_exvr(){
         m_goToD->close();
         m_goToD = nullptr;
     }
+    if(m_importD != nullptr){
+        m_importD->close();
+        m_importD = nullptr;
+    }
 
 
     m_benchmarkD->close();
@@ -204,7 +207,7 @@ void ExVrController::close_exvr(){
 
     // clean
     QtLogger::message("[CONTROLLER] Destroy.");
-    m_experiment        = nullptr;
+    ExperimentManager::get()->clean();
     m_currentInstance   = nullptr;
     m_xmlManager        = nullptr;   
     m_expLauncher       = nullptr;
@@ -652,6 +655,195 @@ void ExVrController::show_component_informations_dialog(ComponentKey componentKe
     }
 }
 
+void ExVrController::show_import_dialog(){
+
+    QFileInfo fileInfo(exp()->states.currentExpfilePath);
+    QString parentDirPath = "";
+    if(fileInfo.exists()){
+        parentDirPath = fileInfo.absoluteDir().path();
+    }else{
+        parentDirPath = Paths::expDir;
+    }
+
+    QString path = QFileDialog::getOpenFileName(nullptr, "Experiment file to import", parentDirPath, "XML (*.xml)");
+    if(path.length() == 0){
+        return;
+    }
+
+    ExperimentManager::get()->init_imported(exp()->states.numVersion);
+    auto ie =ExperimentManager::get()->imported();
+    XmlIoManager xmlR(ie);
+    QtLogger::message("exp read");
+    if(!xmlR.load_experiment_file(path)){
+        QtLogger::error(QSL("Cannot load exp ") % path);
+        return;
+    }
+
+    // dialog
+    m_importD = std::make_unique<QDialog>();
+    m_importD->setWindowTitle(QSL("Import experiment sub-parts"));
+    m_importD->setModal(true);
+    m_importD->setLayout(new QVBoxLayout());
+
+    QTabWidget *tw = new QTabWidget();
+    m_importD->layout()->addWidget(tw);
+
+    std::map<int, std::map<int, QCheckBox*>> validatedConfigs;
+
+
+    ui::ListWidget *lwComponents = new ui::ListWidget();
+    lwComponents->set_margins(2,2,2,2,2);
+    tw->addTab(lwComponents, "Components");
+    for(const auto &component : ie->compM.components){
+        QtLogger::message(QSL("component ") %component->name());
+        auto compL = new QLabel(component->name() % QSL(" [") % from_view(Component::get_full_name(component->type)) % QSL("] ") % QSL("(") % QString::number(component->key()) % QSL(")"));
+        lwComponents->add_widget(compL);
+        for(const auto &config : component->configs){
+            auto configCb = new QCheckBox(config->name);
+            lwComponents->add_widget(ui::F::gen(ui::L::HB(),{ui::W::txt("\t"), configCb}, LStretch{true}, LMargins{false},QFrame::NoFrame));
+            validatedConfigs[component->key()][config->key()] = configCb;
+        }
+    }
+
+    auto pbValidate = new QPushButton("Import selection");
+    auto pbCancel = new QPushButton("Cancel");
+    m_importD->layout()->addWidget(ui::F::gen(ui::L::HB(),{pbValidate, pbCancel}, LStretch{true}, LMargins{false},QFrame::NoFrame));
+    m_importD->show();
+
+    ExperimentManager::get()->clean_imported();
+
+//    e.compo
+
+//    if(const auto component = exp()->get_component(componentKey); component != nullptr){
+
+//        std_v1<std::tuple<Routine*,std_v1<std::tuple<Condition*, Action*>>>> containingComponent;
+//        std_v1<std::tuple<Routine*,std_v1<Condition*>>> notContainingComponent;
+//        std::unordered_map<int, Config*> usedConfigs;
+//        std::unordered_map<int, Config*> notUsedConfigs;
+
+//        auto routines = exp()->get_elements_from_type<Routine>();
+//        for(const auto &routine : routines){
+
+//            if(routine->isARandomizer){
+//                continue;
+//            }
+
+//            std_v1<std::tuple<Condition*, Action*>> conditionsContainingComponent;
+//            std_v1<Condition*> conditionsNotContainingComponent;
+//            for(const auto& condition : routine->conditions){
+//                if(auto action = condition->get_action_from_component_key(componentKey, false); action != nullptr){
+//                    conditionsContainingComponent.emplace_back(std::make_tuple(condition.get(), action));
+//                    usedConfigs[action->config->key()] = action->config;
+//                }else{
+//                    conditionsNotContainingComponent.emplace_back(condition.get());
+//                }
+//            }
+
+//            if(conditionsContainingComponent.size() != 0){
+//                containingComponent.emplace_back(std::make_tuple(routine, conditionsContainingComponent));
+//            }else{
+//                notContainingComponent.emplace_back(std::make_tuple(routine, conditionsNotContainingComponent));
+//            }
+//        }
+
+//        for(const auto &config : component->configs){
+//            if(!usedConfigs.contains(config->key())){
+//                notUsedConfigs[config->key()] = config.get();
+//            }
+//        }
+
+
+
+
+//        QString txt = QSL("Component <b>") % component->name() % QSL("</b> of type <b>") % from_view(Component::get_type_name(component->type)) % QSL("</b> identified in the experiment flow:<br>");
+//        m_componentsInfoD->layout()->addWidget(new QLabel(txt));
+
+
+//        QTextBrowser *tbInside = new QTextBrowser();
+//        QString insideTxt;
+//        if(containingComponent.size() > 0){
+//            for(const auto& [routine, conditionsActions] : containingComponent){
+//                if(conditionsActions.size() == 1){
+//                    insideTxt += QSL("Routine: **[") % routine->name() % QSL("]** with **") % QString::number(conditionsActions.size()) % QSL("** condition referencing it.<br />");
+//                }else{
+//                    insideTxt += QSL("Routine: **[") % routine->name() % QSL("]** with **") % QString::number(conditionsActions.size()) % QSL("** conditions referencing it.<br />");
+//                }
+//                if(conditionsActions.size() > 0){
+//                    for(const auto &conditionAction : conditionsActions){
+//                        auto condition = std::get<0>(conditionAction);
+//                        auto action    = std::get<1>(conditionAction);
+//                        insideTxt += QSL(" * Condition **[") % condition->name % QSL("]** with config **[") % action->config->name % QSL("]**<br />");
+//                    }
+//                }
+//                insideTxt += "<br />";
+//            }
+//        }
+//        tbInside->setMarkdown(insideTxt);
+
+//        QTextBrowser *tbNotInside = new QTextBrowser();
+//        QString notInsideTxt;
+//        if(notContainingComponent.size() > 0){
+//            for(const auto& [routine, conditions] : notContainingComponent){
+//                if(conditions.size() == routine->conditions.size()){
+//                    notInsideTxt += QSL("Routine: **[") % routine->name() % QSL("]** with no condition referencing it.<br />");
+//                }else{
+//                    notInsideTxt += QSL("Routine: **[") % routine->name() % QSL("]** with **") % QString::number(conditions.size()) % QSL("** conditions not referencing it.<br />");
+//                }
+
+//                for(const auto &condition : conditions){
+//                    notInsideTxt += QSL(" * Condition **[") % condition->name % QSL("]**<br />");
+//                }
+//                notInsideTxt += "<br />";
+//            }
+//        }
+//        tbNotInside->setMarkdown(notInsideTxt);
+
+//        QTextBrowser *tbConfigsUsed = new QTextBrowser();
+//        QString configsUsedTxt;
+//        if(usedConfigs.size() > 0){
+//            for(const auto &config : usedConfigs){
+//                configsUsedTxt += QSL("Config: **[") % config.second->name % QSL("]** used. <br />");
+//            }
+//        }
+//        tbConfigsUsed->setMarkdown(configsUsedTxt);
+
+//        QTextBrowser *tbConfigsNotUsed = new QTextBrowser();
+//        QString confisNotUsedTxt;
+//        if(notUsedConfigs.size() > 0){
+//            for(const auto &config : notUsedConfigs){
+//                confisNotUsedTxt += QSL("Config: **[") % config.second->name % QSL("]** not used. <br />");
+//            }
+//        }
+//        tbConfigsNotUsed->setMarkdown(confisNotUsedTxt);
+
+
+
+//        QString txtInside = containingComponent.size() > 1 ?
+//                                (QSL("Inside ") % QString::number(containingComponent.size()) % QSL(" routines.")) :
+//                                (QSL("Inside ") % QString::number(containingComponent.size()) % QSL(" routine."));
+
+//        QString txtNotInside = containingComponent.size() > 1 ?
+//                                   (QSL("Not inside ") % QString::number(notContainingComponent.size()) % QSL(" routines.")) :
+//                                   (QSL("Not inside ") % QString::number(notContainingComponent.size()) % QSL(" routine."));
+
+//        QString txtConfigsUsed = usedConfigs.size() > 1 ?
+//                                     (QSL("Has ") % QString::number(usedConfigs.size()) % QSL(" configs used.")) :
+//                                     (QSL("Has ") % QString::number(usedConfigs.size()) % QSL(" config used."));
+
+//        QString txtConfigsNotUsed = notUsedConfigs.size() > 1 ?
+//                                        (QSL("Has ") % QString::number(notUsedConfigs.size()) % QSL(" configs not used.")) :
+//                                        (QSL("Has ") % QString::number(notUsedConfigs.size()) % QSL(" config not used."));
+
+//        tw->addTab(tbInside,            txtInside);
+//        tw->addTab(tbNotInside,         txtNotInside);
+//        tw->addTab(tbConfigsUsed,       txtConfigsUsed);
+//        tw->addTab(tbConfigsNotUsed,    txtConfigsNotUsed);
+
+//        m_componentsInfoD->show();
+//    }
+
+}
+
 void ExVrController::update_gui_from_experiment(){
 
     Bench::start("[Update full UI]"sv, false);
@@ -989,7 +1181,7 @@ void ExVrController::start_specific_instance(){
         QtLogger::error(QSL("Are you sure this instance has been generated with the current experiment?"));
         return;
     }
-    m_experiment->set_instance_name(m_currentInstance->fileName);
+    exp()->set_instance_name(m_currentInstance->fileName);
 
     // also save to temp for allowing launcher to reload the last one
     xml()->save_instance_file(*m_currentInstance, Paths::tempInstance);
@@ -1176,13 +1368,14 @@ void ExVrController::generate_main_window_connections(){
         exp()->new_experiment();
     });
     connect(ui(), &DMW::play_delay_experiment_signal,   this, &ExVrController::show_play_with_delay_dialog);
+    connect(ui(), &DMW::import_experiment_subparts_signal,          this, &ExVrController::show_import_dialog);
     // -> xml manager
     connect(ui(), &DMW::save_experiment_signal,                     xml(), &XMLM::save_experiment);
     connect(ui(), &DMW::save_experiment_as_signal,                  xml(), &XMLM::save_experiment_as);
-    connect(ui(), &DMW::export_experiment_as_signal,                xml(), &XMLM::export_experiment_to);
+    connect(ui(), &DMW::export_experiment_as_signal,                xml(), &XMLM::export_experiment_to);    
     connect(ui(), &DMW::open_temp_experiment_file_signal,           xml(), &XMLM::open_temp_experiment_file);
     connect(ui(), &DMW::open_experiment_directory_signal,           xml(), &XMLM::open_experiment_directory);
-    connect(ui(), &DMW::open_temp_instance_file_signal,             xml(), &XMLM::open_temp_instance_file);
+    connect(ui(), &DMW::open_temp_instance_file_signal,             xml(), &XMLM::open_temp_instance_file);    
 
     connect(ui(), &DMW::load_experiment_signal,        this, [&](){
 
