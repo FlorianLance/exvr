@@ -233,14 +233,12 @@ void FlowSequence::check_click_on_elements(QPoint clickPos) noexcept{
 
     // check in elements
     if(auto selectedElement = mouse_on_element(clickPos); selectedElement != nullptr){
-        qDebug() << "element";
         emit select_element_signal(selectedElement->key);
         return;
     }
 
     // check in loops
     if(auto selectedLoop = mouse_on_loop(clickPos); selectedLoop != nullptr){
-        qDebug() << "loop";
         emit select_element_signal(selectedLoop->key);
         return;
     }

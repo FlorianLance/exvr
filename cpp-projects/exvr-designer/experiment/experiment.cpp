@@ -1044,6 +1044,10 @@ void Experiment::add_action_to_all_routines_conditions(ComponentKey componentKey
     add_to_update_flag(UpdateRoutines);
 }
 
+void Experiment::insert_action_to(ComponentKey componentKey, ConfigKey configKey, std::vector<std::pair<ElementKey, ConditionKey>> conditions, bool update, bool visibility){
+    QtLogger::message("insert_action_to");
+}
+
 void Experiment::modify_action(ElementKey routineKey, ConditionKey conditionKey, ComponentKey componentKey,
     bool changeConfig, bool changeUpdateTimeline, bool changeVisibilityTimeline, ConfigKey configKey, bool fillUpdateTimeline, bool fillVisibilityTimeline){
 

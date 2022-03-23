@@ -162,6 +162,7 @@ HEADERS += \
     widgets/connections/data_models/connectors/resources_ndm.hpp \
     widgets/designer_window.hpp\
     ## elements
+    widgets/dialogs/add_component_to_conditions_dialog.hpp \
     widgets/dialogs/benchmark_dialog.hpp \
     widgets/dialogs/copy_to_conditions_dialog.hpp \
     widgets/elements/flow_diagram_widget.hpp \
@@ -406,6 +407,7 @@ SOURCES += \
     widgets/components/config_parameters/python_script_pw.cpp \
     widgets/components/config_parameters/slider_ui_pw.cpp \
     ## dialogs
+    widgets/dialogs/add_component_to_conditions_dialog.cpp \
     widgets/dialogs/benchmark_dialog.cpp \
     widgets/dialogs/copy_to_conditions_dialog.cpp \
     widgets/dialogs/generate_instances_dialog.cpp \
@@ -471,6 +473,7 @@ SOURCES += \
 FORMS += \
     # elements
     forms/about_dialog.ui \
+    forms/conditions_selecter.ui \
     forms/copy_to_conditions.ui \
     forms/routine.ui \
     forms/isi.ui \

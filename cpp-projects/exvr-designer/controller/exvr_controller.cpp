@@ -33,6 +33,7 @@
 
 // ui
 #include "ui_about_dialog.h"
+#include "ui_conditions_selecter.h"
 
 using namespace tool::ex;
 
@@ -67,6 +68,8 @@ ExVrController::ExVrController(const QString &nVersion, bool lncoComponents){
     qRegisterMetaType<tool::ex::ExpLauncherState>("tool::ex::ExpLauncherState");
     qRegisterMetaType<tool::ex::ExpState>("tool::ex::ExpState");
     qRegisterMetaType<tool::ex::Settings>("tool::ex::Settings");
+    qRegisterMetaType<std::vector<std::pair<tool::ex::ElementKey, tool::ex::ConditionKey>>>("std::vector<std::pair<tool::ex::ElementKey, tool::ex::ConditionKey>>");
+
 
     qRegisterMetaType<QStringView>("QStringView");
 
@@ -75,7 +78,7 @@ ExVrController::ExVrController(const QString &nVersion, bool lncoComponents){
     qRegisterMetaType<QProcess::ExitStatus>("QProcess::ExitStatus");
 
     // init logging system
-    QtLogger::init(QApplication::applicationDirPath() % QSL("/logs"), QSL("designer_log.html"));
+    QtLogger::init(QApplication::applicationDirPath() % QSL("/logs"), QSL("designer_log.html"), true);
     QtLogger::set_html_ui_type_message_color(QtLogger::MessageType::normal,  QColor(189,189,189));
     QtLogger::set_html_ui_type_message_color(QtLogger::MessageType::warning, QColor(243, 158, 3));
     QtLogger::set_html_ui_type_message_color(QtLogger::MessageType::error,   QColor(244,4,4));
@@ -194,6 +197,10 @@ void ExVrController::close_exvr(){
     if(m_importD != nullptr){
         m_importD->close();
         m_importD = nullptr;
+    }
+    if(addComponentToCondsD != nullptr){
+        addComponentToCondsD->close();
+        addComponentToCondsD = nullptr;
     }
 
 
@@ -918,86 +925,12 @@ void ExVrController::update_gui_from_experiment(){
 
 void ExVrController::show_add_action_detailed_dialog(ComponentKey componentKey){
 
-    modalDialog = std::make_unique<QDialog>();
-    modalDialog->setParent(ui());
-    modalDialog->setModal(true);
-    modalDialog->setWindowTitle("Specify details for adding component:");
-    modalDialog->setLayout(new QVBoxLayout());
-    modalDialog->setWindowFlags(Qt::Dialog | Qt::WindowTitleHint);
-    modalDialog->layout()->setSizeConstraint( QLayout::SetFixedSize );
+    addComponentToCondsD = std::make_unique<AddComponentToConditionsDialog>(componentKey);
 
-    auto rbCurrentCondition      = new QRadioButton("... current condition of selected routine");
-    auto rbAllRoutineConditions  = new QRadioButton("... all conditions of selected routine");
-    auto rbAllRoutinesConditions = new QRadioButton("... all conditions of every routine");
-    rbCurrentCondition->setChecked(true);
-    modalDialog->layout()->addWidget(ui::F::gen(ui::L::VB(),
-        {ui::W::txt("Add to ..."), rbCurrentCondition, rbAllRoutineConditions, rbAllRoutinesConditions}, LStretch{true}, LMargins{true}, QFrame::NoFrame));
+    // connection
+    // ...
 
-    modalDialog->layout()->addWidget(ui::W::horizontal_line());
-
-    auto component = exp()->get_component(componentKey);
-
-    auto cbConfigs = new QComboBox();
-    cbConfigs->addItems(component->get_configs_name());
-    modalDialog->layout()->addWidget(ui::F::gen(ui::L::HB(),
-        {ui::W::txt("Select config to use:"), cbConfigs}, LStretch{true}, LMargins{true}, QFrame::NoFrame));
-
-    modalDialog->layout()->addWidget(ui::W::horizontal_line());
-
-    QRadioButton *rbFillU = nullptr;
-    QRadioButton *rbEmptyU = nullptr;
-    QRadioButton *rbFillV = nullptr;
-    QRadioButton *rbEmptyV = nullptr;
-
-    auto to = Component::get_timeline_opt(component->type);
-    if (to == Component::TimelineO::Both || to == Component::TimelineO::Update){
-        modalDialog->layout()->addWidget(ui::F::gen(ui::L::HB(),
-                                                            {ui::W::txt("Update timeline: "), rbFillU = new QRadioButton("Fill"), rbEmptyU = new QRadioButton("Empty")}, LStretch{true}, LMargins{true}, QFrame::NoFrame));
-        rbFillU->setChecked(true);
-    }
-    if (to == Component::TimelineO::Both || to == Component::TimelineO::Visibility){
-        modalDialog->layout()->addWidget(ui::F::gen(ui::L::HB(),
-                                                            {ui::W::txt("Visibility timeline: "), rbFillV = new QRadioButton("Fill"), rbEmptyV = new QRadioButton("Empty")}, LStretch{true}, LMargins{true}, QFrame::NoFrame));
-            rbFillV->setChecked(true);
-    }
-
-    modalDialog->layout()->addWidget(ui::W::horizontal_line());
-
-    auto pbOk  = new QPushButton("Ok");
-    auto pbCancel = new QPushButton("Cancel");
-    modalDialog->layout()->addWidget(ui::F::gen(ui::L::HB(), {pbOk, pbCancel}, LStretch{true}, LMargins{true}, QFrame::NoFrame));
-    ui::L::stretch(modalDialog->layout());
-
-    connect(pbOk,   &QPushButton::clicked, this, [=]{
-        bool fillU = rbFillU == nullptr ? false : rbFillU->isChecked();
-        bool fillV = rbFillV == nullptr ? false : rbFillV->isChecked();
-
-        const auto idConfig = cbConfigs->currentIndex();
-        if(rbCurrentCondition->isChecked()){
-            if(auto cRoutineW = ui()->routines_manager()->current_routine_widget(); cRoutineW != nullptr){
-                if(auto cCondW = cRoutineW->current_condition_widget(); cCondW != nullptr){
-                    exp()->add_action(cRoutineW->routine_key(), cCondW->condition_key(), componentKey,
-                        ConfigKey{component->configs[idConfig]->key()}, fillU, fillV);
-                }
-            }
-        }else if(rbAllRoutineConditions->isChecked()){
-            if(auto cRoutineW = ui()->routines_manager()->current_routine_widget(); cRoutineW != nullptr){
-                exp()->add_action_to_all_conditions(cRoutineW->routine_key(), componentKey,
-                    ConfigKey{component->configs[idConfig]->key()}, fillU, fillV);
-            }
-        }else{
-            exp()->add_action_to_all_routines_conditions(componentKey,
-            ConfigKey{component->configs[idConfig]->key()}, fillU, fillV);
-        }
-    });
-    connect(pbOk,     &QPushButton::clicked, modalDialog.get(), &QDialog::accept);
-    connect(pbCancel, &QPushButton::clicked, modalDialog.get(), &QDialog::reject);
-    connect(modalDialog.get(), &QDialog::finished, this, [&]{
-        modalDialog = nullptr;
-    });
-
-    ui::L::stretch(modalDialog->layout());
-    modalDialog->open();
+    addComponentToCondsD->show();
 }
 
 void ExVrController::show_modify_action_detailed_dialog(ComponentKey componentKey){
@@ -1112,7 +1045,8 @@ void ExVrController::show_copy_to_conditions_dialog(ElementKey routineKey, Condi
         conditionKey,
         exp()->get_elements_from_type<Routine>()
     );
-    m_copyToCondD.open();
+//    m_copyToCondD.open();
+    m_copyToCondD.show();
 }
 
 void ExVrController::show_play_with_delay_dialog(){
@@ -1299,6 +1233,8 @@ void ExVrController::generate_global_signals_connections(){
     connect(s, &GSignals::exp_launcher_state_updated_signal,          exp(), &EXP::update_exp_launcher_state);
     connect(s, &GSignals::connector_info_update_signal,               exp(), &EXP::update_connector_dialog_with_info);
     connect(s, &GSignals::component_info_update_signal,               exp(), &EXP::update_component_dialog_with_info);
+    connect(s, &GSignals::insert_action_to_signal,                    exp(), &EXP::insert_action_to);
+
     connect(s, &GSignals::remove_action_from_all_routines_conditions_signal, exp(), &EXP::remove_action_from_all_routines_conditions);
     connect(s, &GSignals::insert_action_to_all_routines_conditions_signal,   exp(), &EXP::add_action_to_all_routines_conditions);
     connect(s, &GSignals::delete_action_signal, this, [&](ElementKey routineKey, ConditionKey conditionKey, ActionKey actionKey){

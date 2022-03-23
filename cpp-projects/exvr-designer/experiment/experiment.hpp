@@ -246,7 +246,7 @@ public slots:
         std::optional<ConfigKey> ConfigKey, bool fillUpdateTimeline, bool fillVisibilityTimeline);
     void add_action_to_all_routines_conditions(ComponentKey componentKey,
         std::optional<ConfigKey> ConfigKey, bool fillUpdateTimeline, bool fillVisibilityTimeline);
-
+    void insert_action_to(ComponentKey componentKey, ConfigKey configKey, std::vector<std::pair<ElementKey,ConditionKey>> conditions, bool update, bool visibility);
     void modify_action(ElementKey routineKey, ConditionKey conditionKey, ComponentKey componentKey,
         bool changeConfig, bool changeUpdateTimeline, bool changeVisibilityTimeline,
         ConfigKey ConfigKey, bool fillUpdateTimeline, bool fillVisibilityTimeline);

@@ -111,6 +111,7 @@ signals:
     void insert_action_to_selected_routine_signal(tool::ex::ComponentKey componentKey);
     void insert_action_to_all_selected_routine_conditions_signal(ComponentKey componentKey);
     void insert_action_to_all_routines_conditions_signal(ComponentKey componentKey, std::optional<tool::ex::ConfigKey> ConfigKey, bool fillUpdate, bool fillVisibility);
+    void insert_action_to_signal(tool::ex::ComponentKey componentKey, tool::ex::ConfigKey configKey, std::vector<std::pair<tool::ex::ElementKey,tool::ex::ConditionKey>> conditions, bool update, bool visibility);
     void insert_action_with_details_signal(tool::ex::ComponentKey componentKey);
     void modify_action_with_details_signal(tool::ex::ComponentKey componentKey);
     void remove_action_from_all_selected_routine_conditions_signal(tool::ex::ComponentKey componentKey);

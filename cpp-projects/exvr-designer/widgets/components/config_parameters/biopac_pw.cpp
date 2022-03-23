@@ -74,6 +74,7 @@ struct BiopacInitConfigParametersW::Impl{
     ExSpinBoxW maxNbSecondsToSave{"max_nb_seconds_to_save"};
     ExResourceW presetFile{"preset_xml_file"};
     ExComponentW logger{"logger"};
+    ExComboBoxIndexW writeMode{"write_mode"};
 };
 
 BiopacInitConfigParametersW::BiopacInitConfigParametersW():  ConfigParametersW(), m_p(std::make_unique<Impl>()){}
@@ -83,6 +84,8 @@ void BiopacInitConfigParametersW::insert_widgets(){
     add_widget(ui::F::gen(ui::L::HB(),{ui::W::txt("Device:"), m_p->device(), ui::W::txt("Connection:"),m_p->connection(), ui::W::txt("Serial MP150:"), m_p->serialNumber()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
     add_widget(ui::F::gen(ui::L::HB(),{ui::W::txt("Sampling rate (Hz):"), m_p->samplingRate(), ui::W::txt("Nb samples per call:"), m_p->samplesPerCall()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
     add_widget(ui::F::gen(ui::L::HB(),{ui::W::txt("Read digital mode:"), m_p->readIoMode(), ui::W::txt("Max number seconds to save:"), m_p->maxNbSecondsToSave()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
+    add_widget(ui::F::gen(ui::L::HB(),{ui::W::txt("Write when: "), m_p->writeMode()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
+
     add_widget(ui::F::gen(ui::L::HB(),{m_p->logger()}, LStretch{false}, LMargins{false},QFrame::NoFrame));
     add_widget(ui::F::gen(ui::L::HB(),{m_p->presetFile()}, LStretch{false}, LMargins{false},QFrame::NoFrame));
 
@@ -112,6 +115,7 @@ void BiopacInitConfigParametersW::insert_widgets(){
 void BiopacInitConfigParametersW::init_and_register_widgets(){
 
     add_input_ui(m_p->device.init_widget({"MP36","MP150","MP160"}));
+    add_input_ui(m_p->writeMode.init_widget({"End of routine","End of experiment"}));
     add_input_ui(m_p->connection.init_widget({"USB","UDP"}));
     add_input_ui(m_p->serialNumber.init_widget("AUTO"));
     add_input_ui(m_p->readIoMode.init_widget({"DISABLED", "LOW_BYTES", "HIGHT_BYTES"},0));

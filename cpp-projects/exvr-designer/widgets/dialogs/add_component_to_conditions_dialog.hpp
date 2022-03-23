@@ -22,43 +22,41 @@
 ** SOFTWARE.                                                                      **
 ************************************************************************************/
 
+#pragma once
+
 
 // Qt
-#include <QApplication>
-#include <QSplashScreen>
+#include <QDialog>
 
-// base
-#include "utility/format.hpp"
+// qt-utility
+#include "data/id_key.hpp"
+#include "widgets/list_widget.hpp"
 
 // local
-#include "controller/exvr_controller.hpp"
+#include "ui_conditions_selecter.h"
 
-using namespace tool::ex;
+namespace tool::ex {
 
-int main(int argc, char *argv[]){
+class AddComponentToConditionsDialog : public QDialog{
 
-    // build parameters
-    const QString numVersion = "1.0a26";
-    bool lncoComponents = true;
+    Q_OBJECT
 
-    // compiler check
-    std::cout << tool::fmt("Start ExVR-designer v{}\n", numVersion.toStdString()); // c++20 check
+public :
 
-    // build app
-    QApplication a(argc, argv);
+    AddComponentToConditionsDialog(ComponentKey componentKey);
 
-    QPixmap pixmap(":/splash/ex_vr_splash");
-    QSplashScreen splash(pixmap, Qt::WindowStaysOnTopHint);
-    splash.show();
+private:
 
-    tool::ex::Paths::initialize_paths(QApplication::applicationDirPath());
-    tool::ex::ExVrController controller(numVersion, lncoComponents);
-    QCoreApplication::instance()->installEventFilter(&controller);
+    void update_selection_number();
 
-    QTimer::singleShot(1000, &splash, &QWidget::close);
+    Ui_ConditionsSelecter condSelUi;
+    QRadioButton *rbFillU = nullptr;
+    QRadioButton *rbEmptyU = nullptr;
+    QRadioButton *rbFillV = nullptr;
+    QRadioButton *rbEmptyV = nullptr;
+    QComboBox *cbConfigs = nullptr;
+    QLabel *laApplyTo = nullptr;
+    std::vector<std::pair<ElementKey,std::unique_ptr<ui::ListWidget>>> conditionsPerRoutines;
+};
 
-    int ret = a.exec();
-    std::cout << "Quit with: " << ret << "\n";
-    return ret;
 }
-

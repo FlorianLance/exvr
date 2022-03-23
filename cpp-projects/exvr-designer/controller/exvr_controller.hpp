@@ -38,10 +38,12 @@
 #include "experiment/global_signals.hpp"
 #include "widgets/designer_window.hpp"
 #include "widgets/dialogs/copy_to_conditions_dialog.hpp"
+#include "widgets/dialogs/add_component_to_conditions_dialog.hpp"
 #include "widgets/dialogs/benchmark_dialog.hpp"
 #include "IO/xml_io_manager.hpp"
 #include "resources/resources_manager.hpp"
 #include "ui_copy_to_conditions.h"
+
 
 
 namespace tool::ex {
@@ -49,20 +51,6 @@ namespace tool::ex {
 class ExVrController : public QObject{
 
     Q_OBJECT
-
-//    template<typename EnumType>
-//    QString ToString(const EnumType& enumValue)
-//    {
-//        const char* enumName = qt_getEnumName(enumValue);
-//        const QMetaObject* metaObject = qt_getEnumMetaObject(enumValue);
-//        if (metaObject)
-//        {
-//            const int enumIndex = metaObject->indexOfEnumerator(enumName);
-//            return QString("%1::%2::%3").arg(metaObject->className(), enumName, metaObject->enumerator(enumIndex).valueToKey(enumValue));
-//        }
-
-//        return QString("%1::%2").arg(enumName).arg(static_cast<int>(enumValue));
-//    }
 
 public :
 
@@ -167,6 +155,7 @@ private :
     GenerateInstancesDialog m_instancesD;
     // ## modal
     std::unique_ptr<QDialog> modalDialog = nullptr;
+    std::unique_ptr<AddComponentToConditionsDialog> addComponentToCondsD = nullptr;
     CopyToConditionDialog m_copyToCondD;
     SettingsDialog m_settingsD;
 
