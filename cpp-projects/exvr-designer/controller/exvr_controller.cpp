@@ -223,51 +223,6 @@ void ExVrController::close_exvr(){
     QtLogger::clean();
 }
 
-void ExVrController::show_generate_instances_dialog(){
-
-    m_instancesD.show_dialog();
-
-    if(m_instancesD.directoryPath.size() > 0){
-
-        exp()->update_randomization_seed(m_instancesD.randomSeed);
-
-        if(m_instancesD.useBaseName){
-            for(int ii = 0; ii < m_instancesD.nbInstances; ++ii){
-                auto instance = Instance::generate_from_full_experiment(&exp()->randomizer, *exp(), ii);
-                if(!instance){
-                    return;
-                }
-
-                const QString instanceFileName =
-                        m_instancesD.directoryPath % QSL("/") %
-                        m_instancesD.baseName %
-                        QString::number(ii+m_instancesD.startId) % QSL(".xml");
-
-                if(!xml()->save_instance_file(*instance, instanceFileName)){
-                    return;
-                }
-                QtLogger::message(QSL("[CONTROLLER] Instance [") %  instanceFileName % QSL("] generated."));
-            }
-        }else if(m_instancesD.useManual){
-
-            for(int ii = 0; ii < m_instancesD.manualNames.size(); ++ii){
-
-                auto instance = Instance::generate_from_full_experiment(&exp()->randomizer, *exp(), ii);
-                if(!instance){
-                    return;
-                }
-
-                const QString instanceFileName =
-                        m_instancesD.directoryPath % QSL("/") %
-                        m_instancesD.manualNames[ii] % QSL(".xml");
-                if(!xml()->save_instance_file(*instance, instanceFileName)){
-                    return;
-                }
-                QtLogger::message(QSL("[CONTROLLER] Instance [") %  instanceFileName % QSL("] generated."));
-            }
-        }
-    }
-}
 
 void ExVrController::save_full_exp_with_default_instance(){
 
@@ -342,6 +297,51 @@ void ExVrController::go_to_current_specific_instance_element(){
                 return;
             }
             ++idOrder;
+        }
+    }
+}
+
+void ExVrController::generate_instances(QString directoryPath, unsigned int seed, bool manual, int nbInstances, int startId, QString baseName, QStringList manualNames){
+
+    if(directoryPath.size() > 0){
+
+        exp()->update_randomization_seed(seed);
+
+        if(!manual){
+            for(int ii = 0; ii < nbInstances; ++ii){
+
+                auto instance = Instance::generate_from_full_experiment(&exp()->randomizer, *exp(), ii);
+                if(!instance){
+                    return;
+                }
+
+                const QString instanceFileName =
+                    directoryPath % QSL("/") %
+                    baseName %
+                    QString::number(ii+startId) % QSL(".xml");
+
+                if(!xml()->save_instance_file(*instance, instanceFileName)){
+                    return;
+                }
+                QtLogger::message(QSL("[CONTROLLER] Instance [") %  instanceFileName % QSL("] generated."));
+            }
+        }else if(manual){
+
+            for(int ii = 0; ii < manualNames.size(); ++ii){
+
+                auto instance = Instance::generate_from_full_experiment(&exp()->randomizer, *exp(), ii);
+                if(!instance){
+                    return;
+                }
+
+                const QString instanceFileName =
+                    directoryPath % QSL("/") %
+                    manualNames[ii] % QSL(".xml");
+                if(!xml()->save_instance_file(*instance, instanceFileName)){
+                    return;
+                }
+                QtLogger::message(QSL("[CONTROLLER] Instance [") %  instanceFileName % QSL("] generated."));
+            }
         }
     }
 }
@@ -1129,6 +1129,7 @@ void ExVrController::generate_global_signals_connections(){
 
     auto s = GSignals::get();
 
+    connect(s, &GSignals::generate_instances_signal, this, &CON::generate_instances);
     // -> component infos
     connect(s, &GSignals::show_component_informations_signal,  this, &CON::show_component_informations_dialog);
     // -> about
@@ -1139,9 +1140,8 @@ void ExVrController::generate_global_signals_connections(){
     connect(s, &GSignals::show_resources_manager_dialog_signal, res(), &ResourcesManagerDialog::show_section);
     // -> settings
     connect(s, &GSignals::show_settings_dialog_signal, set(), &SettingsDialog::show);
-    // -> settings
+    // -> benchmark
     connect(s, &GSignals::show_benchmark_dialog_signal, benchmark(), &BenchmarkDialog::show_dialog);
-
     // -> documentation
     connect(s, &GSignals::display_component_help_window_signal, doc(), &DocumentationDialog::show_components_section);
     connect(s, &GSignals::show_documentation_signal,            doc(), &DocumentationDialog::show_window);
@@ -1158,6 +1158,15 @@ void ExVrController::generate_global_signals_connections(){
         }
     });
 
+    // -> components manager
+    auto componentsM = ui()->components_manager();
+    connect(s, &GSignals::show_component_custom_menu_signal,          componentsM, &COM::show_howering_component_custom_menu);
+    connect(s, &GSignals::toggle_component_parameters_signal,         componentsM, &COM::toggle_component_parameters_dialog);
+    connect(s, &GSignals::toggle_selection_component_signal,          componentsM, &COM::toggle_component_selection);
+    connect(s, &GSignals::enter_component_signal,                     componentsM, &COM::update_style);
+    connect(s, &GSignals::leave_component_signal,                     componentsM, &COM::update_style);
+
+    // -> experiment
     connect(s, &GSignals::sort_components_by_category_signal,         exp(), &EXP::sort_components_by_category);
     connect(s, &GSignals::sort_components_by_type_signal,             exp(), &EXP::sort_components_by_type);
     connect(s, &GSignals::sort_components_by_name_signal,             exp(), &EXP::sort_components_by_name);
@@ -1282,14 +1291,6 @@ void ExVrController::generate_global_signals_connections(){
             exp_launcher()->trigger_component_config_action(componentKey, configKey, actionName, initConfig);
         }
     });
-
-    // -> components manager
-    auto componentsM = ui()->components_manager();
-    connect(s, &GSignals::show_component_custom_menu_signal,          componentsM, &COM::show_howering_component_custom_menu);
-    connect(s, &GSignals::toggle_component_parameters_signal,         componentsM, &COM::toggle_component_parameters_dialog);
-    connect(s, &GSignals::toggle_selection_component_signal,          componentsM, &COM::toggle_component_selection);
-    connect(s, &GSignals::enter_component_signal,                     componentsM, &COM::update_style);
-    connect(s, &GSignals::leave_component_signal,                     componentsM, &COM::update_style);
 }
 
 void ExVrController::generate_main_window_connections(){
@@ -1305,6 +1306,11 @@ void ExVrController::generate_main_window_connections(){
     });
     connect(ui(), &DMW::play_delay_experiment_signal,   this, &ExVrController::show_play_with_delay_dialog);
     connect(ui(), &DMW::import_experiment_subparts_signal,          this, &ExVrController::show_import_dialog);
+
+    // -> instances dialog
+    connect(ui(), &DMW::generate_instances_signals,  &m_instancesD, &GenerateInstancesDialog::show_dialog);
+
+
     // -> xml manager
     connect(ui(), &DMW::save_experiment_signal,                     xml(), &XMLM::save_experiment);
     connect(ui(), &DMW::save_experiment_as_signal,                  xml(), &XMLM::save_experiment_as);
@@ -1352,8 +1358,7 @@ void ExVrController::generate_main_window_connections(){
     connect(ui(), &DMW::open_log_directory_signal,                  xml(), &XMLM::open_log_directory);
 
     // -> controller
-    connect(ui(), &DMW::close_exvr_signal,                                          this, &CON::close_exvr);
-    connect(ui(), &DMW::generate_instances_signals,                                 this, &CON::show_generate_instances_dialog);
+    connect(ui(), &DMW::close_exvr_signal,                                          this, &CON::close_exvr);    
     connect(ui(), &DMW::load_full_exp_wtih_default_instance_signal,                 this, &CON::load_full_exp_with_default_instance_to_unity);
     connect(ui(), &DMW::load_selected_routine_with_default_instance_signal,         this, &CON::load_selected_routine_with_default_instance_to_unity);
     connect(ui(), &DMW::load_from_selected_routine_with_default_instance_signal,    this, &CON::load_from_selected_routine_with_default_instance_to_unity);

@@ -47,15 +47,8 @@ private :
     // dialog
     Ui::GenerateInstanceW m_ui;
 
-public :
+private:
 
-    bool useBaseName = false;
-    bool useManual   = false;
-    unsigned int randomSeed = 0;
-    int nbInstances = 0;
-    int startId = 0;
-    QString baseName = "instance_";
-    QStringList manualNames;
-    QString directoryPath = "";
+
 };
 }

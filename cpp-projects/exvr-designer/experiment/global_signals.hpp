@@ -65,6 +65,9 @@ signals:
     void component_info_update_signal(tool::ex::ComponentKey componentKey, tool::ex::ConfigKey configKey, QStringView id, QStringView value);
     void connector_info_update_signal(tool::ex::ElementKey elementKey, tool::ex::ConditionKey conditionKey, tool::ex::ConnectorKey connectorKey, QStringView uiName, QStringView value);
 
+    // instances
+    void generate_instances_signal(QString directoryPath, unsigned int seed, bool manual, int nbInstances, int startId, QString baseName, QStringList manualNames);
+
     // elements
     void update_element_name_signal(tool::ex::ElementKey key, QString name);
     void update_element_informations_signal(tool::ex::ElementKey routineKey, QString informations);

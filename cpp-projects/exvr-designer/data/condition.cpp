@@ -152,7 +152,7 @@ Connection *Condition::get_connection_from_key(ConnectionKey connectionKey, bool
     }
 
     if(displayError){
-        QtLogger::error(QSL("Connector with key ") % QString::number(connectionKey.v) % QSL(" not found"));
+        QtLogger::error(QSL("Connection with key ") % QString::number(connectionKey.v) % QSL(" not found"));
     }
 
     return nullptr;

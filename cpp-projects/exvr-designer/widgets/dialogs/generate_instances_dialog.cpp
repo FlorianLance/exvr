@@ -27,6 +27,9 @@
 // Qt
 #include <QFileDialog>
 
+// local
+#include "experiment/global_signals.hpp"
+
 tool::ex::GenerateInstancesDialog::GenerateInstancesDialog(){
 
     setModal(false);
@@ -102,24 +105,31 @@ tool::ex::GenerateInstancesDialog::GenerateInstancesDialog(){
     connect(m_ui.pbCancel, &QPushButton::clicked, this, &GenerateInstancesDialog::close);
     connect(m_ui.pbGenerateFiles, &QPushButton::clicked, this, [&]{
 
-        directoryPath = QFileDialog::getExistingDirectory(nullptr, "Select parent directory for the generated instances");
+        QString directoryPath = QFileDialog::getExistingDirectory(nullptr, "Select parent directory for the generated instances");
         if(directoryPath.size() == 0){
             return;
         }
 
-        nbInstances = m_ui.sbNbInstancesFiles->value();
-        randomSeed  = static_cast<unsigned int>(m_ui.sbSeed->value());
-        baseName    = m_ui.leBaseName->text();
-        startId     = m_ui.sbStartId->value();
-        useBaseName = m_ui.rbBasename->isChecked();
-        useManual   = m_ui.rbManual->isChecked();
+        unsigned int randomSeed  = static_cast<unsigned int>(m_ui.sbSeed->value());
+        bool useManual   = m_ui.rbManual->isChecked();
+        int nbInstances = m_ui.sbNbInstancesFiles->value();
+        int startId     = m_ui.sbStartId->value();
+        QString baseName    = m_ui.leBaseName->text();
 
-        manualNames.clear();
+        QStringList manualNames;
         for(int ii = 0; ii < m_ui.twNames->rowCount(); ++ii){
             manualNames << m_ui.twNames->item(ii, 0)->text();
         }
 
-        close();
+        emit GSignals().get()->generate_instances_signal(
+            std::move(directoryPath),
+            randomSeed,
+            useManual,
+            nbInstances,
+            startId,
+            std::move(baseName),
+            std::move(manualNames)
+        );
     });
 }
 

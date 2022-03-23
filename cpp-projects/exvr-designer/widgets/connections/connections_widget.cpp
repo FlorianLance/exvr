@@ -63,14 +63,14 @@ ConnectionsW::ConnectionsW(ElementKey routineKey, ConditionKey conditionKey) : m
         std_v1<ConnectorKey> connectorsKey;
         std_v1<ConnectionKey> connectionsKey;
         get_current_selection(componentsKey, connectorsKey, connectionsKey);
-        GSignals::get()->select_nodes_and_connections_signal(routine_key(), condition_key(), std::move(connectorsKey), std::move(componentsKey),  std::move(connectionsKey), false);
+        emit GSignals::get()->select_nodes_and_connections_signal(routine_key(), condition_key(), std::move(connectorsKey), std::move(componentsKey),  std::move(connectionsKey), false);
     });
     connect(m_view, &ExFlowView::mouse_release_event_signal, this, [&](){
         std_v1<ComponentKey> componentsKey;
         std_v1<ConnectorKey> connectorsKey;
         std_v1<ConnectionKey> connectionsKey;
         get_current_selection(componentsKey, connectorsKey, connectionsKey);
-        GSignals::get()->select_nodes_and_connections_signal(routine_key(), condition_key(), std::move(connectorsKey), std::move(componentsKey),  std::move(connectionsKey), false);
+        emit GSignals::get()->select_nodes_and_connections_signal(routine_key(), condition_key(), std::move(connectorsKey), std::move(componentsKey),  std::move(connectionsKey), false);
     });
     connect(m_view, &ExFlowView::open_context_menu_signal, this, [&](QPoint pos, QPointF mappedPos,
         BaseNodeDataModel *nodeModelUnderMouse, QtNodes::Connection *connectionUnderMouse){

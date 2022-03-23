@@ -26,16 +26,15 @@
 using System.Threading;
 using System.Collections.Generic;
 
-using MP = Biopac.API.MPDevice.MPDevImports;
+using MP     = Biopac.API.MPDevice.MPDevImports;
 using MPCODE = Biopac.API.MPDevice.MPDevImports.MPRETURNCODE;
 
 namespace Ex {
 
-
     public class BiopacComponent : ExComponent{
 
         // infos
-        public BiopacSettings bps = null;
+        public BiopacSettings bSettings = null;
 
         // thread
         public BiopacAcquisitionThread acquisitionThread = null;
@@ -56,145 +55,7 @@ namespace Ex {
         private LoggerComponent m_logger = null;
         private bool m_debugBypass = false;
 
-        private bool connect_device() {
-
-            int retry = 10;
-            for (int ii = 0; ii < retry; ++ii) {
-
-                log_message(string.Format("Try to connect, try n°{0} with method {1}", ii.ToString(), bps.connection.ToString()));
-
-                // remember to change the parameters to suit your MP configuration
-                // Auto connect to MP150 was introduced in BHAPI 1.1
-                // passing "AUTO" or "auto" instead of the full serial number of the MP150
-                // will cause BHAPI to connect to the first respoding MP150.  This is usually
-                // the closest MP150 to the host computer.
-                var retval = MP.connectMPDev(bps.device, bps.connection, initC.get<string>("serial"));
-                if (retval == MPCODE.MPNOTINNET) {
-                    log_error(string.Format("MP150 with serial number '{0}' is not in the network.", initC.get<string>("serial")));
-                    continue;
-                }
-
-                if (retval == MPCODE.MPSUCCESS) {
-                    log_message("Connection established.");
-                    return true;
-                } else {
-                    log_error(string.Format("connectMPDev error: {0}", BiopacSettings.code_to_string(retval)));
-                }
-            }
-
-            MP.disconnectMPDev();
-            log_error("Cannot connect to the device. No data will be received.", false);
-
-            return false;
-        }
-
-        private bool setup_device() {
-
-            // ex:
-            // set sample rate to 5 msec per sample = 200 Hz  -> retval = setSampleRate(5.0);
-
-            // set sampling rate (25 kHz maximum)
-            double sampleRate = 1000.0 / samplingRateValues[initC.get<int>("sampling_rate_id")];
-            MPCODE retval = MP.setSampleRate(sampleRate);
-            if (retval != MPCODE.MPSUCCESS) {
-                log_error(string.Format("Sampling error {0} with rate: {1}", BiopacSettings.code_to_string(retval), Converter.to_string(sampleRate)));
-                return false;
-            }
-            log_message("Sample rate (Hz): " + sampleRate);
-
-            // ex: with 16 channels
-            // bool[] aCH = {
-            //      true, false, false, false,
-            //      false, false, false, false,
-            //      false, false, false, false,
-            //      false, false, false, false
-            // };
-
-            // set the acquisition channels
-            retval = MP.setAcqChannels(bps.channelsState);
-            if (retval != MPCODE.MPSUCCESS) {
-                log_error(string.Format("Channels acquisition error {0}, disconnecting device", BiopacSettings.code_to_string(retval)));
-                return false;
-            }
-
-            // read xml preset file
-            var presetTxTData = initC.get_resource_text_data("preset_xml_file");
-            if (presetTxTData != null) {
-                retval = MP.loadXMLPresetFile(presetTxTData.path);
-                if (retval != MPCODE.MPSUCCESS) {
-                    log_error(string.Format("Error during xml preset loading {0}", BiopacSettings.code_to_string(retval)));
-                    return false;
-                }
-
-                // set preset id for each channel
-                for(int ii = 0; ii < bps.channelsId.Count; ++ii) {
-                    string uid = initC.get<string>(string.Format("channel{0}_preset_uid", (bps.channelsId[ii]).ToString()));
-                    if (uid.Length > 0) {
-                        retval = MP.configChannelByPresetID((uint)bps.channelsId[ii], uid);
-                        if (retval != MPCODE.MPSUCCESS) {
-                            log_error(string.Format("Error {0} during preset file configuration for channel {1} with uid {2}", 
-                                BiopacSettings.code_to_string(retval), (bps.channelsId[ii] + 1).ToString(), uid));
-                            return false;
-                        }
-                    }
-                }
-            }
-
-            return true;
-        }
-
-        private bool start_acquisition() {
-
-            // start acquisition daemon
-            MPCODE retval = MP.startMPAcqDaemon();            
-            if (retval != MPCODE.MPSUCCESS) {
-                log_error(string.Format("Biopac acquisition failed: cannot start acquisition daemon, error: {0}", BiopacSettings.code_to_string(retval)));
-
-                retval = MP.stopAcquisition();
-                if (retval != MPCODE.MPSUCCESS) {
-                    log_error(string.Format("Cannot stop biopac acquisition, error: {0}", BiopacSettings.code_to_string(retval)));
-                }
-
-                return false;
-            }
-
-            // start biopac acquisition
-            retval = MP.startAcquisition();
-            if (retval != MPCODE.MPSUCCESS) {
-                log_error(string.Format("Biopac acquisition failed: cannot start, error: {0}", BiopacSettings.code_to_string(retval)));
-
-                retval = MP.stopAcquisition();
-                if (retval != MPCODE.MPSUCCESS) {
-                    log_error(string.Format("Cannot stop biopac acquisition, error: {0}", BiopacSettings.code_to_string(retval)));
-                }
-
-                return false;
-            }
-
-            return true;
-        }
-
-        private void stop_acquisition() {
-
-            if(acquisitionThread == null) {
-                return;
-            }
-
-            // kill thread
-            acquisitionThread.doLoop = false;
-            Thread.Sleep(10);
-            acquisitionThread.stop();
-
-            MPCODE retval = MP.stopAcquisition();
-            if (retval != MPCODE.MPSUCCESS) {
-                log_error(string.Format("Cannot stop biopac acquisition, error: {0}", BiopacSettings.code_to_string(retval)));
-            }
-
-            retval = MP.disconnectMPDev();
-            if (retval != MPCODE.MPSUCCESS) {
-                log_error(string.Format("Cannot disconnect biopac, error: {0}", BiopacSettings.code_to_string(retval)));
-            }
-        }
+        #region ex_functions
 
         protected override bool initialize() {
 
@@ -210,74 +71,47 @@ namespace Ex {
 
             // debug
             if (m_debugBypass = initC.get<bool>("debug_bypass")) {
-                if (initC.get_resource_alias("debug_log_file").Length > 0) {
-                    
-                    var content = initC.get_resource_text_data("debug_log_file").content.Split('\n');
-                    log_error("content: " + content.Length);
-                    m_debugData = new List<System.Tuple<double, List<double>>>(content.Length);
-                    int nbCols = 0;
-                    foreach(var line in content) {
-                        if (line.StartsWith("[Routine")) {
-                            continue;
-                        }
-                        if(line.StartsWith("[Timestamp(ms)]	")) {
-                            nbCols = line.Split('\t').Length;
-                        }
-                        if(nbCols == 0) {
-                            continue;
-                        }
-                        var split = line.Split('\t');
-                        if(split.Length != nbCols) {
-                            continue;
-                        }
-                        var lineValues = new System.Tuple<double, List<double>>(Converter.to_double(split[0]), new List<double>(nbCols));
-                        for(int ii = 1; ii < nbCols; ++ii) {
-                            lineValues.Item2.Add(Converter.to_double(split[ii]));
-                        }
-                        m_debugData.Add(lineValues);
-                    }
-                }
-                
+                read_debug_file();
                 return true;
             }
 
             // init settings
-            bps = new BiopacSettings();
+            bSettings = new BiopacSettings();
 
             // # retrieve device            
             switch (initC.get<int>("device_type")) {
                 case 0:
-                    bps.device = MP.MPTYPE.MP36;
-                    bps.nbMaxChannels = 4;
+                    bSettings.device = MP.MPTYPE.MP36;
+                    bSettings.nbMaxChannels = 4;
                     break;
                 case 1:
-                    bps.device = MP.MPTYPE.MP150;
-                    bps.nbMaxChannels = 16;
+                    bSettings.device = MP.MPTYPE.MP150;
+                    bSettings.nbMaxChannels = 16;
                     break;
                 case 2:
-                    bps.device = MP.MPTYPE.MP160;
-                    bps.nbMaxChannels = 16;
+                    bSettings.device = MP.MPTYPE.MP160;
+                    bSettings.nbMaxChannels = 16;
                     break;
             }
 
             // # retrieve connection
-            bps.connection = (initC.get<int>("device_connection") == 0) ? MP.MPCOMTYPE.MPUSB : MP.MPCOMTYPE.MPUDP;
+            bSettings.connection = (initC.get<int>("device_connection") == 0) ? MP.MPCOMTYPE.MPUSB : MP.MPCOMTYPE.MPUDP;
 
             // # retrieve and count enabled channels
-            bps.channelsState   = new bool[bps.nbMaxChannels];
-            bps.channelsName    = new List<string>();
-            bps.channelsId      = new List<int>();
-            for (int ii = 0; ii < bps.nbMaxChannels; ++ii) {
-                bps.channelsState[ii] = initC.get<bool>(string.Format("channel{0}", ii));
-                if (bps.channelsState[ii]) {
-                    ++bps.enabledChannelsNb;                    
-                    bps.channelsName.Add(initC.get<string>(string.Format("channel{0}_name", ii)));
-                    bps.channelsId.Add(ii);
+            bSettings.channelsState   = new bool[bSettings.nbMaxChannels];
+            bSettings.channelsName    = new List<string>();
+            bSettings.channelsId      = new List<int>();
+            for (int ii = 0; ii < bSettings.nbMaxChannels; ++ii) {
+                bSettings.channelsState[ii] = initC.get<bool>(string.Format("channel{0}", ii));
+                if (bSettings.channelsState[ii]) {
+                    ++bSettings.enabledChannelsNb;                    
+                    bSettings.channelsName.Add(initC.get<string>(string.Format("channel{0}_name", ii)));
+                    bSettings.channelsId.Add(ii);
                 }
             }
 
             // check channels
-            if (bps.enabledChannelsNb == 0) {
+            if (bSettings.enabledChannelsNb == 0) {
                 log_error("No channel enabled.");
                 return false;
             }
@@ -296,17 +130,41 @@ namespace Ex {
             }
 
             // initialize thread
-            bps.nbSamplesPerCall          = initC.get<int>("nb_samples_per_call");
-            bps.samplingRate              = samplingRateValues[initC.get<int>("sampling_rate_id")];// initC.get<int>("sampling_rate");
-            bps.sizeMaxChannelSeconds     = initC.get<int>("max_nb_seconds_to_save");
-            if(initC.get<int>("read_digital_mode") != 0) {
-                bps.readDigitalMode = initC.get<int>("read_digital_mode") == 1 ? MP.DIGITALOPT.READ_LOW_BITS : MP.DIGITALOPT.READ_HIGH_BITS;
-                bps.readDigitalEnabled = true;
+            bSettings.nbSamplesPerCall          = initC.get<int>("nb_samples_per_call");
+            bSettings.samplingRate              = samplingRateValues[initC.get<int>("sampling_rate_id")];// initC.get<int>("sampling_rate");
+            bSettings.sizeMaxChannelSeconds     = initC.get<int>("max_nb_seconds_to_save");
+            bSettings.numberOfDataPoints        = (uint)(bSettings.nbSamplesPerCall * bSettings.enabledChannelsNb);
+
+            if (initC.get<int>("read_digital_mode") != 0) {
+                bSettings.readDigitalMode = initC.get<int>("read_digital_mode") == 1 ? MP.DIGITALOPT.READ_LOW_BITS : MP.DIGITALOPT.READ_HIGH_BITS;
+                bSettings.readDigitalEnabled = true;
             } else {
-                bps.readDigitalEnabled = false;
+                bSettings.readDigitalEnabled = false;
             }
+
+            // init header line        
+            System.Text.StringBuilder titleLineB = new System.Text.StringBuilder();
+
+            // # time column
+            titleLineB.Append("[Timestamp(ms)]\t");
+
+            // # channels data columns
+            for (int ii = 0; ii < bSettings.enabledChannelsNb; ++ii) {
+                titleLineB.AppendFormat("[Val-{0}]\t", bSettings.channelsName[ii]);
+            }
+
+            // # channels digital read columns
+            if (bSettings.readDigitalEnabled) {
+                for (int ii = 0; ii < bSettings.enabledChannelsNb; ++ii) {
+                    titleLineB.AppendFormat("[Tr-{0}]\t", bSettings.channelsName[ii]);
+                }
+            }
+            bSettings.headerLine = titleLineB.ToString(); ;
+
+
+            // init thread
             acquisitionThread             = new BiopacAcquisitionThread();
-            acquisitionThread.bps         = bps;
+            acquisitionThread.bSettings   = bSettings;
             acquisitionThread.processData = false;
             acquisitionThread.doLoop      = true;            
             acquisitionThread.start();
@@ -339,10 +197,155 @@ namespace Ex {
             if (m_debugBypass) {                
                 return;
             }
-            acquisitionThread.bpd.reset_settings(bps);
+            acquisitionThread.bData.reset(bSettings);
         }
 
         protected override void stop_routine() {
+
+            if(initC.get<int>("write_mode") == 0) {
+                write_data();
+            }
+        }
+
+        protected override void stop_experiment() {
+
+            if (initC.get<int>("write_mode") == 1) {
+                write_data();
+            }
+        }
+
+        #endregion
+
+        #region private_functions
+        private bool connect_device() {
+
+            int retry = 10;
+            for (int ii = 0; ii < retry; ++ii) {
+
+                log_message(string.Format("Try to connect, try n°{0} with method {1}", ii.ToString(), bSettings.connection.ToString()));
+
+                // remember to change the parameters to suit your MP configuration
+                // Auto connect to MP150 was introduced in BHAPI 1.1
+                // passing "AUTO" or "auto" instead of the full serial number of the MP150
+                // will cause BHAPI to connect to the first respoding MP150.  This is usually
+                // the closest MP150 to the host computer.
+                var retval = MP.connectMPDev(bSettings.device, bSettings.connection, initC.get<string>("serial"));
+                if (retval == MPCODE.MPNOTINNET) {
+                    log_error(string.Format("MP150 with serial number '{0}' is not in the network.", initC.get<string>("serial")));
+                    continue;
+                }
+
+                if (retval == MPCODE.MPSUCCESS) {
+                    log_message("Connection established.");
+                    return true;
+                } else {
+                    log_error(string.Format("connectMPDev error: {0}", BiopacSettings.code_to_string(retval)));
+                }
+            }
+
+            MP.disconnectMPDev();
+            log_error("Cannot connect to the device. No data will be received.", false);
+
+            return false;
+        }
+
+        private bool setup_device() {
+
+            // ex: set sample rate to 5 msec per sample = 200 Hz  -> retval = setSampleRate(5.0);
+            double sampleRate = 1000.0 / samplingRateValues[initC.get<int>("sampling_rate_id")];
+            MPCODE retval = MP.setSampleRate(sampleRate);
+            if (retval != MPCODE.MPSUCCESS) {
+                log_error(string.Format("Sampling error {0} with rate: {1}", BiopacSettings.code_to_string(retval), Converter.to_string(sampleRate)));
+                return false;
+            }
+            log_message(string.Concat("Sample rate (Hz): ", sampleRate));
+
+            // set the acquisition channels
+            retval = MP.setAcqChannels(bSettings.channelsState);
+            if (retval != MPCODE.MPSUCCESS) {
+                log_error(string.Format("Channels acquisition error {0}, disconnecting device", BiopacSettings.code_to_string(retval)));
+                return false;
+            }
+
+            // read xml preset file
+            var presetTxTData = initC.get_resource_text_data("preset_xml_file");
+            if (presetTxTData != null) {
+                retval = MP.loadXMLPresetFile(presetTxTData.path);
+                if (retval != MPCODE.MPSUCCESS) {
+                    log_error(string.Format("Error during xml preset loading {0}", BiopacSettings.code_to_string(retval)));
+                    return false;
+                }
+
+                // set preset id for each channel
+                for (int ii = 0; ii < bSettings.channelsId.Count; ++ii) {
+                    string uid = initC.get<string>(string.Format("channel{0}_preset_uid", (bSettings.channelsId[ii]).ToString()));
+                    if (uid.Length > 0) {
+                        retval = MP.configChannelByPresetID((uint)bSettings.channelsId[ii], uid);
+                        if (retval != MPCODE.MPSUCCESS) {
+                            log_error(string.Format("Error {0} during preset file configuration for channel {1} with uid {2}",
+                                BiopacSettings.code_to_string(retval), (bSettings.channelsId[ii] + 1).ToString(), uid));
+                            return false;
+                        }
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        private bool start_acquisition() {
+
+            // start acquisition daemon
+            MPCODE retval = MP.startMPAcqDaemon();
+            if (retval != MPCODE.MPSUCCESS) {
+                log_error(string.Format("Biopac acquisition failed: cannot start acquisition daemon, error: {0}", BiopacSettings.code_to_string(retval)));
+
+                retval = MP.stopAcquisition();
+                if (retval != MPCODE.MPSUCCESS) {
+                    log_error(string.Format("Cannot stop biopac acquisition, error: {0}", BiopacSettings.code_to_string(retval)));
+                }
+
+                return false;
+            }
+
+            // start biopac acquisition
+            retval = MP.startAcquisition();
+            if (retval != MPCODE.MPSUCCESS) {
+                log_error(string.Format("Biopac acquisition failed: cannot start, error: {0}", BiopacSettings.code_to_string(retval)));
+
+                retval = MP.stopAcquisition();
+                if (retval != MPCODE.MPSUCCESS) {
+                    log_error(string.Format("Cannot stop biopac acquisition, error: {0}", BiopacSettings.code_to_string(retval)));
+                }
+
+                return false;
+            }
+
+            return true;
+        }
+
+        private void stop_acquisition() {
+
+            if (acquisitionThread == null) {
+                return;
+            }
+
+            // kill thread
+            acquisitionThread.doLoop = false;
+            Thread.Sleep(10);
+            acquisitionThread.stop();
+
+            MPCODE retval = MP.stopAcquisition();
+            if (retval != MPCODE.MPSUCCESS) {
+                log_error(string.Format("Cannot stop biopac acquisition, error: {0}", BiopacSettings.code_to_string(retval)));
+            }
+
+            retval = MP.disconnectMPDev();
+            if (retval != MPCODE.MPSUCCESS) {
+                log_error(string.Format("Cannot disconnect biopac, error: {0}", BiopacSettings.code_to_string(retval)));
+            }
+        }
+        private void write_data() {
 
             if (m_debugBypass) {
                 if (m_logger != null) {
@@ -357,29 +360,67 @@ namespace Ex {
             if (strData != null) {
                 invoke_signal(endRoutineDataLogStr, strData);
 
-                if(m_logger != null) {
-                    m_logger.write(endRoutineDataLogStr);                    
+                if (m_logger != null) {
+                    m_logger.write_lines(strData);
                 }
             }
         }
 
+        void read_debug_file() {
+
+            if (initC.get_resource_alias("debug_log_file").Length > 0) {
+
+                var content = initC.get_resource_text_data("debug_log_file").content.Split('\n');
+                log_message("content: " + content.Length);
+                m_debugData = new List<System.Tuple<double, List<double>>>(content.Length);
+                int nbCols = 0;
+                foreach (var line in content) {
+                    if (line.StartsWith("[Routine")) {
+                        continue;
+                    }
+                    if (line.StartsWith("[Timestamp(ms)]	")) {
+                        nbCols = line.Split('\t').Length;
+                    }
+                    if (nbCols == 0) {
+                        continue;
+                    }
+                    var split = line.Split('\t');
+                    if (split.Length != nbCols) {
+                        continue;
+                    }
+                    var lineValues = new System.Tuple<double, List<double>>(Converter.to_double(split[0]), new List<double>(nbCols));
+                    for (int ii = 1; ii < nbCols; ++ii) {
+                        lineValues.Item2.Add(Converter.to_double(split[ii]));
+                    }
+                    m_debugData.Add(lineValues);
+                }
+            } 
+           
+        }
+
+
+        #endregion
+
+
+        #region public_functions
+
         public void trigger_channels() {
 
             if (m_debugBypass) {
-                if(m_debugData != null) {
+                if (m_debugData != null) {
                     var currTime = ExVR.Time().ellapsed_exp_ms();
-                    for(int ii = m_currentDebugId; ii < m_debugData.Count; ++ii) {
-                        if(m_currentDebugId >= m_debugData.Count) {
+                    for (int ii = m_currentDebugId; ii < m_debugData.Count; ++ii) {
+                        if (m_currentDebugId >= m_debugData.Count) {
                             return;
                         }
-                        if(m_debugData[m_currentDebugId].Item1 < currTime) {
+                        if (m_debugData[m_currentDebugId].Item1 < currTime) {
                             ++m_currentDebugId;
                         } else {
                             break;
                         }
                     }
 
-                    for(int ii = 0; ii < m_debugData[m_currentDebugId].Item2.Count; ++ii) {
+                    for (int ii = 0; ii < m_debugData[m_currentDebugId].Item2.Count; ++ii) {
                         invoke_signal(lastValueChannelStr, new IdAny(ii + 1, m_debugData[m_currentDebugId].Item2[ii]));
                     }
                 }
@@ -390,23 +431,48 @@ namespace Ex {
                 if (values == null) {
                     return;
                 }
+                
+                List<double[]> data = values.Item2;                
 
-                List<List<double>> data = values.Item2;
-                for (int ii = 0; ii < bps.enabledChannelsNb; ++ii) {
-                    List<double> channelData = data[ii];
-                    if (channelData.Count > 0) {
-                        invoke_signal(lastValueChannelStr, new IdAny(bps.channelsId[ii] + 1, channelData[channelData.Count - 1]));
-                        invoke_signal(lastRangeValuesChannelStr, new IdAny(bps.channelsId[ii] + 1, channelData));
+                // count values
+                int nbValues = 0;
+                for (int ii = 0; ii < data.Count; ++ii) {
+                    nbValues += data[ii].Length;
+                }
+
+                // init channel list
+                List<List<double>> channelsData = new List<List<double>>(bSettings.enabledChannelsNb);
+                for(int ii = 0; ii < bSettings.enabledChannelsNb; ++ii) {
+                    channelsData.Add(new List<double>(nbValues/ bSettings.enabledChannelsNb));
+                }
+
+                // copy data
+                for (int ii = 0; ii < data.Count; ++ii) {
+                    for(int jj = 0; jj < data[ii].Length; ++jj) {
+                        int idChannel = jj % bSettings.enabledChannelsNb;
+                        channelsData[idChannel].Add(data[ii][jj]);
                     }
                 }
 
-                // send last latency
+                // send values
+                for (int ii = 0; ii < bSettings.enabledChannelsNb; ++ii) {
+                    List<double> channelData = channelsData[ii];
+                    if (channelData.Count > 0) {
+                        invoke_signal(lastValueChannelStr, new IdAny(bSettings.channelsId[ii] + 1, channelData[channelData.Count - 1]));
+                        invoke_signal(lastRangeValuesChannelStr, new IdAny(bSettings.channelsId[ii] + 1, channelData));
+                    }
+                }
+
+                // send last delay
                 List<FrameTimestamp> times = values.Item1;
                 if (times.Count > 0) {
                     var lastFrameTimestamp = times[times.Count - 1];
-                    invoke_signal(channelsLatencyStr, TimeManager.ticks_to_ms(System.Diagnostics.Stopwatch.GetTimestamp() - lastFrameTimestamp.startingTick));
+                    invoke_signal(channelsLatencyStr, TimeManager.ticks_to_ms(lastFrameTimestamp.afterDataReadingTick - lastFrameTimestamp.startingTick));
+                    //invoke_signal(channelsLatencyStr, TimeManager.ticks_to_ms(System.Diagnostics.Stopwatch.GetTimestamp() - lastFrameTimestamp.startingTick));
                 }
             }
         }
+
+        #endregion
     }
 }

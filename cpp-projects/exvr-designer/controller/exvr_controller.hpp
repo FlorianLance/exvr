@@ -87,6 +87,9 @@ private slots:
     // # go to
     void go_to_current_specific_instance_element();
 
+    // instances
+    void generate_instances(QString directoryPath, unsigned int seed, bool manual, int nbInstances, int startId, QString baseName, QStringList manualNames);
+
     // dialogs
     // # modal    
     void show_add_action_detailed_dialog(ComponentKey componentKey);
@@ -95,7 +98,6 @@ private slots:
     void show_play_with_delay_dialog();
     void show_about_dialog();
     // # non modal
-    void show_generate_instances_dialog();
     void show_got_to_specific_instance_element_dialog();
     void show_component_informations_dialog(ComponentKey componentKey);
     void show_import_dialog();
@@ -150,9 +152,10 @@ private :
     std::unique_ptr<QDialog> m_importD                      = nullptr;
     std::unique_ptr<QDialog> m_goToD                        = nullptr;
     std::unique_ptr<BenchmarkDialog> m_benchmarkD           = nullptr;
+    GenerateInstancesDialog m_instancesD;
     ResourcesManagerDialog m_resourcesD;
     DocumentationDialog m_documentationD;
-    GenerateInstancesDialog m_instancesD;
+
     // ## modal
     std::unique_ptr<QDialog> modalDialog = nullptr;
     std::unique_ptr<AddComponentToConditionsDialog> addComponentToCondsD = nullptr;

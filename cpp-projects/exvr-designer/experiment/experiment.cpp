@@ -948,7 +948,7 @@ void Experiment::select_nodes_and_connections(ElementKey routineKey, ConditionKe
         }
 
         for(const auto &connectionKey : connectionsKey){
-            if(auto connection = condition->get_connection_from_key(connectionKey); connection != nullptr){
+            if(auto connection = condition->get_connection_from_key(connectionKey, false); connection != nullptr){
                 connection->selected = true;
             }
         }

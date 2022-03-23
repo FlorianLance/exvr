@@ -43,6 +43,7 @@ struct BiopacInitConfigParametersW::Impl{
     ExComboBoxIndexW device{"device_type"};
     ExComboBoxIndexW connection{"device_connection"};
     ExComboBoxIndexW readIoMode{"read_digital_mode"};
+    QLabel *info = nullptr;
 
     using CB = ExCheckBoxW;
     std_a1<ExCheckBoxW, 16> channels{
@@ -67,6 +68,10 @@ struct BiopacInitConfigParametersW::Impl{
         LE{"channel12_preset_uid"},LE{"channel13_preset_uid"},LE{"channel14_preset_uid"},LE{"channel15_preset_uid"},
     };
 
+    static constexpr std::array samplingRates = {
+        10, 25, 50, 100, 200, 250, 500, 1000, 2000, 2500, 5000, 10000, 20000, 25000
+    };
+
     std_v1<QWidget*> channelsParentWidgets;
     ExLineEditW serialNumber{"serial"};
     ExComboBoxIndexW samplingRate{"sampling_rate_id"};
@@ -82,12 +87,12 @@ BiopacInitConfigParametersW::BiopacInitConfigParametersW():  ConfigParametersW()
 void BiopacInitConfigParametersW::insert_widgets(){
 
     add_widget(ui::F::gen(ui::L::HB(),{ui::W::txt("Device:"), m_p->device(), ui::W::txt("Connection:"),m_p->connection(), ui::W::txt("Serial MP150:"), m_p->serialNumber()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
-    add_widget(ui::F::gen(ui::L::HB(),{ui::W::txt("Sampling rate (Hz):"), m_p->samplingRate(), ui::W::txt("Nb samples per call:"), m_p->samplesPerCall()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
+    add_widget(ui::F::gen(ui::L::HB(),{ui::W::txt("Sampling rate (Hz):"), m_p->samplingRate(), ui::W::txt("Nb samples per call per channel:"), m_p->samplesPerCall()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
     add_widget(ui::F::gen(ui::L::HB(),{ui::W::txt("Read digital mode:"), m_p->readIoMode(), ui::W::txt("Max number seconds to save:"), m_p->maxNbSecondsToSave()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
     add_widget(ui::F::gen(ui::L::HB(),{ui::W::txt("Write when: "), m_p->writeMode()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
-
     add_widget(ui::F::gen(ui::L::HB(),{m_p->logger()}, LStretch{false}, LMargins{false},QFrame::NoFrame));
     add_widget(ui::F::gen(ui::L::HB(),{m_p->presetFile()}, LStretch{false}, LMargins{false},QFrame::NoFrame));
+    add_widget(ui::F::gen(ui::L::HB(),{m_p->info = new QLabel("...")}, LStretch{true}, LMargins{false},QFrame::NoFrame));
 
     QScrollArea *area = new QScrollArea();
     area->setWidgetResizable(true);
@@ -141,15 +146,52 @@ void BiopacInitConfigParametersW::init_and_register_widgets(){
 }
 
 void BiopacInitConfigParametersW::create_connections(){
+
     connect(&m_p->device, &ExComboBoxIndexW::ui_change_signal, this, [&]{
         late_update_ui();
     });
+    connect(&m_p->samplesPerCall, &ExSpinBoxW::ui_change_signal, this, [&]{
+        late_update_ui();
+    });
+    connect(&m_p->samplingRate, &ExComboBoxIndexW::ui_change_signal, this, [&]{
+        late_update_ui();
+    });
+    for(size_t ii = 0; ii < m_p->channels.size(); ++ii){
+        connect(&m_p->channels[ii], &ExCheckBoxW::ui_change_signal, this, [&]{
+            late_update_ui();
+        });
+    }
 }
 
 void BiopacInitConfigParametersW::late_update_ui(){
+
     int id = m_p->device.w->currentIndex();
-    bool extraChannels = id > 0;
+    bool extraChannels = id > 0;    
     for(size_t ii = 4; ii < m_p->channels.size(); ++ii){
         m_p->channelsParentWidgets[ii]->setEnabled(extraChannels);
+        if(!extraChannels){
+            m_p->channels[ii].blockSignals(true);
+            m_p->channels[ii].w->setChecked(false);
+            m_p->channels[ii].blockSignals(false);
+        }
     }
+
+    size_t nbChannelsEnabled = 0;
+    for(size_t ii = 0; ii < m_p->channels.size(); ++ii){
+        if(m_p->channels[ii].w->isChecked()){
+            ++nbChannelsEnabled;
+        }
+    }
+
+    int nbSamplesPerCall = m_p->samplesPerCall.w->value();
+    int samplingRate = m_p->samplingRates[m_p->samplingRate.w->currentIndex()];
+    size_t numDataPointsPerSample = nbChannelsEnabled * nbSamplesPerCall;
+    double nbAPICallPerSecond = 1.0*samplingRate/nbSamplesPerCall;
+    double durationAPICall = 1000.0/nbAPICallPerSecond;
+
+    QStringView channelStr = nbChannelsEnabled > 0 ? QSL("channels") : QSL("channel");
+    QStringView valuesStr = numDataPointsPerSample > 0 ? QSL("values") : QSL("value");
+    m_p->info->setText(QSL("<b>") % QString::number(nbChannelsEnabled) % QSL("</b> ") % channelStr % QSL(", for a total of <b>") %
+        QString::number(numDataPointsPerSample) % QSL("</b> ") % valuesStr % QSL(" per call with <b>") %
+        QString::number(nbAPICallPerSecond) % QSL("</b> calls/s to the API with a duration of <b>") % QString::number(durationAPICall) % QSL("</b> ms per call."));
 }
