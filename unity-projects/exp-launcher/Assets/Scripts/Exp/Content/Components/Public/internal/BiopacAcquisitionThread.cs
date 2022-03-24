@@ -70,6 +70,7 @@ namespace Ex {
         public bool[] channelsState      = null; // size: nbMaxChannels
         public List<string> channelsName = null; // size: enabledChannelsNb
         public List<int> channelsId      = null; // size: enabledChannelsNb
+        public int writeEveryNbLines = 1000;
 
         public int nbSamplesPerCall = 10;
         public double samplingRate = 0.0;
@@ -147,43 +148,37 @@ namespace Ex {
 
         public BiopacSettings bSettings = null;
         public BiopacData bData     = null;
-
+        
         volatile public bool doLoop         = false;
         volatile public bool processData    = false;
+        volatile public bool askWrite       = false;
+
         private ReaderWriterLock rwl        = new ReaderWriterLock();
 
-        private System.Text.StringBuilder digitalInputStrF = new System.Text.StringBuilder();
-        private System.Text.StringBuilder dataStrF     = new System.Text.StringBuilder();
-
-        private static readonly string tab = "\t";
-        private static readonly string timestampStrAccuracy = "G8";
-                
         protected override void ThreadFunction() {
 
             // initialize data
             bData = new BiopacData(bSettings);
 
-            ExVR.Log().message(
-                string.Format("Number of channels: {0}\nNumber of point asked per call per chanel: {1}\nNumber of point per call to receiveMPData: {2}", 
-                Converter.to_string(bSettings.enabledChannelsNb), Converter.to_string(bSettings.nbSamplesPerCall), Converter.to_string(bSettings.numberOfDataPoints))
-            );
-
             // start reading loop
+            var waitBuffer = new double[bSettings.enabledChannelsNb];
+
             while (doLoop) {
 
-                // raw data
-                var buffer    = new double[bSettings.numberOfDataPoints];
-                var digitalIO = new bool[bSettings.enabledChannelsNb];
-                for (int ii = 0; ii < digitalIO.Length; ++ii) {
-                    digitalIO[ii] = false;
-                }
-
                 if (!processData) { // read only minimum data
-                    MP.receiveMPData(buffer, (uint)bSettings.enabledChannelsNb, out uint notUsed);
+                    MP.receiveMPData(waitBuffer, (uint)bSettings.enabledChannelsNb, out uint notUsed);
+                    //Thread.SpinWait(1);
                     continue;
                 }
 
                 FrameTimestamp times = new FrameTimestamp();
+
+                // raw data
+                var buffer = new double[bSettings.numberOfDataPoints];
+                var digitalIO = new bool[bSettings.enabledChannelsNb];
+                for (int ii = 0; ii < digitalIO.Length; ++ii) {
+                    digitalIO[ii] = false;
+                }
 
                 // retrieve points
                 times.startingTick          = Stopwatch.GetTimestamp();
@@ -233,6 +228,8 @@ namespace Ex {
                 } catch (ApplicationException) {
                     ExVR.Log().error("Can't get writer lock.");
                 }
+
+                askWrite = (bData.channelsData.Count * bSettings.numberOfDataPoints / bSettings.enabledChannelsNb) > bSettings.writeEveryNbLines;
             }
         }
 
@@ -242,10 +239,19 @@ namespace Ex {
             List<double[]> lastData = null;
 
             try {
-                rwl.AcquireReaderLock(10); // 1
+                rwl.AcquireReaderLock(10); // 1☺
                 try {
-                    lastTimes = bData.times.GetRange(bData.lastFrameReadId, bData.times.Count);
-                    lastData = bData.channelsData.GetRange(bData.lastFrameReadId, bData.times.Count);
+                    int startId = bData.lastFrameReadId;
+                    int count   = bData.times.Count - bData.lastFrameReadId;
+                    //if(count > 200) {
+                    //    startId = bData.lastFrameReadId - 200;
+                    //    count   = 200;
+                    //}
+
+                    //UnityEngine.Debug.LogError(bData.times.Count + " " + bData.lastFrameReadId + " " + (bData.times.Count - bData.lastFrameReadId));
+
+                    lastTimes = bData.times.GetRange(startId, count);
+                    lastData = bData.channelsData.GetRange(startId, count);
                     bData.lastFrameReadId = bData.times.Count;
                 } finally {
                     rwl.ReleaseReaderLock();
@@ -257,94 +263,26 @@ namespace Ex {
             return Tuple.Create(lastTimes, lastData);
         }
 
-        public List<string> data_to_string(bool addHeaderLine) {
 
-            BiopacData bDataSwap = null;
-            BiopacData bNewData  = new BiopacData(bSettings);
+        public BiopacData get_data() {
+
+            BiopacData retievedBData = null;
+            BiopacData newBData      = new BiopacData(bSettings);
 
             // swap data
             try {
                 rwl.AcquireWriterLock(1000);
                 try {
-                    bDataSwap = bData;
-                    bData     = bNewData;
+                    retievedBData = bData;
+                    bData         = newBData;
+
                 } finally {
                     rwl.ReleaseWriterLock();
                 }
             } catch (ApplicationException) {
                 return null;
             }
-
-            int countLines = 0;
-            for (int idF = 0; idF < bDataSwap.times.Count; ++idF) {
-                var data = bDataSwap.channelsData[idF];
-                int nbValuesPerChannel = data.Length / bSettings.enabledChannelsNb;
-                countLines += nbValuesPerChannel;
-            }
-
-            // init lines array
-            List<string> dataStr = new List<string>(countLines + (addHeaderLine ? 1 : 0));
-            if (addHeaderLine) {
-                dataStr.Add(bSettings.headerLine);
-            }
-
-            // fill lines
-            for (int idF = 0; idF < bDataSwap.times.Count; ++idF) {
-
-                var data    = bDataSwap.channelsData[idF];
-                var digital = bDataSwap.digitalInputData[idF];
-                int nbValuesPerChannel = data.Length / bSettings.enabledChannelsNb;
-
-                // compute times
-                var time = bDataSwap.times[idF];
-                var beforeT = ExVR.Time().ms_since_start_experiment(time.startingTick);
-                var duration = TimeManager.ticks_to_ms(time.afterDataReadingTick - time.startingTick);
-                List<string> timesPerLine = new List<string>(nbValuesPerChannel);
-
-                if(nbValuesPerChannel == 1) {
-                    timesPerLine.Add(string.Concat(Converter.to_string(beforeT, timestampStrAccuracy), tab));
-                } else {
-                    for (int idV = 0; idV < nbValuesPerChannel; ++idV) {
-                        timesPerLine.Add(string.Concat(Converter.to_string(beforeT + (1.0 * idV / (nbValuesPerChannel - 1) * duration), timestampStrAccuracy), tab));
-                    }
-                }
-
-                // retrieve digital line
-                if (bSettings.readDigitalEnabled) {
-                    digitalInputStrF.Clear();
-                    for (int idC = 0; idC < bSettings.enabledChannelsNb; ++idC) {
-                        if (idC < bSettings.enabledChannelsNb - 1) {
-                            digitalInputStrF.Append(string.Concat(Converter.to_string(digital[idC], false), tab));
-                        } else {
-                            digitalInputStrF.Append(Converter.to_string(digital[idC], false));
-                        }
-                    }
-                }
-
-                int idD = 0;
-                for (int idV = 0; idV < nbValuesPerChannel; ++idV) {
-
-                    // retrieve data line
-                    dataStrF.Clear();
-                    for (int idC = 0; idC < bSettings.enabledChannelsNb; ++idC) {
-                        if (bSettings.readDigitalEnabled || (idC < bSettings.enabledChannelsNb - 1)) {
-                            dataStrF.Append(string.Concat(Converter.to_string(data[idD++]), tab));
-                        } else {
-                            dataStrF.Append(Converter.to_string(data[idD++]));
-                        }
-                    }                
-                     
-                    // create full line
-                    if (bSettings.readDigitalEnabled) {
-                        dataStr.Add(string.Concat(timesPerLine[idV], dataStrF.ToString(), digitalInputStrF.ToString()));
-                    } else {
-                        dataStr.Add(string.Concat(timesPerLine[idV], dataStrF.ToString()));
-                    }
-                }
-            }
-
-            ExVR.Log().message(string.Format("Number of entries: {0}", dataStr.Count.ToString()));
-            return dataStr;
-        }
+            return retievedBData;
+        }        
     }
 }

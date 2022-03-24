@@ -278,6 +278,7 @@ namespace Ex{
             }
 
             return ticks_to_ms(remove_pause_intervals_from_tick(pauseEventsExperimentTimestamp, ticks) - startExperimentTimestamp);
+            //return ticks_to_ms(ticks - startExperimentTimestamp);
         }
 
         public double ns_since_start_experiment(long ticks) {

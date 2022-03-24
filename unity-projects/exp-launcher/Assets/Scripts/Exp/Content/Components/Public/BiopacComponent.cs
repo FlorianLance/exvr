@@ -42,9 +42,9 @@ namespace Ex {
         // signals
         private static readonly string lastValueChannelStr       = "channelX last value";
         private static readonly string lastRangeValuesChannelStr = "channelX last range values";
-        private static readonly string endRoutineDataLogStr      = "end routine data log";
-        private static readonly string channelsLatencyStr        = "channels latency";
-        private static readonly string triggerChannelsStr        = "trigger channels";
+        //private static readonly string endRoutineDataLogStr      = "end routine data log";
+        private static readonly string callDurationAPIStr        = "call duration API";
+        private static readonly string readDataStr               = "read data";
         private static readonly List<int> samplingRateValues = new List<int>(new int[] {
             10,25,50,100,200,250,500,1000,2000,2500,5000,10000,20000,25000
         });
@@ -55,16 +55,22 @@ namespace Ex {
         private LoggerComponent m_logger = null;
         private bool m_debugBypass = false;
 
+        private System.Text.StringBuilder digitalInputStrF = new System.Text.StringBuilder();
+        private System.Text.StringBuilder dataStrF = new System.Text.StringBuilder();
+
+        private static readonly string tab = "\t";
+        private static readonly string timestampStrAccuracy = "G8";
+
         #region ex_functions
 
         protected override bool initialize() {
 
             // initialize signals/slots
-            add_slot(triggerChannelsStr, (nullArg) => { trigger_channels(); });
+            add_slot(readDataStr, (nullArg) => { trigger_channels(); });
             add_signal(lastValueChannelStr);
             add_signal(lastRangeValuesChannelStr);
-            add_signal(endRoutineDataLogStr);
-            add_signal(channelsLatencyStr);
+            //add_signal(endRoutineDataLogStr);
+            add_signal(callDurationAPIStr);
 
             // retrieve components
             m_logger = initC.get_component<LoggerComponent>("logger");
@@ -130,6 +136,7 @@ namespace Ex {
             }
 
             // initialize thread
+            bSettings.writeEveryNbLines         = initC.get<int>("write_every_nb_lines");
             bSettings.nbSamplesPerCall          = initC.get<int>("nb_samples_per_call");
             bSettings.samplingRate              = samplingRateValues[initC.get<int>("sampling_rate_id")];// initC.get<int>("sampling_rate");
             bSettings.sizeMaxChannelSeconds     = initC.get<int>("max_nb_seconds_to_save");
@@ -178,11 +185,11 @@ namespace Ex {
             if (m_debugBypass) {
                 return;
             }
-
             acquisitionThread.processData = doUpdate;
         }
        
         protected override void clean() {
+            log_error("clean");
 
             if (m_debugBypass) {
                 return;
@@ -192,26 +199,32 @@ namespace Ex {
         }
 
         protected override void start_experiment() {
-            m_addHeaderLine = true;
+            m_addHeaderLine  = true;
             m_currentDebugId = 0;
-            if (m_debugBypass) {                
+            if (m_debugBypass) {
                 return;
             }
             acquisitionThread.bData.reset(bSettings);
         }
 
-        protected override void stop_routine() {
+        protected override void post_update() {
 
-            if(initC.get<int>("write_mode") == 0) {
-                write_data();
+            if (m_debugBypass) {
+                return;
+            }
+
+            if (acquisitionThread.askWrite) {
+                write_data();                
             }
         }
 
-        protected override void stop_experiment() {
+        protected override void stop_routine() {
 
-            if (initC.get<int>("write_mode") == 1) {
-                write_data();
+            if (m_debugBypass) {
+                return;
             }
+
+            write_data();
         }
 
         #endregion
@@ -258,7 +271,6 @@ namespace Ex {
                 log_error(string.Format("Sampling error {0} with rate: {1}", BiopacSettings.code_to_string(retval), Converter.to_string(sampleRate)));
                 return false;
             }
-            log_message(string.Concat("Sample rate (Hz): ", sampleRate));
 
             // set the acquisition channels
             retval = MP.setAcqChannels(bSettings.channelsState);
@@ -330,9 +342,10 @@ namespace Ex {
                 return;
             }
 
-            // kill thread
-            acquisitionThread.doLoop = false;
-            Thread.Sleep(10);
+            // kill thread            
+            acquisitionThread.processData = false;
+            acquisitionThread.doLoop      = false;
+            Thread.Sleep(1000);
             acquisitionThread.stop();
 
             MPCODE retval = MP.stopAcquisition();
@@ -354,17 +367,88 @@ namespace Ex {
                 return;
             }
 
-            var strData = acquisitionThread.data_to_string(m_addHeaderLine);
-            m_addHeaderLine = false;
-
-            if (strData != null) {
-                invoke_signal(endRoutineDataLogStr, strData);
-
-                if (m_logger != null) {
+            var bData = acquisitionThread.get_data();
+            if (m_logger != null) {
+                var strData = data_to_string(bData, m_addHeaderLine);
+                m_addHeaderLine = false;
+                if (strData != null) {
                     m_logger.write_lines(strData);
                 }
             }
         }
+        public List<string> data_to_string(BiopacData bData, bool addHeaderLine) {
+
+            int countLines = 0;
+            for (int idF = 0; idF < bData.times.Count; ++idF) {
+                var data = bData.channelsData[idF];
+                int nbValuesPerChannel = data.Length / bSettings.enabledChannelsNb;
+                countLines += nbValuesPerChannel;
+            }
+
+            // init lines array
+            List<string> dataStr = new List<string>(countLines + (addHeaderLine ? 1 : 0));
+            if (addHeaderLine) {
+                dataStr.Add(bSettings.headerLine);
+            }
+
+            // fill lines
+            for (int idF = 0; idF < bData.times.Count; ++idF) {
+
+                var data = bData.channelsData[idF];
+                var digital = bData.digitalInputData[idF];
+                int nbValuesPerChannel = data.Length / bSettings.enabledChannelsNb;
+
+                // compute times
+                var time = bData.times[idF];
+                var beforeT = ExVR.Time().ms_since_start_experiment(time.startingTick);
+                var duration = TimeManager.ticks_to_ms(time.afterDataReadingTick - time.startingTick);
+                List<string> timesPerLine = new List<string>(nbValuesPerChannel);
+
+                if (nbValuesPerChannel == 1) {
+                    timesPerLine.Add(string.Concat(Converter.to_string(beforeT, timestampStrAccuracy), tab));
+                } else {
+                    for (int idV = 0; idV < nbValuesPerChannel; ++idV) {
+                        timesPerLine.Add(string.Concat(Converter.to_string(beforeT + (1.0 * idV / (nbValuesPerChannel - 1) * duration), timestampStrAccuracy), tab));
+                    }
+                }
+
+                // retrieve digital line
+                if (bSettings.readDigitalEnabled) {
+                    digitalInputStrF.Clear();
+                    for (int idC = 0; idC < bSettings.enabledChannelsNb; ++idC) {
+                        if (idC < bSettings.enabledChannelsNb - 1) {
+                            digitalInputStrF.Append(string.Concat(Converter.to_string(digital[idC], false), tab));
+                        } else {
+                            digitalInputStrF.Append(Converter.to_string(digital[idC], false));
+                        }
+                    }
+                }
+
+                int idD = 0;
+                for (int idV = 0; idV < nbValuesPerChannel; ++idV) {
+
+                    // retrieve data line
+                    dataStrF.Clear();
+                    for (int idC = 0; idC < bSettings.enabledChannelsNb; ++idC) {
+                        if (bSettings.readDigitalEnabled || (idC < bSettings.enabledChannelsNb - 1)) {
+                            dataStrF.Append(string.Concat(Converter.to_string(data[idD++]), tab));
+                        } else {
+                            dataStrF.Append(Converter.to_string(data[idD++]));
+                        }
+                    }
+
+                    // create full line
+                    if (bSettings.readDigitalEnabled) {
+                        dataStr.Add(string.Concat(timesPerLine[idV], dataStrF.ToString(), digitalInputStrF.ToString()));
+                    } else {
+                        dataStr.Add(string.Concat(timesPerLine[idV], dataStrF.ToString()));
+                    }
+                }
+            }
+            
+            return dataStr;
+        }
+
 
         void read_debug_file() {
 
@@ -467,8 +551,7 @@ namespace Ex {
                 List<FrameTimestamp> times = values.Item1;
                 if (times.Count > 0) {
                     var lastFrameTimestamp = times[times.Count - 1];
-                    invoke_signal(channelsLatencyStr, TimeManager.ticks_to_ms(lastFrameTimestamp.afterDataReadingTick - lastFrameTimestamp.startingTick));
-                    //invoke_signal(channelsLatencyStr, TimeManager.ticks_to_ms(System.Diagnostics.Stopwatch.GetTimestamp() - lastFrameTimestamp.startingTick));
+                    invoke_signal(callDurationAPIStr, TimeManager.ticks_to_ms(lastFrameTimestamp.afterDataReadingTick - lastFrameTimestamp.startingTick));
                 }
             }
         }

@@ -1045,7 +1045,28 @@ void Experiment::add_action_to_all_routines_conditions(ComponentKey componentKey
 }
 
 void Experiment::insert_action_to(ComponentKey componentKey, ConfigKey configKey, std::vector<std::pair<ElementKey, ConditionKey>> conditions, bool update, bool visibility){
-    QtLogger::message("insert_action_to");
+
+    auto component = compM.get_component(componentKey);
+    if(component == nullptr){
+        return;
+    }
+    auto config = component->get_config(configKey);
+    if(config == nullptr){
+        return;
+    }
+
+    for(auto &conditionP : conditions){
+        if(auto routine = get_element_from_type_and_id<Routine>(conditionP.first); routine != nullptr){
+            if(auto condition = routine->get_condition(conditionP.second); condition != nullptr) {
+                if(auto action = condition->get_action_from_component_key(componentKey, false); action == nullptr){
+                    condition->actions.emplace_back(Action::generate_component_action(
+                        component, condition->duration, configKey, update, visibility));
+                }
+            }
+        }
+    }
+
+    add_to_update_flag(UpdateRoutines);
 }
 
 void Experiment::modify_action(ElementKey routineKey, ConditionKey conditionKey, ComponentKey componentKey,

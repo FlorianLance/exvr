@@ -37,8 +37,15 @@ namespace Ex{
 
         protected override string generate_file_name() {
             string dateStr = string.Format("_{0}", DateTime.Now.ToString(m_dateTimeFormat));
-            return string.Format("{0}{1}{2}.{3}", m_baseFileName, m_addInstanceToFileName ? 
-                string.Concat("_", ExVR.Experiment().instanceName) : "", m_addDateToFileName ? dateStr : "", m_fileExtension);
+            return string.Format("{0}{1}{2}.{3}", m_baseFileName, 
+                m_addInstanceToFileName ? 
+                    string.Format("_{0}", ExVR.Experiment().instanceName) : 
+                    "", 
+                m_addDateToFileName ? 
+                    dateStr : 
+                    "", 
+                m_fileExtension
+            );
         }
 
         protected override bool initialize() {

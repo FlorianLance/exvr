@@ -421,10 +421,10 @@ struct Component {
         {T::Python_script,             "slot4"sv,                      CNT::any_t,             "..."sv},
         // Tracking
         {T::Leap_motion_arms_display,  "trigger"sv,                    CNT::void_t,            "..."sv},
-        {T::Leap_motion_arms_display,  "update frame"sv,              CNT::lm_frame_t,        "..."sv},
+        {T::Leap_motion_arms_display,  "update frame"sv,               CNT::lm_frame_t,        "..."sv},
         {T::Leap_motion_tracking,      "update tracking"sv,            CNT::lm_hands_frame_t,  "..."sv},
         {T::Thera_trainer_platform,    "update rotation"sv,            CNT::vector2_t,         "Set thera trainer platform current rotation angles"sv},
-        {T::Biopac,                    "trigger channels"sv,           CNT::void_t,            "..."sv},
+        {T::Biopac,                    "read data"sv,                  CNT::void_t,            "..."sv},
         {T::Fop_robot,                 "set delay"sv,                  CNT::integer_t,         "..."sv},
         {T::Fop_robot,                 "set force ratio"sv,            CNT::float_t,           "..."sv},
         // UI
@@ -448,7 +448,7 @@ struct Component {
 
     using TComponentSignals = std::tuple<
         CT,                             FunctionN,                     CNT,                            Doc>;
-    static constexpr TupleArray<65, TComponentSignals> componentsSignals = {{
+    static constexpr TupleArray<64, TComponentSignals> componentsSignals = {{
         TComponentSignals
         // Audio
         {T::AudioSource,               "sample value channel"sv,       CNT::id_any_t,                  "..."sv},
@@ -508,8 +508,8 @@ struct Component {
         {T::Thera_trainer_tracking,    "battery"sv,                    CNT::integer_t,                 "..."sv},
         {T::Biopac,                    "channelX last value"sv,        CNT::id_any_t,                  "Send real associated to id channel"sv},
         {T::Biopac,                    "channelX last range values"sv, CNT::id_any_t,                  "Send reals list associated to id channel"sv},
-        {T::Biopac,                    "end routine data log"sv,       CNT::string_list_t,             "..."sv},
-        {T::Biopac,                    "channels latency"sv,           CNT::real_t,                    "..."sv},
+//        {T::Biopac,                    "end routine data log"sv,       CNT::string_list_t,             "..."sv},
+        {T::Biopac,                    "call duration API"sv,           CNT::real_t,                    "..."sv},
         {T::Qualisys,                  "tracked object"sv,             CNT::string_any_t,              "..."sv},
         {T::Fop_robot,                 "slave position"sv,             CNT::vector3_t,                 "..."sv},
         {T::Fop_robot,                 "master position"sv,            CNT::vector3_t,                 "..."sv},

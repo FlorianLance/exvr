@@ -590,7 +590,7 @@ void ExVrController::show_component_informations_dialog(ComponentKey componentKe
                     for(const auto &conditionAction : conditionsActions){
                         auto condition = std::get<0>(conditionAction);
                         auto action    = std::get<1>(conditionAction);
-                        insideTxt += QSL(" * Condition **[") % condition->name % QSL("]** with config **[") % action->config->name % QSL("]**<br />");
+                        insideTxt += QSL(" * Condition **[") % condition->name % QSL("]** with config **[") % action->config->name % QSL("]** ") % (action->nodeUsed ? QSL("(Node used)") : QSL(""))  % QSL("<br />");
                     }
                 }
                 insideTxt += "<br />";

@@ -213,5 +213,5 @@ void AddComponentToConditionsDialog::update_selection_number(){
 
     laApplyTo->setText(QSL("Component will be added to <b>") % QString::number(totalCountC) %
                        QSL("</b> ") % c % QSL(" from <b>") % QString::number(countR) % QSL("</b> ") % r % QSL("."));
-    condSelUi.validateButtonBox->setEnabled(totalCountC > 0);
+    condSelUi.validateButtonBox->button(QDialogButtonBox::StandardButton::Ok)->setEnabled(totalCountC > 0);
 }

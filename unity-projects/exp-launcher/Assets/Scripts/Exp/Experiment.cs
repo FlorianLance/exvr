@@ -490,9 +490,10 @@ namespace Ex{
             }
 
             ExVR.Time().start_experiment();
+
             ExVR.Display().reset_experiment_settings();
             ExVR.ExpLog().reset_strackTrace();
-
+            
             routines.start_experiment();
             schreduler.start_current_flow_element();
 
