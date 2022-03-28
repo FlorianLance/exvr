@@ -35,9 +35,6 @@
 // local
 #include "flow/flow_sequence.hpp"
 
-// debug
-#include <QDebug>
-
 
 namespace tool::ex {
 
@@ -77,20 +74,6 @@ public slots:
     void update_stretch(qreal stretch);
     void update_size_text(qreal sizeTxt);
 
-signals:
-
-    void select_element_signal(ElementKey elementKey);
-    void unselect_element_signal();
-    void add_element_signal(Element::Type type, size_t index);
-    void remove_selected_element_signal();
-    void move_element_left_signal(size_t id);
-    void move_element_right_signal(size_t id);
-
-    void duplicate_element_signal(ElementKey elementKey);
-    void remove_element_signal(ElementKey elementKey);
-    void clean_current_routine_condition_signal(ElementKey routineKey);
-    void clean_all_routine_conditions_signal(ElementKey routineKey);
-    void set_duration_for_all_routine_conditions_signal(ElementKey routineKey);
 
 protected:
 

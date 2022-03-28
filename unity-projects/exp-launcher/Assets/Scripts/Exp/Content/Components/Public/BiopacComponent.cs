@@ -189,7 +189,6 @@ namespace Ex {
         }
        
         protected override void clean() {
-            log_error("clean");
 
             if (m_debugBypass) {
                 return;

@@ -30,6 +30,9 @@
 #include <QInputDialog>
 #include <QToolTip>
 
+// local
+#include "experiment/global_signals.hpp"
+
 using namespace tool::ex;
 
 
@@ -51,32 +54,6 @@ FlowDiagramW::FlowDiagramW(QSlider *zoomSlider, QPushButton *resizeButton){
         m_zoomLevel = 0.1*value;
         update();
     });
-
-    // # flow sequence
-    connect(&m_flowSequence, &FlowSequence::select_element_signal,          this, &FlowDiagramW::select_element_signal);
-    connect(&m_flowSequence, &FlowSequence::unselect_element_signal,        this, &FlowDiagramW::unselect_element_signal);
-    connect(&m_flowSequence, &FlowSequence::add_element_signal,             this, &FlowDiagramW::add_element_signal);
-    connect(&m_flowSequence, &FlowSequence::remove_selected_element_signal, this, &FlowDiagramW::remove_selected_element_signal);
-    connect(&m_flowSequence, &FlowSequence::move_element_left_signal,       this, &FlowDiagramW::move_element_left_signal);
-    connect(&m_flowSequence, &FlowSequence::move_element_right_signal,      this, &FlowDiagramW::move_element_right_signal);
-
-    // menus
-//    duplicateElementA = new QAction("Duplicate");
-//    connect(duplicateElementA, &QAction::triggered, this, [=](){
-////        m_flowSequence.elements
-//    });
-//    removeElementA = new QAction("Remove");
-//    connect(removeElementA, &QAction::triggered, this, [=](){
-
-//    });
-//    moveLeftElementA = new QAction("Move left");
-//    connect(moveLeftElementA, &QAction::triggered, this, [=](){
-
-//    });
-//    moveRightElementA = new QAction("Move right");
-//    connect(moveRightElementA, &QAction::triggered, this, [=](){
-
-//    });
 }
 
 
@@ -90,6 +67,7 @@ void FlowDiagramW::contextMenuEvent(QContextMenuEvent *event) {
         const bool isRoutine = element->type == Element::Type::Routine;
         const bool isIsi     = element->type == Element::Type::Isi;
         const bool isLoop    = element->type == Element::Type::Loop;
+
 
 
 
@@ -111,7 +89,7 @@ void FlowDiagramW::contextMenuEvent(QContextMenuEvent *event) {
             if(element->is_selected()){
                 auto unselectedElement = new QAction(QSL("Unselect"));
                 connect(unselectedElement, &QAction::triggered, this, [=](){
-                    emit unselect_element_signal();
+                    emit GSignals::get()->unselect_element_signal(true);
                 });
                 menu.addAction(unselectedElement);
 
@@ -124,7 +102,7 @@ void FlowDiagramW::contextMenuEvent(QContextMenuEvent *event) {
 
                 auto duplicateElementA = new QAction(QSL("Duplicate"));
                 connect(duplicateElementA, &QAction::triggered, this, [=](){
-                    emit duplicate_element_signal(key);
+                    emit GSignals::get()->duplicate_element_signal(key);
                 });
                 menu.addAction(duplicateElementA);
             }
@@ -132,33 +110,36 @@ void FlowDiagramW::contextMenuEvent(QContextMenuEvent *event) {
             if(isRoutine || isIsi || isLoop){
                 auto removeElementA = new QAction(QSL("Remove"));
                 connect(removeElementA, &QAction::triggered, this, [=](){
-                    emit remove_element_signal(key);
+                    emit GSignals::get()->remove_element_signal(key);
                 });
                 menu.addAction(removeElementA);
             }
 
             if(isRoutine){
-                menu.addSeparator();
+                if(!dynamic_cast<RoutineFlowElement*>(element)->is_a_randomizer()){
 
-                auto cleanCurrentRoutineConditionA = new QAction(QSL("Clean current condition"));
-                connect(cleanCurrentRoutineConditionA, &QAction::triggered, this, [=](){
-                    emit clean_current_routine_condition_signal(key);
-                });
-                menu.addAction(cleanCurrentRoutineConditionA);
+                    menu.addSeparator();
 
-                auto cleanAllRoutineConditionsA = new QAction(QSL("Clean all conditions"));
-                connect(cleanAllRoutineConditionsA, &QAction::triggered, this, [=](){
-                    emit clean_all_routine_conditions_signal(key);
-                });
-                menu.addAction(cleanAllRoutineConditionsA);
+                    auto cleanCurrentRoutineConditionA = new QAction(QSL("Clean current condition"));
+                    connect(cleanCurrentRoutineConditionA, &QAction::triggered, this, [=](){
+                        emit GSignals::get()->clean_current_routine_condition_signal(key);
+                    });
+                    menu.addAction(cleanCurrentRoutineConditionA);
 
-                menu.addSeparator();
+                    auto cleanAllRoutineConditionsA = new QAction(QSL("Clean all conditions"));
+                    connect(cleanAllRoutineConditionsA, &QAction::triggered, this, [=](){
+                        emit GSignals::get()->clean_all_routine_conditions_signal(key);
+                    });
+                    menu.addAction(cleanAllRoutineConditionsA);
 
-                auto setAllRoutineConditionsDurationA = new QAction(QSL("Set duration for all conditions"));
-                connect(setAllRoutineConditionsDurationA, &QAction::triggered, this, [=](){
-                    emit set_duration_for_all_routine_conditions_signal(key);
-                });
-                menu.addAction(setAllRoutineConditionsDurationA);
+                    menu.addSeparator();
+
+                    auto setAllRoutineConditionsDurationA = new QAction(QSL("Set duration for all conditions"));
+                    connect(setAllRoutineConditionsDurationA, &QAction::triggered, this, [=](){
+                        emit GSignals::get()->set_duration_for_all_routine_conditions_signal(key);
+                    });
+                    menu.addAction(setAllRoutineConditionsDurationA);
+                }
             }
 
             menu.exec(event->globalPos());
@@ -344,7 +325,7 @@ void FlowDiagramW::keyPressEvent(QKeyEvent *event){
 
     QWidget::keyPressEvent(event);
     if(event->key() == Qt::Key_Delete){
-        emit remove_selected_element_signal();
+        emit GSignals::get()->remove_selected_element_signal();
     }
 }
 #include "moc_flow_diagram_widget.cpp"

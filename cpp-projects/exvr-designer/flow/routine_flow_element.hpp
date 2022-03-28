@@ -43,6 +43,8 @@ public:
     void compute_position(QPointF topLeft, int loopMaxDeepLevel) override;
     void draw(QPainter &painter, qreal zoomLevel) override;
     void update(Element *element) override;
+
+    bool is_a_randomizer() const noexcept {return isARandomizer;}
 private:
 
     bool isARandomizer;

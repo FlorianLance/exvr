@@ -102,7 +102,7 @@ ActionW::ActionW(ElementKey routineKey, ConditionKey conditionKey, Action *actio
         emit GSignals::get()->select_action_config_signal(routine_key(), condition_key(), action_key(), RowId{index});
     });
     connect(m_ui.pbDelete, &QPushButton::clicked, this, [=]{
-        emit GSignals::get()->delete_action_signal(routine_key(), condition_key(),action_key());
+        emit GSignals::get()->remove_action_signal(routine_key(), condition_key(),action_key());
     });
     connect(m_ui.pbFill, &QPushButton::clicked, this, [=]{
 

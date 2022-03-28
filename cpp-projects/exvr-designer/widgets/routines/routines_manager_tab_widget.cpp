@@ -66,7 +66,7 @@ RoutinesManagerTW::RoutinesManagerTW() {
         if(rowId  > -1){
             auto routineW = routine_widget(RowId{rowId});
             if(routineW != nullptr){
-                emit GSignals::get()->routine_selected_signal(routineW->routine_key());
+                emit GSignals::get()->routine_selected_signal(routineW->routine_key(), true);
             }
         }
     });

@@ -24,6 +24,9 @@
 
 #include "flow_sequence.hpp"
 
+// local
+#include "experiment/global_signals.hpp"
+
 using namespace tool::ex;
 
 void FlowSequence::reset(){
@@ -233,13 +236,13 @@ void FlowSequence::check_click_on_elements(QPoint clickPos) noexcept{
 
     // check in elements
     if(auto selectedElement = mouse_on_element(clickPos); selectedElement != nullptr){
-        emit select_element_signal(selectedElement->key);
+        emit GSignals::get()->select_element_signal(selectedElement->key, true);
         return;
     }
 
     // check in loops
     if(auto selectedLoop = mouse_on_loop(clickPos); selectedLoop != nullptr){
-        emit select_element_signal(selectedLoop->key);
+        emit GSignals::get()->select_element_signal(selectedLoop->key, true);
         return;
     }
 
@@ -253,13 +256,13 @@ void FlowSequence::check_click_on_elements(QPoint clickPos) noexcept{
         if(node->is_selected()){
 
             if(node->addRoutine->uiElemRect.contains(clickPos)){
-                emit add_element_signal(Element::Type::Routine,   flow_position(node));
+                emit GSignals::get()->add_element_signal(Element::Type::Routine,   flow_position(node));
                 return;
             }else if(node->addIsi->uiElemRect.contains(clickPos)){
-                emit add_element_signal(Element::Type::Isi,       flow_position(node));
+                emit GSignals::get()->add_element_signal(Element::Type::Isi,       flow_position(node));
                 return;
             }else if(node->addLoop->uiElemRect.contains(clickPos)){
-                emit add_element_signal(Element::Type::Loop,      flow_position(node));
+                emit GSignals::get()->add_element_signal(Element::Type::Loop,      flow_position(node));
                 return;
             }
         }
@@ -273,23 +276,23 @@ void FlowSequence::check_click_on_elements(QPoint clickPos) noexcept{
         }
         const auto moveElem =  dynamic_cast<MovableFlowElement*>(element.get());
         if(moveElem->removeElement->uiElemRect.contains(clickPos)){
-            emit remove_selected_element_signal();
+            emit GSignals::get()->remove_selected_element_signal();
             return;
         }
 
         int id = to_signed(flow_position(moveElem));
         if(moveElem->moveLeftElement->uiElemRect.contains(clickPos) && id > 1){
-            emit move_element_left_signal(to_unsigned(id));
+            emit GSignals::get()->move_element_left_signal(to_unsigned(id));
             return;
         }
 
         if(moveElem->moveRightElement->uiElemRect.contains(clickPos) && to_unsigned(id) < elements.size()-2){
-            emit move_element_right_signal(to_unsigned(id));
+            emit GSignals::get()->move_element_right_signal(to_unsigned(id));
             return;
         }
     }
 
-    emit unselect_element_signal();
+    emit GSignals::get()->unselect_element_signal(true);
 }
 
 void FlowSequence::draw(QPainter &painter, qreal zoomLevel){
@@ -328,4 +331,3 @@ size_t FlowSequence::flow_position(FlowElement *elem) const{
     return 0;
 }
 
-#include "moc_flow_sequence.cpp"

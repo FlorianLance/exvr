@@ -145,25 +145,30 @@ void CopyToConditionDialog::update_from_data(ElementKey currentRoutineKey, Condi
 
         routinesName << routine->name();
 
-        auto lw = std::make_unique<ui::ListWidget>();
-        ui.twRoutines->addTab(lw.get(), routine->name());
+        auto lwConditions = std::make_unique<ui::ListWidget>();
+        ui.twRoutines->addTab(lwConditions.get(), routine->name());
         for(const auto &condition : routine->conditions){
 
-            auto cb = new QCheckBox(condition->name);
-            cb->setObjectName(QSL("Check ") % condition->name);
+            auto condSelectionCb = new QCheckBox(condition->name);
+            condSelectionCb->setObjectName(QSL("Check ") % condition->name);
             if(condition->key() == m_currentCondition.v){
-                cb->setEnabled(false);
-                cb->setText(cb->text() % QSL(" (condition to copy)"));
+                condSelectionCb->setEnabled(false);
+                condSelectionCb->setText(condSelectionCb->text() % QSL(" (condition to copy)"));
             }
 
-            lw->add_widget(ui::F::gen(ui::L::HB(), {
-                cb, ui::W::txt(QSL("(A: ") % QString::number(condition->actions.size()) % QSL(", C: ") %
-                    QString::number(condition->connectors.size()) %QSL(")"))},LStretch{false}, LMargins{false}, QFrame::NoFrame));
+            QStringView actionStr = condition->actions.size()    > 1 ? QSL("actions") : QSL("action");
+            QStringView nodeStr   = condition->connectors.size() > 1 ? QSL("nodes")   : QSL("node");
 
-            connect(cb, &QCheckBox::clicked, this, &CopyToConditionDialog::update_ui_from_conditions_checkboxes);
+
+            lwConditions->add_widget(ui::F::gen(ui::L::HB(), {
+                condSelectionCb, ui::W::txt(QSL("(") % QString::number(condition->actions.size()) % QSL(" ") % actionStr % QSL(" ") %
+                QString::number(condition->connectors.size()) % QSL(" ") % nodeStr % QSL(")"))},LStretch{false}, LMargins{false}, QFrame::NoFrame));
+
+
+            connect(condSelectionCb, &QCheckBox::clicked, this, &CopyToConditionDialog::update_ui_from_conditions_checkboxes);
         }
-        lw->set_margins(2,2,2,2,2);
-        conditionsPerRoutines.emplace_back(std::make_pair(routine, std::move(lw)));
+        lwConditions->set_margins(2,2,2,2,2);
+        conditionsPerRoutines.emplace_back(std::make_pair(routine, std::move(lwConditions)));
     }
 
     ui.twRoutines->setCurrentIndex(1);

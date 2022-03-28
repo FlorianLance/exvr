@@ -68,19 +68,21 @@ namespace Ex{
             add_slot("keyboard button", (button) => {
 
                 var b = (Input.KeyboardButtonEvent)button;
-                if (b.code == triggerCode) {
-                    string triggerLine = string.Format("TRIGGER,{0},{1},{2},{3}",
-                        currentRoutine.name,
-                        currentCondition.name,
-                        Converter.to_string(time().ellapsed_exp_ms()),
-                        Converter.to_string(time().ellapsed_element_ms())
-                    );
-                    foreach (var logger in m_loggers) {
-                        logger.write(triggerLine, true);
-                    }
+                if (b.state == Input.Button.State.Down) {
+                    if (b.code == triggerCode) {
+                        string triggerLine = string.Format("TRIGGER,{0},{1},{2},{3}",
+                            currentRoutine.name,
+                            currentCondition.name,
+                            Converter.to_string(time().ellapsed_exp_ms()),
+                            Converter.to_string(time().ellapsed_element_ms())
+                        );
+                        foreach (var logger in m_loggers) {
+                            logger.write(triggerLine, true);
+                        }
 
-                    if (current_config().get<bool>("trigger_go_next")) {
-                        command().next();
+                        if (current_config().get<bool>("trigger_go_next")) {
+                            command().next();
+                        }
                     }
                 }
             });

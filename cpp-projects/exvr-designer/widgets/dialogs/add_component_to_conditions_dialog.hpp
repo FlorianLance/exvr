@@ -50,13 +50,11 @@ private:
     void update_selection_number();
 
     Ui_ConditionsSelecter condSelUi;
-    QRadioButton *rbFillU = nullptr;
-    QRadioButton *rbEmptyU = nullptr;
-    QRadioButton *rbFillV = nullptr;
-    QRadioButton *rbEmptyV = nullptr;
+    QCheckBox *cbFillU   = nullptr;
+    QCheckBox *cbFillV   = nullptr;
     QComboBox *cbConfigs = nullptr;
-    QLabel *laApplyTo = nullptr;
-    std::vector<std::pair<ElementKey,std::unique_ptr<ui::ListWidget>>> conditionsPerRoutines;
+    QLabel *laApplyTo    = nullptr;
+    std::vector<std::pair<ElementKey,std::unique_ptr<ui::ListWidget>>> conditionsPerRoutinesW;
 };
 
 }

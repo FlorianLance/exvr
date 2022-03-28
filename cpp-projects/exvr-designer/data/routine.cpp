@@ -33,6 +33,7 @@ RoutineUP Routine::copy_with_new_element_id(const Routine &routineToCopy, const 
 
     RoutineUP routine = std::make_unique<Routine>(newName, -1, routineToCopy.informations);
 
+    routine->isARandomizer = routineToCopy.isARandomizer;
     routine->conditions.reserve(routineToCopy.conditions.size());
     for(const auto &conditionToCopy : routineToCopy.conditions){
         routine->conditions.emplace_back(Condition::duplicate(*conditionToCopy.get()));

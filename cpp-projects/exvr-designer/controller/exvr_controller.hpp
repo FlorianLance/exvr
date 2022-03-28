@@ -129,7 +129,6 @@ private:
     // generate connections
     void generate_global_signals_connections();
     void generate_main_window_connections();
-    void generate_flow_diagram_connections();
     void generate_controller_connections();
     void generate_resources_manager_connections();
     void generate_logger_connections();

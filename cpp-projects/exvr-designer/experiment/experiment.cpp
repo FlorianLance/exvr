@@ -1044,23 +1044,26 @@ void Experiment::add_action_to_all_routines_conditions(ComponentKey componentKey
     add_to_update_flag(UpdateRoutines);
 }
 
-void Experiment::insert_action_to(ComponentKey componentKey, ConfigKey configKey, std::vector<std::pair<ElementKey, ConditionKey>> conditions, bool update, bool visibility){
+void Experiment::insert_action_to(ComponentKey componentKey, std::vector<std::tuple<ElementKey,ConditionKey,ConfigKey,bool, bool>> details){
 
     auto component = compM.get_component(componentKey);
     if(component == nullptr){
         return;
     }
-    auto config = component->get_config(configKey);
-    if(config == nullptr){
-        return;
-    }
 
-    for(auto &conditionP : conditions){
-        if(auto routine = get_element_from_type_and_id<Routine>(conditionP.first); routine != nullptr){
-            if(auto condition = routine->get_condition(conditionP.second); condition != nullptr) {
-                if(auto action = condition->get_action_from_component_key(componentKey, false); action == nullptr){
-                    condition->actions.emplace_back(Action::generate_component_action(
-                        component, condition->duration, configKey, update, visibility));
+    for(auto &detail : details){
+        if(auto routine = get_element_from_type_and_id<Routine>(std::get<0>(detail)); routine != nullptr){
+            if(auto condition = routine->get_condition(std::get<1>(detail)); condition != nullptr) {
+                if(auto config = component->get_config(std::get<2>(detail)); config != nullptr){
+                    if(auto action = condition->get_action_from_component_key(componentKey, false); action == nullptr){
+                        condition->actions.emplace_back(Action::generate_component_action(
+                            component,
+                            condition->duration,
+                            ConfigKey{config->key()},
+                            std::get<3>(detail),
+                            std::get<4>(detail))
+                        );
+                    }
                 }
             }
         }

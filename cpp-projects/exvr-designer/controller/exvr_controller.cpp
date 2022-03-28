@@ -68,8 +68,7 @@ ExVrController::ExVrController(const QString &nVersion, bool lncoComponents){
     qRegisterMetaType<tool::ex::ExpLauncherState>("tool::ex::ExpLauncherState");
     qRegisterMetaType<tool::ex::ExpState>("tool::ex::ExpState");
     qRegisterMetaType<tool::ex::Settings>("tool::ex::Settings");
-    qRegisterMetaType<std::vector<std::pair<tool::ex::ElementKey, tool::ex::ConditionKey>>>("std::vector<std::pair<tool::ex::ElementKey, tool::ex::ConditionKey>>");
-
+    qRegisterMetaType<std::vector<std::tuple<tool::ex::ElementKey, tool::ex::ConditionKey, tool::ex::ConfigKey, bool, bool>>>("std::vector<std::tuple<tool::ex::ElementKey, tool::ex::ConditionKey, tool::ex::ConfigKey, bool, bool>>");
 
     qRegisterMetaType<QStringView>("QStringView");
 
@@ -121,7 +120,6 @@ ExVrController::ExVrController(const QString &nVersion, bool lncoComponents){
     QtLogger::message("[CONTROLLER] Generate connections", false, true);
     generate_global_signals_connections();
     generate_main_window_connections();
-    generate_flow_diagram_connections();
     generate_controller_connections();
     generate_resources_manager_connections();
     generate_logger_connections();
@@ -1167,6 +1165,17 @@ void ExVrController::generate_global_signals_connections(){
     connect(s, &GSignals::leave_component_signal,                     componentsM, &COM::update_style);
 
     // -> experiment
+    // # ui
+    connect(s, &GSignals::toggle_mode_signal,                         exp(), &EXP::toggle_design_mode);
+    connect(s, &GSignals::toggle_follow_condition_mode_signal,        exp(), &EXP::toggle_follow_condition_mode);
+    // # state
+    connect(s, &GSignals::exp_state_updated_signal,                   exp(), &EXP::update_exp_state);
+    connect(s, &GSignals::exp_launcher_state_updated_signal,          exp(), &EXP::update_exp_launcher_state);
+    // # infos
+    connect(s, &GSignals::connector_info_update_signal,               exp(), &EXP::update_connector_dialog_with_info);
+    connect(s, &GSignals::component_info_update_signal,               exp(), &EXP::update_component_dialog_with_info);
+
+    // # components
     connect(s, &GSignals::sort_components_by_category_signal,         exp(), &EXP::sort_components_by_category);
     connect(s, &GSignals::sort_components_by_type_signal,             exp(), &EXP::sort_components_by_type);
     connect(s, &GSignals::sort_components_by_name_signal,             exp(), &EXP::sort_components_by_name);
@@ -1174,10 +1183,41 @@ void ExVrController::generate_global_signals_connections(){
     connect(s, &GSignals::add_component_signal,                       exp(), &EXP::add_component);
     connect(s, &GSignals::remove_component_signal,                    exp(), &EXP::remove_component);
     connect(s, &GSignals::duplicate_component_signal,                 exp(), &EXP::duplicate_component);
-    connect(s, &GSignals::select_routine_condition_signal,            exp(), &EXP::select_routine_condition);
-    connect(s, &GSignals::move_routine_condition_down_signal,         exp(), &EXP::move_routine_condition_down);
-    connect(s, &GSignals::move_routine_condition_up_signal,           exp(), &EXP::move_routine_condition_up);
-    connect(s, &GSignals::update_element_name_signal,                 exp(), &EXP::update_element_name);
+    connect(s, &GSignals::component_name_changed_signal,              exp(), &EXP::update_component_name);
+    // ## config
+    connect(s, &GSignals::select_config_signal,                       exp(), &EXP::select_config_in_component);
+    connect(s, &GSignals::insert_config_signal,                       exp(), &EXP::insert_config_in_component);
+    connect(s, &GSignals::copy_config_signal,                         exp(), &EXP::copy_config_from_component);
+    connect(s, &GSignals::remove_config_signal,                       exp(), &EXP::remove_config_from_component);
+    connect(s, &GSignals::move_config_signal,                         exp(), &EXP::move_config_in_component);
+    connect(s, &GSignals::rename_config_signal,                       exp(), &EXP::rename_config_in_component);
+    // ### args
+    connect(s, &GSignals::arg_removed_signal,                         exp(), &EXP::arg_removed);
+    connect(s, &GSignals::swap_arg_signal,                            exp(), &EXP::swap_arg);
+    connect(s, &GSignals::new_arg_signal,                             exp(), &EXP::new_arg);
+    connect(s, &GSignals::arg_updated_signal,                         exp(), &EXP::arg_updated);
+
+    // # elements
+    connect(s, &GSignals::select_element_signal,                            exp(), &EXP::select_element);
+    connect(s, &GSignals::unselect_element_signal,                          exp(), &EXP::unselect_all_elements);
+    connect(s, &GSignals::add_element_signal,                               exp(), &EXP::add_element);
+    connect(s, &GSignals::remove_selected_element_signal,                   exp(), &EXP::remove_selected_element);
+    connect(s, &GSignals::move_element_left_signal,                         exp(), &EXP::move_left);
+    connect(s, &GSignals::move_element_right_signal,                        exp(), &EXP::move_right);
+    connect(s, &GSignals::duplicate_element_signal,                         exp(), &EXP::duplicate_element);
+    connect(s, &GSignals::remove_element_signal,                            exp(), &EXP::remove_element_of_key);
+    connect(s, &GSignals::clean_current_routine_condition_signal,           exp(), &EXP::clean_current_routine_condition);
+    connect(s, &GSignals::clean_all_routine_conditions_signal,              exp(), &EXP::clean_all_routine_conditions);
+    connect(s, &GSignals::set_duration_for_all_routine_conditions_signal,   exp(), &EXP::set_duration_for_all_routine_conditions);
+    connect(s, &GSignals::update_element_name_signal,                       exp(), &EXP::update_element_name);
+    // ## isi
+    connect(s, &GSignals::add_isi_interval_signal,                    exp(), &EXP::add_isi_interval);
+    connect(s, &GSignals::modify_isi_interval_signal,                 exp(), &EXP::modify_isi_interval);
+    connect(s, &GSignals::set_isi_randomize_signal,                   exp(), &EXP::set_isi_randomize);
+    connect(s, &GSignals::remove_isi_interval_signal,                 exp(), &EXP::remove_isi_interval);
+    connect(s, &GSignals::move_isi_interval_up_signal,                exp(), &EXP::move_isi_interval_up);
+    connect(s, &GSignals::move_isi_interval_down_signal,              exp(), &EXP::move_isi_interval_down);
+    // ## loop
     connect(s, &GSignals::select_loop_set_signal,                     exp(), &EXP::select_loop_set);
     connect(s, &GSignals::modify_loop_nb_reps_signal,                 exp(), &EXP::modify_loop_nb_reps);
     connect(s, &GSignals::modify_loop_n_signal,                       exp(), &EXP::modify_loop_N);
@@ -1190,70 +1230,27 @@ void ExVrController::generate_global_signals_connections(){
     connect(s, &GSignals::load_loop_sets_file_signal,                 exp(), &EXP::load_loop_sets_file);
     connect(s, &GSignals::reload_loop_sets_file_signal,               exp(), &EXP::reload_loop_sets_file);
     connect(s, &GSignals::add_loop_sets_signal,                       exp(), &EXP::add_loop_sets);
-    connect(s, &GSignals::add_isi_interval_signal,                    exp(), &EXP::add_isi_interval);
-    connect(s, &GSignals::modify_isi_interval_signal,                 exp(), &EXP::modify_isi_interval);
-    connect(s, &GSignals::set_isi_randomize_signal,                   exp(), &EXP::set_isi_randomize);
-    connect(s, &GSignals::remove_isi_interval_signal,                 exp(), &EXP::remove_isi_interval);
-    connect(s, &GSignals::move_isi_interval_up_signal,                exp(), &EXP::move_isi_interval_up);
-    connect(s, &GSignals::move_isi_interval_down_signal,              exp(), &EXP::move_isi_interval_down);
+    // ## routine
     connect(s, &GSignals::set_routine_as_randomizer_signal,           exp(), &EXP::set_routine_as_randomizer);
     connect(s, &GSignals::update_element_informations_signal,         exp(), &EXP::update_element_informations);
-    connect(s, &GSignals::toggle_mode_signal,                         exp(), &EXP::toggle_design_mode);
-    connect(s, &GSignals::routine_selected_signal,                    [&]{});
+    connect(s, &GSignals::routine_selected_signal,                    exp(), &EXP::select_element);
+    // ### conditions
+    connect(s, &GSignals::select_routine_condition_signal,            exp(), &EXP::select_routine_condition);
+    connect(s, &GSignals::move_routine_condition_down_signal,         exp(), &EXP::move_routine_condition_down);
+    connect(s, &GSignals::move_routine_condition_up_signal,           exp(), &EXP::move_routine_condition_up);
+    connect(s, &GSignals::routine_condition_selected_signal,          exp(), &EXP::select_routine_condition);
+    // #### actions
     connect(s, &GSignals::delete_actions_signal,                      exp(), &EXP::delete_actions_from_condition);
     connect(s, &GSignals::fill_actions_signal,                        exp(), &EXP::fill_actions_from_condition);
     connect(s, &GSignals::clean_actions_signal,                       exp(), &EXP::clean_actions_from_condition);
-    connect(s, &GSignals::routine_condition_selected_signal,          exp(), &EXP::select_routine_condition);
     connect(s, &GSignals::add_action_signal,                          exp(), &EXP::add_action);
     connect(s, &GSignals::fill_action_signal,                         exp(), &EXP::fill_action);
     connect(s, &GSignals::clean_action_signal,                        exp(), &EXP::clean_action);
     connect(s, &GSignals::move_action_up_signal,                      exp(), &EXP::move_action_up);
     connect(s, &GSignals::move_action_down_signal,                    exp(), &EXP::move_action_down);
     connect(s, &GSignals::select_action_config_signal,                exp(), &EXP::select_action_config);
-    connect(s, &GSignals::select_config_signal,                       exp(), &EXP::select_config_in_component);
-    connect(s, &GSignals::update_timeline_signal,                     exp(), &EXP::update_condition_timeline);
-    connect(s, &GSignals::add_interval_signal,                        exp(), &EXP::add_timeline_interval);
-    connect(s, &GSignals::remove_interval_signal,                     exp(), &EXP::remove_timeline_interval);
-    connect(s, &GSignals::nodes_connection_created_signal,            exp(), &EXP::create_connection);
-    connect(s, &GSignals::connector_node_created_signal,              exp(), &EXP::create_connector_node);
-    connect(s, &GSignals::connector_node_modified_signal,             exp(), &EXP::modify_connector_node);
-    connect(s, &GSignals::duplicate_connector_node_signal,            exp(), &EXP::duplicate_connector_node);
-    connect(s, &GSignals::connector_node_moved_signal,                exp(), &EXP::move_connector_node);
-    connect(s, &GSignals::connector_input_connection_validity_signal, exp(), &EXP::set_connector_input_connection_validity);
-    connect(s, &GSignals::component_node_created_signal,              exp(), &EXP::create_component_node);
-    connect(s, &GSignals::component_node_moved_signal,                exp(), &EXP::move_component_node);
-    connect(s, &GSignals::delete_nodes_and_connections_signal,        exp(), &EXP::delete_nodes_and_connections);
-    connect(s, &GSignals::delete_selected_nodes_signal,               exp(), &EXP::delete_selected_nodes);
-    connect(s, &GSignals::delete_connections_signal,                  exp(), &EXP::delete_connections);    
-    connect(s, &GSignals::unselect_nodes_and_connections_signal,      exp(), &EXP::unselect_nodes_and_connections);
-    connect(s, &GSignals::select_nodes_and_connections_signal,        exp(), &EXP::select_nodes_and_connections);
-    connect(s, &GSignals::toggle_follow_condition_mode_signal,        exp(), &EXP::toggle_follow_condition_mode);
-    connect(s, &GSignals::arg_removed_signal,                         exp(), &EXP::arg_removed);
-    connect(s, &GSignals::swap_arg_signal,                            exp(), &EXP::swap_arg);
-    connect(s, &GSignals::new_arg_signal,                             exp(), &EXP::new_arg);
-    connect(s, &GSignals::arg_updated_signal,                         exp(), &EXP::arg_updated);
-    connect(s, &GSignals::component_name_changed_signal,              exp(), &EXP::update_component_name);
-    connect(s, &GSignals::insert_config_signal,                       exp(), &EXP::insert_config_in_component);
-    connect(s, &GSignals::copy_config_signal,                         exp(), &EXP::copy_config_from_component);
-    connect(s, &GSignals::remove_config_signal,                       exp(), &EXP::remove_config_from_component);
-    connect(s, &GSignals::move_config_signal,                         exp(), &EXP::move_config_in_component);
-    connect(s, &GSignals::rename_config_signal,                       exp(), &EXP::rename_config_in_component);
-    connect(s, &GSignals::exp_state_updated_signal,                   exp(), &EXP::update_exp_state);
-    connect(s, &GSignals::exp_launcher_state_updated_signal,          exp(), &EXP::update_exp_launcher_state);
-    connect(s, &GSignals::connector_info_update_signal,               exp(), &EXP::update_connector_dialog_with_info);
-    connect(s, &GSignals::component_info_update_signal,               exp(), &EXP::update_component_dialog_with_info);
     connect(s, &GSignals::insert_action_to_signal,                    exp(), &EXP::insert_action_to);
-
-    connect(s, &GSignals::remove_action_from_all_routines_conditions_signal, exp(), &EXP::remove_action_from_all_routines_conditions);
     connect(s, &GSignals::insert_action_to_all_routines_conditions_signal,   exp(), &EXP::add_action_to_all_routines_conditions);
-    connect(s, &GSignals::delete_action_signal, this, [&](ElementKey routineKey, ConditionKey conditionKey, ActionKey actionKey){
-        exp()->remove_action_from_condition(routineKey, conditionKey, actionKey, true);
-    });
-
-
-    connect(s, &GSignals::routine_selected_signal,                    this, [&](ElementKey elementKey){
-        exp()->select_element(elementKey);
-    });
     connect(s, &GSignals::insert_action_to_selected_routine_signal, this, [&](ComponentKey componentKey){
         if(auto cRoutineW = ui()->routines_manager()->current_routine_widget(); cRoutineW != nullptr){
             if(auto cCondW = cRoutineW->current_condition_widget(); cCondW != nullptr){
@@ -1266,15 +1263,36 @@ void ExVrController::generate_global_signals_connections(){
             exp()->add_action_to_all_conditions(cRoutineW->routine_key(), componentKey, {}, true, true);
         }
     });
-
     connect(s, &GSignals::insert_action_with_details_signal, this, &ExVrController::show_add_action_detailed_dialog);
     connect(s, &GSignals::modify_action_with_details_signal, this, &ExVrController::show_modify_action_detailed_dialog);
-
+    connect(s, &GSignals::remove_action_from_all_routines_conditions_signal, exp(), &EXP::remove_action_from_all_routines_conditions);
+    connect(s, &GSignals::remove_action_signal, this, [&](ElementKey routineKey, ConditionKey conditionKey, ActionKey actionKey){
+        exp()->remove_action_from_condition(routineKey, conditionKey, actionKey, true);
+    });
     connect(s, &GSignals::remove_action_from_all_selected_routine_conditions_signal, this, [&](ComponentKey componentKey){
         if(auto cRoutineW = ui()->routines_manager()->current_routine_widget(); cRoutineW != nullptr){
             exp()->remove_action_from_all_selected_routine_conditions(cRoutineW->routine_key(), componentKey);
         }
     });
+    // ##### timelines
+    connect(s, &GSignals::update_timeline_signal,                     exp(), &EXP::update_condition_timeline);
+    connect(s, &GSignals::add_interval_signal,                        exp(), &EXP::add_timeline_interval);
+    connect(s, &GSignals::remove_interval_signal,                     exp(), &EXP::remove_timeline_interval);
+    // #### nodes
+    connect(s, &GSignals::nodes_connection_created_signal,            exp(), &EXP::create_connection);
+    connect(s, &GSignals::connector_node_created_signal,              exp(), &EXP::create_connector_node);
+    connect(s, &GSignals::connector_node_modified_signal,             exp(), &EXP::modify_connector_node);
+    connect(s, &GSignals::duplicate_connector_node_signal,            exp(), &EXP::duplicate_connector_node);
+    connect(s, &GSignals::connector_node_moved_signal,                exp(), &EXP::move_connector_node);
+    connect(s, &GSignals::connector_input_connection_validity_signal, exp(), &EXP::set_connector_input_connection_validity);
+    connect(s, &GSignals::component_node_created_signal,              exp(), &EXP::create_component_node);
+    connect(s, &GSignals::component_node_moved_signal,                exp(), &EXP::move_component_node);
+    connect(s, &GSignals::delete_nodes_and_connections_signal,        exp(), &EXP::delete_nodes_and_connections);
+    connect(s, &GSignals::delete_selected_nodes_signal,               exp(), &EXP::delete_selected_nodes);
+    connect(s, &GSignals::delete_connections_signal,                  exp(), &EXP::delete_connections);
+    connect(s, &GSignals::unselect_nodes_and_connections_signal,      exp(), &EXP::unselect_nodes_and_connections);
+    connect(s, &GSignals::select_nodes_and_connections_signal,        exp(), &EXP::select_nodes_and_connections);
+
     // -> exp launcher
     connect(s, &GSignals::connector_node_modified_signal, [&](ElementKey routineKey, ConditionKey conditionKey, ConnectorKey connectorKey, QString name, Arg arg){
         if(!exp()->states.neverLoaded){
@@ -1383,26 +1401,6 @@ void ExVrController::generate_main_window_connections(){
     connect(ui(), &DMW::previous_element_signal,            exp_launcher(), &LAU::previous_element);    
 }
 
-
-
-void ExVrController::generate_flow_diagram_connections(){
-
-    auto flowDiagram = ui()->flow_diagram();
-    // -> experiment
-    connect(flowDiagram, &FlowDiagramW::select_element_signal,          this, [&](ElementKey elementKey){
-        exp()->select_element(elementKey);}
-    );
-    connect(flowDiagram, &FlowDiagramW::unselect_element_signal,        this, [&](){exp()->unselect_all_elements();});
-    connect(flowDiagram, &FlowDiagramW::add_element_signal,             exp(), &EXP::add_element);
-    connect(flowDiagram, &FlowDiagramW::remove_selected_element_signal, exp(), &EXP::remove_selected_element);
-    connect(flowDiagram, &FlowDiagramW::move_element_left_signal,       exp(), &EXP::move_left);
-    connect(flowDiagram, &FlowDiagramW::move_element_right_signal,      exp(), &EXP::move_right);
-    connect(flowDiagram, &FlowDiagramW::duplicate_element_signal,       exp(), &EXP::duplicate_element);
-    connect(flowDiagram, &FlowDiagramW::remove_element_signal,          exp(), &EXP::remove_element_of_key);
-    connect(flowDiagram, &FlowDiagramW::clean_current_routine_condition_signal, exp(), &EXP::clean_current_routine_condition);
-    connect(flowDiagram, &FlowDiagramW::clean_all_routine_conditions_signal,    exp(), &EXP::clean_all_routine_conditions);
-    connect(flowDiagram, &FlowDiagramW::set_duration_for_all_routine_conditions_signal,    exp(), &EXP::set_duration_for_all_routine_conditions);
-}
 
 void ExVrController::generate_controller_connections(){
     // -> exp launcher

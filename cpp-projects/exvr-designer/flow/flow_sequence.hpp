@@ -43,8 +43,6 @@ using FlowSequenceUP = std::unique_ptr<FlowSequence>;
 
 class FlowSequence : public QObject{
 
-    Q_OBJECT
-
 public:
 
     void reset();
@@ -57,15 +55,6 @@ public:
     void draw(QPainter &painter, qreal zoomLevel);
 
     FlowElement* current_selection() const;
-
-signals:
-
-    void select_element_signal(ElementKey elementKey);
-    void unselect_element_signal();
-    void add_element_signal(Element::Type type, size_t index);
-    void remove_selected_element_signal();
-    void move_element_left_signal(size_t id);
-    void move_element_right_signal(size_t id);
 
 private:
 
