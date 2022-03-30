@@ -458,6 +458,13 @@ void DesignerWindow::create_actions(){
     m_benchmarkAct.setStatusTip(tr("Benchmark"));
     connect(&m_benchmarkAct, &QAction::triggered, GSignals::get(), &GSignals::show_benchmark_dialog_signal);
 
+    m_crashAct.setText(tr("&Make it crash"));
+    m_crashAct.setStatusTip(tr("Make it crash"));
+    connect(&m_crashAct, &QAction::triggered, this, [&]{
+        QtLogger::error("CRASH ON PURPOSE");
+        abort();
+    });
+
     m_clearLogsAct.setText(tr("&Erase logs"));
     m_clearLogsAct.setStatusTip(tr("Erase logs"));
     m_clearLogsAct.setIcon(QIcon(":/icons/Eraser"));
@@ -622,6 +629,7 @@ void DesignerWindow::create_menu(){
     menu->addAction(&m_openTempInstanceAct);
     menu->addSeparator();
     menu->addAction(&m_benchmarkAct);
+    menu->addAction(&m_crashAct);
     // doc
     menu = menuBar()->addMenu(tr("&?"));
     menu->addAction(&m_showDocumentationEditorAct);

@@ -37,13 +37,8 @@ using namespace tool::ex;
 
 int main(int argc, char *argv[]){
 
-//    string[] lines = theText.Split(
-//        new string[] { "\r\n", "\r", "\n" },
-//        StringSplitOptions.None
-//    );
-
     // build parameters
-    const QString numVersion = "1.0a28";
+    const QString numVersion = "1.0a29";
     bool lncoComponents = true;
 
     // compiler check

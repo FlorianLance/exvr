@@ -30,7 +30,7 @@ using System.Runtime.InteropServices;
 
 namespace Ex.DLL{
 
-    public class PythonScriptComponentDLL : ExComponentDLL{
+    public class PythonScriptComponentDLL : DLLExComponent{
 
 
         #region memory_management

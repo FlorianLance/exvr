@@ -111,19 +111,16 @@ namespace Ex{
 
         #region unity
 
-        private const string expStr = "[EXP] {0}";
+        static private readonly string expStr = "[EXP] {0}";
+        static private readonly string inforFormat = "{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}";
+        static private readonly string ordersFormat = "{0}/{1}";
+        static private readonly string callsNbFormat = "{0};{1}";
+        static private readonly string routineStr = "R";
+        static private readonly string isiStr = "I";
+        static private readonly string nullStr = "-";
 
-
-
-        //double previousUpdateTime = 0f;
 
         void Update() {
-
-            //double currentUpdateTime = ExVR.Time().ellapsed_time_program_ms();
-            //if (currentUpdateTime - previousUpdateTime < 8.0) { // do not call update more thant 125 times per second
-            //    return;
-            //}
-            //previousUpdateTime = currentUpdateTime;
 
             if (!ExVR.Time().is_experiment_running()) {
                 apply_scheduled_actions();
@@ -184,6 +181,10 @@ namespace Ex{
 
             send_current_experiment_state_to_gui();
 
+            if(ExVR.ExpLog().size_flow() > 100) {
+                ExVR.ExpLog().write();
+            }
+
             ExVR.Time().end_frame();
         }
 
@@ -204,11 +205,6 @@ namespace Ex{
 
         #endregion unity
 
-
-
-        public void log_message(string message, bool extraInfo = false) {
-            ExVR.Log().message(string.Format(expStr, message), extraInfo);
-        }
 
         public void log_warning(string warning, bool extraInfo = false) {
             ExVR.Log().warning(string.Format(expStr, warning), extraInfo);
@@ -267,7 +263,7 @@ namespace Ex{
 
         public void clean_experiment() {
 
-            log_message("Clean experiment...");
+            ExVR.ExpLog().exp("Clean experiment...", true, false, false);
 
             if (ExVR.Time().is_experiment_started()) {
                 stop_experiment();
@@ -279,7 +275,7 @@ namespace Ex{
 
             m_experimentLoaded = false;
 
-            log_message("Experiment cleaned.");
+            ExVR.ExpLog().exp("Experiment cleaned.", true, false, false);
         }
 
         #region load_experiment
@@ -307,19 +303,19 @@ namespace Ex{
 
                 string elementTimeStr   = Converter.to_string(ExVR.Time().ellapsed_element_ms());
                 string expTimeStr       = Converter.to_string(ExVR.Time().ellapsed_exp_ms());                
-                string interStr         = info.interval() != null ? Converter.to_string(info.interval().tEndS * 1000) : "-";
-                string orderStr         = string.Format("{0}/{1}", info.order()+1, schreduler.instance.total_number_of_elements());
+                string interStr         = info.interval() != null ? Converter.to_string(info.interval().tEndS * 1000) : nullStr;
+                string orderStr         = string.Format(ordersFormat, info.order()+1, schreduler.instance.total_number_of_elements());
                 string elementKey       = Converter.to_string(info.key());
 
-                string callsNb          = string.Format("{0};{1}", 
+                string callsNb          = string.Format(callsNbFormat, 
                     Converter.to_string(info.element().calls_nb()),
-                    isRoutine ? Converter.to_string(((RoutineInfo)info).condition().calls_nb()) : "-"
+                    isRoutine ? Converter.to_string(((RoutineInfo)info).condition().calls_nb()) : nullStr
                 );
 
-                string typeStr          = isRoutine ? "R" : "I";
+                string typeStr          = isRoutine ? routineStr : isiStr;
                 string typeSpecificInfo = isRoutine ? ((RoutineInfo)info).condition().key_str() :  ((ISIInfo)info).duration_str();
 
-                infoStr = string.Format("{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}",
+                infoStr = string.Format(inforFormat,
                     elementTimeStr,
                     expTimeStr,
                     interStr,
@@ -339,7 +335,6 @@ namespace Ex{
 
             // init state
             ExVR.Network().set_launcher_loading_state(xmlExperimentPath, xmlInstancePath);
-            ExVR.ExpLog().exp(string.Format("Load XML [{0} , {1}]", xmlExperimentPath, xmlInstancePath), true, false, false);
 
             // clean
             if (m_experimentLoaded) {
@@ -365,11 +360,11 @@ namespace Ex{
         public bool generate_experiment(string xmlExperimentPath, string xmlInstancePath) {
 
             if (ExVR.Time().is_experiment_started()) {
-                log_error("Experiment must be stopped before loading a new one.");
+                log_error("Experiment must be stopped before loading a new one.");                
                 return false;
             }
 
-            log_message("### Generate experiment ###");
+            ExVR.ExpLog().exp("### Generate experiment ###", true, false, false);
 
             if (!File.Exists(xmlExperimentPath)) {
                 log_error(string.Format("Experiment file {0} doesn't exists.", xmlExperimentPath));
@@ -385,7 +380,7 @@ namespace Ex{
 
             // xml experiment
             {
-                log_message(string.Format("Read XML experiment file: {0}", xmlExperimentPath));
+                ExVR.ExpLog().exp("Read XML experiment file...", true, false, false);
                 var serializer = new XmlSerializer(typeof(XML.Experiment));
                 var stream = new FileStream(xmlExperimentPath, FileMode.Open);
                 m_xmlExperiment = serializer.Deserialize(stream) as XML.Experiment;
@@ -397,7 +392,7 @@ namespace Ex{
             }
             // xml instance
             {
-                log_message(string.Format("Read XML instance file: {0}", xmlInstancePath));
+                ExVR.ExpLog().exp("Read XML instance file...", true, false, false);
                 var serializer = new XmlSerializer(typeof(XML.ExperimentFlow));
                 var stream = new FileStream(xmlInstancePath, FileMode.Open);
                 m_xmlFlow = serializer.Deserialize(stream) as XML.ExperimentFlow;
@@ -418,7 +413,7 @@ namespace Ex{
             experimentResourcesManager.generate_from_xml(m_xmlExperiment);
 
             // generate components 
-            log_message(string.Format("Load components: {0}", m_xmlExperiment.Components.Component.Count));
+            ExVR.ExpLog().exp(string.Format("Load components: {0}", m_xmlExperiment.Components.Component.Count), true, false, false);
             if (!ExVR.Components().generate(m_xmlExperiment.Components)) {
                 log_error("Experiment loading failed. Please solve errors and start loading again.");
                 generationTimer.Stop();
@@ -426,7 +421,7 @@ namespace Ex{
             }
 
             // generate flow elements 
-            log_message(string.Format("Load elements: {0}", (m_xmlExperiment.FlowElements.Routines.Routine.Count + m_xmlExperiment.FlowElements.ISIs.Isi.Count)));
+            ExVR.ExpLog().exp(string.Format("Load elements: {0}", (m_xmlExperiment.FlowElements.Routines.Routine.Count + m_xmlExperiment.FlowElements.ISIs.Isi.Count)), true, false, false);
             routines.generate_from_xml(m_xmlExperiment.FlowElements.Routines);
             ISIs.generate_from_xml(m_xmlExperiment.FlowElements.ISIs);
 
@@ -451,17 +446,19 @@ namespace Ex{
                 return false;
             }
 
-
             
             double generationTime = generationTimer.Elapsed.TotalMilliseconds * 0.001;
             generationTimer.Stop();
 
             // GUI log
-            log_message(string.Format("Experiment loaded in {0}s", generationTime));
+            ExVR.ExpLog().exp(string.Format("Experiment loaded in {0}s", generationTime), false, false, false);
             // flow log
-            ExVR.ExpLog().exp(string.Format("Experiment initialized in {0}s ", generationTime), true, false, false);
+            ExVR.ExpLog().exp(string.Format("Experiment initialized in {0}s ", generationTime), false, false, false);
 
-            ExVR.Paths().lastLoadedInstanceFile = xmlInstancePath;
+            var paths = ExVR.Paths();
+            paths.currentExperimentFile = xmlExperimentPath;
+            paths.currentInstanceFile   = xmlInstancePath;
+
 
             return true;
         }

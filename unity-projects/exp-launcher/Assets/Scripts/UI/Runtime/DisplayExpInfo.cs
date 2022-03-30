@@ -34,11 +34,10 @@ namespace Ex{
 
     public class DisplayExpInfo : MonoBehaviour {
 
-
-        public Text tState = null;
-        public Text tTime = null;
-        public Text tCurrElement = null;
-        public Text tComponents = null;
+        public UnityEngine.UI.Text tState = null;
+        public UnityEngine.UI.Text tTime = null;
+        public UnityEngine.UI.Text tCurrElement = null;
+        public UnityEngine.UI.Text tComponents = null;
         GuiSettingsManager guiSettings = null;
 
         // Use this for initialization

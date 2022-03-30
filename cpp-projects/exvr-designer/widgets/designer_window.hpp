@@ -256,8 +256,10 @@ private:
     QAction m_showDocumentationEditorAct;
     QAction m_aboutAct;
     QAction m_showHelpAct;
-    QAction m_benchmarkAct;
     QAction m_settingsAct;
+    // # debug
+    QAction m_benchmarkAct;
+    QAction m_crashAct;
     // # resources
     QAction m_showResourcesManagerDialogAct;
     QAction m_showCSharpScriptDirectoryAct;

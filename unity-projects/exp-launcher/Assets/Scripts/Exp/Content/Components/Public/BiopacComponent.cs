@@ -453,7 +453,7 @@ namespace Ex {
 
             if (initC.get_resource_alias("debug_log_file").Length > 0) {
 
-                var content = initC.get_resource_text_data("debug_log_file").content.Split('\n');
+                var content = Text.split_lines(initC.get_resource_text_data("debug_log_file").content);
                 log_message("content: " + content.Length);
                 m_debugData = new List<System.Tuple<double, List<double>>>(content.Length);
                 int nbCols = 0;
@@ -462,12 +462,12 @@ namespace Ex {
                         continue;
                     }
                     if (line.StartsWith("[Timestamp(ms)]	")) {
-                        nbCols = line.Split('\t').Length;
+                        nbCols = Text.split_tabs(line).Length;
                     }
                     if (nbCols == 0) {
                         continue;
                     }
-                    var split = line.Split('\t');
+                    var split = Text.split_tabs(line);
                     if (split.Length != nbCols) {
                         continue;
                     }

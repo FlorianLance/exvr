@@ -94,6 +94,9 @@ namespace Ex {
             eventsManager.initialize();
             // # logger
             loggerManager.initialize();
+            // # cpp            
+            CppExperiment.init_logger();
+            CppElement.init_callbacks();
             // # IPC
             ExVR.ExpLog().builder("Start IPC communication");
             networkManager.initialize();                        
@@ -124,6 +127,8 @@ namespace Ex {
             networkManager.set_launcher_idle_state();
 
 
+
+
             //// tests
             //var pc = gameObject.AddComponent<PointCloud>();
             //pc.set_rendering(PointCloud.RenderingType.ParabloidFrag);
@@ -131,7 +136,7 @@ namespace Ex {
             //Mesh mesh = gameObject.GetComponent<MeshFilter>().mesh;
             //mesh.MarkDynamic();
 
-    
+
         }
 
 
@@ -172,7 +177,7 @@ namespace Ex {
 
         void OnApplicationQuit() {
 
-            ExVR.Log().message(string.Format("Application ending after {0} seconds -> {1}", Time.time, GlobalVariables.wantToLeave));
+            ExVR.ExpLog().builder(string.Format("Application ending after {0} seconds -> {1}", Time.time, GlobalVariables.wantToLeave));
 
             // force destroy experiment (mostly for C++DLL component to be clean correctly in Editor mode)
             ExVR.ExpLog().builder("Quit application");

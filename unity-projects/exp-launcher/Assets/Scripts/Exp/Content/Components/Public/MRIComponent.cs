@@ -56,6 +56,7 @@ namespace Ex{
 
         private bool processSolving = false;
         private bool processMoving = false;
+        private bool triggerSent = false;
 
         Vector3 initKneePosition = Vector3.zero;
         Vector3 currentKneePosition = Vector3.zero;
@@ -67,9 +68,15 @@ namespace Ex{
 
             add_slot("keyboard button", (button) => {
 
+                if (triggerSent) {
+                    return;
+                }
                 var b = (Input.KeyboardButtonEvent)button;
                 if (b.state == Input.Button.State.Down) {
                     if (b.code == triggerCode) {
+
+                        triggerSent = true;
+
                         string triggerLine = string.Format("TRIGGER,{0},{1},{2},{3}",
                             currentRoutine.name,
                             currentCondition.name,
@@ -83,6 +90,7 @@ namespace Ex{
                         if (current_config().get<bool>("trigger_go_next")) {
                             command().next();
                         }
+                        
                     }
                 }
             });
@@ -201,6 +209,7 @@ namespace Ex{
         }
 
         public override void update_from_current_config() {
+            triggerSent = false;
             reset_config_transform();
         }
 

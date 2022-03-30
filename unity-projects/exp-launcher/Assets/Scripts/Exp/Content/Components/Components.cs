@@ -93,8 +93,8 @@ using static Ex.ExComponent;
 //}
 //#endif
 
-namespace Ex
-{
+namespace Ex{
+
     public class ComponentInfo{
         public ComponentInfo(Category category, Pritority priority, Reserved reserved) {
             this.category = category;

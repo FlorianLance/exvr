@@ -27,7 +27,7 @@ using System.Collections.Generic;
 
 namespace Ex{
 
-    public class PythonScriptComponent : CppComponent{
+    public class PythonScriptComponent : CppExComponent{
 
 
         protected override bool initialize() {
@@ -40,18 +40,18 @@ namespace Ex{
             catchExceptions = true;
 
             // slots
-            add_slot("slot1", (arg) => {
-                cppDll.call_slot(0, arg);
-            });
-            add_slot("slot2", (arg) => {
-                cppDll.call_slot(1, arg);
-            });
-            add_slot("slot3", (arg) => {
-                cppDll.call_slot(2, arg);
-            });
-            add_slot("slot4", (arg) => {
-                cppDll.call_slot(3, arg);
-            });
+            //add_slot("slot1", (arg) => {
+            //    cppDll.call_slot(0, arg);
+            //});
+            //add_slot("slot2", (arg) => {
+            //    cppDll.call_slot(1, arg);
+            //});
+            //add_slot("slot3", (arg) => {
+            //    cppDll.call_slot(2, arg);
+            //});
+            //add_slot("slot4", (arg) => {
+            //    cppDll.call_slot(3, arg);
+            //});
             // signals
             add_signal("signal1");
             add_signal("signal2");

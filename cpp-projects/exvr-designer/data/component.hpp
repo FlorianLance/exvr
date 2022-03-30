@@ -81,18 +81,18 @@ struct Component {
         {Category::Viewer,      "Viewer"sv        },
     }};
 
-    [[maybe_unused]] static Name to_string(Category c) {
+    [[maybe_unused]] static constexpr Name to_string(Category c) {
         return categories.at<0,1>(c);
     }
-    [[maybe_unused]] static std::optional<Category> get_category(const Name name) {
+    [[maybe_unused]] static constexpr std::optional<Category> get_category(const Name name) {
         return categories.optional_at<1,0>(name);
     }
 
-    static auto all_categories() {
+    static constexpr auto all_categories() {
         return categories.tuple_column<0>();
     }
 
-    static auto all_categories_name(){
+    static constexpr auto all_categories_name(){
         return categories.tuple_column<1>();
     }
 
@@ -263,59 +263,59 @@ struct Component {
         {T::Webcam_viewer,            C::Viewer,      TO::B,     CO::B,   false,   R::OpenSource,   S::Sta, "Webcam_viewer"sv, "Webcam viewer"sv, "WebcamViewer"sv, ":/icons/Webcam"sv},
     }};
 
-    static Category get_category(Type type) {
+    static constexpr Category get_category(Type type) {
         return components.at<0,1>(type);
     }
 
-    static TO get_timeline_opt(Type type) {
+    static constexpr TO get_timeline_opt(Type type) {
         return components.at<0,2>(type);
     }
 
-    static CO get_config_opt(Type type) {
+    static constexpr CO get_config_opt(Type type) {
         return components.at<0,3>(type);
     }
 
-    static bool get_unicity(Type type) {
+    static constexpr bool get_unicity(Type type) {
         return components.at<0,4>(type);
     }
 
-    static Restricted get_restricted(Type type) {
+    static constexpr Restricted get_restricted(Type type) {
         return components.at<0,5>(type);
     }
 
-    static State get_state(Type type) {
+    static constexpr State get_state(Type type) {
         return components.at<0,6>(type);
     }
 
-    static TypeStr get_type_name(Type type) {
+    static constexpr TypeStr get_type_name(Type type) {
         return components.at<0,7>(type);
     }
 
-    static FullStr get_full_name(Type type) {
+    static constexpr FullStr get_full_name(Type type) {
         return components.at<0,8>(type);
     }
 
-    static UnityStr get_unity_name(Type type) {
+    static constexpr UnityStr get_unity_name(Type type) {
         return components.at<0,9>(type);
     }
 
-    static SV get_icon_path(Type type) {
+    static constexpr SV get_icon_path(Type type) {
         return components.at<0,10>(type);
     }
 
-    static size_t components_nb_per_category(Category category) {
+    static constexpr size_t components_nb_per_category(Category category) {
         return components.count_equal<1>(category);
     }
 
-    static std::optional<Type> get_type_from_name(FullStr fullName) {
+    static constexpr std::optional<Type> get_type_from_name(FullStr fullName) {
         return components.optional_at<8,0>(fullName);
     }
 
-    static std::optional<Type> get_type_from_unity_name(UnityStr unityName) {
+    static constexpr std::optional<Type> get_type_from_unity_name(UnityStr unityName) {
         return components.optional_at<9,0>(unityName);
     }
 
-    static auto all_components_types(){
+    static constexpr auto all_components_types(){
         return components.tuple_column<0>();
     }
 

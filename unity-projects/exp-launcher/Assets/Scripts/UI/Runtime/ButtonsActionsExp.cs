@@ -87,8 +87,8 @@ namespace Ex{
                 bReloadCurrent.interactable = false;
 
                 string instanceFilePath;
-                if (System.IO.File.Exists(ExVR.Paths().lastLoadedInstanceFile)){
-                    instanceFilePath = ExVR.Paths().lastLoadedInstanceFile;
+                if (System.IO.File.Exists(ExVR.Paths().currentInstanceFile)){
+                    instanceFilePath = ExVR.Paths().currentInstanceFile;
                 } else {
                     ExVR.Log().warning("No last loaded instance file found, will try to load default instance file instead.");
                     instanceFilePath = ExVR.Paths().designerDefaultInstanceFile;

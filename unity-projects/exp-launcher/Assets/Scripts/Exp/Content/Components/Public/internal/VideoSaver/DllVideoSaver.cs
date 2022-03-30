@@ -29,7 +29,7 @@ using System.Runtime.InteropServices;
 
 namespace Ex.DLL{
 
-    public class VideoSaver : ExComponentDLL{
+    public class VideoSaver : DLLExComponent{
 
         byte[] m_byteData = null;
 

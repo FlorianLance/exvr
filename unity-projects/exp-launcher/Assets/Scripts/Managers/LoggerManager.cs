@@ -257,7 +257,7 @@ namespace Ex {
         private Trace[] swapTrace = null;
         public ExperimentLogger() {
 
-            foreach(ExComponent.Function f in Enum.GetValues(typeof(ExComponent.Function))) {
+            foreach (ExComponent.Function f in Enum.GetValues(typeof(ExComponent.Function))) {
                 componentsFunctionsStr[f] = f.ToString();
             }
 
@@ -280,6 +280,18 @@ namespace Ex {
             flow = new System.Collections.Concurrent.ConcurrentQueue<string>();
             try {
                 File.WriteAllText(filePath, string.Concat("[EXVR-EXP] Started at ", DateTime.Now.ToString("MM/dd/yyyy HH:mm:ss"), "\n"));
+                var p = ExVR.Paths();
+                File.AppendAllText(filePath, string.Format("[Paths]\n\t[Exp-launcher]\n\t\tExe file: {0}\n", p.expLauncherExeFile));
+                File.AppendAllText(filePath, string.Format("\t\tMain dir: {0}\n", p.expLauncherMainDir));
+                File.AppendAllText(filePath, string.Format("\t\tData dir: {0}\n", p.expLauncherDataDir));
+                File.AppendAllText(filePath, string.Format("\t\tMono dir: {0}\n", p.expLauncherMonoDir));
+                File.AppendAllText(filePath, string.Format("\t\tTemp generated dir: {0}\n", p.expLauncherTempGeneratedDir));
+                File.AppendAllText(filePath, string.Format("\t[Designer]\n\t\tMain dir: {0}\n", p.designerMainDir));
+                File.AppendAllText(filePath, string.Format("\t\tData temp dir: {0}\n", p.designerDataTempDir));
+                File.AppendAllText(filePath, string.Format("\t\tTemp exp file: {0}\n", p.designerTempExpFile));
+                File.AppendAllText(filePath, string.Format("\t\tDefault instance file: {0}\n", p.designerDefaultInstanceFile));
+                File.AppendAllText(filePath, string.Format("\t\tLog dir: {0}\n", p.designerLogDir));
+
             } catch (Exception exception) {
                 ExVR.Log().no_logger_error(string.Format("Cannot create logger file {0}, get error {1}", filePath, exception.Message));
             }
@@ -506,6 +518,10 @@ namespace Ex {
             flow = new System.Collections.Concurrent.ConcurrentQueue<string>();
         }
 
+
+        public int size_flow() {
+            return flow.Count;
+        }
     }
 }
 

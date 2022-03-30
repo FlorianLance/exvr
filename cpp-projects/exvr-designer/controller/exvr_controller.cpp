@@ -898,7 +898,7 @@ void ExVrController::update_gui_from_experiment(){
                         ConnectorKey{connectorI.first},
                         idI.first,
                         idI.second
-                        );
+                    );
                 }
             }
         }
