@@ -56,7 +56,7 @@ namespace Ex{
 
         private bool processSolving = false;
         private bool processMoving = false;
-        private bool triggerSent = false;
+        //private bool triggerSent = false;
 
         Vector3 initKneePosition = Vector3.zero;
         Vector3 currentKneePosition = Vector3.zero;
@@ -68,14 +68,14 @@ namespace Ex{
 
             add_slot("keyboard button", (button) => {
 
-                if (triggerSent) {
-                    return;
-                }
+                //if (triggerSent) {
+                //    return;
+                //}
                 var b = (Input.KeyboardButtonEvent)button;
                 if (b.state == Input.Button.State.Down) {
                     if (b.code == triggerCode) {
 
-                        triggerSent = true;
+                        //triggerSent = true;
 
                         string triggerLine = string.Format("TRIGGER,{0},{1},{2},{3}",
                             currentRoutine.name,
@@ -83,6 +83,7 @@ namespace Ex{
                             Converter.to_string(time().ellapsed_exp_ms()),
                             Converter.to_string(time().ellapsed_element_ms())
                         );
+                        log_message(triggerLine);
                         foreach (var logger in m_loggers) {
                             logger.write(triggerLine, true);
                         }
@@ -209,7 +210,7 @@ namespace Ex{
         }
 
         public override void update_from_current_config() {
-            triggerSent = false;
+            //triggerSent = false;
             reset_config_transform();
         }
 
