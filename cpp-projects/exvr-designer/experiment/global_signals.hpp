@@ -34,7 +34,7 @@
 #include "data/interval.hpp"
 #include "data/connector.hpp"
 #include "data/connection.hpp"
-#include "data/loop.hpp"
+#include "data/flow_elements/loop.hpp"
 #include "resources/resource.hpp"
 
 namespace tool::ex{
@@ -107,7 +107,7 @@ signals:
     void select_element_signal(tool::ex::ElementKey elementKey, bool updateSignal);
     void unselect_element_signal(bool updateSignal);
     void remove_selected_element_signal();
-    void add_element_signal(tool::ex::Element::Type type, size_t index);
+    void add_element_signal(tool::ex::FlowElement::Type type, size_t index);
     void remove_element_signal(tool::ex::ElementKey elementKey);
     void set_duration_for_all_routine_conditions_signal(tool::ex::ElementKey routineKey);
     void move_element_left_signal(size_t id);

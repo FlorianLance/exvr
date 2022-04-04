@@ -32,30 +32,7 @@
 
 extern "C"{
 
-    DECL_EXPORT void init_callbacks_ex_element(
-        LogMessageCB logMessageCB,
-        LogWarningCB logWarningCB,
-        LogErrorCB logErrorCB,
-        LogMessageIdCB logMessageIdCB,
-        LogWarningIdCB logWarningIdCB,
-        LogErrorIdCB logErrorIdCB,
-        StackTraceCB stackTraceCB,
-        EllapsedTimeExpMsCB ellapsedTimeExpMsCB,
-        EllapsedTimeRoutineMsCB ellapsedTimeRoutineMsCB,
-        GetCB getCB,
-        IsVisibleCB isVisibleCB,
-        IsUpdatingCB isUpdatingCB,
-        IsClosedCB isClosedCB,
-        NextCB nextCB,
-        PreviousCB previousCB,
-        CloseCB closeCB,
-        SignalBoolCB signalBoolCB,
-        SignalIntCB signalIntCB,
-        SignalFloatCB signalFloatCB,
-        SignalDoubleCB signalDoubleCB,
-        SignalStringCB signalStringCB
-    );
-
+    DECL_EXPORT void set_exp_ex_element(tool::ex::ExElement *e, tool::ex::ExExperiment *exp);
     DECL_EXPORT int contains_ex_element(tool::ex::ExElement*e, int containerId, const char* paramName);
 
     DECL_EXPORT int get_parameter_int_ex_element(tool::ex::ExElement*e, int containerId, const char* paramName);

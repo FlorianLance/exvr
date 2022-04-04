@@ -59,9 +59,9 @@
     <Compile Include="Assets\Scripts\Exp\Content\Components\Editor\ExComponentEditor.cs" />
     <Compile Include="Assets\Scripts\Exp\Content\Conditions\Editor\ConditionEditor.cs" />
     <Compile Include="Assets\Scripts\Exp\Content\Config\Editor\ConfigEditor.cs" />
-    <Compile Include="Assets\Scripts\Exp\Content\Elements\Editor\ISIsEditor.cs" />
-    <Compile Include="Assets\Scripts\Exp\Content\Elements\Editor\RoutineEditor.cs" />
-    <Compile Include="Assets\Scripts\Exp\Content\Elements\Editor\RoutinesEditor.cs" />
+    <Compile Include="Assets\Scripts\Exp\Content\FlowElements\Editor\ISIsEditor.cs" />
+    <Compile Include="Assets\Scripts\Exp\Content\FlowElements\Editor\RoutineEditor.cs" />
+    <Compile Include="Assets\Scripts\Exp\Content\FlowElements\Editor\RoutinesEditor.cs" />
     <Compile Include="Assets\Thirdparty\private\RootMotion\Editor\FinalIK\AimIKInspector.cs" />
     <Compile Include="Assets\Thirdparty\private\RootMotion\Editor\FinalIK\AimPoserInspector.cs" />
     <Compile Include="Assets\Thirdparty\private\RootMotion\Editor\FinalIK\ArmIKInspector.cs" />

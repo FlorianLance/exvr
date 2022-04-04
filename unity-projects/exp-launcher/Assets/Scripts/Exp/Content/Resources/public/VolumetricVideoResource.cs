@@ -58,7 +58,7 @@ namespace Ex {
             cppDll.parent = this;
 
             // set path to load
-            CppElement.set(cppDll, Parameters.Container.Dynamic, "path_file", path);
+            cppDll.set(Parameters.Container.Dynamic, "path_file", path);
 
             if (!cppDll.initialize()) {
                 log_error(string.Format("Cannot initialize volumetric video resource dll from path {0}.", path));

@@ -28,7 +28,7 @@ using System.Runtime.InteropServices;
 namespace Ex {
 
 
-    public abstract class ExResourceDll : CppDllImport {
+    public abstract class ExResourceDll : CppExElement {
 
         // parent component
         public CppExResourceFile parent = null;
@@ -39,7 +39,8 @@ namespace Ex {
 
         // once per loading
         public virtual bool initialize() {
-            CppElement.set(this, Parameters.Container.Global, "resource_key", parent.key);
+            set_exp_ex_element(_handle, ExVR.Experiment().cppDll.getHandle());
+            set(Parameters.Container.Global, "resource_key", parent.key);
             return initialize_ex_resource(_handle) == 1 ? true : false;
         }
 

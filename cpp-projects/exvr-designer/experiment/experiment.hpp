@@ -29,9 +29,9 @@
 
 // local
 // # data
-#include "data/routine.hpp"
-#include "data/isi.hpp"
-#include "data/loop.hpp"
+#include "data/flow_elements/routine.hpp"
+#include "data/flow_elements/isi.hpp"
+#include "data/flow_elements/loop.hpp"
 #include "data/settings.hpp"
 #include "data/gui.hpp"
 #include "data/interval.hpp"
@@ -71,9 +71,9 @@ public:
 
     // getters
     // # element
-    std_v1<Element*> get_elements() const;
-    std_v1<Element*> get_elements_from_type(Element::Type type) const;
-    Element *get_element(ElementKey elementKey) const;
+    std_v1<FlowElement*> get_elements() const;
+    std_v1<FlowElement*> get_elements_from_type(FlowElement::Type type) const;
+    FlowElement *get_element(ElementKey elementKey) const;
     // ## routine
     Routine *get_routine(ElementKey routineKey) const;
     // ### condition
@@ -188,11 +188,11 @@ public slots:
     void swap_arg(ComponentKey componentKey, ConfigKey configKey, QStringView argName1, QStringView argName2, bool initConfig);
 
     // elements
-    size_t get_element_position(Element *element) const;
+    size_t get_element_position(FlowElement *element) const;
     void unselect_all_elements(bool updateSignal = true) noexcept;
     void select_element(ElementKey elementKey, bool updateSignal = true);
-    void add_element(Element::Type type, size_t index);
-    void remove_element(Element *elemToDelete);    
+    void add_element(FlowElement::Type type, size_t index);
+    void remove_element(FlowElement *elemToDelete);    
     void remove_element_of_key(ElementKey elementKey);
     void duplicate_element(ElementKey elementKey);
     void clean_current_routine_condition(ElementKey routineKey);
@@ -301,9 +301,9 @@ public :
     Randomizer randomizer;
 
     // elements
-    std_v1<ElementUP> elements;
+    std_v1<std::unique_ptr<FlowElement>> elements;
     std_v1<LoopUP> loops; // not in the flow
-    Element *selectedElement = nullptr;
+    FlowElement *selectedElement = nullptr;
     Routine *lastRoutineSelected = nullptr;
     Isi *lastIsiSelected = nullptr;
 

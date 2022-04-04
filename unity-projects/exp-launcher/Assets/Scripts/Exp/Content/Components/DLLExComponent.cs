@@ -23,9 +23,6 @@
 ************************************************************************************/
 
 // system
-using System;
-using System.Linq;
-using System.ComponentModel;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
@@ -33,11 +30,8 @@ using System.Runtime.InteropServices;
 namespace Ex{
 
 
-    public class Parameters {
-        public enum Container { InitConfig = 0, CurrentConfig = 1, Dynamic = 2, Global = 3};
-    }
 
-    public abstract class DLLExComponent : CppDllImport{
+    public abstract class DLLExComponent : CppExElement {
 
         // parent component
         public ExComponent parent = null;
@@ -49,12 +43,12 @@ namespace Ex{
         // once per loading
         public virtual bool initialize() {
 
-            CppElement.set(this, Parameters.Container.Global, "component_key", parent.key);
+            set_exp_ex_element(_handle, ExVR.Experiment().cppDll.getHandle());
 
+            set(Parameters.Container.Global, "component_key", parent.key);
             foreach (KeyValuePair<string, Argument> arg in parent.initC.args) {
-                CppElement.set(this, Parameters.Container.InitConfig, arg.Value);
-            }            
-
+                set(Parameters.Container.InitConfig, arg.Value);
+            }
             return initialize_ex_component(_handle) == 1 ? true : false;
         }
 
@@ -73,7 +67,7 @@ namespace Ex{
         public virtual void update_from_current_config() {
 
             foreach (KeyValuePair<string, Argument> arg in parent.currentC.args) {
-                CppElement.set(this, Parameters.Container.CurrentConfig, arg.Value);
+                set(Parameters.Container.CurrentConfig, arg.Value);
             }
 
             update_from_current_config_ex_component(_handle);
@@ -95,10 +89,9 @@ namespace Ex{
         public virtual void play() { play_ex_component(_handle); }
         public virtual void pause() { pause_ex_component(_handle); }
 
-
         // gui
         public virtual void update_parameter_from_gui(string updatedArgName) {
-            CppElement.set(this, Parameters.Container.CurrentConfig, parent.currentC.args[updatedArgName]);
+            set( Parameters.Container.CurrentConfig, parent.currentC.args[updatedArgName]);
             update_parameter_from_gui_ex_component(_handle, updatedArgName);
         }
         public virtual void action_from_gui(bool initConfig, string action) {
@@ -128,7 +121,6 @@ namespace Ex{
         //    }
         //    call_slot_ex_component(_handle, index);
         //}
-
 
         [DllImport("exvr-export", EntryPoint = "delete_ex_component", CallingConvention = CallingConvention.Cdecl)]
         static public extern void delete_ex_component(HandleRef exComponent);

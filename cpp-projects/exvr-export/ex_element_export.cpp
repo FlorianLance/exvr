@@ -28,41 +28,9 @@
 
 using namespace tool::ex;
 
-
-void init_callbacks_ex_element(
-    LogMessageCB logMessageCB,
-    LogWarningCB logWarningCB,
-    LogErrorCB logErrorCB,
-    LogMessageIdCB logMessageIdCB,
-    LogWarningIdCB logWarningIdCB,
-    LogErrorIdCB logErrorIdCB,
-    StackTraceCB stackTraceCB,
-    EllapsedTimeExpMsCB ellapsedTimeExpMsCB,
-    EllapsedTimeRoutineMsCB ellapsedTimeRoutineMsCB,
-    GetCB getCB,
-    IsVisibleCB isVisibleCB,
-    IsUpdatingCB isUpdatingCB,
-    IsClosedCB isClosedCB,
-    NextCB nextCB,
-    PreviousCB previousCB,
-    CloseCB closeCB,
-    SignalBoolCB signalBoolCB,
-    SignalIntCB signalIntCB,
-    SignalFloatCB signalFloatCB,
-    SignalDoubleCB signalDoubleCB,
-    SignalStringCB signalStringCB
-    ){
-
-    ExElement::init_callbacks(
-        logMessageCB, logWarningCB, logErrorCB,
-        logMessageIdCB, logWarningIdCB, logErrorIdCB, stackTraceCB,
-        ellapsedTimeExpMsCB, ellapsedTimeRoutineMsCB,
-        getCB, isVisibleCB, isUpdatingCB, isClosedCB,
-        nextCB, previousCB, closeCB,
-        signalBoolCB,signalIntCB,signalFloatCB,signalDoubleCB,signalStringCB
-     );
+void set_exp_ex_element(tool::ex::ExElement *e, tool::ex::ExExperiment *exp){
+    e->set_exp(exp);
 }
-
 
 ParametersContainer to_pc(int containerId){
     return static_cast<ParametersContainer>(containerId);
@@ -144,5 +112,4 @@ const char *get_parameter_string_ex_element(ExElement *e, int containerId, const
 int contains_ex_element(ExElement *e, int containerId, const char *paramName){
     return e->contains(to_pc(containerId), paramName) ? 1 : 0;
 }
-
 

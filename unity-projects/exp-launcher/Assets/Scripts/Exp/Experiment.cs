@@ -108,6 +108,9 @@ namespace Ex{
         private XML.Experiment m_xmlExperiment = null;
         private XML.ExperimentFlow m_xmlFlow = null;
 
+        // dll
+        public DLLExperiment cppDll = null;
+
 
         #region unity
 
@@ -145,9 +148,9 @@ namespace Ex{
 
             {   // update all components states
                 Profiler.BeginSample("[ExVR][Experiment] update_components_states");
-                if (elementInfo.type() == FlowElement.FlowElementType.Routine) {
+                if (elementInfo.type() == FlowElement.Type.Routine) {
                     routines.update_components_states((RoutineInfo)elementInfo);
-                }else if (elementInfo.type() == FlowElement.FlowElementType.Isi){
+                }else if (elementInfo.type() == FlowElement.Type.Isi){
                     ExVR.Components().set_every_component_states_to_false();
                 }
                 Profiler.EndSample();                
@@ -167,7 +170,7 @@ namespace Ex{
 
             {   // trigger each time
                 Profiler.BeginSample("[ExVR][Experiment] trigger_update_signals");
-                if (elementInfo.type() == FlowElement.FlowElementType.Routine) {
+                if (elementInfo.type() == FlowElement.Type.Routine) {
                     routines.trigger_update_signals((RoutineInfo)elementInfo);
                 }
                 Profiler.EndSample();
@@ -205,7 +208,9 @@ namespace Ex{
 
         #endregion unity
 
-
+        public void log_message(string message, bool extraInfo = false) {
+            ExVR.Log().message(string.Format(expStr, message), extraInfo);
+        }
         public void log_warning(string warning, bool extraInfo = false) {
             ExVR.Log().warning(string.Format(expStr, warning), extraInfo);
         }
@@ -259,6 +264,9 @@ namespace Ex{
             ExVR.Events().gui.MessageFromGUI.AddListener((strCmd) => {
                 execute_command(strCmd);
             });
+
+            // init DLL
+            cppDll = new DLLExperiment();
         }
 
         public void clean_experiment() {
@@ -299,7 +307,7 @@ namespace Ex{
             var info = schreduler.current_element_info();
             if (info != null) {
 
-                bool isRoutine = (info.type() == FlowElement.FlowElementType.Routine);
+                bool isRoutine = (info.type() == FlowElement.Type.Routine);
 
                 string elementTimeStr   = Converter.to_string(ExVR.Time().ellapsed_element_ms());
                 string expTimeStr       = Converter.to_string(ExVR.Time().ellapsed_exp_ms());                
@@ -404,7 +412,7 @@ namespace Ex{
             }
 
             ExVR.ExpLog().exp(string.Format("XML [{0}] loaded from designer {1} with version {2}.", m_xmlExperiment.Name, m_xmlExperiment.DesignerUsed, m_xmlExperiment.Version), true, false, false);
-            ExVR.ExpLog().exp("Initialize experiment.", false, false ,false);
+            log_message("Initialize experiment.");
 
             // read settings
             ExVR.GuiSettings().read_from_xml(m_xmlExperiment.Settings);
@@ -413,7 +421,8 @@ namespace Ex{
             experimentResourcesManager.generate_from_xml(m_xmlExperiment);
 
             // generate components 
-            ExVR.ExpLog().exp(string.Format("Load components: {0}", m_xmlExperiment.Components.Component.Count), true, false, false);
+            log_message(string.Format("Load components: {0}", m_xmlExperiment.Components.Component.Count));
+            //ExVR.ExpLog().exp(string.Format("Load components: {0}", m_xmlExperiment.Components.Component.Count), true, false, false);
             if (!ExVR.Components().generate(m_xmlExperiment.Components)) {
                 log_error("Experiment loading failed. Please solve errors and start loading again.");
                 generationTimer.Stop();
@@ -421,7 +430,8 @@ namespace Ex{
             }
 
             // generate flow elements 
-            ExVR.ExpLog().exp(string.Format("Load elements: {0}", (m_xmlExperiment.FlowElements.Routines.Routine.Count + m_xmlExperiment.FlowElements.ISIs.Isi.Count)), true, false, false);
+            log_message(string.Format("Load elements: {0}", (m_xmlExperiment.FlowElements.Routines.Routine.Count + m_xmlExperiment.FlowElements.ISIs.Isi.Count)));
+            //ExVR.ExpLog().exp(string.Format("Load elements: {0}", (m_xmlExperiment.FlowElements.Routines.Routine.Count + m_xmlExperiment.FlowElements.ISIs.Isi.Count)), true, false, false);
             routines.generate_from_xml(m_xmlExperiment.FlowElements.Routines);
             ISIs.generate_from_xml(m_xmlExperiment.FlowElements.ISIs);
 
@@ -450,10 +460,7 @@ namespace Ex{
             double generationTime = generationTimer.Elapsed.TotalMilliseconds * 0.001;
             generationTimer.Stop();
 
-            // GUI log
-            ExVR.ExpLog().exp(string.Format("Experiment loaded in {0}s", generationTime), false, false, false);
-            // flow log
-            ExVR.ExpLog().exp(string.Format("Experiment initialized in {0}s ", generationTime), false, false, false);
+            log_message(string.Format("Experiment loaded in {0}s", generationTime));
 
             var paths = ExVR.Paths();
             paths.currentExperimentFile = xmlExperimentPath;

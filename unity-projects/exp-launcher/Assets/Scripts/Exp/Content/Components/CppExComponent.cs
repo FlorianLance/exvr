@@ -31,7 +31,7 @@ namespace Ex {
         protected DLLExComponent cppDll = null;
 
         // once per loading
-        protected override bool initialize() {if (cppDll != null) { return cppDll.initialize(); } return false;}
+        protected override bool initialize() {if (cppDll != null) {return cppDll.initialize(); } return false;}
         protected override void clean() {if (cppDll != null) {cppDll.clean();}}
 
         // once per experiment

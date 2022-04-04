@@ -26,7 +26,7 @@
 
 // qt-utility
 #include "qt_str.hpp"
-#include "widgets/list_widget.hpp"
+#include "gui/widgets/list_widget.hpp"
 
 // local
 #include "utility/script_utility.hpp"
@@ -257,7 +257,7 @@ void ExVrController::go_to_current_specific_instance_element(){
         return;
     }
 
-    if(element->type == Element::Type::Routine){
+    if(element->type == FlowElement::Type::Routine){
         auto routine = dynamic_cast<Routine*>(element);
         QString selectedCondition = "";
         for(const auto &condition : routine->conditions){
@@ -355,7 +355,7 @@ void ExVrController::show_got_to_specific_instance_element_dialog(){
 
     size_t totalRows = 0;
     for(const auto &element : m_currentInstance->flow){
-        if(element.elem->type == Element::Type::Routine){
+        if(element.elem->type == FlowElement::Type::Routine){
             if(dynamic_cast<Routine*>(element.elem)->isARandomizer){
                 continue;
             }
@@ -373,7 +373,7 @@ void ExVrController::show_got_to_specific_instance_element_dialog(){
     twInstanceElements->setHorizontalHeaderLabels({"Element type", "Element name", "Condition/interval", "Condition iteration"});
     for(const auto &element : m_currentInstance->flow){
 
-        if(element.elem->type == Element::Type::Routine){
+        if(element.elem->type == FlowElement::Type::Routine){
             if(dynamic_cast<Routine*>(element.elem)->isARandomizer){
                 continue;
             }
@@ -386,7 +386,7 @@ void ExVrController::show_got_to_specific_instance_element_dialog(){
         twInstanceElements->setItem(orderId, 1, new QTableWidgetItem(element.elem->name()));
         twInstanceElements->setItem(orderId, 2, new QTableWidgetItem(element.condition));
 
-        if(element.elem->type == Element::Type::Routine){
+        if(element.elem->type == FlowElement::Type::Routine){
 
             if(countIterations.count(element.elem->key()) == 0){
                 countIterations[element.elem->key()] = {};
@@ -444,7 +444,7 @@ void ExVrController::load_selected_routine_with_default_instance_to_unity(){
         return;
     }
 
-    if(exp()->selectedElement->type != Element::Type::Routine){
+    if(exp()->selectedElement->type != FlowElement::Type::Routine){
         QtLogger::message("[CONTROLLER] Selected element must be a routine.");
         return;
     }

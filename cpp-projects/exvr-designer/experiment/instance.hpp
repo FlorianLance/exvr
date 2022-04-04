@@ -44,14 +44,14 @@ struct LoopInfo{
 struct InstanceElement{
     int elementIteration = 0;
     int conditionIteration = 0;
-    Element *elem;
+    FlowElement *elem;
     QString condition;
 };
 
 struct Instance {
 
     Instance() = default;
-    Instance(const Randomizer *randomizer, const std_v1<Element*> &elements, size_t idInstance);
+    Instance(const Randomizer *randomizer, const std_v1<FlowElement*> &elements, size_t idInstance);
 
     static std::unique_ptr<Instance> generate_from_full_experiment(const Randomizer *randomizer, const Experiment &experiment, size_t idInstance);
     static std::unique_ptr<Instance> generate_from_one_routine(Routine *routine);

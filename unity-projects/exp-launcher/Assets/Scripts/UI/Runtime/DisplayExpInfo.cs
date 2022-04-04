@@ -75,7 +75,7 @@ namespace Ex{
 
                 var currentElemenStrBuilder = new StringBuilder();
 
-                if (info.type() == FlowElement.FlowElementType.Routine) {
+                if (info.type() == FlowElement.Type.Routine) {
                     var routineInfo = (RoutineInfo)info;
                     currentElemenStrBuilder.Append("Routine: ");
                     currentElemenStrBuilder.AppendFormat("<color=#00ff00ff>{0}</color> Id: <color=#00ff00ff>{1}</color> Cond: <color=#00ff00ff>{2}</color>",

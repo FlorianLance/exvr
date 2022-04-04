@@ -231,10 +231,10 @@ namespace Ex {
         #region private_functions
         private bool connect_device() {
 
-            int retry = 10;
+            int retry = 3;
             for (int ii = 0; ii < retry; ++ii) {
 
-                log_message(string.Format("Try to connect, try n°{0} with method {1}", ii.ToString(), bSettings.connection.ToString()));
+                log_message(string.Format("Try to connect, try n°{0} with method {1}", (ii+1).ToString(), bSettings.connection.ToString()));
 
                 // remember to change the parameters to suit your MP configuration
                 // Auto connect to MP150 was introduced in BHAPI 1.1

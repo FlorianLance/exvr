@@ -214,7 +214,7 @@ namespace tool::ex{
         void write_connection(const Condition *condition, const Connection *connection);
         void write_condition(const Condition *condition);
         void write_connector(const Connector *connector);
-        void write_element(const Element *element);
+        void write_element(const FlowElement *element);
         void write_loop(const Loop *loop);
         void write_isi(const Isi *isi);
         void write_routine(const Routine *routine);
@@ -251,7 +251,7 @@ namespace tool::ex{
         bool                read_flow_sequence();
         bool                read_settings();
         bool                read_exp();
-        ElementUP           read_element();
+        std::unique_ptr<FlowElement>           read_element();
 
         void check_read_elements();
 

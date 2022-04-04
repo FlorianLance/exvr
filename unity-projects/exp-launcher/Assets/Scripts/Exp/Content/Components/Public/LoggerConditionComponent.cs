@@ -86,7 +86,7 @@ namespace Ex {
             m_filesLines = new Dictionary<string, List<string>>();
 
             foreach (var elementInfo in ExVR.Instance().get_elements_info_order(false)) {
-                if (elementInfo.type() == FlowElement.FlowElementType.Routine) {
+                if (elementInfo.type() == FlowElement.Type.Routine) {
                     var routineInfo = (RoutineInfo)elementInfo;
                     foreach (var action in routineInfo.condition().actions) {
                         if (action.component().key == key) {

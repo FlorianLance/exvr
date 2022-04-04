@@ -448,7 +448,7 @@ struct Component {
 
     using TComponentSignals = std::tuple<
         CT,                             FunctionN,                     CNT,                            Doc>;
-    static constexpr TupleArray<64, TComponentSignals> componentsSignals = {{
+    static constexpr TupleArray<65, TComponentSignals> componentsSignals = {{
         TComponentSignals
         // Audio
         {T::AudioSource,               "sample value channel"sv,       CNT::id_any_t,                  "..."sv},
@@ -523,7 +523,8 @@ struct Component {
         {T::Vive_pro_eye_tracking,     "pupil position"sv,             CNT::id_any_t,                  "..."sv},
         {T::Vive_pro_eye_tracking,     "pupil diameter"sv,             CNT::id_any_t,                  "..."sv},
         // UI
-        {T::Buttons_ui,                "validated"sv,                  CNT::integer_t,                 "Current selected button has been validated"sv},
+        {T::Buttons_ui,                "validated id"sv,               CNT::integer_t,                 "Button with id has been validated"sv},
+        {T::Buttons_ui,                "validated text"sv,             CNT::string_t,                  "Button with text has been validated"sv},
         {T::Slider_ui,                 "value updated"sv,              CNT::float_t,                   "Is triggered when slider value changes"sv},
         // Video
         {T::Video_file,                "new frame"sv,                  CNT::image_t,                   "..."sv},

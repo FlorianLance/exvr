@@ -36,10 +36,10 @@
 
 // local
 #include "experiment/global_signals.hpp"
-#include "widgets/designer_window.hpp"
-#include "widgets/dialogs/copy_to_conditions_dialog.hpp"
-#include "widgets/dialogs/add_component_to_conditions_dialog.hpp"
-#include "widgets/dialogs/benchmark_dialog.hpp"
+#include "gui/widgets/designer_window.hpp"
+#include "gui/dialogs/copy_to_conditions_dialog.hpp"
+#include "gui/dialogs/add_component_to_conditions_dialog.hpp"
+#include "gui/dialogs/benchmark_dialog.hpp"
 #include "IO/xml_io_manager.hpp"
 #include "resources/resources_manager.hpp"
 #include "ui_copy_to_conditions.h"

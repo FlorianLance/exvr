@@ -37,7 +37,7 @@
 #include "utility/math.hpp"
 
 // local
-#include "data/node_flow.hpp"
+#include "data/flow_elements/node_flow.hpp"
 
 
 using namespace tool;
@@ -205,7 +205,7 @@ bool XmlIoManager::read_exp(){
     return currentNodeValid;
 }
 
-ElementUP XmlIoManager::read_element(){
+std::unique_ptr<FlowElement> XmlIoManager::read_element(){
 
     const auto id = read_attribute<int>(QSL("key"), true);
     const auto &typeStr = read_attribute<QString>(QSL("type"), true);
@@ -213,11 +213,11 @@ ElementUP XmlIoManager::read_element(){
         QtLogger::error(QSL("[XML] Invalid element at line: ") % QString::number(r->lineNumber()));
         return nullptr;
     }
-    const Element::Type type = Element::get_type(typeStr.value().toStdString());
+    const FlowElement::Type type = FlowElement::get_type(typeStr.value().toStdString());
 
-    ElementUP element = nullptr;
+    std::unique_ptr<FlowElement> element = nullptr;
     switch (type) {{
-    case Element::Type::Routine:
+    case FlowElement::Type::Routine:
             for(size_t ii = 0; ii < readXmlRoutines.size(); ++ii){
                 if(readXmlRoutines[ii] != nullptr){
                     if(readXmlRoutines[ii]->key() == id){
@@ -228,7 +228,7 @@ ElementUP XmlIoManager::read_element(){
                 }
             }
     }break;{
-    case Element::Type::Isi:
+    case FlowElement::Type::Isi:
             for(size_t ii = 0; ii < readXmlISIs.size(); ++ii){
                 if(readXmlISIs[ii] != nullptr){
                     if(readXmlISIs[ii]->key() == id){
@@ -239,7 +239,7 @@ ElementUP XmlIoManager::read_element(){
                 }
             }
     }break;{
-    case Element::Type::LoopStart:
+    case FlowElement::Type::LoopStart:
             for(size_t ii = 0; ii < readXmlStartLoops.size(); ++ii){
                 if(readXmlStartLoops[ii] != nullptr){
                     if(readXmlStartLoops[ii]->loop->key() == id){
@@ -250,7 +250,7 @@ ElementUP XmlIoManager::read_element(){
                 }
             }
     }break;{
-    case Element::Type::LoopEnd:
+    case FlowElement::Type::LoopEnd:
             for(size_t ii = 0; ii < readXmlEndLoops.size(); ++ii){
                 if(readXmlEndLoops[ii] != nullptr){
                     if(readXmlEndLoops[ii]->loop->key() == id){
@@ -1123,15 +1123,15 @@ ConditionUP XmlIoManager::read_condition(Routine *routine){
     return nullptr;
 }
 
-void XmlIoManager::write_element(const Element *element){
+void XmlIoManager::write_element(const FlowElement *element){
 
-    if(element->type == Element::Type::Node){
+    if(element->type == FlowElement::Type::Node){
         return;
     }
 
     w->writeStartElement(QSL("Element"));
     w->writeAttribute(QSL("key"),  QString::number(element->key()));
-    w->writeAttribute(QSL("type"), from_view(Element::get_type_name(element->type)));
+    w->writeAttribute(QSL("type"), from_view(FlowElement::get_type_name(element->type)));
     w->writeEndElement(); // /Element
 }
 
@@ -1396,7 +1396,7 @@ bool XmlIoManager::save_instance_file(const Instance &instance, QString instance
     stream.writeAttribute(QSL("id_instance"), QString::number(instance.idInstance));
     for(auto &instElem : instance.flow){
 
-        QString type = (instElem.elem->type == Element::Type::Routine) ? QSL("routine") : QSL("isi");
+        QString type = (instElem.elem->type == FlowElement::Type::Routine) ? QSL("routine") : QSL("isi");
         stream.writeStartElement(QSL("Element"));
         stream.writeAttribute(QSL("key"),  QString::number(instElem.elem->key()));
         stream.writeAttribute(QSL("type"), type);

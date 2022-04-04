@@ -25,14 +25,73 @@
 
 #include "ex_experiment_export.hpp"
 
+// base
+#include "utility/logger.hpp"
+
 using namespace tool::ex;
 
-int init_logger_ex_experiment(const char *pathDir, const char *fileName){
-    return ExExperiment::init_logger(pathDir,fileName) ? 1 : 0;;
+ExExperiment *create_ex_experiment(){
+    return new ExExperiment();
 }
 
-void init_logger_no_file_ex_experiment(){
-    ExExperiment::init_logger_no_file();
+void delete_ex_experiment(tool::ex::ExExperiment *e){
+    delete e;
 }
 
 
+void init_callbacks_ex_experiment(
+    tool::ex::ExExperiment *e,
+    LogMessageCB logMessageCB,
+    LogWarningCB logWarningCB,
+    LogErrorCB logErrorCB,
+    LogMessageIdCB logMessageIdCB,
+    LogWarningIdCB logWarningIdCB,
+    LogErrorIdCB logErrorIdCB,
+    StackTraceCB stackTraceCB,
+    EllapsedTimeExpMsCB ellapsedTimeExpMsCB,
+    EllapsedTimeRoutineMsCB ellapsedTimeRoutineMsCB,
+    GetCB getCB,
+    IsVisibleCB isVisibleCB,
+    IsUpdatingCB isUpdatingCB,
+    IsClosedCB isClosedCB,
+    NextCB nextCB,
+    PreviousCB previousCB,
+    CloseCB closeCB,
+    SignalBoolCB signalBoolCB,
+    SignalIntCB signalIntCB,
+    SignalFloatCB signalFloatCB,
+    SignalDoubleCB signalDoubleCB,
+    SignalStringCB signalStringCB
+    ){
+
+    e->init_callbacks(
+        logMessageCB, logWarningCB, logErrorCB,
+        logMessageIdCB, logWarningIdCB, logErrorIdCB, stackTraceCB,
+        ellapsedTimeExpMsCB, ellapsedTimeRoutineMsCB,
+        getCB, isVisibleCB, isUpdatingCB, isClosedCB,
+        nextCB, previousCB, closeCB,
+        signalBoolCB,signalIntCB,signalFloatCB,signalDoubleCB,signalStringCB
+    );
+}
+
+
+int init_logger_ex_experiment(tool::ex::ExExperiment *e, const char *pathDir, const char *fileName){
+    return e->generate_logger(pathDir,fileName) ? 1 : 0;
+}
+
+void init_logger_no_file_ex_experiment(tool::ex::ExExperiment *e){
+    e->generate_logger_no_file();
+}
+
+void test_call_backs_ex_experiment(tool::ex::ExExperiment *e){
+    (*e->logMessageCBP)("test_message_callback_1");
+    (*e->logWarningCBP)("test_warning_callback_1");
+    (*e->logErrorCBP)("test_error_callback_1");
+    tool::Logger::get()->message("test_message_callback_2");
+    tool::Logger::get()->warning("test_warning_callback_2");
+    tool::Logger::get()->error("test_error_callback_2");
+
+    tool::Logger::message("test_message_callback_3");
+    tool::Logger::warning("test_warning_callback_3");
+    tool::Logger::error("test_error_callback_3");
+}

@@ -32,10 +32,42 @@
 
 extern "C"{
 
+    DECL_EXPORT tool::ex::ExExperiment *create_ex_experiment();
+    DECL_EXPORT void delete_ex_experiment(tool::ex::ExExperiment *e);
+
+
+    DECL_EXPORT void init_callbacks_ex_experiment(
+        tool::ex::ExExperiment *e,
+        LogMessageCB logMessageCB,
+        LogWarningCB logWarningCB,
+        LogErrorCB logErrorCB,
+        LogMessageIdCB logMessageIdCB,
+        LogWarningIdCB logWarningIdCB,
+        LogErrorIdCB logErrorIdCB,
+        StackTraceCB stackTraceCB,
+        EllapsedTimeExpMsCB ellapsedTimeExpMsCB,
+        EllapsedTimeRoutineMsCB ellapsedTimeRoutineMsCB,
+        GetCB getCB,
+        IsVisibleCB isVisibleCB,
+        IsUpdatingCB isUpdatingCB,
+        IsClosedCB isClosedCB,
+        NextCB nextCB,
+        PreviousCB previousCB,
+        CloseCB closeCB,
+        SignalBoolCB signalBoolCB,
+        SignalIntCB signalIntCB,
+        SignalFloatCB signalFloatCB,
+        SignalDoubleCB signalDoubleCB,
+        SignalStringCB signalStringCB
+    );
+
     DECL_EXPORT int init_logger_ex_experiment(
+        tool::ex::ExExperiment *e,
         const char*pathDir,
         const char*fileName
     );
 
-    DECL_EXPORT void init_logger_no_file_ex_experiment();
+    DECL_EXPORT void init_logger_no_file_ex_experiment(tool::ex::ExExperiment *e);
+
+    DECL_EXPORT void test_call_backs_ex_experiment(tool::ex::ExExperiment *e);
 }

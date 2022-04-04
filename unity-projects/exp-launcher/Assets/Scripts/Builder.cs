@@ -94,9 +94,6 @@ namespace Ex {
             eventsManager.initialize();
             // # logger
             loggerManager.initialize();
-            // # cpp            
-            CppExperiment.init_logger();
-            CppElement.init_callbacks();
             // # IPC
             ExVR.ExpLog().builder("Start IPC communication");
             networkManager.initialize();                        
@@ -126,7 +123,7 @@ namespace Ex {
             ExVR.ExpLog().builder("Send ready signal to GUI.");
             networkManager.set_launcher_idle_state();
 
-
+            
 
 
             //// tests

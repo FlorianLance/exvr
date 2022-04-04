@@ -28,46 +28,46 @@ using System.Runtime.InteropServices;
 
 namespace Ex{
 
-    public static class ObjectHandleExtensions{
+    //public static class ObjectHandleExtensions{
 
-        public static IntPtr ToIntPtr(this object target) {
-            return GCHandle.Alloc(target).ToIntPtr();
-        }
+    //    public static IntPtr ToIntPtr(this object target) {
+    //        return GCHandle.Alloc(target).ToIntPtr();
+    //    }
 
-        public static GCHandle ToGcHandle(this object target) {
-            return GCHandle.Alloc(target);
-        }
+    //    public static GCHandle ToGcHandle(this object target) {
+    //        return GCHandle.Alloc(target);
+    //    }
 
-        public static IntPtr ToIntPtr(this GCHandle target) {
-            return GCHandle.ToIntPtr(target);
-        }
-    }
+    //    public static IntPtr ToIntPtr(this GCHandle target) {
+    //        return GCHandle.ToIntPtr(target);
+    //    }
+    //}
 
-    public class GCHandleProvider : IDisposable{
+    //public class GCHandleProvider : IDisposable{
 
-        public GCHandleProvider(object target) {
-            Handle = target.ToGcHandle();
-        }
+    //    public GCHandleProvider(object target) {
+    //        Handle = target.ToGcHandle();
+    //    }
 
-        public IntPtr Pointer => Handle.ToIntPtr();
+    //    public IntPtr Pointer => Handle.ToIntPtr();
 
-        public GCHandle Handle { get; }
+    //    public GCHandle Handle { get; }
 
-        private void ReleaseUnmanagedResources() {
-            if (Handle.IsAllocated) {
-                Handle.Free();
-            }
-        }
+    //    private void ReleaseUnmanagedResources() {
+    //        if (Handle.IsAllocated) {
+    //            Handle.Free();
+    //        }
+    //    }
 
-        public void Dispose() {
-            ReleaseUnmanagedResources();
-            GC.SuppressFinalize(this);
-        }
+    //    public void Dispose() {
+    //        ReleaseUnmanagedResources();
+    //        GC.SuppressFinalize(this);
+    //    }
 
-        ~GCHandleProvider() {
-            ReleaseUnmanagedResources();
-        }
-    }
+    //    ~GCHandleProvider() {
+    //        ReleaseUnmanagedResources();
+    //    }
+    //}
 
 
     /// <summary>

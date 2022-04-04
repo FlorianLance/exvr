@@ -47,7 +47,7 @@ namespace Ex{
             EditorGUILayout.LabelField("Current element:");
             var currentElementInfo = ExVR.Scheduler().current_element_info();
             if (currentElementInfo != null) {
-                if (currentElementInfo.type() == FlowElement.FlowElementType.Routine) {
+                if (currentElementInfo.type() == FlowElement.Type.Routine) {
 
                     var routineInfo = (RoutineInfo)currentElementInfo;
                     var routine = (Routine)routineInfo.element();
@@ -183,7 +183,7 @@ namespace Ex {
             if (m_currentElementId < instance.total_number_of_elements() - 1) {
                 for (int ii = m_currentElementId + 1; ii < instance.total_number_of_elements(); ++ii) {
                     var elementO = instance.element_order(ii);
-                    if ((elementO.type() == FlowElement.FlowElementType.Routine ?
+                    if ((elementO.type() == FlowElement.Type.Routine ?
                         ((RoutineInfo)elementO).condition().name : ((ISIInfo)elementO).duration_str()) == conditionName) { 
                         m_currentElementId = ii;
                         start_current_flow_element();
@@ -199,7 +199,7 @@ namespace Ex {
             if (m_currentElementId > 0) {
                 for (int ii = m_currentElementId - 1; ii >= 0; --ii) {
                     var elementO = instance.element_order(ii);
-                    if ((elementO.type() == FlowElement.FlowElementType.Routine ?
+                    if ((elementO.type() == FlowElement.Type.Routine ?
                         ((RoutineInfo)elementO).condition().name : ((ISIInfo)elementO).duration_str()) == conditionName) {
                         m_currentElementId = ii;
                         start_current_flow_element();
@@ -244,10 +244,10 @@ namespace Ex {
 
             // enable new current flow element
             ExVR.Time().start_element();
-            if (m_currentElementInfo.type() == FlowElement.FlowElementType.Isi) {
+            if (m_currentElementInfo.type() == FlowElement.Type.Isi) {
                 // new element is an ISI
                 ExVR.ISIs().start_isi((ISIInfo)m_currentElementInfo);
-            } else if (m_currentElementInfo.type() == FlowElement.FlowElementType.Routine) {
+            } else if (m_currentElementInfo.type() == FlowElement.Type.Routine) {
                 // new element is a routine 
                 ExVR.Routines().start_routine((RoutineInfo)m_currentElementInfo);
             }
