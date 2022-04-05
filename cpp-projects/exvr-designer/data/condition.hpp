@@ -110,7 +110,7 @@ struct Condition  {
 
     std_v1<ConnectionUP> connections;
     std_v1<ConnectorUP> connectors;
-    std_v1<ActionUP> actions;
+    std_v1<std::unique_ptr<Action>> actions;
 
     // copy
     static inline bool currentNodesCopySet = false;

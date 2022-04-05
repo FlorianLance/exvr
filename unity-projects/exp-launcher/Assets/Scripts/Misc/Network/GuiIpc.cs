@@ -47,16 +47,28 @@ namespace Ex{
 
         private UdpCommunication m_udpCommunication = null;
 
-        public void send_log_to_GUI(string log) {
-            m_udpCommunication.append_message(string.Format(logFormat, log));
+        public void send_log_to_GUI(string log, bool append = true) {
+            if (append) {
+                m_udpCommunication.append_message(string.Format(logFormat, log));
+            } else {
+                m_udpCommunication.send_message(string.Format(logFormat, log));
+            }
         }
 
-        public void send_warning_to_GUI(string log) {
-            m_udpCommunication.append_message(string.Format(warningFormat, log));
+        public void send_warning_to_GUI(string log, bool append = false) {
+            if (append) {
+                m_udpCommunication.append_message(string.Format(warningFormat, log));
+            } else {
+                m_udpCommunication.send_message(string.Format(warningFormat, log));
+            }
         }
 
-        public void send_error_to_GUI(string error) {
-            m_udpCommunication.append_message(string.Format(errorFormat, error));
+        public void send_error_to_GUI(string error, bool append = false) {
+            if (append) {
+                m_udpCommunication.append_message(string.Format(errorFormat, error));
+            } else {
+                m_udpCommunication.send_message(string.Format(errorFormat, error));
+            }            
         }
         
         public void send_component_infos_to_GUI(string componentKey, string configKey, string id, string value) {

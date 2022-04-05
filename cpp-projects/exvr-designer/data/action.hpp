@@ -28,14 +28,10 @@
 #include "data/id_key.hpp"
 
 // local
-#include "forward.hpp"
 #include "data/timeline.hpp"
 #include "data/connection.hpp"
 
 namespace tool::ex {
-
-struct Action;
-using ActionUP = std::unique_ptr<Action>;
 
 struct Action{
 
@@ -47,9 +43,9 @@ struct Action{
 
     inline QString to_string() const{return QSL("Action(") % QString::number(key()) % QSL(")");}
 
-    static ActionUP generate_component_action(Component *component, SecondsTS duration,
+    static std::unique_ptr<Action> generate_component_action(Component *component, SecondsTS duration,
         std::optional<ConfigKey> configKey, bool fillUpdateTimeline, bool fillVisibilityTimeline);
-    static ActionUP copy_with_new_element_id(const Action &actionToCopy);
+    static std::unique_ptr<Action> copy_with_new_element_id(const Action &actionToCopy);
 
     void check_integrity();
 
@@ -58,8 +54,8 @@ struct Action{
     Config    *config               = nullptr;
     Component *component            = nullptr;
 
-    TimelineUP timelineUpdate       = nullptr;
-    TimelineUP timelineVisibility   = nullptr;
+    std::unique_ptr<Timeline> timelineUpdate       = nullptr;
+    std::unique_ptr<Timeline> timelineVisibility   = nullptr;
 
     // ui
     // # graph
@@ -69,7 +65,7 @@ struct Action{
     bool nodeSelected = false;
 };
 
-static bool operator<(const ActionUP &l, const ActionUP &r){
+static bool operator<(const std::unique_ptr<Action> &l, const std::unique_ptr<Action> &r){
     if(l->key() == r->key()){
         return false;
     }
@@ -81,7 +77,7 @@ static bool operator<(const ActionUP &l, const ActionUP &r){
     return true;
 }
 
-static bool operator==(const ActionUP &l, const ActionUP &r){
+[[maybe_unused]] static bool operator==(const std::unique_ptr<Action> &l, const std::unique_ptr<Action> &r){
     return !(l < r) && !(r < l);
 }
 

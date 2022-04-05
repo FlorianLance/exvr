@@ -229,8 +229,8 @@ namespace tool::ex{
         ConfigUP            read_config();
         std::tuple<std::optional<Arg>, QString>  read_argument();
         std::optional<Interval> read_interval();
-        TimelineUP          read_timeline();
-        std::tuple<ActionUP, QString> read_action();
+        std::unique_ptr<Timeline>          read_timeline();
+        std::tuple<std::unique_ptr<Action>, QString> read_action();
         std::tuple<ConnectionUP, QString> read_connection(Condition *condition);
         std::tuple<ConnectorUP, QString> read_connector();
         ConditionUP         read_condition(Routine *routine);

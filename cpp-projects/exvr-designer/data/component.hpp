@@ -35,7 +35,6 @@
 #include "data/id_key.hpp"
 
 // local
-#include "forward.hpp"
 #include "config.hpp"
 #include "connection_node.hpp"
 

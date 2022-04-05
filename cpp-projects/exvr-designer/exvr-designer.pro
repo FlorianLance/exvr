@@ -99,7 +99,6 @@ LIBS +=  \
 
 HEADERS += \
     # global
-    forward.hpp \
     # controller
     controller/exvr_controller.hpp \
     # utility

@@ -35,8 +35,6 @@
 
 namespace tool::ex {
 
-struct Timeline;
-using TimelineUP = std::unique_ptr<Timeline>;
 
 struct Timeline{
 
@@ -45,8 +43,8 @@ struct Timeline{
     Timeline(Type t, TimelineKey id) : key(IdKey::Type::Timeline, id.v), type(t){
     }
 
-    static TimelineUP copy_with_new_element_id(const Timeline &timelineToCopy){
-        TimelineUP timeline = std::make_unique<Timeline>(timelineToCopy.type, TimelineKey{-1});
+    static std::unique_ptr<Timeline> copy_with_new_element_id(const Timeline &timelineToCopy){
+        std::unique_ptr<Timeline> timeline = std::make_unique<Timeline>(timelineToCopy.type, TimelineKey{-1});
         for(const auto& interval : timelineToCopy.intervals){
             timeline->intervals.emplace_back(Interval::copy_with_new_element_id(interval));
         }

@@ -103,14 +103,14 @@ namespace Ex{
                 return;
             }
 
-            ExVR.Events().log.Message.AddListener((message) => {
-                guiIpc.send_log_to_GUI(message);
+            ExVR.Events().log.Message.AddListener((message, append) => {
+                guiIpc.send_log_to_GUI(message, append);
             });
-            ExVR.Events().log.Warning.AddListener((warning) => {
-                guiIpc.send_warning_to_GUI(warning);
+            ExVR.Events().log.Warning.AddListener((warning, append) => {
+                guiIpc.send_warning_to_GUI(warning, append);
             });
-            ExVR.Events().log.Error.AddListener((error) => {
-                guiIpc.send_error_to_GUI(error);
+            ExVR.Events().log.Error.AddListener((error, append) => {
+                guiIpc.send_error_to_GUI(error, append);
             });
 
             guiIpc.send_exp_launcher_state_to_GUI(
@@ -123,6 +123,7 @@ namespace Ex{
 
                 set_experiment_state_to_GUI(ExpState.NotLoaded);
 
+
                 guiIpc.send_exp_launcher_state_to_GUI(
                     to_string(m_lastExpLauncherState = ExpLauncherState.Closing));                
 
@@ -131,9 +132,7 @@ namespace Ex{
             }
         }
 
-        public void OnDestroy() {
-            clean();
-        }
+
 
         public void set_launcher_idle_state() {
             if (m_lastExpLauncherState != ExpLauncherState.Idle) {

@@ -208,15 +208,15 @@ namespace Ex{
 
         #endregion unity
 
-        public void log_message(string message, bool extraInfo = false) {
-            ExVR.Log().message(string.Format(expStr, message), extraInfo);
+        public void log_message(string message) {
+            ExVR.Log().message(string.Format(expStr, message), false, "", "", 0, true, false);
         }
-        public void log_warning(string warning, bool extraInfo = false) {
-            ExVR.Log().warning(string.Format(expStr, warning), extraInfo);
+        public void log_warning(string warning) {
+            ExVR.Log().warning(string.Format(expStr, warning), false, "", "", 0, true, false);
         }
 
-        public void log_error(string error, bool extraInfo = false) {
-            ExVR.Log().error(string.Format(expStr, error), extraInfo);
+        public void log_error(string error) {
+            ExVR.Log().error(string.Format(expStr, error), false, "", "", 0, true, false);
         }
 
         public bool is_loaded() { return m_experimentLoaded; }
@@ -372,7 +372,7 @@ namespace Ex{
                 return false;
             }
 
-            ExVR.ExpLog().exp("### Generate experiment ###", true, false, false);
+            log_message("### Generate experiment ###");
 
             if (!File.Exists(xmlExperimentPath)) {
                 log_error(string.Format("Experiment file {0} doesn't exists.", xmlExperimentPath));
@@ -388,7 +388,7 @@ namespace Ex{
 
             // xml experiment
             {
-                ExVR.ExpLog().exp("Read XML experiment file...", true, false, false);
+                log_message("Read XML experiment file...");
                 var serializer = new XmlSerializer(typeof(XML.Experiment));
                 var stream = new FileStream(xmlExperimentPath, FileMode.Open);
                 m_xmlExperiment = serializer.Deserialize(stream) as XML.Experiment;
@@ -400,7 +400,7 @@ namespace Ex{
             }
             // xml instance
             {
-                ExVR.ExpLog().exp("Read XML instance file...", true, false, false);
+                log_message("Read XML instance file...");
                 var serializer = new XmlSerializer(typeof(XML.ExperimentFlow));
                 var stream = new FileStream(xmlInstancePath, FileMode.Open);
                 m_xmlFlow = serializer.Deserialize(stream) as XML.ExperimentFlow;
@@ -411,7 +411,7 @@ namespace Ex{
                 ExVR.Experiment().instanceName = split[split.Length - 1];
             }
 
-            ExVR.ExpLog().exp(string.Format("XML [{0}] loaded from designer {1} with version {2}.", m_xmlExperiment.Name, m_xmlExperiment.DesignerUsed, m_xmlExperiment.Version), true, false, false);
+            log_message(string.Format("XML [{0}] loaded from designer {1} with version {2}.", m_xmlExperiment.Name, m_xmlExperiment.DesignerUsed, m_xmlExperiment.Version));
             log_message("Initialize experiment.");
 
             // read settings

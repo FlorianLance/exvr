@@ -54,8 +54,9 @@ namespace Ex{
             ipAddress      = initC.get<string>("ip_address");
             connectToFirst = initC.get<bool>("connect_to_first");
 
-            Thread thread = new Thread(connect);
-            thread.Start();
+            connect();
+            //Thread thread = new Thread(connect);
+            //thread.Start();
 
             return true;
         }
@@ -152,7 +153,7 @@ namespace Ex{
                     }
                 }
                 if(RTClient.GetInstance().Connect(server, server.Port, true, true, true, true, true, true)) { 
-                //if (RTClient.GetInstance().Connect(server, server.Port, true, true)) {
+                
                     log_message(
                         String.Format("Connected to Qualisys server {0}:{1}:{2} with {3} cameras.",
                         server.HostName, server.IpAddress, server.Port, server.CameraCount

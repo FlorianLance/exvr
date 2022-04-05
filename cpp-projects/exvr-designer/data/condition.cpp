@@ -96,7 +96,7 @@ void Condition::apply_condition(const Condition *conditionToCopy, bool copyActio
 
 int Condition::get_action_id_from_key(ActionKey actionKey, bool displayError) const{
 
-    auto actionFound = std::find_if(actions.begin(), actions.end(), [actionKey](const ActionUP & action){
+    auto actionFound = std::find_if(actions.begin(), actions.end(), [actionKey](const std::unique_ptr<Action> & action){
         return action->key() == actionKey.v;
     });
     if(actionFound != actions.end()){
@@ -112,7 +112,7 @@ int Condition::get_action_id_from_key(ActionKey actionKey, bool displayError) co
 
 Action *Condition::get_action_from_key(ActionKey actionKey, bool displayError) const{
 
-    auto actionFound = std::find_if(actions.begin(), actions.end(), [actionKey](const ActionUP &action){
+    auto actionFound = std::find_if(actions.begin(), actions.end(), [actionKey](const std::unique_ptr<Action> &action){
         return action->key() == actionKey.v;
     });
     if(actionFound != actions.end()){
@@ -128,7 +128,7 @@ Action *Condition::get_action_from_key(ActionKey actionKey, bool displayError) c
 
 Action *Condition::get_action_from_component_key(ComponentKey componentKey, bool displayError) const{
 
-    auto actionFound = std::find_if(actions.begin(), actions.end(), [componentKey](const ActionUP &action){
+    auto actionFound = std::find_if(actions.begin(), actions.end(), [componentKey](const std::unique_ptr<Action> &action){
         return action->component->key() == componentKey.v;
     });
     if(actionFound != actions.end()){
@@ -277,7 +277,7 @@ void Condition::check_integrity(){
     countBefore = actions.size();
     {
         std::unordered_set<int> seen;
-        auto newEnd = std::remove_if(actions.begin(), actions.end(), [&seen](const ActionUP &action){
+        auto newEnd = std::remove_if(actions.begin(), actions.end(), [&seen](const std::unique_ptr<Action> &action){
             if (seen.find(action->key()) != std::end(seen)){
                 return true;
             }
@@ -378,7 +378,7 @@ void Condition::remove_action(ActionKey actionKey){
             break;
         }
 
-        auto actionToDelete = std::find_if(actions.begin(), actions.end(), [actionKey](ActionUP &action){
+        auto actionToDelete = std::find_if(actions.begin(), actions.end(), [actionKey](std::unique_ptr<Action> &action){
             return action->key() == actionKey.v;
         });
         if(actionToDelete != actions.end()){
@@ -496,7 +496,7 @@ std_v1<Action *> Condition::actions_with_nodes() const{
 
     auto count = std::count_if(
                 actions.begin(),
-                actions.end(), [](const ActionUP &action){
+                actions.end(), [](const std::unique_ptr<Action> &action){
         return action->nodeUsed;
     });
 

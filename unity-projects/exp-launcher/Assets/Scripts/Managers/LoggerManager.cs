@@ -111,26 +111,26 @@ namespace Ex {
         public void no_logger_message(object m, bool addExtraInfo = false,
             [CallerMemberName] string memberName = "",
             [CallerFilePath] string sourceFilePath = "",
-            [CallerLineNumber] int sourceLineNumber = 0) {
+            [CallerLineNumber] int sourceLineNumber = 0, bool append = true) {
             message(m, addExtraInfo, memberName, sourceFilePath, sourceLineNumber, false);
         }
         public void no_logger_warning(object w, bool addExtraInfo = true,
             [CallerMemberName] string memberName = "",
             [CallerFilePath] string sourceFilePath = "",
-            [CallerLineNumber] int sourceLineNumber = 0) {
+            [CallerLineNumber] int sourceLineNumber = 0, bool append = false) {
             warning(w, addExtraInfo, memberName, sourceFilePath, sourceLineNumber, false);
         }
         public void no_logger_error(object e, bool addExtraInfo = true,
             [CallerMemberName] string memberName = "",
             [CallerFilePath] string sourceFilePath = "",
-            [CallerLineNumber] int sourceLineNumber = 0) {
+            [CallerLineNumber] int sourceLineNumber = 0, bool append = false) {
             error(e, addExtraInfo, memberName, sourceFilePath, sourceLineNumber, false);
         }
 
         public void message(object message, bool addExtraInfo = false,
             [CallerMemberName]  string memberName = "",
             [CallerFilePath]    string sourceFilePath = "",
-            [CallerLineNumber]  int sourceLineNumber = 0, bool logger = true) {
+            [CallerLineNumber]  int sourceLineNumber = 0, bool logger = true, bool append = true) {
 
             var messageStr = Converter.to_string(message);
             if (addExtraInfo) {
@@ -139,18 +139,18 @@ namespace Ex {
 
                 UnityEngine.Debug.Log(string.Format(editorMessageExtraInfoFormat, messageStr, memberName, lineStr, sourceFilePath));
 #endif
-                ExVR.Events().log.Message.Invoke(string.Format(guiMessageExtraInfoFormat, messageStr, memberName, lineStr, sourceFilePath));
+                ExVR.Events().log.Message.Invoke(string.Format(guiMessageExtraInfoFormat, messageStr, memberName, lineStr, sourceFilePath), append);
                 if (logger) {
-                    ExVR.Events().log.LoggerMessage.Invoke(string.Format(loggerMessageExtraInfoFormat, messageStr, memberName, lineStr, sourceFilePath));
+                    ExVR.Events().log.LoggerMessage.Invoke(string.Format(loggerMessageExtraInfoFormat, messageStr, memberName, lineStr, sourceFilePath), append);
                 }
             } else {
 #if UNITY_EDITOR
 
                 UnityEngine.Debug.Log(string.Format(editorMessageFormat, messageStr));
 #endif
-                ExVR.Events().log.Message.Invoke(string.Format(guiMessageFormat, messageStr));
+                ExVR.Events().log.Message.Invoke(string.Format(guiMessageFormat, messageStr), append);
                 if (logger) {
-                    ExVR.Events().log.LoggerMessage.Invoke(string.Format(loggerMessageFormat, messageStr));
+                    ExVR.Events().log.LoggerMessage.Invoke(string.Format(loggerMessageFormat, messageStr), append);
                 }
             }
         }
@@ -158,7 +158,7 @@ namespace Ex {
         public void warning(object warning, bool addExtraInfo = true,
             [CallerMemberName]  string memberName = "",
             [CallerFilePath]    string sourceFilePath = "",
-            [CallerLineNumber]  int sourceLineNumber = 0, bool logger = true) {
+            [CallerLineNumber]  int sourceLineNumber = 0, bool logger = true, bool append = true) {
 
             var warningStr = Converter.to_string(warning);
             if (addExtraInfo) {
@@ -166,18 +166,18 @@ namespace Ex {
 #if UNITY_EDITOR
                 UnityEngine.Debug.Log(string.Format(editorWarningExtraInfoFormat, warningStr, memberName, lineStr, sourceFilePath));
 #endif
-                ExVR.Events().log.Warning.Invoke(string.Format(guiWarningExtraInfoFormat, warningStr, memberName, lineStr, sourceFilePath));
+                ExVR.Events().log.Warning.Invoke(string.Format(guiWarningExtraInfoFormat, warningStr, memberName, lineStr, sourceFilePath), append);
                 if (logger) {
-                    ExVR.Events().log.LoggerWarning.Invoke(string.Format(loggerWarningExtraInfoFormat, warningStr, memberName, lineStr, sourceFilePath));
+                    ExVR.Events().log.LoggerWarning.Invoke(string.Format(loggerWarningExtraInfoFormat, warningStr, memberName, lineStr, sourceFilePath), append);
                 }
             } else {
 #if UNITY_EDITOR
 
                 UnityEngine.Debug.Log(string.Format(editorWarningFormat, warningStr));
 #endif
-                ExVR.Events().log.Warning.Invoke(string.Format(guiWarningFormat, warningStr));
+                ExVR.Events().log.Warning.Invoke(string.Format(guiWarningFormat, warningStr), append);
                 if (logger) {
-                    ExVR.Events().log.LoggerWarning.Invoke(string.Format(loggerWarningFormat, warningStr));
+                    ExVR.Events().log.LoggerWarning.Invoke(string.Format(loggerWarningFormat, warningStr), append);
                 }
             }
         }
@@ -186,7 +186,7 @@ namespace Ex {
         public void error(object error, bool addExtraInfo = true,
             [CallerMemberName]  string memberName = "",
             [CallerFilePath]    string sourceFilePath = "",
-            [CallerLineNumber]  int sourceLineNumber = 0, bool logger = true) {
+            [CallerLineNumber]  int sourceLineNumber = 0, bool logger = true, bool append = true) {
 
             var errorStr = Converter.to_string(error);
             if (addExtraInfo) {
@@ -194,18 +194,18 @@ namespace Ex {
 #if UNITY_EDITOR
                 UnityEngine.Debug.LogError(string.Format(editorErrorExtraInfoFormat, errorStr, memberName, lineStr, sourceFilePath));
 #endif
-                ExVR.Events().log.Error.Invoke(string.Format(guiErrorExtraInfoFormat, errorStr, memberName, lineStr, sourceFilePath));
+                ExVR.Events().log.Error.Invoke(string.Format(guiErrorExtraInfoFormat, errorStr, memberName, lineStr, sourceFilePath), append);
                 if (logger) {
-                    ExVR.Events().log.LoggerError.Invoke(string.Format(loggerErrorExtraInfoFormat, errorStr, memberName, lineStr, sourceFilePath));
+                    ExVR.Events().log.LoggerError.Invoke(string.Format(loggerErrorExtraInfoFormat, errorStr, memberName, lineStr, sourceFilePath), append);
                 }
             } else {
 #if UNITY_EDITOR
 
                 UnityEngine.Debug.LogError(string.Format(editorErrorFormat, errorStr));
 #endif
-                ExVR.Events().log.Error.Invoke(string.Format(guiErrorFormat, errorStr));
+                ExVR.Events().log.Error.Invoke(string.Format(guiErrorFormat, errorStr), append);
                 if (logger) {
-                    ExVR.Events().log.LoggerError.Invoke(string.Format(loggerErrorFormat, errorStr));
+                    ExVR.Events().log.LoggerError.Invoke(string.Format(loggerErrorFormat, errorStr), append);
                 }
             }
         }
@@ -297,13 +297,13 @@ namespace Ex {
             }
             ExVR.Log().no_logger_message(string.Format("Log file {0} generated.", filePath));
 
-            ExVR.Events().log.LoggerMessage.AddListener((message) => {
+            ExVR.Events().log.LoggerMessage.AddListener((message, append) => {
                 add(message, false, false, false);
             });
-            ExVR.Events().log.LoggerWarning.AddListener((warning) => {
+            ExVR.Events().log.LoggerWarning.AddListener((warning, append) => {
                 add(warning, false, true, true);
             });
-            ExVR.Events().log.LoggerError.AddListener((error) => {
+            ExVR.Events().log.LoggerError.AddListener((error, append) => {
                 add(error, true, true, true);
             });
             ExVR.Events().stacktrace.ComponentTrace.AddListener((component, message) => {

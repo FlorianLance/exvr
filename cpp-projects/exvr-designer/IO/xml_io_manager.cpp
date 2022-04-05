@@ -679,7 +679,7 @@ void XmlIoManager::write_timeline(const Timeline *timeline){
     w->writeEndElement(); // /Timeline
 }
 
-TimelineUP XmlIoManager::read_timeline(){
+std::unique_ptr<Timeline> XmlIoManager::read_timeline(){
 
     const auto key  = read_attribute<int>(QSL("key"), true);
     const auto typeStr = read_attribute<QString>(QSL("type"), true);
@@ -798,7 +798,7 @@ void XmlIoManager::write_connector(const Connector *connector){
 }
 
 
-std::tuple<ActionUP, QString> XmlIoManager::read_action(){
+std::tuple<std::unique_ptr<Action>, QString> XmlIoManager::read_action(){
 
     const auto key          = read_attribute<int>(QSL("key"), true);
     const auto keyComponent = read_attribute<int>(QSL("key_component"), true);
@@ -818,7 +818,7 @@ std::tuple<ActionUP, QString> XmlIoManager::read_action(){
         return {nullptr, QSL("Invalid action at line: ") % QString::number(r->lineNumber()) % QSL(", cannot found config with key ") % QString::number(configKey.value())};
     }
 
-    ActionUP action = std::make_unique<Action>(actionComponent, actionConfig, ActionKey{key.value()});
+    std::unique_ptr<Action> action = std::make_unique<Action>(actionComponent, actionConfig, ActionKey{key.value()});
     assign_attribute(action->nodeUsed, QSL("node_used"), true);
     if(auto nodePositionStr = read_attribute<QString>(QSL("node_position"), true); nodePositionStr.has_value()){
         const auto split = nodePositionStr.value().split(" ");
