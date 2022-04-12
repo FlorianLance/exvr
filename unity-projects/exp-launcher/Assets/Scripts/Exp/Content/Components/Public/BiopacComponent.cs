@@ -136,10 +136,10 @@ namespace Ex {
             }
 
             // initialize thread
-            bSettings.writeEveryNbLines         = initC.get<int>("write_every_nb_lines");
+            bSettings.writeEveryNbLines         = initC.get<int>("write_every_nb_lines")*1000;
             bSettings.nbSamplesPerCall          = initC.get<int>("nb_samples_per_call");
             bSettings.samplingRate              = samplingRateValues[initC.get<int>("sampling_rate_id")];// initC.get<int>("sampling_rate");
-            bSettings.sizeMaxChannelSeconds     = initC.get<int>("max_nb_seconds_to_save");
+            bSettings.capacityChannelSeconds     = initC.get<int>("max_nb_seconds_to_save");
             bSettings.numberOfDataPoints        = (uint)(bSettings.nbSamplesPerCall * bSettings.enabledChannelsNb);
 
             if (initC.get<int>("read_digital_mode") != 0) {
@@ -217,8 +217,7 @@ namespace Ex {
             }
         }
 
-        protected override void stop_routine() {
-
+        protected override void stop_experiment() {
             if (m_debugBypass) {
                 return;
             }
@@ -226,10 +225,11 @@ namespace Ex {
             write_data();
         }
 
+
         #endregion
 
         #region private_functions
-        private bool connect_device() {
+            private bool connect_device() {
 
             int retry = 3;
             for (int ii = 0; ii < retry; ++ii) {
@@ -266,6 +266,7 @@ namespace Ex {
             // ex: set sample rate to 5 msec per sample = 200 Hz  -> retval = setSampleRate(5.0);
             double sampleRate = 1000.0 / samplingRateValues[initC.get<int>("sampling_rate_id")];
             MPCODE retval = MP.setSampleRate(sampleRate);
+            log_message(string.Format("Frequency {0} {1} {2}", initC.get<int>("sampling_rate_id"), samplingRateValues[initC.get<int>("sampling_rate_id")], sampleRate));
             if (retval != MPCODE.MPSUCCESS) {
                 log_error(string.Format("Sampling error {0} with rate: {1}", BiopacSettings.code_to_string(retval), Converter.to_string(sampleRate)));
                 return false;
@@ -365,7 +366,7 @@ namespace Ex {
                 }
                 return;
             }
-
+            
             var bData = acquisitionThread.get_data();
             if (m_logger != null) {
                 var strData = data_to_string(bData, m_addHeaderLine);
@@ -390,30 +391,33 @@ namespace Ex {
                 dataStr.Add(bSettings.headerLine);
             }
 
+            if (bData.times.Count == 0) {
+                return dataStr;
+            }
+
+            var firstTime = ExVR.Time().ms_since_start_experiment(bData.times[0].startingTick);
+            var lastTime  = ExVR.Time().ms_since_start_experiment(bData.times[bData.times.Count-1].afterDataReadingTick);
+            var interval = (lastTime - firstTime) / countLines;
+
             // fill lines
+            int idL = 0;
             for (int idF = 0; idF < bData.times.Count; ++idF) {
 
-                var data = bData.channelsData[idF];
-                var digital = bData.digitalInputData[idF];
-                int nbValuesPerChannel = data.Length / bSettings.enabledChannelsNb;
+                var data                = bData.channelsData[idF];
+                var digital             = bData.digitalInputData[idF];
+                int nbValuesPerChannel  = data.Length / bSettings.enabledChannelsNb;
 
                 // compute times
-                var time = bData.times[idF];
-                var beforeT = ExVR.Time().ms_since_start_experiment(time.startingTick);
-                var duration = TimeManager.ticks_to_ms(time.afterDataReadingTick - time.startingTick);
                 List<string> timesPerLine = new List<string>(nbValuesPerChannel);
-
-                if (nbValuesPerChannel == 1) {
-                    timesPerLine.Add(string.Concat(Converter.to_string(beforeT, timestampStrAccuracy), tab));
-                } else {
-                    for (int idV = 0; idV < nbValuesPerChannel; ++idV) {
-                        timesPerLine.Add(string.Concat(Converter.to_string(beforeT + (1.0 * idV / (nbValuesPerChannel - 1) * duration), timestampStrAccuracy), tab));
-                    }
+                for (int idV = 0; idV < nbValuesPerChannel; ++idV) {
+                    var time = firstTime + idL * interval;
+                    timesPerLine.Add(string.Concat(Converter.to_string(time, timestampStrAccuracy), tab));
+                    ++idL;
                 }
 
                 // retrieve digital line
                 if (bSettings.readDigitalEnabled) {
-                    digitalInputStrF.Clear();
+                digitalInputStrF.Clear();
                     for (int idC = 0; idC < bSettings.enabledChannelsNb; ++idC) {
                         if (idC < bSettings.enabledChannelsNb - 1) {
                             digitalInputStrF.Append(string.Concat(Converter.to_string(digital[idC], false), tab));

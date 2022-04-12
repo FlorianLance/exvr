@@ -33,6 +33,32 @@ using MPCODE    = Biopac.API.MPDevice.MPDevImports.MPRETURNCODE;
 
 namespace Ex {
 
+    //  Advanced Data Transfer Functions
+    //  getMPDaemonLastError()
+    //  startMPAcqDaemon()
+    //  receiveMPData()
+    //
+    //  This set of functions improves the usability of the API.The function startMPAcqDaemon() s
+    //  tarts a virtual server that will stream acquired data to the client once the startAcquisition() has been invoked.
+    //  The client program can read the stream by calling the receiveMPData() function. This allows for real-time processing of data while a
+    //  dedicated thread downloads, caches and streams the data to the client program.The thread is spawned from the same process that attached to the DLL.
+    //  If a call to receiveMPData() fails, the client program can query what happened to the acquisition daemon by calling getMPDaemonLastError().
+    //  If the user decides to use this data transfer mechanism, the function startMPAcqDaemon() must called before the startAcquisition().
+    //  Simple Data Transfer Functions should not be used in conjunction with this set of functions per acquisitio
+
+
+    // sample:
+    // create a buffer that is 3 time the frequency in Hz
+    // this is large enough to hold 1 second of 
+    // samples from all three acquisition channels
+    // uint numberOfDataPoints = (uint)sampleFreq * 3;
+    // double[] buffer = new double[numberOfDataPoints];
+    // while(true) {
+    //  retval = MP.receiveMPData(buffer,numberOfDataPoints, out received);
+    //  // ...
+    // }
+
+
     //MPSUCCESS = 1,
     //MPDRVERR,
     //MPDLLBUSY,
@@ -70,11 +96,11 @@ namespace Ex {
         public bool[] channelsState      = null; // size: nbMaxChannels
         public List<string> channelsName = null; // size: enabledChannelsNb
         public List<int> channelsId      = null; // size: enabledChannelsNb
-        public int writeEveryNbLines = 1000;
+        public int writeEveryNbLines = 10000;
 
         public int nbSamplesPerCall = 10;
         public double samplingRate = 0.0;
-        public int sizeMaxChannelSeconds = 0;        
+        public int capacityChannelSeconds = 0;        
         public uint numberOfDataPoints = 0;
 
         public string headerLine;
@@ -137,10 +163,10 @@ namespace Ex {
             reset(bps);
         }
         public void reset(BiopacSettings bps) {
-            int capacity = bps.sizeMaxChannelSeconds * (int)bps.samplingRate / bps.nbSamplesPerCall;
+            int capacity = bps.capacityChannelSeconds * (int)bps.samplingRate / bps.nbSamplesPerCall;
             channelsData = new List<double[]>(capacity);
             digitalInputData = new List<bool[]>(capacity);
-            times = new List<FrameTimestamp>(bps.sizeMaxChannelSeconds);
+            times = new List<FrameTimestamp>(bps.capacityChannelSeconds);
         }
     }
 
@@ -229,7 +255,7 @@ namespace Ex {
                     ExVR.Log().error("Can't get writer lock.");
                 }
 
-                askWrite = (bData.channelsData.Count * bSettings.numberOfDataPoints / bSettings.enabledChannelsNb) > bSettings.writeEveryNbLines;
+                askWrite = (1f* bData.channelsData.Count * bSettings.numberOfDataPoints / bSettings.enabledChannelsNb) > bSettings.writeEveryNbLines;
             }
         }
 
@@ -243,15 +269,9 @@ namespace Ex {
                 try {
                     int startId = bData.lastFrameReadId;
                     int count   = bData.times.Count - bData.lastFrameReadId;
-                    //if(count > 200) {
-                    //    startId = bData.lastFrameReadId - 200;
-                    //    count   = 200;
-                    //}
-
-                    //UnityEngine.Debug.LogError(bData.times.Count + " " + bData.lastFrameReadId + " " + (bData.times.Count - bData.lastFrameReadId));
 
                     lastTimes = bData.times.GetRange(startId, count);
-                    lastData = bData.channelsData.GetRange(startId, count);
+                    lastData  = bData.channelsData.GetRange(startId, count);
                     bData.lastFrameReadId = bData.times.Count;
                 } finally {
                     rwl.ReleaseReaderLock();
