@@ -30,9 +30,11 @@
 #include "gui/ex_widgets/ex_checkbox_w.hpp"
 #include "gui/ex_widgets/ex_combo_box_index_w.hpp"
 #include "gui/ex_widgets/ex_select_color_w.hpp"
+#include "gui/ex_widgets/ex_transformation_w.hpp"
 
 // local
 #include "gui/ex_widgets/ex_component_w.hpp"
+#include "gui/ex_widgets/ex_tab_w.hpp"
 
 
 using namespace tool::ex;
@@ -74,7 +76,7 @@ struct SceneScanerConfigParametersW::Impl{
     // filtering obb
     ExCheckBoxW filterPointsOutsideOBB{"filter_points_outside_obb"};
     ExCheckBoxW displayFilteringOBB{"display_filtering_obb"};    
-    TransformSubPart filteringObbTr{"filtering_obb_tr"};
+    ExTabW<ExTransformationW> filteringObbTrTab{"filtering_obb_tr_tab"};
 };
 
 SceneScanerConfigParametersW::SceneScanerConfigParametersW() :  ConfigParametersW(), m_p(std::make_unique<Impl>()){
@@ -97,7 +99,7 @@ void SceneScanerConfigParametersW::insert_widgets(){
     add_widget(F::gen(L::VB(),{W::txt("<b>Display: </b>"),
         m_p->displayClouds(), m_p->displayColliders()}, LStretch{false}, LMargins{true},QFrame::Box));
     add_widget(F::gen(L::VB(),{W::txt("<b>Filtering oriented bounding box: </b>"),
-        m_p->filterPointsOutsideOBB(), m_p->displayFilteringOBB(), m_p->filteringObbTr.frame}, LStretch{false}, LMargins{true},QFrame::Box));
+        F::gen(L::HB(), {m_p->filterPointsOutsideOBB(), m_p->displayFilteringOBB()}, LStretch{true}, LMargins{false},QFrame::NoFrame) , m_p->filteringObbTrTab()}, LStretch{false}, LMargins{true},QFrame::Box));
 }
 
 void SceneScanerConfigParametersW::init_and_register_widgets(){
@@ -115,5 +117,19 @@ void SceneScanerConfigParametersW::init_and_register_widgets(){
     // filtering obb
     add_input_ui(m_p->filterPointsOutsideOBB.init_widget("Remove points outside", false));
     add_input_ui(m_p->displayFilteringOBB.init_widget("Display", false));
-    map_sub_part(m_p->filteringObbTr.init_widget("Transform"));
+
+    DsbSettings pos   = {MinV<qreal>{-10000.}, V<qreal>{0.},MaxV<qreal>{10000.}, StepV<qreal>{0.1}, 3};
+    DsbSettings rot   = {MinV<qreal>{-360.}, V<qreal>{0.},MaxV<qreal>{360.}, StepV<qreal>{0.1}, 2};
+    DsbSettings scale = {MinV<qreal>{0}, V<qreal>{1.},MaxV<qreal>{10000.}, StepV<qreal>{0.1}, 3};
+
+    add_input_ui(m_p->filteringObbTrTab.init_widget("Filtering OBBs",
+        ExTransformationW::generate_init_any_array(
+            "OBB transform",
+            Vector3dSettings{pos,pos,pos},
+            Vector3dSettings{rot,rot,rot},
+            Vector3dSettings{scale,scale,scale},
+            true
+        ),
+        10, QTabWidget::TabPosition::North)
+    );
 }

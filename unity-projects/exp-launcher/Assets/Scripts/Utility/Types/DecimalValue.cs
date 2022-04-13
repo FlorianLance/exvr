@@ -24,13 +24,13 @@
 
 namespace Ex {
     public class DecimalValue{
-
         enum Type{
-            boolT,intT,floatT,doubleT
+            boolT,intT,longT,floatT,doubleT
         }
 
-        private object boolValue = null;
+        private object boolValue    = null;
         private object intValue     = null;
+        private object longValue    = null;
         private object floatValue   = null;
         private object doubleValue  = null;
         
@@ -38,6 +38,9 @@ namespace Ex {
         }
         public DecimalValue(bool value) {
             boolValue = value;
+        }
+        public DecimalValue(short value) {
+            intValue = Converter.to_int(value);
         }
         public DecimalValue(int value) {
             intValue = value;
@@ -56,6 +59,9 @@ namespace Ex {
         public bool has_int() {
             return intValue != null;
         }
+        public bool has_long() {
+            return longValue != null;
+        }
         public bool has_float() {
             return floatValue != null;
         }
@@ -70,6 +76,9 @@ namespace Ex {
             if (has_int()) {
                 return Converter.to_bool((int)intValue);
             }
+            if (has_long()) {
+                return Converter.to_bool((long)longValue);
+            }
             if (has_float()) {
                 return Converter.to_bool((float)floatValue);
             }
@@ -83,6 +92,9 @@ namespace Ex {
             if (has_int()) {
                 return (int)intValue;
             }
+            if (has_long()) {
+                return Converter.to_int((long)longValue);
+            }
             if (has_float()) {
                 return Converter.to_int((float)floatValue);
             }
@@ -91,6 +103,26 @@ namespace Ex {
             }
             if (has_bool()) {
                 return Converter.to_int((bool)boolValue);
+            }
+            return 0;
+        }
+
+        public long to_long() {
+
+            if (has_long()) {
+                return (long)longValue;
+            }
+            if (has_double()) {
+                return Converter.to_long((double)doubleValue);
+            }
+            if (has_int()) {
+                return Converter.to_long((long)longValue);
+            }
+            if (has_float()) {
+                return Converter.to_long((float)floatValue);
+            }
+            if (has_bool()) {
+                return Converter.to_long((bool)boolValue);
             }
             return 0;
         }
@@ -108,6 +140,9 @@ namespace Ex {
             if (has_bool()) {
                 return Converter.to_float((bool)boolValue);
             }
+            if (has_long()) {
+                return Converter.to_float((long)longValue);
+            }
             return 0f;
         }
 
@@ -124,15 +159,22 @@ namespace Ex {
             if (has_bool()) {
                 return Converter.to_double((bool)boolValue);
             }
+            if (has_long()) {
+                return Converter.to_double((long)longValue);
+            }
             return 0f;
         }
 
         static Type get_type(DecimalValue v1, DecimalValue v2) {
+
             if(v1.has_double() || v2.has_double()) {
                 return Type.doubleT;
             }
             if (v1.has_float() || v2.has_float()) {
                 return Type.floatT;
+            }
+            if (v1.has_long() || v2.has_long()) {
+                return Type.longT;
             }
             if (v1.has_int() || v2.has_int()) {
                 return Type.intT;
@@ -146,24 +188,35 @@ namespace Ex {
                     doubleValue = to_double() + value.to_double();
                     boolValue = null;
                     intValue = null;
+                    longValue = null;
                     floatValue = null;
                     break;
                 case Type.floatT:
                     floatValue = to_float() + value.to_float();
                     boolValue = null;
                     intValue = null;
+                    longValue = null;
                     doubleValue = null;
                     break;
                 case Type.intT:
                     intValue = to_int() + value.to_int();
+                    boolValue   = null;
+                    floatValue  = null;
+                    longValue   = null;
+                    doubleValue = null;
+                    break;
+                case Type.longT:
+                    intValue = null;
                     boolValue = null;
                     floatValue = null;
+                    longValue = to_long() + value.to_long(); 
                     doubleValue = null;
                     break;
                 case Type.boolT:
-                    boolValue = null;
+                    boolValue   = null;
                     intValue    = to_int() + value.to_int();
                     floatValue  = null;
+                    longValue   = null;
                     doubleValue = null;
                     break;
             }
@@ -175,22 +228,32 @@ namespace Ex {
                     doubleValue = to_double() - value.to_double();
                     intValue    = null;
                     floatValue  = null;
+                    longValue   = null;
                     break;
                 case Type.floatT:
                     floatValue  = to_float() - value.to_float();
                     intValue    = null;
                     doubleValue = null;
+                    longValue   = null;
                     break;
                 case Type.intT:
                     intValue    = to_int() - value.to_int();
                     floatValue  = null;
                     doubleValue = null;
+                    longValue   = null;
+                    break;
+                case Type.longT:
+                    intValue    = null;
+                    floatValue  = null;
+                    doubleValue = null;
+                    longValue   = to_long() - value.to_long();
                     break;
                 case Type.boolT:
                     boolValue   = null;
                     intValue    = to_int() - value.to_int();
                     floatValue  = null;
                     doubleValue = null;
+                    longValue   = null;
                     break;
             }
         }
@@ -201,22 +264,32 @@ namespace Ex {
                     doubleValue = to_double() * value.to_double();
                     intValue    = null;
                     floatValue  = null;
+                    longValue   = null;
                     break;
                 case Type.floatT:
                     floatValue  = to_float() * value.to_float();
                     intValue    = null;
                     doubleValue = null;
+                    longValue   = null;
                     break;
                 case Type.intT:
                     intValue    = to_int() * value.to_int();
                     floatValue  = null;
                     doubleValue = null;
+                    longValue   = null;
+                    break;
+                case Type.longT:
+                    intValue    = null;
+                    floatValue  = null;
+                    doubleValue = null;
+                    longValue   = to_long() * value.to_long();
                     break;
                 case Type.boolT:
                     boolValue   = null;
                     intValue    = to_int() * value.to_int();
                     floatValue  = null;
                     doubleValue = null;
+                    longValue   = null;
                     break;
             }
         }

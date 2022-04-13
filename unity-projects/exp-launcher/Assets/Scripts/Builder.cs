@@ -67,7 +67,9 @@ namespace Ex {
         [Rename("Experiment")]
         public Experiment experiment = null;
 
+
         public void Awake() {
+
 
 #if EXVR
             Debug.Log("[EXVR-EXP]");
@@ -123,10 +125,10 @@ namespace Ex {
             ExVR.ExpLog().builder("Send ready signal to GUI.");
             networkManager.set_launcher_idle_state();
 
-            
 
 
-            //// tests
+
+            // tests
             //var pc = gameObject.AddComponent<PointCloud>();
             //pc.set_rendering(PointCloud.RenderingType.ParabloidFrag);
 
@@ -137,39 +139,49 @@ namespace Ex {
         }
 
 
+        //bool cloudInit = false;
+
         //void Update() {
 
         //    if (!cloudInit) {
         //        Mesh mesh = gameObject.GetComponent<MeshFilter>().mesh;
-        //    mesh.Clear();
-        //    mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+        //        mesh.Clear();
+        //        mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
 
-        //    int sizePts = 100000;
-        //    Vector3[] vertices = new Vector3[sizePts];
-        //    Color[] colors = new Color[sizePts];
-        //    System.Collections.Generic.List<int> commonIndices = new System.Collections.Generic.List<int>(sizePts);
-        //    for (int ii = 0; ii < sizePts; ++ii) {
-        //        var x = UnityEngine.Random.Range(-0.5f, 0.5f);
-        //        var y = UnityEngine.Random.Range(-0.5f, 0.5f);
-        //        var z = UnityEngine.Random.Range(-0.5f, 0.5f);
-        //        vertices[ii] = new Vector3(x, y, z);
+        //        int sizePts = 100000;
+        //        Vector3[] vertices = new Vector3[sizePts];
+        //        Color[] colors = new Color[sizePts];
+        //        System.Collections.Generic.List<int> commonIndices = new System.Collections.Generic.List<int>(sizePts);
+        //        for (int ii = 0; ii < sizePts; ++ii) {
+        //            var x = UnityEngine.Random.Range(-0.5f, 0.5f);
+        //            var y = UnityEngine.Random.Range(-0.5f, 0.5f);
+        //            var z = UnityEngine.Random.Range(-0.5f, 0.5f);
+        //            vertices[ii] = new Vector3(x, y, z);
 
-        //        var r = UnityEngine.Random.Range(0f, 1f);
-        //        var g = UnityEngine.Random.Range(0f, 1f);
-        //        var b = UnityEngine.Random.Range(0f, 1f);
-        //        colors[ii] = new Color(r, g, b);
+        //            var r = UnityEngine.Random.Range(0f, 1f);
+        //            var g = UnityEngine.Random.Range(0f, 1f);
+        //            var b = UnityEngine.Random.Range(0f, 1f);
+        //            colors[ii] = new Color(r, g, b);
 
-        //        commonIndices.Add(ii);
-        //    }
-        //    mesh.SetVertices(vertices, 0, sizePts);
-        //    mesh.SetColors(colors, 0, sizePts);
-        //    mesh.SetIndices(commonIndices, 0, sizePts, MeshTopology.Points, 0, true);
+        //            commonIndices.Add(ii);
+        //        }
+        //        mesh.SetVertices(vertices, 0, sizePts);
+        //        mesh.SetColors(colors, 0, sizePts);
+        //        mesh.SetIndices(commonIndices, 0, sizePts, MeshTopology.Points, 0, true);
 
-        //    cloudInit = true;
+        //        cloudInit = true;
         //    }
 
         //    var pc = gameObject.GetComponent<PointCloud>();
-        //    pc.set_filtering_obb_transform(transform.Find("Cube"));
+
+        //    System.Collections.Generic.List<GameObject> cubes = new System.Collections.Generic.List<GameObject>();
+        //    cubes.Add(transform.Find("Cube1").gameObject);
+        //    cubes.Add(transform.Find("Cube2").gameObject);
+
+        //    System.Collections.Generic.List<bool> enabled = new System.Collections.Generic.List<bool>() { true, true };
+        //    //pc.set_obb_filtering_state(true);
+        //    pc.set_filtering_obb_transforms(cubes,enabled);
+        //    pc.set_rendering(PointCloud.RenderingType.ParabloidGeo);
         //}
 
         void OnApplicationQuit() {

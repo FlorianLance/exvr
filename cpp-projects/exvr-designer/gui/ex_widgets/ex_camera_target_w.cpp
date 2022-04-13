@@ -66,7 +66,7 @@ ExCameraTargetW *ExCameraTargetW::init_widget(bool enabled){
     return this;
 }
 
-ExBaseW *ExCameraTargetW::init_widget2(std_v1<std::any> parameters){
+ExBaseW *ExCameraTargetW::init_widget_from_any_array(std_v1<std::any> &parameters){
     init_widget(std::any_cast<bool>(parameters[0]));
     return this;
 }
@@ -85,7 +85,7 @@ void ExCameraTargetW::update_from_arg(const Arg &arg){
 
     w->blockSignals(true);
 
-    auto values = arg.split_value("[#0#]");
+    auto values = arg.split_value("[#1#]");
     std::array<Arg, 7> args;
     args[0].init_from_double_str(values[0]);    // time
     args[1].init_from_bool_str(values[1]);      // display
@@ -119,7 +119,7 @@ Arg ExCameraTargetW::convert_to_arg() const{
         color.convert_to_arg(),
         speed.convert_to_arg(),
     };
-    arg.init_from_args(args, "[#0#]");
+    arg.init_from_args(args, "[#1#]");
 
     return arg;
 }

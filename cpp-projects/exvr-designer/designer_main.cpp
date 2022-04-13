@@ -22,7 +22,6 @@
 ** SOFTWARE.                                                                      **
 ************************************************************************************/
 
-
 // Qt
 #include <QApplication>
 #include <QSplashScreen>

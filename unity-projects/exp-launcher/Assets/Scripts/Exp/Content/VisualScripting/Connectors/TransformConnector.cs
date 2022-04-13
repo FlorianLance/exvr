@@ -34,7 +34,7 @@ namespace Ex {
 
         protected override bool initialize() {
      
-            uiValue = m_config.get_transform(valueStr);
+            uiValue = m_config.get_transform_value(valueStr);
 
             add_signals(1);
             add_slot(0, (arg) => { base_slot1(arg); });
@@ -50,7 +50,7 @@ namespace Ex {
         }
 
         protected override void update_from_gui() {
-            uiValue = m_config.get_transform(valueStr);
+            uiValue = m_config.get_transform_value(valueStr);
             pre_start_routine();
         }
 

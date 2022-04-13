@@ -25,3 +25,65 @@
 #include "ex_tab_w.hpp"
 
 using namespace tool::ex;
+
+TabUiW::TabUiW(){
+
+    auto vb = ui::L::VB();
+    setLayout(vb);
+     vb->addWidget(ui::F::gen(ui::L::VB(), {
+        name = ui::W::txt("Default"),
+        ui::F::gen(ui::L::HB(),{pbAddTab = new QPushButton("Add tab"), pbRemoveTab = new QPushButton("Remove tab")}, LStretch{true}, LMargins{false},QFrame::NoFrame),
+        tab = new QTabWidget()},
+        LStretch{true}, LMargins{true}, QFrame::Box
+    ));
+
+    connect(pbAddTab,    &QPushButton::clicked, this, [&]{
+        emit ask_new_tab_signal(tab->currentIndex());
+    });
+    connect(pbRemoveTab,    &QPushButton::clicked, this, [&]{
+        emit ask_remove_tab_signal(tab->currentIndex());
+    });
+    connect(tab->tabBar(), &QTabBar::tabMoved, this, [&](int from, int to){
+        update_tab_names();
+        emit tab_moved_signal(from, to);
+    });
+
+    tab->setMovable(true);
+    pbRemoveTab->setEnabled(false);
+}
+
+int TabUiW::current_tab_id(){
+    return tab->currentIndex();
+}
+
+void TabUiW::insert_tab(int index, QWidget *w){
+    tab->insertTab(index, w, "");
+    pbRemoveTab->setEnabled(true);
+    pbAddTab->setEnabled(tab->count() < maxTabNumber);
+    update_tab_names();
+}
+
+void TabUiW::remove_tab(int index){
+    tab->removeTab(index);
+    pbRemoveTab->setEnabled(tab->count() > 0);
+    pbAddTab->setEnabled(tab->count() < maxTabNumber);
+    update_tab_names();
+}
+
+void TabUiW::set_title(const QString &title){
+    name->setText(title);
+}
+
+void TabUiW::set_tab_position(QTabWidget::TabPosition tabPosition){
+    tab->setTabPosition(tabPosition);
+}
+
+void TabUiW::set_max_tab_number(int maxTabNumber){
+    this->maxTabNumber = maxTabNumber;
+}
+
+void TabUiW::update_tab_names(){
+    for(int ii = 0; ii < tab->count(); ++ii){
+        tab->setTabText(ii, QString::number(ii+1));
+    }
+}

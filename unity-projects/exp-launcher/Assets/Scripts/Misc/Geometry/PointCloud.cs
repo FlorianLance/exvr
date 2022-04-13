@@ -22,6 +22,10 @@
 ** SOFTWARE.                                                                      **
 ************************************************************************************/
 
+// system
+using System.Collections.Generic;
+
+// unity
 using UnityEngine;
 
 namespace Ex{
@@ -110,12 +114,31 @@ namespace Ex{
             GetComponent<MeshRenderer>().material.SetFloat("_PointSize", size);
         }
 
-        public void set_filtering_obb_transform(Transform obbTr) {
+        public void set_filtering_obb_transforms(List<GameObject> OBBS, List<bool> enabled) {
+
             var material = GetComponent<MeshRenderer>().material;
-            material.SetVector("_ObbPos", obbTr.position);
-            material.SetVector("_ObbSize", obbTr.localScale*0.5f);
-            material.SetMatrix("_ObbOrientation", Matrix4x4.Rotate(obbTr.rotation).inverse);
+            Vector4[] positions     = new Vector4[enabled.Count];
+            Matrix4x4[] rotations   = new Matrix4x4[enabled.Count];
+            Vector4[] sizes         = new Vector4[enabled.Count];
+
+            for (int ii = 0; ii < OBBS.Count; ++ii) {
+                positions[ii] = OBBS[ii].transform.position;
+                rotations[ii] = Matrix4x4.Rotate(OBBS[ii].transform.rotation).inverse;
+                sizes[ii]     = OBBS[ii].transform.localScale*0.5f;
+                sizes[ii].w   = enabled[ii] ? 1f : 0f;
+            }
+
+            material.SetVectorArray("_ObbsPos",  positions);
+            material.SetVectorArray("_ObbsSize", sizes);
+            material.SetMatrixArray("_ObbsOrientation", rotations);
         }
+
+        //public void set_filtering_obb_transform(Transform obbTr) {
+        //    var material = GetComponent<MeshRenderer>().material;
+        //    material.SetVector("_ObbPos", obbTr.position);
+        //    material.SetVector("_ObbSize", obbTr.localScale*0.5f);
+        //    material.SetMatrix("_ObbOrientation", Matrix4x4.Rotate(obbTr.rotation).inverse);
+        //}
     }
 
 

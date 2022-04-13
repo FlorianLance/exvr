@@ -44,7 +44,7 @@ namespace Ex{
             ["any:string"] = input => { return Converter.to_string(input); },
             ["any:vector2"] = input => { return Converter.to_vector2(input); },
             ["any:vector3"] = input => { return Converter.to_vector3(input); },
-            ["any:transform"] = input => { return Converter.to_transform(input); },
+            ["any:transform"] = input => { return Converter.to_transform_value(input); },
             ["any:decimal"] = input => { return Converter.to_decimal(input); },
             ["any:list_string"] = input => { return Converter.to_string_list(input); },
             ["any:lm_frame"] = input => { return (Leap.Frame)input; },

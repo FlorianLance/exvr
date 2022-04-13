@@ -230,7 +230,7 @@ namespace Ex{
 
             if (initAvatarTr == null) {
                 if (m_controller != null) {
-                    initAvatarTr = m_controller.current_config().get_transform("transform");
+                    initAvatarTr = m_controller.current_config().get_transform_value("transform");
                     initPos = initAvatarTr.position;
                     initHeadOffsetPos = m_controller.current_config().get_vector3("head_tracking_offset_pos");
                     initHeadOffsetRot = m_controller.current_config().get_vector3("head_tracking_offset_rot");

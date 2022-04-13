@@ -223,9 +223,9 @@ namespace Ex {
             [CallerFilePath] string sourceFilePath = "",
             [CallerLineNumber] int sourceLineNumber = 0) {
             if (verbose) {
-                log().warning(string.Concat(Converter.to_string(warning), verbose_name()), extra, memberName, sourceFilePath, sourceLineNumber);
+                log().warning(string.Concat(Converter.to_string(warning), verbose_name()), extra, memberName, sourceFilePath, sourceLineNumber, true, false);
             } else {
-                log().warning(warning, extra, memberName, sourceFilePath, sourceLineNumber);
+                log().warning(warning, extra, memberName, sourceFilePath, sourceLineNumber, true, false);
             }
         }
 
@@ -234,9 +234,9 @@ namespace Ex {
             [CallerFilePath] string sourceFilePath = "",
             [CallerLineNumber] int sourceLineNumber = 0) {
             if (verbose) {
-                log().error(string.Concat(Converter.to_string(error), verbose_name()), extra, memberName, sourceFilePath, sourceLineNumber);
+                log().error(string.Concat(Converter.to_string(error), verbose_name()), extra, memberName, sourceFilePath, sourceLineNumber, true, false);
             } else {
-                log().error(error, extra, memberName, sourceFilePath, sourceLineNumber);
+                log().error(error, extra, memberName, sourceFilePath, sourceLineNumber, true, false);
             }
         }
 

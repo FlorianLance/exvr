@@ -24,67 +24,79 @@
 
 #pragma once
 
-// Qt
-#include <QGridLayout>
-
-// local
-// # data
-#include "data/config.hpp"
-// # utility
-#include "qt_str.hpp"
-// # widgets
-#include "ex_camera_target_w.hpp"
+// qt-utility
+#include "gui/ex_widgets/ex_item_w.hpp"
 
 namespace tool::ex {
 
-
-template <typename T>
-class ExTabW : public ExItemW<QTabWidget>{
-
-
+class TabUiW : public QWidget{
+Q_OBJECT
 public:
 
-    ExTabW(QString name ="") : ExItemW<QTabWidget>(UiType::Tab, name){
+    TabUiW();
 
-        w->setMovable(true);
+    int current_tab_id();
+    void insert_tab(int index, QWidget *w);
+    void remove_tab(int index);
+    void set_title(const QString &title);
+    void set_tab_position(QTabWidget::TabPosition tabPosition);
+    void set_max_tab_number(int maxTabNumber);
 
-        // connections
-        connect(&pbAddTab, &QPushButton::clicked, [&]{
-            add_tab();
-            pbRemoveTab.setEnabled(w->count() > 0);
-            update_tab_names();
+signals:
+
+    void ask_new_tab_signal(int index);
+    void ask_remove_tab_signal(int index);
+    void tab_moved_signal(int from, int to);
+
+private:
+
+    void update_tab_names();
+
+    QLabel *name = nullptr;
+    QPushButton *pbAddTab = nullptr;
+    QPushButton *pbRemoveTab = nullptr;
+    QTabWidget *tab = nullptr;
+
+    QString baseName = "Tab_";
+    int maxTabNumber = 10;
+};
+
+
+template <typename T>
+class ExTabW : public ExItemW<TabUiW>{
+    static_assert(std::is_base_of<ExBaseW, T>::value, "T must derive from ExBaseW");
+public:
+
+    ExTabW(QString name ="") : ExItemW<TabUiW>(UiType::Tab, name){
+
+        connect(w.get(), &TabUiW::ask_new_tab_signal,this, [&](int index){
+            add_tab(index);
             trigger_ui_change();
         });
-        connect(&pbRemoveTab, &QPushButton::clicked, [&]{
-            remove_tab();
-            pbRemoveTab.setEnabled(w->count() > 0);
-            update_tab_names();
-            trigger_ui_change();
-        });
-        connect(w->tabBar(), &QTabBar::tabMoved, this, [&](int from, int to){
-            std::swap(widgets[from], widgets[to]);
-            update_tab_names();
-            trigger_ui_change();
-        });
-    }
-
-    void update_tab_names(){
-        for(int ii = 0; ii < w->count(); ++ii){
-            if(m_addNum){
-                w->setTabText(ii, m_baseName + QString::number(ii));
-            }else{
-                w->setTabText(ii, m_baseName);
+        connect(w.get(), &TabUiW::ask_remove_tab_signal, this, [&](int index){
+            if(index != -1){
+                widgets.erase(widgets.begin() + index);
+                w->remove_tab(index);
+                trigger_ui_change();
             }
-        }
+        });
+
+        connect(w.get(), &TabUiW::tab_moved_signal, this, [&](int from, int to){
+            std::swap(widgets[from], widgets[to]);
+            trigger_ui_change();
+        });
     }
 
-    ExTabW *init_widget(const QString &baseName, std_v1<std::any> parameters, QTabWidget::TabPosition tabPosition = QTabWidget::TabPosition::North, bool addNum = true, bool enabled = true){
 
-        m_baseName = baseName;
-        m_parameters = std::move(parameters);
-        w->setTabPosition(tabPosition);
-        m_addNum = addNum;
+    ExTabW *init_widget(QString tabTitle, std_v1<std::any> initParameters, int maxTabNumber, QTabWidget::TabPosition tabPosition = QTabWidget::TabPosition::North, bool enabled = true){
+
+        w->set_title(tabTitle);
+        w->set_max_tab_number(maxTabNumber);
+        m_initParameters = std::move(initParameters);
+
+        w->set_tab_position(tabPosition);
         w->setEnabled(enabled);
+
         return this;
     }
 
@@ -95,17 +107,12 @@ public:
         w->blockSignals(true);
 
         if(arg.count() > 0){
-            auto values = arg.split_value("[#1#]");
-            for(auto &value : values){
-                ExBaseW *w = add_tab();
+            for(auto value : arg.split_value("[#T#]")){
                 Arg arg;
-                arg.init_from_unknow(std::move(value));
-//                arg.init_from_unknow(arg.uiElementKey, std::move(value));
-                w->update_from_arg(arg);
+                arg.init_from(std::move(value));
+                add_tab(static_cast<int>(widgets.size()))->update_from_arg(arg);
             }
         }
-
-        update_tab_names();
 
         w->blockSignals(false);
     }
@@ -118,7 +125,7 @@ public:
         for(const auto& w : widgets){
             args.emplace_back(w->convert_to_arg());
         }
-        arg.init_from_args(std::move(args), "[#1#]");
+        arg.init_from_args(std::move(args), "[#T#]", UnityType::System_string);
 
         return arg;
     }
@@ -133,54 +140,39 @@ public:
 private:
 
 
-    ExBaseW *add_tab(){
+    ExBaseW *add_tab(int index){
 
         // create item
-        auto widget = std::make_unique<T>(QSL("tab") % QString::number(widgets.size()));
+        widgets.push_back(std::make_unique<T>(QSL("tab") % QString::number(widgets.size())));
+
+        auto widget = dynamic_cast<T*>(widgets[widgets.size()-1].get());
 
         // init sub connections
-        auto baseW = dynamic_cast<ExBaseW*>(widget.get());
+        auto baseW = dynamic_cast<ExBaseW*>(widget);
         connect(baseW, &ExBaseW::ui_change_signal, this, [&]{
             trigger_ui_change();
         });
 
         // init widget
-        widget->init_widget2(m_parameters);
+        widget->init_widget_from_any_array(m_initParameters);
 
         // add tab
         QWidget *subW = new QWidget();
-        auto l = new QVBoxLayout();
+        auto l = ui::L::VB();
         subW->setLayout(l);
         l->addWidget(widget->w.get());
         l->addStretch();
-        w->addTab(subW, m_baseName + QString::number(w->count()));
 
-        // add to container
-        widgets.emplace_back(std::move(widget));
+        w->insert_tab(index, subW);
+
         return baseW;
     }
 
-    void remove_tab(){
-        int id = w->currentIndex();
-        if(id > -1){
-            w->removeTab(id);
-            widgets.erase(widgets.begin()+id);
-        }
-    }
-
-
 public:
-
-    QPushButton pbAddTab;
-    QPushButton pbRemoveTab;
-    std_v1<std::unique_ptr<ExBaseW>> widgets;
+    std_v1<std::unique_ptr<T>> widgets;
 
 private :
-
-    bool m_addNum;
-    QString m_nameParam;
-    QString m_baseName;
-    std_v1<std::any> m_parameters;
+    std_v1<std::any> m_initParameters;
 };
 
 }

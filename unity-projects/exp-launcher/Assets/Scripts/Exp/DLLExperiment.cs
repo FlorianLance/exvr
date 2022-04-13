@@ -125,20 +125,18 @@ namespace Ex {
         private void init_callbacks() {
 
             stackTraceCB = (trace) => {
-                ExVR.Log().error("TRACE");
                 ExVR.ExpLog().push_to_strackTrace(new ComponentTrace(trace));
             };
 
             logMessageCB = (message) => { ExVR.Log().message(message); };
             logMessageIdCB = (message, sType, sKey) => {
 
-                ExVR.Log().error("MESSAGE");
                 switch ((SenderT)sType) {
                     case SenderT.Component:
                         if (ExVR.Components().componentPerKey.ContainsKey(sKey)) {
                             ExVR.Components().componentPerKey[sKey].log_message(message, true);
                         } else {
-                            ExVR.Log().error(string.Format("[DLL] Receive message from invalid component key {0} : {1}", sKey, message));
+                            ExVR.Log().error(string.Format("[DLL] Receive message from invalid component key {0} : {1}", sKey, message), true, "", "", 0, true, false);
                         }
                         break;
                 }
@@ -146,13 +144,13 @@ namespace Ex {
 
             logWarningCB = (message) => { ExVR.Log().warning(message); };
             logWarningIdCB = (message, sType, sKey) => {
-                ExVR.Log().error("WARNING");
+
                 switch ((SenderT)sType) {
                     case SenderT.Component:
                         if (ExVR.Components().componentPerKey.ContainsKey(sKey)) {
                             ExVR.Components().componentPerKey[sKey].log_warning(message, true);
                         } else {
-                            ExVR.Log().error(string.Format("[DLL] Receive warning from invalid component key {0} : {1}", sKey, message));
+                            ExVR.Log().error(string.Format("[DLL] Receive warning from invalid component key {0} : {1}", sKey, message), true, "", "", 0, true, false);
                         }
                         break;
                 }
@@ -160,7 +158,7 @@ namespace Ex {
 
             logErrorCB = (message) => { ExVR.Log().error(message); };
             logErrorIdCB = (message, sType, sKey) => {
-                ExVR.Log().error("ERROR");
+
                 switch ((SenderT)sType) {
                     case SenderT.Component:
                         if (ExVR.Components().componentPerKey.ContainsKey(sKey)) {
