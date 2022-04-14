@@ -110,7 +110,6 @@ void ExpLauncher::message_from_exp_launcher(QString m){
     messagesReceived.emplace_back(std::move(m));
     QStringView message = messagesReceived[messagesReceived.size()-1];
 
-    qDebug() << message.length();
 
     while(message.length() > 0){
         if(auto balise = extract_balise(message); balise.has_value()){
