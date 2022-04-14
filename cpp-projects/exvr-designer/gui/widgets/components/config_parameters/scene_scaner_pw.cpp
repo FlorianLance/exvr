@@ -111,7 +111,7 @@ public:
 
         auto values = arg.split_value("[#OBBFW#]");
         if(values.size() != 4){
-            QtLogger::error("OBBFilteringW: Invalid arg.");
+            QtLogger::error(QSL("OBBFilteringW: Invalid arg ") % QString::number(values.count()) % QSL("->") % arg.value() );
             return;
         }
 
@@ -146,8 +146,6 @@ public:
         init_widget(std::any_cast<QColor>(parameters[0]));
         return this;
     }
-
-
 
 
     ExCheckBoxW enableObb{"obb_enabled"};

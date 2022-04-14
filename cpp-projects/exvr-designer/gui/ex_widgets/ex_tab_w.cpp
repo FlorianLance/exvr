@@ -26,6 +26,7 @@
 
 using namespace tool::ex;
 
+
 TabUiW::TabUiW(){
 
     auto vb = ui::L::VB();
@@ -55,7 +56,6 @@ TabUiW::TabUiW(){
 int TabUiW::current_tab_id(){
     return tab->currentIndex();
 }
-
 
 void TabUiW::insert_tab(int index, QWidget *w){
     tab->insertTab(index, w, "");

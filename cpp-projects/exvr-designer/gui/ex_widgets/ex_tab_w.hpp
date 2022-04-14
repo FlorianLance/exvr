@@ -106,8 +106,8 @@ public:
 
         w->blockSignals(true);
 
-        if(arg.count() > 0){
-            for(auto value : arg.split_value("[#T#]")){
+        if(arg.value().length() != 0){
+            for(auto value : arg.split_value(QSL("[#T#]"))){
                 Arg arg;
                 arg.init_from(std::move(value));
                 add_tab(static_cast<int>(widgets.size()))->update_from_arg(arg);
