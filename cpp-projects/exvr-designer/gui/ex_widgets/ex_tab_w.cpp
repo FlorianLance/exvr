@@ -32,7 +32,7 @@ TabUiW::TabUiW(){
     setLayout(vb);
      vb->addWidget(ui::F::gen(ui::L::VB(), {
         name = ui::W::txt("Default"),
-        ui::F::gen(ui::L::HB(),{pbAddTab = new QPushButton("Add tab"), pbRemoveTab = new QPushButton("Remove tab")}, LStretch{true}, LMargins{false},QFrame::NoFrame),
+        ui::F::gen(ui::L::HB(),{pbAddTab = new QPushButton("Insert tab"), pbRemoveTab = new QPushButton("Remove current tab")}, LStretch{true}, LMargins{false},QFrame::NoFrame),
         tab = new QTabWidget()},
         LStretch{true}, LMargins{true}, QFrame::Box
     ));
@@ -55,6 +55,7 @@ TabUiW::TabUiW(){
 int TabUiW::current_tab_id(){
     return tab->currentIndex();
 }
+
 
 void TabUiW::insert_tab(int index, QWidget *w){
     tab->insertTab(index, w, "");

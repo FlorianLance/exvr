@@ -76,6 +76,8 @@ namespace Ex{
                 return (T)(object)to_decimal(value);
             } else if (typeof(T) == typeof(object)) {
                 return (T)(object)value;
+            } else if (typeof(T) == typeof(Color)) {
+                return (T)(object)to_color(value);
             } else if (typeof(T) == typeof(List<float>)) {
                 return (T)(object)to_float_list(value);
             } else if (typeof(T) == typeof(List<double>)) {
@@ -1064,8 +1066,9 @@ namespace Ex{
             if (value is Vector3) {
                 return (Vector3)value;
             }else if(value is Vector2) {
-
-            }else if(value is float) {
+                var v = (Vector2)value;
+                return new Vector3(v.x, v.y, 0);
+            } else if(value is float) {
                 var vf = (float)value;
                 return new Vector3(vf, vf, vf);
             } else if(value is double) {
@@ -1098,6 +1101,20 @@ namespace Ex{
         #endregion
 
         #region to_color
+
+        public static Color to_color(object value) {
+
+            if (value is Color) {
+                return (Color)value;
+            } else if (value is string) {
+                return to_color((string)value);
+            } else if (value is List<object>) {
+                return to_color((List<object>)value);
+            } 
+            log_error(string.Format("Conversion to \"Color\" not supported with type {0}.", value.GetType()));
+            return new Color();
+        }
+
         public static Color to_color(string colorStr) {
             var split = colorStr.Split(' ');
             return new Color(to_float(split[1]), to_float(split[2]), to_float(split[3]), to_float(split[0]));

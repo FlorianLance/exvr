@@ -70,13 +70,13 @@ public:
     ExTabW(QString name ="") : ExItemW<TabUiW>(UiType::Tab, name){
 
         connect(w.get(), &TabUiW::ask_new_tab_signal,this, [&](int index){
-            add_tab(index);
+            add_tab(index+1);
             trigger_ui_change();
         });
         connect(w.get(), &TabUiW::ask_remove_tab_signal, this, [&](int index){
             if(index != -1){
-                widgets.erase(widgets.begin() + index);
                 w->remove_tab(index);
+                widgets.erase(widgets.begin() + index);                
                 trigger_ui_change();
             }
         });
@@ -143,9 +143,9 @@ private:
     ExBaseW *add_tab(int index){
 
         // create item
-        widgets.push_back(std::make_unique<T>(QSL("tab") % QString::number(widgets.size())));
+        widgets.insert(widgets.begin() + index, std::make_unique<T>(QSL("tab")));
 
-        auto widget = dynamic_cast<T*>(widgets[widgets.size()-1].get());
+        auto widget = dynamic_cast<T*>(widgets[index].get());
 
         // init sub connections
         auto baseW = dynamic_cast<ExBaseW*>(widget);

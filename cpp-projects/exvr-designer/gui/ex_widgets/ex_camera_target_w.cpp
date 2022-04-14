@@ -27,7 +27,7 @@
 using namespace tool;
 using namespace tool::ex;
 
-ExCameraTargetW::ExCameraTargetW(QString name) : ExItemW<QFrame>(UiType::Camera_position, name){
+ExCameraTargetW::ExCameraTargetW(QString name) : ExItemW<QFrame>(UiType::Custom, name){
 
     w->setFrameShadow(QFrame::Raised);
     w->setFrameShape(QFrame::Shape::NoFrame);

@@ -46,6 +46,8 @@ private:
 };
 
 
+
+
 class SceneScanerConfigParametersW : public ConfigParametersW{
 
 public :

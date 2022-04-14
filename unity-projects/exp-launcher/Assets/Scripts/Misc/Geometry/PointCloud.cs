@@ -30,6 +30,14 @@ using UnityEngine;
 
 namespace Ex{
 
+    public class OBBFInfo {
+        public bool enabled = false;
+        public bool display = false;
+        public Color color = new Color(1, 0, 0, 0.2f);
+        public TransformValue transform = new TransformValue();
+    }
+
+
     [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
     public class PointCloud : MonoBehaviour{
         public enum RenderingType {
@@ -114,31 +122,26 @@ namespace Ex{
             GetComponent<MeshRenderer>().material.SetFloat("_PointSize", size);
         }
 
-        public void set_filtering_obb_transforms(List<GameObject> OBBS, List<bool> enabled) {
+        public void set_filtering_obb_infos(List<OBBFInfo> infos) {
 
-            var material = GetComponent<MeshRenderer>().material;
-            Vector4[] positions     = new Vector4[enabled.Count];
-            Matrix4x4[] rotations   = new Matrix4x4[enabled.Count];
-            Vector4[] sizes         = new Vector4[enabled.Count];
+            var material            = GetComponent<MeshRenderer>().material;
+            Vector4[] positions     = new Vector4[infos.Count];
+            Matrix4x4[] rotations   = new Matrix4x4[infos.Count];
+            Vector4[] sizes         = new Vector4[infos.Count];
 
-            for (int ii = 0; ii < OBBS.Count; ++ii) {
-                positions[ii] = OBBS[ii].transform.position;
-                rotations[ii] = Matrix4x4.Rotate(OBBS[ii].transform.rotation).inverse;
-                sizes[ii]     = OBBS[ii].transform.localScale*0.5f;
-                sizes[ii].w   = enabled[ii] ? 1f : 0f;
+            for(int ii = 0; ii < infos.Count; ++ii) {
+                positions[ii] = infos[ii].transform.position;
+                rotations[ii] = Matrix4x4.Rotate(infos[ii].transform.rotation).inverse;
+                sizes[ii]     = infos[ii].transform.scale * 0.5f;
+                sizes[ii].w   = infos[ii].enabled ? 1f : 0f;
             }
 
-            material.SetVectorArray("_ObbsPos",  positions);
+            material.SetVectorArray("_ObbsPos", positions);
             material.SetVectorArray("_ObbsSize", sizes);
             material.SetMatrixArray("_ObbsOrientation", rotations);
         }
 
-        //public void set_filtering_obb_transform(Transform obbTr) {
-        //    var material = GetComponent<MeshRenderer>().material;
-        //    material.SetVector("_ObbPos", obbTr.position);
-        //    material.SetVector("_ObbSize", obbTr.localScale*0.5f);
-        //    material.SetMatrix("_ObbOrientation", Matrix4x4.Rotate(obbTr.rotation).inverse);
-        //}
+
     }
 
 

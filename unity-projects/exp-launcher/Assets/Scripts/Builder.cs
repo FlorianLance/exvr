@@ -128,7 +128,7 @@ namespace Ex {
 
 
 
-            // tests
+            //// tests
             //var pc = gameObject.AddComponent<PointCloud>();
             //pc.set_rendering(PointCloud.RenderingType.ParabloidFrag);
 
@@ -177,10 +177,34 @@ namespace Ex {
         //    System.Collections.Generic.List<GameObject> cubes = new System.Collections.Generic.List<GameObject>();
         //    cubes.Add(transform.Find("Cube1").gameObject);
         //    cubes.Add(transform.Find("Cube2").gameObject);
+        //    cubes.Add(transform.Find("Cube3").gameObject);
 
-        //    System.Collections.Generic.List<bool> enabled = new System.Collections.Generic.List<bool>() { true, true };
-        //    //pc.set_obb_filtering_state(true);
-        //    pc.set_filtering_obb_transforms(cubes,enabled);
+        //    System.Collections.Generic.List<OBBFInfo> infos = new System.Collections.Generic.List<OBBFInfo>();
+        //    infos.Add(new OBBFInfo());
+        //    infos.Add(new OBBFInfo());
+        //    infos.Add(new OBBFInfo());
+
+        //    infos[0].color = new Color(1, 0, 0, 0.2f);
+        //    infos[1].color = new Color(0, 1, 0, 0.2f);
+        //    infos[2].color = new Color(0, 0, 1, 0.2f);
+
+        //    cubes[0].GetComponent<MeshRenderer>().material.SetColor("_Color", infos[0].color);
+        //    cubes[1].GetComponent<MeshRenderer>().material.SetColor("_Color", infos[1].color);
+        //    cubes[2].GetComponent<MeshRenderer>().material.SetColor("_Color", infos[2].color);
+
+        //    infos[0].display = true;
+        //    infos[1].display = true;
+        //    infos[2].display = true;
+
+        //    infos[0].enabled = true;
+        //    infos[1].enabled = true;
+        //    infos[2].enabled = true;
+
+        //    infos[0].transform = Converter.to_transform_value(cubes[0].transform);
+        //    infos[1].transform = Converter.to_transform_value(cubes[2].transform);
+        //    infos[2].transform = Converter.to_transform_value(cubes[1].transform);
+
+        //    pc.set_filtering_obb_infos(infos);
         //    pc.set_rendering(PointCloud.RenderingType.ParabloidGeo);
         //}
 
