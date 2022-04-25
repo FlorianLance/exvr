@@ -117,7 +117,7 @@ namespace Ex{
         }
         public bool initialize() {
 
-            foreach(var condition in m_conditions) {
+            foreach (var condition in m_conditions) {
                 if (!condition.initialize()) {
                     ExVR.Log().error(string.Format("Cannot initialize condition with name {0} and key {1}", condition.name, condition.key_str()));
                     return false; 
@@ -129,6 +129,8 @@ namespace Ex{
 
         public void start(RoutineInfo info) {
 
+            ExVR.ExpLog().enable_routine(info);
+
             // update routine with info
             m_currentCondition = info.condition();
             m_elementIteration = info.element_iteration();
@@ -137,25 +139,29 @@ namespace Ex{
             // enable it
             gameObject.SetActive(true);
 
-            ExVR.ExpLog().routine(name, current_condition().name, "Start");
             m_startTimer.Restart();
             m_currentCondition.start_routine();
             m_startTimer.Stop();
-            ExVR.ExpLog().routine(name, current_condition().name, string.Format("Started in {0} ms", m_startTimer.ElapsedMilliseconds));            
+            ExVR.ExpLog().routine_message(string.Format("Started in {0} ms", m_startTimer.ElapsedMilliseconds));            
         }
 
         public void on_gui() {m_currentCondition.on_gui();}
         public void update() {m_currentCondition.update();}
-        public void play() {m_currentCondition.play();}
-        public void pause() {m_currentCondition.pause();}
+        public void play() {
+            ExVR.ExpLog().routine_message("Play.");
+            m_currentCondition.play();
+        }
+        public void pause() {
+            ExVR.ExpLog().routine_message("Pause.");
+            m_currentCondition.pause();
+        }
 
         public void stop() {  
 
-            ExVR.ExpLog().routine(name, current_condition().name, "Stop");
             m_stopTimer.Restart();
             m_currentCondition.stop_routine();
             m_stopTimer.Stop();
-            ExVR.ExpLog().routine(name, current_condition().name, string.Format("Stopped in {0} ms", m_stopTimer.ElapsedMilliseconds));
+            ExVR.ExpLog().routine_message(string.Format("Stopped in {0} ms", m_stopTimer.ElapsedMilliseconds));
 
             // increment nb of calls
             m_callsNb++;

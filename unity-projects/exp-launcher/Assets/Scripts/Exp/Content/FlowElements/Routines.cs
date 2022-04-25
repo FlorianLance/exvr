@@ -43,70 +43,6 @@ namespace Ex{
             return m_currentRoutine;
         }
 
-        public void generate_from_xml(XML.Routines xmlRoutines) {
-
-            m_routines.Clear();
-            m_routinesPerName.Clear();
-            m_routinesPerKey.Clear();
-            foreach (XML.Routine xmlRoutine in xmlRoutines.Routine) {
-                var routine = GO.generate_empty_object(xmlRoutine.Name, ExVR.GO().Routines.transform).AddComponent<Routine>();
-                routine.setup_element_object(xmlRoutine);
-                m_routines.Add(routine);
-                m_routinesPerName[routine.name] = routine;
-                m_routinesPerKey[routine.key()] = routine;
-            }            
-        }
-
-        public bool initialize() {
-            foreach(var routine in m_routines) {
-                if (!routine.initialize()) {
-                    ExVR.Log().error(string.Format("Cannot initialize routine with name {0} and key {1}", routine.name, routine.key_str()));
-                    return false;
-                }
-            }
-            return true;
-        }
-
-
-        public void display_last_info() {
-
-            // display last routine info
-            StringBuilder builder = new StringBuilder();
-            builder.Append(" [DISABLE] -> ");
-            if (m_currentRoutine != null) {
-                builder.AppendFormat(" last routine [{0}]", m_currentRoutine.name);
-                var currentCond = m_currentRoutine.current_condition();
-                if (currentCond != null) {
-                    builder.AppendFormat(" with condition [{0}]", currentCond.name);
-                    if (currentCond.currentConnector != null) {
-                        builder.AppendFormat(" with last connector [{0}] and function [{1}]", currentCond.currentConnector.name, currentCond.currentConnector.currentFunction.ToString());
-                    } else {
-                        builder.Append(" and no last connector");
-                    }
-                } else {
-                    builder.Append(" with no condition");
-                }
-            } else {
-                builder.Append(" no last routine");
-            }
-            ExVR.ExpLog().routine_manager(builder.ToString());
-        }
-
-        public void trigger_update_signals(RoutineInfo info) {
-
-            Routine routine = get(info.key());
-            if (routine) {
-                foreach (Condition condition in routine.get_conditions()) {
-
-                    // retrieve current condition
-                    if (condition.name == info.condition().name) {
-                        condition.trigger_update_connector_signals();
-                        return;
-                    }
-                }
-            }
-        }
-
         public int count() {
             return m_routines.Count;
         }
@@ -133,12 +69,67 @@ namespace Ex{
             return null;
         }
 
+        public void display_last_info() {
+
+            // display last routine info
+            StringBuilder builder = new StringBuilder();
+            builder.Append(" [DISABLE] -> ");
+            if (m_currentRoutine != null) {
+                builder.AppendFormat(" last routine [{0}]", m_currentRoutine.name);
+                var currentCond = m_currentRoutine.current_condition();
+                if (currentCond != null) {
+                    builder.AppendFormat(" with condition [{0}]", currentCond.name);
+                    if (currentCond.currentConnector != null) {
+                        builder.AppendFormat(" with last connector [{0}] and function [{1}]", currentCond.currentConnector.name, currentCond.currentConnector.currentFunction.ToString());
+                    } else {
+                        builder.Append(" and no last connector");
+                    }
+                } else {
+                    builder.Append(" with no condition");
+                }
+            } else {
+                builder.Append(" no last routine");
+            }
+            ExVR.ExpLog().routine_message(builder.ToString());
+        }
+
+
+
+        public void generate_from_xml(XML.Routines xmlRoutines) {
+
+            ExVR.ExpLog().routines_message("Generate from XML.");
+
+            m_routines.Clear();
+            m_routinesPerName.Clear();
+            m_routinesPerKey.Clear();
+            foreach (XML.Routine xmlRoutine in xmlRoutines.Routine) {
+                var routine = GO.generate_empty_object(xmlRoutine.Name, ExVR.GO().Routines.transform).AddComponent<Routine>();
+                routine.setup_element_object(xmlRoutine);
+                m_routines.Add(routine);
+                m_routinesPerName[routine.name] = routine;
+                m_routinesPerKey[routine.key()] = routine;
+            }            
+        }
+
+        public bool initialize() {
+
+            ExVR.ExpLog().routines_message("Initialize.");
+
+            foreach (var routine in m_routines) {
+                if (!routine.initialize()) {
+                    ExVR.Log().error(string.Format("Cannot initialize routine with name {0} and key {1}", routine.name, routine.key_str()));
+                    return false;
+                }
+            }
+            return true;
+        }
+
+
 
         public void start_routine(RoutineInfo info) {
 
             // set current routine
             m_currentRoutine = (Routine)info.element();
-            ExVR.ExpLog().routine_manager(info);
 
             // start it
             ExVR.ExpLog().push_to_strackTrace(new RoutinesManagerTrace(m_currentRoutine, "Start", true));
@@ -158,6 +149,23 @@ namespace Ex{
             }
         }
 
+        public void trigger_update_signals(RoutineInfo info) {
+
+            Routine routine = get(info.key());
+            if (routine) {
+                foreach (Condition condition in routine.get_conditions()) {
+
+                    // retrieve current condition
+                    if (condition.name == info.condition().name) {
+                        condition.trigger_update_connector_signals();
+                        return;
+                    }
+                }
+            }
+        }
+
+
+
         public void play() {
             if (m_currentRoutine != null) {
                 m_currentRoutine.play();
@@ -165,7 +173,7 @@ namespace Ex{
         }
 
         public void pause() {
-            if (m_currentRoutine != null) {
+            if (m_currentRoutine != null) {                
                 m_currentRoutine.pause();
             }
         }
@@ -180,10 +188,13 @@ namespace Ex{
         }
 
         public void start_experiment() {
+            ExVR.ExpLog().routines_message("Start experiment.");
             ExVR.Components().start_experiment();
         }
 
         public void stop_experiment() {
+
+            ExVR.ExpLog().routines_message("Stop experiment.");
 
             ExVR.Components().disable();
 
@@ -201,6 +212,8 @@ namespace Ex{
 
         public void clean() {
 
+            ExVR.ExpLog().routines_message("Clean.");
+
             // destroy components
             ExVR.Components().clean();
 
@@ -214,9 +227,7 @@ namespace Ex{
         }
 
         public void update_components_states(RoutineInfo info) {
-            //ExVR.ExpLog().push_to_strackTrace(new RoutinesManagerTrace(routine, "update_components_states", true));
             ExVR.Components().update_states_from_time(info.condition(), ExVR.Time().ellapsed_element_s());
-            //ExVR.ExpLog().push_to_strackTrace(new RoutinesManagerTrace(routine, "update_components_states", false));
         }
 
         public bool modify_action_config(string routineName, string conditionName, string componentName, string newConfigName) {

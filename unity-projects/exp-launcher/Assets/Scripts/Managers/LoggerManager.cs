@@ -86,12 +86,12 @@ namespace Ex {
     
     public class Log{
 
-        private static readonly string loggerMessageFormat          = "[MESSAGE] {0}";
-        private static readonly string loggerWarningFormat          = "[WARNING] {0}";
-        private static readonly string loggerErrorFormat            = "[ERROR] {0}";
-        private static readonly string loggerMessageExtraInfoFormat = "[MESSAGE] {0} from [{1}] at line ({2}) in file [{3}]";
-        private static readonly string loggerWarningExtraInfoFormat = "[WARNING] {0} from [{1}] at line ({2}) in file [{3}]";
-        private static readonly string loggerErrorExtraInfoFormat   = "[ERROR] {0} from [{1}] at line ({2}) in file [{3}]";
+        private static readonly string loggerMessageFormat          = "[#MESSAGE#] {0}";
+        private static readonly string loggerWarningFormat          = "[#WARNING#] {0}";
+        private static readonly string loggerErrorFormat            = "[#ERROR#] {0}";
+        private static readonly string loggerMessageExtraInfoFormat = "[#MESSAGE#] {0} from [{1}] at line ({2}) in file [{3}]";
+        private static readonly string loggerWarningExtraInfoFormat = "[#WARNING#] {0} from [{1}] at line ({2}) in file [{3}]";
+        private static readonly string loggerErrorExtraInfoFormat   = "[#ERROR#] {0} from [{1}] at line ({2}) in file [{3}]";
 
         private static readonly string guiMessageFormat             = "<font color=#bdbdbd>{0}</font>";
         private static readonly string guiWarningFormat             = "<font color=#f39e03>{0}</font>";
@@ -226,18 +226,23 @@ namespace Ex {
         private static readonly string ExpStr = "[EXP] {0}";
         private static readonly string CmdStr = "[COMMAND] {0}";
 
-        private static readonly string StartCondCompStr = "\t[Condition] (Begin) Component function {0}";
-        private static readonly string EndCondCompStr = "\t[Condition] (End) Component function {0}";
-        private static readonly string StartCondConnStr = "\t[Condition] (Begin) Connector function {0}";
-        private static readonly string EndCondConnStr = "\t[Condition] (End) Connector function {0}";
+        private static readonly string ComponentsStartStr = "\t[Components-Start] {0}";
+        private static readonly string ComponentsEndStr   = "\t[Components-End] {0}";
+                
+        private static readonly string RoutinesMessageStr = "\t[Routines] {0}";
+        private static readonly string RoutineEnableStr   = "\t\t[Routine] Enable -> Name:[{0}], R-Iter:[{1}], Cond:[{2}], C-Iter:[{3}] Order:[{4}], Duration:[{5}]";
+        private static readonly string RoutineMessageStr  = "\t\t[Routine] Message:[{0}]";
+        private static readonly string IsiEnableStr       = "\t\t[ISI] Enable -> Name:[{0}], Cond:[{1}]";
 
-        private static readonly string StartCompMaStr = "\t[Components_manager] (Begin) {0}";
-        private static readonly string EndCompMaStr = "\t[Components_manager] (End) {0}";
-        private static readonly string EnableRoutineManStr = "\t[Routines_manager] (Enable routine: {0})(Cond: {1})";
-        private static readonly string RoutineManStr = "\t[Routines_manager] {0}";
-        private static readonly string EnableIsiManStr = "\t[ISI_manager] (Enable ISI: {0})(Cond: {1})";
-        private static readonly string StartCompStr = "\t\t\t[Component] {0} (Conf: {1}) (Func: {2}{3})";
-        private static readonly string RoutineStr = "\t\t[Routine] {0} (Condition: {1})(Message: {2})";
+        private static readonly string ActionStartStr     = "\t\t\t[Action-Start] Function:[{0}]";
+        private static readonly string ActionEndStr       = "\t\t\t[Action-End] Function:[{0}]";
+        private static readonly string ComponentStr       = "\t\t\t\t[Component] Name:[{0}], Config:[{1}], Function:[{2}], Extra:[{3}]";
+
+
+        private static readonly string StartConnectorStr  = "\t\t\t[Connector-Start] Function:[{0}]";
+        private static readonly string EndConnectorStr    = "\t\t\t[Connector-End] Function:[{0}]";
+
+
         private static readonly string NullStr = "-";
 
         private static readonly string AddT0     = "{0} (tTot: {1})";
@@ -313,42 +318,68 @@ namespace Ex {
             swapTrace = new Trace[100];
         }
 
-        public void isi_manager(ISIInfo info) {
-            add(string.Format(EnableIsiManStr, info.name(), info.duration_str()), false, true, false);
+
+
+
+
+        public void routines_message(string message) {
+            add(string.Format(RoutinesMessageStr, message), false, true, false);
         }
 
-        public void routine_manager(string message) {
-            add(string.Format(RoutineManStr, message), false, true, true);
+        public void enable_routine(RoutineInfo info) {
+            add(string.Format(RoutineEnableStr,
+                info.name(),
+                info.element_iteration(),
+                info.condition().name,
+                info.condition_iteration(),
+                info.order(),
+                info.interval().duration()), false, true, false);
         }
 
-        public void routine_manager(RoutineInfo info) {
-            add(string.Format(EnableRoutineManStr, info.name(), info.condition().name), false, true, false);
+        public void routine_message(string message) {
+            add(string.Format(RoutineMessageStr, message), false, true, false);
+        }
+
+        public void enable_isi(ISIInfo info) {
+            add(string.Format(IsiEnableStr, info.name(), info.duration_str()), false, true, false);
         }
 
 
-        public void component_manager(ExComponent.Function function, bool start) {
+        public void components(ExComponent.Function function, bool start) {
             if (start) {
-                add(string.Format(StartCompMaStr, componentsFunctionsStr[function]), false, true, true);
+                add(string.Format(ComponentsStartStr, componentsFunctionsStr[function]), false, true, true);
             } else {
-                add(string.Format(EndCompMaStr, componentsFunctionsStr[function]), false, true, true);
+                add(string.Format(ComponentsEndStr, componentsFunctionsStr[function]), false, true, true);
             }            
         }
 
-        public void condition(ExConnector.Function function, bool start) {
+
+        public void action(ExComponent.Function function, bool start) {
             if (start) {
-                add(string.Format(StartCondConnStr, connectorsFunctionsStr[function]), false, true, true);
+                add(string.Format(ActionStartStr, componentsFunctionsStr[function]), false, true, true);
             } else {
-                add(string.Format(EndCondConnStr, connectorsFunctionsStr[function]), false, true, true);
+                add(string.Format(ActionEndStr, componentsFunctionsStr[function]), false, true, true);
             }
         }
 
-        public void condition(ExComponent.Function function, bool start) {
+        public void connector(ExConnector.Function function, bool start) {
             if (start) {
-                add(string.Format(StartCondCompStr, componentsFunctionsStr[function]), false, true, true);
+                add(string.Format(StartConnectorStr, connectorsFunctionsStr[function]), false, true, true);
             } else {
-                add(string.Format(EndCondCompStr, componentsFunctionsStr[function]), false, true, true);
+                add(string.Format(EndConnectorStr, connectorsFunctionsStr[function]), false, true, true);
             }
         }
+
+        public void component(ExComponent component, ExComponent.Function function, string config = "", string extra = "", bool timeExp = false, bool timeCurrentElement = false) {
+            add(string.Format(ComponentStr, 
+                component.name, 
+                (config.Length > 0) ? config : NullStr, 
+                function.ToString(), 
+                extra),
+                false, timeExp, timeCurrentElement
+            );
+        }
+
 
         public void log_and_add_to_stacktrace(ExComponent c, ExComponent.Function function, bool start, bool log = false, bool timeExp = false, bool timeElem = false) {
 
@@ -429,15 +460,9 @@ namespace Ex {
             add("### [End stack trace] ###", false, false, false);
         }
 
-        public void routine(string routineName, string condition, string message) {
-            add(string.Format(RoutineStr, routineName, condition, message), false, true, false);
-        }
 
-        public void component(ExComponent component, ExComponent.Function function, string config = "", string extra = "", bool timeExp = false, bool timeCurrentElement = false) {
-            add(string.Format(StartCompStr, component.name, (config.Length > 0) ? config : NullStr, function.ToString(), extra),
-                false, timeExp, timeCurrentElement
-            );
-        }
+
+  
 
         public void command(string text) {
             add(string.Format(CmdStr, text), true, true, true);

@@ -324,7 +324,7 @@ namespace Ex{
         public bool initialize() {
 
             // initialize components
-            ExVR.ExpLog().component_manager(Function.initialize, true);
+            ExVR.ExpLog().components(Function.initialize, true);
             foreach (var component in sortedComponents) {
 
                 if (component.is_function_defined(Function.initialize)) {
@@ -337,7 +337,7 @@ namespace Ex{
                 }
 
             }
-            ExVR.ExpLog().component_manager(Function.initialize, false);
+            ExVR.ExpLog().components(Function.initialize, false);
 
             return true;
         }
@@ -407,7 +407,7 @@ namespace Ex{
 
         public void start_experiment() {
                         
-            ExVR.ExpLog().component_manager(Function.start_experiment, true);
+            ExVR.ExpLog().components(Function.start_experiment, true);
 
             foreach (var component in sortedComponents) {
 
@@ -427,13 +427,13 @@ namespace Ex{
                 }
             }
 
-            ExVR.ExpLog().component_manager(Function.start_experiment, false);
+            ExVR.ExpLog().components(Function.start_experiment, false);
         }
 
 
         public void stop_experiment() {
 
-            ExVR.ExpLog().component_manager(Function.stop_experiment, true);
+            ExVR.ExpLog().components(Function.stop_experiment, true);
             foreach (var component in reverseSortedComponents) {
 
                 if (component.is_function_defined(Function.stop_experiment)) {
@@ -452,7 +452,7 @@ namespace Ex{
                 component.currentTimeline = null;
                 component.currentC = null;
             }
-            ExVR.ExpLog().component_manager(Function.stop_experiment, false);
+            ExVR.ExpLog().components(Function.stop_experiment, false);
         }
         public void close(ExComponent componentToClose) {
 
@@ -467,7 +467,7 @@ namespace Ex{
 
         public void clean() {
             
-            ExVR.ExpLog().component_manager(Function.clean, true);
+            ExVR.ExpLog().components(Function.clean, true);
             foreach (var component in reverseSortedComponents) {
 
                 if (component.is_function_defined(Function.clean)) {
@@ -478,7 +478,7 @@ namespace Ex{
                 // destroy gameobject
                 Destroy(component.gameObject);
             }
-            ExVR.ExpLog().component_manager(Function.clean, false);
+            ExVR.ExpLog().components(Function.clean, false);
 
             // clean container
             sortedComponents.Clear();
