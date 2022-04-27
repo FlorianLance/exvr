@@ -76,6 +76,8 @@ INCLUDEPATH += \
     $$BOOST_INCLUDES \
     # signals
     $$SIGNALS_INCLUDES \
+    # sigslot
+    $$SIGSLOT_INCLUDES \
     # PYTHON
     $$PYTHON_INCLUDES \
 
