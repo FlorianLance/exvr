@@ -1890,6 +1890,81 @@ void Experiment::sort_components_by_name(){
     add_to_update_flag(UpdateComponents);
 }
 
+void Experiment::delete_unused_components(){
+
+//    QtLogger::message("### CHECK DUPLICATE NAMES###");
+//    std::set<QString> cNames;
+//    for(auto &component : compM.components){
+
+//        auto n = component->name();
+//        if(cNames.contains(n)){
+//            size_t iter = 1;
+//            while(cNames.contains(n)){
+//                n = component->name() % QSL(" (") % QString::number(iter++) % QSL(")");
+//            }
+//            QtLogger::message(QSL("Rename component [") % component->name() % QSL("] into [") % n % QSL("]"));
+//            component->set_name(n);
+//        }
+//    }
+
+
+//    QtLogger::message("### REMOVE ACTIONS###");
+//    std::vector<std::tuple<ElementKey, ConditionKey, ActionKey>> actionsToRemove;
+//    for(const auto &routine : get_elements_from_type<Routine>()){
+//        for(const auto &condition : routine->conditions){
+//            for(const auto &action : condition->actions){
+//                auto timeOpt = Component::get_timeline_opt(action->component->type);
+//                bool removeAction = false;
+//                if(timeOpt == Component::TimelineO::Both){
+//                    if(action->timelineUpdate->intervals.size() == 0 && action->timelineVisibility->intervals.size() == 0){
+//                        removeAction = true;
+//                    }
+//                }else if(timeOpt == Component::TimelineO::Update){
+//                    if(action->timelineUpdate->intervals.size() == 0){
+//                        removeAction = true;
+//                    }
+//                }else if(timeOpt == Component::TimelineO::Visibility){
+//                    if(action->timelineVisibility->intervals.size() == 0){
+//                        removeAction = true;
+//                    }
+//                }
+
+//                if(removeAction){
+//                    QtLogger::message(QSL(" - remove component [") % action->component->name() % QSL("] from [") % condition->name % QSL("] from routine [") % routine->name() % QSL("]"));
+//                    actionsToRemove.push_back(std::make_tuple(ElementKey{routine->key()}, ConditionKey{condition->key()}, ActionKey{action->key()}));
+//                }
+//            }
+//        }
+//    }
+
+//    for(const auto &action : actionsToRemove){
+//        remove_action_from_condition(std::get<0>(action), std::get<1>(action), std::get<2>(action), false);
+//    }
+
+    QtLogger::message("### REMOVE COMPONENTS###");
+    std::unordered_set<int> keys;
+    for(const auto &routine : get_elements_from_type<Routine>()){
+        for(const auto &condition : routine->conditions){
+            for(const auto &action : condition->actions){
+                keys.emplace(action->component->key());
+            }
+        }
+    }
+
+    std::vector<Component*> componentsToRemove;
+    for(const auto &component : compM.components){
+        if(!keys.contains(component->key())){
+            componentsToRemove.push_back(component.get());                        
+        }
+    }
+
+    for(const auto &c : componentsToRemove){
+        remove_component(ComponentKey{c->key()});
+    }
+
+    add_to_update_flag(UpdateComponents | UpdateRoutines);
+}
+
 void Experiment::select_config_in_component(ComponentKey componentKey, RowId id){
     if(auto component = get_component(componentKey); component != nullptr){
         component->selectedConfigId = id;

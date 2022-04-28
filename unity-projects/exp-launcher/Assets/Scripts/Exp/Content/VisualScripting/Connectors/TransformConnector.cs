@@ -22,9 +22,6 @@
 ** SOFTWARE.                                                                      **
 ************************************************************************************/
 
-// unity
-using UnityEngine;
-
 namespace Ex {
 
     public class TransformConnector : ExConnector {

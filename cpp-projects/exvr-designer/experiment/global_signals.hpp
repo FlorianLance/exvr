@@ -188,6 +188,10 @@ signals:
 
     void ask_for_udapte_signal(int);
 
+
+    // debug & test
+    void delete_unused_components_debug_signal();
+
 private:
     static inline std::unique_ptr<GSignals> m_signals = nullptr;
 };

@@ -174,6 +174,7 @@ public slots:
     void sort_components_by_category();
     void sort_components_by_type();
     void sort_components_by_name();
+    void delete_unused_components();
     // # components configs
     void select_config_in_component(ComponentKey componentKey, RowId id);
     void insert_config_in_component(ComponentKey componentKey, RowId id, QString configName);

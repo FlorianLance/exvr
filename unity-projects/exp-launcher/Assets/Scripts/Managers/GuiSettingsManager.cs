@@ -45,6 +45,7 @@ namespace Ex{
         public bool designerDebugBuild          = false;
         public bool csharpDebugInfo             = false;
         public bool catchComponentsExceptions   = false;
+        public bool catchConverterExceptions    = true;
 
         // camera
         public bool enablePositionalTracking    = true;

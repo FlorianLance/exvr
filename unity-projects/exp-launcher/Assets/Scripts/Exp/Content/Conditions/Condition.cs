@@ -247,7 +247,7 @@ namespace Ex{
 
             foreach (var connector in connectors) {
                 if (!connector.base_initialize()) {
-                    ExVR.Log().error(string.Format("Cannot initialize connector {0} with key {1}.", connector.name, connector.keyStr));
+                    ExVR.Log().error(string.Format("Cannot initialize connector [{0}] with key [{1}].", connector.name, connector.keyStr));
                     return false;
                 }
             }

@@ -1309,6 +1309,11 @@ void ExVrController::generate_global_signals_connections(){
             exp_launcher()->trigger_component_config_action(componentKey, configKey, actionName, initConfig);
         }
     });
+
+
+    // debug & test
+    connect(s, &GSignals::delete_unused_components_debug_signal, exp(), &EXP::delete_unused_components);
+
 }
 
 void ExVrController::generate_main_window_connections(){

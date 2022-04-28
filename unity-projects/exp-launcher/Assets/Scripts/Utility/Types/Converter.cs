@@ -1184,9 +1184,24 @@ namespace Ex{
                 return to_transform_value((List<string>)value, order);
             } else if (value is string) {
                 return to_transform_value((string)value, order);
+            } else if (value is List<object>) {
+
+                var list = (List<object>)value;
+                if (list.Count > 0) {
+                    if (list[0] is float) {
+                        return to_transform_value(to_list<float>(value));
+                    } else if (list[0] is double) {
+                        return to_transform_value(to_list<double>(value));
+                    }
+                }         
+            }
+            
+            if (ExVR.GuiSettings().catchConverterExceptions) {
+                throw new ArgumentException(string.Format("Conversion to \"TransformValue\" not supported with type {0}.", value.GetType()));
+            } else {
+                log_error(string.Format("Conversion to \"TransformValue\" not supported with type {0}.", value.GetType()));
             }
 
-            log_error(string.Format("Conversion to \"TransformValue\" not supported with type {0}.", value.GetType()));
             return new TransformValue();
         }
 

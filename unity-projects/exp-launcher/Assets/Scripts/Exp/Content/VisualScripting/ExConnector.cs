@@ -174,9 +174,10 @@ namespace Ex {
         }
 
         protected string verbose_name() {
-            return String.Format(" [From connector: [{0}] ({1})([{2}])]",
+            return String.Format(" [From connector with name [{0}] of type [{1}] and key [{2}] from function [{3}]]",
                 name,
                 this.GetType().ToString(),
+                key,                
                 currentFunction.ToString()
             );
         }

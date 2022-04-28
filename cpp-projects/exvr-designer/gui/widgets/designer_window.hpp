@@ -260,6 +260,7 @@ private:
     // # debug
     QAction m_benchmarkAct;
     QAction m_crashAct;
+    QAction m_deleteUnusedComponentAct;
     // # resources
     QAction m_showResourcesManagerDialogAct;
     QAction m_showCSharpScriptDirectoryAct;

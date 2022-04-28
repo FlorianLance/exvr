@@ -465,6 +465,10 @@ void DesignerWindow::create_actions(){
         abort();
     });
 
+    m_deleteUnusedComponentAct.setText(tr("&Delete unused component"));
+    m_deleteUnusedComponentAct.setStatusTip(tr("m_deleteUnusedComponentAct"));
+    connect(&m_deleteUnusedComponentAct, &QAction::triggered, GSignals::get(), &GSignals::delete_unused_components_debug_signal);
+
     m_clearLogsAct.setText(tr("&Erase logs"));
     m_clearLogsAct.setStatusTip(tr("Erase logs"));
     m_clearLogsAct.setIcon(QIcon(":/icons/Eraser"));
@@ -630,6 +634,7 @@ void DesignerWindow::create_menu(){
     menu->addSeparator();
     menu->addAction(&m_benchmarkAct);
     menu->addAction(&m_crashAct);
+    menu->addAction(&m_deleteUnusedComponentAct);
     // doc
     menu = menuBar()->addMenu(tr("&?"));
     menu->addAction(&m_showDocumentationEditorAct);
