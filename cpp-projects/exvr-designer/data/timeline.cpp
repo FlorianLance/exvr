@@ -100,6 +100,10 @@ void Timeline::cut(SecondsTS max){
     }
 }
 
+size_t Timeline::nb_intervals() const{
+    return intervals.size();
+}
+
 double Timeline::sum_intervals() const{
 
     double total = 0.;

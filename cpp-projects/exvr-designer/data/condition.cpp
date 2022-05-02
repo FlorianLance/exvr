@@ -49,6 +49,7 @@ void Condition::apply_condition(const Condition *conditionToCopy, bool copyActio
             auto action = Action::copy_with_new_element_id(*actionToCopy);
             if(!copyConnections){
                 action->nodeUsed = false;
+                action->nodePosition = QPoint(0,0);
             }
             actions.emplace_back(std::move(action));
         }
@@ -67,7 +68,8 @@ void Condition::apply_condition(const Condition *conditionToCopy, bool copyActio
         // apply action component node used state
         for(auto &actionToCopy : conditionToCopy->actions){
             if(auto action = get_action_from_component_key(ComponentKey{actionToCopy->component->key()}, false); action != nullptr){
-                action->nodeUsed = actionToCopy->nodeUsed;
+                action->nodeUsed     = actionToCopy->nodeUsed;
+                action->nodePosition = actionToCopy->nodePosition;
             }
         }
 
@@ -120,7 +122,8 @@ Action *Condition::get_action_from_key(ActionKey actionKey, bool displayError) c
     }
 
     if(displayError){
-        QtLogger::error(QSL("Action with key ") % QString::number(actionKey.v) % QSL(" not found"));
+        QtLogger::error(QSL("Cannot find Action with key [") % QString::number(actionKey.v) %
+                        QSL("] from condition [") % name % QSL("] wtih key [") % QString::number(key()) % QSL("]"));
     }
 
     return nullptr;
@@ -135,8 +138,10 @@ Action *Condition::get_action_from_component_key(ComponentKey componentKey, bool
         return actionFound->get();
     }
 
+
     if(displayError){
-        QtLogger::error(QSL("Component with key ") % QString::number(componentKey.v) % QSL(" not found"));
+        QtLogger::error(QSL("Cannot find Action with component key [") % QString::number(componentKey.v) %
+                        QSL("] from condition [") % name % QSL("] wtih key [") % QString::number(key()) % QSL("]"));
     }
 
     return nullptr;

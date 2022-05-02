@@ -965,6 +965,8 @@ void Experiment::add_action(ElementKey routineKey, ConditionKey conditionKey, Co
 
     auto component = compM.get_component(componentKey);
     if(component == nullptr){
+        QtLogger::error(QSL("Cannot add action to condition with key [") % QString::number(conditionKey.v) % QSL("] from routine with key [")
+            % QString::number(routineKey.v) % QSL("]"));
         return;
     }
 
@@ -995,6 +997,7 @@ void Experiment::add_action_to_all_conditions(ElementKey routineKey, ComponentKe
 
     auto component = compM.get_component(componentKey);
     if(component == nullptr){
+        QtLogger::error(QSL("Cannot add action to all conditions.)"));
         return;
     }
 
@@ -1022,6 +1025,7 @@ void Experiment::add_action_to_all_routines_conditions(ComponentKey componentKey
 
     auto component = compM.get_component(componentKey);
     if(component == nullptr){
+        QtLogger::error(QSL("Cannot add action to all routines conditions.)"));
         return;
     }
 
@@ -1048,6 +1052,7 @@ void Experiment::insert_action_to(ComponentKey componentKey, std::vector<std::tu
 
     auto component = compM.get_component(componentKey);
     if(component == nullptr){
+        QtLogger::error(QSL("Cannot insert action.)"));
         return;
     }
 
@@ -1077,6 +1082,7 @@ void Experiment::modify_action(ElementKey routineKey, ConditionKey conditionKey,
 
     auto component = compM.get_component(componentKey);
     if(component == nullptr){
+        QtLogger::error(QSL("Cannot modify action.)"));
         return;
     }
 
@@ -1124,6 +1130,7 @@ void Experiment::modify_action_to_all_conditions(ElementKey routineKey, Componen
 
     auto component = compM.get_component(componentKey);
     if(component == nullptr){
+        QtLogger::error(QSL("Cannot modify action.)"));
         return;
     }
 
@@ -1170,6 +1177,7 @@ void Experiment::modify_action_to_all_routines_conditions(ComponentKey component
 
     auto component = compM.get_component(componentKey);
     if(component == nullptr){
+        QtLogger::error(QSL("Cannot modify action.)"));
         return;
     }
 
@@ -1805,11 +1813,13 @@ void Experiment::update_conditions(){
 
 void Experiment::update_component_position(ComponentKey componentKey, RowId id){
 
-    if(const auto compoInfo = compM.get_component_and_position(componentKey); compoInfo.second != nullptr){
+    if(const auto compoInfo = compM.get_component_and_position(componentKey); compoInfo.second != nullptr){                
         auto compoToMove = std::move(compM.components[compoInfo.first]);
         compM.components.erase(compM.components.begin() + static_cast<std_v1<ComponentUP>::difference_type>(compoInfo.first));
         compM.components.insert(compM.components.begin() + id.v, std::move(compoToMove));
         add_to_update_flag(UpdateComponents);
+    }else{
+        QtLogger::error(QSL("Cannot update component position."));
     }
 }
 

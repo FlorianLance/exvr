@@ -54,6 +54,7 @@ struct Timeline{
     bool add_interval(const Interval &interval);
     bool remove_interval(const Interval &intervalToRemove);
     void cut(SecondsTS max);
+    size_t nb_intervals() const;
     double sum_intervals() const;
 
 

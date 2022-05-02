@@ -235,7 +235,7 @@ struct Component {
         {T::Fop_robot,                C::Tracking,    TO::U,     CO::B,   true,    R::LNCO,         S::Sta, "Fop_robot"sv, "FOP robot"sv, "FOPRobot"sv,":/icons/Fop_robot"sv},
         {T::Kinect_manager,           C::Tracking,    TO::U,     CO::B,   true,    R::LNCO,         S::Sta, "Kinect_manager"sv, "Kinect manager"sv, "KinectManager"sv,":/icons/Kinect"sv},
         {T::Kinect_body_tracking,     C::Tracking,    TO::B,     CO::B,   true,    R::LNCO,         S::Exp, "Kinect_body_tracking"sv, "Kinect body tracking"sv, "KinectBodyTracking"sv,":/icons/Kinect"sv},
-        {T::Leap_motion,              C::Tracking,    TO::U,     CO::N,   true,    R::OpenSource,   S::Leg, "Leap_motion"sv, "LeapMotion"sv, "LeapMotion"sv, ":/icons/Hand"sv},
+        {T::Leap_motion,              C::Tracking,    TO::U,     CO::C,   true,    R::OpenSource,   S::Leg, "Leap_motion"sv, "LeapMotion"sv, "LeapMotion"sv, ":/icons/Hand"sv},
         {T::Leap_motion_arms_display, C::Tracking,    TO::V,     CO::B,   true,    R::ClosedSource, S::Leg, "Leap_motion_arms_display"sv, "LeapMotion realistic arms"sv, "LeapMotionArmsDisplay"sv, ":/icons/Hand"sv},
         {T::Leap_motion_tracking,     C::Tracking,    TO::V,     CO::N,   true,    R::OpenSource,   S::Leg, "Leap_motion_tracking"sv, "LeapMotion tracking"sv, "LeapMotionTracking"sv, ":/icons/Hand"sv},
         {T::Qualisys,                 C::Tracking,    TO::B,     CO::B,   true,    R::OpenSource,   S::Sta, "Qualisys_tracking"sv, "Qualisys tracking"sv, "QualisysTracking"sv, ":/icons/Qualisys"sv},

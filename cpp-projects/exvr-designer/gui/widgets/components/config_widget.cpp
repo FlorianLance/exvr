@@ -97,6 +97,7 @@
 
 using namespace tool::ex;
 
+
 ConfigW::ConfigW(Config *config, Component *component, bool initConfig, std::map<QStringView,Arg> &args) :
       configKey(ConfigKey{config->key()}), componentKey(ComponentKey{component->key()}), name(config->name){
 
@@ -270,6 +271,8 @@ ConfigParametersW *ConfigW::generate_parameters(Component::Type type, bool initC
         return gen_params_w<KinectManagerInitConfigParametersW,KinectManagerConfigParametersW>(initConfig);
     case CT::Kinect_body_tracking:
         return gen_params_w<KinectBodyTrackingInitConfigParametersW,KinectBodyTrackingConfigParametersW>(initConfig);
+    case CT::Leap_motion:
+        return gen_params_w<LeapMotionInitConfigParametersW,LeapMotionConfigParametersW>(initConfig);
     case CT::Leap_motion_arms_display:
         return gen_params_w<LeapMotionArmsDisplayInitConfigParametersW,LeapMotionArmsDisplayConfigParametersW>(initConfig);
     case CT::Scene_scaner:

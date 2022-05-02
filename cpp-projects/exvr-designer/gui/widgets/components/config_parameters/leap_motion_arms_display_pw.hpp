@@ -29,11 +29,33 @@
 #include "gui/ex_widgets/ex_checkbox_w.hpp"
 #include "gui/ex_widgets/ex_combo_box_text_w.hpp"
 
+
 // local
 #include "config_pw.hpp"
 
 
 namespace tool::ex {
+
+class LeapMotionInitConfigParametersW : public ConfigParametersW{
+public:
+};
+
+class LeapMotionConfigParametersW : public ConfigParametersW{
+public:
+    ExCheckBoxW useTransformAsOrigin{"use_transform_as_origin"};
+    TransformSubPart tr{"transform"};
+
+    void insert_widgets() override{
+        add_sub_part_widget(tr);
+        add_widget(ui::F::gen(ui::L::HB(),{useTransformAsOrigin()}, LStretch{false}, LMargins{true}));
+    }
+
+    void init_and_register_widgets() override{
+        add_input_ui(useTransformAsOrigin.init_widget("Use transform as origin", false));
+        map_sub_part(tr.init_widget("Transform"));
+    }
+};
+
 
 class LeapMotionArmsDisplayInitConfigParametersW : public ConfigParametersW{
 

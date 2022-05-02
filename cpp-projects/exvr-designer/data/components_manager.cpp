@@ -75,7 +75,7 @@ Component *ComponentsManager::get_component(ComponentKey componentKey, bool disp
     }
 
     if(displayError){
-        QtLogger::error(QSL("Component with key ") % QString::number(componentKey.v) % QSL(" not found."));
+        QtLogger::error(QSL("Component with key [") % QString::number(componentKey.v) % QSL("] not found."));
     }
 
     return nullptr;
@@ -87,7 +87,7 @@ Component *ComponentsManager::get_component(Component::Type type, const QString 
             return component;
         }
     }
-    QtLogger::error(QSL("Component with name ") % name % QSL(" not found."));
+    QtLogger::error(QSL("Component with name [") % name % QSL("] and type [") % from_view(Component::get_type_name(type)) % QSL("] not found."));
     return  nullptr;
 }
 
@@ -98,7 +98,7 @@ std::pair<size_t, Component *> ComponentsManager::get_component_and_position(Com
             return {ii, components[ii].get()};
         }
     }
-    QtLogger::error(QSL("Component with key ") % QString::number(componentKey.v) % QSL(" not found."));
+    QtLogger::error(QSL("Component with key [") % QString::number(componentKey.v) % QSL("] and its position not found."));
     return {0, nullptr};
 }
 

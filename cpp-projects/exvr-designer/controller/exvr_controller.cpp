@@ -588,7 +588,61 @@ void ExVrController::show_component_informations_dialog(ComponentKey componentKe
                     for(const auto &conditionAction : conditionsActions){
                         auto condition = std::get<0>(conditionAction);
                         auto action    = std::get<1>(conditionAction);
-                        insideTxt += QSL(" * Condition **[") % condition->name % QSL("]** with config **[") % action->config->name % QSL("]** ") % (action->nodeUsed ? QSL("(Node used)") : QSL(""))  % QSL("<br />");
+
+                        double lengthUpdate = 0.;
+                        size_t nbUpdateIntervals = 0;
+                        if(action->timelineUpdate){
+                            nbUpdateIntervals = action->timelineUpdate->nb_intervals();
+                            lengthUpdate = action->timelineUpdate->sum_intervals();
+                        }
+                        double lengthVisibility = 0.;
+                        size_t nbVisibilityIntervals = 0;
+                        if(action->timelineVisibility){
+                            nbVisibilityIntervals += action->timelineVisibility->nb_intervals();
+                            lengthVisibility = action->timelineVisibility->sum_intervals() ;
+                        }
+
+                        QString timelineTxt;
+                        auto tOpt = Component::get_timeline_opt(action->component->type);
+                        if(tOpt == Component::TimelineO::Both){
+
+                            if(nbUpdateIntervals > 0){
+                                timelineTxt += QSL(" with **[") % QString::number(nbUpdateIntervals) % QSL("]** intervals of total length  **[")
+                                               % QString::number(lengthUpdate) % QSL("]** for update timeline");
+                            }else{
+                                timelineTxt += QSL(" with no interval for update timeline");
+                            }
+
+                            if(nbVisibilityIntervals > 0){
+                                timelineTxt += QSL(" with  **[") % QString::number(nbVisibilityIntervals) % QSL("]** intervals of total length  **[") %
+                                               QString::number(lengthVisibility) % QSL("]** for visibility timeline");
+                            }else{
+                                timelineTxt += QSL(" with no interval for visibility timeline");
+                            }
+
+                        }else if(tOpt == Component::TimelineO::Update){
+
+                            if(nbUpdateIntervals > 0){
+                                timelineTxt += QSL(" with  **[") % QString::number(nbUpdateIntervals) % QSL("]** intervals of total length  **[") %
+                                               QString::number(lengthUpdate) % QSL("]** for update timeline");
+                            }else{
+                                timelineTxt += QSL(" with no interval for update timeline");
+                            }
+
+                        }else if(tOpt == Component::TimelineO::Visibility){
+
+                            if(nbVisibilityIntervals > 0){
+                                timelineTxt += QSL(" with **[") % QString::number(nbVisibilityIntervals) % QSL("]** intervals of total length **[") %
+                                               QString::number(lengthVisibility) % QSL("]** for visibility timeline");
+                            }else{
+                                timelineTxt += QSL(" with no interval for visibility timeline");
+                            }
+                        }else{
+                            timelineTxt += QSL(" (Timeline-less)");
+                        }
+
+                        insideTxt += QSL(" * Condition **[") % condition->name % QSL("]** with config **[") % action->config->name % QSL("]** ") % timelineTxt %
+                                      (action->nodeUsed ? QSL(" **(Node used)**") : QSL(""))  % QSL("<br />");
                     }
                 }
                 insideTxt += "<br />";
@@ -601,7 +655,7 @@ void ExVrController::show_component_informations_dialog(ComponentKey componentKe
         if(notContainingComponent.size() > 0){
             for(const auto& [routine, conditions] : notContainingComponent){
                 if(conditions.size() == routine->conditions.size()){
-                    notInsideTxt += QSL("Routine: **[") % routine->name() % QSL("]** with no condition referencing it.<br />");
+                    notInsideTxt += QSL("Routine: **[") % routine->name() % QSL("]** with all conditions **[") % QString::number(conditions.size()) % QSL("]** not referencing it.<br />");
                 }else{
                     notInsideTxt += QSL("Routine: **[") % routine->name() % QSL("]** with **") % QString::number(conditions.size()) % QSL("** conditions not referencing it.<br />");
                 }
