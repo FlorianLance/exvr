@@ -116,10 +116,6 @@ public slots:
 
     virtual void compute(){};
 
-//    void call_embedded_widget_compute_signal(){
-//        emit node_container()->compute_data_signal();
-//    }
-
 signals:
 
     void connector_modified_signal(ConnectorKey key, QString name, tool::ex::Arg arg);

@@ -102,6 +102,7 @@ HEADERS += \
     # controller
     controller/exvr_controller.hpp \
     # utility
+    gui/widgets/connections/data_models/base_node_data_model.hpp \
     utility/script_utility.hpp \
     utility/path_utility.hpp \
     # IO
@@ -260,7 +261,6 @@ HEADERS += \
     gui/widgets/connections/connections_widget.hpp \
     gui/widgets/connections/data_models/connectors/resources_ndm.hpp \
     gui/widgets/connections/data_models/base_embedded_widget.hpp \
-    gui/widgets/connections/data_models/base_node_data_model.hpp \
     gui/widgets/connections/data_models/data/nodes_data_converters.hpp \
     gui/widgets/connections/data_models/all_node_data_models.hpp \
     gui/widgets/connections/data_models/data/nodes_data.hpp \
@@ -432,7 +432,6 @@ SOURCES += \
     gui/widgets/connections/data_models/all_node_data_models.cpp \
     gui/widgets/connections/data_models/base_embedded_widget.cpp \
     gui/widgets/connections/data_models/data/nodes_data_converters.cpp \
-    gui/widgets/connections/data_models/base_node_data_model.cpp \
     gui/widgets/connections/data_models/connectors/connector_node_data_model.cpp \
     gui/widgets/connections/data_models/connectors/component_node_data_model.cpp \
     gui/widgets/connections/data_models/connectors/transform_to_vectors_ndm.cpp \

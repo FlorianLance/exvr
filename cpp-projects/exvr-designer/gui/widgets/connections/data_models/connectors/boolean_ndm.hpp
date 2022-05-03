@@ -51,8 +51,8 @@ Q_OBJECT
 public slots:
     void compute() override;
     void setInData(std::shared_ptr<QtNodes::NodeData> nodeData, PortIndex port) override;
-    void inputConnectionCreated(const QtNodes::Connection &c) override;
-    void inputConnectionDeleted(const QtNodes::Connection &c) override;
+    void input_connection_created(const QtNodes::Connection &c) override;
+    void input_connection_deleted(const QtNodes::Connection &c) override;
 public:
     void init_ports_caption() override;
 };

@@ -33,7 +33,7 @@ ComponentNodeDataModel::ComponentNodeDataModel(int key, Component::Type componen
     this->key = key;
 
     for(const auto &cSignal : Component::get_signals(componentType)){
-        signalsF.emplace_back(std::make_pair(
+        signalsF.push_back(std::make_pair(
             Component::Info{
                 std::get<1>(cSignal),
                 std::get<2>(cSignal),
@@ -45,7 +45,7 @@ ComponentNodeDataModel::ComponentNodeDataModel(int key, Component::Type componen
 
     for(const auto &cSlot : Component::get_slots(componentType)){
         std::weak_ptr<NodeData> wPtr;
-        slotsF.emplace_back(std::make_pair(
+        slotsF.push_back(std::make_pair(
             Component::Info{
                 std::get<1>(cSlot),
                 std::get<2>(cSlot),

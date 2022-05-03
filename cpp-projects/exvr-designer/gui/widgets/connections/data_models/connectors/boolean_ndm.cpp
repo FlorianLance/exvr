@@ -52,14 +52,14 @@ void BooleanNodeDataModel::setInData(std::shared_ptr<QtNodes::NodeData> nodeData
     compute();
 }
 
-void BooleanNodeDataModel::inputConnectionCreated(const QtNodes::Connection &c){
+void BooleanNodeDataModel::input_connection_created(const QtNodes::Connection &c){
     int id = c.getPortIndex(QtNodes::PortType::In);
     if(id == 0){
         lock_embedded_widget();
     }
 }
 
-void BooleanNodeDataModel::inputConnectionDeleted(const QtNodes::Connection &c){
+void BooleanNodeDataModel::input_connection_deleted(const QtNodes::Connection &c){
     int id = c.getPortIndex(QtNodes::PortType::In);
     if(id == 0){
         unlock_embedded_widget();

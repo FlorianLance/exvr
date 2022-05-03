@@ -90,12 +90,12 @@ void ConnectorNodeDataModel::initialize(QtNodes::NodeStyle style, ConnectorKey c
     init_ports_caption_visibility();
 
     // resize data
-    inputData.resize(nPorts(PortType::In));
+    inputData.resize(nb_Ports(PortType::In));
     interData.resize(Connector::get_inter_number(m_type));
-    outputData.resize(nPorts(PortType::Out));
+    outputData.resize(nb_Ports(PortType::Out));
 
     // set style
-    setNodeStyle(style);
+    set_node_style(style);
 
     // init embedded widget
     connect(m_widget, &BaseNodeContainerW::update_internal_data_signal, this, [&](std_v1<size_t> indexes, std_v1<std::shared_ptr<NodeData>> nodes){

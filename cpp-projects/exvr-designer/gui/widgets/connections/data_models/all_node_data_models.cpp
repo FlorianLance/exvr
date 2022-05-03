@@ -616,8 +616,8 @@ std::unique_ptr<ConnectorNodeDataModel> DataNodeModels::generate_connector_data_
 }
 
 std::unique_ptr<ComponentNodeDataModel> DataNodeModels::generate_component_data_model(Component *component){
-    auto componentDataModel = std::make_unique<ComponentNodeDataModel>(component->key(), component->type);    
-    componentDataModel->setNodeStyle(componentStyle);
+    auto componentDataModel = std::make_unique<ComponentNodeDataModel>(component->key(), component->type);
+    componentDataModel->set_node_style(componentStyle);
     componentDataModel->update_name(component->name());
     return componentDataModel;
 }

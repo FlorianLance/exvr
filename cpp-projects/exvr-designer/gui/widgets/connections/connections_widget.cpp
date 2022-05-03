@@ -257,8 +257,8 @@ void ConnectionsW::add_connection(Connection *connection){
         endNode = m_componentsNodes[connection->endKey].first;
     }
 
-    const NodeDataType &outType = startNode->nodeDataModel()->dataType(PortType::Out,connection->startIndex);
-    const NodeDataType &intType = endNode->nodeDataModel()->dataType(PortType::In,connection->endIndex);
+    const NodeDataType &outType = startNode->nodeDataModel()->port_data_type(PortType::Out,connection->startIndex);
+    const NodeDataType &intType = endNode->nodeDataModel()->port_data_type(PortType::In,connection->endIndex);
 
     auto connectionW = m_scene->createConnection(*endNode, connection->endIndex, *startNode, connection->startIndex, DataNodeModels::registry->getTypeConverter(outType, intType));
     m_connections[connectionW->id()] = std::make_pair(connectionW.get(), ConnectionKey{connection->key()});
@@ -337,7 +337,7 @@ void ConnectionsW::add_nodes_and_connections_to_scene(std_v1<Action *> component
         auto nodePtr  = &node;
 
         // geometry
-        node.nodeGeometry().setSpacing(20);
+        node.nodeGeometry().set_spacing(20);
 
         // position
         node.nodeGraphicsObject().setPos(std::get<2>(nodeDataModelType));
@@ -409,8 +409,8 @@ void ConnectionsW::force_graphic_update(){
     for(auto &c : m_componentsNodes){
         c.second.first->nodeGraphicsObject().update();
 
-        const int nbIn  = static_cast<int>(c.second.first->nodeDataModel()->nPorts(PortType::In));
-        const int nbOut = static_cast<int>(c.second.first->nodeDataModel()->nPorts(PortType::Out));
+        const int nbIn  = static_cast<int>(c.second.first->nodeDataModel()->nb_Ports(PortType::In));
+        const int nbOut = static_cast<int>(c.second.first->nodeDataModel()->nb_Ports(PortType::Out));
 
         for(int ii = 0; ii < nbIn; ++ii){
             for(auto &connection : c.second.first->nodeState().connections(PortType::In, ii)){
@@ -427,8 +427,8 @@ void ConnectionsW::force_graphic_update(){
     for(auto &c : m_connectorsNodes){
         c.second.first->nodeGraphicsObject().update();
 
-        const int nbIn  = static_cast<int>(c.second.first->nodeDataModel()->nPorts(PortType::In));
-        const int nbOut = static_cast<int>(c.second.first->nodeDataModel()->nPorts(PortType::Out));
+        const int nbIn  = static_cast<int>(c.second.first->nodeDataModel()->nb_Ports(PortType::In));
+        const int nbOut = static_cast<int>(c.second.first->nodeDataModel()->nb_Ports(PortType::Out));
 
         for(int ii = 0; ii < nbIn; ++ii){
             for(auto &connection : c.second.first->nodeState().connections(PortType::In, ii)){

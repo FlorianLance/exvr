@@ -62,7 +62,6 @@ public:
     // name
     void update_name(QString componentName);
 
-
     // widget
     QWidget * embeddedWidget() override { return nullptr; }
 
