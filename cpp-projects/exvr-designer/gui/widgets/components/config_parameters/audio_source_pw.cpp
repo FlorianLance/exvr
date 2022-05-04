@@ -46,32 +46,7 @@ struct AudioSourceInitConfigParametersW::Impl{
     std_v1<std::unique_ptr<ExLineEditW>> channelsToCopy;
 };
 
-struct AudioSourceConfigParametersW::Impl{
 
-    ExCheckBoxW displaySoundOrigin = {"display"};
-    ExCheckBoxW playNewBlock = {"play_new_block"};
-    QButtonGroup group1;
-    ExRadioButtonW pauseEndBlock = {"pause_end_block"};
-    ExRadioButtonW stopEndBlock = {"stop_end_block"};
-    ExRadioButtonW nothingEndBlock = {"nothing_end_block"};
-
-    ExCheckBoxW doMute = {"mute"};
-    ExCheckBoxW doLoop = {"loop"};
-    ExSliderFloatW volume = {"volume"};
-    ExSliderFloatW stereo = {"stereo"};    
-    ExSliderFloatW pitch = {"pitch"};
-
-    ExCheckBoxW isSpatialized = {"spatialized"};
-    ExSliderFloatW spatialBlend = {"spatial_blend"};
-    ExSliderFloatW dopplerLevel = {"doppler_level"}; // 0 - 5
-    ExSliderIntegerW spread = {"spread"}; // 0 - 360
-    ExComboBoxIndexW rolloffMode = {"rollof_mode"};
-    ExSliderFloatW minDistance = {"min_distance"};
-    ExSliderFloatW maxDistance = {"max_distance"};
-
-    TransformSubPart transfo = {"transform"};
-
-};
 
 AudioSourceInitConfigParametersW::AudioSourceInitConfigParametersW() :  ConfigParametersW(), m_p(std::make_unique<Impl>()){
 }
@@ -145,6 +120,40 @@ void AudioSourceInitConfigParametersW::update_with_info(QStringView id, QStringV
     }
 }
 
+struct AudioSourceConfigParametersW::Impl{
+
+    ExCheckBoxW displaySoundOrigin = {"display"};
+
+    QButtonGroup group1;
+    ExRadioButtonW playNewBlock     = {"play_new_block"};
+    ExRadioButtonW stopNewBlock     = {"stop_new_block"};
+    ExRadioButtonW pauseNewBlock    = {"pause_new_block"};
+    ExRadioButtonW nothingNewBlock  = {"nothing_new_block"};
+
+    QButtonGroup group2;
+    ExRadioButtonW playEndBlock     = {"play_end_block"};
+    ExRadioButtonW pauseEndBlock    = {"pause_end_block"};
+    ExRadioButtonW stopEndBlock     = {"stop_end_block"};
+    ExRadioButtonW nothingEndBlock  = {"nothing_end_block"};
+
+    ExCheckBoxW doMute              = {"mute"};
+    ExCheckBoxW doLoop              = {"loop"};
+    ExSliderFloatW volume           = {"volume"};
+    ExSliderFloatW stereo           = {"stereo"};
+    ExSliderFloatW pitch            = {"pitch"};
+
+    ExCheckBoxW isSpatialized       = {"spatialized"};
+    ExSliderFloatW spatialBlend     = {"spatial_blend"};
+    ExSliderFloatW dopplerLevel     = {"doppler_level"}; // 0 - 5
+    ExSliderIntegerW spread         = {"spread"}; // 0 - 360
+    ExComboBoxIndexW rolloffMode    = {"rollof_mode"};
+    ExSliderFloatW minDistance      = {"min_distance"};
+    ExSliderFloatW maxDistance      = {"max_distance"};
+
+    TransformSubPart transfo        = {"transform"};
+
+};
+
 AudioSourceConfigParametersW::AudioSourceConfigParametersW() :  ConfigParametersW(), m_p(std::make_unique<Impl>()){
 }
 
@@ -153,13 +162,13 @@ void AudioSourceConfigParametersW::insert_widgets(){
     m_p = std::make_unique<Impl>();
 
     add_sub_part_widget(m_p->transfo);
-
     add_widget(ui::F::gen(ui::L::VB(), {
-        m_p->playNewBlock(), m_p->pauseEndBlock(), m_p->stopEndBlock(),m_p->nothingEndBlock()},
-        LStretch{false}, LMargins{true}, QFrame::Box)
+        ui::W::txt("What to do when update block starts:"),
+        ui::F::gen(ui::L::HB(),{m_p->playNewBlock(),m_p->pauseNewBlock(), m_p->stopNewBlock(),m_p->nothingNewBlock()}, LStretch{true}, LMargins{true}),
+        ui::W::txt("What to do when update block ends:"),
+        ui::F::gen(ui::L::HB(),{m_p->playEndBlock(),m_p->pauseEndBlock(),m_p->stopEndBlock(),m_p->nothingEndBlock()}, LStretch{true}, LMargins{true})
+        }, LStretch{false}, LMargins{true}, QFrame::Box)
     );
-
-
 
     {
         auto gl = new QGridLayout();
@@ -239,13 +248,20 @@ void AudioSourceConfigParametersW::insert_widgets(){
 
 void AudioSourceConfigParametersW::init_and_register_widgets(){
 
-    add_input_ui(m_p->playNewBlock.init_widget("Play when update block starts", true));
 
     add_inputs_ui(
         ExRadioButtonW::init_group_widgets(m_p->group1,
-            {&m_p->pauseEndBlock, &m_p->stopEndBlock, &m_p->nothingEndBlock},
-            {"Pause when update block ends","Stop when update block ends","Do nothing when update block ends"},
-            {false, true, false}
+            {&m_p->playNewBlock, &m_p->pauseNewBlock, &m_p->stopNewBlock, &m_p->nothingNewBlock},
+            {"Play","Pause","Stop", "Nothing"},
+            {true, false, false, false}
+        )
+    );
+
+    add_inputs_ui(
+        ExRadioButtonW::init_group_widgets(m_p->group2,
+            {&m_p->playEndBlock,&m_p->pauseEndBlock, &m_p->stopEndBlock, &m_p->nothingEndBlock},
+            {"Play","Pause","Stop", "Nothing"},
+            {false, false, true, false}
         )
     );
 

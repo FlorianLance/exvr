@@ -40,9 +40,13 @@ namespace Ex{
         private AudioClip m_audioClip = null;
         private AudioData m_audioData = null;
 
-        private bool m_stopEndBlock = false;
-        private bool m_playNewBlock = false;
+        private bool m_playNewBlock  = false;
+        private bool m_pauseNewBlock = false;
+        private bool m_stopNewBlock  = false;
+
+        private bool m_playEndBlock  = false;
         private bool m_pauseEndBlock = false;
+        private bool m_stopEndBlock  = false;
 
         public GameObject audioSourceGO = null;
         public AudioSource audioSource = null;
@@ -82,14 +86,6 @@ namespace Ex{
             audioSource.playOnAwake = false;            
             audioSource.loop        = false;
             audioSource.spatialize  = false;
-
-            //audioSource.spatialBlend = 1f;
-            //audioSource.spatialize = true;
-            //audioSource.rolloffMode = AudioRolloffMode.Logarithmic;
-            //audioSource.minDistance = 0.01f;
-            //audioSource.maxDistance = 10f;
-
-
 
             var audioFileData    = initC.get_resource_audio_data("sound");
             var assetBundleAlias = initC.get_resource_alias("asset_bundle");
@@ -181,6 +177,11 @@ namespace Ex{
 
         public override void update_from_current_config() {
 
+
+
+            audioSource.mute = currentC.get<bool>("mute");
+            set_volume(currentC.get<float>("volume"));
+
             //audioSource.spatialBlend = 0;
             bool loop = currentC.get<bool>("loop");
             if (loop != audioSource.loop) {
@@ -196,17 +197,11 @@ namespace Ex{
             audioSource.panStereo = currentC.get<float>("stereo");
             audioSource.spatialBlend = currentC.get<float>("spatial_blend");
 
-            m_playNewBlock = currentC.get<bool>("play_new_block");
-            m_stopEndBlock = currentC.get<bool>("stop_end_block");
-            m_pauseEndBlock = currentC.get<bool>("pause_end_block");
-
-            set_volume(currentC.get<float>("volume"));
 
             if (!currentC.get<bool>("transform_do_not_apply")) {
                 currentC.update_transform("transform", transform);
             }
-
-            audioSource.mute = currentC.get<bool>("mute");
+            
             audioSource.dopplerLevel = currentC.get<float>("doppler_level");
             audioSource.spread = currentC.get<int>("spread");
 
@@ -224,6 +219,15 @@ namespace Ex{
                 audioSource.maxDistance = maxDistance;
             }
 
+            // new/end blocks
+            m_playNewBlock  = currentC.get<bool>("play_new_block");
+            m_pauseNewBlock = currentC.get<bool>("pause_new_block");
+            m_stopNewBlock  = currentC.get<bool>("stop_new_block");
+
+            m_playEndBlock  = currentC.get<bool>("play_end_block");
+            m_pauseEndBlock = currentC.get<bool>("pause_end_block");
+            m_stopEndBlock  = currentC.get<bool>("stop_end_block");
+
             set_visibility(is_visible());
         }
 
@@ -238,14 +242,24 @@ namespace Ex{
 
         protected override void set_update_state(bool doUpdate) {
 
+
             if (doUpdate) {
+
                 if (!audioSource.isPlaying && m_playNewBlock) {
                     audioSource.Play();
-                }
-            } else {
-                if (m_stopEndBlock && audioSource.isPlaying) {
+                } else if (audioSource.isPlaying && m_stopNewBlock) {
                     audioSource.Stop();
-                } else if (m_pauseEndBlock) {
+                }else if(audioSource.isPlaying && m_pauseNewBlock) {
+                    audioSource.Pause();
+                } 
+
+            } else {
+
+                if (!audioSource.isPlaying && m_playEndBlock) {
+                    audioSource.Play();
+                } else if (audioSource.isPlaying && m_stopEndBlock) {
+                    audioSource.Stop();
+                } else if (audioSource.isPlaying && m_pauseEndBlock) {
                     audioSource.Pause();
                 }
             }
@@ -316,6 +330,10 @@ namespace Ex{
         }
         public void stop_sound() {
             audioSource.Stop();
+        }
+
+        public void mute(bool state) {
+            audioSource.mute = state;
         }
 
         public override void play() {

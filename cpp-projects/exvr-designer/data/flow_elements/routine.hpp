@@ -45,6 +45,7 @@ struct Routine : public FlowElement {
 
     void set_as_randomizer(bool randomizer);
 
+    void select_condition(RowId id);
     void select_condition(ConditionKey conditionKey);
     void move_condition_down(RowId id);
     void move_condition_up(RowId id);
@@ -66,6 +67,7 @@ struct Routine : public FlowElement {
 
 
     Condition *get_condition(ConditionKey conditionKey) const;
+    Condition *selected_condition() const;
 
     QString to_string() const;
 

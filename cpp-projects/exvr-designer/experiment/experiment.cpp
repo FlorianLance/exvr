@@ -104,9 +104,9 @@ void Experiment::select_element(ElementKey elementKey, bool updateSignal){
         }else{
 
             if(elem->type == FlowElement::Type::Routine){
-                lastRoutineSelected = dynamic_cast<Routine*>(elem);                
-                if(lastRoutineSelected->conditions.size() > 0){
-                    lastRoutineSelected->select_condition(ConditionKey{lastRoutineSelected->conditions[0]->key()});
+                lastRoutineSelected = dynamic_cast<Routine*>(elem);
+                if(lastRoutineSelected->selected_condition() == nullptr){
+                    lastRoutineSelected->select_condition(RowId{0});
                 }
             }else if(elem->type == FlowElement::Type::Isi){
                 lastIsiSelected = dynamic_cast<Isi*>(elem);

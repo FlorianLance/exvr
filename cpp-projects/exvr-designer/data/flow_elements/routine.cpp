@@ -50,11 +50,18 @@ void Routine::set_as_randomizer(bool randomizer){
         condition->connections.clear();
         condition->connectors.clear();
     }
-//    ghostsConditions.clear();
+}
+
+void Routine::select_condition(RowId id){
+    if(id.v < static_cast<int>(conditions.size())){
+        for(size_t ii = 0; ii < conditions.size(); ++ii){
+            conditions[ii]->selected = static_cast<int>(ii) == id.v;
+        }
+    }
 }
 
 void Routine::select_condition(ConditionKey conditionKey){
-    for(const auto &condition : conditions){
+    for(auto &condition : conditions){
         condition->selected = (condition->key() == conditionKey.v);
     }
 }
@@ -176,6 +183,15 @@ Condition *Routine::get_condition(ConditionKey conditionKey) const{
     }
 
     QtLogger::error(QSL("Condition with key ") % QString::number(conditionKey.v) % QSL(" not found."));
+    return nullptr;
+}
+
+Condition *Routine::selected_condition() const{
+    for(const auto &condition : conditions){
+        if(condition->selected){
+            return condition.get();
+        }
+    }
     return nullptr;
 }
 
