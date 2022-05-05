@@ -70,6 +70,9 @@ namespace Ex {
 
         public void Awake() {
 
+ 
+
+
 
 #if EXVR
             Debug.Log("[EXVR-EXP]");
@@ -135,7 +138,7 @@ namespace Ex {
             //Mesh mesh = gameObject.GetComponent<MeshFilter>().mesh;
             //mesh.MarkDynamic();
 
-
+            Converter.unit_tests();
         }
 
 

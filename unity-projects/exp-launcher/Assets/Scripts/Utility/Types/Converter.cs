@@ -34,6 +34,41 @@ namespace Ex{
 
     public static class Converter {
 
+
+        public static void unit_tests() {
+
+            bool a = false;
+            byte b = 25;
+            char c = '5';
+            int d = 866;
+            float e = 846.8f;
+            double f = 58453.07578;
+            string g = "test";
+            DecimalValue h = new DecimalValue(45);
+
+            Converter.to2<bool>(a);
+            Converter.to2<bool>(b);
+            Converter.to2<bool>(c);
+            Converter.to2<bool>(d);
+            Converter.to2<bool>(e);
+            Converter.to2<bool>(f);
+            Converter.to2<bool>(g);
+            Converter.to2<bool>(h);
+
+            int total = 0;
+            total += Converter.to2<int>(a);
+            total += Converter.to2<int>(b);
+            total += Converter.to2<int>(c);
+            total += Converter.to2<int>(d);
+            total += Converter.to2<int>(e);
+            total += Converter.to2<int>(f);
+            total += Converter.to2<int>(g);
+            total += Converter.to2<int>(h);
+            Debug.LogError("total " + total);
+        }
+
+
+
         private const string g4  = "G4";
         private const string g7  = "G7";
         private const string g15 = "G15";
@@ -50,11 +85,186 @@ namespace Ex{
             PitchYawRoll, YawRollPitch
         };
 
+        private static void log_warning(string warning) {
+            ExVR.Log().warning(string.Format("[CONVERTER] {0}", warning));
+        }
+
         private static void log_error(string error) {
             ExVR.Log().error(string.Format("[CONVERTER] {0}", error));
         }
 
+        public static T to2<T>(object value) {
+            var toType = typeof(T);
+            if (conv.ContainsKey(toType)){
+                var fromType = value.GetType();
+                if (conv[toType].ContainsKey(fromType)) {
+                    return (T)(object)conv[toType][fromType](value);
+                } else {
+                    log_error(String.Format("No specific converter defined for source type {0} with destination type {1}. ", fromType.ToString(), toType.ToString()));
+                    return default(T);
+                }
+            } else {
+                log_error(String.Format("No specific converter defined for destination type {0}. ", toType.ToString()));
+                return default(T);
+            }            
+        }
+
+        private static readonly System.Type boolT   = typeof(bool);
+        private static readonly System.Type byteT   = typeof(byte);
+        private static readonly System.Type charT   = typeof(char);
+        private static readonly System.Type intT    = typeof(int);        
+        private static readonly System.Type longT   = typeof(long);
+        private static readonly System.Type floatT  = typeof(float);
+        private static readonly System.Type doubleT = typeof(double);
+        private static readonly System.Type stringT = typeof(string);
+        private static readonly System.Type decValT = typeof(DecimalValue);
+
+        // to - from
+        private static Dictionary<System.Type, Dictionary<System.Type, Func<object, object>>> conv = new Dictionary<Type, Dictionary<Type, Func<object, object>>> {
+            [boolT] = new Dictionary<Type, Func<object, object>>() {
+                [boolT] = input => { return (bool)input; },
+                [byteT] = input => { return Convert.ToBoolean((byte)input); },
+                [charT] = input => { return Convert.ToBoolean(Convert.ToInt32((char)input)); },
+                [intT] = input => { return Convert.ToBoolean((int)input); },
+                [longT] = input => { return Convert.ToBoolean((long)input); },
+                [floatT] = input => { return Convert.ToBoolean((float)input); },
+                [doubleT] = input => { return Convert.ToBoolean((double)input); },
+                [decValT] = input => { return ((DecimalValue)input).to_bool(); },
+                [stringT] = input => {
+                    var strValue = (string)input;
+                    if (strValue.Length == 1) {
+                        return strValue[0] != '0';
+                    }
+                    Boolean.TryParse(strValue, out bool result);
+                    return result;
+                },
+            },
+            [byteT] = new Dictionary<Type, Func<object, object>>() {
+                [boolT]   = input => { return Convert.ToByte((bool)input); },
+                [byteT]   = input => { return (byte)input; },
+                [charT]   = input => { return Convert.ToByte((char)input); },
+                [intT]    = input => { try { return Convert.ToByte((int)input); } catch (OverflowException e) { log_error(e.Message); } return default(byte); },
+                [longT]   = input => { try { return Convert.ToByte((long)input); } catch (OverflowException e) { log_error(e.Message); } return default(byte); },
+                [floatT]  = input => { try { return Convert.ToByte((float)input); } catch (OverflowException e) { log_error(e.Message); } return default(byte); },
+                [doubleT] = input => { try { return Convert.ToByte((double)input); } catch (OverflowException e) { log_error(e.Message); } return default(byte); },
+                [decValT] = input => { try { return Convert.ToByte(((DecimalValue)input).to_int()); } catch (OverflowException e) { log_error(e.Message); }return default(byte);},
+                [stringT] = input => { Byte.TryParse((string)input, out byte result); return result;},
+            },
+            [charT] = new Dictionary<Type, Func<object, object>>() {
+                [boolT] = input => { return Convert.ToChar((bool)input); },
+                [byteT] = input => { return Convert.ToChar((byte)input); },
+                [charT] = input => { return (char)input; },
+                [intT] = input => { return Convert.ToChar((int)input); },
+                [longT] = input => { return Convert.ToChar((long)input); },
+                [floatT] = input => { return Convert.ToChar((float)input); },
+                [doubleT] = input => { return Convert.ToChar((double)input); },
+                [stringT] = input => { Char.TryParse((string)input, out char result); return result; },
+            },
+            [intT] = new Dictionary<Type, Func<object, object>>() {
+                [boolT]   = input => { return Convert.ToInt32((bool)input); },
+                [byteT]   = input => { return Convert.ToInt32((byte)input); },
+                [charT]   = input => { return Convert.ToInt32((char)input); },
+                [intT]    = input => { return (int)input;},
+                [longT]   = input => { try { return Convert.ToInt32((long)input);  } catch (OverflowException e) {log_error(e.Message);} return default(int);},
+                [floatT]  = input => { try { return Convert.ToInt32((float)input); } catch (OverflowException e) {log_error(e.Message);} return default(int); },
+                [doubleT] = input => { try { return Convert.ToInt32((double)input);} catch (OverflowException e) {log_error(e.Message);} return default(int); },
+                [stringT] = input => { Int32.TryParse((string)input, out int result); return result; },
+            },
+            [longT] = new Dictionary<Type, Func<object, object>>() {
+                [boolT] = input => { return Convert.ToInt64((bool)input); },
+                [byteT] = input => { return Convert.ToInt64((byte)input); },
+                [charT] = input => { return Convert.ToInt64((char)input); },
+                [intT] = input => { return Convert.ToInt64((int)input); },
+                [longT] = input => { return (long)input; },
+                [floatT] = input => { try { return Convert.ToInt64((float)input); } catch (OverflowException e) { log_error(e.Message); } return default(long); },
+                [doubleT] = input => { try { return Convert.ToInt64((double)input); } catch (OverflowException e) { log_error(e.Message); } return default(long); },
+                [stringT] = input => { Int64.TryParse((string)input, out long result); return result; },
+            },
+            [floatT] = new Dictionary<Type, Func<object, object>>() {
+                [boolT] = input => { return Convert.ToSingle((bool)input); },
+                [byteT] = input => { return Convert.ToSingle((byte)input); },
+                [charT] = input => { return Convert.ToSingle(Convert.ToInt32((char)input)); },
+                [intT]  = input => { return Convert.ToSingle((int)input); },
+                [longT] = input => { return Convert.ToSingle((long)input); },
+                [floatT] = input => { return (float)input; },
+                [doubleT] = input => { try { return Convert.ToSingle((double)input); } catch (OverflowException e) { log_error(e.Message); } return default(float); },
+                [stringT] = input => {
+                    var strValue = (string)input;
+                    if (Single.TryParse(strValue, out float result1)) {
+                        return result1;
+                    }
+                    if (!Single.TryParse(strValue.Replace(",", "."), out float result2)) {
+                        log_error(string.Format("Float parse error: {0} -> {1}", strValue, result2));
+                    }                  
+                    return result2;
+                },
+            },
+            [doubleT] = new Dictionary<Type, Func<object, object>>() {
+                [boolT] = input => { return Convert.ToDouble((bool)input); },
+                [byteT] = input => { return Convert.ToDouble((byte)input); },
+                [charT] = input => { return Convert.ToDouble(Convert.ToInt32((char)input)); },
+                [intT] = input => { return Convert.ToDouble((int)input); },
+                [longT] = input => { return Convert.ToDouble((long)input); },
+                [floatT] = input => { return Convert.ToDouble((double)input); },
+                [doubleT] = input => { return (double)input; },
+                [stringT] = input => {
+                    var strValue = (string)input;
+                    if (double.TryParse(strValue, out double result1)) {
+                        return result1;
+                    }
+                    if (!double.TryParse(strValue.Replace(",", "."), out double result2)) {
+                        log_error(string.Format("Double parse error: {0} -> {1}", strValue, result2));
+                    }
+                    return result2;
+                },
+            }
+        };
+
+
+        //public static DecimalValue to_decimal(short value) {
+        //    return new DecimalValue(value);
+        //}
+        //public static DecimalValue to_decimal(int value) {
+        //    return new DecimalValue(value);
+        //}
+        //public static DecimalValue to_decimal(float value) {
+        //    return new DecimalValue(value);
+        //}
+        //public static DecimalValue to_decimal(double value) {
+        //    return new DecimalValue(value);
+        //}
+        //public static DecimalValue to_decimal(string decimalStr) {
+
+        //    var split = decimalStr.Split(':');
+        //    int id = to_int(split[0]);
+        //    if (id == 0) { // char
+        //        return to_decimal(to_char(split[1]));
+        //    } else if (id == 1) { // integer
+        //        return to_decimal(to_int(split[1]));
+        //    } else if (id == 2) { // float
+        //        return to_decimal(to_float(split[1]));
+        //    }
+        //    // double
+        //    return new DecimalValue(to_double(split[1]));
+        //}
+
+
+
+        //public static float to_float(DecimalValue value) {
+        //    return value.to_float();
+        //}
+
+
+        //public static double to_double(DecimalValue value) {
+        //    return value.to_double();
+        //}
+
+
+        // DecimalValue
+
+
         public static T to<T>(object value) {
+
 
             if (typeof(T) == typeof(bool)) {
                 return (T)(object)to_bool(value);
@@ -93,6 +303,10 @@ namespace Ex{
         #region builtin_types
 
         #region to_bool
+
+
+
+
         public static bool to_bool(object value) {
 
             if (value is bool) {
@@ -117,6 +331,9 @@ namespace Ex{
             log_error(string.Format("Conversion to \"bool\" not supported with type {0}.", value.GetType()));
             return false;
         }
+
+ 
+
         public static bool to_bool(int value) {
             return Convert.ToBoolean(value);
         }
@@ -612,6 +829,8 @@ namespace Ex{
         #endregion
 
         #region to_string
+
+
         public static string to_string(object value) {
 
             if (value is string) {
@@ -644,10 +863,20 @@ namespace Ex{
                 return to_string((TransformValue)value);
             } else if (value is DecimalValue) {
                 return to_string((DecimalValue)value);
+            }else if(value is IdAny) {
+                var idA = (IdAny)value;
+                return string.Format("Id:{0} Value:{1}", idA.value, to_string(idA.value));
+            }else if(value is StringAny) {
+                var idA = (StringAny)value;
+                return string.Format("Id:{0} Value:{1}", idA.value, to_string(idA.value));
             }
 
-            log_error(string.Format("Conversion to \"string\" not supported with type {0}.", value.GetType()));
-            return null;
+            if (ExVR.GuiSettings().catchConverterExceptions) {
+                throw new ArgumentException(string.Format("No specific conversion to \"string\" defined with type {0}. Default convertions will be used.", value.GetType()));
+            } else {
+                log_error(string.Format("No specific conversion to \"string\" defined with type {0}. Default convertions will be used.", value.GetType()));
+                return value.ToString();
+            }            
         }
 
         public static string to_string(bool value, bool useLetters = true) {
