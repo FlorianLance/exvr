@@ -138,7 +138,7 @@ namespace Ex {
             //Mesh mesh = gameObject.GetComponent<MeshFilter>().mesh;
             //mesh.MarkDynamic();
 
-            Converter.unit_tests();
+            //Converter.unit_tests();
         }
 
 
