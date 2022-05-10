@@ -212,7 +212,6 @@ namespace Ex {
             return Converter.to_vector3((List<object>)args[argName].value);
         }
         public Vector3 get_vector3_with_order(string argName, Converter.AxisOrder order = Converter.AxisOrder.PitchYawRoll) {
-
             if (!has(argName)) {
                 log_error(string.Format("Argument {0} of type Vector3 doesn't exist.", argName));
                 return new Vector3(0f, 0f, 0f);
@@ -221,7 +220,6 @@ namespace Ex {
         }
 
         public TransformValue get_transform_value(string argName, Converter.AxisOrder order = Converter.AxisOrder.PitchYawRoll) {
-
             if (!has(argName)) {
                 log_error(string.Format("Argument {0} of type Transform doesn't exist.", argName));
                 return new TransformValue();
@@ -252,7 +250,7 @@ namespace Ex {
                 log_error(string.Format("Argument {0} of type AnimationCurve doesn't exist.", argName));
                 return new AnimationCurve();
             }
-            return Converter.to_curve(get_list<float>(argName));
+            return Converter.to_animation_curve(get_list<float>(argName));
         }
 
         #endregion
@@ -335,9 +333,7 @@ namespace Ex {
             return components;
         }
 
-
         #endregion
-
 
         #region get_resources_data
 
@@ -354,7 +350,6 @@ namespace Ex {
             }
             return "";
         }
-
 
         public AudioResource get_resource_audio_data(string argName) {
             string audioAlias = get_resource_alias(argName);
@@ -538,35 +533,30 @@ namespace Ex {
 
 
         public void set_vector2(string argName, Vector2 value) {
-            set(argName, Converter.to_list(value));
+            set(argName, Converter.to_object_list(value));
         }
 
         public void set_vector3(string argName, Vector3 value) { 
-            set(argName, Converter.to_list(value));
+            set(argName, Converter.to_object_list(value));
+        }
+        public void set_color(string argName, Color color) {
+            set(argName, Converter.to_object_list(color));
         }
 
         public void set_transform(string argName, Transform transform, bool local = false) {
-            set(argName, Converter.to_list(transform, local));
+            set(argName, Converter.to_object_list(transform, local));
         }
 
         public void set_transform(string argName, TransformValue transform) {
-            set(argName, Converter.to_list(transform));
+            set(argName, Converter.to_object_list(transform));
         }
 
         public void set_transform(string argName, List<Vector3> transform) {
-            set(argName, Converter.to_list(transform));
-        }
-        public void set_color(string argName, Color color) {
-            set(argName, Converter.to_list(color));
+            set(argName, Converter.to_object_list(transform));
         }
 
         public void set_list<T>(string argName, List<T> values) {
-
-            List<object> elements = new List<object>(values.Count);
-            foreach (T value in values) {
-                elements.Add(value);
-            }
-            set(argName, elements);
+            set(argName, Converter.to_list<object>(values));
         }
 
         #endregion
