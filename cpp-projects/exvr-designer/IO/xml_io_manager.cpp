@@ -848,7 +848,7 @@ std::tuple<std::unique_ptr<Action>, QString> XmlIoManager::read_action(){
     return {nullptr, invalid_bracket_error_message(key.value(), IdKey::Type::Action)};
 }
 
-std::tuple<ConnectionUP, QString> XmlIoManager::read_connection(Condition *condition){
+std::tuple<std::unique_ptr<Connection>, QString> XmlIoManager::read_connection(Condition *condition){
 
     auto key = read_attribute<int>(QSL("key"), true);
     if(!key.has_value()){
@@ -936,7 +936,7 @@ std::tuple<ConnectionUP, QString> XmlIoManager::read_connection(Condition *condi
     return {std::move(connection), ""};
 }
 
-std::tuple<ConnectorUP, QString> XmlIoManager::read_connector(){
+std::tuple<std::unique_ptr<Connector>, QString> XmlIoManager::read_connector(){
 
     const auto key         = read_attribute<int>(QSL("key"), true);
     auto name              = read_attribute<QString>(QSL("name"), true);
@@ -1060,7 +1060,7 @@ void XmlIoManager::write_condition(const Condition *condition){
 }
 
 
-ConditionUP XmlIoManager::read_condition(Routine *routine){
+std::unique_ptr<Condition> XmlIoManager::read_condition(Routine *routine){
 
     const auto key          = read_attribute<int>(QSL("key"), true);
     const auto name         = read_attribute<QString>(QSL("name"), true);

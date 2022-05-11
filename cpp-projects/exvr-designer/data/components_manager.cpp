@@ -102,6 +102,27 @@ std::pair<size_t, Component *> ComponentsManager::get_component_and_position(Com
     return {0, nullptr};
 }
 
+//void ComponentsManager::insert_new_component(std::unique_ptr<Component> component, RowId id){
+
+//    size_t offset = 1;
+//    QString name;
+//    bool isInside = false;
+//    do{
+//        name = component->name() %  ((offset != 1) ? (QSL(" ") % QString::number(offset)) : QSL(""));
+//        isInside = false;
+//        for(auto &component : components){
+//            if(component->name() == name){
+//                isInside = true;
+//                break;
+//            }
+//        }
+//        ++offset;
+//    }while(isInside);
+//    component->set_name(name);
+
+//    components.insert(std::begin(components) + id.v, std::move(component));
+//}
+
 void ComponentsManager::insert_new_component(Component::Type type, RowId id){
 
     const QString baseName = QString::fromStdString(std::string(Component::get_full_name(type)));

@@ -102,6 +102,7 @@ HEADERS += \
     # controller
     controller/exvr_controller.hpp \
     # utility
+    gui/dialogs/import_sub_exp_dialog.hpp \
     gui/widgets/connections/data_models/base_node_data_model.hpp \
     utility/script_utility.hpp \
     utility/path_utility.hpp \
@@ -328,6 +329,7 @@ SOURCES += \
     # controller
     controller/exvr_controller.cpp \
     # launcher
+    gui/dialogs/import_sub_exp_dialog.cpp \
     launcher/exp_launcher.cpp \
     launcher/exp_launcher_communication.cpp \
     launcher/exp_launcher_process.cpp \

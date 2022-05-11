@@ -24,45 +24,26 @@
 
 #pragma once
 
-// std
-#include <unordered_map>
-#include <set>
-
 // Qt
-#include <QStringList>
-#include <QDebug>
-
-// base
-#include "utility/vector.hpp"
+#include <QDialog>
+#include <QCheckBox>
 
 // qt-utility
-#include "qt_logger.hpp"
-
-// local
-#include "component.hpp"
+#include "data/id_key.hpp"
 
 namespace tool::ex {
 
-class ComponentsManager{
+class ImportSubExpDialog : public QDialog{
 
-public:
+    Q_OBJECT
 
-    void clean_components();
-    void sort_by_category();
-    void sort_by_type();
-    void sort_by_name();
+public :
 
-    Component *get_component(ComponentKey componentKey, bool displayError= true) const;
-    Component *get_component(Component::Type type, const QString &name) const;
+    ImportSubExpDialog(QString path);
 
-    std::pair<size_t, Component*> get_component_and_position(ComponentKey componentKey) const;
+private:
 
-//    void insert_new_component(std::unique_ptr<Component> component, RowId id);
-    void insert_new_component(Component::Type type, RowId id);
-    bool update_component_name(ComponentKey componentKey, QString newName);
-
-    std_v1<Component*> get_components(Component::Type type) const;    
-
-    std_v1<ComponentUP> components;
+    std::map<ComponentKey, std::map<ConfigKey, QCheckBox*>> validatedConfigs;
 };
+
 }

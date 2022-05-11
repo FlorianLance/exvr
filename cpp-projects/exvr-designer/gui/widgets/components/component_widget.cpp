@@ -44,7 +44,7 @@
 using namespace tool;
 using namespace tool::ex;
 
-ComponentW::ComponentW(Component *component) : key(ComponentKey{component->key()}), type(component->type), category(component->category){
+ComponentW::ComponentW(Component *component) : key(component->c_key()), type(component->type), category(component->category){
 
     setMouseTracking(true);
 

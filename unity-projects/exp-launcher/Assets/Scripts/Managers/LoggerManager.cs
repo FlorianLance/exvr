@@ -105,7 +105,7 @@ namespace Ex {
         private static readonly string editorErrorFormat            = "<color=red>{0}</color>";
         private static readonly string editorMessageExtraInfoFormat = "<color=green>{0}</color> from <b>{1}</b> at line <b>{2}</b> in file <i>{3}</i>";
         private static readonly string editorWarningExtraInfoFormat = "<color=orange>{0}</color> from <b>{1}</b> at line <b>{2}</b> in file <i>{3}</i>";
-        private static readonly string editorErrorExtraInfoFormat   = "<color=red>{0}</color> from <b>{1}</b> at line <b>{2}</b> in file <i>{3}</i>";
+        private static readonly string editorErrorExtraInfoFormat   = "<color=red>{0}</color><color=white>from <b>{1}</b> at line <b>{2}</b> in file <i>{3}</i></color>";
 #endif
 
         public void no_logger_message(object m, bool addExtraInfo = false,

@@ -149,7 +149,7 @@ Action *Condition::get_action_from_component_key(ComponentKey componentKey, bool
 
 Connection *Condition::get_connection_from_key(ConnectionKey connectionKey, bool displayError) const{
 
-    auto connectionFound = std::find_if(connections.begin(), connections.end(), [connectionKey](const ConnectionUP &connection){
+    auto connectionFound = std::find_if(connections.begin(), connections.end(), [connectionKey](const std::unique_ptr<Connection> &connection){
         return connection->key() == connectionKey.v;
     });
     if(connectionFound != connections.end()){
@@ -165,7 +165,7 @@ Connection *Condition::get_connection_from_key(ConnectionKey connectionKey, bool
 
 Connector *Condition::get_connector_from_key(ConnectorKey connectorKey, bool displayError) const{
 
-    auto connectorFound = std::find_if(connectors.begin(), connectors.end(), [connectorKey](const ConnectorUP &connector){
+    auto connectorFound = std::find_if(connectors.begin(), connectors.end(), [connectorKey](const std::unique_ptr<Connector> &connector){
         return connector->key() == connectorKey.v;
     });
     if(connectorFound != connectors.end()){
@@ -239,7 +239,7 @@ void Condition::check_integrity(){
     size_t countBefore = connections.size();
     {
         std::unordered_set<int> seen;
-        auto newEnd = std::remove_if(connections.begin(), connections.end(), [&seen](const ConnectionUP &connection){
+        auto newEnd = std::remove_if(connections.begin(), connections.end(), [&seen](const std::unique_ptr<Connection> &connection){
             if (seen.find(connection->key()) != std::end(seen)){
                 return true;
             }
@@ -261,7 +261,7 @@ void Condition::check_integrity(){
     countBefore = connectors.size();
     {
         std::unordered_set<int> seen;
-        auto newEnd = std::remove_if(connectors.begin(), connectors.end(), [&seen](const ConnectorUP &connector){
+        auto newEnd = std::remove_if(connectors.begin(), connectors.end(), [&seen](const std::unique_ptr<Connector> &connector){
             if (seen.find(connector->key()) != std::end(seen)){
                 return true;
             }
@@ -363,7 +363,7 @@ void Condition::remove_action(ActionKey actionKey){
     if(auto action = get_action_from_key(actionKey); action != nullptr){
 
         while(auto searchConnections = true){
-            auto connectionToDelete = std::find_if(connections.begin(), connections.end(), [action](ConnectionUP &connection){
+            auto connectionToDelete = std::find_if(connections.begin(), connections.end(), [action](std::unique_ptr<Connection> &connection){
 
                 if((connection->startType == Connection::Type::Component) && (connection->startKey == action->component->key())){
                     return true;
@@ -398,7 +398,7 @@ void Condition::remove_action(ActionKey actionKey){
 void Condition::remove_all_actions(){
 
     while(auto searchConnections = true){
-        auto connectionToDelete = std::find_if(connections.begin(), connections.end(), [](ConnectionUP &connection){
+        auto connectionToDelete = std::find_if(connections.begin(), connections.end(), [](std::unique_ptr<Connection> &connection){
             return ((connection->startType == Connection::Type::Component) ||
                     (connection->endType == Connection::Type::Component));
         });
@@ -414,7 +414,7 @@ void Condition::remove_all_actions(){
 
 void Condition::remove_connection(ConnectionKey connectionKey){
 
-    auto connectionToDelete = std::find_if(connections.begin(), connections.end(), [connectionKey](ConnectionUP &connection){
+    auto connectionToDelete = std::find_if(connections.begin(), connections.end(), [connectionKey](std::unique_ptr<Connection> &connection){
         return connection->key() == connectionKey.v;
     });
     if(connectionToDelete != connections.end()){
@@ -427,7 +427,7 @@ void Condition::remove_connector(ConnectorKey connectorKey){
 
     // remove connections associated to connector
     while(auto searchConnections = true){
-        auto connectionToDelete = std::find_if(connections.begin(), connections.end(), [connectorKey](ConnectionUP &connection){
+        auto connectionToDelete = std::find_if(connections.begin(), connections.end(), [connectorKey](std::unique_ptr<Connection> &connection){
 
             if((connection->endType == Connection::Type::Connector) && (connection->endKey == connectorKey.v)){
                 return true;
@@ -446,7 +446,7 @@ void Condition::remove_connector(ConnectorKey connectorKey){
     }
 
     // remove connectors
-    auto connectorToDelete = std::find_if(connectors.begin(), connectors.end(), [connectorKey](ConnectorUP &connector){
+    auto connectorToDelete = std::find_if(connectors.begin(), connectors.end(), [connectorKey](std::unique_ptr<Connector> &connector){
         return connector->key() == connectorKey.v;
     });
     if(connectorToDelete != connectors.end()){
@@ -460,7 +460,7 @@ void Condition::remove_component_node(ComponentKey componentKey){
 
     // remove connections associated to component
     while(auto searchConnections = true){
-        auto connectionToDelete = std::find_if(connections.begin(), connections.end(), [componentKey](ConnectionUP &connection){
+        auto connectionToDelete = std::find_if(connections.begin(), connections.end(), [componentKey](std::unique_ptr<Connection> &connection){
 
             if((connection->endType == Connection::Type::Component) && (connection->endKey == componentKey.v)){
                 return true;
@@ -516,9 +516,9 @@ std_v1<Action *> Condition::actions_with_nodes() const{
 }
 
 
-ConditionUP Condition::duplicate(const Condition &conditionToCopy){
+std::unique_ptr<Condition> Condition::duplicate(const Condition &conditionToCopy){
 
-    ConditionUP condition = std::make_unique<Condition>(
+    std::unique_ptr<Condition> condition = std::make_unique<Condition>(
         conditionToCopy.name,
         ConditionKey{-1},
         conditionToCopy.duration,

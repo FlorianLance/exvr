@@ -151,7 +151,7 @@ void Routine::check_integrity(){
     size_t countBefore = conditions.size();
     {
         std::unordered_set<int> seen;
-        auto newEnd = std::remove_if(conditions.begin(), conditions.end(), [&seen](const ConditionUP &condition){
+        auto newEnd = std::remove_if(conditions.begin(), conditions.end(), [&seen](const std::unique_ptr<Condition> &condition){
             if (seen.find(condition->key()) != std::end(seen)){
                 return true;
             }

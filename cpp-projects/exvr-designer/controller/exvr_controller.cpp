@@ -729,47 +729,18 @@ void ExVrController::show_import_dialog(){
         return;
     }
 
-    ExperimentManager::get()->init_imported(exp()->states.numVersion);
-    auto ie =ExperimentManager::get()->imported();
-    XmlIoManager xmlR(ie);
-    QtLogger::message("exp read");
-    if(!xmlR.load_experiment_file(path)){
-        QtLogger::error(QSL("Cannot load exp ") % path);
-        return;
-    }
 
     // dialog
-    m_importD = std::make_unique<QDialog>();
-    m_importD->setWindowTitle(QSL("Import experiment sub-parts"));
-    m_importD->setModal(true);
-    m_importD->setLayout(new QVBoxLayout());
+    m_importD = std::make_unique<ImportSubExpDialog>(path);
 
-    QTabWidget *tw = new QTabWidget();
-    m_importD->layout()->addWidget(tw);
-
-    std::map<int, std::map<int, QCheckBox*>> validatedConfigs;
-
-
-    ui::ListWidget *lwComponents = new ui::ListWidget();
-    lwComponents->set_margins(2,2,2,2,2);
-    tw->addTab(lwComponents, "Components");
-    for(const auto &component : ie->compM.components){
-        QtLogger::message(QSL("component ") %component->name());
-        auto compL = new QLabel(component->name() % QSL(" [") % from_view(Component::get_full_name(component->type)) % QSL("] ") % QSL("(") % QString::number(component->key()) % QSL(")"));
-        lwComponents->add_widget(compL);
-        for(const auto &config : component->configs){
-            auto configCb = new QCheckBox(config->name);
-            lwComponents->add_widget(ui::F::gen(ui::L::HB(),{ui::W::txt("\t"), configCb}, LStretch{true}, LMargins{false},QFrame::NoFrame));
-            validatedConfigs[component->key()][config->key()] = configCb;
-        }
-    }
-
-    auto pbValidate = new QPushButton("Import selection");
-    auto pbCancel = new QPushButton("Cancel");
-    m_importD->layout()->addWidget(ui::F::gen(ui::L::HB(),{pbValidate, pbCancel}, LStretch{true}, LMargins{false},QFrame::NoFrame));
     m_importD->show();
 
-    ExperimentManager::get()->clean_imported();
+
+//    m_importD->show();
+
+
+
+
 
 //    e.compo
 
@@ -1234,7 +1205,7 @@ void ExVrController::generate_global_signals_connections(){
     connect(s, &GSignals::sort_components_by_type_signal,             exp(), &EXP::sort_components_by_type);
     connect(s, &GSignals::sort_components_by_name_signal,             exp(), &EXP::sort_components_by_name);
     connect(s, &GSignals::update_component_position_signal,           exp(), &EXP::update_component_position);
-    connect(s, &GSignals::add_component_signal,                       exp(), &EXP::add_component);
+    connect(s, &GSignals::add_component_signal,                       exp(), &EXP::add_new_component);
     connect(s, &GSignals::remove_component_signal,                    exp(), &EXP::remove_component);
     connect(s, &GSignals::duplicate_component_signal,                 exp(), &EXP::duplicate_component);
     connect(s, &GSignals::component_name_changed_signal,              exp(), &EXP::update_component_name);

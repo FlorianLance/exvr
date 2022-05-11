@@ -1766,7 +1766,7 @@ void Experiment::update_conditions(){
         }
 
         // rebuild routine conditions
-        std_v1<ConditionUP> newConditions;
+        std_v1<std::unique_ptr<Condition>> newConditions;
         for(size_t ii = 0; ii < newConditionsKeys.size(); ++ii){
 
             bool found = false;
@@ -1873,9 +1873,15 @@ void Experiment::duplicate_component(ComponentKey componentKey){
     }
 }
 
-void Experiment::add_component(Component::Type type, RowId id){
+void Experiment::add_new_component(Component::Type type, RowId id){
     compM.insert_new_component(type, id);
     add_to_update_flag(UpdateComponents | UpdateRoutines);
+}
+
+void Experiment::add_component(std::unique_ptr<Component> component, RowId id){
+
+//    compM.insert_new_component(std::move(component), id);
+//    add_to_update_flag(UpdateComponents | UpdateRoutines);
 }
 
 void Experiment::update_component_name(ComponentKey componentKey, QString name){
@@ -1969,7 +1975,7 @@ void Experiment::delete_unused_components(){
     }
 
     for(const auto &c : componentsToRemove){
-        remove_component(ComponentKey{c->key()});
+        remove_component(c->c_key());
     }
 
     add_to_update_flag(UpdateComponents | UpdateRoutines);

@@ -28,20 +28,27 @@
 // Qt
 #include <QObject>
 #include <QDesktopWidget>
-
 #include <QMetaEnum>
 
 // qt-utility
 #include "qt_logger.hpp"
 
 // local
+// # exp
 #include "experiment/global_signals.hpp"
+// # IO
+#include "IO/xml_io_manager.hpp"
+// # resources
+#include "resources/resources_manager.hpp"
+// # gui
+// ## widgets
 #include "gui/widgets/designer_window.hpp"
+// ## dialogs
 #include "gui/dialogs/copy_to_conditions_dialog.hpp"
 #include "gui/dialogs/add_component_to_conditions_dialog.hpp"
 #include "gui/dialogs/benchmark_dialog.hpp"
-#include "IO/xml_io_manager.hpp"
-#include "resources/resources_manager.hpp"
+#include "gui/dialogs/import_sub_exp_dialog.hpp"
+// ## ui
 #include "ui_copy_to_conditions.h"
 
 
@@ -148,7 +155,7 @@ private :
     // # dialogs
     // ## non modal
     std::unique_ptr<QDialog> m_componentsInfoD              = nullptr;
-    std::unique_ptr<QDialog> m_importD                      = nullptr;
+    std::unique_ptr<ImportSubExpDialog> m_importD           = nullptr;
     std::unique_ptr<QDialog> m_goToD                        = nullptr;
     std::unique_ptr<BenchmarkDialog> m_benchmarkD           = nullptr;
     GenerateInstancesDialog m_instancesD;

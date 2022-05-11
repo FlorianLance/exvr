@@ -72,9 +72,9 @@ struct Routine : public FlowElement {
     QString to_string() const;
 
     bool isARandomizer = false;
-    std_v1<ConditionUP> conditions;
+    std_v1<std::unique_ptr<Condition>> conditions;
 
-//    std_v1<ConditionUP> ghostsConditions; // condition that could be restored
+//    std_v1<std::unique_ptr<Condition>> ghostsConditions; // condition that could be restored
 };
 
 static bool operator<(const RoutineUP &l, const RoutineUP &r){

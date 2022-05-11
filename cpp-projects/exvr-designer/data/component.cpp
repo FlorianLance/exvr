@@ -29,7 +29,7 @@
 
 using namespace tool::ex;
 
-Component::Component(Component::Type t, ComponentKey id, QString name) : key(IdKey::Type::Component, id.v), type(t), category(get_category(type)){
+Component::Component(Component::Type t, ComponentKey id, QString name) : type(t), category(get_category(type)), m_key(IdKey::Type::Component, id.v){
 
     if(m_counter.count(type) == 0){
         m_counter[type] = 1;
@@ -50,12 +50,21 @@ Component::~Component(){
     }
 }
 
-ComponentUP Component::copy_with_new_element_id(const Component &componentToCopy, const QString &newName){
+ComponentUP Component::copy_with_new_element_id(const Component &componentToCopy, const QString &newName, const std::vector<ConfigKey> &configKeys){
 
     ComponentUP component = std::make_unique<Component>(componentToCopy.type, ComponentKey{-1}, newName);
     component->set_init_config(ex::Config::copy_with_new_element_id(*componentToCopy.initConfig.get(), componentToCopy.initConfig->name));
-    for(const auto &config : componentToCopy.configs){
-        component->add_config(ex::Config::copy_with_new_element_id(*config.get(), config->name));
+
+    if(configKeys.size() == 0){
+        for(const auto &config : componentToCopy.configs){
+            component->add_config(ex::Config::copy_with_new_element_id(*config.get(), config->name));
+        }
+    }else{
+        for(const auto &configKey : configKeys){
+            if(auto config = componentToCopy.get_config(configKey); config != nullptr){
+                component->add_config(ex::Config::copy_with_new_element_id(*config, config->name));
+            }
+        }
     }
 
     return component;
@@ -74,7 +83,7 @@ void Component::set_name(QString name){
     m_name = name;
 }
 
-tool::ex::Config *Component::get_config(ConfigKey configKey){
+tool::ex::Config *Component::get_config(ConfigKey configKey) const{
 
     auto configFound = std::find_if(configs.begin(), configs.end(), [configKey](const ConfigUP &config){
         return config->key() == configKey.v;

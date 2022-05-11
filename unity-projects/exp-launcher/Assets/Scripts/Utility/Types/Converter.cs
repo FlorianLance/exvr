@@ -33,42 +33,8 @@ using UnityEngine;
 namespace Ex{
 
     using SC = System.Convert;
-    using OE = System.OverflowException;
-    public static class Converter {
-       
-        public static void unit_tests() {
-
-            bool a = false;
-            byte b = 25;
-            char c = '5';
-            int d = 866;
-            float e = 846.8f;
-            double f = 58453.07578;
-            string g = "test";
-            DecimalValue h = new DecimalValue(45);
-
-            //Converter.to_bool(a);
-
-            Converter.to<bool>(a);
-            Converter.to<bool>(b);
-            Converter.to<bool>(c);
-            Converter.to<bool>(d);
-            Converter.to<bool>(e);
-            Converter.to<bool>(f);
-            Converter.to<bool>(g);
-            Converter.to<bool>(h);
-
-            int total = 0;
-            total += Converter.to<int>(a);
-            total += Converter.to<int>(b);
-            total += Converter.to<int>(c);
-            total += Converter.to<int>(d);
-            total += Converter.to<int>(e);
-            total += Converter.to<int>(f);
-            total += Converter.to<int>(g);
-            total += Converter.to<int>(h);
-            Debug.LogError("total " + total);
-        }
+    using SE = System.SystemException;
+    public static class Converter {      
 
         public const string g4  = "G4";
         public const string g7  = "G7";
@@ -130,20 +96,57 @@ namespace Ex{
             if (conv.ContainsKey(toType)) {
                 return to<T>(conv[toType], value);
             } else {
-                log_e(string.Format("No specific converter defined for destination type {0}. ", toType.ToString()));
+                log_e(string.Format("No specific converter defined for destination type [{0}]. ", 
+                    toType.ToString()));
                 return default(T);
             }
         }
-
         public static T to<T>(Dictionary<System.Type, Func<object, object>> toConvF, object value) {
             var fromType = value.GetType();
             if (toConvF.ContainsKey(fromType)) {
                 return (T)(object)toConvF[fromType](value);
             } else {
-                log_e(string.Format("No specific converter defined for source type {0} with destination type {1}. ", fromType.ToString(), typeof(T).ToString()));
+                log_e(string.Format("No specific converter defined for source type [{0}] with destination type [{1}]. ", 
+                    fromType.ToString(), typeof(T).ToString()));
                 return default(T);
             }
         }
+
+        private static object get_default(Type type) {
+            if (type.IsValueType) {
+                return Activator.CreateInstance(type);
+            }
+            return null;
+        }
+
+        public static object to_type(object value, Type destinationType, bool nullIfError = false, bool verbose = true) {
+
+            if (conv.ContainsKey(destinationType)) {
+                return to_type(conv[destinationType], value, destinationType, nullIfError, verbose);
+            } else {
+                if (verbose) {
+                    log_e(string.Format("No specific converter defined for destination type [{0}]. ",
+                        destinationType.ToString()));
+                }
+                return nullIfError ? null : get_default(destinationType);
+            }
+        }
+
+        public static object to_type(Dictionary<System.Type, Func<object, object>> toConvF, object value, Type destinationType, bool nullIfError = false, bool verbose = true) {
+
+            var fromType = value.GetType();
+            if (toConvF.ContainsKey(fromType)) {
+                return toConvF[fromType](value);
+            } else {
+                if (verbose) {
+                    log_e(string.Format("No specific converter defined for source type [{0}] with destination type [{1}]. ",
+                        fromType.ToString(), destinationType.ToString()));
+                }
+                return nullIfError ? null : get_default(destinationType);
+            }
+        }
+
+
 
 
         // specific to
@@ -161,7 +164,6 @@ namespace Ex{
         public static DecimalValue to_decimal(object value) {return to<DecimalValue>(conv[decValT], value);}
         public static IdAny to_id_any(object value) {return to<IdAny>(conv[idAnyT], value);}
         public static StringAny to_string_any(object value) {return to<StringAny>(conv[strAnyT], value);}
-        //public static TransformValue to_transform_value(object value) { return to<TransformValue>(conv[trValT], value); }
         public static TransformValue to_transform_value(object value, AxisOrder order = AxisOrder.PitchYawRoll) {
 
             var fromType = value.GetType();
@@ -212,24 +214,24 @@ namespace Ex{
                 [boolT]     = input => { return SC.ToByte((bool)input);},
                 [byteT]     = input => { return (byte)input;},
                 [charT]     = input => { return SC.ToByte((char)input);},
-                [shortT]    = input => { try { return SC.ToByte((short)input);}   catch (OE e) { log_e(e.Message);} return default(byte);},
-                [intT]      = input => { try { return SC.ToByte((int)input);}     catch (OE e) { log_e(e.Message);} return default(byte);},
-                [longT]     = input => { try { return SC.ToByte((long)input);}    catch (OE e) { log_e(e.Message);} return default(byte);},
-                [floatT]    = input => { try { return SC.ToByte((float)input);}   catch (OE e) { log_e(e.Message);} return default(byte);},
-                [doubleT]   = input => { try { return SC.ToByte((double)input);}  catch (OE e) { log_e(e.Message);} return default(byte);},
-                [decValT]   = input => { try { return SC.ToByte(((DecimalValue)input).to_int());} catch (OE e) { log_e(e.Message);} return default(byte);},
+                [shortT]    = input => { try { return SC.ToByte((short)input);}   catch (SE e) { log_e(e.Message);} return default(byte);},
+                [intT]      = input => { try { return SC.ToByte((int)input);}     catch (SE e) { log_e(e.Message);} return default(byte);},
+                [longT]     = input => { try { return SC.ToByte((long)input);}    catch (SE e) { log_e(e.Message);} return default(byte);},
+                [floatT]    = input => { try { return SC.ToByte((float)input);}   catch (SE e) { log_e(e.Message);} return default(byte);},
+                [doubleT]   = input => { try { return SC.ToByte((double)input);}  catch (SE e) { log_e(e.Message);} return default(byte);},
+                [decValT]   = input => { try { return SC.ToByte(((DecimalValue)input).to_int());} catch (SE e) { log_e(e.Message);} return default(byte);},
                 [stringT]   = input => { Byte.TryParse((string)input, out byte result); return result;},
             },
             [charT] = new Dictionary<Type, Func<object, object>>(){
-                [boolT]   = input => { return SC.ToChar((bool)input);},
+                [boolT]   = input => { return SC.ToChar(to_int((bool)input));},
                 [byteT]   = input => { return SC.ToChar((byte)input);},
                 [charT]   = input => { return (char)input;},
-                [shortT]  = input => { try { return SC.ToChar((short)input);}     catch (OE e) { log_e(e.Message);} return default(char);},
-                [intT]    = input => { try { return SC.ToChar((int)input);}       catch (OE e) { log_e(e.Message);} return default(char);},
-                [longT]   = input => { try { return SC.ToChar((long)input);}      catch (OE e) { log_e(e.Message);} return default(char);},
-                [floatT]  = input => { try { return SC.ToChar((float)input);}     catch (OE e) { log_e(e.Message);} return default(char);},
-                [doubleT] = input => { try { return SC.ToChar((double)input);}    catch (OE e) { log_e(e.Message);} return default(char);},
-                [decValT] = input => { try { return SC.ToChar(((DecimalValue)input).to_int());} catch (OE e) { log_e(e.Message);} return default(char);},
+                [shortT]  = input => { try { return SC.ToChar((short)input);}     catch (SE e) { log_e(e.Message);} return default(char);},
+                [intT]    = input => { try { return SC.ToChar((int)input);}       catch (SE e) { log_e(e.Message);} return default(char);},
+                [longT]   = input => { try { return SC.ToChar((long)input);}      catch (SE e) { log_e(e.Message);} return default(char);},
+                [floatT]  = input => { try { return SC.ToChar(to_int((float)input));}   catch (SE e) { log_e(e.Message);} return default(char);},
+                [doubleT] = input => { try { return SC.ToChar(to_int((double)input));}  catch (SE e) { log_e(e.Message);} return default(char);},
+                [decValT] = input => { try { return SC.ToChar(((DecimalValue)input).to_int());} catch (SE e) { log_e(e.Message);} return default(char);},
                 [stringT] = input => { Char.TryParse((string)input, out char result); return result;},
             },
             [shortT] = new Dictionary<Type, Func<object, object>>(){
@@ -237,11 +239,11 @@ namespace Ex{
                 [byteT]   = input => { return SC.ToInt16((byte)input);},
                 [charT]   = input => { return SC.ToInt16((char)input);},
                 [shortT]  = input => { return (short)input;},
-                [intT]    = input => { try { return SC.ToInt16((int)input);}        catch (OE e) {log_e(e.Message);} return default(short);},
-                [longT]   = input => { try { return SC.ToInt16((long)input);}       catch (OE e) {log_e(e.Message);} return default(short);},
-                [floatT]  = input => { try { return SC.ToInt16((float)input);}      catch (OE e) {log_e(e.Message);} return default(short);},
-                [doubleT] = input => { try { return SC.ToInt16((double)input);}     catch (OE e) {log_e(e.Message);} return default(short);},
-                [decValT] = input => { try { return SC.ToInt16(((DecimalValue)input).to_int());} catch (OE e) { log_e(e.Message);}return default(short);},
+                [intT]    = input => { try { return SC.ToInt16((int)input);}        catch (SE e) {log_e(e.Message);} return default(short);},
+                [longT]   = input => { try { return SC.ToInt16((long)input);}       catch (SE e) {log_e(e.Message);} return default(short);},
+                [floatT]  = input => { try { return SC.ToInt16((float)input);}      catch (SE e) {log_e(e.Message);} return default(short);},
+                [doubleT] = input => { try { return SC.ToInt16((double)input);}     catch (SE e) {log_e(e.Message);} return default(short);},
+                [decValT] = input => { try { return SC.ToInt16(((DecimalValue)input).to_int());} catch (SE e) { log_e(e.Message);}return default(short);},
                 [stringT] = input => { Int16.TryParse((string)input, out short result); return result;},
             },
             [intT] = new Dictionary<Type, Func<object, object>>(){
@@ -250,9 +252,9 @@ namespace Ex{
                 [charT]   = input => { return SC.ToInt32((char)input);},
                 [shortT]  = input => { return SC.ToInt32((short)input);},
                 [intT]    = input => { return (int)input;},
-                [longT]   = input => { try { return SC.ToInt32((long)input);}       catch (OE e) {log_e(e.Message);} return default(int);},
-                [floatT]  = input => { try { return SC.ToInt32((float)input);}      catch (OE e) {log_e(e.Message);} return default(int);},
-                [doubleT] = input => { try { return SC.ToInt32((double)input);}     catch (OE e) {log_e(e.Message);} return default(int);},
+                [longT]   = input => { try { return SC.ToInt32((long)input);}       catch (SE e) {log_e(e.Message);} return default(int);},
+                [floatT]  = input => { try { return SC.ToInt32((float)input);}      catch (SE e) {log_e(e.Message);} return default(int);},
+                [doubleT] = input => { try { return SC.ToInt32((double)input);}     catch (SE e) {log_e(e.Message);} return default(int);},
                 [decValT] = input => { return ((DecimalValue)input).to_int();},
                 [stringT] = input => { Int32.TryParse((string)input, out int result); return result;},
             },
@@ -263,8 +265,8 @@ namespace Ex{
                 [shortT]  = input => { return SC.ToInt64((short)input);},
                 [intT]    = input => { return SC.ToInt64((int)input);},
                 [longT]   = input => { return (long)input;},
-                [floatT]  = input => { try { return SC.ToInt64((float)input);}      catch (OE e) { log_e(e.Message);} return default(long);},
-                [doubleT] = input => { try { return SC.ToInt64((double)input);}     catch (OE e) { log_e(e.Message);} return default(long);},
+                [floatT]  = input => { try { return SC.ToInt64((float)input);}      catch (SE e) { log_e(e.Message);} return default(long);},
+                [doubleT] = input => { try { return SC.ToInt64((double)input);}     catch (SE e) { log_e(e.Message);} return default(long);},
                 [decValT] = input => { return ((DecimalValue)input).to_long();},
                 [stringT] = input => { Int64.TryParse((string)input, out long result); return result;},
             },
@@ -276,7 +278,7 @@ namespace Ex{
                 [intT]    = input => { return SC.ToSingle((int)input);},
                 [longT]   = input => { return SC.ToSingle((long)input);},
                 [floatT]  = input => { return (float)input;},
-                [doubleT] = input => { try { return SC.ToSingle((double)input);}    catch (OE e) { log_e(e.Message);} return default(float);},
+                [doubleT] = input => { try { return SC.ToSingle((double)input);}    catch (SE e) { log_e(e.Message);} return default(float);},
                 [decValT] = input => { return ((DecimalValue)input).to_float();},
                 [stringT] = input => {
                     var strValue = (string)input;
@@ -296,7 +298,7 @@ namespace Ex{
                 [shortT]  = input => { return SC.ToDouble((short)input);},
                 [intT]    = input => { return SC.ToDouble((int)input);},
                 [longT]   = input => { return SC.ToDouble((long)input);},
-                [floatT]  = input => { return SC.ToDouble((double)input);},
+                [floatT]  = input => { return SC.ToDouble((float)input);},
                 [doubleT] = input => { return (double)input;},
                 [decValT] = input => { return ((DecimalValue)input).to_double();},
                 [stringT] = input => {
@@ -350,6 +352,11 @@ namespace Ex{
                 [stringT] = input => {
                     var decimalStr = (string)input;
                     var split = decimalStr.Split(':');
+                    if(split.Length != 2) {
+                        log_e(string.Format("DecimalValue parse error with input: {0}", decimalStr));
+                        return new DecimalValue();
+                    }
+
                     int id = to_int(split[0]);
                     if (id == 0) { // char
                         return to_decimal(to_char(split[1]));
@@ -382,9 +389,10 @@ namespace Ex{
                     var vector2Str = (string)input;
                     var split = vector2Str.Split(' ');
                     if (split.Length >= 2) {
+                        return new Vector2(to_float(split[0]), to_float(split[1]));
                     }
-                        log_e(string.Format("Vector3 parse error with input: {0}", vector2Str));
-                    return new Vector2(to_float(split[0]), to_float(split[1]));
+                    log_e(string.Format("Vector2 parse error with input: {0}", vector2Str));
+                    return Vector2.zero;
                 },
                 [lObjT] = input => {
                     var listO = (List<object>)input;
@@ -674,13 +682,13 @@ namespace Ex{
 
         private static Dictionary<System.Type, Func<object, Converter.AxisOrder, TransformValue>> convTrVal = new Dictionary<Type, Func<object, Converter.AxisOrder, TransformValue>>() {
             [trValT]    = (input, order) => { return (TransformValue)input; },
-            [trT]       = (input, order) => { var tr = (Transform)input; return new TransformValue(tr.position, tr.rotation, tr.lossyScale); }, // TODO: lossy scale?
-            [lFloatT]   = (input, order) => { return to_transform_value((List<float>)input, order); },            
-            [stringT]   = (input, order) => { return to_transform_value(to_float_list((string)input, ' '), order); },
-            [lVec3T]    = (input, order) => { return to_transform_value(to_float_list((List<Vector3>)input), order); },
-            [lStringT]  = (input, order) => { return to_transform_value(to_float_list((List<string>)input), order); },
-            [lObjT]     = (input, order) => { return to_transform_value(to_float_list((List<object>)input), order); },
-            [lDoubleT]  = (input, order) => {
+            [trT]       = (input, order) => { var tr = (Transform)input; return new TransformValue(tr.position, tr.rotation, tr.localScale); }, // TODO: lossy scale?
+            [lDoubleT]  = (input, order) => { return convTrVal[lFloatT](to_float_list((List<double>)input), order); },            
+            [stringT]   = (input, order) => { return convTrVal[lFloatT](to_float_list((string)input, ' '), order); },
+            [lVec3T]    = (input, order) => { return convTrVal[lFloatT](to_float_list((List<Vector3>)input), order); },
+            [lStringT]  = (input, order) => { return convTrVal[lFloatT](to_float_list((List<string>)input), order); },
+            [lObjT]     = (input, order) => { return convTrVal[lFloatT](to_float_list((List<object>)input), order); },
+            [lFloatT]   = (input, order) => {
                 var values = (List<float>)input;
                 TransformValue trV = new TransformValue();
                 if (values.Count == 9) {
@@ -701,5 +709,79 @@ namespace Ex{
 
 
         #endregion
+
+        public static void unit_tests() {
+
+ 
+
+            //// # lists
+            //private static readonly System.Type lFloatT = typeof(List<float>);
+            //private static readonly System.Type lDoubleT = typeof(List<double>);
+            //private static readonly System.Type lStringT = typeof(List<string>);
+            //private static readonly System.Type lDecValT = typeof(List<DecimalValue>);
+            //private static readonly System.Type lVec2T = typeof(List<Vector2>);
+            //private static readonly System.Type lVec3T = typeof(List<Vector3>);
+            //private static readonly System.Type lObjT = typeof(List<object>);
+
+            bool vBool1 = false; bool vBool2 = true;
+            byte vByte1 = 0, vByte2 = 25, vByte3 = 255;
+            char vChar1 = 'e', vChar2 = (char)106, vChar3 = '\u006A';
+            short vShort1 = -32768, vShort2 = 4154, vShort3 = 32767;
+            int vInt = 866;
+            long vLong = 468468484;
+            float vFloat = 846.8f;
+            double vDouble = 58453.07578;
+            string vString = "test";
+
+            Vector2 vVec2 = new Vector2(1, 2);
+            Vector3 vVec3 = new Vector3(1, 2, 3);
+            Color vCol = new Color(1, 0, 0, 1);
+            AnimationCurve vAniCurve = new AnimationCurve();
+            vAniCurve.AddKey(0, 0.0f);
+            vAniCurve.AddKey(0.2f, 0.5f);
+            vAniCurve.AddKey(1.0f, 1.0f);
+            GameObject go = new GameObject();
+            Transform vTr = go.transform;
+
+            DecimalValue vDecVamA = new DecimalValue(true);
+            DecimalValue vDecVamB = new DecimalValue(164);
+            DecimalValue vDecVamC = new DecimalValue(21.045);
+            IdAny vIdAnyA = new IdAny(5, 45);
+            IdAny vIdAnyB = new IdAny(3, "785");
+            IdAny vIdAnyC = new IdAny(2, 9489.07);
+            StringAny vStrAnyA = new StringAny("a", 45);
+            StringAny vStrAnyB = new StringAny("b", "785");
+            StringAny vStrAnyC = new StringAny("c", 9489.07);
+            TransformValue vTrVal = new TransformValue();
+
+            List<object> valuesToTest = new List<object>() {
+                // builtin
+                vBool1, vBool2 ,vByte1, vByte2, vByte3, vChar1, vChar2, vChar3, 
+                vShort1, vShort2, vShort3, vInt, vLong, vFloat, vDouble, vString,
+                // unity
+                vVec2, vVec3, vCol, vAniCurve, vTr,
+                // custom
+                vDecVamA, vDecVamB, vDecVamC, vIdAnyA, vIdAnyB, vIdAnyC, vStrAnyA, vStrAnyB, vStrAnyC, vTrVal                
+            };
+            test(valuesToTest);
+
+            ExVR.Memory().destroy_go(go);
+        }
+
+        private static void test(List<object> valuesToTest) {
+            foreach (var valueToConvert in valuesToTest) {
+                foreach (var typeToConvert in valuesToTest) {
+                    var type = typeToConvert.GetType();
+                    var convertedValue = to_type(valueToConvert, type, true, false);
+                   // if(convertedValue != null) {
+                   //     Debug.Log(string.Format("[{0}] -> [{1}] : [{2}] -> [{3}]",
+                   //         valueToConvert.GetType(), type, valueToConvert, convertedValue));
+                   // } else {
+                   //     Debug.LogError(string.Format("[{0}] -> [{1}] : [{2}] -> [FAILURE]",
+                   //         valueToConvert.GetType(), type, valueToConvert));
+                   //}
+                }
+            }
+        }
     }
 }

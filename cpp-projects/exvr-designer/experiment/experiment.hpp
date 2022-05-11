@@ -166,7 +166,8 @@ public slots:
     void update_exp_state(ExpState state, QStringView infos);
 
     // components
-    void add_component(Component::Type type, RowId id);
+    void add_new_component(Component::Type type, RowId id);
+    void add_component(std::unique_ptr<Component> component, RowId id);
     void duplicate_component(ComponentKey componentKey);
     void remove_component(ComponentKey componentKey);
     void update_component_position(ComponentKey componentKey, RowId id);

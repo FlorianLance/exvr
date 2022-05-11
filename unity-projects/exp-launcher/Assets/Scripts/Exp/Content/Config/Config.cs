@@ -146,7 +146,6 @@ namespace Ex {
 
         #endregion
 
-
         #region get_if_exists
 
         // get only if exists
@@ -182,7 +181,6 @@ namespace Ex {
 
         #endregion
 
-
         #region get_type
 
         public Color get_color(string argName) {
@@ -211,13 +209,16 @@ namespace Ex {
             }
             return Converter.to_vector3((List<object>)args[argName].value);
         }
-        public Vector3 get_vector3_with_order(string argName, Converter.AxisOrder order = Converter.AxisOrder.PitchYawRoll) {
+
+        public Vector3 get_euler_angles(string argName, Converter.AxisOrder order = Converter.AxisOrder.PitchYawRoll) {
+
             if (!has(argName)) {
                 log_error(string.Format("Argument {0} of type Vector3 doesn't exist.", argName));
                 return new Vector3(0f, 0f, 0f);
             }
             return Converter.to_vector3((List<object>)args[argName].value, order);
         }
+
 
         public TransformValue get_transform_value(string argName, Converter.AxisOrder order = Converter.AxisOrder.PitchYawRoll) {
             if (!has(argName)) {
@@ -506,7 +507,7 @@ namespace Ex {
         public void add<T>(string argName, T value) {
 
             if (has(argName)) {
-                log_error(string.Format("Argument {0} of type {1} already exists.", argName, typeof(T).ToString()));
+                log_error(string.Format("Argument with name [{0}] of type [{1}] already exists.", argName, typeof(T).ToString()));
                 return;
             }
             args[argName] = new Argument();
@@ -525,7 +526,7 @@ namespace Ex {
 
         public void set<T>(string argName, T value) {
             if (!has(argName)) {
-                log_error(string.Format("Argument {0} of type {1} doesn't exist in config.", argName, typeof(T).ToString()));
+                log_error(string.Format("Argument with name [{0}] of type [{1}] doesn't exist in config.", argName, typeof(T).ToString()));
                 return;
             }
             args[argName].value = value;
@@ -556,7 +557,7 @@ namespace Ex {
         }
 
         public void set_list<T>(string argName, List<T> values) {
-            set(argName, Converter.to_list<object>(values));
+            set(argName, Converter.to_object_list(values));
         }
 
         #endregion
