@@ -563,7 +563,7 @@ struct Component {
         return componentsSignals.elements_matching_columns_values<0,1>(type);
     }
 
-    Component() = delete;
+//    Component() = delete;
     Component(Type t, ComponentKey id, QString name);
     ~Component();
 
@@ -575,7 +575,7 @@ struct Component {
         configs.emplace_back(std::move(config));
     }
 
-    static ComponentUP copy_with_new_element_id(const Component &componentToCopy, const QString &newName, const std::vector<ConfigKey> &configKeys = {});
+    static ComponentUP copy_with_new_element_id(const Component &componentToCopy, const QString &newName, std::vector<ConfigKey> configKeys = {});
 
     QStringList get_configs_name() const;
     inline QString name() const{return m_name;}
@@ -583,8 +583,7 @@ struct Component {
 
     tool::ex::Config *get_config(ConfigKey configKey) const;
 
-    inline QString to_string() const{return QSL("Component(") % m_name % QSL("|") % from_view(get_full_name(type)) % QSL("|") % QString::number(key()) % QSL(")");}
-    static inline size_t count(Type t) {return m_counter[t];}
+    inline QString to_string() const{return QSL("Component(") % m_name % QSL("|") % from_view(get_full_name(type)) % QSL("|") % QString::number(key()) % QSL(")");}    
 
     constexpr int key() const noexcept{ return m_key();}
     constexpr ComponentKey c_key() const noexcept {return ComponentKey{key()};}
@@ -596,12 +595,11 @@ public:
     ConfigUP initConfig = nullptr;
 
     RowId selectedConfigId = {0};
-    std_v1<ConfigUP> configs;
+    std_v1<ConfigUP> configs = {};
 
 private:
 
     IdKey m_key;
-    QString m_name = "default";
-    static inline std::unordered_map<Type, size_t> m_counter = {};
+    QString m_name = "default";    
 };
 }

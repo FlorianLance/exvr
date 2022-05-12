@@ -81,7 +81,7 @@ ExConfigW::ExConfigW(QString name) : ExItemW<QFrame>(UiType::Component_config, n
         m_currentComponentKey.v = -1;
         if(m_componentNames->currentIndex() > 0){
             const size_t id = to_unsigned(m_componentNames->currentIndex()-1);
-            m_currentComponentKey.v = ExperimentManager::get()->current()->compM.components[id]->key();
+            m_currentComponentKey.v = ExperimentManager::get()->current()->compM.get_components()[id]->key();
         }
         update_configs_list_widget();
         trigger_ui_change();
@@ -189,13 +189,13 @@ void ExConfigW::update_components_list_widget(){
     ComponentsManager *componentsM = &ExperimentManager::get()->current()->compM;
 
     bool rebuildList = false;
-    if(m_componentNames->count() != static_cast<int>((componentsM->components.size()+1))){
+    if(m_componentNames->count() != static_cast<int>((componentsM->count()+1))){
         rebuildList = true;
     }
 
     if(!rebuildList){
-        for(size_t ii = 0; ii < componentsM->components.size(); ++ii){
-            if(m_componentNames->itemText(static_cast<int>(ii)+1) != componentsM->components[ii]->name()){
+        for(size_t ii = 0; ii < componentsM->count(); ++ii){
+            if(m_componentNames->itemText(static_cast<int>(ii)+1) != componentsM->get_components()[ii]->name()){
                 rebuildList = true;
                 break;
             }
@@ -209,7 +209,7 @@ void ExConfigW::update_components_list_widget(){
         m_componentNames->addItem("");
 
         QStringList componentsNamesList;
-        for(const auto &component : componentsM->components){
+        for(auto component : componentsM->get_components()){
             componentsNamesList << component->name();
         }
 
@@ -221,7 +221,7 @@ void ExConfigW::update_components_list_widget(){
     // check current index
     int id = 1;
     int newId = -1;
-    for(const auto &component : componentsM->components){
+    for(auto component : componentsM->get_components()){
         if(component->key() == m_currentComponentKey.v){
             newId = id;
         }

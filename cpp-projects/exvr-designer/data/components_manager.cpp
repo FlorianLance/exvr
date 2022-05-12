@@ -63,6 +63,59 @@ void ComponentsManager::sort_by_name(){
     });
 }
 
+void ComponentsManager::add_component(std::unique_ptr<Component> component){
+    components.push_back(std::move(component));
+}
+
+void ComponentsManager::duplicate_component(ComponentKey componentKey){
+
+    if(const auto compoInfo = get_component_and_position(componentKey); compoInfo.second != nullptr){
+        if(Component::get_unicity(compoInfo.second->type)){
+            QtLogger::error(QSL("You can only have one component of type [") % from_view(Component::get_type_name(compoInfo.second->type)) % QSL("] in the experiment."));
+        }else{
+            components.insert(
+                components.begin() + static_cast<std_v1<ComponentUP>::difference_type>(compoInfo.first + 1),
+                Component::copy_with_new_element_id(*compoInfo.second, compoInfo.second->name() % QSL("(copy)"))
+            );
+        }
+    }
+}
+
+void ComponentsManager::remove_component(ComponentKey componentKey){
+
+    auto componentToRemove = get_component(componentKey);
+
+    for(size_t id = 0; id < components.size(); ++id){
+        if(components[id]->key() == componentToRemove->key()){
+            QtLogger::message(QSL("Remove component ") % components[id]->to_string());
+            components.erase(components.begin() + static_cast<int>(id));
+            break;
+        }
+    }
+}
+
+void ComponentsManager::update_component_position(ComponentKey componentKey, RowId id){
+
+    if(const auto compoInfo = get_component_and_position(componentKey); compoInfo.second != nullptr){
+        auto compoToMove = std::move(components[compoInfo.first]);
+        components.erase(components.begin() + static_cast<std::vector<ComponentUP>::difference_type>(compoInfo.first));
+        components.insert(components.begin() + id.v, std::move(compoToMove));
+    }else{
+        QtLogger::error(QSL("Cannot update component position."));
+    }
+}
+
+Component *ComponentsManager::get_component(RowId id, bool displayError) const{
+    if(id.v < components.size()){
+        return components[id.v].get();
+    }
+    if(displayError){
+        QtLogger::error(QSL("Component from row [") % QString::number(id.v) % QSL("] not found."));
+    }
+
+    return nullptr;
+}
+
 
 Component *ComponentsManager::get_component(ComponentKey componentKey, bool displayError) const{
 
@@ -102,28 +155,47 @@ std::pair<size_t, Component *> ComponentsManager::get_component_and_position(Com
     return {0, nullptr};
 }
 
-//void ComponentsManager::insert_new_component(std::unique_ptr<Component> component, RowId id){
+void ComponentsManager::insert_copy_of_component(Component *component, std::vector<ConfigKey> configKeys, RowId id){
 
-//    size_t offset = 1;
-//    QString name;
-//    bool isInside = false;
-//    do{
-//        name = component->name() %  ((offset != 1) ? (QSL(" ") % QString::number(offset)) : QSL(""));
-//        isInside = false;
-//        for(auto &component : components){
-//            if(component->name() == name){
-//                isInside = true;
-//                break;
-//            }
-//        }
-//        ++offset;
-//    }while(isInside);
-//    component->set_name(name);
+    if(Component::get_unicity(component->type) && count(component->type) > 0){
+        QtLogger::error(QSL("Unique component already inside experiment."));
+        return;
+    }
 
-//    components.insert(std::begin(components) + id.v, std::move(component));
-//}
+    size_t offset = 1;
+    QString name;
+    bool isInside = false;
+    do{
+        name = component->name() %  ((offset != 1) ? (QSL(" ") % QString::number(offset)) : QSL(""));
+        isInside = false;
+        for(auto &component : components){
+            if(component->name() == name){
+                isInside = true;
+                break;
+            }
+        }
+        ++offset;
+    }while(isInside);
+    component->set_name(name);
+
+    if(count(component->type) == 0){
+        m_counter[component->type] = 1;
+    }else{
+        m_counter[component->type]++;
+    }
+
+    components.insert(
+        std::begin(components) + id.v,
+        Component::copy_with_new_element_id(*component, component->name() % QSL("(imported)"), std::move(configKeys))
+    );
+}
 
 void ComponentsManager::insert_new_component(Component::Type type, RowId id){
+
+    if(Component::get_unicity(type) && count(type) > 0){
+        QtLogger::error(QSL("Unique component already inside experiment."));
+        return;
+    }
 
     const QString baseName = QString::fromStdString(std::string(Component::get_full_name(type)));
     size_t offset = 1;
@@ -140,6 +212,12 @@ void ComponentsManager::insert_new_component(Component::Type type, RowId id){
         }
         ++offset;
     }while(isInside);
+
+    if(m_counter.count(type) == 0){
+        m_counter[type] = 1;
+    }else{
+        m_counter[type]++;
+    }
 
     auto component = std::make_unique<Component>(type, ComponentKey{-1}, name);
     component->set_init_config(std::make_unique<Config>(QSL("standard"), ConfigKey{-1}));
@@ -168,13 +246,31 @@ bool ComponentsManager::update_component_name(ComponentKey componentKey, QString
     return false;
 }
 
-std_v1<Component*> ComponentsManager::get_components(Component::Type type) const{
-    std_v1<Component*> componentsOfType;
+std::vector<Component *> ComponentsManager::get_components() const{
+    std::vector<Component*> componentsPtr;
+    for(auto &component : components){
+        componentsPtr.push_back(component.get());
+    }
+    return componentsPtr;
+}
+
+std::vector<Component*> ComponentsManager::get_components(Component::Type type) const{
+    std::vector<Component*> componentsOfType;
     for(auto &component : components){
         if(component->type == type){
-            componentsOfType.emplace_back(component.get());
+            componentsOfType.push_back(component.get());
         }
     }
     return componentsOfType;
+}
+
+std::vector<Component *> ComponentsManager::get_components(Component::Category category) const{
+    std::vector<Component*> componentsOfCategory;
+    for(auto &component : components){
+        if(component->category == category){
+            componentsOfCategory.push_back(component.get());
+        }
+    }
+    return componentsOfCategory;
 }
 

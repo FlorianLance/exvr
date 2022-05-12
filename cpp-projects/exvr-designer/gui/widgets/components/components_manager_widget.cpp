@@ -129,7 +129,7 @@ void ComponentsManagerW::update_from_components_manager(ComponentsManager *compM
 
             bool found = false;
             auto componentW = qobject_cast<ComponentW*>(m_componentsListW.widget_at(ii));
-            for(const auto &component : compM->components){
+            for(auto component : compM->get_components()){
                 if(component->key() == componentW->key.v){
                     found = true;
                     break;
@@ -148,7 +148,7 @@ void ComponentsManagerW::update_from_components_manager(ComponentsManager *compM
         m_configsList.clear();
 
         // add new widget/dialog
-        for(const auto &component : compM->components){                        
+        for(auto component : compM->get_components()){
 
             // update config list
             m_configsList[{component->key()}] = component->get_configs_name();
@@ -160,7 +160,7 @@ void ComponentsManagerW::update_from_components_manager(ComponentsManager *compM
                 Bench::start("[CM: Generate component config dialog]"sv, false);                    
 
                     // dialog
-                    auto configDialog = std::make_unique<ComponentConfigDialog>(this, component.get());
+                    auto configDialog = std::make_unique<ComponentConfigDialog>(this, component);
                     connect(configDialog.get(), &ComponentConfigDialog::finished, this, [=](){
                         component_widget(componentKey)->showWindow = false;
                         update_style();
@@ -169,7 +169,7 @@ void ComponentsManagerW::update_from_components_manager(ComponentsManager *compM
                 Bench::stop();
 
                 Bench::start("[CM: Generate Component widget]"sv, false);   
-                    m_componentsListW.add_widget(new ComponentW(component.get()));
+                    m_componentsListW.add_widget(new ComponentW(component));
                 Bench::stop();
             }
         }
@@ -178,9 +178,9 @@ void ComponentsManagerW::update_from_components_manager(ComponentsManager *compM
     Bench::start("[CM: Move components]"sv, false);
 
         // reorder
-        for(int ii = 0; ii < to_signed(compM->components.size()); ++ii){
+    for(int ii = 0; ii < to_signed(compM->count()); ++ii){
             for(int jj = 0; jj < to_signed(m_componentsListW.count()); ++jj){
-                if(qobject_cast<ComponentW*>(m_componentsListW.widget_at(jj))->key.v == compM->components[to_unsigned(ii)]->key()){
+                if(qobject_cast<ComponentW*>(m_componentsListW.widget_at(jj))->key.v == compM->get_component(RowId{ii})->key()){
                     if(ii != jj){
                         m_componentsListW.move_from_to(jj,ii);
                     }
@@ -194,7 +194,7 @@ void ComponentsManagerW::update_from_components_manager(ComponentsManager *compM
 
     // update components
     for(int ii = 0; ii< m_componentsListW.count(); ++ii){
-        auto component  = compM->components[to_unsigned(ii)].get();
+        auto component  = compM->get_component(RowId{ii});
         auto componentW = qobject_cast<ComponentW*>(m_componentsListW.widget_at(ii));
         Bench::start("[CM: Update component]"sv, false);
             componentW->update_from_component(component);
@@ -528,12 +528,12 @@ void ComponentsManagerW::add_new_component(tool::ex::Component::Type type, int i
     // TODO: ...
     // ...
 
-    if(const bool unicity = tool::ex::Component::get_unicity(type); unicity == true){
-        if(tool::ex::Component::count(type) != 0){
-            QtLogger::warning(QSL("Only one component for this type."));
-            return;
-        }
-    }
+//    if(const bool unicity = tool::ex::Component::get_unicity(type); unicity == true){
+//        if(tool::ex::Component::count(type) != 0){
+//            QtLogger::warning(QSL("Only one component for this type."));
+//            return;
+//        }
+//    }
 
     emit GSignals::get()->add_component_signal(type, RowId{id});
 }

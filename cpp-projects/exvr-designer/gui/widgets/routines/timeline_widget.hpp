@@ -46,7 +46,7 @@ public :
     TimelineW(ElementKey routineKey, ConditionKey conditionKey, ActionKey actionKey, Timeline *timeline, bool drawAxe, bool updateTimeline);
 
     QRectF interval_to_rect(const Interval &i)const;
-    Interval rect_to_interval(const QRectF &r) const;
+    std::pair<SecondsTS,SecondsTS> rect_to_interval(const QRectF &r) const;
 
     void update_from_timeline(Timeline *timeline, qreal m_scale, qreal m_factorSize, SecondsTS max);
 

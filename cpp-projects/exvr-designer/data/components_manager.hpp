@@ -52,17 +52,37 @@ public:
     void sort_by_type();
     void sort_by_name();
 
+    void add_component(std::unique_ptr<Component> component);
+    void insert_copy_of_component(Component *component, std::vector<ConfigKey> configKeys, RowId id);
+    void insert_new_component(Component::Type type, RowId id);
+    void duplicate_component(ComponentKey componentKey);
+
+    void remove_component(ComponentKey componentKey);
+    void update_component_position(ComponentKey componentKey, RowId id);
+    Component *get_component(RowId id, bool displayError= true) const;
     Component *get_component(ComponentKey componentKey, bool displayError= true) const;
     Component *get_component(Component::Type type, const QString &name) const;
 
     std::pair<size_t, Component*> get_component_and_position(ComponentKey componentKey) const;
 
-//    void insert_new_component(std::unique_ptr<Component> component, RowId id);
-    void insert_new_component(Component::Type type, RowId id);
+
     bool update_component_name(ComponentKey componentKey, QString newName);
 
-    std_v1<Component*> get_components(Component::Type type) const;    
+    std::vector<Component*> get_components() const;
+    std::vector<Component*> get_components(Component::Type type) const;
+    std::vector<Component*> get_components(Component::Category category) const;
 
-    std_v1<ComponentUP> components;
+    inline size_t count() {return components.size();}
+    inline size_t count(Component::Type type) {return m_counter[type];}
+
+    std::vector<std::unique_ptr<Component>> components;
+private:
+
+
+    std::unordered_map<Component::Type, size_t> m_counter = {};
+
+//    if(m_counter.count(type) > 0){
+//        m_counter[type]--;
+//    }
 };
 }

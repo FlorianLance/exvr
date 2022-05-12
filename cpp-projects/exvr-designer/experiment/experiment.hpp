@@ -153,6 +153,7 @@ public slots:
     void remove_resource(Resource::Type type, size_t index);
     void clean_resources(Resource::Type type);
     void update_reload_resource_code(int reloadCode);
+    void copy_resource(Resource *resource);
 
     // ui
     void toggle_actions_connections_separation();
@@ -167,7 +168,7 @@ public slots:
 
     // components
     void add_new_component(Component::Type type, RowId id);
-    void add_component(std::unique_ptr<Component> component, RowId id);
+    void copy_component(Component *component, std::vector<ConfigKey> configKeys, RowId id);
     void duplicate_component(ComponentKey componentKey);
     void remove_component(ComponentKey componentKey);
     void update_component_position(ComponentKey componentKey, RowId id);
@@ -267,8 +268,8 @@ public slots:
     void move_action_up(ElementKey routineKey, ConditionKey conditionKey, ActionKey actionKey);
     void move_action_down(ElementKey routineKey, ConditionKey conditionKey, ActionKey actionKey);
     // #### timeline
-    void add_timeline_interval(ElementKey routineKey,ConditionKey conditionKey, ActionKey actionKey, bool updateTimeline, TimelineKey timelineKey, Interval interval);
-    void remove_timeline_interval(ElementKey routineKey,ConditionKey conditionKey, ActionKey actionKey, bool updateTimeline, TimelineKey timelineKey, Interval interval);
+    void add_timeline_interval(ElementKey routineKey,ConditionKey conditionKey, ActionKey actionKey, bool updateTimeline, TimelineKey timelineKey, std::pair<SecondsTS,SecondsTS> interval);
+    void remove_timeline_interval(ElementKey routineKey,ConditionKey conditionKey, ActionKey actionKey, bool updateTimeline, TimelineKey timelineKey, std::pair<SecondsTS,SecondsTS> interval);
     // #### config
     void select_action_config(ElementKey routineKey, ConditionKey conditionKey, ActionKey actionKey, RowId  configTabId);
     // ### connection
@@ -312,6 +313,9 @@ public :
     // components
     ComponentsManager compM;
 
+    // resources
+    ResourcesManager resM;
+
     // infos
     using UiKey   = QStringView;
     using UiValue = QStringView;
@@ -329,7 +333,7 @@ private :
     Settings m_settings;
 
     // resources
-    ResourcesManager *m_resM = nullptr;
+//    ResourcesManager *m_resM = nullptr;
 };
 
 class ExperimentManager{

@@ -50,11 +50,10 @@ QRectF TimelineW::interval_to_rect(const Interval &i) const{
     };
 }
 
-Interval TimelineW::rect_to_interval(const QRectF &r) const{
-    return Interval{
+std::pair<SecondsTS,SecondsTS> TimelineW::rect_to_interval(const QRectF &r) const{
+    return {
         SecondsTS{m_maxLength.v*(r.x()-m_widthOffset)/m_timelineWidth},
-        SecondsTS{m_maxLength.v*(r.x()+r.width()-m_widthOffset)/m_timelineWidth},
-        IntervalKey{-1}
+        SecondsTS{m_maxLength.v*(r.x()+r.width()-m_widthOffset)/m_timelineWidth}
     };
 }
 

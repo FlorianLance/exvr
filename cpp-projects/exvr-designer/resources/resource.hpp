@@ -119,8 +119,7 @@ struct Resource{
     }
 
     Resource() = delete;
-
-    Resource(Type t, int id, QString path, QString alias = "") : key(IdKey::Type::Resource, id), type(t){
+    Resource(Type t, ResourceKey id, QString path, QString alias = "") : type(t), m_key(IdKey::Type::Resource, id.v){
 
         this->path  = path;
         this->alias = alias;
@@ -139,8 +138,21 @@ struct Resource{
         }else{
             extension = ""; // no extension or directory
         }
+    }
 
+    static std::unique_ptr<Resource> copy_with_new_element_id(const Resource &resourceToCopy){
+        auto resource = std::make_unique<Resource>(
+            resourceToCopy.type,
+            ResourceKey{-1},
+            resourceToCopy.path,
+            resourceToCopy.alias
+        );
 
+        resource->preview   = resourceToCopy.preview;
+        resource->exist     = resourceToCopy.exist;
+        resource->extension = resourceToCopy.extension;
+
+        return resource;
     }
 
     inline QString display_name() const noexcept{
@@ -151,7 +163,9 @@ struct Resource{
         }
     }
 
-    IdKey key;
+    constexpr int key() const noexcept{ return m_key();}
+    constexpr ResourceKey r_key() const noexcept {return ResourceKey{key()};}
+
     Type type;
     bool exist = false;
     bool preview = false;
@@ -159,5 +173,8 @@ struct Resource{
     QString path;
     QString extension;
 
+private:
+
+    IdKey m_key;
 };
 }

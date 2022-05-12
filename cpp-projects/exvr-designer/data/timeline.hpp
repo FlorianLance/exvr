@@ -40,8 +40,8 @@ struct Timeline{
 
     enum Type {Update,Visibility};
 
-    Timeline(Type t, TimelineKey id) : key(IdKey::Type::Timeline, id.v), type(t){
-    }
+    Timeline() = delete;
+    Timeline(Type t, TimelineKey id) : key(IdKey::Type::Timeline, id.v), type(t){}
 
     static std::unique_ptr<Timeline> copy_with_new_element_id(const Timeline &timelineToCopy){
         std::unique_ptr<Timeline> timeline = std::make_unique<Timeline>(timelineToCopy.type, TimelineKey{-1});
@@ -51,8 +51,8 @@ struct Timeline{
         return timeline;
     }
 
-    bool add_interval(const Interval &interval);
-    bool remove_interval(const Interval &intervalToRemove);
+    bool add_interval(std::pair<SecondsTS,SecondsTS> interval);
+    bool remove_interval(std::pair<SecondsTS,SecondsTS> intervalToRemove);
     void cut(SecondsTS max);
     size_t nb_intervals() const;
     double sum_intervals() const;

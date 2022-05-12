@@ -44,6 +44,7 @@ public :
 private:
 
     std::map<ComponentKey, std::map<ConfigKey, QCheckBox*>> validatedConfigs;
+    std::map<ResourceKey, QCheckBox*> validatedResources;
 };
 
 }

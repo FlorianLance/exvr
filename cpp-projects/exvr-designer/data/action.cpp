@@ -41,11 +41,11 @@ std::unique_ptr<Action> Action::generate_component_action(Component *component, 
         configKey.has_value() ? component->get_config(configKey.value()) : component->configs[0].get(), ActionKey{-1});
     action->timelineUpdate     = std::make_unique<Timeline>(Timeline::Type::Update, TimelineKey{-1});
     if(fillUpdateTimeline){
-        action->timelineUpdate->add_interval(Interval(SecondsTS{0}, duration,IntervalKey{-1}));
+        action->timelineUpdate->add_interval({SecondsTS{0}, duration});
     }
     action->timelineVisibility = std::make_unique<Timeline>(Timeline::Type::Visibility, TimelineKey{-1});
     if(fillVisibilityTimeline){
-        action->timelineVisibility->add_interval(Interval(SecondsTS{0}, duration,IntervalKey{-1}));
+        action->timelineVisibility->add_interval({SecondsTS{0}, duration});
     }
     return action;
 }

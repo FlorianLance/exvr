@@ -99,13 +99,21 @@ namespace Ex{
             functionsDefined[Function.slot4] = (runtimeType.GetMethod("slot4", flagPublic).DeclaringType == runtimeType);
             functionsDefined[Function.slot5] = (runtimeType.GetMethod("slot5", flagPublic).DeclaringType == runtimeType);
 
-            //if (functionsDefined[Function.initialize]) {
-            // catchExceptions
-            if (!compiledComponent.initialize()) {
-                log_error("Error during CSharp script initialization, component will be disactivated.");
+            bool initSuccess = false;
+            if (catchExceptions) {
+                try {
+                    initSuccess = compiledComponent.initialize();
+                } catch (Exception e) {
+                    display_exception(e);
+                }
+            } else {
+                initSuccess = compiledComponent.initialize();
+            }
+
+            if (!initSuccess) {
+                log_error("Error during CSharp script initialization, component will be disactivated.", true, false);
                 return false;
             }
-            //}
 
             // slots
             add_slot("slot1", (value) => {

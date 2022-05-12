@@ -85,6 +85,8 @@ signals:
     void enter_component_signal(tool::ex::ComponentKey key);
     void leave_component_signal(tool::ex::ComponentKey key);
     void show_component_informations_signal(tool::ex::ComponentKey componentKey);
+    void copy_component_signal(tool::ex::Component *component, std::vector<tool::ex::ConfigKey> configKeys, tool::ex::RowId to);
+
     // ## config
     void select_action_config_signal(tool::ex::ElementKey routineKey,tool::ex::ConditionKey conditionKey, tool::ex::ActionKey actionKey, tool::ex::RowId configTabId);
     void insert_config_signal(tool::ex::ComponentKey componentKey, tool::ex::RowId id, QString name);
@@ -165,8 +167,8 @@ signals:
     // #### timeline
     void update_timeline_signal(tool::ex::ElementKey routineKey,tool::ex::ConditionKey conditionKey, double duration, double scale, double uiSize);
     // ##### interval
-    void add_interval_signal(tool::ex::ElementKey routineKey,tool::ex::ConditionKey conditionKey, tool::ex::ActionKey actionKey, bool updateTimeline, tool::ex::TimelineKey timelineKey, tool::ex::Interval interval);
-    void remove_interval_signal(tool::ex::ElementKey routineKey,tool::ex::ConditionKey conditionKey, tool::ex::ActionKey actionKey, bool updateTimeline, tool::ex::TimelineKey timelineKey, tool::ex::Interval interval);
+    void add_interval_signal(tool::ex::ElementKey routineKey,tool::ex::ConditionKey conditionKey, tool::ex::ActionKey actionKey, bool updateTimeline, tool::ex::TimelineKey timelineKey, std::pair<SecondsTS,SecondsTS> interval);
+    void remove_interval_signal(tool::ex::ElementKey routineKey,tool::ex::ConditionKey conditionKey, tool::ex::ActionKey actionKey, bool updateTimeline, tool::ex::TimelineKey timelineKey,  std::pair<SecondsTS,SecondsTS> interval);
     // ### connections / connectors / nodes
     void delete_connections_signal(tool::ex::ElementKey routineKey, tool::ex::ConditionKey conditionKey);
     void nodes_connection_created_signal(tool::ex::ElementKey routineKey,tool::ex::ConditionKey conditionKey, tool::ex::Connection *connection);
@@ -184,6 +186,9 @@ signals:
         std_v1<tool::ex::ConnectorKey> connectorsKey, std_v1<tool::ex::ComponentKey> componentsKey, std_v1<tool::ex::ConnectionKey> connectionsKey, bool doUpdate);
     void select_nodes_and_connections_signal(tool::ex::ElementKey routineKey, tool::ex::ConditionKey conditionKey,
         std_v1<tool::ex::ConnectorKey> connectorsKey, std_v1<tool::ex::ComponentKey> componentsKey, std_v1<tool::ex::ConnectionKey> connectionsKey, bool doUpdate);
+
+    // resource
+    void copy_resource_signal(tool::ex::Resource *resource);
 
 
     void ask_for_udapte_signal(int);

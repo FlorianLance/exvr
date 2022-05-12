@@ -33,6 +33,7 @@
 // local
 #include "resources/resources_manager.hpp"
 #include "experiment/global_signals.hpp"
+#include "experiment/experiment.hpp"
 
 using namespace tool::ex;
 
@@ -63,9 +64,7 @@ ExResourceW::ExResourceW(QString name) : ExItemW<QFrame>(UiType::Resource, name)
         if(m_resourcesAlias->currentIndex() > 0){
 
             const size_t id = to_unsigned(m_resourcesAlias->currentIndex()-1);
-            ResourcesManager *resourcesM = ResourcesManager::get();
-
-            if(auto resources = resourcesM->get_resources(m_resourceType); id < resources.size()){
+            if(auto resources = ExperimentManager::get()->current()->resM.get_resources(m_resourceType); id < resources.size()){
                 m_currentKey =  resources[id]->key();
             }
         }
@@ -122,7 +121,7 @@ Arg ExResourceW::convert_to_arg() const{
 
     Arg arg = ExBaseW::convert_to_arg();
     QString alias = "";
-    if(auto resource = ResourcesManager::get()->get_resource(m_resourceType, m_currentKey, false); resource != nullptr){
+    if(auto resource = ExperimentManager::get()->current()->resM.get_resource(m_resourceType, ResourceKey{m_currentKey}, false); resource != nullptr){
         alias = resource->alias;
     }
     arg.init_from({alias, std::to_string(m_currentKey).c_str()}, "%%%");
@@ -140,11 +139,10 @@ void ExResourceW::update_from_resources(){
 
     Bench::start("ExResourceW::update_from_resources_1"sv);
 
-    ResourcesManager *resourcesM = ResourcesManager::get();
     QString currentText = "";
     if(m_currentKey != -1){
         // check if component still available
-        if(auto resource = resourcesM->get_resource(m_resourceType, m_currentKey, false); resource != nullptr){
+        if(auto resource = ExperimentManager::get()->current()->resM.get_resource(m_resourceType, ResourceKey{m_currentKey}, false); resource != nullptr){
             currentText = resource->display_name();
         }
     }
@@ -152,7 +150,7 @@ void ExResourceW::update_from_resources(){
     Bench::stop();
     Bench::start("ExResourceW::update_from_resources_2"sv);
 
-    auto resources = resourcesM->get_resources(m_resourceType);
+    auto resources = ExperimentManager::get()->current()->resM.get_resources(m_resourceType);
 
     bool rebuild = false;
     if(resourcesId.size() != resources.size()){

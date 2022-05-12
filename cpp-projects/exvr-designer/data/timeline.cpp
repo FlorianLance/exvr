@@ -24,22 +24,21 @@
 
 #include "timeline.hpp"
 
-#include <QDebug>
-
 using namespace tool;
 using namespace tool::ex;
 
-bool Timeline::add_interval(const Interval &interval){
+bool Timeline::add_interval(std::pair<SecondsTS,SecondsTS> interval){
 
     const double totalBefore = sum_intervals();
-    intervals.emplace_back(interval);
-    merge();
-    const double totalAfter = sum_intervals();
+    intervals.emplace_back(interval.first, interval.second, IntervalKey{-1});
 
+    merge();
+
+    const double totalAfter = sum_intervals();
     return !almost_equal(totalBefore,totalAfter);
 }
 
-bool Timeline::remove_interval(const Interval &intervalToRemove){
+bool Timeline::remove_interval(std::pair<SecondsTS,SecondsTS> intervalToRemove){
 
     const double totalBefore = sum_intervals();
 
@@ -49,18 +48,19 @@ bool Timeline::remove_interval(const Interval &intervalToRemove){
     for(size_t ii = 0; ii < intervals.size(); ++ii){
         Interval &interval = intervals[ii];
 
-        bool startInside = interval.inside(intervalToRemove.start);
-        bool endInside   = interval.inside(intervalToRemove.end);
+        bool startInside = interval.inside(intervalToRemove.first);
+        bool endInside   = interval.inside(intervalToRemove.second);
 
         if(startInside && endInside){
-            intervalsToAdd.emplace_back(Interval{intervalToRemove.end, interval.end, IntervalKey{-1}});
-            interval.end = intervalToRemove.start;
+            intervalsToAdd.emplace_back(intervalToRemove.second, interval.end, IntervalKey{-1});
+            interval.end = intervalToRemove.first;
         }else if(startInside){
-            interval.end = intervalToRemove.start;
+            interval.end = intervalToRemove.first;
         }else if(endInside){
-            interval.start = intervalToRemove.end;
-        }else if(intervalToRemove.inside(interval.start) && intervalToRemove.inside(interval.end)){
-            idToRemove.emplace_back(ii);
+            interval.start = intervalToRemove.second;
+        }else if(Interval::inside(intervalToRemove.first, intervalToRemove.second, interval.start)
+              && Interval::inside(intervalToRemove.first, intervalToRemove.second, interval.end)){
+            idToRemove.push_back(ii);
         }
     }
 
@@ -69,13 +69,13 @@ bool Timeline::remove_interval(const Interval &intervalToRemove){
     }
 
     for(auto &i : intervalsToAdd){
-        intervals.emplace_back(std::move(i));
+        intervals.push_back(std::move(i));
     }
 
     std::sort(intervals.begin(), intervals.end(), compare_intervals);
 
     intervals.erase(std::remove_if(intervals.begin(), intervals.end(),[](Interval& i) {
-        return (almost_equal<double>(i.length().v,0.)); // put your condition here
+        return (almost_equal<double>(i.length().v,0.));
     }), intervals.end());
 
     const double totalAfter = sum_intervals();
@@ -115,8 +115,16 @@ double Timeline::sum_intervals() const{
 
 
 void Timeline::fill(SecondsTS length){
-    clean();
-    intervals.emplace_back(Interval{SecondsTS{0.},length, IntervalKey{-1}});
+
+    if(intervals.size() == 0){
+        intervals.emplace_back(Interval{SecondsTS{0.},length, IntervalKey{-1}});
+    }else{
+        intervals[0].start = {0.};
+        intervals[0].end   = length;
+        if(intervals.size() > 1){
+            intervals.erase(intervals.begin()+1, intervals.end());
+        }
+    }
 }
 
 void Timeline::clean(){
@@ -148,15 +156,8 @@ void Timeline::merge(){
             break;
         }
 
-        Interval merged = merge_intervals(intervals[collides[0].first], intervals[collides[0].second]);
-        if(collides[0].first < collides[0].second){
-            intervals.erase(intervals.begin()+static_cast<int>(collides[0].second));
-            intervals.erase(intervals.begin()+static_cast<int>(collides[0].first));
-        }else{
-            intervals.erase(intervals.begin()+static_cast<int>(collides[0].first));
-            intervals.erase(intervals.begin()+static_cast<int>(collides[0].second));
-        }
-        intervals.emplace_back(merged);
+        intervals[collides[0].first].merge_with(intervals[collides[0].second]);
+        intervals.erase(intervals.begin()+static_cast<int>(collides[0].second));
     }
 
     std::sort(intervals.begin(), intervals.end(), compare_intervals);

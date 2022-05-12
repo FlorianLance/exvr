@@ -34,18 +34,15 @@ namespace tool::ex {
 
 struct Set{
 
-    Set(QString name, SetKey id) : key(IdKey::Type::Set, id.v), name(name){
-    }
+    Set(QString name, size_t occurencies = 1, SetKey id = {-1}) : name(name), occurencies(occurencies), key(IdKey::Type::Set, id.v) {}
 
     static Set copy_with_new_element_id(const Set &setToCopy){
-        Set set(setToCopy.name, SetKey{-1});
-        set.occurencies = setToCopy.occurencies;
-        return set;
+        return {setToCopy.name, setToCopy.occurencies, SetKey{-1}};
     }
 
-    IdKey key;
     QString name;
     size_t occurencies = 1;
+    IdKey key;
 };
 
 [[maybe_unused]] static bool operator==(const Set &l, const Set &r){

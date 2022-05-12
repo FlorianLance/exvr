@@ -25,7 +25,7 @@
 #include "ex_resources_list_w.hpp"
 
 // local
-#include "resources/resources_manager.hpp"
+#include "experiment/experiment.hpp"
 
 using namespace tool::ex;
 
@@ -62,7 +62,7 @@ ExResourcesListW::ExResourcesListW(QString name) : ExItemW<QFrame>(UiType::Resou
         }
 
         const auto currTxt = m_resourcesAliases->currentText();
-        if(auto resource = ResourcesManager::get()->get_resource(m_resourceType.value(), currTxt); resource != nullptr){
+        if(auto resource = ExperimentManager::get()->current()->resM.get_resource(m_resourceType.value(), currTxt); resource != nullptr){
             m_resourcesKeys.emplace_back(resource->key());
             m_list->add_widget(ui::W::txt(resource->alias));
             update_from_resources();
@@ -124,7 +124,7 @@ void ExResourcesListW::update_from_arg(const Arg &arg){
         for(const auto &keyStr : split){
 
             int key = keyStr.toInt();
-            if(auto resource = ResourcesManager::get()->get_resource(m_resourceType.value(), key); resource != nullptr){
+            if(auto resource = ExperimentManager::get()->current()->resM.get_resource(m_resourceType.value(), ResourceKey{key}); resource != nullptr){
                 m_resourcesKeys.emplace_back(keyStr.toInt());
                 m_list->add_widget(ui::W::txt(resource->alias));
             }
@@ -168,7 +168,7 @@ void ExResourcesListW::update_from_resources(){
     std::vector<size_t> widgetsToRemove;
     std::set<QString> inside;
 
-    if(auto resources = ResourcesManager::get()->get_resources(m_resourceType.value()); resources.size() > 0){
+    if(auto resources = ExperimentManager::get()->current()->resM.get_resources(m_resourceType.value()); resources.size() > 0){
 
         // remove resources keys not existing anymore
         std_v1<int> elemsToRemove;

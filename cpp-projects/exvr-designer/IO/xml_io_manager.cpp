@@ -174,8 +174,8 @@ bool XmlIoManager::read_exp(){
             }
         }else if(check_start_node(QSL("Resources"))){
             QtLogger::message(QSL("[XML] Read resources..."));
-            if(auto reloadCode = read_attribute<int>(QSL("reload"), true); reloadCode.has_value()){                
-                ResourcesManager::get()->set_reload_code(reloadCode.value());
+            if(auto reloadCode = read_attribute<int>(QSL("reload"), true); reloadCode.has_value()){
+                m_experiment->resM.set_reload_code(reloadCode.value());
             }            
             if(!read_resources()){
                 break;
@@ -572,7 +572,7 @@ std::unique_ptr<Resource> XmlIoManager::read_resource(){
         return nullptr;
     }
 
-    auto resource = std::make_unique<Resource>(type.value(), key.value(), path.value(), alias.value());
+    auto resource = std::make_unique<Resource>(type.value(), ResourceKey{key.value()}, path.value(), alias.value());
 
     // check if absolute path
     auto fileInfo = QFileInfo(path.value());
@@ -1196,7 +1196,7 @@ std::tuple<LoopNodeUP, LoopUP, LoopNodeUP> XmlIoManager::read_loop(){
     const auto sets = read_attribute<QString>(QSL("set"), false);
     if(sets.has_value()){
         for(auto setStr : sets->split(" ")){
-            loop->sets.emplace_back(Set(setStr, SetKey{-1}));
+            loop->sets.emplace_back(setStr, 1, SetKey{-1});
         }
         return std::make_tuple(std::move(startLoop), std::move(loop), std::move(endLoop));
     }
@@ -1236,9 +1236,7 @@ std::optional<Set> XmlIoManager::read_set(){
         return {};
     }
 
-    Set set(name.value(), SetKey{key.value()});
-    set.occurencies = occu.value();
-    return {set};
+    return {{name.value(), static_cast<size_t>(occu.value()), SetKey{key.value()}}};
 }
 
 void XmlIoManager::write_routine(const Routine *routine){
@@ -1289,7 +1287,7 @@ void XmlIoManager::write_settings(){
 
 void XmlIoManager::write_resources(){
 
-    auto resM = ResourcesManager::get();
+    auto resM = &m_experiment->resM;
 
     w->writeStartElement(QSL("Resources")); 
     w->writeAttribute(QSL("reload"), QString::number(resM->reload_code()));
@@ -1323,8 +1321,8 @@ void XmlIoManager::write_resources(){
 void XmlIoManager::write_components(){
 
     w->writeStartElement(QSL("Components"));{
-        for(const auto &component : m_experiment->compM.components){
-            write_component(component.get());
+        for(auto component : m_experiment->compM.get_components()){
+            write_component(component);
         }
     }w->writeEndElement(); // /Components
 }
@@ -1607,8 +1605,8 @@ bool XmlIoManager::read_components(){
     while(!r->atEnd()){
 
         if(check_start_node(QSL("Component"))){
-            if(auto component = read_component(); component != nullptr){                
-                m_experiment->compM.components.emplace_back(std::move(component));
+            if(auto component = read_component(); component != nullptr){
+                m_experiment->compM.components.push_back(std::move(component));
             }            
         }
 
@@ -1747,7 +1745,7 @@ bool XmlIoManager::read_resources(){
     while(!r->atEnd()){
         if(check_start_node(QSL("Resource"))){
             if(auto resource = read_resource();resource != nullptr){                
-                ResourcesManager::get()->add_resource(std::move(resource));
+                m_experiment->resM.add_resource(std::move(resource));
             }
         }else if(check_end_node(QSL("Resources"))){
             return true;
@@ -1880,7 +1878,7 @@ void XmlIoManager::export_experiment_to(){
     if(path.length() > 0){
         QtLogger::message(QSL("[XML] Export experiment to directory: ") % path);
         QString expFilePath =  path % QSL("/") % m_experiment->states.currentName % QSL(".xml");
-        auto resM = ResourcesManager::get();
+        auto resM = &m_experiment->resM;
         resM->exportMode = true;
         save_experiment_file(expFilePath);
         resM->exportMode = false;        

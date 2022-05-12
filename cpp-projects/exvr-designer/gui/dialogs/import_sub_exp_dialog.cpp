@@ -32,6 +32,7 @@
 #include "data/components_manager.hpp"
 #include "experiment/experiment.hpp"
 #include "IO/xml_io_manager.hpp"
+#include "experiment/global_signals.hpp"
 
 using namespace tool;
 using namespace tool::ex;
@@ -39,10 +40,11 @@ using namespace tool::ex;
 ImportSubExpDialog::ImportSubExpDialog(QString path){
 
     validatedConfigs.clear();
+    validatedResources.clear();
 
     setWindowTitle(QSL("Import experiment sub-parts"));
     setModal(true);
-    setWindowFlags(Qt::Dialog | Qt::WindowTitleHint | Qt::MSWindowsFixedSizeDialogHint);
+    setWindowFlags(Qt::Dialog | Qt::WindowTitleHint);
 
     setLayout(new QVBoxLayout());
 
@@ -61,18 +63,50 @@ ImportSubExpDialog::ImportSubExpDialog(QString path){
     QTabWidget *tw = new QTabWidget();
     layout()->addWidget(tw);
 
+    QTabWidget *twResources = new QTabWidget();
+    tw->addTab(twResources, "Resources");
 
-    ui::ListWidget *lwComponents = new ui::ListWidget();
-    lwComponents->set_margins(2,2,2,2,2);
-    tw->addTab(lwComponents, "Components");
-    for(const auto &component : importedExp->compM.components){
-//        QtLogger::message(QSL("component ") %component->name());
-        auto compL = new QLabel(component->name() % QSL(" [") % from_view(Component::get_full_name(component->type)) % QSL("] ") % QSL("(") % QString::number(component->key()) % QSL(")"));
-        lwComponents->add_widget(compL);
-        for(const auto &config : component->configs){
-            auto configCb = new QCheckBox(config->name);
-            lwComponents->add_widget(ui::F::gen(ui::L::HB(),{ui::W::txt("\t"), configCb}, LStretch{true}, LMargins{false},QFrame::NoFrame));
-            validatedConfigs[component->c_key()][ConfigKey{config->key()}] = configCb;
+    for(auto rType : Resource::get_types()){
+        auto resources = importedExp->resM.get_resources(rType);
+        if(resources.size() == 0){
+            continue;
+        }
+
+        ui::ListWidget *lwResources = new ui::ListWidget();
+        lwResources->set_margins(2,2,2,2,2);
+        twResources->addTab(lwResources, from_view(Resource::get_name(rType)) % QSL("(") % QString::number(resources.size()) % QSL(")"));
+
+        for(const auto &resource : resources){
+            auto resourceCb = new QCheckBox(resource->alias % QSL(" [") % resource->path % QSL("] "));
+            lwResources->add_widget(resourceCb);
+            validatedResources[resource->r_key()] = resourceCb;
+        }
+    }
+
+    QTabWidget *twComponents = new QTabWidget();
+    tw->addTab(twComponents, "Components");
+
+    for(auto category : Component::all_categories()){
+
+        auto components = importedExp->compM.get_components(category);
+        if(components.size() == 0){
+            continue;
+        }
+
+        ui::ListWidget *lwCategory = new ui::ListWidget();
+        lwCategory->set_margins(2,2,2,2,2);
+        twComponents->addTab(lwCategory, from_view(Component::to_string(category)) % QSL("(") % QString::number(components.size()) % QSL(")"));
+
+        for(const auto &component : components){
+
+            lwCategory->add_widget(
+                new QLabel(component->name() % QSL(" [") % from_view(Component::get_full_name(component->type)) % QSL("] ") % QSL("(") % QString::number(component->configs.size()) % QSL(")")));
+
+            for(const auto &config : component->configs){
+                auto configCb = new QCheckBox(config->name);
+                lwCategory->add_widget(ui::F::gen(ui::L::HB(),{ui::W::txt("\t"), configCb}, LStretch{true}, LMargins{false},QFrame::NoFrame));
+                validatedConfigs[component->c_key()][ConfigKey{config->key()}] = configCb;
+            }
         }
     }
 
@@ -88,8 +122,15 @@ ImportSubExpDialog::ImportSubExpDialog(QString path){
     connect(this, &ImportSubExpDialog::finished, this, [&](int result){
 
         if(result != 1){
-            QtLogger::message("CANCEL");
             return;
+        }
+
+        for(const auto &resource : validatedResources){
+            if(resource.second->isChecked()){
+                emit GSignals::get()->copy_resource_signal(
+                    ExperimentManager::get()->imported()->resM.get_resource(resource.first)
+                );
+            }
         }
 
         for(const auto &componentConfigs : validatedConfigs){
@@ -104,13 +145,14 @@ ImportSubExpDialog::ImportSubExpDialog(QString path){
                 continue;
             }
 
-            auto ie = ExperimentManager::get()->imported();
-            auto iComponent = ie->compM.get_component(componentConfigs.first);
-//            ExperimentManager::get()->current()->add_component(Component::copy_with_new_element_id(*iComponent, iComponent->name() % QSL("(imported)"), configsKeys), RowId{0});
+            emit GSignals::get()->copy_component_signal(
+                ExperimentManager::get()->imported()->compM.get_component(componentConfigs.first),
+                std::move(configsKeys),
+                RowId{0}
+            );
         }
 
         ExperimentManager::get()->clean_imported();
-        QtLogger::message("OK");
     });
 
 }

@@ -68,6 +68,8 @@ ExVrController::ExVrController(const QString &nVersion, bool lncoComponents){
     qRegisterMetaType<tool::ex::ExpLauncherState>("tool::ex::ExpLauncherState");
     qRegisterMetaType<tool::ex::ExpState>("tool::ex::ExpState");
     qRegisterMetaType<tool::ex::Settings>("tool::ex::Settings");
+    qRegisterMetaType<std::pair<SecondsTS,SecondsTS>>("std::pair<SecondsTS,SecondsTS>>");
+
     qRegisterMetaType<std::vector<std::tuple<tool::ex::ElementKey, tool::ex::ConditionKey, tool::ex::ConfigKey, bool, bool>>>("std::vector<std::tuple<tool::ex::ElementKey, tool::ex::ConditionKey, tool::ex::ConfigKey, bool, bool>>");
 
     qRegisterMetaType<QStringView>("QStringView");
@@ -885,7 +887,7 @@ void ExVrController::update_gui_from_experiment(){
 
     if(exp()->update_flag() & UpdateResources){ // update experiment components
         Bench::start("[Update resources]"sv, false);
-        m_resourcesD.update_from_resources_manager(ResourcesManager::get());
+        m_resourcesD.update_from_resources_manager(&ExperimentManager::get()->current()->resM);
         Bench::stop();
     }
 
@@ -1105,6 +1107,7 @@ void ExVrController::show_play_with_delay_dialog(){
     modalDialog->open();
 }
 
+
 void ExVrController::show_about_dialog(){
 
     Ui_AboutD about;
@@ -1146,7 +1149,6 @@ void ExVrController::start_specific_instance(){
     // load experiment
     emit load_experiment_unity_signal(Paths::tempExp, pathFile);
 }
-
 
 void ExVrController::generate_global_signals_connections(){
 
@@ -1209,6 +1211,8 @@ void ExVrController::generate_global_signals_connections(){
     connect(s, &GSignals::remove_component_signal,                    exp(), &EXP::remove_component);
     connect(s, &GSignals::duplicate_component_signal,                 exp(), &EXP::duplicate_component);
     connect(s, &GSignals::component_name_changed_signal,              exp(), &EXP::update_component_name);
+    connect(s, &GSignals::copy_component_signal,                      exp(), &EXP::copy_component);
+
     // ## config
     connect(s, &GSignals::select_config_signal,                       exp(), &EXP::select_config_in_component);
     connect(s, &GSignals::insert_config_signal,                       exp(), &EXP::insert_config_in_component);
@@ -1299,6 +1303,9 @@ void ExVrController::generate_global_signals_connections(){
             exp()->remove_action_from_all_selected_routine_conditions(cRoutineW->routine_key(), componentKey);
         }
     });
+    // ### resources
+    connect(s, &GSignals::copy_resource_signal,                       exp(), &EXP::copy_resource);
+
     // ##### timelines
     connect(s, &GSignals::update_timeline_signal,                     exp(), &EXP::update_condition_timeline);
     connect(s, &GSignals::add_interval_signal,                        exp(), &EXP::add_timeline_interval);

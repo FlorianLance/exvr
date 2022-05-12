@@ -31,15 +31,15 @@ using namespace tool::ex;
 
 
 Loop::Loop() : FlowElement(Type::Loop, QSL("loop")){
-    sets = {Set{QSL("default"), SetKey{-1}}};
-    fileSets = {Set{QSL("file_default"),SetKey{-1}}};
+    sets     = {Set(QSL("default"))};
+    fileSets = {Set(QSL("file_default"))};
 }
 
 Loop::Loop(QString n, ElementKey id, QString infos) : FlowElement(Type::Loop, n, id.v, infos){
 
     if(id.v == -1){
-        sets = {Set{QSL("default"), SetKey{-1}}};
-        fileSets = {Set{QSL("file_default"), SetKey{-1}}};
+        sets     = {Set(QSL("default"))};
+        fileSets = {Set(QSL("file_default"))};
     }
 }
 
@@ -117,7 +117,7 @@ void Loop::set_sets(QStringList setsName){
         validNames.insert(setName);
 
         // add valid set
-        sets.emplace_back(Set{setName, SetKey{-1}});
+        sets.emplace_back(setName, 1, SetKey{-1});
     }
 }
 
@@ -143,7 +143,7 @@ bool Loop::add_set(QString setName, RowId id) {
         }
     }
 
-    sets.insert(std::begin(sets) + id.v, Set{setName, SetKey{-1}});
+    sets.insert(std::begin(sets) + id.v, Set(setName));
     currentSetName = setName;
     return true;
 }
@@ -175,7 +175,7 @@ void Loop::add_sets(QStringList setsName, RowId id){
         validNames.insert(setName);
 
         // insert valid set
-        sets.insert(std::begin(sets) + id.v + (v++), Set{setName, SetKey{-1}});
+        sets.insert(std::begin(sets) + id.v + (v++), Set(setName));
 
     }
 }
@@ -253,7 +253,7 @@ bool Loop::load_file(QString path){
     QTextStream in(&file);
     std_v1<Set> newFileSet;
     while (!in.atEnd()){
-        newFileSet.emplace_back(Set{in.readLine(), SetKey{-1}});
+        newFileSet.emplace_back(in.readLine(),1, SetKey{-1});
     }
     file.close();
 

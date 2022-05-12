@@ -47,8 +47,8 @@ using namespace tool::ex;
 
 Experiment::Experiment(QString nVersion) : states(nVersion), randomizer(Randomizer(states.randomizationSeed)) {
 
-    ResourcesManager::init();
-    m_resM = ResourcesManager::get();
+//    ResourcesManager::init();
+//    m_resM = ResourcesManager::get();
 
 //    ComponentsManager::init();
 //    m_compM = ComponentsManager::get();
@@ -121,6 +121,8 @@ void Experiment::select_element(ElementKey elementKey, bool updateSignal){
         if(updateSignal){
             add_to_update_flag(UpdateFlow | UpdateSelection | UpdateRoutines);
         }
+    }else{
+        QtLogger::error(QSL("Cannot select element with key [") % QString::number(elementKey.v) % QSL("], it doesn't exist."));
     }
 }
 
@@ -620,11 +622,11 @@ void Experiment::check_integrity(){
     // check validity
     // # components
     std::unordered_map<int, Component*> checkComponents;
-    for(auto &component : ExperimentManager::get()->current()->compM.components){
+    for(auto component : compM.get_components()){
         if(checkComponents.count(component->key()) != 0){
             QtLogger::error(QSL("[EXP] ") % component->to_string() % QSL(" already exists."));
         }else{
-            checkComponents[component->key()] = component.get();
+            checkComponents[component->key()] = component;
         }
     }
 
@@ -1257,6 +1259,7 @@ void Experiment::fill_action(ElementKey routineKey, ConditionKey conditionKey, A
 
     if(auto condition = get_condition(routineKey, conditionKey); condition != nullptr){
         if(auto action = condition->get_action_from_key(actionKey); action != nullptr){
+            QtLogger::message("fill");
             if(update){
                 action->timelineUpdate->fill(condition->duration);
             }
@@ -1500,12 +1503,12 @@ void Experiment::reload_loop_sets_file(ElementKey loopKey){
     }
 }
 
-void Experiment::add_timeline_interval(ElementKey routineKey, ConditionKey conditionKey, ActionKey actionKey, bool updateTimeline, TimelineKey timelineKey, Interval interval){
+void Experiment::add_timeline_interval(ElementKey routineKey, ConditionKey conditionKey, ActionKey actionKey, bool updateTimeline, TimelineKey timelineKey, std::pair<SecondsTS,SecondsTS> interval){
 
     Q_UNUSED(timelineKey)
     if(auto action = get_action(routineKey, conditionKey, actionKey); action != nullptr){
 
-        if(updateTimeline){            
+        if(updateTimeline){
             if(action->timelineUpdate->add_interval(interval)){
                 add_to_update_flag(UpdateRoutines);
             }
@@ -1517,7 +1520,7 @@ void Experiment::add_timeline_interval(ElementKey routineKey, ConditionKey condi
     }
 }
 
-void Experiment::remove_timeline_interval(ElementKey routineKey, ConditionKey conditionKey, ActionKey actionKey, bool updateTimeline, TimelineKey timelineKey, Interval interval){
+void Experiment::remove_timeline_interval(ElementKey routineKey, ConditionKey conditionKey, ActionKey actionKey, bool updateTimeline, TimelineKey timelineKey, std::pair<SecondsTS,SecondsTS> interval){
 
     Q_UNUSED(timelineKey)
     if(auto action = get_action(routineKey, conditionKey, actionKey); action != nullptr){
@@ -1811,66 +1814,33 @@ void Experiment::update_conditions(){
     }
 }
 
-void Experiment::update_component_position(ComponentKey componentKey, RowId id){
-
-    if(const auto compoInfo = compM.get_component_and_position(componentKey); compoInfo.second != nullptr){                
-        auto compoToMove = std::move(compM.components[compoInfo.first]);
-        compM.components.erase(compM.components.begin() + static_cast<std_v1<ComponentUP>::difference_type>(compoInfo.first));
-        compM.components.insert(compM.components.begin() + id.v, std::move(compoToMove));
-        add_to_update_flag(UpdateComponents);
-    }else{
-        QtLogger::error(QSL("Cannot update component position."));
-    }
+void Experiment::update_component_position(ComponentKey componentKey, RowId id){    
+    compM.update_component_position(componentKey, id);
+    add_to_update_flag(UpdateComponents);
 }
 
 void Experiment::remove_component(ComponentKey componentKey){
 
-    if(auto componentToRemove = get_component(componentKey); componentToRemove != nullptr){
+    // remove action which use this component
+    for(auto routine : get_elements_from_type<Routine>()){
 
-        // remove action which use this component
-        for(auto routine : get_elements_from_type<Routine>()){
-
-            // remove action containing component from conditions
-            for(auto &condition : routine->conditions){
-                if(auto action = condition->get_action_from_component_key(componentKey, false); action != nullptr){
-                    QtLogger::message(QSL("[EXP] Remove ") % action->to_string() % QSL(" using component ") % action->component->name() % QSL(" from ") %  condition->to_string() % QSL(" from ") % routine->to_string());
-                    condition->remove_action(ActionKey{action->key()});
-                }
-            }
-
-//            // remove action containing component from ghost conditions
-//            for(auto &condition : routine->ghostsConditions){
-//                if(auto action = condition->get_action_from_component_key(componentKey, false); action != nullptr){
-//                    condition->remove_action(ActionKey{action->key()});
-//                }
-//            }
-        }
-
-        for(size_t id = 0; id < compM.components.size(); ++id){
-            if(compM.components[id]->key() == componentToRemove->key()){
-                QtLogger::message(QSL("[EXP] Remove ") % compM.components[id]->to_string());
-                compM.components.erase(compM.components.begin() + static_cast<int>(id));
-                break;
+        // remove action containing component from conditions
+        for(auto &condition : routine->conditions){
+            if(auto action = condition->get_action_from_component_key(componentKey, false); action != nullptr){
+                QtLogger::message(QSL("[EXP] Remove ") % action->to_string() % QSL(" using component ") % action->component->name() % QSL(" from ") %  condition->to_string() % QSL(" from ") % routine->to_string());
+                condition->remove_action(ActionKey{action->key()});
             }
         }
-
-        add_to_update_flag(UpdateComponents | UpdateRoutines);
     }
+
+    compM.remove_component(componentKey);
+    add_to_update_flag(UpdateComponents | UpdateRoutines);
 }
 
 void Experiment::duplicate_component(ComponentKey componentKey){
 
-    if(const auto compoInfo = compM.get_component_and_position(componentKey); compoInfo.second != nullptr){
-        if(Component::get_unicity(compoInfo.second->type)){
-            QtLogger::error(QSL("[EXP] You can only have one component of type [") % from_view(Component::get_type_name(compoInfo.second->type)) % QSL("] in the experiment."));
-        }else{
-            compM.components.insert(
-                compM.components.begin() + static_cast<std_v1<ComponentUP>::difference_type>(compoInfo.first + 1),
-                Component::copy_with_new_element_id(*compoInfo.second, compoInfo.second->name() % QSL("(copy)"))
-            );
-            add_to_update_flag(UpdateComponents | UpdateRoutines);
-        }
-    }
+    compM.duplicate_component(componentKey);
+    add_to_update_flag(UpdateComponents | UpdateRoutines);
 }
 
 void Experiment::add_new_component(Component::Type type, RowId id){
@@ -1878,10 +1848,9 @@ void Experiment::add_new_component(Component::Type type, RowId id){
     add_to_update_flag(UpdateComponents | UpdateRoutines);
 }
 
-void Experiment::add_component(std::unique_ptr<Component> component, RowId id){
-
-//    compM.insert_new_component(std::move(component), id);
-//    add_to_update_flag(UpdateComponents | UpdateRoutines);
+void Experiment::copy_component(Component *component, std::vector<ConfigKey> configKeys, RowId id){
+    compM.insert_copy_of_component(component, std::move(configKeys), id);
+    add_to_update_flag(UpdateComponents | UpdateRoutines);
 }
 
 void Experiment::update_component_name(ComponentKey componentKey, QString name){
@@ -1968,9 +1937,9 @@ void Experiment::delete_unused_components(){
     }
 
     std::vector<Component*> componentsToRemove;
-    for(const auto &component : compM.components){
+    for(auto component : compM.get_components()){
         if(!keys.contains(component->key())){
-            componentsToRemove.push_back(component.get());                        
+            componentsToRemove.push_back(component);
         }
     }
 
@@ -2129,40 +2098,43 @@ void Experiment::swap_arg(ComponentKey componentKey, ConfigKey configKey, QStrin
     }
 }
 
-
-
 void Experiment::add_resources(Resource::Type type, QStringList filesPath){
-    m_resM->add_resources(type, filesPath);
+    resM.add_resources(type, filesPath);
     add_to_update_flag(UpdateResources | UpdateComponents | UpdateRoutines);
 }
 
 void Experiment::update_resource_path(QString currentPath, QString newPath){
-    m_resM->update_resource_path(currentPath, newPath);
+    resM.update_resource_path(currentPath, newPath);
     add_to_update_flag(UpdateResources);
 }
 
 void Experiment::update_resource_alias(QString currentAlias, QString newAlias){
-    m_resM->update_resource_alias(currentAlias, newAlias);
+    resM.update_resource_alias(currentAlias, newAlias);
     add_to_update_flag(UpdateResources | UpdateComponents | UpdateRoutines);
 }
 
 void Experiment::select_resource(Resource::Type type, size_t index){
-    m_resM->select_resource(type, index);
+    resM.select_resource(type, index);
     add_to_update_flag(UpdateResources);
 }
 
 void Experiment::remove_resource(Resource::Type type, size_t index){
-    m_resM->remove_resource(type, index);
+    resM.remove_resource(type, index);
     add_to_update_flag(UpdateResources | UpdateComponents | UpdateRoutines);
 }
 
 void Experiment::clean_resources(Resource::Type type){
-    m_resM->clean_resources(type);
+    resM.clean_resources(type);
     add_to_update_flag(UpdateResources | UpdateComponents | UpdateRoutines);
 }
 
 void Experiment::update_reload_resource_code(int reloadCode){
-    m_resM->set_reload_code(reloadCode);
+    resM.set_reload_code(reloadCode);
+}
+
+void Experiment::copy_resource(Resource *resource){
+    resM.copy_resource(resource);
+    add_to_update_flag(UpdateResources | UpdateComponents | UpdateRoutines);
 }
 
 Component *Experiment::get_component(ComponentKey componentKey) const{
@@ -2258,7 +2230,7 @@ void Experiment::clean_experiment(){
     QtLogger::message(QSL("[EXP] Clean experiment"));
 
     // remove resources
-    m_resM->clean_resources();
+    resM.clean_resources();
 
     // remove elements
     elements.clear();
