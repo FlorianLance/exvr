@@ -63,9 +63,9 @@ void ComponentsManager::sort_by_name(){
     });
 }
 
-void ComponentsManager::add_component(std::unique_ptr<Component> component){
-    components.push_back(std::move(component));
-}
+//void ComponentsManager::add_component(std::unique_ptr<Component> component){
+//    components.push_back(std::move(component));
+//}
 
 void ComponentsManager::duplicate_component(ComponentKey componentKey){
 
@@ -74,7 +74,7 @@ void ComponentsManager::duplicate_component(ComponentKey componentKey){
             QtLogger::error(QSL("You can only have one component of type [") % from_view(Component::get_type_name(compoInfo.second->type)) % QSL("] in the experiment."));
         }else{
             components.insert(
-                components.begin() + static_cast<std_v1<ComponentUP>::difference_type>(compoInfo.first + 1),
+                components.begin() + static_cast<std_v1<std::unique_ptr<Component>>::difference_type>(compoInfo.first + 1),
                 Component::copy_with_new_element_id(*compoInfo.second, compoInfo.second->name() % QSL("(copy)"))
             );
         }
@@ -98,7 +98,7 @@ void ComponentsManager::update_component_position(ComponentKey componentKey, Row
 
     if(const auto compoInfo = get_component_and_position(componentKey); compoInfo.second != nullptr){
         auto compoToMove = std::move(components[compoInfo.first]);
-        components.erase(components.begin() + static_cast<std::vector<ComponentUP>::difference_type>(compoInfo.first));
+        components.erase(components.begin() + static_cast<std::vector<std::unique_ptr<Component>>::difference_type>(compoInfo.first));
         components.insert(components.begin() + id.v, std::move(compoToMove));
     }else{
         QtLogger::error(QSL("Cannot update component position."));
@@ -119,7 +119,7 @@ Component *ComponentsManager::get_component(RowId id, bool displayError) const{
 
 Component *ComponentsManager::get_component(ComponentKey componentKey, bool displayError) const{
 
-    auto componentFound = std::find_if(std::begin(components), std::end(components), [componentKey](const ComponentUP &component){
+    auto componentFound = std::find_if(std::begin(components), std::end(components), [componentKey](const std::unique_ptr<Component> &component){
         return component->key() == componentKey.v;
     });
 
@@ -190,11 +190,11 @@ void ComponentsManager::insert_copy_of_component(Component *component, std::vect
     );
 }
 
-void ComponentsManager::insert_new_component(Component::Type type, RowId id){
+bool ComponentsManager::insert_new_component(Component::Type type, RowId id){
 
     if(Component::get_unicity(type) && count(type) > 0){
-        QtLogger::error(QSL("Unique component already inside experiment."));
-        return;
+        QtLogger::error(QSL("[ComponentsManager::insert_new_component] Unique component already inside experiment."));
+        return false;
     }
 
     const QString baseName = QString::fromStdString(std::string(Component::get_full_name(type)));
@@ -219,10 +219,18 @@ void ComponentsManager::insert_new_component(Component::Type type, RowId id){
         m_counter[type]++;
     }
 
-    auto component = std::make_unique<Component>(type, ComponentKey{-1}, name);
-    component->set_init_config(std::make_unique<Config>(QSL("standard"), ConfigKey{-1}));
-    component->add_config(std::make_unique<Config>(QSL("standard"),ConfigKey{-1}));
-    components.insert(std::begin(components) + id.v, std::move(component));
+    auto component =
+        std::make_unique<Component>(
+        type, ComponentKey{-1}, name,
+        std::make_unique<Config>("standard", ConfigKey{-1})
+    );
+    component->add_config(std::make_unique<Config>("standard", ConfigKey{-1}));
+
+    components.insert(
+        std::begin(components) + id.v,
+        std::move(component)
+    );
+    return true;
 }
 
 bool ComponentsManager::update_component_name(ComponentKey componentKey, QString newName){
@@ -248,6 +256,7 @@ bool ComponentsManager::update_component_name(ComponentKey componentKey, QString
 
 std::vector<Component *> ComponentsManager::get_components() const{
     std::vector<Component*> componentsPtr;
+    componentsPtr.resize(components.size());
     for(auto &component : components){
         componentsPtr.push_back(component.get());
     }

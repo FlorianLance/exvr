@@ -43,10 +43,6 @@ namespace tool::ex {
 
 using namespace std::literals::string_view_literals;
 
-struct Component;
-using ComponentUP = std::unique_ptr<Component>;
-
-
 struct Component {
 
 
@@ -563,27 +559,27 @@ struct Component {
         return componentsSignals.elements_matching_columns_values<0,1>(type);
     }
 
-//    Component() = delete;
-    Component(Type t, ComponentKey id, QString name);
-    ~Component();
+    Component() = default;
+    Component(Type t, ComponentKey id, QString name, std::unique_ptr<Config> initConfig);
+    static std::unique_ptr<Component> copy_with_new_element_id(const Component &componentToCopy, const QString &newName, std::vector<ConfigKey> configKeys = {});
 
-    inline void set_init_config(ConfigUP config){
-        initConfig = std::move(config);
-    }
+    inline QString name() const noexcept{return m_name;}
+    inline void set_name(QString name) noexcept{m_name = name;}
 
-    inline void add_config(ConfigUP config){
-        configs.emplace_back(std::move(config));
-    }
+    void add_config(std::unique_ptr<Config> config);
+    bool insert_config(RowId id, QString configName);
+    bool select_config(RowId id);
+    bool remove_config(RowId id);
+    bool move_config(RowId from, RowId to);
+    bool rename_config(RowId id, QString configName);
+    bool copy_config(RowId id, QString configName);
 
-    static ComponentUP copy_with_new_element_id(const Component &componentToCopy, const QString &newName, std::vector<ConfigKey> configKeys = {});
-
+    tool::ex::Config *get_config(RowId id) const;
+    tool::ex::Config *get_config(ConfigKey configKey) const ;
     QStringList get_configs_name() const;
-    inline QString name() const{return m_name;}
-    void set_name(QString name);
+    inline size_t get_configs_count() const noexcept {return configs.size();}
 
-    tool::ex::Config *get_config(ConfigKey configKey) const;
-
-    inline QString to_string() const{return QSL("Component(") % m_name % QSL("|") % from_view(get_full_name(type)) % QSL("|") % QString::number(key()) % QSL(")");}    
+    inline QString to_string() const noexcept{return QSL("Component(") % m_name % QSL("|") % from_view(get_full_name(type)) % QSL("|") % QString::number(key()) % QSL(")");}
 
     constexpr int key() const noexcept{ return m_key();}
     constexpr ComponentKey c_key() const noexcept {return ComponentKey{key()};}
@@ -592,14 +588,14 @@ public:
 
     Type type = Type::SizeEnum;
     Category category   = Category::SizeEnum;
-    ConfigUP initConfig = nullptr;
+    std::unique_ptr<Config> initConfig = nullptr;
 
     RowId selectedConfigId = {0};
-    std_v1<ConfigUP> configs = {};
+    std::vector<std::unique_ptr<Config>> configs = {};
 
 private:
 
-    IdKey m_key;
+    IdKey m_key = IdKey(IdKey::Type::Component, -1);;
     QString m_name = "default";    
 };
 }

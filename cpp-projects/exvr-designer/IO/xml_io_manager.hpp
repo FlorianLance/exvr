@@ -226,7 +226,7 @@ namespace tool::ex{
 
         // ### read
         Generator           read_generator();
-        ConfigUP            read_config();
+        std::unique_ptr<Config>            read_config();
         std::tuple<std::optional<Arg>, QString>  read_argument();
         std::optional<Interval> read_interval();
         std::unique_ptr<Timeline>          read_timeline();
@@ -234,7 +234,7 @@ namespace tool::ex{
         std::tuple<std::unique_ptr<Connection>, QString> read_connection(Condition *condition);
         std::tuple<std::unique_ptr<Connector>, QString> read_connector();
         std::unique_ptr<Condition>         read_condition(Routine *routine);
-        ComponentUP         read_component();
+        std::unique_ptr<Component>         read_component();
         bool                read_components();
         std::unique_ptr<Resource> read_resource();
 
@@ -242,7 +242,7 @@ namespace tool::ex{
         std::tuple<LoopNodeUP, LoopUP, LoopNodeUP> read_loop();
         std::optional<Set> read_set();
         IsiUP               read_isi();
-        bool                read_configs(Component *component);
+        std::vector<std::unique_ptr<Config>> read_configs();
         bool                read_ISIs();
         bool                read_loops();
         bool                read_routines();

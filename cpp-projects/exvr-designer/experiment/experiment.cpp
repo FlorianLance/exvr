@@ -622,12 +622,21 @@ void Experiment::check_integrity(){
     // check validity
     // # components
     std::unordered_map<int, Component*> checkComponents;
+    std::unordered_map<int, Config*> checkConfigs;
     for(auto component : compM.get_components()){
         if(checkComponents.count(component->key()) != 0){
             QtLogger::error(QSL("[EXP] ") % component->to_string() % QSL(" already exists."));
         }else{
             checkComponents[component->key()] = component;
         }
+
+//        for(const auto &config : component->configs){
+//            if(checkConfigs.count(config->key()) != 0){
+//                QtLogger::error(QSL("[EXP] ") % config->to_string() % QSL(" already exists."));
+//            }else{
+//                checkConfigs[config->key()] = config.get();
+//            }
+//        }
     }
 
     // # elements
@@ -1844,8 +1853,11 @@ void Experiment::duplicate_component(ComponentKey componentKey){
 }
 
 void Experiment::add_new_component(Component::Type type, RowId id){
-    compM.insert_new_component(type, id);
-    add_to_update_flag(UpdateComponents | UpdateRoutines);
+    QtLogger::message(QSL("add new component ") % QString::number(id.v));
+    if(compM.insert_new_component(type, id)){
+        add_to_update_flag(UpdateComponents | UpdateRoutines);
+    }
+    QtLogger::message(QSL("->") % QString::number(compM.count()));
 }
 
 void Experiment::copy_component(Component *component, std::vector<ConfigKey> configKeys, RowId id){
@@ -1952,42 +1964,27 @@ void Experiment::delete_unused_components(){
 
 void Experiment::select_config_in_component(ComponentKey componentKey, RowId id){
     if(auto component = get_component(componentKey); component != nullptr){
-        component->selectedConfigId = id;
-        add_to_update_flag(UpdateComponents | UpdateRoutines);
+        if(component->select_config(id)){
+            add_to_update_flag(UpdateComponents | UpdateRoutines);
+        }
     }
 }
 
 void Experiment::insert_config_in_component(ComponentKey componentKey, RowId id, QString configName){
 
     if(auto component = get_component(componentKey); component != nullptr){
-        for(const auto &config : component->configs){
-            if(config->name == configName){
-                QtLogger::error(QSL("[EXP] ") % config->to_string() % QSL(" already exist"));
-                return;
-            }
+        if(component->insert_config(id, configName)){
+            add_to_update_flag(UpdateComponents | UpdateRoutines);
         }
-
-        component->configs.insert(component->configs.begin() + id.v + 1, std::make_unique<Config>(configName, ConfigKey{-1}));
-        component->selectedConfigId = {id.v + 1};
-        add_to_update_flag(UpdateComponents | UpdateRoutines);
     }
 }
 
 void Experiment::copy_config_from_component(ComponentKey componentKey, RowId id, QString configName){
 
     if(auto component = get_component(componentKey); component != nullptr){
-        for(const auto &config : component->configs){
-            if(config->name == configName){
-                QtLogger::error(QSL("[EXP] ") % config->to_string() % QSL(" already exist"));
-                return;
-            }
+        if(component->copy_config(id, configName)){
+            add_to_update_flag(UpdateComponents | UpdateRoutines);
         }
-
-        component->configs.insert(component->configs.begin() + id.v + 1,
-            Config::copy_with_new_element_id(*component->configs[id.v].get(), configName));
-        component->selectedConfigId = {id.v + 1};
-
-        add_to_update_flag(UpdateComponents | UpdateRoutines);
     }
 }
 
@@ -1995,60 +1992,49 @@ void Experiment::remove_config_from_component(ComponentKey componentKey, RowId i
 
     if(auto component = get_component(componentKey); component != nullptr){
 
-        if(id.v < to_signed(component->configs.size())){
+        auto config = component->get_config(id);
+        if(config == nullptr){
+            return;
+        }
 
-            auto config = component->configs[id.v].get();
-            ConfigKey configKey = ConfigKey{config->key()};
+        auto configKey = ConfigKey{config->key()};
+        for(auto routine : get_elements_from_type<Routine>()){
 
-            for(auto routine : get_elements_from_type<Routine>()){
+            for(auto &condition : routine->conditions){
 
-                for(auto &condition : routine->conditions){
-                    std_v1<ActionKey> actionsToRemoved;
-                    for(auto &action : condition->actions){
-                        if(action->config->key() == configKey.v){
-                            QtLogger::message(QSL("[EXP] Remove ") % action->to_string() % QSL(" from ") % condition->to_string() %
-                                            QSL(" from ") % routine->to_string());
-                            actionsToRemoved.emplace_back(ActionKey{action->key()});
-                        }
-                    }
-
-                    for(auto actionToRemove : actionsToRemoved){
-                        condition->remove_action(actionToRemove);
+                std_v1<ActionKey> actionsToRemoved;
+                for(auto &action : condition->actions){
+                    if(action->config->key() == configKey.v){
+                        QtLogger::message(QSL("[EXP] Remove ") % action->to_string() % QSL(" from ") % condition->to_string() %
+                                          QSL(" from ") % routine->to_string());
+                        actionsToRemoved.emplace_back(ActionKey{action->key()});
                     }
                 }
-            }
 
-            QtLogger::message(QSL("[EXP] Remove ") % config->to_string() % QSL(" from ") % component->to_string());
-            component->configs.erase(component->configs.begin() + id.v);
-            component->selectedConfigId = {id.v-1};
-            if(component->selectedConfigId.v < 0){
-                component->selectedConfigId.v = 0;
+                for(auto actionToRemove : actionsToRemoved){
+                    condition->remove_action(actionToRemove);
+                }
             }
         }
 
+        component->remove_config(id);
         add_to_update_flag(UpdateComponents | UpdateRoutines);
     }
 }
 
 void Experiment::move_config_in_component(ComponentKey componentKey, RowId from, RowId to){
-    if(auto component = get_component(componentKey); component != nullptr){
-        auto config = std::move(component->configs[from.v]);
-        component->configs.erase(component->configs.begin() + from.v);
-        component->configs.insert(component->configs.begin() + to.v, std::move(config));
-        component->selectedConfigId = to;
-        add_to_update_flag(UpdateComponents |UpdateRoutines);                
+    if(auto component = get_component(componentKey); component != nullptr){        
+        if(component->move_config(from, to)){
+            add_to_update_flag(UpdateComponents | UpdateRoutines);
+        }
     }
 }
 
 void Experiment::rename_config_in_component(ComponentKey componentKey, RowId id, QString configName){
 
     if(auto component = get_component(componentKey); component != nullptr){
-        if(id.v < to_signed(component->configs.size())){
-            component->configs[id.v]->name = configName;
+        if(component->rename_config(id, configName)){
             add_to_update_flag(UpdateComponents | UpdateRoutines);
-        }else{
-            QtLogger::error(QSL("[EXP] Cannot rename config in component ") % QString::number(componentKey.v) % QSL(" -> wrong id for configs ") %
-                          QString::number(id.v) % QSL(" (size=") % QString::number(component->configs.size()) % QSL(")"));
         }
     }
 }

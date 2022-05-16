@@ -38,7 +38,7 @@ std::unique_ptr<Action> Action::generate_component_action(Component *component, 
         std::optional<ConfigKey> configKey, bool fillUpdateTimeline, bool fillVisibilityTimeline){
 
     auto action = std::make_unique<Action>(component,
-        configKey.has_value() ? component->get_config(configKey.value()) : component->configs[0].get(), ActionKey{-1});
+        configKey.has_value() ? component->get_config(configKey.value()) : component->get_config(RowId{0}), ActionKey{-1});
     action->timelineUpdate     = std::make_unique<Timeline>(Timeline::Type::Update, TimelineKey{-1});
     if(fillUpdateTimeline){
         action->timelineUpdate->add_interval({SecondsTS{0}, duration});
@@ -50,8 +50,10 @@ std::unique_ptr<Action> Action::generate_component_action(Component *component, 
     return action;
 }
 
-void Action::select_config(RowId  configTabId){
-    config = component->configs[static_cast<size_t>(configTabId.v)].get();
+void Action::select_config(RowId configTabId){
+    if(auto conf = component->get_config(configTabId); conf != nullptr){
+        config = conf;
+    }
 }
 
 std::unique_ptr<Action> Action::copy_with_new_element_id(const Action &actionToCopy){

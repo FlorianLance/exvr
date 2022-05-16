@@ -109,8 +109,6 @@ bool XmlIoManager::load_experiment_file(QString expFilePath){
     // xml has been fully loaded, update path
     m_experiment->states.currentExpfilePath = expFileToLoad;
 
-
-
 //    m_experiment->check_elements();
     m_experiment->compute_loops_levels();    
     m_experiment->check_legacy_conditions(); // due to previous used xml format
@@ -430,7 +428,7 @@ std::tuple<std::optional<Arg>, QString> XmlIoManager::read_argument(){
     return {std::move(arg), ""};
 }
 
-ConfigUP XmlIoManager::read_config(){
+std::unique_ptr<Config> XmlIoManager::read_config(){
 
     const auto key      = read_attribute<int>(QSL("key"), true);
     const auto name     = read_attribute<QString>(QSL("name"), true);
@@ -476,29 +474,28 @@ void XmlIoManager::write_config(const Config *config, bool initConfig){
     w->writeEndElement(); // /InitConfig or /Config
 }
 
-bool XmlIoManager::read_configs(Component *component){
+std::vector<std::unique_ptr<Config>> XmlIoManager::read_configs(){
 
     r->readNext();
-    component->configs.clear();
 
+    std::vector<std::unique_ptr<Config>> readConfigs;
     while(!r->atEnd()){
 
         if(check_start_node(QSL("Config"))){
-            component->add_config(read_config());
+            readConfigs.push_back(read_config());
         }
 
         if(check_end_node(QSL("Configs"))){
-            return true;
+            return readConfigs;
         }
 
         r->readNext();
     }
-    QtLogger::error(QSL("[XML] Invalid xml configs list, no end bracket."));
-
-    return false;
+    QtLogger::error(QSL("[XML] Invalid xml configs list, no end bracket."));    
+    return {};
 }
 
-ComponentUP XmlIoManager::read_component(){
+std::unique_ptr<Component> XmlIoManager::read_component(){
 
     const auto key  = read_attribute<int>(QSL("key"), true);
     const auto name = read_attribute<QString>(QSL("name"), true);
@@ -531,20 +528,29 @@ ComponentUP XmlIoManager::read_component(){
     }
 
     // generate component
-    auto component = std::make_unique<Component>(type.value(), ComponentKey{key.value()}, name.value());
+    std::unique_ptr<Config> initConfig = nullptr;
+    std::vector<std::unique_ptr<Config>> configs;
 
     r->readNext();
     while(!r->atEnd()){
 
         if(check_start_node(QSL("InitConfig"))){
-            component->initConfig = read_config();
+            initConfig = read_config();
         }else if(check_start_node(QSL("Configs"))){
-            if(!read_configs(component.get())){
+            configs = read_configs();
+            if(configs.size() == 0){
                 return nullptr;
             }
         }else if(check_end_node(QSL("Component"))){
+
+            auto component = std::make_unique<Component>(
+                type.value(), ComponentKey{key.value()}, name.value(),std::move(initConfig));
+            for(auto &config : configs){
+                component->add_config(std::move(config));
+            }
             return component;
         }
+
 
         r->readNext();
     }
@@ -1598,8 +1604,6 @@ bool XmlIoManager::read_components(){
 
     QtLogger::status("Read components.", 2000);
     BenchGuard bench("[XML::read_components]");
-//    QCoreApplication::processEvents( QEventLoop::AllEvents, 5);
-
     r->readNext();
 
     while(!r->atEnd()){
@@ -1613,8 +1617,6 @@ bool XmlIoManager::read_components(){
         if(check_end_node(QSL("Components"))){
             return true;
         }
-
-//        QCoreApplication::processEvents( QEventLoop::AllEvents, 2);
         r->readNext();
     }
 
@@ -1676,8 +1678,6 @@ bool XmlIoManager::read_ISIs(){
         }else if(check_end_node(QSL("ISIs"))){
             return true;
         }
-
-        //QCoreApplication::processEvents( QEventLoop::AllEvents, 2);
         r->readNext();
     }
 
@@ -1702,7 +1702,6 @@ bool XmlIoManager::read_loops(){
         }else if(check_end_node(QSL("Loops"))){
             return true;
         }
-        //QCoreApplication::processEvents( QEventLoop::AllEvents, 2);
         r->readNext();
     }
     QtLogger::error(QSL("[XML] Invalid xml Loops, no end bracket. "));
@@ -1726,7 +1725,6 @@ bool XmlIoManager::read_routines(){
 
             return true;
         }
-        //QCoreApplication::processEvents( QEventLoop::AllEvents, 2);
         r->readNext();
     }
 
@@ -1739,7 +1737,6 @@ bool XmlIoManager::read_resources(){
 
     QtLogger::status("Read resources.", 2000);
     BenchGuard bench("[XML::read_resources]");
-    //QCoreApplication::processEvents( QEventLoop::AllEvents, 5);
 
     r->readNext();
     while(!r->atEnd()){
@@ -1751,7 +1748,6 @@ bool XmlIoManager::read_resources(){
             return true;
         }
 
-        //QCoreApplication::processEvents( QEventLoop::AllEvents, 2);
         r->readNext();
     }
 
@@ -1764,7 +1760,6 @@ bool XmlIoManager::read_flow_elements(){
 
     QtLogger::status("Read flow elements.", 2000);
     BenchGuard bench("[XML::read_flow_elements]");
-    //QCoreApplication::processEvents( QEventLoop::AllEvents, 5);
 
     r->readNext();
     while(!r->atEnd()){
@@ -1798,7 +1793,6 @@ bool XmlIoManager::read_flow_sequence(){
 
     QtLogger::status("Read flow sequence.", 2000);
     BenchGuard bench("[XML::read_flow_sequence]");
-    //QCoreApplication::processEvents( QEventLoop::AllEvents, 5);
 
     r->readNext();
     while(!r->atEnd()){

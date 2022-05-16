@@ -52,9 +52,9 @@ public:
     void sort_by_type();
     void sort_by_name();
 
-    void add_component(std::unique_ptr<Component> component);
+//    void add_component(std::unique_ptr<Component> component);
     void insert_copy_of_component(Component *component, std::vector<ConfigKey> configKeys, RowId id);
-    void insert_new_component(Component::Type type, RowId id);
+    bool insert_new_component(Component::Type type, RowId id);
     void duplicate_component(ComponentKey componentKey);
 
     void remove_component(ComponentKey componentKey);
