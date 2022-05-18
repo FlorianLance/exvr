@@ -32,7 +32,6 @@ RemoveFlowElementO::RemoveFlowElementO() : remove(std::make_unique<FlowElement>(
     key         = ElementKey{remove->key()};
     m_selected  = remove->is_selected();
     m_insideLoopsID = remove->insideLoopsID;
-    colors      = display::Colors::flowElements.at(type);
 }
 
 void RemoveFlowElementO::draw(QPainter &painter, qreal zoomLevel){
@@ -40,13 +39,13 @@ void RemoveFlowElementO::draw(QPainter &painter, qreal zoomLevel){
     // draw rectangle
     QPen pen;
     pen.setWidthF(zoomLevel*1.1);
-    pen.setColor(colors.selectedLineBoxColor);
+    pen.setColor(display::Colors::line_box(true, type));
     painter.setPen(pen);
-    painter.setBrush(colors.selectedFillBoxColor);
+    painter.setBrush(display::Colors::fill_box(true, type));
     painter.drawRoundedRect(uiElemRect, zoomLevel*4.,zoomLevel*4., Qt::AbsoluteSize);
 
     // draw name
-    pen.setColor(colors.selectedTextColor);
+    pen.setColor(display::Colors::text(true, type));
     painter.setPen(pen);
     painter.drawText(uiElemRect,  Qt::AlignCenter, "X");
 }

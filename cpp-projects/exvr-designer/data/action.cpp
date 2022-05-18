@@ -29,7 +29,7 @@
 
 using namespace tool::ex;
 
-Action::Action(Component *component, Config *config, ActionKey id) : key(IdKey::Type::Action, id.v){
+Action::Action(Component *component, Config *config, ActionKey id) : m_key(IdKey::Type::Action, id.v){
     this->component    = component;
     this->config       = config;
 }
@@ -39,11 +39,11 @@ std::unique_ptr<Action> Action::generate_component_action(Component *component, 
 
     auto action = std::make_unique<Action>(component,
         configKey.has_value() ? component->get_config(configKey.value()) : component->get_config(RowId{0}), ActionKey{-1});
-    action->timelineUpdate     = std::make_unique<Timeline>(Timeline::Type::Update, TimelineKey{-1});
+    action->timelineUpdate     = std::make_unique<Timeline>(Timeline::Type::Update);
     if(fillUpdateTimeline){
         action->timelineUpdate->add_interval({SecondsTS{0}, duration});
     }
-    action->timelineVisibility = std::make_unique<Timeline>(Timeline::Type::Visibility, TimelineKey{-1});
+    action->timelineVisibility = std::make_unique<Timeline>(Timeline::Type::Visibility);
     if(fillVisibilityTimeline){
         action->timelineVisibility->add_interval({SecondsTS{0}, duration});
     }
@@ -57,7 +57,7 @@ void Action::select_config(RowId configTabId){
 }
 
 std::unique_ptr<Action> Action::copy_with_new_element_id(const Action &actionToCopy){
-    std::unique_ptr<Action> action            = std::make_unique<Action>(actionToCopy.component, actionToCopy.config, ActionKey{-1});
+    auto action                = std::make_unique<Action>(actionToCopy.component, actionToCopy.config, ActionKey{-1});
     action->timelineUpdate     = Timeline::copy_with_new_element_id(*actionToCopy.timelineUpdate);
     action->timelineVisibility = Timeline::copy_with_new_element_id(*actionToCopy.timelineVisibility);
     action->nodePosition       = actionToCopy.nodePosition;

@@ -37,8 +37,10 @@ struct Action{
 
     Action() = delete;
     Action(Component *component, Config *config, ActionKey id);
+    Action(const Action&) = delete;
+    Action& operator=(const Action&) = delete;
 
-    void select_config(RowId  configTabId);
+    void select_config(RowId configTabId);
     void update_intervals_with_max_length(SecondsTS maxLength);
 
     inline QString to_string() const{return QSL("Action(") % QString::number(key()) % QSL(")");}
@@ -49,7 +51,8 @@ struct Action{
 
     void check_integrity();
 
-    IdKey key;
+    constexpr int key() const noexcept{ return m_key();}
+    constexpr ActionKey a_key() const noexcept {return ActionKey{key()};}
 
     Config    *config               = nullptr;
     Component *component            = nullptr;
@@ -63,22 +66,30 @@ struct Action{
     //QSize nodeSize;
     bool nodeUsed = false;
     bool nodeSelected = false;
+
+private:
+    IdKey m_key;
 };
 
-static bool operator<(const std::unique_ptr<Action> &l, const std::unique_ptr<Action> &r){
-    if(l->key() == r->key()){
+[[maybe_unused]]  static bool operator<(const std::unique_ptr<Action> &l, const std::unique_ptr<Action> &r){
+
+    if(l->key() < r->key()){
+        return true;
+    }
+
+    if(l->key() > r->key()){
         return false;
     }
 
-    if(l->component->key() == r->component->key()){
-        return false;
+    if(l->component->key() < r->component->key()){
+        return true;
     }
 
-    return true;
+    return false;
 }
 
 [[maybe_unused]] static bool operator==(const std::unique_ptr<Action> &l, const std::unique_ptr<Action> &r){
-    return !(l < r) && !(r < l);
+    return (l->key() == r->key()) && (l->component->key() == r->component->key());
 }
 
 }

@@ -137,8 +137,8 @@ struct Loop : public FlowElement {
 
     // sets
     QString currentSetName;
-    std_v1<Set> sets;
-    std_v1<Set> fileSets;
+    std::vector<std::unique_ptr<Set>> sets;
+    std::vector<std::unique_ptr<Set>> fileSets;
 
     // associated nodes
     LoopNode *start = nullptr;

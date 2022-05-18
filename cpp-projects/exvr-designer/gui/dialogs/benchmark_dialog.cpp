@@ -71,6 +71,11 @@ void BenchmarkDialog::update(){
     view->viewport()->update();
 }
 
+void BenchmarkDialog::show_dialog(){
+    show();
+    raise();
+}
+
 int Table::rowCount(const QModelIndex &) const{
     return static_cast<int>(elements.size());
 }

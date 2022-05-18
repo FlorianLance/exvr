@@ -31,21 +31,21 @@ using namespace tool::ex;
 
 
 Loop::Loop() : FlowElement(Type::Loop, QSL("loop")){
-    sets     = {Set(QSL("default"))};
-    fileSets = {Set(QSL("file_default"))};
+    sets.push_back(std::make_unique<Set>(QSL("default")));
+    fileSets.push_back(std::make_unique<Set>(QSL("file_default")));
 }
 
 Loop::Loop(QString n, ElementKey id, QString infos) : FlowElement(Type::Loop, n, id.v, infos){
 
     if(id.v == -1){
-        sets     = {Set(QSL("default"))};
-        fileSets = {Set(QSL("file_default"))};
+        sets.push_back(std::make_unique<Set>(QSL("default")));
+        fileSets.push_back(std::make_unique<Set>(QSL("file_default")));
     }
 }
 
-LoopUP Loop::copy_with_new_element_id(const Loop &loopToCopy, const QString &newName){
+std::unique_ptr<Loop> Loop::copy_with_new_element_id(const Loop &loopToCopy, const QString &newName){
 
-    LoopUP loop = std::make_unique<Loop>(newName, ElementKey{-1}, loopToCopy.informations);
+    auto loop = std::make_unique<Loop>(newName, ElementKey{-1}, loopToCopy.informations);
 
     loop->nbReps = loopToCopy.nbReps;
     loop->mode = loopToCopy.mode;
@@ -55,12 +55,12 @@ LoopUP Loop::copy_with_new_element_id(const Loop &loopToCopy, const QString &new
 
     loop->sets.reserve(loopToCopy.sets.size());
     for(const auto &setToCopy : loopToCopy.sets){
-        loop->sets.emplace_back(Set::copy_with_new_element_id(setToCopy));
+        loop->sets.push_back(Set::copy_with_new_element_id(setToCopy.get()));
     }
 
     loop->fileSets.reserve(loopToCopy.fileSets.size());
     for(const auto &setToCopy : loopToCopy.fileSets){
-        loop->fileSets.emplace_back(Set::copy_with_new_element_id(setToCopy));
+        loop->fileSets.push_back(Set::copy_with_new_element_id(setToCopy.get()));
     }
 
     return loop;
@@ -86,7 +86,7 @@ void Loop::set_loop_type(Loop::Mode m) noexcept{
 bool Loop::is_default() const{
 
     if(sets.size() == 1){
-        if(sets[0].name == QSL("default")){
+        if(sets[0]->name == QSL("default")){
             return true;
         }
     }
@@ -117,7 +117,7 @@ void Loop::set_sets(QStringList setsName){
         validNames.insert(setName);
 
         // add valid set
-        sets.emplace_back(setName, 1, SetKey{-1});
+        sets.push_back(std::make_unique<Set>(setName, 1, SetKey{-1}));
     }
 }
 
@@ -130,20 +130,20 @@ bool Loop::add_set(QString setName, RowId id) {
     }
 
     if(is_default()){
-        sets[0].name = setName;
+        sets[0]->name = setName;
         currentSetName = setName;
         return true;
     }
 
     // name already used
     for(const auto &set : sets){
-        if(set.name == setName){
+        if(set->name == setName){
             QtLogger::error(QSL("[LOOP] Loop already contains a set named \"") % setName % QSL("\""));
             return false;
         }
     }
 
-    sets.insert(std::begin(sets) + id.v, Set(setName));
+    sets.insert(std::begin(sets) + id.v, std::make_unique<Set>(setName));
     currentSetName = setName;
     return true;
 }
@@ -152,7 +152,7 @@ void Loop::add_sets(QStringList setsName, RowId id){
 
     std::set<QString> validNames;
     for(const auto &set : sets){
-        validNames.insert(set.name);
+        validNames.insert(set->name);
     }
 
     int v = 0;
@@ -175,7 +175,7 @@ void Loop::add_sets(QStringList setsName, RowId id){
         validNames.insert(setName);
 
         // insert valid set
-        sets.insert(std::begin(sets) + id.v + (v++), Set(setName));
+        sets.insert(std::begin(sets) + id.v + (v++), std::make_unique<Set>(setName));
 
     }
 }
@@ -188,9 +188,9 @@ void Loop::remove_set(RowId id){
 
     sets.erase(std::begin(sets) + id.v);
     if(static_cast<int>(sets.size()) > id.v){
-        currentSetName = sets[id.v].name;
+        currentSetName = sets[id.v]->name;
     }else if(id.v > 0){
-        currentSetName = sets[id.v-1].name;
+        currentSetName = sets[id.v-1]->name;
     }else{
         currentSetName = "";
     }
@@ -210,18 +210,18 @@ bool Loop::modify_set_name(QString newSetName, RowId id){
 
     // check if set doesn't already exist
     for(const auto &set : sets){
-        if(set.name == newSetName){
+        if(set->name == newSetName){
             QtLogger::error(QSL("[LOOP] Set ") % newSetName % QSL(" already exists."));
             return false;
         }
     }
 
-    sets[id.v].name = newSetName;
+    sets[id.v]->name = newSetName;
     return true;
 }
 
 void Loop::modify_set_occurencies_nb(int occurrencies, RowId id){
-    sets[id.v].occurencies = static_cast<size_t>(occurrencies);
+    sets[id.v]->occurencies = static_cast<size_t>(occurrencies);
 }
 
 void Loop::move_set_up(RowId id){
@@ -251,9 +251,9 @@ bool Loop::load_file(QString path){
     }
 
     QTextStream in(&file);
-    std_v1<Set> newFileSet;
+    std::vector<std::unique_ptr<Set>> newFileSet;
     while (!in.atEnd()){
-        newFileSet.emplace_back(in.readLine(),1, SetKey{-1});
+        newFileSet.push_back(std::make_unique<Set>(in.readLine(),1, SetKey{-1}));
     }
     file.close();
 
@@ -271,7 +271,7 @@ QString Loop::merge_sets_names() const{
 
     QString str;
     for(const auto& set : sets){
-        str += set.name % QSL(" ");
+        str += set->name % QSL(" ");
     }
     if(str.size() > 0){
         str.remove(str.size()-1,1);
@@ -282,7 +282,7 @@ QString Loop::merge_sets_names() const{
 QString Loop::merge_sets_occurencies() const{
     QString str;
     for(const auto& set : sets){
-        str += QString::number(set.occurencies) % QSL(" ");
+        str += QString::number(set->occurencies) % QSL(" ");
     }
     if(str.size() > 0){
         str.remove(str.size()-1,1);
@@ -293,13 +293,13 @@ QString Loop::merge_sets_occurencies() const{
 Set *Loop::get_set(SetKey setKey) {
 
     for(auto &set : sets){
-        if(set.key() == setKey.v){
-            return &set;
+        if(set->key() == setKey.v){
+            return set.get();
         }
     }
     for(auto &set : fileSets){
-        if(set.key() == setKey.v){
-            return &set;
+        if(set->key() == setKey.v){
+            return set.get();
         }
     }
     return nullptr;

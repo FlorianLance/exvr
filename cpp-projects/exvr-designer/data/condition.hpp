@@ -39,7 +39,10 @@ namespace tool::ex {
 
 struct Condition  {
 
+    Condition() = delete;
     Condition(QString n, ConditionKey id, SecondsTS duration, double uiScale, double uiSize );
+    Condition(const Component &) = delete;
+    Condition& operator=(const Condition&) = delete;
 
     static std::unique_ptr<Condition> generate_new_default(){
         return std::make_unique<Condition>(QSL("default"), ConditionKey{-1}, SecondsTS{100.}, 10., 1.);
@@ -55,8 +58,8 @@ struct Condition  {
     void apply_condition(const Condition *condition, bool copyActions, bool copyConnections);
 
     // sets
-    bool contains_set_key(int setKeyToCheck) const;
-    bool contains_same_set_keys(const std_v1<int> setKeysToCheck) const;
+    bool contains_set_key(SetKey setKeyToCheck) const;
+    bool contains_same_set_keys(const std::vector<SetKey> setKeysToCheck) const;
 
     // actions
     int get_action_id_from_key(ActionKey actionKey, bool displayError = true) const;
@@ -93,10 +96,11 @@ struct Condition  {
 
     void check_integrity();
 
+    constexpr int key() const noexcept{ return m_key();}
+    constexpr ConditionKey c_key() const noexcept {return ConditionKey{key()};}
 
-    IdKey key;
-    QString name;    
-    std_v1<int> setsKeys;
+    QString name;
+    std::vector<SetKey> setsKeys;
 
     SecondsTS duration{100.};
     qreal scale = 10. ;
@@ -112,20 +116,30 @@ struct Condition  {
     static inline bool currentNodesCopySet = false;
     static inline std_v1<std::unique_ptr<Connector>> connectorsToCopy = {};
     static inline std_v1<std::unique_ptr<Connection>> connectionsToCopy = {};
+
+private:
+
+    IdKey m_key;
 };
 
-static bool operator<(const std::unique_ptr<Condition> &l, const std::unique_ptr<Condition> &r){
-    if(l->key() == r->key()){
+[[maybe_unused]] static bool operator<(const std::unique_ptr<Condition> &l, const std::unique_ptr<Condition> &r){
+
+    if(l->key() < r->key()){
+        return true;
+    }
+
+    if(l->key() > r->key()){
         return false;
     }
-    if(l->name == r->name){
-        return false;
+
+    if(l->name < r->name){
+        return true;
     }
-    return true;
+    return false;
 }
 
 [[maybe_unused]] static bool operator==(const std::unique_ptr<Condition> &l, const std::unique_ptr<Condition> &r){
-    return !(l < r) && !(r < l);
+    return (l->key() == r->key()) && (l->name == r->name);
 }
 
 

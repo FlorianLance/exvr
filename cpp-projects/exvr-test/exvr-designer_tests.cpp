@@ -68,9 +68,11 @@ using namespace tool::ex;
 TEST_CASE("Experiment"){
 
     Experiment exp("1.0");
+    auto types = Component::all_components_types();
 
     SECTION("Components types"){
-        auto types = Component::all_components_types();
+
+        qDebug() << from_view(Component::get_type_name(types[0]));
         for(const auto & type : types){
             exp.add_new_component(type, {0});
         }

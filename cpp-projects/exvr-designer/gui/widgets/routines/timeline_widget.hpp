@@ -46,14 +46,13 @@ public :
     TimelineW(ElementKey routineKey, ConditionKey conditionKey, ActionKey actionKey, Timeline *timeline, bool drawAxe, bool updateTimeline);
 
     QRectF interval_to_rect(const Interval &i)const;
-    std::pair<SecondsTS,SecondsTS> rect_to_interval(const QRectF &r) const;
+    Interval rect_to_interval(const QRectF &r) const;
 
     void update_from_timeline(Timeline *timeline, qreal m_scale, qreal m_factorSize, SecondsTS max);
 
     constexpr ElementKey routine_key() const noexcept{return m_routineKey;}
     constexpr ConditionKey condition_key() const noexcept{return m_conditionKey;}
     constexpr ActionKey action_key() const noexcept{return m_actionKey;}
-    constexpr TimelineKey timeline_key() const noexcept{return m_timelineKey;}
 
 protected:
 
@@ -72,7 +71,6 @@ private:
     ElementKey m_routineKey;
     ConditionKey m_conditionKey;
     ActionKey m_actionKey;
-    TimelineKey m_timelineKey;
 
     bool m_drawAxe = false;
     bool m_updateTimeline = false;

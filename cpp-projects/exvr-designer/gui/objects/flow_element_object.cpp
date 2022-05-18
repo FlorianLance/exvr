@@ -24,8 +24,16 @@
 
 #include "flow_element_object.hpp"
 
+// qt-utility
+#include "qt_str.hpp"
 
 using namespace tool::ex;
+
+FlowElementO::FlowElementO(FlowElement *element) :
+      key(ElementKey{element->key()}), name(element->name()), type(element->type),
+      m_selected(element->is_selected()), m_insideLoopsID(element->insideLoopsID){
+
+}
 
 
 void FlowElementO::define_area_height(qreal height){
@@ -59,12 +67,6 @@ void FlowElementO::draw(QPainter &painter, qreal zoomLevel){
 }
 
 
-FlowElementO::FlowElementO(FlowElement *element) :
-    key(ElementKey{element->key()}), name(element->name()), type(element->type),
-    m_selected(element->is_selected()), m_insideLoopsID(element->insideLoopsID){
-
-    colors = display::Colors::flowElements.at(type);
-}
 
 void FlowElementO::update(FlowElement *element){
     key             = ElementKey{element->key()};

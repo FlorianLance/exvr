@@ -212,6 +212,15 @@ void FlowSequenceO::update_from_experiment(Experiment *exp){
     }
 }
 
+RowId FlowSequenceO::mouse_on_element_id(const QPoint &mousePos){
+    for(size_t ii = 0; ii < elements.size(); ++ii){
+        if(elements[ii]->uiElemRect.contains(mousePos)){
+            return RowId{static_cast<int>(ii)};
+        }
+    }
+    return RowId{-1};
+}
+
 FlowElementO *FlowSequenceO::mouse_on_element(const QPoint &mousePos){
 
     for(auto& elem : elements){
@@ -239,6 +248,12 @@ void FlowSequenceO::check_click_on_elements(QPoint clickPos) noexcept{
         emit GSignals::get()->select_element_signal(selectedElement->key, true);
         return;
     }
+
+//    if(auto selectedElementId = mouse_on_element_id(clickPos); selectedElementId.v != -1){
+//        emit GSignals::get()->select_element_id_signal(selectedElementId, true);
+//        return;
+//    }
+
 
     // check in loops
     if(auto selectedLoop = mouse_on_loop(clickPos); selectedLoop != nullptr){

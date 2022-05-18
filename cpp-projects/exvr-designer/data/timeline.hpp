@@ -29,6 +29,7 @@
 
 // qt-utility
 #include "qt_str.hpp"
+#include "data/id_key.hpp"
 
 // local
 #include "interval.hpp"
@@ -40,29 +41,24 @@ struct Timeline{
 
     enum Type {Update,Visibility};
 
-    Timeline() = delete;
-    Timeline(Type t, TimelineKey id) : key(IdKey::Type::Timeline, id.v), type(t){}
+    Timeline(Type t) : type(t){}
 
     static std::unique_ptr<Timeline> copy_with_new_element_id(const Timeline &timelineToCopy){
-        std::unique_ptr<Timeline> timeline = std::make_unique<Timeline>(timelineToCopy.type, TimelineKey{-1});
-        for(const auto& interval : timelineToCopy.intervals){
-            timeline->intervals.emplace_back(Interval::copy_with_new_element_id(interval));
-        }
+        std::unique_ptr<Timeline> timeline = std::make_unique<Timeline>(timelineToCopy.type);
+        timeline->intervals = timelineToCopy.intervals;
         return timeline;
     }
 
-    bool add_interval(std::pair<SecondsTS,SecondsTS> interval);
-    bool remove_interval(std::pair<SecondsTS,SecondsTS> intervalToRemove);
+    bool add_interval(Interval interval);
+    bool remove_interval(Interval intervalToRemove);
     void cut(SecondsTS max);
     size_t nb_intervals() const;
     double sum_intervals() const;
 
-
     void fill(SecondsTS lenght);
     void clean();
 
-    IdKey key;
-    std_v1<Interval> intervals;
+    std::vector<Interval> intervals;
     Type type;
 
     inline QString to_string() const{
@@ -76,6 +72,7 @@ struct Timeline{
 private:
 
     void merge();
+
 };
 
 

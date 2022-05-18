@@ -36,7 +36,11 @@ namespace tool::ex {
 
 struct Config{
 
-    Config(const QString &n, ConfigKey id) : name(n), key(IdKey::Type::Config, id.v){}
+    Config() = delete;
+    Config(const QString &n, ConfigKey id) : name(n), m_key(IdKey::Type::Config, id.v){}
+    Config(const Config&) = delete;
+    Config& operator=(const Config&) = delete;
+
     static std::unique_ptr<Config> copy_with_new_element_id(const Config &configToCopy, const QString &newName);
 
     void add_arg(Arg arg);
@@ -47,9 +51,13 @@ struct Config{
 
     inline QString to_string() const noexcept {return QSL("Config(") % name % QSL("|") % QString::number(key()) % QSL(")");}
 
-    QString name{QSL("standard")};
-    IdKey key = IdKey(IdKey::Type::Config, -1);
+    constexpr int key() const noexcept{ return m_key();}
+    constexpr ConfigKey c_key() const noexcept {return ConfigKey{key()};}
 
+    QString name{QSL("standard")};
     std::map<QStringView, Arg> args;
+
+private :
+    IdKey m_key;
 };
 }

@@ -123,79 +123,76 @@ void ComponentsManagerW::update_from_components_manager(ComponentsManager *compM
 
     Bench::start("[Update components 0]"sv, false);
 
-        // # remove inused components
-        std::map<int,bool> mask;
-        for(int ii = m_componentsListW.count()-1; ii >= 0; --ii){
+    // # remove inused components
+    std::map<ComponentKey, bool> mask;
+    for(int ii = m_componentsListW.count()-1; ii >= 0; --ii){
 
-            bool found = false;
-            auto componentW = qobject_cast<ComponentW*>(m_componentsListW.widget_at(ii));
-            for(auto component : compM->get_components()){
-                if(component->key() == componentW->key.v){
-                    found = true;
-                    break;
-                }
-            }
-            mask[componentW->key.v] = found;
-            if(!found){
-                m_dialogsW.erase(componentW->key);
-                delete m_componentsListW.remove_at(ii);
-            }
+        auto componentW = qobject_cast<ComponentW*>(m_componentsListW.widget_at(ii));
+
+        bool found = compM->is_key_used(componentW->key);
+        mask[componentW->key] = found;
+        if(!found){
+            m_dialogsW.erase(componentW->key);
+            delete m_componentsListW.remove_at(ii);
         }
+    }
 
     Bench::stop();
     Bench::start("[CM: Generates new components]"sv, false);
 
-        m_configsList.clear();
+    m_configsList.clear();
 
-        // add new widget/dialog
-        for(auto component : compM->get_components()){
+    // add new widget/dialog
+    for(auto component : compM->get_components()){
 
-            // update config list
-            m_configsList[{component->key()}] = component->get_configs_name();
+        ComponentKey componentKey = component->c_key();
 
-            if(!mask[component->key()]){
+        // update config list
+        m_configsList[componentKey] = component->get_configs_name();
 
-                ComponentKey componentKey  = ComponentKey{component->key()};
+        if(!mask[componentKey]){
 
-                Bench::start("[CM: Generate component config dialog]"sv, false);                    
+            Bench::start("[CM: Generate component config dialog]"sv, false);
 
-                    // dialog
-                    auto configDialog = std::make_unique<ComponentConfigDialog>(this, component);
-                    connect(configDialog.get(), &ComponentConfigDialog::finished, this, [=](){
-                        component_widget(componentKey)->showWindow = false;
-                        update_style();
-                    });
-                    m_dialogsW[componentKey] = std::move(configDialog);
-                Bench::stop();
+                // dialog
+                auto configDialog = std::make_unique<ComponentConfigDialog>(this, component);
+                connect(configDialog.get(), &ComponentConfigDialog::finished, this, [=](){
+                    component_widget(componentKey)->showWindow = false;
+                    update_style();
+                });
+                m_dialogsW[componentKey] = std::move(configDialog);
+            Bench::stop();
 
-                Bench::start("[CM: Generate Component widget]"sv, false);   
-                    m_componentsListW.add_widget(new ComponentW(component));
-                Bench::stop();
-            }
+            Bench::start("[CM: Generate Component widget]"sv, false);
+                m_componentsListW.add_widget(new ComponentW(component));
+            Bench::stop();
         }
+    }
 
     Bench::stop();
     Bench::start("[CM: Move components]"sv, false);
 
-        // reorder
+    // reorder
     for(int ii = 0; ii < to_signed(compM->count()); ++ii){
-            for(int jj = 0; jj < to_signed(m_componentsListW.count()); ++jj){
-                if(qobject_cast<ComponentW*>(m_componentsListW.widget_at(jj))->key.v == compM->get_component(RowId{ii})->key()){
-                    if(ii != jj){
-                        m_componentsListW.move_from_to(jj,ii);
-                    }
-                    break;
+        for(int jj = 0; jj < to_signed(m_componentsListW.count()); ++jj){
+            if(qobject_cast<ComponentW*>(m_componentsListW.widget_at(jj))->key.v == compM->get_component(RowId{ii})->key()){
+                if(ii != jj){
+                    m_componentsListW.move_from_to(jj,ii);
                 }
+                break;
             }
         }
+    }
 
     Bench::stop();
     Bench::start("[CM: Update components]"sv, false);
 
     // update components
     for(int ii = 0; ii< m_componentsListW.count(); ++ii){
+
         auto component  = compM->get_component(RowId{ii});
         auto componentW = qobject_cast<ComponentW*>(m_componentsListW.widget_at(ii));
+
         Bench::start("[CM: Update component]"sv, false);
             componentW->update_from_component(component);
         Bench::stop();

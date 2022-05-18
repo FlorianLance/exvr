@@ -32,12 +32,14 @@ namespace tool::ex {
 
 struct Connection{
 
-    explicit Connection(ConnectionKey id) : key(IdKey::Type::Connection, id.v){
-    }
-
     enum class Type{
         Component,Connector
     };
+
+    Connection() = delete;
+    Connection(ConnectionKey id) : m_key(IdKey::Type::Connection, id.v){}
+    Connection(const Connection &) = delete;
+    Connection& operator=(const Connection&) = delete;
 
     static std::unique_ptr<Connection> copy_with_new_element_id(const Connection &connectionToCopy, std::unordered_map<int,int> keysMapping){
 
@@ -74,6 +76,9 @@ struct Connection{
             QSL("|endDataType:")  % endDataType % QSL("|slot:") % slot % QSL(")");
     }
 
+    constexpr int key() const noexcept{ return m_key();}
+    constexpr ConnectionKey c_key() const noexcept {return ConnectionKey{key()};}
+
     Type startType;
     Type endType;
 
@@ -89,9 +94,10 @@ struct Connection{
     QString startDataType;
     QString endDataType;
 
-    IdKey key;
-
     bool selected = false;
+
+private:
+    IdKey m_key;
 };
 
 

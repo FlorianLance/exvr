@@ -28,7 +28,6 @@
 using namespace tool::ex;
 
 NodeFlowElementO::NodeFlowElementO(NodeFlow *node) : FlowElementO(node){
-
     addRoutine = std::make_unique<AddFlowElementO>(FlowElement::Type::Routine);
     addIsi     = std::make_unique<AddFlowElementO>(FlowElement::Type::Isi);
     addLoop    = std::make_unique<AddFlowElementO>(FlowElement::Type::Loop);
@@ -52,9 +51,9 @@ void NodeFlowElementO::draw(QPainter &painter, qreal zoomLevel){
     // draw ellipse
     QPen pen;
     pen.setWidthF(zoomLevel*1.1);
-    pen.setColor(is_selected() ? colors.selectedLineBoxColor : colors.unselectedLineBoxColor);
+    pen.setColor(display::Colors::line_box(is_selected(), type));
     painter.setPen(pen);
-    painter.setBrush(is_selected() ? colors.selectedFillBoxColor : colors.unselectedFillBoxColor);
+    painter.setBrush(display::Colors::fill_box(is_selected(), type));
     painter.drawEllipse(uiElemRect);
 
     if(is_selected()){

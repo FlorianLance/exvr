@@ -29,16 +29,15 @@
 
 // qt-utility
 #include "qt_str.hpp"
-#include "data/id_key.hpp"
 
 namespace tool::ex {
 
 struct Interval{
 
-    Interval() = delete;
-    Interval(SecondsTS tS, SecondsTS tE, IntervalKey id) : key(IdKey::Type::Interval, id.v), start(tS), end(tE){}
+    Interval(SecondsTS tS, SecondsTS tE) : start(tS), end(tE){}
+    Interval(const Interval &interval) = default;
 
-    static Interval copy_with_new_element_id(const Interval &intervalToCopy){return {intervalToCopy.start, intervalToCopy.end, IntervalKey{-1}};}
+    void merge_with(const Interval &i);
 
     bool inside(SecondsTS time) const;
     static bool inside(SecondsTS start, SecondsTS end, SecondsTS time);
@@ -46,13 +45,10 @@ struct Interval{
 
     Seconds length() const;
 
-    void merge_with(const Interval &i);
+    inline QString to_string() const{return QSL("[") % QString::number(start.v) % QSL(", ") % QString::number(end.v) % QSL("]");}
 
-    IdKey key;
     SecondsTS start{0.};
     SecondsTS end{0.};
-
-    inline QString to_string() const{return QSL("[") % QString::number(start.v) % QSL(", ") % QString::number(end.v) % QSL("]");}
 };
 
 [[maybe_unused]] static bool compare_intervals(const Interval &i1, const Interval &i2){

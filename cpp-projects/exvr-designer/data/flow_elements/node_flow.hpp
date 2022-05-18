@@ -29,8 +29,6 @@
 
 namespace tool::ex {
 
-    struct NodeFlow;
-    using NodeFlowUP = std::unique_ptr<NodeFlow>;
 
     /**
      * @brief Non-data element used only with by the flow but still take place in experiment

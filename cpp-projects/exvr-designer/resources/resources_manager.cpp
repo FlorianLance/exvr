@@ -163,7 +163,7 @@ void ResourcesManager::add_resources(Resource::Type type, const QStringList &fil
 }
 
 void ResourcesManager::copy_resource(Resource *resource){
-    add_resource(Resource::copy_with_new_element_id(*resource));
+    add_resource(Resource::copy_with_new_element_id(resource));
 }
 
 void ResourcesManager::update_resource_path(QString currentPath, QString newPath){

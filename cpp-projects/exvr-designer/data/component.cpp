@@ -41,22 +41,22 @@ Component::Component(Type t, ComponentKey id, QString name, std::unique_ptr<Conf
     this->initConfig = std::move(initConfig);
 }
 
-std::unique_ptr<Component> Component::copy_with_new_element_id(const Component &componentToCopy, const QString &newName, std::vector<ConfigKey> configKeys){
+std::unique_ptr<Component> Component::copy_with_new_element_id(Component *componentToCopy, const QString &newName, std::vector<ConfigKey> configKeys){
 
-    auto component = std::make_unique<Component>(Component(
-        componentToCopy.type,
+    auto component = std::make_unique<Component>(
+        componentToCopy->type,
         ComponentKey{-1},
         newName,
-        Config::copy_with_new_element_id(*componentToCopy.initConfig, QSL("standard"))
+        Config::copy_with_new_element_id(*componentToCopy->initConfig, QSL("standard")
     ));
 
     if(configKeys.size() == 0){
-        for(auto &config : componentToCopy.configs){
+        for(auto &config : componentToCopy->configs){
             component->add_config(ex::Config::copy_with_new_element_id(*config, config->name));
         }
     }else{
         for(const auto &configKey : configKeys){
-            if(auto config = componentToCopy.get_config(configKey); config != nullptr){
+            if(auto config = componentToCopy->get_config(configKey); config != nullptr){
                 component->add_config(ex::Config::copy_with_new_element_id(*config, config->name));
             }
         }
@@ -86,7 +86,8 @@ bool Component::insert_config(RowId id, QString configName){
 }
 
 bool Component::select_config(RowId id){
-    if(id.v < configs.size()){
+
+    if(id.v < static_cast<int>(configs.size())){
         selectedConfigId = id;
         return true;
     }
@@ -96,7 +97,7 @@ bool Component::select_config(RowId id){
 
 bool Component::remove_config(RowId id){
 
-    if(id.v < configs.size()){
+    if(id.v < static_cast<int>(configs.size())){
 
         QtLogger::message(QSL("[INFO] Remove ") % configs[id.v]->to_string() % QSL(" from ") % to_string());
         configs.erase(configs.begin() + id.v);
@@ -114,18 +115,15 @@ bool Component::remove_config(RowId id){
 
 bool Component::move_config(RowId from, RowId to){
 
-    if(from.v >= configs.size()){
+    if(from.v >= static_cast<int>(configs.size())){
         QtLogger::error(QSL("[Component::move_config] Config with row id [") % QString::number(from.v) % QSL("] not found in ") % to_string());
         return false;
     }
-    if(to.v >= configs.size()){
+    if(to.v >= static_cast<int>(configs.size())){
         QtLogger::error(QSL("[Component::move_config] Config with row id [") % QString::number(to.v) % QSL("] not found in ") % to_string());
         return false;
     }
 
-//    auto config = std::move(configs[from.v]);
-//    configs.erase(configs.begin() + from.v);
-//    configs.insert(configs.begin() + to.v, std::move(config));
     std::swap(configs[from.v], configs[to.v]);
     selectedConfigId = to;
 
@@ -133,7 +131,8 @@ bool Component::move_config(RowId from, RowId to){
 }
 
 bool Component::rename_config(RowId id, QString configName){
-    if(id.v < configs.size()){
+
+    if(id.v < static_cast<int>(configs.size())){
 
         for(const auto &config : configs){
             if(config->name == configName){
@@ -151,7 +150,7 @@ bool Component::rename_config(RowId id, QString configName){
 
 bool Component::copy_config(RowId id, QString configName){
 
-    if(id.v < configs.size()){
+    if(id.v < static_cast<int>(configs.size())){
 
         for(const auto &config : configs){
             if(config->name == configName){
@@ -165,6 +164,8 @@ bool Component::copy_config(RowId id, QString configName){
             Config::copy_with_new_element_id(*configs[id.v], configName)
         );
         selectedConfigId = {id.v + 1};
+
+        return true;
     }
 
     QtLogger::error(QSL("[Component::copy_config] Config with row id [") % QString::number(id.v) % QSL("] not found in ") % to_string());
@@ -173,7 +174,8 @@ bool Component::copy_config(RowId id, QString configName){
 
 
 Config *Component::get_config(RowId id) const {
-    if(id.v < configs.size()){
+
+    if(id.v < static_cast<int>(configs.size())){
         return configs[id.v].get();
     }
     QtLogger::error(QSL("[Component::get_config] Config with row id [") % QString::number(id.v) % QSL("] not found in ") % to_string());

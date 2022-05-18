@@ -46,24 +46,23 @@ void RoutineFlowElementO::draw(QPainter &painter, qreal zoomLevel){
     // draw rectangle
     QPen pen;
     pen.setWidthF(zoomLevel*1.1);
-    pen.setColor(is_selected() ? colors.selectedLineBoxColor : colors.unselectedLineBoxColor);
     if(!isARandomizer){
-        pen.setColor(is_selected() ? colors.selectedLineBoxColor : colors.unselectedLineBoxColor);
+        pen.setColor(display::Colors::line_box(is_selected(), type));
     }else{
-        pen.setColor(is_selected() ? QColor(140,165,206) : colors.unselectedLineBoxColor);
+        pen.setColor(is_selected() ? QColor(140,165,206) : QColor("#000000"));
     }
 
     painter.setPen(pen);
 
     if(!isARandomizer){
-        painter.setBrush(is_selected() ? colors.selectedFillBoxColor : colors.unselectedFillBoxColor);
+        painter.setBrush(display::Colors::fill_box(is_selected(), type));
     }else{
         painter.setBrush(QColor(140,165,206));
     }
     painter.drawRoundedRect(uiElemRect, zoomLevel*4.,zoomLevel*4., Qt::AbsoluteSize);
 
     // draw name
-    pen.setColor(is_selected() ? colors.selectedTextColor : colors.unselectedTextColor);
+    pen.setColor(display::Colors::text(is_selected(), type));
     painter.setPen(pen);
     painter.drawText(uiElemRect,  Qt::AlignCenter, name);
 }

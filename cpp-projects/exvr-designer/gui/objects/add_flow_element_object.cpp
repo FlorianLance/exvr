@@ -26,13 +26,11 @@
 
 using namespace tool::ex;
 
-AddFlowElementO::AddFlowElementO(FlowElement::Type typeToAdd) : add(std::make_unique<FlowElement>(FlowElement::Type::AddElement, "add")){
+AddFlowElementO::AddFlowElementO(FlowElement::Type typeToAdd) : typeToAdd(typeToAdd), add(std::make_unique<FlowElement>(FlowElement::Type::AddElement, "add")){
 
-    this->typeToAdd = typeToAdd;
-    name      = add->name();
-    type      = add->type;
+    name        = add->name();
+    type        = add->type;
     key         = ElementKey{add->key()};
     m_selected  = add->is_selected();
     m_insideLoopsID = add->insideLoopsID;
-    colors = display::Colors::flowElements.at(type);
 }

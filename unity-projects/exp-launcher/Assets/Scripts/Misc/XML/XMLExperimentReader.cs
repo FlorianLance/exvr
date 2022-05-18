@@ -130,9 +130,6 @@ namespace Ex{
         public class Interval{
 
             // attributes
-            [XmlAttribute(AttributeName = "key")]
-            public int Key { get; set; }
-
             [XmlAttribute(AttributeName = "t1")]
             public double T1 { get; set; }
 
@@ -144,9 +141,6 @@ namespace Ex{
         public class Timeline{
 
             // attributes
-            [XmlAttribute(AttributeName = "key")]
-            public int Key { get; set; }
-
             [XmlAttribute(AttributeName = "type")]
             public string Type { get; set; }
 

@@ -405,21 +405,20 @@ struct Connector{
         return connectors.at<0,8>(t);
     }
 
-    explicit Connector(ConnectorKey id, Type t, QString n, QPointF p)
-        : key(IdKey::Type::Connector, id.v), name(n), pos(p), type(t){
-    }
-
-    explicit Connector(ConnectorKey id, Type t, QString n, QPointF p, Arg a)
-        : key(IdKey::Type::Connector, id.v), name(n), pos(p), arg(a), type(t){
-    }
+    Connector() = delete;
+    Connector(ConnectorKey id, Type t, QString n, QPointF p) : name(n), pos(p), type(t), m_key(IdKey::Type::Connector, id.v){}
+    Connector(ConnectorKey id, Type t, QString n, QPointF p, Arg a) : name(n), pos(p), arg(a), type(t), m_key(IdKey::Type::Connector, id.v){}
+    Connector(const Connector &) = delete;
+    Connector& operator=(const Connector&) = delete;
 
     static std::unique_ptr<Connector> copy_with_new_element_id(const Connector &connectorToCopy);
 
     inline QString to_string() const{return QSL("Connector(") % name % QSL("|") %
                QString::number(key()) % QSL(")");}
 
+    constexpr int key() const noexcept{ return m_key();}
+    constexpr ConnectorKey c_key() const noexcept {return ConnectorKey{key()};}
 
-    IdKey key;
     QString name;
     QPointF pos;
     Arg arg;
@@ -427,6 +426,9 @@ struct Connector{
     Type type;
     QSize size; // TO REMOVE
     bool selected = false;
+
+private:
+    IdKey m_key;
 };
 
 static bool operator<(const std::unique_ptr<Connector> &l, const std::unique_ptr<Connector> &r){

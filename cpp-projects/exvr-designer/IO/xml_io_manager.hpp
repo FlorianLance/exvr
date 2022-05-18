@@ -203,7 +203,7 @@ namespace tool::ex{
 
         // ### write
         void write_argument(const Arg &arg);
-        void write_set(const Set &set);
+        void write_set(const Set *set);
         void write_generator(const Generator &generator);
         void write_config(const Config *config, bool initConfig = false);
         void write_interval(const Interval &interval);
@@ -240,7 +240,7 @@ namespace tool::ex{
 
         RoutineUP           read_routine();
         std::tuple<LoopNodeUP, LoopUP, LoopNodeUP> read_loop();
-        std::optional<Set> read_set();
+        std::unique_ptr<Set> read_set();
         IsiUP               read_isi();
         std::vector<std::unique_ptr<Config>> read_configs();
         bool                read_ISIs();

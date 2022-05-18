@@ -45,6 +45,7 @@ public:
     void reset();
     void update_from_experiment(Experiment *exp);
 
+    RowId mouse_on_element_id(const QPoint &mousePos);
     FlowElementO *mouse_on_element(const QPoint &mousePos);
     LoopFlowElementO *mouse_on_loop(const QPoint &mousePos);
 

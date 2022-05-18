@@ -38,7 +38,6 @@ namespace tool::ex::display {
 struct Colors{
 
     struct FlowElement{
-
         QColor selectedTextColor;
         QColor unselectedTextColor;
         QColor selectedLineBoxColor;
@@ -51,20 +50,33 @@ struct Colors{
 
     using QC = QColor;
 
+    using T = tool::ex::FlowElement::Type;
+
     static inline const std::unordered_map<tool::ex::FlowElement::Type, FlowElement> flowElements = {
-                                         // sel_txt     unsel_txt       sel_line        unsel_line      sel_box         unsel_box
-        {tool::ex::FlowElement::Type::Node,           {QC("#000000"), QC("#000000"),  QC("#000000"),  QC("#000000"),  QC("#000000"),  QC("#000000")}},
-        {tool::ex::FlowElement::Type::LoopStart,      {QC("#FFFFFF"), QC("#FFFFFF"),  QC("#427b89"),  QC("#000000"),  QC("#427b89"),  QC("#427b89")}},
-        {tool::ex::FlowElement::Type::LoopEnd,        {QC("#FFFFFF"), QC("#FFFFFF"),  QC("#427b89"),  QC("#000000"),  QC("#427b89"),  QC("#427b89")}},
-        {tool::ex::FlowElement::Type::Routine,        {QC("#FFFFFF"), QC("#FFFFFF"),  QC("#279340"),  QC("#000000"),  QC("#279340"),  QC("#279340")}},
-        {tool::ex::FlowElement::Type::Isi,            {QC("#FFFFFF"), QC("#FFFFFF"),  QC("#ff8c00"),  QC("#000000"),  QC("#ff8c00"),  QC("#ff8c00")}},
-        {tool::ex::FlowElement::Type::Loop,           {QC("#FFFFFF"), QC("#FFFFFF"),  QC("#427b89"),  QC("#000000"),  QC("#427b89"),  QC("#427b89")}},
-        {tool::ex::FlowElement::Type::AddElement,     {QC("#FFFFFF"), inused,         QC("#000000"),  inused,         QC("#FFFFFF"),  inused}},
-        {tool::ex::FlowElement::Type::RemoveElement,  {QC("#FFFFFF"), inused,         QC("#000000"),  inused,         QC("#000000"),  inused}},
-        {tool::ex::FlowElement::Type::MoveElement,    {QC("#000000"), inused,         QC("#000000"),  inused,         QC("#FFFFFF"),  inused}},
-        {tool::ex::FlowElement::Type::MoveElement,    {QC("#000000"), inused,         QC("#000000"),  inused,         QC("#FFFFFF"),  inused}},
-        {tool::ex::FlowElement::Type::Default,        {inused,        inused,         inused,         inused,         inused,         inused}},
+                            // sel_txt      unsel_txt       sel_line        unsel_line      sel_box         unsel_box
+        {T::Node,           {QC("#000000"), QC("#000000"),  QC("#000000"),  QC("#000000"),  QC("#000000"),  QC("#000000")}},
+        {T::LoopStart,      {QC("#FFFFFF"), QC("#FFFFFF"),  QC("#427b89"),  QC("#000000"),  QC("#427b89"),  QC("#427b89")}},
+        {T::LoopEnd,        {QC("#FFFFFF"), QC("#FFFFFF"),  QC("#427b89"),  QC("#000000"),  QC("#427b89"),  QC("#427b89")}},
+        {T::Routine,        {QC("#FFFFFF"), QC("#FFFFFF"),  QC("#279340"),  QC("#000000"),  QC("#279340"),  QC("#279340")}},
+        {T::Isi,            {QC("#FFFFFF"), QC("#FFFFFF"),  QC("#ff8c00"),  QC("#000000"),  QC("#ff8c00"),  QC("#ff8c00")}},
+        {T::Loop,           {QC("#FFFFFF"), QC("#FFFFFF"),  QC("#427b89"),  QC("#000000"),  QC("#427b89"),  QC("#427b89")}},
+        {T::AddElement,     {QC("#FFFFFF"), inused,         QC("#000000"),  inused,         QC("#FFFFFF"),  inused}},
+        {T::RemoveElement,  {QC("#FFFFFF"), inused,         QC("#000000"),  inused,         QC("#000000"),  inused}},
+        {T::MoveElement,    {QC("#000000"), inused,         QC("#000000"),  inused,         QC("#FFFFFF"),  inused}},
+        {T::MoveElement,    {QC("#000000"), inused,         QC("#000000"),  inused,         QC("#FFFFFF"),  inused}},
     };
+
+    static inline const QColor& text(bool selected, tool::ex::FlowElement::Type type){
+        return selected ? flowElements.at(type).selectedTextColor : flowElements.at(type).unselectedTextColor;
+    }
+
+    static inline const QColor& line_box(bool selected, tool::ex::FlowElement::Type type){
+        return selected ? flowElements.at(type).selectedLineBoxColor : flowElements.at(type).unselectedLineBoxColor;
+    }
+
+    static inline const QColor& fill_box(bool selected, tool::ex::FlowElement::Type type){
+        return selected ? flowElements.at(type).selectedFillBoxColor : flowElements.at(type).unselectedFillBoxColor;
+    }
 
 };
 }

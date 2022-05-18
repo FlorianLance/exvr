@@ -62,7 +62,7 @@ ExComponentsListW::ExComponentsListW(QString name) : ExItemW<QFrame>(UiType::Com
         }
 
         const auto currTxt = m_componentNames->currentText();
-        if(auto component = ExperimentManager::get()->current()->compM.get_component(m_componentType.value(), currTxt); component != nullptr){
+        if(auto component = ExperimentManager::get()->current()->compM.get_component(currTxt); component != nullptr){
             m_componentsKeys.emplace_back(component->key());
             m_list->add_widget(ui::W::txt(component->name()));
             update_from_components();

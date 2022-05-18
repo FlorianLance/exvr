@@ -559,9 +559,12 @@ struct Component {
         return componentsSignals.elements_matching_columns_values<0,1>(type);
     }
 
-    Component() = default;
+    Component() = delete;
     Component(Type t, ComponentKey id, QString name, std::unique_ptr<Config> initConfig);
-    static std::unique_ptr<Component> copy_with_new_element_id(const Component &componentToCopy, const QString &newName, std::vector<ConfigKey> configKeys = {});
+    Component(const Component &) = delete;
+    Component& operator=(const Component&) = delete;
+
+    static std::unique_ptr<Component> copy_with_new_element_id(Component *componentToCopy, const QString &newName, std::vector<ConfigKey> configKeys = {});
 
     inline QString name() const noexcept{return m_name;}
     inline void set_name(QString name) noexcept{m_name = name;}
@@ -595,7 +598,7 @@ public:
 
 private:
 
-    IdKey m_key = IdKey(IdKey::Type::Component, -1);;
+    IdKey m_key = IdKey(IdKey::Type::Component, -1);
     QString m_name = "default";    
 };
 }

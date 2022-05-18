@@ -374,7 +374,7 @@ void ElementViewerW::update_loop_ui(Loop *loop){
     ui->wAddSet->setHidden(false);
     ui->fMove->setHidden(false);
 
-    std_v1<Set> *sets = nullptr;
+    std::vector<std::unique_ptr<Set>> *sets = nullptr;
     if(loop->mode != Loop::Mode::File){
         sets = &loop->sets;
     }else{
@@ -396,10 +396,10 @@ void ElementViewerW::update_loop_ui(Loop *loop){
 
     for(const auto &set : *sets){
 
-        auto *item1 = new QTableWidgetItem(set.name);
+        auto *item1 = new QTableWidgetItem(set->name);
         tw->setItem(idRow,0,item1);
 
-        auto *item2 = new QTableWidgetItem(QString::number(set.occurencies));
+        auto *item2 = new QTableWidgetItem(QString::number(set->occurencies));
         tw->setItem(idRow++,1,item2);
 
         if(loop->mode != Loop::Mode::File){

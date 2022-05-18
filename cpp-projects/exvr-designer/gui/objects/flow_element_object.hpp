@@ -40,15 +40,16 @@ namespace tool::ex {
 
 class FlowElementO : public QObject{
 
-
 public:
 
     FlowElementO() = default;
+    FlowElementO(FlowElement *element);
+
     FlowElementO(FlowElementO&&) = delete;
     FlowElementO& operator=(FlowElementO&&) = delete;
     FlowElementO(const FlowElementO&) = delete;
     FlowElementO& operator=(const FlowElementO&) = delete;
-    FlowElementO(FlowElement *element);
+
 
     virtual void update(FlowElement *element);
 
@@ -68,7 +69,6 @@ public:
     static inline qreal sizeTxt = 3.;
     QRectF uiAreaRect = QRectF(0., 0., 0., 0.); /**< area rectangle in the display view */
     QRectF uiElemRect = QRectF(0., 0., 0., 0.); /**< rectangle of the element in the display view */
-    display::Colors::FlowElement colors;
 
     ElementKey key;
     QString name;
@@ -78,7 +78,7 @@ public:
 protected:
 
     bool m_selected;
-    std_v1<int> m_insideLoopsID;    
+    std::vector<ElementKey> m_insideLoopsID;
 };
 
 }

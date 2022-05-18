@@ -31,7 +31,7 @@ using namespace tool;
 using namespace tool::ex;
 
 TimelineW::TimelineW(ElementKey routineKey, ConditionKey conditionKey, ActionKey actionKey, Timeline *timeline, bool drawAxe, bool updateTimeline) :
-      type(timeline->type), m_routineKey(routineKey), m_conditionKey(conditionKey), m_actionKey(actionKey), m_timelineKey(TimelineKey{timeline->key()}), m_drawAxe(drawAxe), m_updateTimeline(updateTimeline){
+      type(timeline->type), m_routineKey(routineKey), m_conditionKey(conditionKey), m_actionKey(actionKey), m_drawAxe(drawAxe), m_updateTimeline(updateTimeline){
 
     setMouseTracking(true);
     setObjectName(QSL("timeline"));
@@ -50,7 +50,7 @@ QRectF TimelineW::interval_to_rect(const Interval &i) const{
     };
 }
 
-std::pair<SecondsTS,SecondsTS> TimelineW::rect_to_interval(const QRectF &r) const{
+Interval TimelineW::rect_to_interval(const QRectF &r) const{
     return {
         SecondsTS{m_maxLength.v*(r.x()-m_widthOffset)/m_timelineWidth},
         SecondsTS{m_maxLength.v*(r.x()+r.width()-m_widthOffset)/m_timelineWidth}
@@ -189,9 +189,9 @@ void TimelineW::mouseMoveEvent(QMouseEvent *event){
         for(const auto &element : m_elementsPartsAreas){
             if(QRectF(element.x(), element.y(), element.width(), element.height() ).contains(m_currentMousePos)){
                 if(m_currentButtonPressed == Qt::MouseButton::LeftButton){
-                    emit GSignals::get()->add_interval_signal(routine_key(), condition_key(), action_key(), m_updateTimeline, timeline_key(), rect_to_interval(element));
+                    emit GSignals::get()->add_interval_signal(routine_key(), condition_key(), action_key(), m_updateTimeline, rect_to_interval(element));
                 }else if(m_currentButtonPressed == Qt::MouseButton::RightButton){
-                    emit GSignals::get()->remove_interval_signal(routine_key(), condition_key(), action_key(), m_updateTimeline, timeline_key(), rect_to_interval(element));
+                    emit GSignals::get()->remove_interval_signal(routine_key(), condition_key(), action_key(), m_updateTimeline, rect_to_interval(element));
                 }
                 return;
             }

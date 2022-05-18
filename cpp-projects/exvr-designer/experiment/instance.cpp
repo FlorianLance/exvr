@@ -83,14 +83,14 @@ Instance::Instance(const Randomizer *randomizer, const std_v1<FlowElement*> &ele
         if(loop->mode != Loop::Mode::File){
 
             for(const auto &set : loop->sets){
-                for(size_t ii = 0; ii < set.occurencies; ++ii){
-                    setsOccurenciesStr.push_back(set.name);
+                for(size_t ii = 0; ii < set->occurencies; ++ii){
+                    setsOccurenciesStr.push_back(set->name);
                 }
             }
         }else{
             for(const auto &set : loop->fileSets){
-                for(size_t ii = 0; ii < set.occurencies; ++ii){
-                    setsOccurenciesStr.push_back(set.name);
+                for(size_t ii = 0; ii < set->occurencies; ++ii){
+                    setsOccurenciesStr.push_back(set->name);
                 }
             }
         }

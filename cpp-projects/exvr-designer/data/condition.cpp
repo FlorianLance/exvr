@@ -32,7 +32,7 @@ using namespace tool;
 using namespace tool::ex;
 
 Condition::Condition(QString n, ConditionKey id, SecondsTS duration, double uiScale, double uiSize)
-    : key(IdKey::Type::Condition, id.v), name(n), duration(duration), scale(uiScale), uiFactorSize(uiSize){
+    : name(n), duration(duration), scale(uiScale), uiFactorSize(uiSize), m_key(IdKey::Type::Condition, id.v){
 }
 
 void Condition::apply_condition(const Condition *conditionToCopy, bool copyActions, bool copyConnections){
@@ -304,15 +304,15 @@ void Condition::check_integrity(){
     }
 }
 
-bool Condition::contains_set_key(int setKeyToCheck) const{
+bool Condition::contains_set_key(SetKey setKeyToCheck) const{
 
-    auto keyFound = std::find_if(std::begin(setsKeys), std::end(setsKeys), [setKeyToCheck](int setKey){
-        return setKey == setKeyToCheck;
+    auto keyFound = std::find_if(std::begin(setsKeys), std::end(setsKeys), [setKeyToCheck](SetKey setKey){
+        return setKey.v == setKeyToCheck.v;
     });
     return keyFound != std::end(setsKeys);
 }
 
-bool Condition::contains_same_set_keys(const std_v1<int> setKeysToCheck) const{
+bool Condition::contains_same_set_keys(const std::vector<SetKey> setKeysToCheck) const{
 
     if(setKeysToCheck.size() != setsKeys.size()){
         return false;

@@ -139,18 +139,20 @@ struct Resource{
             extension = ""; // no extension or directory
         }
     }
+    Resource(const Resource &) = delete;
+    Resource& operator=(const Resource&) = delete;
 
-    static std::unique_ptr<Resource> copy_with_new_element_id(const Resource &resourceToCopy){
+    static std::unique_ptr<Resource> copy_with_new_element_id(Resource *resourceToCopy){
         auto resource = std::make_unique<Resource>(
-            resourceToCopy.type,
+            resourceToCopy->type,
             ResourceKey{-1},
-            resourceToCopy.path,
-            resourceToCopy.alias
+            resourceToCopy->path,
+            resourceToCopy->alias
         );
 
-        resource->preview   = resourceToCopy.preview;
-        resource->exist     = resourceToCopy.exist;
-        resource->extension = resourceToCopy.extension;
+        resource->preview   = resourceToCopy->preview;
+        resource->exist     = resourceToCopy->exist;
+        resource->extension = resourceToCopy->extension;
 
         return resource;
     }

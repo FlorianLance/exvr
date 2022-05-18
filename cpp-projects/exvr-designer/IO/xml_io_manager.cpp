@@ -375,11 +375,11 @@ void XmlIoManager::write_argument(const Arg &arg){
     w->writeEndElement();
 }
 
-void XmlIoManager::write_set(const Set &set){
+void XmlIoManager::write_set(const Set *set){
     w->writeStartElement(QSL("Set"));
-    w->writeAttribute(QSL("key"),   QString::number(set.key()));
-    w->writeAttribute(QSL("name"),  set.name);
-    w->writeAttribute(QSL("occu"),  QString::number(set.occurencies));
+    w->writeAttribute(QSL("key"),   QString::number(set->key()));
+    w->writeAttribute(QSL("name"),  set->name);
+    w->writeAttribute(QSL("occu"),  QString::number(set->occurencies));
     w->writeEndElement();
 }
 
@@ -641,7 +641,6 @@ void XmlIoManager::write_component(const Component *component) {
 
 void XmlIoManager::write_interval(const Interval &interval){
     w->writeStartElement(QSL("Interval"));
-    w->writeAttribute(QSL("key"),    QString::number(interval.key()));
     w->writeAttribute(QSL("t1"),     QString::number(interval.start.v));
     w->writeAttribute(QSL("t2"),     QString::number(interval.end.v));
     w->writeEndElement(); // /Interval
@@ -649,20 +648,18 @@ void XmlIoManager::write_interval(const Interval &interval){
 
 std::optional<Interval> XmlIoManager::read_interval(){
 
-    const auto key   = read_attribute<int>(QSL("key"), true);
     const auto start = read_attribute<double>(QSL("t1"), true);
     const auto end   = read_attribute<double>(QSL("t2"), true);
-    if(!key.has_value() || !start.has_value() || !end.has_value()){
+    if(!start.has_value() || !end.has_value()){
         QtLogger::error(QSL("[XML] Invalid interval at line: ") % QString::number(r->lineNumber()));
         return {};
     }
-    return Interval{SecondsTS{start.value()}, SecondsTS{end.value()}, IntervalKey{key.value()}};
+    return Interval{SecondsTS{start.value()}, SecondsTS{end.value()}};
 }
 
 void XmlIoManager::write_timeline(const Timeline *timeline){
 
     w->writeStartElement(QSL("Timeline"));
-    w->writeAttribute(QSL("key"), QString::number(timeline->key()));
     w->writeAttribute(QSL("type"), (timeline->type == Timeline::Update ? QSL("Update") : QSL("Visibiliy")));
 
     double min = std::numeric_limits<double>::max();
@@ -687,16 +684,15 @@ void XmlIoManager::write_timeline(const Timeline *timeline){
 
 std::unique_ptr<Timeline> XmlIoManager::read_timeline(){
 
-    const auto key  = read_attribute<int>(QSL("key"), true);
     const auto typeStr = read_attribute<QString>(QSL("type"), true);
 
-    if(!key.has_value() || !typeStr.has_value()){
+    if(!typeStr.has_value()){
         QtLogger::error(QSL("[XML] Invalid timeline at line: ") % QString::number(r->lineNumber()));
         return nullptr;
     }
 
     const auto type = typeStr.value() == QSL("Update") ? Timeline::Update : Timeline::Visibility;
-    auto timeline = std::make_unique<Timeline>(type, TimelineKey{key.value()});
+    auto timeline = std::make_unique<Timeline>(type);
 
     // read attributes
     r->readNext();
@@ -1014,7 +1010,7 @@ void XmlIoManager::write_condition(const Condition *condition){
 
     QStringList setsKeys;
     for(const auto &setKey : condition->setsKeys){
-        setsKeys << QString::number(setKey);
+        setsKeys << QString::number(setKey.v);
     }
     w->writeAttribute(QSL("sets_keys"), setsKeys.join("-"));
 
@@ -1088,7 +1084,7 @@ std::unique_ptr<Condition> XmlIoManager::read_condition(Routine *routine){
     const auto setsKeys = read_attribute<QString>(QSL("sets_keys"), false);
     if(setsKeys.has_value()){
         for(auto split : setsKeys->split("-")){
-            condition->setsKeys.emplace_back(split.toInt());
+            condition->setsKeys.push_back(SetKey{split.toInt()});
         }
     }
 
@@ -1154,12 +1150,12 @@ void XmlIoManager::write_loop(const Loop *loop) {
     if(loop->mode == Loop::Mode::File){
         w->writeAttribute(QSL("path"), loop->filePath);
         for(const auto &set : loop->fileSets){
-            write_set(set);
+            write_set(set.get());
         }
 
     }else{
         for(const auto &set : loop->sets){
-            write_set(set);
+            write_set(set.get());
         }
     }           
 
@@ -1202,7 +1198,7 @@ std::tuple<LoopNodeUP, LoopUP, LoopNodeUP> XmlIoManager::read_loop(){
     const auto sets = read_attribute<QString>(QSL("set"), false);
     if(sets.has_value()){
         for(auto setStr : sets->split(" ")){
-            loop->sets.emplace_back(setStr, 1, SetKey{-1});
+            loop->sets.push_back(std::make_unique<Set>(setStr, 1, SetKey{-1}));
         }
         return std::make_tuple(std::move(startLoop), std::move(loop), std::move(endLoop));
     }
@@ -1214,8 +1210,8 @@ std::tuple<LoopNodeUP, LoopUP, LoopNodeUP> XmlIoManager::read_loop(){
 
         if(check_start_node(QSL("Set"))){
 
-            if(auto set = read_set(); set.has_value()){
-                loop->sets.emplace_back(std::move(set.value()));
+            if(auto set = read_set(); set != nullptr){
+                loop->sets.push_back(std::move(set));
             }
             r->readNext();
         }
@@ -1229,7 +1225,7 @@ std::tuple<LoopNodeUP, LoopUP, LoopNodeUP> XmlIoManager::read_loop(){
     return {nullptr,nullptr,nullptr};
 }
 
-std::optional<Set> XmlIoManager::read_set(){
+std::unique_ptr<Set> XmlIoManager::read_set(){
 
     const auto key        = read_attribute<int>(QSL("key"), true);
     const auto name       = read_attribute<QString>(QSL("name"), true);
@@ -1239,10 +1235,10 @@ std::optional<Set> XmlIoManager::read_set(){
        !name.has_value()    ||
        !occu.has_value()){
         QtLogger::error(QSL("[XML] Invalid set at line: ") + QString::number(r->lineNumber()));
-        return {};
+        return nullptr;
     }
 
-    return {{name.value(), static_cast<size_t>(occu.value()), SetKey{key.value()}}};
+    return std::make_unique<Set>(name.value(), static_cast<size_t>(occu.value()), SetKey{key.value()});
 }
 
 void XmlIoManager::write_routine(const Routine *routine){
@@ -1552,7 +1548,7 @@ RoutineUP XmlIoManager::read_routine(){
     }
 
 
-    QtLogger::error(QSL("[XML] ") % invalid_bracket_error_message(key.value(), IdKey::Type::Element));
+    QtLogger::error(QSL("[XML] ") % invalid_bracket_error_message(key.value(), IdKey::Type::FlowElement));
 
     return nullptr;
 }
@@ -1610,7 +1606,7 @@ bool XmlIoManager::read_components(){
 
         if(check_start_node(QSL("Component"))){
             if(auto component = read_component(); component != nullptr){
-                m_experiment->compM.components.push_back(std::move(component));
+                m_experiment->compM.add_component(std::move(component));
             }            
         }
 

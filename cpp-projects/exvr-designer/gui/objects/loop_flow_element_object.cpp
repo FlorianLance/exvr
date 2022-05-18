@@ -41,13 +41,12 @@ void LoopFlowElementO::draw(QPainter &painter, qreal zoomLevel){
     QSizeF sizeArrow(squareSizeArrow*zoomLevel, squareSizeArrow*zoomLevel);
 
     QPen linePen;
-
-    linePen.setColor(is_selected() ? colors.selectedLineBoxColor : colors.unselectedLineBoxColor);
+    linePen.setColor(display::Colors::line_box(is_selected(), type));
     linePen.setWidthF(zoomLevel * 1.);
 
     QPen boxPen;
     boxPen.setWidthF(zoomLevel*1.1);
-    boxPen.setColor(is_selected() ? colors.selectedLineBoxColor : colors.unselectedLineBoxColor);
+    boxPen.setColor(display::Colors::line_box(is_selected(), type));
 
     QPointF right    = endLoopNode->uiElemRect.center() - QPointF(0., endLoopNode->uiElemRect.height()*0.5);
     QPointF topRight = QPointF(endLoopNode->uiElemRect.center().x(),  (level)*FlowElementO::areaHeight);
@@ -78,13 +77,13 @@ void LoopFlowElementO::draw(QPainter &painter, qreal zoomLevel){
 
     // draw rectangle
     painter.setPen(boxPen);
-    painter.setBrush(is_selected() ? colors.selectedFillBoxColor : colors.unselectedFillBoxColor);
+    painter.setBrush(display::Colors::fill_box(is_selected(), type));
     painter.drawRoundedRect(uiElemRect, zoomLevel*2.,zoomLevel*2., Qt::AbsoluteSize);
 
     // draw name
     QPen textPen;
     textPen.setWidthF(zoomLevel*1.1);
-    textPen.setColor(is_selected() ?  colors.selectedTextColor : colors.unselectedTextColor);
+    textPen.setColor(display::Colors::text(is_selected(), type));
     painter.setPen(textPen);
     painter.drawText(uiElemRect, Qt::AlignCenter, name);
 }
@@ -113,10 +112,10 @@ void LoopNodeFlowElementO::draw(QPainter &painter, qreal zoomLevel){
     // draw rectangle
     QPen pen;
     pen.setWidthF(zoomLevel*1.1);
-    pen.setColor(is_selected() ? colors.selectedLineBoxColor : colors.unselectedLineBoxColor);
+    pen.setColor(display::Colors::line_box(is_selected(), type));
 
     painter.setPen(pen);
-    painter.setBrush(is_selected() ? colors.selectedFillBoxColor : colors.unselectedFillBoxColor);
+    painter.setBrush(display::Colors::fill_box(is_selected(), type));
     painter.drawRect(uiElemRect);
 }
 

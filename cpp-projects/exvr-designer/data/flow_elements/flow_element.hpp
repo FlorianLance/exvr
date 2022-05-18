@@ -25,17 +25,17 @@
 #pragma once
 
 // std
-#include <memory>
-#include <optional>
+//#include <memory>
+//#include <optional>
 
 // Qt
 #include <QString>
-#include <QList>
-#include <QVector>
+//#include <QList>
+//#include <QVector>
 
 // base
-#include "utility/vector.hpp"
-#include "utility/tuple_array.hpp"
+//#include "utility/vector.hpp"
+//#include "utility/tuple_array.hpp"
 
 // qt-utility
 #include "data/id_key.hpp"
@@ -49,45 +49,51 @@ struct FlowElement {
 public:
 
     enum class Type : int {
-        Node,LoopStart,LoopEnd,Routine,Isi,Loop,AddElement,RemoveElement,MoveElement,Default,
+        Node,LoopStart,LoopEnd,Routine,Isi,Loop,AddElement,RemoveElement,MoveElement,
         SizeEnum};
 
+    enum class Category : int{
+        Movable, Fixed, Button,
+        SizeEnum
+    };
+
     using Name     = std::string_view;
-    using IsButton = bool;
-    using TElement = std::tuple<Type, Name, IsButton>;
+
+    using TElement = std::tuple<Type, Name, Category>;
     static constexpr TupleArray<Type::SizeEnum,TElement> elements ={{
         TElement
-        {Type::Node,         "Node"sv,          false},
-        {Type::LoopStart,    "LoopStart"sv,     false},
-        {Type::LoopEnd,      "LoopEnd"sv,       false},
-        {Type::Routine,      "Routine"sv,       false},
-        {Type::Isi,          "Isi"sv,           false},
-        {Type::Loop,         "Loop"sv,          false},
-        {Type::AddElement,   "AddElement"sv,    true},
-        {Type::RemoveElement,"RemoveElement"sv, true},
-        {Type::MoveElement,  "MoveElement"sv,   true},
-        {Type::Default,      "Default"sv,       false}
+        {Type::Node,         "Node"sv,          Category::Fixed},
+        {Type::LoopStart,    "LoopStart"sv,     Category::Movable},
+        {Type::LoopEnd,      "LoopEnd"sv,       Category::Movable},
+        {Type::Routine,      "Routine"sv,       Category::Movable},
+        {Type::Isi,          "Isi"sv,           Category::Movable},
+        {Type::Loop,         "Loop"sv,          Category::Movable},
+        {Type::AddElement,   "AddElement"sv,    Category::Button},
+        {Type::RemoveElement,"RemoveElement"sv, Category::Button},
+        {Type::MoveElement,  "MoveElement"sv,   Category::Button}
     }};
 
-    static Type get_type(Name n) {
+    static constexpr Type get_type(Name n) {
         return elements.at<1,0>(n);
     }
 
-    static Name get_type_name(Type t) {
+    static constexpr Name get_type_name(Type t) {
         return elements.at<0,1>(t);
     }
 
-    static bool is_button(Type t) {
+    static constexpr Category get_category(Type t) {
         return elements.at<0,2>(t);
     }
 
     FlowElement() = delete;
     FlowElement(Type t, QString n, int id = -1, QString infos = "") :
-          key(is_button(t) ? IdKey::Type::ButtonElement :
-            IdKey::Type::Element, id), type(t), informations(infos), m_name(n){
+          type(t), informations(infos),
+          m_key(Category(t) == Category::Button ? IdKey::Type::ButtonFlowElement : IdKey::Type::FlowElement, id),
+          m_name(n){
     }
+    FlowElement(const FlowElement &) = delete;
+    FlowElement& operator=(const FlowElement&) = delete;
 
-    virtual ~FlowElement() = default;
 
     inline void set_selected(bool select) noexcept {
         m_isSelected = select;
@@ -105,37 +111,30 @@ public:
         return m_isSelected;
     }
 
-    constexpr bool is_routine()const{
+    constexpr bool is_routine()const noexcept{
         return type == Type::Routine;
     }
 
-    constexpr bool is_isi()const{
+    constexpr bool is_isi()const noexcept{
         return type == Type::Isi;
     }
 
     virtual void check_integrity(){}
 
-    IdKey key;
-    Type type = Type::Default;
+    constexpr int key() const noexcept{ return m_key();}
+//    constexpr ElementKey e_key() const noexcept {return ElementKey{key()};}
 
-    std_v1<int> insideLoopsID;       /**< all loop id containing the element */
-    std_v1<FlowElement*> insideLoops;
+    Type type;
+
+    std::vector<ElementKey> insideLoopsID;       /**< all loop id containing the element */
+    std::vector<FlowElement*> insideLoops;
     QString informations;
 
 private:
 
+    IdKey m_key;
     QString m_name = "";
     bool m_isSelected = false;  /**< is the element selected ? */
 };
 
-[[maybe_unused]] static bool operator<(const std::unique_ptr<FlowElement> &l, const std::unique_ptr<FlowElement> &r){
-    if(l->key() == r->key()){
-        return false;
-    }
-    return true;
-}
-
-[[maybe_unused]] static bool operator==(const std::unique_ptr<FlowElement> &l, const std::unique_ptr<FlowElement> &r){
-    return !(l < r) && !(r < l);
-}
 }

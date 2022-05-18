@@ -194,9 +194,6 @@ public slots:
     size_t get_element_position(FlowElement *element) const;
     void unselect_all_elements(bool updateSignal = true) noexcept;
     void select_element(ElementKey elementKey, bool updateSignal = true);
-    void select_element_id(RowId elementId, bool updateSignal = true);
-    void select_element_from_ptr(FlowElement *element, bool updateSignal = true);
-
     void add_element(FlowElement::Type type, size_t index);
     void remove_element(FlowElement *elemToDelete);    
     void remove_element_of_key(ElementKey elementKey);
@@ -271,10 +268,10 @@ public slots:
     void move_action_up(ElementKey routineKey, ConditionKey conditionKey, ActionKey actionKey);
     void move_action_down(ElementKey routineKey, ConditionKey conditionKey, ActionKey actionKey);
     // #### timeline
-    void add_timeline_interval(ElementKey routineKey,ConditionKey conditionKey, ActionKey actionKey, bool updateTimeline, Interval interval);
-    void remove_timeline_interval(ElementKey routineKey,ConditionKey conditionKey, ActionKey actionKey, bool updateTimeline, Interval interval);
+    void add_timeline_interval(ElementKey routineKey,ConditionKey conditionKey, ActionKey actionKey, bool updateTimeline, TimelineKey timelineKey, std::pair<SecondsTS,SecondsTS> interval);
+    void remove_timeline_interval(ElementKey routineKey,ConditionKey conditionKey, ActionKey actionKey, bool updateTimeline, TimelineKey timelineKey, std::pair<SecondsTS,SecondsTS> interval);
     // #### config
-    void select_action_config(ElementKey routineKey, ConditionKey conditionKey, ActionKey actionKey, RowId configTabId);
+    void select_action_config(ElementKey routineKey, ConditionKey conditionKey, ActionKey actionKey, RowId  configTabId);
     // ### connection
     void create_connection(ElementKey routineKey,ConditionKey conditionKey, Connection *connection);
     void delete_connections(ElementKey routineKey, ConditionKey conditionKey);
@@ -333,6 +330,8 @@ private :
     GUI m_gui;
     Settings m_settings;
 
+    // resources
+//    ResourcesManager *m_resM = nullptr;
 };
 
 class ExperimentManager{
@@ -351,17 +350,11 @@ public:
     }
 
     inline void init_current(const QString &numVersion){
-        auto currentSource = IdKey::current_source();
-        IdKey::set_source(IdKey::Source::Current);
         m_experiment = std::make_unique<Experiment>(numVersion);
-        IdKey::set_source(currentSource);
     }
 
     inline void init_imported(const QString &numVersion){
-        auto currentSource = IdKey::current_source();
-        IdKey::set_source(IdKey::Source::Imported);
         m_importedExperiment = std::make_unique<Experiment>(numVersion);
-        IdKey::set_source(currentSource);
     }
 
     inline Experiment *current(){

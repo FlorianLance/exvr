@@ -46,13 +46,6 @@ using namespace tool::ex;
 
 
 Experiment::Experiment(QString nVersion) : states(nVersion), randomizer(Randomizer(states.randomizationSeed)) {
-
-//    ResourcesManager::init();
-//    m_resM = ResourcesManager::get();
-
-//    ComponentsManager::init();
-//    m_compM = ComponentsManager::get();
-
     new_experiment();
 }
 
@@ -79,52 +72,72 @@ void Experiment::unselect_all_elements(bool updateSignal) noexcept{
     }
 }
 
+void Experiment::select_element_id(RowId elementId, bool updateSignal){
+    if(elementId.v < static_cast<int>(elements.size())){
+        select_element_from_ptr(elements[elementId.v].get(), updateSignal);
+    }else{
+        QtLogger::error(QSL("Cannot select element with id [") % QString::number(elementId.v) % QSL("], it doesn't exist."));
+    }
+}
+
 void Experiment::select_element(ElementKey elementKey, bool updateSignal){
 
     if(auto elem = get_element(elementKey); elem != nullptr){
-        if(elem->is_selected()){
-            return;
-        }
-
-        bool select = !elem->is_selected();
-        unselect_all_elements(false); // unselect everything
-
-        if(elem->type == FlowElement::Type::LoopStart || elem->type == FlowElement::Type::LoopEnd){
-            LoopNode *loopNode = dynamic_cast<LoopNode*>(elem);
-            loopNode->loop->set_selected(select);
-            loopNode->loop->start->set_selected(select);
-            loopNode->loop->end->set_selected(select);
-            selectedElement = loopNode->loop;
-        }else if(elem->type == FlowElement::Type::Loop){
-            Loop *loop = dynamic_cast<Loop*>(elem);
-            loop->set_selected(select);
-            loop->start->set_selected(select);
-            loop->end->set_selected(select);
-            selectedElement = loop;
-        }else{
-
-            if(elem->type == FlowElement::Type::Routine){
-                lastRoutineSelected = dynamic_cast<Routine*>(elem);
-                if(lastRoutineSelected->selected_condition() == nullptr){
-                    lastRoutineSelected->select_condition(RowId{0});
-                }
-            }else if(elem->type == FlowElement::Type::Isi){
-                lastIsiSelected = dynamic_cast<Isi*>(elem);
-            }
-
-            if(select){ // current element not selected
-                selectedElement = elem;
-                elem->set_selected(select);
-            }
-        }
-
-        if(updateSignal){
-            add_to_update_flag(UpdateFlow | UpdateSelection | UpdateRoutines);
-        }
+        select_element_from_ptr(elem, updateSignal);
     }else{
         QtLogger::error(QSL("Cannot select element with key [") % QString::number(elementKey.v) % QSL("], it doesn't exist."));
     }
 }
+
+void Experiment::select_element_from_ptr(FlowElement *element, bool updateSignal){
+
+    qDebug() << "select_element_from_ptr " << element->name() << element->key();
+
+    if(element->is_selected()){
+        return;
+    }
+
+    bool select = !element->is_selected();
+    unselect_all_elements(false); // unselect everything
+
+    if(element->type == FlowElement::Type::LoopStart || element->type == FlowElement::Type::LoopEnd){
+        LoopNode *loopNode = dynamic_cast<LoopNode*>(element);
+        loopNode->loop->set_selected(select);
+        loopNode->loop->start->set_selected(select);
+        loopNode->loop->end->set_selected(select);
+        selectedElement = loopNode->loop;
+    }else if(element->type == FlowElement::Type::Loop){
+        Loop *loop = dynamic_cast<Loop*>(element);
+        loop->set_selected(select);
+        loop->start->set_selected(select);
+        loop->end->set_selected(select);
+        selectedElement = loop;
+    }else{
+
+        if(element->type == FlowElement::Type::Routine){
+            lastRoutineSelected = dynamic_cast<Routine*>(element);
+            if(lastRoutineSelected->selected_condition() == nullptr){
+                lastRoutineSelected->select_condition(RowId{0});
+            }
+        }else if(element->type == FlowElement::Type::Isi){
+            lastIsiSelected = dynamic_cast<Isi*>(element);
+        }
+
+        if(select){ // current element not selected
+            selectedElement = element;
+            element->set_selected(select);
+        }
+    }
+
+    qDebug() << "end sel";
+
+    if(updateSignal){
+        add_to_update_flag(UpdateFlow | UpdateSelection | UpdateRoutines);
+    }
+}
+
+
+
 
 
 size_t Experiment::get_element_position(FlowElement *element) const{
@@ -211,12 +224,18 @@ void Experiment::add_element(FlowElement::Type type, size_t index){
             }while(isInside);
 
             auto loop = std::make_unique<Loop>(name, ElementKey{-1});
+
+            qDebug() << "loop " << loop->key();
             auto loopPtr = loop.get();
             loops.emplace_back(std::move(loop));
 
             auto start = std::make_unique<LoopNode>(loopPtr, true);
             auto end   = std::make_unique<LoopNode>(loopPtr, false);
             loopPtr->set_nodes(start.get(),end.get());
+
+            qDebug() << "loop ptr" << loopPtr->key();
+            qDebug() << start->key();
+            qDebug() << end->key();
 
             elements.insert(elements.begin() + static_cast<std_v1<std::unique_ptr<FlowElement>>::difference_type>(index + 1), std::move(start));
             elements.insert(elements.begin() + static_cast<std_v1<std::unique_ptr<FlowElement>>::difference_type>(index + 2), std::make_unique<NodeFlow>());
@@ -1512,33 +1531,31 @@ void Experiment::reload_loop_sets_file(ElementKey loopKey){
     }
 }
 
-void Experiment::add_timeline_interval(ElementKey routineKey, ConditionKey conditionKey, ActionKey actionKey, bool updateTimeline, TimelineKey timelineKey, std::pair<SecondsTS,SecondsTS> interval){
+void Experiment::add_timeline_interval(ElementKey routineKey, ConditionKey conditionKey, ActionKey actionKey, bool updateTimeline, Interval interval){
 
-    Q_UNUSED(timelineKey)
     if(auto action = get_action(routineKey, conditionKey, actionKey); action != nullptr){
 
         if(updateTimeline){
-            if(action->timelineUpdate->add_interval(interval)){
+            if(action->timelineUpdate->add_interval(std::move(interval))){
                 add_to_update_flag(UpdateRoutines);
             }
         }else{
-            if(action->timelineVisibility->add_interval(interval)){
+            if(action->timelineVisibility->add_interval(std::move(interval))){
                 add_to_update_flag(UpdateRoutines);
             }
         }        
     }
 }
 
-void Experiment::remove_timeline_interval(ElementKey routineKey, ConditionKey conditionKey, ActionKey actionKey, bool updateTimeline, TimelineKey timelineKey, std::pair<SecondsTS,SecondsTS> interval){
+void Experiment::remove_timeline_interval(ElementKey routineKey, ConditionKey conditionKey, ActionKey actionKey, bool updateTimeline, Interval interval){
 
-    Q_UNUSED(timelineKey)
     if(auto action = get_action(routineKey, conditionKey, actionKey); action != nullptr){
         if(updateTimeline){
-            if(action->timelineUpdate->remove_interval(interval)){
+            if(action->timelineUpdate->remove_interval(std::move(interval))){
                 add_to_update_flag(UpdateRoutines);
             }
         }else{
-            if(action->timelineVisibility->remove_interval(interval)){
+            if(action->timelineVisibility->remove_interval(std::move(interval))){
                 add_to_update_flag(UpdateRoutines);
             }
         }        
@@ -1590,17 +1607,17 @@ void Experiment::move_isi_interval_down(ElementKey isiKey, RowId id){
 void Experiment::compute_loops_levels(){
 
     // retrieve id of loops inside each element
-    std_v1<int> idLoops;
+    std::vector<ElementKey> idLoops;
     states.maximumDeepLevel = -1;
     for(auto& elem : elements){
         if(elem->type == FlowElement::Type::LoopStart){
             auto node = dynamic_cast<LoopNode*>(elem.get());
             node->insideLoopsID       = idLoops;
             node->loop->insideLoopsID = idLoops;
-            idLoops.emplace_back(node->key());
+            idLoops.emplace_back(ElementKey{node->key()});
          }else if(elem->type ==FlowElement::Type::LoopEnd){
-            auto node = dynamic_cast<LoopNode*>(elem.get());            
-            idLoops.erase(std::find(idLoops.begin(),idLoops.end(), node->key()));
+            auto node = dynamic_cast<LoopNode*>(elem.get());
+            idLoops.erase(std::find(idLoops.begin(),idLoops.end(), ElementKey{node->key()}));
             node->insideLoopsID = idLoops;
         }else{
             elem->insideLoopsID = idLoops;
@@ -1617,7 +1634,7 @@ void Experiment::compute_loops_levels(){
         elem->insideLoops.clear();
         for(auto id : elem->insideLoopsID){
             for(auto &loop : loops){
-                if(loop->key() == id){
+                if(loop->key() == id.v){
                     elem->insideLoops.emplace_back(loop.get());
                     break;
                 }
@@ -1635,7 +1652,7 @@ void Experiment::compute_loops_levels(){
         loop->insideLoops.clear();
         for(auto id : loop->insideLoopsID){
             for(auto &iLoop : loops){
-                if(iLoop->key() == id){
+                if(iLoop->key() == id.v){
                     loop->insideLoops.emplace_back(iLoop.get());
                     break;
                 }
@@ -1691,31 +1708,31 @@ void Experiment::update_conditions(){
         }
 
         // merge every set key from every loop containing the routine
-        std_v1<std_v1<QString>> setsId;
+        std::vector<std::vector<QString>> setsId;
         for(const auto& insideLoop : routine->insideLoops){
 
             auto loop = dynamic_cast<Loop*>(insideLoop);
             if(loop->is_file_mode()){
 
-                std_v1<QString> loopFileSetsId;
+                std::vector<QString> loopFileSetsId;
                 loopFileSetsId.reserve(loop->fileSets.size());
                 for(const auto &s : loop->fileSets){
-                    loopFileSetsId.emplace_back(QString::number(s.key()));
+                    loopFileSetsId.push_back(QString::number(s->key()));
                 }
                 setsId.emplace_back(std::move(loopFileSetsId));
             }else{
 
-                std_v1<QString> loopSetsId;
+                std::vector<QString> loopSetsId;
                 loopSetsId.reserve(loop->sets.size());
                 for(const auto &s : loop->sets){
-                    loopSetsId.emplace_back(QString::number(s.key()));
+                    loopSetsId.push_back(QString::number(s->key()));
                 }
                 setsId.emplace_back(std::move(loopSetsId));
             }
         }
 
         // mix new conditions keys
-        std_v1<QString> newConditionsKeysStr;
+        std::vector<QString> newConditionsKeysStr;
         while(setsId.size() > 1){
             setsId[setsId.size()-2] = mix(setsId[setsId.size()-2],setsId[setsId.size()-1]);
             setsId.erase(std::end(setsId)-1);
@@ -1725,11 +1742,11 @@ void Experiment::update_conditions(){
         }
 
         //  create all current conditions names
-        std_v1<std_v1<int>> newConditionsKeys;
-        std_v1<QString> newConditionsNames;
+        std::vector<std::vector<SetKey>> newConditionsKeys;
+        std::vector<QString> newConditionsNames;
         for(const auto &conditionKeysStr : newConditionsKeysStr){
 
-            std_v1<int> conditionKeys;
+            std::vector<SetKey> conditionKeys;
             QStringList conditionName;
 
             for(const auto &key : conditionKeysStr.split("-")){
@@ -1740,7 +1757,7 @@ void Experiment::update_conditions(){
                     auto loop = dynamic_cast<Loop*>(insideLoop);
                     if(auto set = loop->get_set(SetKey{key.toInt()}); set != nullptr){
                         conditionName << set->name;
-                        conditionKeys.emplace_back(set->key());
+                        conditionKeys.push_back(set->s_key());
                         found = true;
                         break;
                     }
@@ -1750,8 +1767,8 @@ void Experiment::update_conditions(){
                     QtLogger::error(QSL("[EXP] Cannot retrieve set with key ") % key % QSL(" from any loop."));
                 }
             }
-            newConditionsKeys.emplace_back(std::move(conditionKeys));
-            newConditionsNames.emplace_back(conditionName.join("-"));
+            newConditionsKeys.push_back(std::move(conditionKeys));
+            newConditionsNames.push_back(conditionName.join("-"));
         }
 
 
@@ -1847,17 +1864,14 @@ void Experiment::remove_component(ComponentKey componentKey){
 }
 
 void Experiment::duplicate_component(ComponentKey componentKey){
-
     compM.duplicate_component(componentKey);
-    add_to_update_flag(UpdateComponents | UpdateRoutines);
+    add_to_update_flag(UpdateComponents);
 }
 
 void Experiment::add_new_component(Component::Type type, RowId id){
-    QtLogger::message(QSL("add new component ") % QString::number(id.v));
     if(compM.insert_new_component(type, id)){
-        add_to_update_flag(UpdateComponents | UpdateRoutines);
+        add_to_update_flag(UpdateComponents);
     }
-    QtLogger::message(QSL("->") % QString::number(compM.count()));
 }
 
 void Experiment::copy_component(Component *component, std::vector<ConfigKey> configKeys, RowId id){
@@ -2148,7 +2162,6 @@ void Experiment::check_elements(){
 //    }
 
     for(auto &element : elements){
-        qDebug() << "check " << element->name();
         element->check_integrity();
     }
 }
@@ -2177,11 +2190,10 @@ void Experiment::check_legacy_conditions(){
 
                         bool found = false;
                         for(const auto &loopSet : dynamic_cast<Loop*>(loop)->sets){
-                            if(loopSet.name == set){
+                            if(loopSet->name == set){
                                 found = true;
                                 ++countMatched;
-                                condition->setsKeys.emplace_back(loopSet.key());
-
+                                condition->setsKeys.push_back(loopSet->s_key());
                                 break;
                             }
                         }
@@ -2196,8 +2208,6 @@ void Experiment::check_legacy_conditions(){
         }
     }
 }
-
-
 
 void Experiment::new_experiment(){
 

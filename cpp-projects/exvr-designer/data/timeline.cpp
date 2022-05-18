@@ -27,10 +27,10 @@
 using namespace tool;
 using namespace tool::ex;
 
-bool Timeline::add_interval(std::pair<SecondsTS,SecondsTS> interval){
+bool Timeline::add_interval(Interval interval){
 
     const double totalBefore = sum_intervals();
-    intervals.emplace_back(interval.first, interval.second, IntervalKey{-1});
+    intervals.push_back(std::move(interval));
 
     merge();
 
@@ -38,28 +38,28 @@ bool Timeline::add_interval(std::pair<SecondsTS,SecondsTS> interval){
     return !almost_equal(totalBefore,totalAfter);
 }
 
-bool Timeline::remove_interval(std::pair<SecondsTS,SecondsTS> intervalToRemove){
+bool Timeline::remove_interval(Interval intervalToRemove){
 
     const double totalBefore = sum_intervals();
 
-    std_v1<size_t> idToRemove;
-    std_v1<Interval> intervalsToAdd;
+    std::vector<size_t> idToRemove;
+    std::vector<Interval> intervalsToAdd;
 
     for(size_t ii = 0; ii < intervals.size(); ++ii){
         Interval &interval = intervals[ii];
 
-        bool startInside = interval.inside(intervalToRemove.first);
-        bool endInside   = interval.inside(intervalToRemove.second);
+        bool startInside = interval.inside(intervalToRemove.start);
+        bool endInside   = interval.inside(intervalToRemove.end);
 
         if(startInside && endInside){
-            intervalsToAdd.emplace_back(intervalToRemove.second, interval.end, IntervalKey{-1});
-            interval.end = intervalToRemove.first;
+            intervalsToAdd.emplace_back(intervalToRemove.end, interval.end);
+            interval.end = intervalToRemove.start;
         }else if(startInside){
-            interval.end = intervalToRemove.first;
+            interval.end = intervalToRemove.start;
         }else if(endInside){
-            interval.start = intervalToRemove.second;
-        }else if(Interval::inside(intervalToRemove.first, intervalToRemove.second, interval.start)
-              && Interval::inside(intervalToRemove.first, intervalToRemove.second, interval.end)){
+            interval.start = intervalToRemove.end;
+        }else if(Interval::inside(intervalToRemove.start, intervalToRemove.end, interval.start)
+              && Interval::inside(intervalToRemove.start, intervalToRemove.end, interval.end)){
             idToRemove.push_back(ii);
         }
     }
@@ -85,7 +85,7 @@ bool Timeline::remove_interval(std::pair<SecondsTS,SecondsTS> intervalToRemove){
 
 void Timeline::cut(SecondsTS max){
 
-    std_v1<size_t> idToRemove;
+    std::vector<size_t> idToRemove;
     for(size_t ii = 0; ii < intervals.size(); ++ii){
         Interval &interval = intervals[ii];
         if(interval.inside(max)){
@@ -117,7 +117,7 @@ double Timeline::sum_intervals() const{
 void Timeline::fill(SecondsTS length){
 
     if(intervals.size() == 0){
-        intervals.emplace_back(Interval{SecondsTS{0.},length, IntervalKey{-1}});
+        intervals.emplace_back(SecondsTS{0.},length);
     }else{
         intervals[0].start = {0.};
         intervals[0].end   = length;
@@ -135,7 +135,7 @@ void Timeline::merge(){
 
     while(true){
 
-        std_v1<std::pair<size_t,size_t>> collides;
+        std::vector<std::pair<size_t,size_t>> collides;
 
         for(size_t ii = 0; ii < intervals.size(); ++ii){
             for(size_t jj = 0; jj < intervals.size(); ++jj){
@@ -143,7 +143,7 @@ void Timeline::merge(){
                     continue;
                 }
                 if(intervals[ii].collide(intervals[jj])){ // merge if collide
-                    collides.emplace_back(std::make_pair(ii,jj));
+                    collides.push_back(std::make_pair(ii,jj));
                     break;
                 }
             }

@@ -47,22 +47,16 @@ public:
 };
 
 class BenchmarkDialog : public QDialog{
-
     Q_OBJECT
 
 public :
 
     BenchmarkDialog();
 
-
 public slots:
 
     void update();
-
-    void show_dialog(){
-        show();
-        raise();
-    }
+    void show_dialog();
 
 private:
 

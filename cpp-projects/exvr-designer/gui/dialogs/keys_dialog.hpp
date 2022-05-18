@@ -22,41 +22,44 @@
 ** SOFTWARE.                                                                      **
 ************************************************************************************/
 
+#pragma once
 
-#include "isi_flow_element_object.hpp"
+// Qt
+#include <QDialog>
+#include <QTableWidget>
+#include <QAbstractTableModel>
 
-// local
-#include "gui/settings/display.hpp"
+namespace tool::ex {
 
 
-using namespace tool::ex;
+class KeysTable : public QAbstractTableModel{
 
-IsiFlowElementO::IsiFlowElementO(Isi *isi) : MovableFlowElementO(isi){
+public:
+    int rowCount(const QModelIndex &parent) const;
+    int columnCount(const QModelIndex &parent) const;
+    QVariant data(const QModelIndex &index, int role) const;
+
+    void update();
+
+    std::unordered_map<std::string_view, size_t> elementsRow;
+    std::vector<std::tuple<std::string_view, QString, std::int64_t, bool, size_t>> elements;
+};
+
+class KeysDialog : public QDialog{
+    Q_OBJECT
+
+public :
+
+    KeysDialog();
+
+public slots:
+
+    void update();
+    void show_dialog();
+
+private:
+
+    QTableView *view = nullptr;
+    KeysTable *model = nullptr;
+};
 }
-
-void IsiFlowElementO::adapt_size_from_name(QFontMetrics fontMetrics){
-    MovableFlowElementO::adapt_size_from_name(fontMetrics);
-}
-
-void IsiFlowElementO::compute_position(QPointF topLeft, int loopMaxDeepLevel){
-    MovableFlowElementO::compute_position(topLeft, loopMaxDeepLevel);
-}
-
-void IsiFlowElementO::draw(QPainter &painter, qreal zoomLevel){
-
-    MovableFlowElementO::draw(painter, zoomLevel);
-
-    // draw rectangle
-    QPen pen;
-    pen.setWidthF(zoomLevel*1.2);
-    pen.setColor(display::Colors::line_box(is_selected(), type));
-    painter.setPen(pen);
-    painter.setBrush(display::Colors::fill_box(is_selected(), type));
-    painter.drawRoundedRect(uiElemRect, zoomLevel*4.,zoomLevel*4., Qt::AbsoluteSize);
-
-    // draw name
-    pen.setColor(display::Colors::text(is_selected(), type));
-    painter.setPen(pen);
-    painter.drawText(uiElemRect,  Qt::AlignCenter, name);
-}
-

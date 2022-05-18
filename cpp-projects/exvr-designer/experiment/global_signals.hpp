@@ -107,6 +107,7 @@ signals:
     void update_element_informations_signal(tool::ex::ElementKey routineKey, QString informations);
     void duplicate_element_signal(tool::ex::ElementKey elementKey);
     void select_element_signal(tool::ex::ElementKey elementKey, bool updateSignal);
+    void select_element_id_signal(RowId id, bool updateSignal);
     void unselect_element_signal(bool updateSignal);
     void remove_selected_element_signal();
     void add_element_signal(tool::ex::FlowElement::Type type, size_t index);
@@ -167,8 +168,8 @@ signals:
     // #### timeline
     void update_timeline_signal(tool::ex::ElementKey routineKey,tool::ex::ConditionKey conditionKey, double duration, double scale, double uiSize);
     // ##### interval
-    void add_interval_signal(tool::ex::ElementKey routineKey,tool::ex::ConditionKey conditionKey, tool::ex::ActionKey actionKey, bool updateTimeline, tool::ex::TimelineKey timelineKey, std::pair<SecondsTS,SecondsTS> interval);
-    void remove_interval_signal(tool::ex::ElementKey routineKey,tool::ex::ConditionKey conditionKey, tool::ex::ActionKey actionKey, bool updateTimeline, tool::ex::TimelineKey timelineKey,  std::pair<SecondsTS,SecondsTS> interval);
+    void add_interval_signal(tool::ex::ElementKey routineKey,tool::ex::ConditionKey conditionKey, tool::ex::ActionKey actionKey, bool updateTimeline, Interval interval);
+    void remove_interval_signal(tool::ex::ElementKey routineKey,tool::ex::ConditionKey conditionKey, tool::ex::ActionKey actionKey, bool updateTimeline, Interval interval);
     // ### connections / connectors / nodes
     void delete_connections_signal(tool::ex::ElementKey routineKey, tool::ex::ConditionKey conditionKey);
     void nodes_connection_created_signal(tool::ex::ElementKey routineKey,tool::ex::ConditionKey conditionKey, tool::ex::Connection *connection);

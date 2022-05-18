@@ -51,8 +51,6 @@
 #include "connections/data_models/connectors/connector_node_data_model.hpp"
 #include "experiment/global_signals.hpp"
 
-// debug
-#include <QDebug>
 
 using namespace tool::ex;
 
@@ -140,30 +138,35 @@ void DesignerWindow::update_from_experiment(Experiment *experiment, int update){
     }
 
     if(update & UpdateComponents){ // update experiment components
+        QtLogger::log(QSL("update experiment components"));
         Bench::start("[Update components]"sv, display);
         m_componentsW->update_from_components_manager(&experiment->compM);
         Bench::stop();
     }
 
     if(update & UpdateFlow){ // update flow
+        QtLogger::log(QSL("update flow"));
         Bench::start("[Update flow]"sv, display);
         m_flowDiagramW->update_from_experiment(experiment);
         Bench::stop();
     }
 
     if(update & UpdateSelection){ // update selected element
+        QtLogger::log(QSL("update selected element"));
         Bench::start("[Update selected element]"sv, display);
         m_elementViewerW->update_from_current_element(experiment->selectedElement);
         Bench::stop();
     }
 
     if(update & UpdateRoutines){ // update routines
+        QtLogger::log(QSL("update routines"));
         Bench::start("[Update routines]"sv, display);
         m_routinesW->update_from_experiment(experiment);
         Bench::stop();             
     }
 
     if(update & UpdateUI){
+        QtLogger::log(QSL("update ui"));
         Bench::start("[Update main ui]"sv, false);
         update_main_ui(experiment);
         Bench::stop();
