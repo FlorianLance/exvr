@@ -68,6 +68,6 @@ void RoutineFlowElementO::draw(QPainter &painter, qreal zoomLevel){
 }
 
 void RoutineFlowElementO::update(FlowElement *element){
-    FlowElementO::update(element);
+    MovableFlowElementO::update(element);
     isARandomizer = dynamic_cast<Routine*>(element)->isARandomizer;
 }

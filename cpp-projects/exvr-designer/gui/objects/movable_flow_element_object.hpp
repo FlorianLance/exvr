@@ -34,11 +34,14 @@ struct MovableFlowElementO : public FlowElementO{
 
     MovableFlowElementO(FlowElement *element);
 
+
+
     void adapt_size_from_name(QFontMetrics fontMetrics) override;
 
     void compute_position(QPointF topLeft, int loopMaxDeepLevel) override;
 
     void draw(QPainter &painter, qreal zoomLevel) override;
+    void update(FlowElement *element) override;
 
     bool canMoveToLeft = true;
     bool canMoveToRight= true;

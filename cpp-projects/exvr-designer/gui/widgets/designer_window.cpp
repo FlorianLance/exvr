@@ -468,6 +468,13 @@ void DesignerWindow::create_actions(){
         abort();
     });
 
+    m_displayKeysAct.setText(tr("&Display keys"));
+    m_displayKeysAct.setStatusTip(tr("Display keys"));
+    connect(&m_displayKeysAct, &QAction::triggered, this, [&]{
+        tool::ex::IdKey::debug_display();
+    });
+
+
     m_deleteUnusedComponentAct.setText(tr("&Delete unused component"));
     m_deleteUnusedComponentAct.setStatusTip(tr("m_deleteUnusedComponentAct"));
     connect(&m_deleteUnusedComponentAct, &QAction::triggered, GSignals::get(), &GSignals::delete_unused_components_debug_signal);
@@ -638,6 +645,7 @@ void DesignerWindow::create_menu(){
     menu->addAction(&m_benchmarkAct);
     menu->addAction(&m_crashAct);
     menu->addAction(&m_deleteUnusedComponentAct);
+    menu->addAction(&m_displayKeysAct);
     // doc
     menu = menuBar()->addMenu(tr("&?"));
     menu->addAction(&m_showDocumentationEditorAct);

@@ -29,6 +29,7 @@
 #include "gui/ex_widgets/ex_checkbox_w.hpp"
 #include "gui/ex_widgets/ex_line_edit_w.hpp"
 #include "gui/ex_widgets/ex_spin_box_w.hpp"
+#include "gui/ex_widgets/ex_label_w.hpp".hpp"
 
 // local
 #include "gui/ex_widgets/ex_resource_w.hpp"
@@ -42,6 +43,8 @@ struct KinectManagerInitConfigParametersW::Impl{
     ExComboBoxIndexW mode{"mode"};
     ExLineEditW camarasToUse{"cameras_to_use"};
     ExCheckBoxW debugBypassDevice{"debug_bypass"};
+//    ExCheckBoxW disableDisplayOnGrabber{"disable_grabber_display"};
+    ExLabelW infos{"infos"};
 };
 
 KinectManagerInitConfigParametersW::KinectManagerInitConfigParametersW():  ConfigParametersW(), m_p(std::make_unique<Impl>()){
@@ -52,6 +55,8 @@ void KinectManagerInitConfigParametersW::insert_widgets(){
     add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Cameras mode:"), m_p->mode()}, LStretch{false}, LMargins{true}, QFrame::NoFrame));
     add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Cameras id to use:"), m_p->camarasToUse()}, LStretch{false}, LMargins{true}, QFrame::NoFrame));
     add_widget(m_p->debugBypassDevice());
+//    add_widget(m_p->disableDisplayOnGrabber());
+    add_widget(ui::F::gen(ui::L::VB(), {ui::W::txt("Infos:"), m_p->infos()}, LStretch{false}, LMargins{true}, QFrame::Box));
 }
 
 void KinectManagerInitConfigParametersW::init_and_register_widgets(){
@@ -62,6 +67,22 @@ void KinectManagerInitConfigParametersW::init_and_register_widgets(){
     add_input_ui(m_p->mode.init_widget({"Cloud", "Mesh"}, 0));
     add_input_ui(m_p->camarasToUse.init_widget("0 1 2 3 4 5 6 7"));
     add_input_ui(m_p->debugBypassDevice.init_widget("Enable it for testing the experiment without the device", false));
+//    add_input_ui(m_p->disableDisplayOnGrabber.init_widget("Disable display on grabber", true));
+}
+
+void KinectManagerInitConfigParametersW::update_with_info(QStringView id, QStringView value){
+    if(id == QSL("config_infos")){
+        auto split = value.split('%');
+        if(split.size() >= 4){
+            m_p->infos.w->setText(
+                QString("Grabbers count: [%1]\nNetwork file loaded: [%2]\nCalibration file loaded: [%3]\nCamera file loaded: [%4]").arg(
+                split[0],
+                split[1] == '1' ? "YES" : "NO",
+                split[2] == '1' ? "YES" : "NO",
+                split[3] == '1' ? "YES" : "NO"
+            ));
+        }
+    }
 }
 
 struct KinectManagerConfigParametersW::Impl{

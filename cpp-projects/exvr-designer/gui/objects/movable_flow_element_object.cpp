@@ -84,3 +84,7 @@ void MovableFlowElementO::draw(QPainter &painter, qreal zoomLevel){
         moveRightElement->draw(painter,zoomLevel);
     }
 }
+
+void tool::ex::MovableFlowElementO::update(FlowElement *element){
+    FlowElementO::update(element);
+}

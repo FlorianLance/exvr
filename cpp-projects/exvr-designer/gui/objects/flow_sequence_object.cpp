@@ -72,24 +72,24 @@ void FlowSequenceO::update_from_experiment(Experiment *exp){
             oldE->update(newElement.get());
             switch (newElement->type) {
                 case FlowElement::Type::Node:{
-                    newNodesElements.emplace_back(dynamic_cast<NodeFlowElementO*>(oldE.get()));
-                    newElements.emplace_back(std::move(oldE));
+                    newNodesElements.push_back(dynamic_cast<NodeFlowElementO*>(oldE.get()));
+                    newElements.push_back(std::move(oldE));
                 }break;{
                 case FlowElement::Type::Routine:
-                    newRoutinesElements.emplace_back(dynamic_cast<RoutineFlowElementO*>(oldE.get()));
-                    newElements.emplace_back(std::move(oldE));
+                    newRoutinesElements.push_back(dynamic_cast<RoutineFlowElementO*>(oldE.get()));
+                    newElements.push_back(std::move(oldE));
                 }break;{
                 case FlowElement::Type::Isi:
-                    newISIsElements.emplace_back(dynamic_cast<IsiFlowElementO*>(oldE.get()));
-                    newElements.emplace_back(std::move(oldE));
+                    newISIsElements.push_back(dynamic_cast<IsiFlowElementO*>(oldE.get()));
+                    newElements.push_back(std::move(oldE));
                 }break;{
                 case FlowElement::Type::LoopStart:
-                    newLoopsStart.emplace_back(dynamic_cast<LoopNodeFlowElementO*>(oldE.get()));
-                    newElements.emplace_back(std::move(oldE));
+                    newLoopsStart.push_back(dynamic_cast<LoopNodeFlowElementO*>(oldE.get()));
+                    newElements.push_back(std::move(oldE));
                 }break;{
                 case FlowElement::Type::LoopEnd:
-                    newLoopsEnd.emplace_back(dynamic_cast<LoopNodeFlowElementO*>(oldE.get()));
-                    newElements.emplace_back(std::move(oldE));
+                    newLoopsEnd.push_back(dynamic_cast<LoopNodeFlowElementO*>(oldE.get()));
+                    newElements.push_back(std::move(oldE));
                 }break;
                 default:
                 break;

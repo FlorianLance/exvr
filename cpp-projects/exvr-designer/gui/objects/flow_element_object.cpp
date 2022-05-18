@@ -67,12 +67,11 @@ void FlowElementO::draw(QPainter &painter, qreal zoomLevel){
 }
 
 
-
 void FlowElementO::update(FlowElement *element){
     key             = ElementKey{element->key()};
     name            = element->name();
     type            = element->type;
-    informations    = element->informations;
     m_selected      = element->is_selected();
-    m_insideLoopsID = element->insideLoopsID;    
+    informations    = element->informations;
+    m_insideLoopsID = element->insideLoopsID;
 }
