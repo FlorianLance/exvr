@@ -91,6 +91,37 @@ void ElementViewerW::update_from_current_element(FlowElement *elem){
     }
 }
 
+void ElementViewerW::update_set_settings(QTableWidgetItem *item){
+
+    QTableWidget *tw = m_loopUI->twSets;
+    int row = item->row();
+    if(item->column() == 0){
+
+        QString currentSet = tw->item(row,0)->text();
+
+        bool ok;
+        QString newSetName = QInputDialog::getText(this,
+           tr("Define selected Set name"),
+           tr("Enter name:"), QLineEdit::Normal,
+           currentSet, &ok);
+
+        if(ok && newSetName.length() > 0){
+            emit GSignals::get()->modify_loop_set_name_signal(m_currentElementId, newSetName.replace(' ', '_').replace('-', '_'), RowId{row});
+        }
+
+    }else if(item->column() == 1){
+
+        bool ok;
+        int newOccurenciesNb = QInputDialog::getInt(this,
+            tr("Define selected set number of occurencies"),
+            tr("Enter number:"),
+            tw->item(row,1)->text().toInt(), 0, 100000, 1, &ok);
+        if(ok ){
+            emit GSignals::get()->modify_loop_set_occurrencies_nb_signal(m_currentElementId, newOccurenciesNb, RowId{row});
+        }
+    }
+}
+
 void ElementViewerW::init_routine_ui(){
 
     // routine
@@ -176,6 +207,7 @@ void ElementViewerW::init_loop_ui(){
     tw->setItemDelegate(new Delegate);
     tw->setColumnWidth(0, 100);
     tw->setColumnWidth(1, 75);
+    tw->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
     // name
     connect(ui->pbSetName, &QPushButton::clicked, this, [&, ui]{
@@ -249,18 +281,10 @@ void ElementViewerW::init_loop_ui(){
         int row = tw->currentRow();
         emit GSignals::get()->select_loop_set_signal(m_currentElementId, tw->item(row,0)->text());
     });
-    connect(tw, &QTableWidget::itemChanged, this, [=](QTableWidgetItem *item){
-        int row = item->row();
-        if(item->column() == 0){
-            auto txt = tw->item(row,0)->text().replace(' ', '_').replace('-', '_');
-            tw->blockSignals(true);
-            tw->item(row,0)->setText(txt);
-            tw->blockSignals(false);
-            emit GSignals::get()->modify_loop_set_name_signal(m_currentElementId, txt, RowId{row});
-        }else{
-            emit GSignals::get()->modify_loop_set_occurrencies_nb_signal(m_currentElementId, tw->item(row,1)->text().toInt(), RowId{row});
-        }
-    });
+
+    connect(tw, &QTableWidget::itemClicked,       this, &ElementViewerW::update_set_settings);
+    connect(tw, &QTableWidget::itemDoubleClicked, this, &ElementViewerW::update_set_settings);
+
 
     connect(ui->pbAdd, &QPushButton::clicked, this, [=]{
         QString txt = ui->teAdd->toPlainText().replace(' ', '_').replace('-', '_');

@@ -210,19 +210,14 @@ void ComponentsManager::insert_copy_of_component(Component *component, std::vect
         ++offset;
     }while(isInside);
 
-
-    qDebug() << "ncompo";
     auto nComponent = Component::copy_with_new_element_id(component, name % QSL("(imported)"), std::move(configKeys));
 
-    qDebug() << "map";
     add_component_to_map(nComponent.get());
 
-    qDebug() << "insert";
     components.insert(
         std::begin(components) + id.v,
         std::move(nComponent)
     );
-    qDebug() << "end ncomp";
 }
 
 bool ComponentsManager::insert_new_component(Component::Type type, RowId id){
@@ -288,7 +283,7 @@ bool ComponentsManager::update_component_name(ComponentKey componentKey, QString
 
     component->set_name(newName);
 
-    return false;
+    return true;
 }
 
 std::vector<Component *> ComponentsManager::get_components() const{

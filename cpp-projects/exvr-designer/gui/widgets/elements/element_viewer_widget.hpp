@@ -61,6 +61,7 @@ public :
 public slots:
 
     void update_from_current_element(FlowElement *elem);
+    void update_set_settings(QTableWidgetItem *item);
 
 private:
 

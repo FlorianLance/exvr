@@ -91,7 +91,6 @@ void Experiment::select_element(ElementKey elementKey, bool updateSignal){
 
 void Experiment::select_element_from_ptr(FlowElement *element, bool updateSignal){
 
-    qDebug() << "select_element_from_ptr " << element->name() << element->key();
 
     if(element->is_selected()){
         return;
@@ -128,8 +127,6 @@ void Experiment::select_element_from_ptr(FlowElement *element, bool updateSignal
             element->set_selected(select);
         }
     }
-
-    qDebug() << "end sel";
 
     if(updateSignal){
         add_to_update_flag(UpdateFlow | UpdateSelection | UpdateRoutines);
@@ -1370,18 +1367,6 @@ void Experiment::add_loop_sets(ElementKey loopKey, QString sets, RowId id){
                 loop->set_sets(sets.split("\n"));
             }else{
                 loop->add_sets(sets.split("\n"), id);
-//                int startId = id.v;
-//                int ii = 0;
-//                for(const auto &setName : sets.split("\n")){
-
-//                    if(setName.length() == 0){
-//                        continue;
-//                    }
-
-//                    if(loop->add_set(setName, RowId{startId+ii})){
-//                        ++ii;
-//                    }
-//                }
             }
 
             update_conditions();
@@ -1406,9 +1391,11 @@ void Experiment::modify_loop_set_occurrencies_nb(ElementKey loopKey, int setOccu
         if(loop->is_file_mode()){
             QtLogger::error(QSL("[EXP] Cannot modify loop set when file mode is used."));
         }else{
-            loop->modify_set_occurencies_nb(setOccuranciesNb, id);
-            add_to_update_flag(UpdateSelection);
+            loop->modify_set_occurencies_nb(setOccuranciesNb, id);            
         }
+        add_to_update_flag(UpdateSelection);
+    }else{
+        QtLogger::error(QSL("[Experiment::modify_loop_set_occurrencies_nb] Cannot get loop from key [") % QString::number(loopKey.v) % QSL("]"));
     }
 }
 
@@ -1426,7 +1413,7 @@ void Experiment::modify_loop_nb_reps(ElementKey loopKey, int nbReps){
     if(auto loop = get_loop(loopKey); loop != nullptr){
         loop->set_nb_reps(to_unsigned(nbReps));
         update_conditions();
-        //add_to_update_flag(UpdateSelection);
+        add_to_update_flag(UpdateSelection);
     }
 }
 
@@ -1435,7 +1422,7 @@ void Experiment::modify_loop_N(ElementKey loopKey, int N){
     if(auto loop = get_loop(loopKey); loop != nullptr){
         loop->set_N(N);
         update_conditions();
-        //add_to_update_flag(UpdateSelection);
+        add_to_update_flag(UpdateSelection);
     }
 }
 

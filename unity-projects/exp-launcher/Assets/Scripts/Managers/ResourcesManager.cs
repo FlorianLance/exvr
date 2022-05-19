@@ -71,15 +71,15 @@ namespace Ex {
         };
 
         public void log_message(string message) {
-            ExVR.Log().message(string.Format("[RESOURCE] {0}", message), false);
+            ExVR.Log().message(string.Format("[RESOURCE] {0}", message), false, "", "", 0, true, false);
         }
 
         public void log_warning(string warning) {
-            ExVR.Log().warning(string.Format("[RESOURCE] {0}", warning));
+            ExVR.Log().warning(string.Format("[RESOURCE] {0}", warning), true, "", "", 0, true, false);
         }
 
         public void log_error(string error) {
-            ExVR.Log().error(string.Format("[RESOURCE] {0}", error));
+            ExVR.Log().error(string.Format("[RESOURCE] {0}", error), true, "", "", 0, true, false);
         }
 
         private Dictionary<ResourceType, Dictionary<string, ExResource>> m_pathMappingResources = null; // type - path -> resource        

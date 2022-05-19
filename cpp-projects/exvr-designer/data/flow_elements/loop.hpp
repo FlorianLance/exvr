@@ -116,7 +116,7 @@ struct Loop : public FlowElement {
     void add_sets(QStringList setsName, RowId id);
     void remove_set(RowId id);
     bool modify_set_name(QString newSetName, RowId id);
-    void modify_set_occurencies_nb(int occurrencies, RowId id);
+    bool modify_set_occurencies_nb(int occurrencies, RowId id);
     void move_set_up(RowId id);
     void move_set_down(RowId id);
     void sort_sets_lexico();

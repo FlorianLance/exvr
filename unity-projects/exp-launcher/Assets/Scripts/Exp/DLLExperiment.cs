@@ -134,9 +134,19 @@ namespace Ex {
                 switch ((SenderT)sType) {
                     case SenderT.Component:
                         if (ExVR.Components().componentPerKey.ContainsKey(sKey)) {
-                            ExVR.Components().componentPerKey[sKey].log_message(message, true);
+                            ExVR.Components().componentPerKey[sKey].log_message(
+                                message : message, 
+                                verbose : true,
+                                logger  : true, 
+                                append  : false
+                            );
                         } else {
-                            ExVR.Log().error(string.Format("[DLL] Receive message from invalid component key {0} : {1}", sKey, message), true, "", "", 0, true, false);
+                            ExVR.Log().error(
+                                error        : string.Format("[DLL] Receive message from invalid component key {0} : {1}", sKey, message),
+                                addExtraInfo : true,
+                                logger       : true,
+                                append       : false
+                            );
                         }
                         break;
                 }
@@ -148,7 +158,12 @@ namespace Ex {
                 switch ((SenderT)sType) {
                     case SenderT.Component:
                         if (ExVR.Components().componentPerKey.ContainsKey(sKey)) {
-                            ExVR.Components().componentPerKey[sKey].log_warning(message, true);
+                            ExVR.Components().componentPerKey[sKey].log_warning(
+                                warning : message,
+                                verbose : true,
+                                logger  : true,
+                                append  : false
+                            );
                         } else {
                             ExVR.Log().error(string.Format("[DLL] Receive warning from invalid component key {0} : {1}", sKey, message), true, "", "", 0, true, false);
                         }
@@ -162,7 +177,12 @@ namespace Ex {
                 switch ((SenderT)sType) {
                     case SenderT.Component:
                         if (ExVR.Components().componentPerKey.ContainsKey(sKey)) {
-                            ExVR.Components().componentPerKey[sKey].log_error(message, true);
+                            ExVR.Components().componentPerKey[sKey].log_error(
+                                error   : message,
+                                verbose : true,
+                                logger  : true,
+                                append  : false
+                            );
                         } else {
                             ExVR.Log().error(string.Format("[DLL] Receive error from invalid component key {0} : {1}", sKey, message));
                         }

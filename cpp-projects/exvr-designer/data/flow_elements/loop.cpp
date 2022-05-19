@@ -220,12 +220,30 @@ bool Loop::modify_set_name(QString newSetName, RowId id){
     return true;
 }
 
-void Loop::modify_set_occurencies_nb(int occurrencies, RowId id){
+bool Loop::modify_set_occurencies_nb(int occurrencies, RowId id){
+
+    auto currentNb = sets[id.v]->occurencies;
     sets[id.v]->occurencies = static_cast<size_t>(occurrencies);
+
+    bool foundNotZero = false;
+    for(const auto &set : sets){
+        if(set->occurencies != 0){
+            foundNotZero = true;
+            break;
+        }
+    }
+
+    if(!foundNotZero){
+        sets[id.v]->occurencies = currentNb;
+        QtLogger::error(QSL("[LOOP] We need to have at least one set with a non-zero occurency."));
+        return false;
+    }
+    return true;
 }
 
 void Loop::move_set_up(RowId id){
     std::swap(sets[id.v], sets[id.v-1]);
+
 }
 
 void Loop::move_set_down(RowId id){

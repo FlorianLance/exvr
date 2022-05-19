@@ -29,7 +29,7 @@
 #include "gui/ex_widgets/ex_checkbox_w.hpp"
 #include "gui/ex_widgets/ex_line_edit_w.hpp"
 #include "gui/ex_widgets/ex_spin_box_w.hpp"
-#include "gui/ex_widgets/ex_label_w.hpp".hpp"
+#include "gui/ex_widgets/ex_label_w.hpp"
 
 // local
 #include "gui/ex_widgets/ex_resource_w.hpp"
@@ -43,7 +43,6 @@ struct KinectManagerInitConfigParametersW::Impl{
     ExComboBoxIndexW mode{"mode"};
     ExLineEditW camarasToUse{"cameras_to_use"};
     ExCheckBoxW debugBypassDevice{"debug_bypass"};
-//    ExCheckBoxW disableDisplayOnGrabber{"disable_grabber_display"};
     ExLabelW infos{"infos"};
 };
 
@@ -51,11 +50,10 @@ KinectManagerInitConfigParametersW::KinectManagerInitConfigParametersW():  Confi
 }
 
 void KinectManagerInitConfigParametersW::insert_widgets(){
-    add_widget(ui::F::gen(ui::L::VB(), {m_p->config(),m_p->calib(),m_p->camera()}, LStretch{false}, LMargins{true}, QFrame::Box));
+    add_widget(ui::F::gen(ui::L::VB(), {m_p->config(), ui::W::txt("Optional:"),m_p->calib(),m_p->camera()}, LStretch{false}, LMargins{true}, QFrame::Box));
     add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Cameras mode:"), m_p->mode()}, LStretch{false}, LMargins{true}, QFrame::NoFrame));
-    add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Cameras id to use:"), m_p->camarasToUse()}, LStretch{false}, LMargins{true}, QFrame::NoFrame));
+    add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Grabbers id to use (ex:\"0;1;2\"):"), m_p->camarasToUse()}, LStretch{false}, LMargins{true}, QFrame::NoFrame));
     add_widget(m_p->debugBypassDevice());
-//    add_widget(m_p->disableDisplayOnGrabber());
     add_widget(ui::F::gen(ui::L::VB(), {ui::W::txt("Infos:"), m_p->infos()}, LStretch{false}, LMargins{true}, QFrame::Box));
 }
 
@@ -63,7 +61,7 @@ void KinectManagerInitConfigParametersW::init_and_register_widgets(){
 
     add_input_ui(m_p->config.init_widget(Resource::Type::Text, "Network file: "));
     add_input_ui(m_p->calib.init_widget(Resource::Type::Text,  "Calibration file: "));
-    add_input_ui(m_p->camera.init_widget(Resource::Type::Text, "Camera file: "));
+    add_input_ui(m_p->camera.init_widget(Resource::Type::Text, "Common camera file: "));
     add_input_ui(m_p->mode.init_widget({"Cloud", "Mesh"}, 0));
     add_input_ui(m_p->camarasToUse.init_widget("0 1 2 3 4 5 6 7"));
     add_input_ui(m_p->debugBypassDevice.init_widget("Enable it for testing the experiment without the device", false));
@@ -89,6 +87,8 @@ struct KinectManagerConfigParametersW::Impl{
     ExSpinBoxW fps{"fps"};
     ExCheckBoxW updateFromCameras{"update_cameras"};
     ExSpinBoxW maxDiffTime{"max_diff_time"};
+    ExLabelW infos{"infos"};
+    std::vector<QString> infosStr;
 };
 
 KinectManagerConfigParametersW::KinectManagerConfigParametersW():  ConfigParametersW(), m_p(std::make_unique<Impl>()){
@@ -97,10 +97,33 @@ KinectManagerConfigParametersW::KinectManagerConfigParametersW():  ConfigParamet
 void KinectManagerConfigParametersW::insert_widgets(){
     add_widget(ui::F::gen(ui::L::HB(),{m_p->updateFromCameras(), ui::W::txt("Camera ask frame rate: "), m_p->fps()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
     add_widget(ui::F::gen(ui::L::HB(),{ui::W::txt("Max diff time(ms): "), m_p->maxDiffTime()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
+    add_widget(ui::F::gen(ui::L::VB(), {ui::W::txt("Infos:"), m_p->infos()}, LStretch{false}, LMargins{true}, QFrame::Box));
 }
 
 void KinectManagerConfigParametersW::init_and_register_widgets(){
     add_input_ui(m_p->updateFromCameras.init_widget("Update cameras ", true));
     add_input_ui(m_p->fps.init_widget(MinV<int>{1}, V<int>{45}, MaxV<int>{90}, StepV<int>{1}));
     add_input_ui(m_p->maxDiffTime.init_widget(MinV<int>{1}, V<int>{100}, MaxV<int>{1000}, StepV<int>{1}));
+}
+
+void KinectManagerConfigParametersW::update_with_info(QStringView id, QStringView value){
+    if(id == QSL("frame_info")){
+        auto split = value.split('%');
+        if(split.size() >= 5){
+            auto id = split[0].toInt();
+            if(id >= m_p->infosStr.size()){
+                m_p->infosStr.resize(id+1);
+            }
+
+            m_p->infosStr[id] = QString("Grabber id: [%1], frame id: [%2], diff time: [%3], nb pts: [%4], nb tris: [%5]\n").arg(
+                split[0], split[1], split[2], split[3], split[4]
+            );
+
+            QString infos;
+            for(const auto &info : m_p->infosStr){
+                infos += info;
+            }
+            m_p->infos.w->setText(infos);
+        }
+    }
 }

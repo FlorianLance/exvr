@@ -180,34 +180,49 @@ namespace Ex {
         public void log_message(object message, bool verbose = false, bool extra = false,
             [CallerMemberName] string memberName = "",
             [CallerFilePath] string sourceFilePath = "",
-            [CallerLineNumber] int sourceLineNumber = 0) {
-            if (verbose) {
-                log().message(string.Concat(Converter.to_string(message), verbose_name()), extra, memberName, sourceFilePath, sourceLineNumber);
-            } else {
-                log().message(message, extra, memberName, sourceFilePath, sourceLineNumber);
-            }            
+            [CallerLineNumber] int sourceLineNumber = 0, bool logger = true, bool append = true) {
+
+            log().message(
+                message         : verbose ? string.Concat(Converter.to_string(message), verbose_name()) : message,
+                addExtraInfo    : extra,
+                memberName      : memberName,
+                sourceFilePath  : sourceFilePath,
+                sourceLineNumber: sourceLineNumber,
+                logger          : logger,
+                append          : append
+            );
         }
 
         public void log_warning(object warning, bool verbose = true, bool extra = false,
             [CallerMemberName] string memberName = "",
             [CallerFilePath] string sourceFilePath = "",
-            [CallerLineNumber] int sourceLineNumber = 0) {
-            if (verbose) {
-                log().warning(string.Concat(Converter.to_string(warning), verbose_name()), extra, memberName, sourceFilePath, sourceLineNumber, true, false);
-            } else {
-                log().warning(warning, extra, memberName, sourceFilePath, sourceLineNumber, true, false);
-            }
+            [CallerLineNumber] int sourceLineNumber = 0, bool logger = true, bool append = false) {
+
+            log().warning(
+                warning          : verbose ? string.Concat(Converter.to_string(warning), verbose_name()) : warning,
+                addExtraInfo     : extra,
+                memberName       : memberName,
+                sourceFilePath   : sourceFilePath,
+                sourceLineNumber : sourceLineNumber,
+                logger           : logger,
+                append           : append
+            );
         }
 
         public void log_error(object error, bool verbose = true, bool extra = true,
             [CallerMemberName] string memberName = "",
             [CallerFilePath] string sourceFilePath = "",
-            [CallerLineNumber] int sourceLineNumber = 0) {
-            if (verbose) {
-                log().error(string.Concat(Converter.to_string(error), verbose_name()), extra, memberName, sourceFilePath, sourceLineNumber, true, false);
-            } else {
-                log().error(error, extra, memberName, sourceFilePath, sourceLineNumber, true, false);
-            }
+            [CallerLineNumber] int sourceLineNumber = 0, bool logger = true, bool append = false) {
+
+            log().error(
+                error            : verbose ? string.Concat(Converter.to_string(error), verbose_name()) : error,
+                addExtraInfo     : extra, 
+                memberName       : memberName,
+                sourceFilePath   : sourceFilePath,
+                sourceLineNumber : sourceLineNumber,
+                logger           : logger,
+                append           : append
+            );
         }
 
         // configs
