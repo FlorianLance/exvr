@@ -27,9 +27,9 @@
 using namespace tool::ex;
 
 MovableFlowElementO::MovableFlowElementO(FlowElement *element) : FlowElementO (element){
-    removeElement    = std::make_unique<RemoveFlowElementO>();
-    moveLeftElement  = std::make_unique<MoveFlowElementO>(true);
-    moveRightElement = std::make_unique<MoveFlowElementO>(false);
+    removeElement    = std::make_unique<RemoveButtonO>();
+    moveLeftElement  = std::make_unique<MoveButtonO>(true);
+    moveRightElement = std::make_unique<MoveButtonO>(false);
 }
 
 void MovableFlowElementO::adapt_size_from_name(QFontMetrics fontMetrics){

@@ -22,30 +22,18 @@
 ** SOFTWARE.                                                                      **
 ************************************************************************************/
 
-#include "remove_flow_element_object.hpp"
+#pragma once
 
-using namespace tool::ex;
+// local
+#include "flow_element_object.hpp"
 
-RemoveFlowElementO::RemoveFlowElementO() : remove(std::make_unique<FlowElement>(FlowElement::Type::RemoveElement, "remove")) {
-    name        = remove->name();
-    type        = remove->type;
-    key         = ElementKey{remove->key()};
-    m_selected  = remove->is_selected();
-    m_insideLoopsID = remove->insideLoopsID;
-}
+namespace tool::ex{
 
-void RemoveFlowElementO::draw(QPainter &painter, qreal zoomLevel){
+class AddButtonO : public ElementO{
+public:
+    AddButtonO(FlowElement::Type typeToAdd): ElementO(ButtonType::AddElement), typeToAdd(typeToAdd){}
+    FlowElement::Type typeToAdd;
+    ButtonType type = ButtonType::AddElement;
+};
 
-    // draw rectangle
-    QPen pen;
-    pen.setWidthF(zoomLevel*1.1);
-    pen.setColor(display::Colors::line_box(true, type));
-    painter.setPen(pen);
-    painter.setBrush(display::Colors::fill_box(true, type));
-    painter.drawRoundedRect(uiElemRect, zoomLevel*4.,zoomLevel*4., Qt::AbsoluteSize);
-
-    // draw name
-    pen.setColor(display::Colors::text(true, type));
-    painter.setPen(pen);
-    painter.drawText(uiElemRect,  Qt::AlignCenter, "X");
 }

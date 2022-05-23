@@ -69,7 +69,7 @@ void ElementViewerW::update_from_current_element(FlowElement *elem){
         return;
     }
 
-    if(elem->type == FlowElement::Type::Node){
+    if(elem->type() == FlowElement::Type::Node){
         m_toolBox->removeTab(0);
         m_toolBox->insertTab(0, &m_noSelectionW, QSL("No selection"));
         return;
@@ -79,13 +79,13 @@ void ElementViewerW::update_from_current_element(FlowElement *elem){
 
 
     m_toolBox->removeTab(0);
-    if(elem->type == FlowElement::Type::Loop){
+    if(elem->type() == FlowElement::Type::Loop){
         update_loop_ui(dynamic_cast<Loop*>(elem));
         m_toolBox->insertTab(0, &m_loopW, "Selected loop");
-    }else if(elem->type == FlowElement::Type::Routine){
+    }else if(elem->type() == FlowElement::Type::Routine){
         update_routine_ui(dynamic_cast<Routine*>(elem));
         m_toolBox->insertTab(0, &m_routineW, "Selected Routine");
-    }else if(elem->type == FlowElement::Type::Isi){
+    }else if(elem->type() == FlowElement::Type::Isi){
         update_isi_ui(dynamic_cast<Isi*>(elem));
         m_toolBox->insertTab(0, &m_isiW, "Selected Isi");
     }

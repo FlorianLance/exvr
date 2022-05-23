@@ -22,32 +22,22 @@
 ** SOFTWARE.                                                                      **
 ************************************************************************************/
 
-#include "move_flow_element_object.hpp"
+#include "remove_button_object.hpp"
 
 using namespace tool::ex;
 
-
-MoveFlowElementO::MoveFlowElementO(bool left)  : isLeft(left), move(std::make_unique<FlowElement>(FlowElement::Type::MoveElement, "move")) {
-
-    name            = move->name();
-    type            = move->type;
-    key             = ElementKey{move->key()};
-    m_selected      = move->is_selected();
-    m_insideLoopsID = move->insideLoopsID;
-}
-
-void MoveFlowElementO::draw(QPainter &painter, qreal zoomLevel){
+void RemoveButtonO::draw(QPainter &painter, qreal zoomLevel){
 
     // draw rectangle
     QPen pen;
     pen.setWidthF(zoomLevel*1.1);
-    pen.setColor(display::Colors::line_box(true, type));
+    pen.setColor(display::Colors::line_box(type));
     painter.setPen(pen);
-    painter.setBrush(display::Colors::fill_box(true, type));
+    painter.setBrush(display::Colors::fill_box(type));
     painter.drawRoundedRect(uiElemRect, zoomLevel*4.,zoomLevel*4., Qt::AbsoluteSize);
 
     // draw name
-    pen.setColor(display::Colors::text(true, type));
+    pen.setColor(display::Colors::text(type));
     painter.setPen(pen);
-    painter.drawText(uiElemRect,  Qt::AlignCenter, isLeft ? "<" : ">");
+    painter.drawText(uiElemRect,  Qt::AlignCenter, "X");
 }

@@ -24,18 +24,8 @@
 
 #pragma once
 
-// std
-//#include <memory>
-//#include <optional>
-
 // Qt
 #include <QString>
-//#include <QList>
-//#include <QVector>
-
-// base
-//#include "utility/vector.hpp"
-//#include "utility/tuple_array.hpp"
 
 // qt-utility
 #include "data/id_key.hpp"
@@ -44,94 +34,68 @@ namespace tool::ex {
 
 using namespace std::literals::string_view_literals;
 
-struct FlowElement {
+enum class ButtonType : int {
+    AddElement,RemoveElement,MoveElement,
+    SizeEnum};
 
-public:
+struct FlowElement {
 
     enum class Type : int {
         Node,LoopStart,LoopEnd,Routine,Isi,Loop,AddElement,RemoveElement,MoveElement,
         SizeEnum};
 
-    enum class Category : int{
-        Movable, Fixed, Button,
+    enum class Mobility : int{
+        Movable, Fixed,
         SizeEnum
     };
 
     using Name     = std::string_view;
 
-    using TElement = std::tuple<Type, Name, Category>;
+    using TElement = std::tuple<Type, Name, Mobility>;
     static constexpr TupleArray<Type::SizeEnum,TElement> elements ={{
         TElement
-        {Type::Node,         "Node"sv,          Category::Fixed},
-        {Type::LoopStart,    "LoopStart"sv,     Category::Movable},
-        {Type::LoopEnd,      "LoopEnd"sv,       Category::Movable},
-        {Type::Routine,      "Routine"sv,       Category::Movable},
-        {Type::Isi,          "Isi"sv,           Category::Movable},
-        {Type::Loop,         "Loop"sv,          Category::Movable},
-        {Type::AddElement,   "AddElement"sv,    Category::Button},
-        {Type::RemoveElement,"RemoveElement"sv, Category::Button},
-        {Type::MoveElement,  "MoveElement"sv,   Category::Button}
+        {Type::Node,         "Node"sv,          Mobility::Fixed},
+        {Type::LoopStart,    "LoopStart"sv,     Mobility::Movable},
+        {Type::LoopEnd,      "LoopEnd"sv,       Mobility::Movable},
+        {Type::Routine,      "Routine"sv,       Mobility::Movable},
+        {Type::Isi,          "Isi"sv,           Mobility::Movable},
+        {Type::Loop,         "Loop"sv,          Mobility::Movable},
     }};
 
-    static constexpr Type get_type(Name n) {
-        return elements.at<1,0>(n);
-    }
-
-    static constexpr Name get_type_name(Type t) {
-        return elements.at<0,1>(t);
-    }
-
-    static constexpr Category get_category(Type t) {
-        return elements.at<0,2>(t);
-    }
+    static constexpr Type get_type(Name n) {return elements.at<1,0>(n);}
+    static constexpr Name get_type_name(Type t) {return elements.at<0,1>(t);}
+    static constexpr Mobility get_mobility(Type t) {return elements.at<0,2>(t);}
 
     FlowElement() = delete;
     FlowElement(Type t, QString n, int id = -1, QString infos = "") :
-          type(t), informations(infos),
-          m_key(Category(t) == Category::Button ? IdKey::Type::ButtonFlowElement : IdKey::Type::FlowElement, id),
-          m_name(n){
+        informations(infos),
+        m_type(t),
+        m_key(IdKey::Type::FlowElement, id),
+        m_name(n){
     }
     FlowElement(const FlowElement &) = delete;
     FlowElement& operator=(const FlowElement&) = delete;
 
+    constexpr Type type()const noexcept{ return m_type;}
+    constexpr int key() const noexcept{ return m_key();}
+    constexpr ElementKey e_key() const noexcept {return ElementKey{key()};}
+    inline QString name()const noexcept{return m_name;}
+    constexpr bool is_selected() const noexcept {return m_isSelected;}
+    constexpr bool is_routine()const noexcept{return m_type == Type::Routine;}
+    constexpr bool is_isi()const noexcept{return m_type == Type::Isi;}
 
-    inline void set_selected(bool select) noexcept {
-        m_isSelected = select;
-    }
-
-    inline void update_name(QString name)noexcept{
-        m_name = name;
-    }
-
-    inline QString name()const noexcept{
-        return m_name;
-    }
-
-    constexpr bool is_selected() const noexcept {
-        return m_isSelected;
-    }
-
-    constexpr bool is_routine()const noexcept{
-        return type == Type::Routine;
-    }
-
-    constexpr bool is_isi()const noexcept{
-        return type == Type::Isi;
-    }
+    inline void update_name(QString name)noexcept{m_name = name;}
+    inline void set_selected(bool select) noexcept {m_isSelected = select;}
 
     virtual void check_integrity(){}
 
-    constexpr int key() const noexcept{ return m_key();}
-//    constexpr ElementKey e_key() const noexcept {return ElementKey{key()};}
-
-    Type type;
-
-    std::vector<ElementKey> insideLoopsID;       /**< all loop id containing the element */
+    std::vector<ElementKey> insideLoopsID;   /**< all loop id containing the element */
     std::vector<FlowElement*> insideLoops;
     QString informations;
 
 private:
 
+    Type m_type;
     IdKey m_key;
     QString m_name = "";
     bool m_isSelected = false;  /**< is the element selected ? */

@@ -904,24 +904,19 @@ void ComboTextGen::update_arg(Arg &arg) const{
     arg.generator->info = leText.text();
 }
 
+NotepadGen::NotepadGen(){}
 
-CodeEditorGen::CodeEditorGen(){
+void NotepadGen::update_arg(Arg &arg) const{}
 
-}
+CodeEditorGen::CodeEditorGen(){}
 
-void CodeEditorGen::update_arg(Arg &) const{
+void CodeEditorGen::update_arg(Arg &) const{}
 
-}
+ColorPickGen::ColorPickGen(){}
 
-ColorPickGen::ColorPickGen(){
-
-}
-
-void ColorPickGen::update_arg(Arg &
-                              ) const{
-
-}
+void ColorPickGen::update_arg(Arg &) const{}
 
 CheckBoxGen::CheckBoxGen(){}
 
 void CheckBoxGen::update_arg(Arg &) const{}
+

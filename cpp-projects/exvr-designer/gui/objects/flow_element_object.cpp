@@ -29,22 +29,9 @@
 
 using namespace tool::ex;
 
-FlowElementO::FlowElementO(FlowElement *element) :
-      key(ElementKey{element->key()}), name(element->name()), type(element->type),
-      m_selected(element->is_selected()), m_insideLoopsID(element->insideLoopsID){
-
-}
 
 
-void FlowElementO::define_area_height(qreal height){
-    areaHeight = height;
-}
-
-void FlowElementO::define_stretch(qreal stretch){
-    areaStretch = stretch;
-}
-
-void FlowElementO::adapt_size_from_name(QFontMetrics fontMetrics){
+void ElementO::adapt_size_from_name(QFontMetrics fontMetrics){
 
     QRect rect = fontMetrics.boundingRect(name);
     qreal minAreaWidth = 1.2*rect.width();
@@ -54,23 +41,29 @@ void FlowElementO::adapt_size_from_name(QFontMetrics fontMetrics){
     uiAreaRect = QRectF(QPointF(0.,0.), QSizeF(areaWidth, areaHeight));
 }
 
-void FlowElementO::compute_position(QPointF topLeft, int loopMaxDeepLevel){
+void ElementO::compute_position(QPointF topLeft, int loopMaxDeepLevel){
 
     uiAreaRect = QRectF(topLeft, uiAreaRect.size());
     QPointF midRect(topLeft.x() + uiAreaRect.width()*0.5, loopMaxDeepLevel*FlowElementO::areaHeight + uiAreaRect.height()*0.5);
     uiElemRect = QRectF(QPointF(midRect.x()-uiElemRect.width() * 0.5,midRect.y()-uiElemRect.height() * 0.5), uiElemRect.size());
 }
 
-void FlowElementO::draw(QPainter &painter, qreal zoomLevel){
+void ElementO::draw(QPainter &painter, qreal zoomLevel){
     Q_UNUSED(painter)
     Q_UNUSED(zoomLevel)    
 }
 
+FlowElementO::FlowElementO(FlowElement *element) :
+    ElementO(element->name()),
+    key(ElementKey{element->key()}),
+    type(element->type()),
+    m_selected(element->is_selected()), m_insideLoopsID(element->insideLoopsID){
+}
 
 void FlowElementO::update(FlowElement *element){
     key             = ElementKey{element->key()};
     name            = element->name();
-    type            = element->type;
+    type            = element->type();
     m_selected      = element->is_selected();
     informations    = element->informations;
     m_insideLoopsID = element->insideLoopsID;

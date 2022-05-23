@@ -24,25 +24,16 @@
 
 #pragma once
 
-// lcaol
+// local
 #include "flow_element_object.hpp"
 
-namespace tool::ex{
+namespace tool::ex {
 
-class MoveFlowElementO : public FlowElementO{
-
+class RemoveButtonO : public ElementO{
 public:
-
-    MoveFlowElementO(bool left);
-
+    RemoveButtonO() : ElementO(ButtonType::RemoveElement){};
     void draw(QPainter &painter, qreal zoomLevel) override;
-
-
-    bool isLeft;
-
-private:
-
-    std::unique_ptr<FlowElement> move = nullptr;
+    ButtonType type = ButtonType::RemoveElement;
 };
 
 }

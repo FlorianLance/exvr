@@ -42,6 +42,7 @@
 #include "gui/ex_widgets/ex_curve_x_w.hpp"
 #include "gui/ex_widgets/ex_vector2d_w.hpp"
 #include "gui/ex_widgets/ex_code_editor_w.hpp"
+#include "gui/ex_widgets/ex_notepad_w.hpp"
 
 // local
 #include "gui/ex_widgets/ex_resource_w.hpp"
@@ -180,7 +181,7 @@ Arg ExParametersGeneratorWidgetW::convert_to_arg() const{
 void ExParametersGeneratorWidgetW::add_ui_element_from_dialog(UiType uiType, int order){
 
     auto [wElem, exW] =  gen_ui_element(uiType);
-    if(exW == nullptr){
+    if(wElem == nullptr){
         return;
     }
     exW->set_as_generator();
@@ -193,7 +194,14 @@ void ExParametersGeneratorWidgetW::add_ui_element_from_dialog(UiType uiType, int
     GenUIItemDialog genD(uiType);
     genD.setMinimumWidth(500);
     genD.setMaximumWidth(900);
+
     switch (uiType) {
+    // simple ui
+    // # bool
+    case UiType::Check_box:{
+        genD.add_gen_widget(new CheckBoxGen());
+    }break;
+    // # reals
     case UiType::Slider_integer :{
         genD.add_gen_widget(new GenSpinboxW("Slider options"));
     }break;
@@ -203,60 +211,67 @@ void ExParametersGeneratorWidgetW::add_ui_element_from_dialog(UiType uiType, int
     case UiType::Spin_box:{
         genD.add_gen_widget(new GenSpinboxW());
     }break;
-    case UiType::Double_spin_box:{
-        genD.add_gen_widget(new SpinboxDoubleGenW());
-    }break;
     case UiType::Float_spin_box :{
         genD.add_gen_widget(new SpinboxFloatGenW());
     }break;
-    case UiType::Vector2D:{
-        genD.add_gen_widget(new Vector2dGenW());
+    case UiType::Double_spin_box:{
+        genD.add_gen_widget(new SpinboxDoubleGenW());
     }break;
-    case UiType::Vector3D:{
-        genD.add_gen_widget(new Vector3dGenW());
-    }break;
-    case UiType::Resource:{
-        genD.add_gen_widget(new ResourceGenW());
-    }break;
-    case UiType::Component:{
-        genD.add_gen_widget(new ComponentGenW());
-    }break;
-    case UiType::Transformation:{
-        genD.add_gen_widget(new TransformGenW());
-    }break;
-    case UiType::ComponentsList:{
-        genD.add_gen_widget(new ComponentGenW());
-    }break;
-    case UiType::ResourcesList:{
-        genD.add_gen_widget(new ResourceGenW());
-    }break;
-    case UiType::Text_edit:{
-        genD.add_gen_widget(new TextGenW("Text:"));
+    // # text
+    case UiType::Label:{
+        genD.add_gen_widget(new TextGenW("Title:"));
     }break;
     case UiType::Line_edit:{
         genD.add_gen_widget(new TextGenW("Value:"));
     }break;
-    case UiType::Label:{
-        genD.add_gen_widget(new TextGenW("Title:"));
+    case UiType::Text_edit:{
+        genD.add_gen_widget(new TextGenW("Text:"));
     }break;
+    // # combo
     case UiType::Combo_box_text:{
         genD.add_gen_widget(new ComboTextGen());
     }break;
     case UiType::Combo_box_index:{
         genD.add_gen_widget(new ComboTextGen());
     }break;
+    // # vector
+    case UiType::Vector2D:{
+        genD.add_gen_widget(new Vector2dGenW());
+    }break;
+    case UiType::Vector3D:{
+        genD.add_gen_widget(new Vector3dGenW());
+    }break;
+    // # color
+    case UiType::Color_pick:{
+        genD.add_gen_widget(new ColorPickGen());
+    }break;
+    // complex ui
+    case UiType::Transformation:{
+        genD.add_gen_widget(new TransformGenW());
+    }break;
     case UiType::Curve:{
         genD.add_gen_widget(new CurveGen());
+    }break;
+    case UiType::Notepad:{
+        genD.add_gen_widget(new NotepadGen());
     }break;
     case UiType::Code_editor:{
         genD.add_gen_widget(new CodeEditorGen());
     }break;
-    case UiType::Color_pick:{
-        genD.add_gen_widget(new ColorPickGen());
+    // ex data
+    case UiType::ResourcesList:{
+        genD.add_gen_widget(new ResourceGenW());
     }break;
-    case UiType::Check_box:{
-        genD.add_gen_widget(new CheckBoxGen());
+    case UiType::Resource:{
+        genD.add_gen_widget(new ResourceGenW());
     }break;
+    case UiType::Component:{
+        genD.add_gen_widget(new ComponentGenW());        
+    }break;
+    case UiType::ComponentsList:{
+        genD.add_gen_widget(new ComponentGenW());
+    }break;
+
     default:        
         break;
     }
@@ -362,18 +377,12 @@ std::pair<QWidget*,ExBaseW*> ExParametersGeneratorWidgetW::gen_ui_element(UiType
     QWidget *wElem = nullptr;
 
     switch (uiType) {
-    case UiType::Line_edit :{
-        wElem = dynamic_cast<ExLineEditW*>(exW = new ExLineEditW())->w.get();
-    }break;
-    case UiType::Slider_integer :{
-        wElem = dynamic_cast<ExSliderIntegerW*>(exW = new ExSliderIntegerW())->w.get();
-    }break;
-    case UiType::Slider_double :{
-        wElem = dynamic_cast<ExSliderFloatW*>(exW = new ExSliderFloatW())->w.get();
-    }break;
+    // simple ui
+    // # bool
     case UiType::Check_box :{
         wElem = dynamic_cast<ExCheckBoxW*>(exW = new ExCheckBoxW())->w.get();
     }break;
+    // # reals
     case UiType::Spin_box:{
         wElem = dynamic_cast<ExSpinBoxW*>(exW = new ExSpinBoxW())->w.get();
     }break;
@@ -383,48 +392,68 @@ std::pair<QWidget*,ExBaseW*> ExParametersGeneratorWidgetW::gen_ui_element(UiType
     case UiType::Float_spin_box :{
         wElem = dynamic_cast<ExFloatSpinBoxW*>(exW = new ExFloatSpinBoxW())->w.get();
     }break;
+    case UiType::Slider_integer :{
+        wElem = dynamic_cast<ExSliderIntegerW*>(exW = new ExSliderIntegerW())->w.get();
+    }break;
+    case UiType::Slider_double :{
+        wElem = dynamic_cast<ExSliderFloatW*>(exW = new ExSliderFloatW())->w.get();
+    }break;
+    // # text
+    case UiType::Label:{
+        wElem = dynamic_cast<ExLabelW*>(exW = new ExLabelW())->w.get();
+    }break;
+    case UiType::Line_edit :{
+        wElem = dynamic_cast<ExLineEditW*>(exW = new ExLineEditW())->w.get();
+    }break;
     case UiType::Text_edit:{
         wElem = dynamic_cast<ExTextEditW*>(exW = new ExTextEditW())->w.get();
     }break;
-    case UiType::Color_pick:{
-        wElem = dynamic_cast<ExSelectColorW*>(exW = new ExSelectColorW())->w.get();
-    }break;
+    // # combo
     case UiType::Combo_box_text:{
         wElem = dynamic_cast<ExComboBoxTextW*>(exW = new ExComboBoxTextW())->w.get();
     }break;
     case UiType::Combo_box_index:{
         wElem = dynamic_cast<ExComboBoxIndexW*>(exW = new ExComboBoxIndexW())->w.get();
     }break;
-    case UiType::Label:{
-        wElem = dynamic_cast<ExLabelW*>(exW = new ExLabelW())->w.get();
-    }break;
+    // # vector
     case UiType::Vector2D:{
         wElem = dynamic_cast<ExVector2dW*>(exW = new ExVector2dW())->w.get();
     }break;
     case UiType::Vector3D:{
         wElem = dynamic_cast<ExVector3dW*>(exW = new ExVector3dW())->w.get();
     }break;
-    case UiType::Resource:{
-        wElem = dynamic_cast<ExResourceW*>(exW = new ExResourceW())->w.get();
+    // # color
+    case UiType::Color_pick:{
+        wElem = dynamic_cast<ExSelectColorW*>(exW = new ExSelectColorW())->w.get();
     }break;
-    case UiType::Component:{
-        wElem = dynamic_cast<ExComponentW*>(exW = new ExComponentW())->w.get();
-    }break;
+    // complex ui
     case UiType::Transformation:{
         wElem = dynamic_cast<ExTransformationW*>(exW = new ExTransformationW())->w.get();
-    }break;
-    case UiType::ComponentsList:{
-        wElem = dynamic_cast<ExComponentsListW*>(exW = new ExComponentsListW())->w.get();
-    }break;
-    case UiType::ResourcesList:{
-        wElem = dynamic_cast<ExResourcesListW*>(exW = new ExResourcesListW())->w.get();
     }break;
     case UiType::Curve:{
         wElem = dynamic_cast<ExCurveW*>(exW = new ExCurveW())->w.get();
     }break;
+    case UiType::Notepad:{
+        wElem = dynamic_cast<ExNotepadW*>(exW = new ExNotepadW())->w.get();
+    }break;
     case UiType::Code_editor:{
         wElem = dynamic_cast<ExCodeEditorW*>(exW = new ExCodeEditorW())->w.get();
+        dynamic_cast<ExCodeEditorW*>(exW)->init_widget_as_csharp_editor(QColor(30,30,30), "");
     }break;
+    // exvr_data
+    case UiType::Resource:{
+        wElem = dynamic_cast<ExResourceW*>(exW = new ExResourceW())->w.get();
+    }break;
+    case UiType::ResourcesList:{
+        wElem = dynamic_cast<ExResourcesListW*>(exW = new ExResourcesListW())->w.get();
+    }break;
+    case UiType::Component:{
+        wElem = dynamic_cast<ExComponentW*>(exW = new ExComponentW())->w.get();
+    }break;
+    case UiType::ComponentsList:{
+        wElem = dynamic_cast<ExComponentsListW*>(exW = new ExComponentsListW())->w.get();
+    }break;
+
     default:
         qDebug() << "generator widget not managed for type " << from_view(get_name(uiType));
         return {nullptr,nullptr};

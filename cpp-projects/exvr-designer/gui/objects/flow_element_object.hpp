@@ -38,11 +38,49 @@
 
 namespace tool::ex {
 
-class FlowElementO : public QObject{
+
+class ElementO : public QObject{
+public:
+
+    ElementO(QString name) :name(name){}
+    ElementO(ButtonType type){
+        switch(type){
+            case ButtonType::AddElement:
+                name = "------";
+                break;
+            case ButtonType::RemoveElement:
+                name = "-----";
+                break;
+            case ButtonType::MoveElement:
+                name = "-----";
+                break;
+            default:
+                break;
+        }
+    }
+    static void define_area_height(qreal height){areaHeight = height;}
+    static void define_stretch(qreal stretch){areaStretch = stretch;};
+
+    virtual void adapt_size_from_name(QFontMetrics fontMetrics);
+    virtual void compute_position(QPointF topLeft, int loopMaxDeepLevel);
+    virtual void draw(QPainter &painter, qreal zoomLevel);
+
+    static inline qreal areaHeight = 0.;
+    static inline qreal areaStretch = 0.75;
+    static inline qreal sizeTxt = 3.;
+
+    QRectF uiAreaRect = QRectF(0., 0., 0., 0.); /**< area rectangle in the display view */
+    QRectF uiElemRect = QRectF(0., 0., 0., 0.); /**< rectangle of the element in the display view */
+
+    QString name;
+};
+
+
+class FlowElementO : public ElementO{
 
 public:
 
-    FlowElementO() = default;
+    FlowElementO() = delete;
     FlowElementO(FlowElement *element);
 
     FlowElementO(FlowElementO&&) = delete;
@@ -50,28 +88,10 @@ public:
     FlowElementO(const FlowElementO&) = delete;
     FlowElementO& operator=(const FlowElementO&) = delete;
 
-
     virtual void update(FlowElement *element);
-
-    static void define_area_height(qreal height);
-    static void define_stretch(qreal stretch);
-
-    virtual void adapt_size_from_name(QFontMetrics fontMetrics);
-    virtual void compute_position(QPointF topLeft, int loopMaxDeepLevel);
-
-    virtual void draw(QPainter &painter, qreal zoomLevel);
-
     inline bool is_selected() const noexcept{return m_selected;}
 
-    // ui       
-    static inline qreal areaHeight = 0.;
-    static inline qreal areaStretch = 0.75;
-    static inline qreal sizeTxt = 3.;
-    QRectF uiAreaRect = QRectF(0., 0., 0., 0.); /**< area rectangle in the display view */
-    QRectF uiElemRect = QRectF(0., 0., 0., 0.); /**< rectangle of the element in the display view */
-
     ElementKey key;
-    QString name;
     FlowElement::Type type;
     QString informations;
 

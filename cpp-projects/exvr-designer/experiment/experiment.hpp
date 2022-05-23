@@ -295,6 +295,9 @@ public slots:
     void select_nodes_and_connections(ElementKey routineKey, ConditionKey conditionKey,
         std_v1<ConnectorKey> connectorsKey, std_v1<ComponentKey> componentsKey, std_v1<ConnectionKey> connectionsKey, bool doUpdate);
 
+    // # debug
+    void display_exp_infos();
+
 private :    
 
     // clean
@@ -308,7 +311,7 @@ public :
 
     // elements
     std_v1<std::unique_ptr<FlowElement>> elements;
-    std_v1<LoopUP> loops; // not in the flow
+    std_v1<std::unique_ptr<Loop>> loops; // not in the flow
     FlowElement *selectedElement = nullptr;
     Routine *lastRoutineSelected = nullptr;
     Isi *lastIsiSelected = nullptr;

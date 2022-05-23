@@ -48,8 +48,10 @@ CSharpFunctionInitConfigParametersW::CSharpFunctionInitConfigParametersW() :  Co
 
 void CSharpFunctionInitConfigParametersW::insert_widgets(){
 
-    add_widget(ui::F::gen(ui::L::VB(), {ui::W::txt("Define extra content accesible for each function of each config\n (ex: variables, enum, struct/class, functions...)"), m_p->extraContent()},
-            LStretch{false},LMargins{true}, QFrame::NoFrame));
+    add_widget(ui::F::gen(ui::L::VB(),
+        {ui::W::txt("Define extra content accesible for each function of each config\n (ex: variables, enum, struct/class, functions...)"), m_p->extraContent()},
+        LStretch{false},LMargins{true}, QFrame::NoFrame)
+    );
 
     no_end_stretch();
 }
@@ -78,7 +80,8 @@ void CSharpFunctionConfigParametersW::insert_widgets(){
     add_widget(m_p->tab);
 
     auto functionF = ui::F::gen(ui::L::VB(), {ui::W::txt("Define the content of the function below:"), m_p->startFunction(), m_p->contentFunction(), m_p->endFunction()},
-                                LStretch{false},LMargins{true}, QFrame::NoFrame);
+        LStretch{false},LMargins{true}, QFrame::NoFrame);
+
     auto functionL = dynamic_cast<QVBoxLayout*>(functionF->layout());
     functionL->setStretch(0,1);
     functionL->setStretch(1,5);
@@ -87,7 +90,7 @@ void CSharpFunctionConfigParametersW::insert_widgets(){
     m_p->tab->addTab(functionF, "Function");
 
     auto extraF = ui::F::gen(ui::L::VB(), {ui::W::txt("Define extra content accesible in the function for this config \n (ex: variables, enum, struct/class, functions...)"), m_p->extraContent()},
-                             LStretch{false},LMargins{true}, QFrame::NoFrame);
+        LStretch{false},LMargins{true}, QFrame::NoFrame);
     auto extraL = dynamic_cast<QVBoxLayout*>(extraF->layout());
     extraL->setStretch(0,1);
     extraL->setStretch(1,50);

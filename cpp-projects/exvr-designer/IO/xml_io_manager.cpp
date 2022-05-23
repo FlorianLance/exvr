@@ -1127,13 +1127,13 @@ std::unique_ptr<Condition> XmlIoManager::read_condition(Routine *routine){
 
 void XmlIoManager::write_element(const FlowElement *element){
 
-    if(element->type == FlowElement::Type::Node){
+    if(element->type() == FlowElement::Type::Node){
         return;
     }
 
     w->writeStartElement(QSL("Element"));
     w->writeAttribute(QSL("key"),  QString::number(element->key()));
-    w->writeAttribute(QSL("type"), from_view(FlowElement::get_type_name(element->type)));
+    w->writeAttribute(QSL("type"), from_view(FlowElement::get_type_name(element->type())));
     w->writeEndElement(); // /Element
 }
 
@@ -1396,7 +1396,7 @@ bool XmlIoManager::save_instance_file(const Instance &instance, QString instance
     stream.writeAttribute(QSL("id_instance"), QString::number(instance.idInstance));
     for(auto &instElem : instance.flow){
 
-        QString type = (instElem.elem->type == FlowElement::Type::Routine) ? QSL("routine") : QSL("isi");
+        QString type = (instElem.elem->type() == FlowElement::Type::Routine) ? QSL("routine") : QSL("isi");
         stream.writeStartElement(QSL("Element"));
         stream.writeAttribute(QSL("key"),  QString::number(instElem.elem->key()));
         stream.writeAttribute(QSL("type"), type);

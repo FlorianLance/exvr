@@ -41,13 +41,13 @@ void FlowSequenceO::reset(){
 
 void FlowSequenceO::update_from_experiment(Experiment *exp){
 
-    std_v1<NodeFlowElementO*>                   newNodesElements;
-    std_v1<RoutineFlowElementO*>                newRoutinesElements;
-    std_v1<IsiFlowElementO*>                    newISIsElements;
-    std_v1<LoopNodeFlowElementO*>               newLoopsStart;
-    std_v1<LoopNodeFlowElementO*>               newLoopsEnd;
-    std_v1<std::unique_ptr<LoopFlowElementO>>   newLoopsElements;   // not in elements
-    std_v1<std::unique_ptr<FlowElementO>>       newElements;        // all elements
+    std::vector<NodeFlowElementO*>                   newNodesElements;
+    std::vector<RoutineFlowElementO*>                newRoutinesElements;
+    std::vector<IsiFlowElementO*>                    newISIsElements;
+    std::vector<LoopNodeFlowElementO*>               newLoopsStart;
+    std::vector<LoopNodeFlowElementO*>               newLoopsEnd;
+    std::vector<std::unique_ptr<LoopFlowElementO>>   newLoopsElements;   // not in elements
+    std::vector<std::unique_ptr<FlowElementO>>       newElements;        // all elements
 
     for(auto &newElement : exp->elements){
 
@@ -70,7 +70,7 @@ void FlowSequenceO::update_from_experiment(Experiment *exp){
         if(found){ // move from previous array
             // update
             oldE->update(newElement.get());
-            switch (newElement->type) {
+            switch (newElement->type()) {
                 case FlowElement::Type::Node:{
                     newNodesElements.push_back(dynamic_cast<NodeFlowElementO*>(oldE.get()));
                     newElements.push_back(std::move(oldE));
@@ -95,31 +95,31 @@ void FlowSequenceO::update_from_experiment(Experiment *exp){
                 break;
             }
         }else{ // create new
-            switch (newElement->type) {{
+            switch (newElement->type()) {{
                 case FlowElement::Type::Node:
                     auto nodeElement = std::make_unique<NodeFlowElementO>(dynamic_cast<NodeFlow*>(newElement.get()));
-                    newNodesElements.emplace_back(nodeElement.get());
-                    newElements.emplace_back(std::move(nodeElement));
+                    newNodesElements.push_back(nodeElement.get());
+                    newElements.push_back(std::move(nodeElement));
                 }break;{
                 case FlowElement::Type::Routine:
                     auto routineElement = std::make_unique<RoutineFlowElementO>(dynamic_cast<Routine*>(newElement.get()));
-                    newRoutinesElements.emplace_back(routineElement.get());
-                    newElements.emplace_back(std::move(routineElement));
+                    newRoutinesElements.push_back(routineElement.get());
+                    newElements.push_back(std::move(routineElement));
                 }break;{
                 case FlowElement::Type::Isi:
                     auto isiElement = std::make_unique<IsiFlowElementO>(dynamic_cast<Isi*>(newElement.get()));
-                    newISIsElements.emplace_back(isiElement.get());
-                    newElements.emplace_back(std::move(isiElement));
+                    newISIsElements.push_back(isiElement.get());
+                    newElements.push_back(std::move(isiElement));
                 }break;{
                 case FlowElement::Type::LoopStart:
                     auto loopStart = std::make_unique<LoopNodeFlowElementO>(dynamic_cast<LoopNode*>(newElement.get()));
-                    newLoopsStart.emplace_back(loopStart.get());
-                    newElements.emplace_back(std::move(loopStart));
+                    newLoopsStart.push_back(loopStart.get());
+                    newElements.push_back(std::move(loopStart));
                 }break;{
                 case FlowElement::Type::LoopEnd:
                     auto loopEnd = std::make_unique<LoopNodeFlowElementO>(dynamic_cast<LoopNode*>(newElement.get()));
-                    newLoopsEnd.emplace_back(loopEnd.get());
-                    newElements.emplace_back(std::move(loopEnd));
+                    newLoopsEnd.push_back(loopEnd.get());
+                    newElements.push_back(std::move(loopEnd));
                 }break;
                 default:
                 break;

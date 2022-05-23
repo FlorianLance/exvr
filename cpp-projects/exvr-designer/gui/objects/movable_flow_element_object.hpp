@@ -25,8 +25,8 @@
 #pragma once
 
 // local
-#include "remove_flow_element_object.hpp"
-#include "move_flow_element_object.hpp"
+#include "remove_button_object.hpp"
+#include "move_button_object.hpp"
 
 namespace tool::ex {
 
@@ -34,20 +34,17 @@ struct MovableFlowElementO : public FlowElementO{
 
     MovableFlowElementO(FlowElement *element);
 
-
-
     void adapt_size_from_name(QFontMetrics fontMetrics) override;
-
     void compute_position(QPointF topLeft, int loopMaxDeepLevel) override;
 
     void draw(QPainter &painter, qreal zoomLevel) override;
     void update(FlowElement *element) override;
 
-    bool canMoveToLeft = true;
-    bool canMoveToRight= true;
+    bool canMoveToLeft  = true;
+    bool canMoveToRight = true;
 
-    std::unique_ptr<RemoveFlowElementO> removeElement   = nullptr;
-    std::unique_ptr<MoveFlowElementO> moveLeftElement   = nullptr;
-    std::unique_ptr<MoveFlowElementO> moveRightElement  = nullptr;
+    std::unique_ptr<RemoveButtonO> removeElement   = nullptr;
+    std::unique_ptr<MoveButtonO> moveLeftElement   = nullptr;
+    std::unique_ptr<MoveButtonO> moveRightElement  = nullptr;
 };
 }

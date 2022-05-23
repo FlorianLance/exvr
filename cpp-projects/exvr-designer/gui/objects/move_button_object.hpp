@@ -24,22 +24,17 @@
 
 #pragma once
 
-// local
+// lcaol
 #include "flow_element_object.hpp"
 
 namespace tool::ex{
 
-
-class AddFlowElementO : public FlowElementO{
-
+class MoveButtonO : public ElementO{
 public:
-
-    AddFlowElementO(FlowElement::Type typeToAdd);
-
-    FlowElement::Type typeToAdd;
-
-private:
-    std::unique_ptr<FlowElement> add = nullptr;
+    MoveButtonO(bool left) : ElementO(ButtonType::MoveElement), isLeft(left){}
+    void draw(QPainter &painter, qreal zoomLevel) override;
+    bool isLeft;
+    ButtonType type = ButtonType::MoveElement;
 };
 
 }

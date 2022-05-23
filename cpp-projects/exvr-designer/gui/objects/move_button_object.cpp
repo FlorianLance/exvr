@@ -22,15 +22,22 @@
 ** SOFTWARE.                                                                      **
 ************************************************************************************/
 
-#include "add_flow_element_object.hpp"
+#include "move_button_object.hpp"
 
 using namespace tool::ex;
 
-AddFlowElementO::AddFlowElementO(FlowElement::Type typeToAdd) : typeToAdd(typeToAdd), add(std::make_unique<FlowElement>(FlowElement::Type::AddElement, "add")){
+void MoveButtonO::draw(QPainter &painter, qreal zoomLevel){
 
-    name        = add->name();
-    type        = add->type;
-    key         = ElementKey{add->key()};
-    m_selected  = add->is_selected();
-    m_insideLoopsID = add->insideLoopsID;
+    // draw rectangle
+    QPen pen;
+    pen.setWidthF(zoomLevel*1.1);
+    pen.setColor(display::Colors::line_box(type));
+    painter.setPen(pen);
+    painter.setBrush(display::Colors::fill_box(type));
+    painter.drawRoundedRect(uiElemRect, zoomLevel*4.,zoomLevel*4., Qt::AbsoluteSize);
+
+    // draw name
+    pen.setColor(display::Colors::text(type));
+    painter.setPen(pen);
+    painter.drawText(uiElemRect,  Qt::AlignCenter, isLeft ? "<" : ">");
 }

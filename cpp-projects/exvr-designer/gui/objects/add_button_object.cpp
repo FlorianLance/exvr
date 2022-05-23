@@ -22,23 +22,7 @@
 ** SOFTWARE.                                                                      **
 ************************************************************************************/
 
-#pragma once
+#include "add_button_object.hpp"
 
-// local
-#include "flow_element_object.hpp"
+using namespace tool::ex;
 
-namespace tool::ex {
-
-class RemoveFlowElementO : public FlowElementO{
-
-public:
-
-    RemoveFlowElementO();
-
-    void draw(QPainter &painter, qreal zoomLevel) override;
-
-private :
-    std::unique_ptr<FlowElement> remove = nullptr;
-};
-
-}

@@ -99,13 +99,13 @@ void Experiment::select_element_from_ptr(FlowElement *element, bool updateSignal
     bool select = !element->is_selected();
     unselect_all_elements(false); // unselect everything
 
-    if(element->type == FlowElement::Type::LoopStart || element->type == FlowElement::Type::LoopEnd){
+    if(element->type() == FlowElement::Type::LoopStart || element->type() == FlowElement::Type::LoopEnd){
         LoopNode *loopNode = dynamic_cast<LoopNode*>(element);
         loopNode->loop->set_selected(select);
         loopNode->loop->start->set_selected(select);
         loopNode->loop->end->set_selected(select);
         selectedElement = loopNode->loop;
-    }else if(element->type == FlowElement::Type::Loop){
+    }else if(element->type() == FlowElement::Type::Loop){
         Loop *loop = dynamic_cast<Loop*>(element);
         loop->set_selected(select);
         loop->start->set_selected(select);
@@ -113,12 +113,12 @@ void Experiment::select_element_from_ptr(FlowElement *element, bool updateSignal
         selectedElement = loop;
     }else{
 
-        if(element->type == FlowElement::Type::Routine){
+        if(element->type() == FlowElement::Type::Routine){
             lastRoutineSelected = dynamic_cast<Routine*>(element);
             if(lastRoutineSelected->selected_condition() == nullptr){
                 lastRoutineSelected->select_condition(RowId{0});
             }
-        }else if(element->type == FlowElement::Type::Isi){
+        }else if(element->type() == FlowElement::Type::Isi){
             lastIsiSelected = dynamic_cast<Isi*>(element);
         }
 
@@ -252,11 +252,11 @@ void Experiment::add_element(FlowElement::Type type, size_t index){
 
 void Experiment::remove_element(FlowElement *elemToDelete){
 
-    if(elemToDelete->type == FlowElement::Type::LoopStart || elemToDelete->type == FlowElement::Type::LoopEnd){
+    if(elemToDelete->type() == FlowElement::Type::LoopStart || elemToDelete->type() == FlowElement::Type::LoopEnd){
         elemToDelete = dynamic_cast<LoopNode*>(elemToDelete)->loop;
     }
 
-    if(elemToDelete->type == FlowElement::Type::Routine || elemToDelete->type == FlowElement::Type::Isi){
+    if(elemToDelete->type() == FlowElement::Type::Routine || elemToDelete->type() == FlowElement::Type::Isi){
 
         auto elementFound = std::find_if(elements.begin(), elements.end(), [elemToDelete](const std::unique_ptr<FlowElement> & currElem){
             return currElem.get() == elemToDelete;
@@ -265,7 +265,7 @@ void Experiment::remove_element(FlowElement *elemToDelete){
 
         remove_elements_not_in_flow();
 
-    }else if(elemToDelete->type == FlowElement::Type::Loop){
+    }else if(elemToDelete->type() == FlowElement::Type::Loop){
 
         LoopNode *startL = dynamic_cast<Loop*>(elemToDelete)->start;
         LoopNode *endL   = dynamic_cast<Loop*>(elemToDelete)->end;
@@ -302,7 +302,7 @@ void Experiment::duplicate_element(ElementKey elementKey){
         if(elements[ii]->key() == elementKey.v){
 
             std::unique_ptr<FlowElement> newElement = nullptr;
-            if(elements[ii]->type == FlowElement::Type::Routine){
+            if(elements[ii]->type() == FlowElement::Type::Routine){
 
                 newElement = Routine::copy_with_new_element_id(*dynamic_cast<Routine*>(elements[ii].get()), elements[ii]->name() % QSL("(copy)"));
                 auto elementPtr = newElement.get();
@@ -310,7 +310,7 @@ void Experiment::duplicate_element(ElementKey elementKey){
                 elements.insert(std::begin(elements) + static_cast<std_v1<std::unique_ptr<FlowElement>>::difference_type>(ii + 2), std::move(newElement));
                 select_element(ElementKey{elementPtr->key()}, false);
 
-            }else if(elements[ii]->type == FlowElement::Type::Isi){
+            }else if(elements[ii]->type() == FlowElement::Type::Isi){
 
                 newElement = Isi::copy_with_new_element_id(*dynamic_cast<Isi*>(elements[ii].get()), elements[ii]->name() % QSL("(copy)"));
                 auto elementPtr = newElement.get();
@@ -319,7 +319,7 @@ void Experiment::duplicate_element(ElementKey elementKey){
                 select_element(ElementKey{elementPtr->key()}, false);
 
 
-            }else if(elements[ii]->type == FlowElement::Type::LoopStart){
+            }else if(elements[ii]->type() == FlowElement::Type::LoopStart){
 
                 auto loopStart = dynamic_cast<LoopNode*>(elements[ii].get());
                 auto loopEnd = loopStart->loop->end;
@@ -341,7 +341,7 @@ void Experiment::duplicate_element(ElementKey elementKey){
                 select_element(ElementKey{loopPtr->key()}, false);
 
                 return;
-            }else if(elements[ii]->type == FlowElement::Type::LoopEnd){
+            }else if(elements[ii]->type() == FlowElement::Type::LoopEnd){
                 return;
             }else{
                 return;
@@ -420,9 +420,9 @@ void Experiment::move_left(size_t id){
     auto current  = elements[id].get();
     auto previous = elements[id-2].get();
 
-    if(current->type == FlowElement::Type::LoopStart && previous->type == FlowElement::Type::LoopEnd){
+    if(current->type() == FlowElement::Type::LoopStart && previous->type() == FlowElement::Type::LoopEnd){
         for(auto &elem : elements){
-            if(elem->type == FlowElement::Type::LoopStart && elem->key() == previous->key()){
+            if(elem->type() == FlowElement::Type::LoopStart && elem->key() == previous->key()){
 
                 size_t idS = get_element_position(elem.get());
                 auto e = std::move(elements[id]);
@@ -439,10 +439,10 @@ void Experiment::move_left(size_t id){
                 return;
             }
         }
-    }else if(current->type == FlowElement::Type::LoopEnd && previous->type == FlowElement::Type::LoopEnd){
+    }else if(current->type() == FlowElement::Type::LoopEnd && previous->type() == FlowElement::Type::LoopEnd){
 
         for(auto &elem : elements){
-            if(elem->type == FlowElement::Type::LoopStart && elem->key() == previous->key()){
+            if(elem->type() == FlowElement::Type::LoopStart && elem->key() == previous->key()){
 
                 size_t idS = get_element_position(elem.get());
 
@@ -475,9 +475,9 @@ void Experiment::move_right(size_t id){
     auto current  = elements[id].get();
     auto next = elements[id+2].get();
 
-    if(current->type == FlowElement::Type::LoopStart && next->type == FlowElement::Type::LoopStart){
+    if(current->type() == FlowElement::Type::LoopStart && next->type() == FlowElement::Type::LoopStart){
         for(auto &elem : elements){
-            if(elem->type == FlowElement::Type::LoopEnd && elem->key() == next->key()){
+            if(elem->type() == FlowElement::Type::LoopEnd && elem->key() == next->key()){
 
                 size_t idS = get_element_position(elem.get());
                 auto e = std::move(elements[id]);
@@ -494,10 +494,10 @@ void Experiment::move_right(size_t id){
                 return;
             }
         }
-    }else if(current->type == FlowElement::Type::LoopEnd && next->type == FlowElement::Type::LoopStart){
+    }else if(current->type() == FlowElement::Type::LoopEnd && next->type() == FlowElement::Type::LoopStart){
 
         for(auto &elem : elements){
-            if(elem->type == FlowElement::Type::LoopEnd && elem->key() == next->key()){
+            if(elem->type() == FlowElement::Type::LoopEnd && elem->key() == next->key()){
 
                 size_t idS = get_element_position(elem.get());
 
@@ -665,7 +665,7 @@ void Experiment::check_integrity(){
     std::unordered_map<int, Action*> checkActions;
 
     for(auto &elem : elements){
-        if(elem->type == FlowElement::Type::Routine){
+        if(elem->type() == FlowElement::Type::Routine){
 
             if(checkRoutines.count(elem->key()) != 0){
                 QtLogger::error(QSL("[EXP] ") % dynamic_cast<Routine*>(elem.get())->to_string() % QSL(" already exists."));
@@ -702,13 +702,13 @@ void Experiment::check_integrity(){
                     }
                 }
             }
-        }else if(elem->type == FlowElement::Type::Loop){
+        }else if(elem->type() == FlowElement::Type::Loop){
             if(checkLoops.count(elem->key()) != 0){
                 QtLogger::error(QSL("[EXP] ") % dynamic_cast<Loop*>(elem.get())->to_string() % QSL(" already exists."));
             }else{
                 checkLoops[elem->key()] = dynamic_cast<Loop*>(elem.get());
             }
-        }else if(elem->type == FlowElement::Type::Isi){
+        }else if(elem->type() == FlowElement::Type::Isi){
             if(checkIsi.count(elem->key()) != 0){
                 QtLogger::error(QSL("[EXP] ") % dynamic_cast<Isi*>(elem.get())->to_string() % QSL(" already exists."));
             }else{
@@ -983,6 +983,14 @@ void Experiment::select_nodes_and_connections(ElementKey routineKey, ConditionKe
         if(doUpdate){
             add_to_update_flag(UpdateRoutines);
         }
+    }
+}
+
+void Experiment::display_exp_infos(){
+
+    QtLogger::message("### ELEMENTS ###");
+    for(const auto &element : elements){
+        QtLogger::message(QSL("->") % QString::number(element->key()) % QSL(" ") %element->name() %  QSL(" ") % from_view(FlowElement::get_type_name(element->type())));
     }
 }
 
@@ -1597,12 +1605,12 @@ void Experiment::compute_loops_levels(){
     std::vector<ElementKey> idLoops;
     states.maximumDeepLevel = -1;
     for(auto& elem : elements){
-        if(elem->type == FlowElement::Type::LoopStart){
+        if(elem->type() == FlowElement::Type::LoopStart){
             auto node = dynamic_cast<LoopNode*>(elem.get());
             node->insideLoopsID       = idLoops;
             node->loop->insideLoopsID = idLoops;
             idLoops.emplace_back(ElementKey{node->key()});
-         }else if(elem->type ==FlowElement::Type::LoopEnd){
+         }else if(elem->type() ==FlowElement::Type::LoopEnd){
             auto node = dynamic_cast<LoopNode*>(elem.get());
             idLoops.erase(std::find(idLoops.begin(),idLoops.end(), ElementKey{node->key()}));
             node->insideLoopsID = idLoops;
@@ -2396,7 +2404,7 @@ void Experiment::remove_elements_not_in_flow(){
 
     QVector<int> idsLoopsRemaining;
     for(const auto &startLoop : get_elements_from_type<LoopNode>()){
-        if(startLoop->type == FlowElement::Type::LoopStart){
+        if(startLoop->type() == FlowElement::Type::LoopStart){
             idsLoopsRemaining << startLoop->key();
         }
     }
@@ -2429,7 +2437,7 @@ std_v1<FlowElement *> Experiment::get_elements() const{
 std_v1<FlowElement *> Experiment::get_elements_from_type(FlowElement::Type type) const{
     std_v1<FlowElement*> children;
     for(const auto &elem : elements){
-        if(elem->type == type){
+        if(elem->type() == type){
             children.emplace_back(elem.get());
         }
     }

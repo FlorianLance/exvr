@@ -37,7 +37,7 @@ namespace tool::ex::display {
 
 struct Colors{
 
-    struct FlowElement{
+    struct FlowElementColors{
         QColor selectedTextColor;
         QColor unselectedTextColor;
         QColor selectedLineBoxColor;
@@ -46,25 +46,35 @@ struct Colors{
         QColor unselectedFillBoxColor;
     };
 
+    struct ButtonColors{
+        QColor unselectedTextColor;
+        QColor unselectedLineBoxColor;
+        QColor unselectedFillBoxColor;
+    };
+
     static inline QColor inused = Qt::black;
 
     using QC = QColor;
 
-    using T = tool::ex::FlowElement::Type;
-
-    static inline const std::unordered_map<tool::ex::FlowElement::Type, FlowElement> flowElements = {
+    using FT = tool::ex::FlowElement::Type;
+    static inline const std::unordered_map<tool::ex::FlowElement::Type, FlowElementColors> flowElements = {
                             // sel_txt      unsel_txt       sel_line        unsel_line      sel_box         unsel_box
-        {T::Node,           {QC("#000000"), QC("#000000"),  QC("#000000"),  QC("#000000"),  QC("#000000"),  QC("#000000")}},
-        {T::LoopStart,      {QC("#FFFFFF"), QC("#FFFFFF"),  QC("#427b89"),  QC("#000000"),  QC("#427b89"),  QC("#427b89")}},
-        {T::LoopEnd,        {QC("#FFFFFF"), QC("#FFFFFF"),  QC("#427b89"),  QC("#000000"),  QC("#427b89"),  QC("#427b89")}},
-        {T::Routine,        {QC("#FFFFFF"), QC("#FFFFFF"),  QC("#279340"),  QC("#000000"),  QC("#279340"),  QC("#279340")}},
-        {T::Isi,            {QC("#FFFFFF"), QC("#FFFFFF"),  QC("#ff8c00"),  QC("#000000"),  QC("#ff8c00"),  QC("#ff8c00")}},
-        {T::Loop,           {QC("#FFFFFF"), QC("#FFFFFF"),  QC("#427b89"),  QC("#000000"),  QC("#427b89"),  QC("#427b89")}},
-        {T::AddElement,     {QC("#FFFFFF"), inused,         QC("#000000"),  inused,         QC("#FFFFFF"),  inused}},
-        {T::RemoveElement,  {QC("#FFFFFF"), inused,         QC("#000000"),  inused,         QC("#000000"),  inused}},
-        {T::MoveElement,    {QC("#000000"), inused,         QC("#000000"),  inused,         QC("#FFFFFF"),  inused}},
-        {T::MoveElement,    {QC("#000000"), inused,         QC("#000000"),  inused,         QC("#FFFFFF"),  inused}},
+        {FT::Node,           {QC("#000000"), QC("#000000"),  QC("#000000"),  QC("#000000"),  QC("#000000"),  QC("#000000")}},
+        {FT::LoopStart,      {QC("#FFFFFF"), QC("#FFFFFF"),  QC("#427b89"),  QC("#000000"),  QC("#427b89"),  QC("#427b89")}},
+        {FT::LoopEnd,        {QC("#FFFFFF"), QC("#FFFFFF"),  QC("#427b89"),  QC("#000000"),  QC("#427b89"),  QC("#427b89")}},
+        {FT::Routine,        {QC("#FFFFFF"), QC("#FFFFFF"),  QC("#279340"),  QC("#000000"),  QC("#279340"),  QC("#279340")}},
+        {FT::Isi,            {QC("#FFFFFF"), QC("#FFFFFF"),  QC("#ff8c00"),  QC("#000000"),  QC("#ff8c00"),  QC("#ff8c00")}},
+        {FT::Loop,           {QC("#FFFFFF"), QC("#FFFFFF"),  QC("#427b89"),  QC("#000000"),  QC("#427b89"),  QC("#427b89")}},
     };
+
+    using BT = tool::ex::ButtonType;
+    static inline const std::unordered_map<tool::ex::ButtonType, ButtonColors> buttons = {
+        // sel_txt           unsel_txt       unsel_line     unsel_box
+        {BT::AddElement,     {QC("#FFFFFF"), QC("#000000"), QC("#FFFFFF")}},
+        {BT::RemoveElement,  {QC("#FFFFFF"), QC("#000000"), QC("#000000")}},
+        {BT::MoveElement,    {QC("#000000"), QC("#000000"), QC("#FFFFFF")}},
+    };
+
 
     static inline const QColor& text(bool selected, tool::ex::FlowElement::Type type){
         return selected ? flowElements.at(type).selectedTextColor : flowElements.at(type).unselectedTextColor;
@@ -76,6 +86,18 @@ struct Colors{
 
     static inline const QColor& fill_box(bool selected, tool::ex::FlowElement::Type type){
         return selected ? flowElements.at(type).selectedFillBoxColor : flowElements.at(type).unselectedFillBoxColor;
+    }
+
+    static inline const QColor& text(tool::ex::ButtonType type){
+        return buttons.at(type).unselectedTextColor;
+    }
+
+    static inline const QColor& line_box( tool::ex::ButtonType type){
+        return buttons.at(type).unselectedLineBoxColor;
+    }
+
+    static inline const QColor& fill_box(tool::ex::ButtonType type){
+        return buttons.at(type).unselectedFillBoxColor;
     }
 
 };

@@ -472,6 +472,7 @@ void DesignerWindow::create_actions(){
     m_displayKeysAct.setStatusTip(tr("Display keys"));
     connect(&m_displayKeysAct, &QAction::triggered, this, [&]{
         tool::ex::IdKey::debug_display();
+        tool::ex::ExperimentManager::get()->current()->display_exp_infos();
     });
 
 

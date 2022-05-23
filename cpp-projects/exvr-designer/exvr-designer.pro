@@ -104,6 +104,9 @@ HEADERS += \
     # utility
     gui/dialogs/import_sub_exp_dialog.hpp \
     gui/dialogs/keys_dialog.hpp \
+    gui/objects/add_button_object.hpp \
+    gui/objects/move_button_object.hpp \
+    gui/objects/remove_button_object.hpp \
     gui/widgets/connections/data_models/base_node_data_model.hpp \
     utility/script_utility.hpp \
     utility/path_utility.hpp \
@@ -146,15 +149,12 @@ HEADERS += \
     ## settings
     gui/settings/display.hpp \
     ## objects
-    gui/objects/add_flow_element_object.hpp \
     gui/objects/flow_element_object.hpp \
     gui/objects/flow_sequence_object.hpp \
     gui/objects/isi_flow_element_object.hpp \
     gui/objects/loop_flow_element_object.hpp \
     gui/objects/movable_flow_element_object.hpp \
-    gui/objects/move_flow_element_object.hpp \
     gui/objects/node_flow_element_object.hpp \
-    gui/objects/remove_flow_element_object.hpp \
     gui/objects/routine_flow_element_object.hpp \
     ## dialogs
     gui/dialogs/add_component_to_conditions_dialog.hpp \
@@ -332,6 +332,9 @@ SOURCES += \
     # launcher
     gui/dialogs/import_sub_exp_dialog.cpp \
     gui/dialogs/keys_dialog.cpp \
+    gui/objects/add_button_object.cpp \
+    gui/objects/move_button_object.cpp \
+    gui/objects/remove_button_object.cpp \
     launcher/exp_launcher.cpp \
     launcher/exp_launcher_communication.cpp \
     launcher/exp_launcher_process.cpp \
@@ -344,15 +347,12 @@ SOURCES += \
     ## settings
     gui/settings/display.cpp \
     ## objects
-    gui/objects/add_flow_element_object.cpp \
     gui/objects/flow_element_object.cpp \
     gui/objects/flow_sequence_object.cpp \
     gui/objects/isi_flow_element_object.cpp \
     gui/objects/loop_flow_element_object.cpp \
     gui/objects/movable_flow_element_object.cpp \
-    gui/objects/move_flow_element_object.cpp \
     gui/objects/node_flow_element_object.cpp \
-    gui/objects/remove_flow_element_object.cpp \
     gui/objects/routine_flow_element_object.cpp \
     ## dialogs
     gui/dialogs/add_component_to_conditions_dialog.cpp \

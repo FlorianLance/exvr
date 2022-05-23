@@ -29,7 +29,7 @@
 
 // local
 #include "data/flow_elements/node_flow.hpp"
-#include "add_flow_element_object.hpp"
+#include "add_button_object.hpp"
 
 namespace tool::ex {
 
@@ -44,8 +44,8 @@ public:
     void compute_position(QPointF topLeft, int loopMaxDeepLevel) override;
     void draw_add_buttons(QPainter &painter, qreal zoomLevel);
 
-    std::unique_ptr<AddFlowElementO> addRoutine = nullptr;
-    std::unique_ptr<AddFlowElementO> addIsi     = nullptr;
-    std::unique_ptr<AddFlowElementO> addLoop    = nullptr;
+    std::unique_ptr<AddButtonO> addRoutine = nullptr;
+    std::unique_ptr<AddButtonO> addIsi     = nullptr;
+    std::unique_ptr<AddButtonO> addLoop    = nullptr;
 };
 }

@@ -49,15 +49,15 @@ Instance::Instance(const Randomizer *randomizer, const std_v1<FlowElement*> &ele
     std_v1<Isi *> ISIs;
     std_v1<Loop *> loops;
     for(const auto elem : elements){
-        if(elem->type == FlowElement::Type::Isi){
+        if(elem->type() == FlowElement::Type::Isi){
             ISIs.push_back(dynamic_cast<Isi*>(elem));
             continue;
         }
-        if(elem->type == FlowElement::Type::Routine){
+        if(elem->type() == FlowElement::Type::Routine){
             routines.push_back(dynamic_cast<Routine*>(elem));
             continue;
         }
-        if(elem->type == FlowElement::Type::LoopStart){
+        if(elem->type() == FlowElement::Type::LoopStart){
             loops.push_back(dynamic_cast<LoopNode*>(elem)->loop);
             continue;
         }
@@ -249,7 +249,7 @@ Instance::Instance(const Randomizer *randomizer, const std_v1<FlowElement*> &ele
 
     for(size_t ii = 0; ii < elements.size(); ++ii){
 
-        if(elements[ii]->type == FlowElement::Type::Routine){
+        if(elements[ii]->type() == FlowElement::Type::Routine){
 
             auto routine = dynamic_cast<Routine*>(elements[ii]);
 
@@ -269,7 +269,7 @@ Instance::Instance(const Randomizer *randomizer, const std_v1<FlowElement*> &ele
             }
             flow.emplace_back(std::move(instanceElem));
 
-        }else if(elements[ii]->type == FlowElement::Type::Isi){
+        }else if(elements[ii]->type() == FlowElement::Type::Isi){
 
             auto isi = dynamic_cast<Isi*>(elements[ii]);
 
@@ -282,7 +282,7 @@ Instance::Instance(const Randomizer *randomizer, const std_v1<FlowElement*> &ele
             flow.emplace_back(std::move(instanceElem));
 
 
-        }else if(elements[ii]->type == FlowElement::Type::LoopStart){
+        }else if(elements[ii]->type() == FlowElement::Type::LoopStart){
 
             // store information about current loop
             auto loopNode = dynamic_cast<LoopNode*>(elements[ii]);
@@ -293,7 +293,7 @@ Instance::Instance(const Randomizer *randomizer, const std_v1<FlowElement*> &ele
             info.idEnd   = get_index_from_loop_node(loopNode->loop->end);
             infos << std::move(info);
 
-        }else if(elements[ii]->type == FlowElement::Type::LoopEnd){
+        }else if(elements[ii]->type() == FlowElement::Type::LoopEnd){
 
             // increment loop set and go back to loop start if necessary
             auto loop = dynamic_cast<LoopNode*>(elements[ii])->loop;
@@ -336,7 +336,7 @@ Instance::Instance(const Randomizer *randomizer, const std_v1<FlowElement*> &ele
         const int key = element.elem->key();
         const QString cond = element.condition;
 
-        if(element.elem->type == FlowElement::Type::Routine){
+        if(element.elem->type() == FlowElement::Type::Routine){
 
             if(routinesIterations.count(key) == 0){
                 routinesIterations[key] = 1;
@@ -354,7 +354,7 @@ Instance::Instance(const Randomizer *randomizer, const std_v1<FlowElement*> &ele
             routinesIterations[key]++;
             routinesConditionsIterations[key][cond]++;
 
-        }else if(element.elem->type == FlowElement::Type::Isi){
+        }else if(element.elem->type() == FlowElement::Type::Isi){
 
             if(isisIterations.count(key) == 0){
                 isisIterations[key] = 1;

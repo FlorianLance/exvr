@@ -28,11 +28,10 @@
 using namespace tool::ex;
 
 NodeFlowElementO::NodeFlowElementO(NodeFlow *node) : FlowElementO(node){
-    addRoutine = std::make_unique<AddFlowElementO>(FlowElement::Type::Routine);
-    addIsi     = std::make_unique<AddFlowElementO>(FlowElement::Type::Isi);
-    addLoop    = std::make_unique<AddFlowElementO>(FlowElement::Type::Loop);
+    addRoutine = std::make_unique<AddButtonO>(FlowElement::Type::Routine);
+    addIsi     = std::make_unique<AddButtonO>(FlowElement::Type::Isi);
+    addLoop    = std::make_unique<AddButtonO>(FlowElement::Type::Loop);
 }
-
 
 void NodeFlowElementO::adapt_size_from_name(QFontMetrics fontMetrics){
 
@@ -44,6 +43,10 @@ void NodeFlowElementO::adapt_size_from_name(QFontMetrics fontMetrics){
     qreal min = std::min(0.6*areaWidth, 0.8*areaHeight);
     uiElemRect = QRectF(QPointF(0.,0.), QSizeF(min, min));
     uiAreaRect = QRectF(QPointF(0.,0.), QSizeF(areaWidth, areaHeight));
+
+    addRoutine->adapt_size_from_name(fontMetrics);
+    addIsi->adapt_size_from_name(fontMetrics);
+    addLoop->adapt_size_from_name(fontMetrics);
 }
 
 void NodeFlowElementO::draw(QPainter &painter, qreal zoomLevel){
@@ -58,7 +61,7 @@ void NodeFlowElementO::draw(QPainter &painter, qreal zoomLevel){
 
     if(is_selected()){
         draw_add_buttons(painter,zoomLevel);
-    }
+    }        
 }
 
 void NodeFlowElementO::compute_position(QPointF topLeft, int loopMaxDeepLevel){
