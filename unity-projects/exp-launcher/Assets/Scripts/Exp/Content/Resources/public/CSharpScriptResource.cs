@@ -85,7 +85,7 @@ namespace Ex{
             try {
                 result = provider.CompileAssemblyFromFileBatch(param, files);
             } catch (Exception ex) {
-                ExVR.Log().error(string.Format("[COMPILER] Cannot compile csharp scripts files: {0}", ex.Message), false);
+                ExVR.Log().error(error : string.Format("[COMPILER] Cannot compile csharp scripts files: {0}", ex.Message), addExtraInfo : false, append : false);
             }
 
             if (result != null) {
@@ -101,14 +101,14 @@ namespace Ex{
                     );
 
                     if (error.IsWarning) {
-                        ExVR.Log().warning(errorMsg, false);
+                        ExVR.Log().warning(warning : errorMsg, addExtraInfo: false, append : false);
                     } else {
-                        ExVR.Log().error(errorMsg, false);
+                        ExVR.Log().error(error : errorMsg, addExtraInfo : false, append : false);
                         return null;
                     }
                 }
             } else {
-                ExVR.Log().error("[COMPILER] CompileAssemblyFromFile crash", false);
+                ExVR.Log().error(error : "[COMPILER] CompileAssemblyFromFile crash", addExtraInfo : false, append : false);
                 return null;
             }
 

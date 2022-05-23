@@ -234,7 +234,7 @@ namespace Ex {
             int retry = 3;
             for (int ii = 0; ii < retry; ++ii) {
 
-                log_message(string.Format("Try to connect, try n°{0} with method {1}", (ii+1).ToString(), bSettings.connection.ToString()));
+                log_message( message : string.Format("Try to connect, try n°{0} with method {1}", (ii+1).ToString(), bSettings.connection.ToString()),  append : false);
 
                 // remember to change the parameters to suit your MP configuration
                 // Auto connect to MP150 was introduced in BHAPI 1.1
@@ -248,7 +248,7 @@ namespace Ex {
                 }
 
                 if (retval == MPCODE.MPSUCCESS) {
-                    log_message("Connection established.");
+                    log_message(message : "Connection established.", append : false);
                     return true;
                 } else {
                     log_error(string.Format("connectMPDev error: {0}", BiopacSettings.code_to_string(retval)));
@@ -266,7 +266,7 @@ namespace Ex {
             // ex: set sample rate to 5 msec per sample = 200 Hz  -> retval = setSampleRate(5.0);
             double sampleRate = 1000.0 / samplingRateValues[initC.get<int>("sampling_rate_id")];
             MPCODE retval = MP.setSampleRate(sampleRate);
-            log_message(string.Format("Frequency {0} {1} {2}", initC.get<int>("sampling_rate_id"), samplingRateValues[initC.get<int>("sampling_rate_id")], sampleRate));
+            log_message(message : string.Format("Frequency {0} {1} {2}", initC.get<int>("sampling_rate_id"), samplingRateValues[initC.get<int>("sampling_rate_id")], sampleRate), append : false);
             if (retval != MPCODE.MPSUCCESS) {
                 log_error(string.Format("Sampling error {0} with rate: {1}", BiopacSettings.code_to_string(retval), Converter.to_string(sampleRate)));
                 return false;
@@ -487,7 +487,6 @@ namespace Ex {
 
 
         #endregion
-
 
         #region public_functions
 

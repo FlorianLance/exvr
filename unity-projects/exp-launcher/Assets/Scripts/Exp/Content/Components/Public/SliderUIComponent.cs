@@ -22,8 +22,6 @@
 ** SOFTWARE.                                                                      **
 ************************************************************************************/
 
-// system
-using System.Collections.Generic;
 
 // unity
 using UnityEngine;
@@ -45,10 +43,11 @@ namespace Ex{
         private TextMeshProUGUI m_sliderText2 = null;
         private TextMeshProUGUI m_sliderValueText = null;
 
-        //private float currentRandValue = 0f;
 
-        //private static Dictionary<string, TextAlignmentOptions> m_alignment = null;
+        private bool valueIntialized = false;
 
+
+        #region ex_functions
         protected override bool initialize() {
 
             // signals
@@ -94,30 +93,105 @@ namespace Ex{
             return true;
         }
 
+        protected override void start_experiment() {
+            valueIntialized = false;
+        }
+
         protected override void start_routine() {
+            init_value();
+        }
 
-            float currentValue;
-            if (currentC.get<bool>("random_start")) { // random value
-                if (currentC.get<bool>("whole")) {     
-                    currentValue = (float)Random.Range((int)currentC.get<float>("min"), (int)currentC.get<float>("max") + 1);
-                } else {
-                    currentValue = Random.Range(currentC.get<float>("min"), currentC.get<float>("max"));
+        protected override void update_parameter_from_gui(string updatedArgName) {
+
+            if (updatedArgName == "normal_start" || updatedArgName == "random_start" || updatedArgName == "once_start" || updatedArgName == "once_random_start]") {
+
+                if (currentC.get<bool>(updatedArgName)) {
+                    init_value();
                 }
-            } else { // current value
-                currentValue = get_value();
-            }
 
-            set_value(currentValue);
+            } else if (updatedArgName == "value") {
+
+                if (currentC.get<bool>("normal_start")) {
+
+                    set_value(currentC.get<float>("value"));
+
+                } else if (currentC.get<bool>("once_start")) {
+                    if (!valueIntialized) {
+
+                        set_value(currentC.get<float>("value"));
+
+                        valueIntialized = true;
+                    } else {
+                        return;
+                    }
+
+                }
+            }
+            
+            update_from_current_config();
+        }
+
+        public override void update_from_current_config() {
+
+            m_sliderGO.GetComponent<UnityEngine.UI.Image>().color = currentC.get_color("background_color");
+            m_slider.transform.Find("Fill Area").Find("Fill").GetComponent<UnityEngine.UI.Image>().color = currentC.get_color("fill_area_color");
+            m_slider.transform.Find("Handle Slide Area").Find("Handle").GetComponent<UnityEngine.UI.Image>().color = currentC.get_color("handle_color");
+            m_slider.transform.Find("Background").GetComponent<UnityEngine.UI.Image>().color = currentC.get_color("rest_area_color");
+        }
+
+        protected override void pre_update() {
+            resize_container();
         }
 
         protected override void set_visibility(bool visibility) {
             m_sliderGO.SetActive(visibility);
         }
 
-        public float get_value() {
-            return currentC.get<float>("value");
+        #endregion
+
+        #region private_functions
+
+
+        private void init_value() {
+
+            if (currentC.get<bool>("normal_start")) {
+
+                set_value(currentC.get<float>("value"));
+
+            } else if (currentC.get<bool>("once_start")) {
+
+                if (!valueIntialized) {
+                    set_value(currentC.get<float>("value"));
+                }
+
+            } else if (currentC.get<bool>("random_start")) {
+
+                if (currentC.get<bool>("whole")) {
+                    set_value((float)Random.Range((int)currentC.get<float>("min"), (int)currentC.get<float>("max") + 1));
+                } else {
+                    set_value(Random.Range(currentC.get<float>("min"), currentC.get<float>("max")));
+                }
+
+            } else { // once_random_start
+
+                if (!valueIntialized) {
+
+                    if (currentC.get<bool>("whole")) {
+                        set_value((float)Random.Range((int)currentC.get<float>("min"), (int)currentC.get<float>("max") + 1));
+                    } else {
+                        set_value(Random.Range(currentC.get<float>("min"), currentC.get<float>("max")));
+                    }
+                } 
+            }
         }
 
+        #endregion
+
+        #region public_functions
+
+        public float get_value() {
+            return m_slider.value;
+        }
         public void decrease(float amount) {
             set_value(get_value() - amount);
         }
@@ -125,30 +199,6 @@ namespace Ex{
         public void increase(float amount) {
             set_value(get_value() + amount);
         }
-
-
-        // use_eye_camera
-        protected override void pre_update() {
-            resize_container();
-        }
-
-        protected override void update_parameter_from_gui(string updatedArgName) {
-
-            // regenerate random value
-            float currentValue = get_value();
-            if (updatedArgName == "random_start") {                
-                if (currentC.get<bool>("random_start")) {                    
-                    if (currentC.get<bool>("whole")) {
-                        currentValue = (float)Random.Range((int)currentC.get<float>("min"), (int)currentC.get<float>("max"));
-                    } else {
-                        currentValue = Random.Range(currentC.get<float>("min"), currentC.get<float>("max"));
-                    }
-                }
-            }
-
-            set_value(currentValue);
-        }
-
 
         public void resize_container() {
 
@@ -182,8 +232,8 @@ namespace Ex{
             );
         }
 
-
         public void set_value(float value) {
+
 
             bool whole = currentC.get<bool>("whole");
             float min = currentC.get<float>("min");
@@ -202,12 +252,9 @@ namespace Ex{
                 value = m_slider.maxValue;
             }
 
-            // update value
-            currentC.set("value", value);
-
             // update slider value
-            var previousValue = m_slider.value;
             m_slider.value = !whole ? value : (int)value;
+            valueIntialized = true;
 
             // update text ui
             currentC.update_text("t1", m_descriptionText1);
@@ -235,14 +282,12 @@ namespace Ex{
                 m_sliderValueText.text = "";
             }
 
-            // slider
-            m_sliderGO.GetComponent<UnityEngine.UI.Image>().color = currentC.get_color("background_color");
-            m_slider.transform.Find("Fill Area").Find("Fill").GetComponent<UnityEngine.UI.Image>().color = currentC.get_color("fill_area_color");
-            m_slider.transform.Find("Handle Slide Area").Find("Handle").GetComponent<UnityEngine.UI.Image>().color = currentC.get_color("handle_color");
-            m_slider.transform.Find("Background").GetComponent<UnityEngine.UI.Image>().color = currentC.get_color("rest_area_color");
-
             // send updated slider value
             invoke_signal("value updated", m_slider.value);
         }
+
+        #endregion
+
+
     }
 }
