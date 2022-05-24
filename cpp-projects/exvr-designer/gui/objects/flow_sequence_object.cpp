@@ -156,16 +156,16 @@ void FlowSequenceO::update_from_experiment(Experiment *exp){
         if(found){
             oldL->update(newLoop.get());
             auto loopElementPtr = oldL.get();
-            auto start = dynamic_cast<LoopNodeFlowElementO*>(elements[exp->get_element_position(newLoop->start)].get());
-            auto end   = dynamic_cast<LoopNodeFlowElementO*>(elements[exp->get_element_position(newLoop->end)].get());
+            auto start = dynamic_cast<LoopNodeFlowElementO*>(elements[exp->get_element_position(newLoop->start).v].get());
+            auto end   = dynamic_cast<LoopNodeFlowElementO*>(elements[exp->get_element_position(newLoop->end).v].get());
             loopElementPtr->startLoopNode = start;
             loopElementPtr->endLoopNode   = end;
             newLoopsElements.emplace_back(std::move(oldL));
         }else{
             auto loopElement = std::make_unique<LoopFlowElementO>(newLoop.get());
             auto loopElementPtr = loopElement.get();
-            auto start = dynamic_cast<LoopNodeFlowElementO*>(elements[exp->get_element_position(newLoop->start)].get());
-            auto end   = dynamic_cast<LoopNodeFlowElementO*>(elements[exp->get_element_position(newLoop->end)].get());
+            auto start = dynamic_cast<LoopNodeFlowElementO*>(elements[exp->get_element_position(newLoop->start).v].get());
+            auto end   = dynamic_cast<LoopNodeFlowElementO*>(elements[exp->get_element_position(newLoop->end).v].get());
             loopElementPtr->startLoopNode = start;
             loopElementPtr->endLoopNode   = end;
             start->loopElement = loopElementPtr;

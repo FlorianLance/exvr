@@ -29,20 +29,20 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-namespace Modified.Mono.CSharp{
+// system
+using System;
+using System.CodeDom;
+using System.CodeDom.Compiler;
+using System.ComponentModel;
+using System.IO;
+using System.Text;
+using System.Reflection;
+using System.Collections.Specialized;
+using System.Diagnostics;
+using System.Text.RegularExpressions;
+using System.Linq;
 
-    using System;
-    using System.CodeDom;
-    using System.CodeDom.Compiler;
-    using System.ComponentModel;
-    using System.IO;
-    using System.Text;
-    using System.Reflection;
-    using System.Collections.Generic;
-    using System.Collections.Specialized;
-    using System.Diagnostics;
-    using System.Text.RegularExpressions;
-    using System.Linq;
+namespace Modified.Mono.CSharp{
 
     internal class CSharpCodeCompiler : ICodeCompiler{
 

@@ -129,51 +129,66 @@ void DesignerWindow::update_from_experiment(Experiment *experiment, int update){
 
     bool display = false;
     if(update & ResetUI){
+        QtLogger::log(QSL("Start [Reset ui]"));
         Bench::start("[Reset ui]"sv, display);
+        QtLogger::log(QSL("Reset components widgets."));
         m_componentsW->reset();
+        QtLogger::log(QSL("Reset rouitines widgets."));
         m_routinesW->reset();
+        QtLogger::log(QSL("Reset flow diagram widget."));
         m_flowDiagramW->reset();
+        QtLogger::log(QSL("Reset element viewer widget."));
         m_elementViewerW->reset();
         Bench::stop();
+        QtLogger::log(QSL("End [Reset ui]"));
     }
 
     if(update & UpdateComponents){ // update experiment components
-        QtLogger::log(QSL("update experiment components"));
+        QtLogger::log(QSL("Start [update experiment components]"));
         Bench::start("[Update components]"sv, display);
         m_componentsW->update_from_components_manager(&experiment->compM);
         Bench::stop();
+        QtLogger::log(QSL("End [update experiment components]"));
     }
 
     if(update & UpdateFlow){ // update flow
-        QtLogger::log(QSL("update flow"));
+        QtLogger::log(QSL("Start [update flow]"));
         Bench::start("[Update flow]"sv, display);
         m_flowDiagramW->update_from_experiment(experiment);
         Bench::stop();
+        QtLogger::log(QSL("End [update flow]"));
     }
 
     if(update & UpdateSelection){ // update selected element
-        QtLogger::log(QSL("update selected element"));
+        QtLogger::log(QSL("Start [update selected element]"));
         Bench::start("[Update selected element]"sv, display);
         m_elementViewerW->update_from_current_element(experiment->selectedElement);
         Bench::stop();
+        QtLogger::log(QSL("End [update selected element]"));
     }
 
     if(update & UpdateRoutines){ // update routines
-        QtLogger::log(QSL("update routines"));
+        QtLogger::log(QSL("Start [update routines]"));
         Bench::start("[Update routines]"sv, display);
         m_routinesW->update_from_experiment(experiment);
-        Bench::stop();             
+        Bench::stop();
+        QtLogger::log(QSL("End [update routines]"));
     }
 
     if(update & UpdateUI){
-        QtLogger::log(QSL("update ui"));
+        // QtLogger::log(QSL("Start [update ui]"));
         Bench::start("[Update main ui]"sv, false);
         update_main_ui(experiment);
         Bench::stop();
+        // QtLogger::log(QSL("End [update ui]"));
     }
 
-    setWindowTitle(QSL("ExVR [VERSION: ") % experiment->states.numVersion %
-        QSL("]  [EXP: ") % experiment->states.currentName % QSL("]  [INSTANCE: ") % experiment->states.currentInstanceName % QSL("]"));
+    // update title
+    setWindowTitle(
+        QSL("ExVR [VERSION: ") % experiment->states.numVersion %
+        QSL("]  [EXP: ") % experiment->states.currentName %
+        QSL("]  [INSTANCE: ") % experiment->states.currentInstanceName % QSL("]")
+    );
 }
 
 void DesignerWindow::display_status(QString status, int ms){
@@ -205,6 +220,8 @@ void DesignerWindow::update_main_ui(Experiment *experiment){
     QString currentTime = QSL("Time: 0 (s)");
     QString expTime = "";
     int progressbarValue = 0;
+
+    qDebug() << expStateDescription << (int)expLauncherState;
 
     switch (expLauncherState) {
         case ExpLauncherState::NotStarted:
@@ -245,6 +262,10 @@ void DesignerWindow::update_main_ui(Experiment *experiment){
             if(expState == ExpState::Paused || expState == ExpState::Running){
 
                 auto nbCallsSplit = experiment->states.nbCalls.split(";");
+                if(nbCallsSplit.size() < 2){
+                    QtLogger::error("Invalid states.");
+                    break;
+                }
 
                 QString n = QSL("<b>") % experiment->states.currentElementName % QSL("</b> (T: ") % nbCallsSplit[0] % QSL(")");
 
@@ -259,8 +280,13 @@ void DesignerWindow::update_main_ui(Experiment *experiment){
                                   QSL("</b> - ")            % experiment->states.currentOrder;
                 }
 
-                currentTime = QSL("Time: ") % QString::number(experiment->states.currentElementTimeS) % QSL(" / ") % QString::number(experiment->states.currentIntervalEndTimeS) % QSL("(s)");
-                expTime = QSL("Total exp time: ") % QString::number(experiment->states.experimentTimeS) % QSL("(s)");
+                currentTime =
+                    QSL("Time: ") % QString::number(experiment->states.currentElementTimeS) %
+                    QSL(" / ") % QString::number(experiment->states.currentIntervalEndTimeS) % QSL("(s)");
+
+                expTime =
+                    QSL("Total exp time: ") % QString::number(experiment->states.experimentTimeS) % QSL("(s)");
+
                 progressbarValue = static_cast<int>((experiment->states.currentElementTimeS/experiment->states.currentIntervalEndTimeS)*100);
                 displayElementCurrentTime = true;
                 diplayProgresssbar = true;

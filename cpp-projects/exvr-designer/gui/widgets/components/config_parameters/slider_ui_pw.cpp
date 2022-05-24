@@ -94,6 +94,7 @@ struct SliderUiConfigParametersW::Impl{
     ExRadioButtonW onceStart{"once_start"};
     ExRadioButtonW randomStart{"random_start"};
     ExRadioButtonW onceRandomStart{"once_random_start"};
+    ExRadioButtonW doNothing{"do_nothing"};
 
     ExFloatSpinBoxW minValue{"min"};
     ExFloatSpinBoxW initialValue{"value"};
@@ -226,14 +227,15 @@ void SliderUiConfigParametersW::init_and_register_widgets(){
 
     add_inputs_ui(
         ExRadioButtonW::init_group_widgets(m_p->group2,
-           {&m_p->normalStart, &m_p->onceStart, &m_p->randomStart, &m_p->onceRandomStart},
+           {&m_p->normalStart, &m_p->onceStart, &m_p->randomStart, &m_p->onceRandomStart, &m_p->doNothing},
            {
                "\"value\"",
                "\"value\" only once during the experiment",
                "random value between \"min\" and \"max\"",
-               "random value between \"min\" and \"max\" only once during the experiment"
+               "random value between \"min\" and \"max\" only once during the experiment",
+               "do nothing"
            },
-           {true, false, false, false}
+           {true, false, false, false, false}
         )
     );
 

@@ -65,14 +65,15 @@ public slots:
 
 private:
 
+    void init_no_selection_ui();
     void init_routine_ui();
     void init_loop_ui();
     void init_isi_ui();
 
+    void update_no_selection_ui();
     void update_loop_ui(Loop *loop);
     void update_routine_ui(Routine *routine);
     void update_isi_ui(Isi *isi);
-
 
     // current loop style index
     int m_currentLoopIndex = 0;
@@ -81,13 +82,15 @@ private:
     // layout
     QHBoxLayout *m_layout = nullptr;
 
-    // ui
+    // ui    
     std::unique_ptr<Ui::RoutineW> m_routineUI   = nullptr;
     std::unique_ptr<Ui::LoopW>    m_loopUI      = nullptr;
     std::unique_ptr<Ui::IsiW>     m_isiUI       = nullptr;
 
     // widgets
     QWidget m_noSelectionW;
+    QLabel *m_allElementLa = nullptr;
+    QListWidget *m_allElementsLW = nullptr;
     QWidget m_routineW;
     QWidget m_loopW;
     QWidget m_isiW;

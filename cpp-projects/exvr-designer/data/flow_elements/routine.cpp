@@ -36,7 +36,7 @@ RoutineUP Routine::copy_with_new_element_id(const Routine &routineToCopy, const 
     routine->isARandomizer = routineToCopy.isARandomizer;
     routine->conditions.reserve(routineToCopy.conditions.size());
     for(const auto &conditionToCopy : routineToCopy.conditions){
-        routine->conditions.emplace_back(Condition::duplicate(*conditionToCopy.get()));
+        routine->conditions.push_back(Condition::duplicate(*conditionToCopy.get()));
     }
 
     return routine;
@@ -80,7 +80,7 @@ void Routine::move_condition_up(RowId id){
 
 void Routine::create_nodes_connection(ConditionKey conditionKey, Connection *connection){
     if(auto condition = get_condition(conditionKey); condition != nullptr){
-        condition->connections.emplace_back(std::unique_ptr<Connection>(connection));
+        condition->connections.emplace_back(connection);
     }
 }
 
@@ -92,7 +92,7 @@ void Routine::delete_nodes_connection(ConditionKey conditionKey, ConnectionKey c
 
 void Routine::create_connector_node(ConditionKey conditionKey, Connector *connector){
     if(auto condition = get_condition(conditionKey); condition != nullptr){
-        condition->connectors.emplace_back(std::unique_ptr<Connector>(connector));
+        condition->connectors.emplace_back(connector);
     }
 }
 
@@ -176,21 +176,22 @@ void Routine::check_integrity(){
 
 
 Condition *Routine::get_condition(ConditionKey conditionKey) const{
-    for(const auto &condition : conditions){
-        if(condition->key() == conditionKey.v){
-            return condition.get();
-        }
-    }
 
+    if(auto condFound = std::find_if(conditions.begin(), conditions.end(), [conditionKey](const auto &condition){
+            return condition->c_key() == conditionKey;
+        }); condFound != conditions.end()){
+        return condFound->get();
+    }
     QtLogger::error(QSL("Condition with key ") % QString::number(conditionKey.v) % QSL(" not found."));
     return nullptr;
 }
 
 Condition *Routine::selected_condition() const{
-    for(const auto &condition : conditions){
-        if(condition->selected){
-            return condition.get();
-        }
+
+    if(auto condFound = std::find_if(conditions.begin(), conditions.end(), [](const auto &condition){
+            return condition->selected;
+        }); condFound != conditions.end()){
+        return condFound->get();
     }
     return nullptr;
 }

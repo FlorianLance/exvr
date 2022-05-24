@@ -1096,6 +1096,7 @@ void ExVrController::generate_global_signals_connections(){
     connect(s, &GSignals::clean_all_routine_conditions_signal,              exp(), &EXP::clean_all_routine_conditions);
     connect(s, &GSignals::set_duration_for_all_routine_conditions_signal,   exp(), &EXP::set_duration_for_all_routine_conditions);
     connect(s, &GSignals::update_element_name_signal,                       exp(), &EXP::update_element_name);
+    connect(s, &GSignals::move_element_signal,                              exp(), &EXP::move_element);
     // ## isi
     connect(s, &GSignals::add_isi_interval_signal,                    exp(), &EXP::add_isi_interval);
     connect(s, &GSignals::modify_isi_interval_signal,                 exp(), &EXP::modify_isi_interval);

@@ -65,6 +65,11 @@ void RoutineFlowElementO::draw(QPainter &painter, qreal zoomLevel){
     pen.setColor(display::Colors::text(is_selected(), type));
     painter.setPen(pen);
     painter.drawText(uiElemRect,  Qt::AlignCenter, name);
+
+//    pen.setColor(Qt::red);
+//    pen.setWidthF(zoomLevel*50.0);
+//    painter.setPen(pen);
+//    painter.drawText(QRect(uiAreaRect.left()),  Qt::AlignCenter, "12");
 }
 
 void RoutineFlowElementO::update(FlowElement *element){

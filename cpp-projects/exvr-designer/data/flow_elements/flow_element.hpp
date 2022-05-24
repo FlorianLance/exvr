@@ -41,7 +41,7 @@ enum class ButtonType : int {
 struct FlowElement {
 
     enum class Type : int {
-        Node,LoopStart,LoopEnd,Routine,Isi,Loop,AddElement,RemoveElement,MoveElement,
+        Node,LoopStart,LoopEnd,Routine,Isi,Loop,
         SizeEnum};
 
     enum class Mobility : int{

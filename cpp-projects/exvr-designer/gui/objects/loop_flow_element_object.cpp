@@ -50,8 +50,10 @@ void LoopFlowElementO::draw(QPainter &painter, qreal zoomLevel){
 
     QPointF right    = endLoopNode->uiElemRect.center() - QPointF(0., endLoopNode->uiElemRect.height()*0.5);
     QPointF topRight = QPointF(endLoopNode->uiElemRect.center().x(),  (level)*FlowElementO::areaHeight);
+
     QPointF topLeft  = QPointF(startLoopNode->uiElemRect.center().x(), (level)*FlowElementO::areaHeight);
     QPointF left     = startLoopNode->uiElemRect.center() - QPointF(0., sizeArrow.height() + startLoopNode->uiElemRect.height()*0.5);
+
     QPointF topMiddle= (topLeft + topRight)*0.5;
 
     QPolygonF loopLine({right, topRight, topLeft, left});

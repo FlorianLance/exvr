@@ -47,62 +47,56 @@ namespace Ex{
 
         private UdpCommunication m_udpCommunication = null;
 
-        public void send_log_to_GUI(string log, bool append = true) {
+        private void send_message_to_GUI(string message, bool append) {
             if (append) {
-                m_udpCommunication.append_message(string.Format(logFormat, log));
+                m_udpCommunication.append_message(message);
             } else {
-                m_udpCommunication.send_message(string.Format(logFormat, log));
+                m_udpCommunication.send_message(message);
             }
         }
 
-        public void send_warning_to_GUI(string log, bool append = false) {
-            if (append) {
-                m_udpCommunication.append_message(string.Format(warningFormat, log));
-            } else {
-                m_udpCommunication.send_message(string.Format(warningFormat, log));
-            }
+        public void send_log_to_GUI(string log, bool append = true) {
+            send_message_to_GUI(string.Format(logFormat, log), append);
+        }
+
+        public void send_warning_to_GUI(string warning, bool append = false) {
+            send_message_to_GUI(string.Format(warningFormat, warning), append);
         }
 
         public void send_error_to_GUI(string error, bool append = false) {
-            if (append) {
-                m_udpCommunication.append_message(string.Format(errorFormat, error));
-            } else {
-                m_udpCommunication.send_message(string.Format(errorFormat, error));
-            }            
+            send_message_to_GUI(string.Format(errorFormat, error), append);          
         }
-        
-        public void send_component_infos_to_GUI(string componentKey, string configKey, string id, string value) {
-            m_udpCommunication.append_message(string.Format(componentInfosFormat,
+
+        public void send_component_infos_to_GUI(string componentKey, string configKey, string id, string value, bool append = true) {
+            send_message_to_GUI(string.Format(componentInfosFormat,
                 componentKey, 
                 configKey, 
                 id, 
                 value
-            ));
+            ), append);
         }
 
-        public void send_connector_infos_to_GUI(string routineKey, string conditionKey, string connectorKey, string id, string value) {
-
-            m_udpCommunication.append_message(string.Format(connectorInfosFormat,
+        public void send_connector_infos_to_GUI(string routineKey, string conditionKey, string connectorKey, string id, string value, bool append = true) {
+            send_message_to_GUI(string.Format(connectorInfosFormat,
                 routineKey,
                 conditionKey,
                 connectorKey,
                 id,
                 value
-            ));
+            ), append);
         }
 
-        public void send_experiment_state_to_GUI(string expState) {
-            m_udpCommunication.append_message(string.Format(experimentStateGuiFormat, expState));
+        public void send_experiment_state_to_GUI(string expState, bool append = true) {
+            send_message_to_GUI(string.Format(experimentStateGuiFormat, expState), append);
         }
 
-        public void send_exp_launcher_state_to_GUI(string expState) {
-            m_udpCommunication.append_message(string.Format(expLauncherStateGuiFormat, expState));
+        public void send_exp_launcher_state_to_GUI(string expState, bool append = false) {
+            send_message_to_GUI(string.Format(expLauncherStateGuiFormat, expState), append);
         }
 
         public void debug_fake_communication(string cmd) {
             ExVR.Events().gui.MessageFromGUI.Invoke(cmd);
         }
-
 
         public void define_udp_ports(int portToWrite) {
             m_udpCommunication = new UdpCommunication(true, true, 
@@ -123,27 +117,18 @@ namespace Ex{
             return m_udpCommunication.receiver_initialized() && m_udpCommunication.sender_initialized();
         }
 
-
         void Update() {
-
 
             if (m_udpCommunication == null) {
                 return;
             }
       
-            // get last 
+            // read all
             foreach(var message in m_udpCommunication.read_all_messages()) {
                 ExVR.Events().gui.MessageFromGUI.Invoke(message);
             }
 
-            //for (int ii = 0; ii < 5; ++ii) {
-            //    string cmd = m_udpCommunication.read_message();
-            //    if (cmd.Length == 0) {
-            //        return;
-            //    }
-            //    ExVR.Events().gui.MessageFromGUI.Invoke(cmd);
-            //}
-
+            // send all
             m_udpCommunication.send_all_messages();
         }
     }

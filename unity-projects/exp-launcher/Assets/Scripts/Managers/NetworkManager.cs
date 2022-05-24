@@ -121,11 +121,11 @@ namespace Ex{
 
             if (guiIpc != null) {
 
-                set_experiment_state_to_GUI(ExpState.NotLoaded);
-
+                set_experiment_state_to_GUI(ExpState.NotLoaded, "", false);
 
                 guiIpc.send_exp_launcher_state_to_GUI(
-                    to_string(m_lastExpLauncherState = ExpLauncherState.Closing));                
+                    to_string(m_lastExpLauncherState = ExpLauncherState.Closing), false);
+
 
                 guiIpc.clean();
                 guiIpc = null;
@@ -146,15 +146,15 @@ namespace Ex{
         }
 
 
-        public void set_experiment_state_to_GUI(ExpState state, string infos = "") {
+        public void set_experiment_state_to_GUI(ExpState state, string infos = "", bool append = false) {
 
             if (infos.Length == 0) {
                 if (m_lastExpState != state) {
-                    guiIpc.send_experiment_state_to_GUI(to_string(m_lastExpState = state));
+                    guiIpc.send_experiment_state_to_GUI(to_string(m_lastExpState = state), append);
                 }
             } else {
                 if ((m_lastExpState != state) || (m_lastStateMessage != infos)) {
-                    guiIpc.send_experiment_state_to_GUI(string.Format(cancat2, to_string(m_lastExpState = state), m_lastStateMessage = infos));
+                    guiIpc.send_experiment_state_to_GUI(string.Format(cancat2, to_string(m_lastExpState = state), m_lastStateMessage = infos), append);
                 }
             }
         }

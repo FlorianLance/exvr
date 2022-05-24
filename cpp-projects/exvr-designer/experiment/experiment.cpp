@@ -49,6 +49,76 @@ Experiment::Experiment(QString nVersion) : states(nVersion), randomizer(Randomiz
     new_experiment();
 }
 
+auto Experiment::nb_elements() const noexcept -> size_t{
+    return elements.size();
+}
+
+auto Experiment::nb_elements_no_nodes() const noexcept -> size_t{
+    return nb_elements() / 2;
+}
+
+auto Experiment::get_element_position(FlowElement *element) const -> RowId{
+
+    if(auto elementFound = get_element_iterator(element); elementFound != elements.end()){
+        return RowId{static_cast<int>(std::distance(elements.begin(), elementFound))};
+    }
+
+    QtLogger::error(QSL("[EXP] Element with key ") % QString::number(element->key()) % QSL(" not found."));
+    return RowId{-1};
+}
+
+auto Experiment::get_element_position_no_node(FlowElement *element) const -> RowId{
+
+    if(auto row = get_element_position(element); row.v != -1){
+        return {row.v / 2};
+    }
+    return {-1};
+}
+
+auto Experiment::get_element(RowId id) const -> FlowElement*{
+    if(id.v < static_cast<int>(nb_elements())){
+        return elements[id.v].get();
+    }
+    return nullptr;
+}
+
+auto Experiment::get_element_no_nodes(RowId id) const -> FlowElement*{
+    return get_element(RowId{id.v * 2 + 1});
+}
+
+auto Experiment::get_element(ElementKey elementKey, bool showError) const -> FlowElement* {
+
+    if(auto elementFound = get_element_iterator(elementKey); elementFound != elements.end()){
+        return elementFound->get();
+    }
+    if(showError){
+        QtLogger::error(QSL("[EXP] Element with key ") % QString::number(elementKey.v) % QSL(" not found."));
+    }
+    return nullptr;
+}
+
+auto Experiment::get_elements() const -> std::vector<FlowElement*>{
+    std::vector<FlowElement*> children;
+    children.reserve(elements.size());
+    for(const auto &elem : elements){
+        children.push_back(elem.get());
+    }
+    return children;
+}
+
+auto Experiment::get_elements_from_type(FlowElement::Type type) const -> std::vector<FlowElement*>{
+    std::vector<FlowElement*> children;
+    for(const auto &elem : elements){
+        if(elem->type() == type){
+            children.push_back(elem.get());
+        }
+    }
+    return children;
+}
+
+
+
+
 void Experiment::update_randomization_seed(unsigned int seed){
     QtLogger::message(QSL("[EXP] Set randomizer with seed ") % QString::number(seed));
     states.randomizationSeed = seed;
@@ -136,20 +206,6 @@ void Experiment::select_element_from_ptr(FlowElement *element, bool updateSignal
 
 
 
-
-size_t Experiment::get_element_position(FlowElement *element) const{
-
-    auto elementFound = std::find_if(elements.begin(), elements.end(), [element](const std::unique_ptr<FlowElement> & currElem){
-        return currElem.get() == element;
-    });
-    if(elementFound != elements.end()){
-        return static_cast<size_t>(std::distance(elements.begin(), elementFound));
-    }
-
-    QtLogger::error(QSL("[EXP] Element with key ") % QString::number(element->key()) % QSL(" not found."));
-    return 0;
-}
-
 void Experiment::add_element(FlowElement::Type type, size_t index){
 
 
@@ -222,17 +278,12 @@ void Experiment::add_element(FlowElement::Type type, size_t index){
 
             auto loop = std::make_unique<Loop>(name, ElementKey{-1});
 
-            qDebug() << "loop " << loop->key();
             auto loopPtr = loop.get();
-            loops.emplace_back(std::move(loop));
+            loops.push_back(std::move(loop));
 
             auto start = std::make_unique<LoopNode>(loopPtr, true);
             auto end   = std::make_unique<LoopNode>(loopPtr, false);
             loopPtr->set_nodes(start.get(),end.get());
-
-            qDebug() << "loop ptr" << loopPtr->key();
-            qDebug() << start->key();
-            qDebug() << end->key();
 
             elements.insert(elements.begin() + static_cast<std_v1<std::unique_ptr<FlowElement>>::difference_type>(index + 1), std::move(start));
             elements.insert(elements.begin() + static_cast<std_v1<std::unique_ptr<FlowElement>>::difference_type>(index + 2), std::make_unique<NodeFlow>());
@@ -318,17 +369,16 @@ void Experiment::duplicate_element(ElementKey elementKey){
                 elements.insert(std::begin(elements) + static_cast<std_v1<std::unique_ptr<FlowElement>>::difference_type>(ii + 2), std::move(newElement));
                 select_element(ElementKey{elementPtr->key()}, false);
 
-
             }else if(elements[ii]->type() == FlowElement::Type::LoopStart){
 
                 auto loopStart = dynamic_cast<LoopNode*>(elements[ii].get());
                 auto loopEnd = loopStart->loop->end;
 
-                auto endPosition = get_element_position(loopEnd);
+                auto endPosition = get_element_position(loopEnd).v;
 
                 auto loop = Loop::copy_with_new_element_id(*loopStart->loop, loopStart->loop->name() % QSL("(copy)"));
                 auto loopPtr = loop.get();
-                loops.emplace_back(std::move(loop));
+                loops.push_back(std::move(loop));
 
                 auto start = std::make_unique<LoopNode>(loopPtr, true);
                 auto end   = std::make_unique<LoopNode>(loopPtr, false);
@@ -340,13 +390,7 @@ void Experiment::duplicate_element(ElementKey elementKey){
                 elements.insert(elements.begin() + static_cast<std_v1<std::unique_ptr<FlowElement>>::difference_type>(endPosition + 4), std::move(end));
                 select_element(ElementKey{loopPtr->key()}, false);
 
-                return;
-            }else if(elements[ii]->type() == FlowElement::Type::LoopEnd){
-                return;
-            }else{
-                return;
             }
-
 
             break;
         }
@@ -424,7 +468,7 @@ void Experiment::move_left(size_t id){
         for(auto &elem : elements){
             if(elem->type() == FlowElement::Type::LoopStart && elem->key() == previous->key()){
 
-                size_t idS = get_element_position(elem.get());
+                int idS = get_element_position(elem.get()).v;
                 auto e = std::move(elements[id]);
                 elements.erase(elements.begin() + static_cast<std::vector<std::unique_ptr<FlowElement>>::difference_type>(id));
                 elements.insert(elements.begin()+ static_cast<std::vector<std::unique_ptr<FlowElement>>::difference_type>(idS), std::move(e));
@@ -444,7 +488,7 @@ void Experiment::move_left(size_t id){
         for(auto &elem : elements){
             if(elem->type() == FlowElement::Type::LoopStart && elem->key() == previous->key()){
 
-                size_t idS = get_element_position(elem.get());
+                int idS = get_element_position(elem.get()).v;
 
                 auto e = std::move(elements[id]);
                 erase_row(elements, id);
@@ -479,7 +523,7 @@ void Experiment::move_right(size_t id){
         for(auto &elem : elements){
             if(elem->type() == FlowElement::Type::LoopEnd && elem->key() == next->key()){
 
-                size_t idS = get_element_position(elem.get());
+                int idS = get_element_position(elem.get()).v;
                 auto e = std::move(elements[id]);
                 elements.erase(elements.begin() + static_cast<std::vector<std::unique_ptr<FlowElement>>::difference_type>(id));
                 elements.insert(elements.begin()+ static_cast<std::vector<std::unique_ptr<FlowElement>>::difference_type>(idS+1), std::move(e));
@@ -499,7 +543,7 @@ void Experiment::move_right(size_t id){
         for(auto &elem : elements){
             if(elem->type() == FlowElement::Type::LoopEnd && elem->key() == next->key()){
 
-                size_t idS = get_element_position(elem.get());
+                int idS = get_element_position(elem.get()).v;
 
                 auto e = std::move(elements[id]);
                 elements.erase(elements.begin() + static_cast<std::vector<std::unique_ptr<FlowElement>>::difference_type>(id));
@@ -524,6 +568,48 @@ void Experiment::move_right(size_t id){
     add_to_update_flag(UpdateFlow | UpdateRoutines | UpdateSelection);
 }
 
+void Experiment::move_element(ElementKey elementKey){
+
+    if(auto element = get_element(elementKey); element != nullptr){
+
+        auto currentNoNodePosition =  get_element_position_no_node(element);
+        bool ok;
+        auto newNoNodePosition = RowId{QInputDialog::getInt(nullptr,
+            QSL("Move element from position [") % QString::number(currentNoNodePosition.v) % QSL("] to"), "Enter new id position", currentNoNodePosition.v, 0,
+            static_cast<int>(nb_elements_no_nodes()-1),1, &ok)};
+
+        if(ok){
+
+            auto currentPos = get_element_position(get_element_no_nodes(currentNoNodePosition));
+            auto newPos     = get_element_position(get_element_no_nodes(newNoNodePosition));
+            if(currentPos.v == newPos.v){
+                return;
+            }
+
+            auto node    = std::move(elements[currentPos.v-1]);
+            auto element = std::move(elements[currentPos.v]);
+
+            // remove element
+            elements.erase(elements.begin() + currentPos.v);
+
+            // remove node
+            elements.erase(elements.begin() + currentPos.v-1);
+
+            if(newPos.v > currentPos.v){
+                elements.insert(elements.begin() + newPos.v - 1, std::move(element));
+                elements.insert(elements.begin() + newPos.v - 1, std::move(node));
+            }else{
+                elements.insert(elements.begin() + newPos.v, std::move(node));
+                elements.insert(elements.begin() + newPos.v, std::move(element));
+            }
+
+            compute_loops_levels();
+            update_conditions();
+            add_to_update_flag(UpdateRoutines | UpdateFlow | UpdateSelection);
+        }
+    }
+}
+
 void Experiment::update_element_name(ElementKey elementKey, QString elemName){
 
     if(auto element = get_element(elementKey); element != nullptr){
@@ -532,18 +618,6 @@ void Experiment::update_element_name(ElementKey elementKey, QString elemName){
     }    
 }
 
-FlowElement *Experiment::get_element(ElementKey elementKey) const{
-
-    auto elementFound = std::find_if(elements.begin(), elements.end(), [elementKey](const std::unique_ptr<FlowElement> &element){
-        return element->key() == elementKey.v;
-    });
-    if(elementFound != elements.end()){
-        return elementFound->get();
-    }
-
-    QtLogger::error(QSL("[EXP] Element with key ") % QString::number(elementKey.v) % QSL(" not found."));
-    return nullptr;
-}
 
 void Experiment::select_routine_condition(ElementKey routineKey, RowId conditionTabId){
 
@@ -741,10 +815,10 @@ Condition *Experiment::get_condition(ElementKey routineKey, ConditionKey conditi
 
 Routine *Experiment::get_routine(ElementKey routineKey) const{
 
-    auto elementFound = std::find_if(elements.begin(), elements.end(), [routineKey](const std::unique_ptr<FlowElement> &element){
-        return element->key() == routineKey.v && element->is_routine();
-    });
-    if(elementFound != elements.end()){
+    if(auto elementFound = std::find_if(elements.begin(), elements.end(), [routineKey](const std::unique_ptr<FlowElement> &element){
+            return element->key() == routineKey.v && element->is_routine();
+        }); elementFound != elements.end()){
+
         return dynamic_cast<Routine*>(elementFound->get());
     }
 
@@ -1014,7 +1088,7 @@ void Experiment::add_action(ElementKey routineKey, ConditionKey conditionKey, Co
         if(auto condition = routine->get_condition(conditionKey); condition != nullptr){
 
             if(auto action = condition->get_action_from_component_key(componentKey, false); action == nullptr){
-                condition->actions.emplace_back(Action::generate_component_action(
+                condition->actions.push_back(Action::generate_component_action(
                     component, condition->duration, configKey, fillUpdateTimeline, fillVisibilityTimeline));
 
                 add_to_update_flag(UpdateRoutines);
@@ -1046,7 +1120,7 @@ void Experiment::add_action_to_all_conditions(ElementKey routineKey, ComponentKe
 
             if(auto action = condition->get_action_from_component_key(componentKey, false); action == nullptr){
 
-                condition->actions.emplace_back(Action::generate_component_action(
+                condition->actions.push_back(Action::generate_component_action(
                     component, condition->duration, configKey, fillUpdateTimeline, fillVisibilityTimeline));
             }
         }
@@ -1074,7 +1148,7 @@ void Experiment::add_action_to_all_routines_conditions(ComponentKey componentKey
 
             if(auto action = condition->get_action_from_component_key(componentKey, false); action == nullptr){
 
-                condition->actions.emplace_back(Action::generate_component_action(
+                condition->actions.push_back(Action::generate_component_action(
                     component, condition->duration, configKey, fillUpdateTimeline, fillVisibilityTimeline));
             }
         }
@@ -1096,7 +1170,7 @@ void Experiment::insert_action_to(ComponentKey componentKey, std::vector<std::tu
             if(auto condition = routine->get_condition(std::get<1>(detail)); condition != nullptr) {
                 if(auto config = component->get_config(std::get<2>(detail)); config != nullptr){
                     if(auto action = condition->get_action_from_component_key(componentKey, false); action == nullptr){
-                        condition->actions.emplace_back(Action::generate_component_action(
+                        condition->actions.push_back(Action::generate_component_action(
                             component,
                             condition->duration,
                             ConfigKey{config->key()},
@@ -1292,7 +1366,6 @@ void Experiment::fill_action(ElementKey routineKey, ConditionKey conditionKey, A
 
     if(auto condition = get_condition(routineKey, conditionKey); condition != nullptr){
         if(auto action = condition->get_action_from_key(actionKey); action != nullptr){
-            QtLogger::message("fill");
             if(update){
                 action->timelineUpdate->fill(condition->duration);
             }
@@ -1609,7 +1682,7 @@ void Experiment::compute_loops_levels(){
             auto node = dynamic_cast<LoopNode*>(elem.get());
             node->insideLoopsID       = idLoops;
             node->loop->insideLoopsID = idLoops;
-            idLoops.emplace_back(ElementKey{node->key()});
+            idLoops.push_back(ElementKey{node->key()});
          }else if(elem->type() ==FlowElement::Type::LoopEnd){
             auto node = dynamic_cast<LoopNode*>(elem.get());
             idLoops.erase(std::find(idLoops.begin(),idLoops.end(), ElementKey{node->key()}));
@@ -1630,7 +1703,7 @@ void Experiment::compute_loops_levels(){
         for(auto id : elem->insideLoopsID){
             for(auto &loop : loops){
                 if(loop->key() == id.v){
-                    elem->insideLoops.emplace_back(loop.get());
+                    elem->insideLoops.push_back(loop.get());
                     break;
                 }
             }
@@ -1648,7 +1721,7 @@ void Experiment::compute_loops_levels(){
         for(auto id : loop->insideLoopsID){
             for(auto &iLoop : loops){
                 if(iLoop->key() == id.v){
-                    loop->insideLoops.emplace_back(iLoop.get());
+                    loop->insideLoops.push_back(iLoop.get());
                     break;
                 }
             }
@@ -1666,7 +1739,7 @@ std_v1<QString> mix(const std_v1<QString> &l1, const std_v1<QString> &l2){
     m.reserve(l1.size()*l2.size());
     for(size_t ii = 0; ii < l1.size(); ++ii){
         for(size_t jj = 0; jj < l2.size(); ++jj){
-            m.emplace_back(l1[ii] % QSL("-") % l2[jj]);
+            m.push_back(l1[ii] % QSL("-") % l2[jj]);
         }
     }
     return m;
@@ -1681,7 +1754,7 @@ void Experiment::update_conditions(){
         if(routine->insideLoops.size() == 0){
 
             if(routine->conditions.size() == 0){
-                routine->conditions.emplace_back(Condition::generate_new_default());
+                routine->conditions.push_back(Condition::generate_new_default());
             }else{
 
                 // log deleted conditions
@@ -1714,7 +1787,7 @@ void Experiment::update_conditions(){
                 for(const auto &s : loop->fileSets){
                     loopFileSetsId.push_back(QString::number(s->key()));
                 }
-                setsId.emplace_back(std::move(loopFileSetsId));
+                setsId.push_back(std::move(loopFileSetsId));
             }else{
 
                 std::vector<QString> loopSetsId;
@@ -1722,7 +1795,7 @@ void Experiment::update_conditions(){
                 for(const auto &s : loop->sets){
                     loopSetsId.push_back(QString::number(s->key()));
                 }
-                setsId.emplace_back(std::move(loopSetsId));
+                setsId.push_back(std::move(loopSetsId));
             }
         }
 
@@ -1799,7 +1872,7 @@ void Experiment::update_conditions(){
                 if(routine->conditions[jj]->contains_same_set_keys(newConditionsKeys[ii])){
                     // all keys found
                     routine->conditions[jj]->name = newConditionsNames[ii];
-                    newConditions.emplace_back(std::move(routine->conditions[jj]));
+                    newConditions.push_back(std::move(routine->conditions[jj]));
                     routine->conditions.erase(std::begin(routine->conditions) + static_cast<int>(jj));
                     found = true;
                     break;
@@ -1809,7 +1882,7 @@ void Experiment::update_conditions(){
             if(!found){ // not found, create new condition
                 auto condition = Condition::generate_new(newConditionsNames[ii]);
                 condition->setsKeys = std::move(newConditionsKeys[ii]);
-                newConditions.emplace_back(std::move(condition));
+                newConditions.push_back(std::move(condition));
             }
         }
 
@@ -2016,7 +2089,7 @@ void Experiment::remove_config_from_component(ComponentKey componentKey, RowId i
                     if(action->config->key() == configKey.v){
                         QtLogger::message(QSL("[EXP] Remove ") % action->to_string() % QSL(" from ") % condition->to_string() %
                                           QSL(" from ") % routine->to_string());
-                        actionsToRemoved.emplace_back(ActionKey{action->key()});
+                        actionsToRemoved.push_back(ActionKey{action->key()});
                     }
                 }
 
@@ -2210,7 +2283,7 @@ void Experiment::new_experiment(){
 
     QtLogger::message(QSL("[EXP] New experiment"));
     states.currentName = QSL("new_experiment");
-    elements.emplace_back(std::make_unique<NodeFlow>()); // init with one node
+    elements.push_back(std::make_unique<NodeFlow>()); // init with one node
     compute_loops_levels();
     update_conditions();
     add_to_update_flag(UpdateAll | ResetUI);
@@ -2416,32 +2489,31 @@ void Experiment::remove_elements_not_in_flow(){
     }
 }
 
+
+
+
 std_v1<Loop *> Experiment::get_loops() const{
     std_v1<Loop*> l;
     l.reserve(loops.size());
     for(const auto &loop : loops){
-        l.emplace_back(loop.get());
+        l.push_back(loop.get());
     }
     return l;
 }
 
-std_v1<FlowElement *> Experiment::get_elements() const{
-    std_v1<FlowElement*> children;
-    children.reserve(elements.size());
-    for(const auto &elem : elements){
-        children.emplace_back(elem.get());
-    }
-    return children;
+
+auto Experiment::get_element_iterator(ElementKey elementKey) const -> std::vector<std::unique_ptr<FlowElement>>::const_iterator{
+    return std::find_if(elements.begin(), elements.end(), [elementKey](const std::unique_ptr<FlowElement> &element){
+        return element->key() == elementKey.v;
+    });
 }
 
-std_v1<FlowElement *> Experiment::get_elements_from_type(FlowElement::Type type) const{
-    std_v1<FlowElement*> children;
-    for(const auto &elem : elements){
-        if(elem->type() == type){
-            children.emplace_back(elem.get());
-        }
-    }
-    return children;
+
+auto Experiment::get_element_iterator(FlowElement *element) const -> std::vector<std::unique_ptr<FlowElement>>::const_iterator{
+    return std::find_if(elements.begin(), elements.end(), [element](const std::unique_ptr<FlowElement> & currElem){
+        return currElem.get() == element;
+    });
 }
+
 
 #include "moc_experiment.cpp"

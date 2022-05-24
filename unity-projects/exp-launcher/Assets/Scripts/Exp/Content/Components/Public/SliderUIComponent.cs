@@ -103,35 +103,44 @@ namespace Ex{
 
         protected override void update_parameter_from_gui(string updatedArgName) {
 
-            if (updatedArgName == "normal_start" || updatedArgName == "random_start" || updatedArgName == "once_start" || updatedArgName == "once_random_start]") {
+
+            if (updatedArgName == "normal_start" || updatedArgName == "random_start" || updatedArgName == "once_start" || updatedArgName == "once_random_start") {
 
                 if (currentC.get<bool>(updatedArgName)) {
                     init_value();
                 }
 
-            } else if (updatedArgName == "value") {
-
-                if (currentC.get<bool>("normal_start")) {
-
-                    set_value(currentC.get<float>("value"));
-
-                } else if (currentC.get<bool>("once_start")) {
-                    if (!valueIntialized) {
-
-                        set_value(currentC.get<float>("value"));
-
-                        valueIntialized = true;
-                    } else {
-                        return;
-                    }
-
-                }
+            } else if (updatedArgName == "value" || updatedArgName == "min" || updatedArgName == "max" || updatedArgName == "whole") {
+                set_value(currentC.get<float>("value"));                
             }
-            
+
             update_from_current_config();
         }
 
         public override void update_from_current_config() {
+
+            // update text ui
+            currentC.update_text("t1", m_descriptionText1);
+            currentC.update_text("t2", m_descriptionText2);
+
+            // update textes according to display option
+            bool whole = currentC.get<bool>("whole");
+            float min = currentC.get<float>("min");
+            float max = currentC.get<float>("max");
+
+            if (currentC.get<bool>("display_min_max")) {
+                m_sliderText1.text = (!whole ? min : (int)min).ToString();
+                m_sliderText2.text = (!whole ? max : (int)max).ToString();
+            } else if (currentC.get<bool>("display_min_max_value")) {
+                m_sliderText1.text = (!whole ? min : (int)min).ToString();
+                m_sliderText2.text = (!whole ? max : (int)max).ToString();
+            } else if (currentC.get<bool>("display_slider_textes_text")) {
+                m_sliderText1.text = currentC.get<string>("slider_text1");
+                m_sliderText2.text = currentC.get<string>("slider_text2");
+            } else {
+                m_sliderText1.text = "";
+                m_sliderText2.text = "";
+            }
 
             m_sliderGO.GetComponent<UnityEngine.UI.Image>().color = currentC.get_color("background_color");
             m_slider.transform.Find("Fill Area").Find("Fill").GetComponent<UnityEngine.UI.Image>().color = currentC.get_color("fill_area_color");
@@ -172,7 +181,7 @@ namespace Ex{
                     set_value(Random.Range(currentC.get<float>("min"), currentC.get<float>("max")));
                 }
 
-            } else { // once_random_start
+            } else if (currentC.get<bool>("once_random_start")){
 
                 if (!valueIntialized) {
 
@@ -181,13 +190,73 @@ namespace Ex{
                     } else {
                         set_value(Random.Range(currentC.get<float>("min"), currentC.get<float>("max")));
                     }
-                } 
+                }
+            } else { // do_nothing
+
             }
         }
 
         #endregion
 
         #region public_functions
+
+        public void set_min(float min) {
+            set_min_value_max(min, currentC.get<float>("value"), currentC.get<float>("max"));
+        }
+
+        public void set_max(float max) {
+            set_min_value_max(currentC.get<float>("min"), currentC.get<float>("value"), max);
+        }
+
+        public void set_value(float value) {
+            set_min_value_max(currentC.get<float>("min"), value, currentC.get<float>("max"));
+        }
+        public void set_min_value_max(float min, float value, float max) {
+
+            // whole
+            bool whole = currentC.get<bool>("whole");
+            m_slider.wholeNumbers = whole;
+
+            // min
+            m_slider.minValue = !whole ? min : (int)min;
+            if (currentC.get<bool>("display_min_max") || currentC.get<bool>("display_min_max_value")) {
+                m_sliderText1.text = (!whole ? min : (int)min).ToString();
+            }
+
+            // max            
+            m_slider.maxValue = !whole ? max : (int)max;
+            if (currentC.get<bool>("display_min_max") || currentC.get<bool>("display_min_max_value")) {
+                m_sliderText2.text = (!whole ? max : (int)max).ToString();
+            }
+
+            // clamp value according to min/max
+            if (value < min) {
+                value = min;
+            }
+            if (value > max) {
+                value = max;
+            }
+
+            // update slider value
+            float previousValue = m_slider.value;
+            m_slider.value = !whole ? value : (int)value;
+            valueIntialized = true;
+
+            // update text ui
+            currentC.update_text("tvalue", m_sliderValueText);
+            if (currentC.get<bool>("display_min_max_value")) {
+                m_sliderValueText.text = (!whole ? value : (int)value).ToString();
+            } else {
+                m_sliderValueText.text = "";
+            }
+
+            // send updated slider value
+            if (previousValue != m_slider.value) {
+                invoke_signal("value updated", m_slider.value);
+            }
+        }
+
+
 
         public float get_value() {
             return m_slider.value;
@@ -232,59 +301,6 @@ namespace Ex{
             );
         }
 
-        public void set_value(float value) {
-
-
-            bool whole = currentC.get<bool>("whole");
-            float min = currentC.get<float>("min");
-            float max = currentC.get<float>("max");
-
-            // update sliders min/max according to whole
-            m_slider.wholeNumbers = whole;
-            m_slider.minValue = !whole ? min : (int)min;
-            m_slider.maxValue = !whole ? max : (int)max;
-
-            // clamp value according to min/max
-            if (value < m_slider.minValue) {
-                value = m_slider.minValue;
-            }
-            if (value > m_slider.maxValue) {
-                value = m_slider.maxValue;
-            }
-
-            // update slider value
-            m_slider.value = !whole ? value : (int)value;
-            valueIntialized = true;
-
-            // update text ui
-            currentC.update_text("t1", m_descriptionText1);
-            currentC.update_text("t2", m_descriptionText2);
-            currentC.update_text("tmin", m_sliderText1);
-            currentC.update_text("tmax", m_sliderText2);
-            currentC.update_text("tvalue", m_sliderValueText);
-
-            // update textures according to display option
-            if (currentC.get<bool>("display_min_max")) {
-                m_sliderText1.text = (!whole ? min : (int)min).ToString();
-                m_sliderText2.text = (!whole ? max : (int)max).ToString();
-                m_sliderValueText.text = "";
-            } else if (currentC.get<bool>("display_min_max_value")) {
-                m_sliderText1.text = (!whole ? min : (int)min).ToString();
-                m_sliderText2.text = (!whole ? max : (int)max).ToString();
-                m_sliderValueText.text = (!whole ? value : (int)value).ToString();
-            } else if (currentC.get<bool>("display_slider_textes_text")) {
-                m_sliderText1.text = currentC.get<string>("slider_text1");
-                m_sliderText2.text = currentC.get<string>("slider_text2");
-                m_sliderValueText.text = "";
-            } else {
-                m_sliderText1.text = "";
-                m_sliderText2.text = "";
-                m_sliderValueText.text = "";
-            }
-
-            // send updated slider value
-            invoke_signal("value updated", m_slider.value);
-        }
 
         #endregion
 

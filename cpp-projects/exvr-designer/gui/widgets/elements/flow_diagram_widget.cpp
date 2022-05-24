@@ -105,14 +105,21 @@ void FlowDiagramW::contextMenuEvent(QContextMenuEvent *event) {
                     emit GSignals::get()->duplicate_element_signal(key);
                 });
                 menu.addAction(duplicateElementA);
-            }
 
-            if(isRoutine || isIsi || isLoop){
                 auto removeElementA = new QAction(QSL("Remove"));
                 connect(removeElementA, &QAction::triggered, this, [=](){
                     emit GSignals::get()->remove_element_signal(key);
                 });
                 menu.addAction(removeElementA);
+            }
+
+            if(isRoutine || isIsi){
+
+                auto moveElementA = new QAction(QSL("Move to"));
+                connect(moveElementA, &QAction::triggered, this, [=](){
+                    emit GSignals::get()->move_element_signal(key);
+                });
+                menu.addAction(moveElementA);
             }
 
             if(isRoutine){

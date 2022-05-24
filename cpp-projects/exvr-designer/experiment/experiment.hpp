@@ -71,9 +71,44 @@ public:
 
     // getters
     // # element
-    std_v1<FlowElement*> get_elements() const;
-    std_v1<FlowElement*> get_elements_from_type(FlowElement::Type type) const;
-    FlowElement *get_element(ElementKey elementKey) const;
+    auto nb_elements()const noexcept -> size_t;
+    auto nb_elements_no_nodes()const noexcept-> size_t;
+
+    auto get_element_position(FlowElement *element) const -> RowId;
+    auto get_element_position_no_node(FlowElement *element) const -> RowId;
+
+    auto get_element(RowId id) const -> FlowElement*;
+    auto get_element_no_nodes(RowId id) const -> FlowElement*;
+    auto get_element(ElementKey elementKey, bool showError = true) const -> FlowElement*;
+
+    template<class T>
+    auto get_element_from_type_and_id(ElementKey key) const -> T*{
+        for(const auto &elem : elements){
+            if(T* child = dynamic_cast<T*>(elem.get()); child != nullptr){
+                if(elem->key() == key.v){
+                    return child;
+                }
+            }
+        }
+        return nullptr;
+    }
+
+    auto get_elements() const -> std::vector<FlowElement*>;
+    auto get_elements_from_type(FlowElement::Type type) const -> std::vector<FlowElement*>;
+
+    template<class T>
+    auto get_elements_from_type() const -> std::vector<T*>{
+        std::vector<T*> children;
+        for(const auto &elem : elements){
+            if(auto child = dynamic_cast<T*>(elem.get()); child != nullptr){
+                children.push_back(child);
+            }
+        }
+        return children;
+    }
+
+
+
     // ## routine
     Routine *get_routine(ElementKey routineKey) const;
     // ### condition
@@ -105,28 +140,7 @@ public:
     inline void reset_update_flag() noexcept{updateFlag = 0;}
     inline int update_flag() const noexcept {return updateFlag;}
 
-    template<class T>
-    std_v1<T*> get_elements_from_type() const{
-        std_v1<T*> children;
-        for(const auto &elem : elements){
-            if(auto child = dynamic_cast<T*>(elem.get()); child != nullptr){
-                children.emplace_back(child);
-            }
-        }
-        return children;
-    }
 
-    template<class T>
-    T* get_element_from_type_and_id(ElementKey key) const{
-        for(const auto &elem : elements){
-            if(T* child = dynamic_cast<T*>(elem.get()); child != nullptr){
-                if(elem->key() == key.v){
-                    return child;
-                }
-            }
-        }
-        return nullptr;
-    }
 
 public slots:
 
@@ -191,12 +205,10 @@ public slots:
     void swap_arg(ComponentKey componentKey, ConfigKey configKey, QStringView argName1, QStringView argName2, bool initConfig);
 
     // elements
-    size_t get_element_position(FlowElement *element) const;
     void unselect_all_elements(bool updateSignal = true) noexcept;
     void select_element(ElementKey elementKey, bool updateSignal = true);
     void select_element_id(RowId elementId, bool updateSignal = true);
     void select_element_from_ptr(FlowElement *element, bool updateSignal = true);
-
     void add_element(FlowElement::Type type, size_t index);
     void remove_element(FlowElement *elemToDelete);    
     void remove_element_of_key(ElementKey elementKey);
@@ -207,6 +219,7 @@ public slots:
     void remove_selected_element();
     void move_left(size_t id);
     void move_right(size_t id);
+    void move_element(ElementKey elementKey);
     void update_element_name(ElementKey elementKey, QString elemName);
     void update_element_informations(ElementKey elementKey, QString informations);
 
@@ -302,6 +315,9 @@ private :
 
     // clean
     void remove_elements_not_in_flow();
+
+    auto get_element_iterator(ElementKey elementKey) const -> std::vector<std::unique_ptr<FlowElement>>::const_iterator;
+    auto get_element_iterator(FlowElement *element) const -> std::vector<std::unique_ptr<FlowElement>>::const_iterator;
 
 
 public :

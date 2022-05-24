@@ -47,6 +47,7 @@ ElementViewerW::ElementViewerW(QTabWidget *twCurrentElement) :  m_layout(new QHB
     m_loopUI->setupUi(&m_loopW);
     m_isiUI->setupUi(&m_isiW);
 
+    init_no_selection_ui();
     init_routine_ui();
     init_loop_ui();
     init_isi_ui();
@@ -65,6 +66,7 @@ void ElementViewerW::update_from_current_element(FlowElement *elem){
 
     if(elem == nullptr){
         m_toolBox->removeTab(0);
+        update_no_selection_ui();
         m_toolBox->insertTab(0, &m_noSelectionW, QSL("No selection"));
         return;
     }
@@ -120,6 +122,20 @@ void ElementViewerW::update_set_settings(QTableWidgetItem *item){
             emit GSignals::get()->modify_loop_set_occurrencies_nb_signal(m_currentElementId, newOccurenciesNb, RowId{row});
         }
     }
+}
+
+void ElementViewerW::init_no_selection_ui(){
+
+    QVBoxLayout *vbl = new QVBoxLayout();
+    m_noSelectionW.setLayout(vbl);
+
+    m_allElementsLW = new QListWidget();
+    vbl->addWidget(m_allElementLa = new QLabel("Current flow elements (0): "));
+    vbl->addWidget(m_allElementsLW);
+
+    connect(m_allElementsLW, &QListWidget::itemSelectionChanged, this, [=]{
+        emit GSignals::get()->select_element_id_signal(RowId{m_allElementsLW->currentRow()}, true);
+    });
 }
 
 void ElementViewerW::init_routine_ui(){
@@ -382,6 +398,44 @@ void ElementViewerW::init_isi_ui(){
     connect(teI, &QTextEdit::textChanged, this, [=]{
         emit GSignals::get()->update_element_informations_signal(m_currentElementId, teI->toPlainText());
     });
+}
+
+void ElementViewerW::update_no_selection_ui(){
+
+    m_allElementsLW->blockSignals(true);
+    m_allElementsLW->clear();
+    auto exp = ExperimentManager::get()->current();
+
+    m_allElementLa->setText(QSL("Current flow elements (") % QString::number(exp->nb_elements_no_nodes()) % QSL(")"));
+    size_t row = 0;
+    for(const auto &element : exp->elements){
+
+        QString base = QSL(" [ID:") % QString::number(element->key()) %
+                    QSL("] [L:") % QString::number(element->insideLoops.size()) % QSL("]");
+
+        switch(element->type()){
+            using enum FlowElement::Type;
+            case Node:
+                continue;
+            case Routine:
+                m_allElementsLW->addItem(QString::number(row) % QSL(" [R] ") % element->name() % base);
+                break;
+            case Isi:
+                m_allElementsLW->addItem(QString::number(row) % QSL( "[I] ") % element->name() % base);
+                break;
+            case LoopStart:
+                m_allElementsLW->addItem(QString::number(row) % QSL(" [LS] ") % element->name() % base);
+                break;
+            case LoopEnd:
+                m_allElementsLW->addItem(QString::number(row) % QSL(" [LE] ") % element->name() % base);
+                break;
+            default:
+                break;
+        }
+        ++row;
+    }
+
+    m_allElementsLW->blockSignals(false);
 }
 
 
