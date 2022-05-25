@@ -70,4 +70,7 @@ extern "C"{
     DECL_EXPORT void init_logger_no_file_ex_experiment(tool::ex::ExExperiment *e);
 
     DECL_EXPORT void test_call_backs_ex_experiment(tool::ex::ExExperiment *e);
+
+
+//    DECL_EXPORT void convert_to_chars(double *);
 }

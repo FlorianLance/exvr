@@ -60,7 +60,7 @@ private:
     QLabel *m_title = nullptr;
     QComboBox *m_componentNames = nullptr;
 
-    int m_currentKey = -1;
+    ComponentKey m_currentKey = {-1};
 };
 
 }

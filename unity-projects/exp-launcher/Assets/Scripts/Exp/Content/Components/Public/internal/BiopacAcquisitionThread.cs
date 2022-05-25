@@ -28,6 +28,9 @@ using System.Threading;
 using System.Diagnostics;
 using System.Collections.Generic;
 
+// unity
+using UnityEngine.Profiling;
+
 using MP        = Biopac.API.MPDevice.MPDevImports;
 using MPCODE    = Biopac.API.MPDevice.MPDevImports.MPRETURNCODE;
 
@@ -103,8 +106,6 @@ namespace Ex {
         public int capacityChannelSeconds = 0;        
         public uint numberOfDataPoints = 0;
 
-        public string headerLine;
-
         public static string code_to_string(MPCODE code) {
             switch (code) {
                 case MPCODE.MPSUCCESS:
@@ -170,6 +171,7 @@ namespace Ex {
         }
     }
 
+
     public class BiopacAcquisitionThread : ThreadedJob {
 
         public BiopacSettings bSettings = null;
@@ -182,6 +184,9 @@ namespace Ex {
         private ReaderWriterLock rwl        = new ReaderWriterLock();
 
         protected override void ThreadFunction() {
+
+            Thread.CurrentThread.Name = "BiopacAcquisitionThread";
+            Profiler.BeginThreadProfiling("BiopacAcquisitionThread", "BiopacAcquisitionThread 1");
 
             // initialize data
             bData = new BiopacData(bSettings);
@@ -257,6 +262,8 @@ namespace Ex {
 
                 askWrite = (1f* bData.channelsData.Count * bSettings.numberOfDataPoints / bSettings.enabledChannelsNb) > bSettings.writeEveryNbLines;
             }
+
+            Profiler.EndThreadProfiling();
         }
 
         public Tuple<List<FrameTimestamp>, List<double[]>> get_last_values() {

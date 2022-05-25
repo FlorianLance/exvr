@@ -26,9 +26,11 @@
 
 // std
 #include <optional>
+#include <ranges>
 
 // local
 // # data
+#include "data/flow_elements/node_flow.hpp"
 #include "data/flow_elements/routine.hpp"
 #include "data/flow_elements/isi.hpp"
 #include "data/flow_elements/loop.hpp"
@@ -42,6 +44,9 @@
 #include "resources/resources_manager.hpp"
 // # experiment
 #include "randomizer.hpp"
+
+template<class T>
+concept FlowElementDerived = std::is_base_of<tool::ex::FlowElement, T>::value;
 
 namespace tool::ex{
 
@@ -75,11 +80,13 @@ public:
     auto nb_elements_no_nodes()const noexcept-> size_t;
 
     auto get_element_position(FlowElement *element) const -> RowId;
-    auto get_element_position_no_node(FlowElement *element) const -> RowId;
+    auto get_element_position_no_nodes(FlowElement *element) const -> RowId;
 
     auto get_element(RowId id) const -> FlowElement*;
     auto get_element_no_nodes(RowId id) const -> FlowElement*;
     auto get_element(ElementKey elementKey, bool showError = true) const -> FlowElement*;
+
+
 
     template<class T>
     auto get_element_from_type_and_id(ElementKey key) const -> T*{
@@ -94,10 +101,28 @@ public:
     }
 
     auto get_elements() const -> std::vector<FlowElement*>;
-    auto get_elements_from_type(FlowElement::Type type) const -> std::vector<FlowElement*>;
 
-    template<class T>
+//    template <typename T>
+//    static constexpr FlowElement::Type get_type(){
+//        if constexpr(std::is_same<T, Routine>()){
+//            return FlowElement::Type::Routine;
+//        }else if constexpr(std::is_same<T, Isi>()){
+//            return FlowElement::Type::Isi;
+//        }else if constexpr(std::is_same<T, LoopNode>()){
+//            return FlowElement::Type::LoopStart;
+//        }
+//        return FlowElement::Type::Node;
+//    }
+
+    auto get_elements_from_type(FlowElement::Type type) const{
+        return elements | std::ranges::views::filter([type](const auto &element) {
+            return element->type() == type;
+        });
+    }
+
+    template<FlowElementDerived T>
     auto get_elements_from_type() const -> std::vector<T*>{
+
         std::vector<T*> children;
         for(const auto &elem : elements){
             if(auto child = dynamic_cast<T*>(elem.get()); child != nullptr){
@@ -107,15 +132,14 @@ public:
         return children;
     }
 
-
-
     // ## routine
-    Routine *get_routine(ElementKey routineKey) const;
+    auto get_routine(ElementKey routineKey) const -> Routine*;
     // ### condition
-    Condition *get_condition(ConditionKey conditionKey) const;
-    Condition *get_condition(ElementKey routineKey, ConditionKey conditionKey) const;
+    auto get_condition(ConditionKey conditionKey) const -> Condition*;
+    auto get_condition(ElementKey routineKey, ConditionKey conditionKey) const -> Condition*;
     // #### action
     Action *get_action(ElementKey routineKey, ConditionKey conditionKey, ActionKey actionKey) const;
+
     // ## isi
     Isi *get_isi(ElementKey isiKey) const;
     // ## loop
@@ -208,6 +232,7 @@ public slots:
     void unselect_all_elements(bool updateSignal = true) noexcept;
     void select_element(ElementKey elementKey, bool updateSignal = true);
     void select_element_id(RowId elementId, bool updateSignal = true);
+    void select_element_id_no_nodes(RowId elementId, bool updateSignal = true);
     void select_element_from_ptr(FlowElement *element, bool updateSignal = true);
     void add_element(FlowElement::Type type, size_t index);
     void remove_element(FlowElement *elemToDelete);    

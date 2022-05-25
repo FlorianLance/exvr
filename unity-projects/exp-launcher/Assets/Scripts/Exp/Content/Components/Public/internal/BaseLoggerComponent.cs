@@ -29,6 +29,34 @@ using System.IO;
 
 namespace Ex {
 
+    public class WritingFileThread : ThreadedJob {
+
+        //public bool useListFilePahs = false;
+        public string fileFullPath = "";
+
+        volatile public bool doLoop = false;
+        
+        System.Collections.Concurrent.ConcurrentQueue<List<string>> linesList = new System.Collections.Concurrent.ConcurrentQueue<List<string>>();
+
+        void add_line(string line) {
+            linesList.Enqueue(new List<string>(1) { line });
+        }
+
+        void add_lines(List<string> lines) {
+            linesList.Enqueue(lines);
+        }
+        protected override void ThreadFunction() {
+            while (doLoop) {
+
+                List<string> lines = null;
+                if(linesList.TryDequeue(out lines)) {
+                    // write_to_file();
+                }
+                System.Threading.Thread.Sleep(1);
+            }
+        }
+    }
+
     public class BaseLoggerComponent : ExComponent {
 
         // parameters

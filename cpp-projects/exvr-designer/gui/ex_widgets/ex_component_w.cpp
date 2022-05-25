@@ -47,12 +47,13 @@ ExComponentW::ExComponentW(QString name) : ExItemW<QFrame>(UiType::Component, na
 
     connect(m_componentNames, QOverload<int>::of(&QComboBox::currentIndexChanged), this,[&](int index){
 
-        m_currentKey = -1;
+        m_currentKey = {-1};
+
         if(index > 0){
             const size_t id = to_unsigned(index-1);
 
             if(auto components = ExperimentManager::get()->current()->compM.get_components(m_componentType.value()); id < components.size()){
-                m_currentKey =  components[id]->key();
+                m_currentKey =  components[id]->c_key();
             }
         }
         trigger_ui_change();
@@ -89,7 +90,7 @@ void ExComponentW::update_from_arg(const Arg &arg){
     }
 
     if(auto split = arg.split_value(); split.size() > 1){
-        m_currentKey = split[1].toInt();
+        m_currentKey.v = split[1].toInt();
     }
     update_from_components();
 
@@ -99,7 +100,7 @@ void ExComponentW::update_from_arg(const Arg &arg){
 Arg ExComponentW::convert_to_arg() const{
 
     Arg arg = ExBaseW::convert_to_arg();
-    arg.init_from({m_componentNames->currentText(),QString::number(m_currentKey)}, "%%%");
+    arg.init_from({m_componentNames->currentText(),QString::number(m_currentKey.v)}, "%%%");
 
     if(hasGenerator){
         if(m_componentType.has_value()){
@@ -151,7 +152,7 @@ void ExComponentW::update_from_components(){
     int id = 1;
     int newId = -1;
     for(const auto &component : components){
-        if(component->key() == m_currentKey){
+        if(component->c_key() == m_currentKey){
             newId = id;
         }
         ++id;
@@ -160,7 +161,7 @@ void ExComponentW::update_from_components(){
     if(newId != -1){
         m_componentNames->setCurrentIndex(newId);
     }else{
-        m_currentKey = -1;
+        m_currentKey = {-1};
         if(m_componentNames->count() > 0){
             m_componentNames->setCurrentIndex(0);
         }

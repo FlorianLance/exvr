@@ -134,7 +134,7 @@ void ElementViewerW::init_no_selection_ui(){
     vbl->addWidget(m_allElementsLW);
 
     connect(m_allElementsLW, &QListWidget::itemSelectionChanged, this, [=]{
-        emit GSignals::get()->select_element_id_signal(RowId{m_allElementsLW->currentRow()}, true);
+        emit GSignals::get()->select_element_id_no_nodes_signal(RowId{m_allElementsLW->currentRow()}, true);
     });
 }
 

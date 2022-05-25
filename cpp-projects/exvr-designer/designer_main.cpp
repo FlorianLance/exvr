@@ -22,6 +22,9 @@
 ** SOFTWARE.                                                                      **
 ************************************************************************************/
 
+// std
+#include <ranges>
+
 // Qt
 #include <QApplication>
 #include <QSplashScreen>
@@ -35,11 +38,16 @@
 using namespace tool::ex;
 
 
-
 int main(int argc, char *argv[]){
 
+//    std::vector<int> c = {1,2,3,4,5};
+
+//    auto evenNumbers = c | std::ranges::views::filter([]( auto v) {
+//        return v % 2 == 0;
+//    });
+
     // build parameters
-    const QString numVersion = "1.0a42";
+    const QString numVersion = "1.0a43";
     bool lncoComponents = true;
 
     // compiler check

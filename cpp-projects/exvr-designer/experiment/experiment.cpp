@@ -38,7 +38,6 @@
 
 // local
 #include "data/config.hpp"
-#include "data/flow_elements/node_flow.hpp"
 #include "utility/path_utility.hpp"
 
 using namespace tool;
@@ -67,7 +66,7 @@ auto Experiment::get_element_position(FlowElement *element) const -> RowId{
     return RowId{-1};
 }
 
-auto Experiment::get_element_position_no_node(FlowElement *element) const -> RowId{
+auto Experiment::get_element_position_no_nodes(FlowElement *element) const -> RowId{
 
     if(auto row = get_element_position(element); row.v != -1){
         return {row.v / 2};
@@ -98,6 +97,7 @@ auto Experiment::get_element(ElementKey elementKey, bool showError) const -> Flo
 }
 
 auto Experiment::get_elements() const -> std::vector<FlowElement*>{
+
     std::vector<FlowElement*> children;
     children.reserve(elements.size());
     for(const auto &elem : elements){
@@ -106,15 +106,59 @@ auto Experiment::get_elements() const -> std::vector<FlowElement*>{
     return children;
 }
 
-auto Experiment::get_elements_from_type(FlowElement::Type type) const -> std::vector<FlowElement*>{
-    std::vector<FlowElement*> children;
-    for(const auto &elem : elements){
-        if(elem->type() == type){
-            children.push_back(elem.get());
+//auto Experiment::get_elements_from_type(FlowElement::Type type) const -> std::vector<FlowElement*>{
+
+
+////    auto elementsFromType = elements | std::ranges::views::filter([type](const auto &element) {
+////        return element->type() == type;
+////    });
+////    return elementsFromType;
+//    std::vector<FlowElement*> children;
+//    for(const auto &elem : elements){
+//        if(elem->type() == type){
+//            children.push_back(elem.get());
+//        }
+//    }
+//    return children;
+//}
+
+auto Experiment::get_routine(ElementKey routineKey) const -> Routine*{
+
+    if(auto elementFound = std::find_if(elements.begin(), elements.end(), [routineKey](const auto &element){
+            return element->key() == routineKey.v && element->is_routine();
+        }); elementFound != elements.end()){
+
+        return dynamic_cast<Routine*>(elementFound->get());
+    }
+
+//    QtLogger::error(QSL("[EXP] Routine with key ") % QString::number(routineKey.v) % QSL(" not found."));
+    return nullptr;
+}
+
+
+auto Experiment::get_condition(ElementKey routineKey, ConditionKey conditionKey) const -> Condition*{
+    if(auto routine = get_routine(routineKey); routine != nullptr){
+        return routine->get_condition(conditionKey);
+    }
+    return nullptr;
+}
+
+auto Experiment::get_condition(ConditionKey conditionKey) const -> Condition *{
+
+    for(const auto &routine : get_elements_from_type<Routine>()){
+
+        if(auto condFound = std::find_if(routine->conditions.begin(), routine->conditions.end(), [conditionKey](const auto &condition){
+                return condition->key() == conditionKey.v;
+            }); condFound != routine->conditions.end()){
+            return condFound->get();
         }
     }
-    return children;
+    QtLogger::error(QSL("[EXP] Condition with key ") % QString::number(conditionKey.v) % QSL(" not found."));
+    return nullptr;
 }
+
+
+
 
 
 
@@ -148,6 +192,10 @@ void Experiment::select_element_id(RowId elementId, bool updateSignal){
     }else{
         QtLogger::error(QSL("Cannot select element with id [") % QString::number(elementId.v) % QSL("], it doesn't exist."));
     }
+}
+
+void Experiment::select_element_id_no_nodes(RowId elementId, bool updateSignal){
+    select_element_id(RowId{elementId.v * 2 + 1}, updateSignal);
 }
 
 void Experiment::select_element(ElementKey elementKey, bool updateSignal){
@@ -219,7 +267,7 @@ void Experiment::add_element(FlowElement::Type type, size_t index){
             do{
                 name = QSL("Routine ") % QString::number(offset);
                 isInside = false;
-                for(auto element : typeElements){
+                for(const auto &element : typeElements){
                     if(element->name() == name){
                         isInside = true;
                         break;
@@ -243,7 +291,7 @@ void Experiment::add_element(FlowElement::Type type, size_t index){
             do{
                 name = QSL("Isi ") % QString::number(offset);
                 isInside = false;
-                for(auto element : typeElements){
+                for(const auto &element : typeElements){
                     if(element->name() == name){
                         isInside = true;
                         break;
@@ -572,7 +620,7 @@ void Experiment::move_element(ElementKey elementKey){
 
     if(auto element = get_element(elementKey); element != nullptr){
 
-        auto currentNoNodePosition =  get_element_position_no_node(element);
+        auto currentNoNodePosition =  get_element_position_no_nodes(element);
         bool ok;
         auto newNoNodePosition = RowId{QInputDialog::getInt(nullptr,
             QSL("Move element from position [") % QString::number(currentNoNodePosition.v) % QSL("] to"), "Enter new id position", currentNoNodePosition.v, 0,
@@ -794,37 +842,8 @@ void Experiment::check_integrity(){
 
 }
 
-Condition *Experiment::get_condition(ConditionKey conditionKey) const{
 
-    for(const auto &routine : get_elements_from_type<Routine>()){
-        for(const auto &condition : routine->conditions){
-            if(condition->key() == conditionKey.v){
-                return condition.get();
-            }
-        }
-    }
-    return nullptr;
-}
 
-Condition *Experiment::get_condition(ElementKey routineKey, ConditionKey conditionKey) const{
-    if(auto routine = get_routine(routineKey); routine != nullptr){
-        return routine->get_condition(conditionKey);
-    }
-    return nullptr;
-}
-
-Routine *Experiment::get_routine(ElementKey routineKey) const{
-
-    if(auto elementFound = std::find_if(elements.begin(), elements.end(), [routineKey](const std::unique_ptr<FlowElement> &element){
-            return element->key() == routineKey.v && element->is_routine();
-        }); elementFound != elements.end()){
-
-        return dynamic_cast<Routine*>(elementFound->get());
-    }
-
-    // QtLogger::error(QSL("[EXP] Routine with key ") % QString::number(routineKey.v) % QSL(" not found."));
-    return nullptr;
-}
 
 void Experiment::copy_to_conditions(ElementKey routineKey, ConditionKey conditionKey, std_v1<std::pair<ElementKey,ConditionKey>> conditionsToBeEcrased, bool copyActions, bool copyConnections){
 

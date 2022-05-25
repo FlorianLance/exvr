@@ -108,6 +108,7 @@ signals:
     void duplicate_element_signal(tool::ex::ElementKey elementKey);
     void select_element_signal(tool::ex::ElementKey elementKey, bool updateSignal);
     void select_element_id_signal(RowId id, bool updateSignal);
+    void select_element_id_no_nodes_signal(RowId id, bool updateSignal);
     void unselect_element_signal(bool updateSignal);
     void remove_selected_element_signal();
     void add_element_signal(tool::ex::FlowElement::Type type, size_t index);

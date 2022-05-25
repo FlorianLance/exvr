@@ -221,8 +221,6 @@ void DesignerWindow::update_main_ui(Experiment *experiment){
     QString expTime = "";
     int progressbarValue = 0;
 
-    qDebug() << expStateDescription << (int)expLauncherState;
-
     switch (expLauncherState) {
         case ExpLauncherState::NotStarted:
             canStartLauncher = true;

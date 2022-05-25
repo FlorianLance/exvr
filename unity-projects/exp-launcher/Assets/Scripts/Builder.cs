@@ -67,6 +67,8 @@ namespace Ex {
         [Rename("Experiment")]
         public Experiment experiment = null;
 
+      
+
 
         public void Awake() {
 
@@ -129,7 +131,7 @@ namespace Ex {
             networkManager.set_launcher_idle_state();
 
 
-
+            //Program.tests();
 
             //// tests
             //var pc = gameObject.AddComponent<PointCloud>();
@@ -229,6 +231,122 @@ namespace Ex {
         }
     }
 }
+
+//unsafe class Program {
+//    public static unsafe void tests() {
+
+//        int nbValues = 1000000;
+//        System.Collections.Generic.List<double> values = new System.Collections.Generic.List<double>(nbValues);
+//        for(int ii = 0; ii < nbValues; ++ii) {
+//            values.Add((double)UnityEngine.Random.Range(0f, 1000f));
+//        }
+
+//        System.Collections.Generic.List<string> valuesStr = new System.Collections.Generic.List<string>(values.Count);
+//        for(int ii = 0; ii < values.Count; ++ii) {
+//            valuesStr.Add(null);
+//        }
+
+//        const int buffer_length = 2000;
+//        var buffer = stackalloc char[buffer_length];
+//        //var buffer = stackalloc char[buffer_length];
+//        //var buffer = new char[buffer_length];
+
+//        System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+//        sw.Start();
+//        for (int ii = 0; ii < values.Count; ++ii) {
+//            var res = RyuCsharp.Ryu.d2s_buffered_n(values[ii], buffer);
+//            valuesStr[ii] = new string(buffer, 0, res);
+//            Empty(buffer, res);
+//        }
+//        sw.Stop();
+//        UnityEngine.Debug.LogError("d2s_buffered_n: " + sw.ElapsedMilliseconds);
+
+//        //sw.Restart();
+//        //for (int ii = 0; ii < values.Count; ++ii) {
+//        //    valuesStr[ii] = new string(buffer, 0, RyuCsharp.Ryu.d2exp_buffered_n(values[ii], 5, buffer));
+//        //    Empty(buffer, buffer_length);
+//        //}
+//        //sw.Stop();
+//        //UnityEngine.Debug.LogError("d2exp_buffered_n: " + sw.ElapsedMilliseconds);
+
+//        //sw.Restart();
+//        //for (int ii = 0; ii < values.Count; ++ii) {
+//        //    valuesStr[ii] = new string(buffer, 0, RyuCsharp.Ryu.d2fixed_buffered_n(values[ii], 5, buffer));
+//        //    Empty(buffer, buffer_length);
+//        //}
+//        //sw.Stop();
+//        //UnityEngine.Debug.LogError("d2fixed_buffered_n: " + sw.ElapsedMilliseconds);
+
+//        sw.Restart();
+//        for (int ii = 0; ii < values.Count; ++ii) {
+//            valuesStr[ii] = Ex.Converter.to_string(values[ii]);
+//        }
+//        sw.Stop();
+//        UnityEngine.Debug.LogError("converter: " + sw.ElapsedMilliseconds);
+
+//        sw.Restart();
+//        for (int ii = 0; ii < values.Count; ++ii) {            
+//            valuesStr[ii] = values[ii].ToString();
+//        }
+//        sw.Stop();
+//        UnityEngine.Debug.LogError("ToString: " + sw.ElapsedMilliseconds);
+
+//        sw.Restart();
+//        for (int ii = 0; ii < values.Count; ++ii) {
+//            valuesStr[ii] = values[ii].ToString("G15");
+//        }
+//        sw.Stop();
+//        UnityEngine.Debug.LogError("ToString format g15: " + sw.ElapsedMilliseconds);
+
+//        //test(3);
+//        //test(3.14);
+//        //test(3.1415926);
+//        //test(998);
+//        //test(1218);
+//        //test(19971218);
+//        //test(ulong.MaxValue);
+//        //test(long.MinValue);
+//        //test(0.1);
+//        //test(0.00314);
+//        //test(0.0000000998);
+//        //test(-0.0000000998);
+
+
+//        //test(3.1415926e100);
+//        //test(double.MaxValue);
+//        //test(double.MinValue);
+//    }
+
+//    //public static void test(double val) {
+//    //    const int buffer_length = 2000;
+
+//    //    var buffer = stackalloc char[2000];
+
+        
+//    //    var str1 = new string(buffer, 0, RyuCsharp.Ryu.d2s_buffered_n(val, buffer));
+//    //    double val1;
+//    //    var eq1 = RyuCsharp.Ryu.s2d_n(buffer, str1.Length, &val1);
+//    //    Empty(buffer, buffer_length);
+
+//    //    var str2 = new string(buffer, 0, RyuCsharp.Ryu.d2exp_buffered_n(val, 10, buffer));
+//    //    double val2;
+//    //    var eq2 = RyuCsharp.Ryu.s2d_n(buffer, str2.Length, &val2);
+//    //    Empty(buffer, buffer_length);
+
+//    //    var str3 = new string(buffer, 0, RyuCsharp.Ryu.d2fixed_buffered_n(val, 10, buffer));
+//    //    double val3;
+//    //    var eq3 = RyuCsharp.Ryu.s2d_n(buffer, str3.Length, &val3);
+//    //    Empty(buffer, buffer_length);
+
+//    //    UnityEngine.Debug.Log($"Value: {val}, d2s: [{str1} -- s2d: {val1}], d2exp(10): [{str2} -- s2d: {val2}], d2fixed(10): [{str3} -- s2d: {val3}]");
+//    //}
+
+//    //public static void Empty(char* buffer, int length) {
+//    //    for (int i = 0; i < length; i++) {
+//    //        buffer[i] = default;
+//    //    }
+//    //}
+//}
 
 
 //Debug.LogError("UnityEngine.XR.XRSettings.loadedDeviceName " + UnityEngine.XR.XRSettings.loadedDeviceName);

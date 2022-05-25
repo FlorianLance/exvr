@@ -269,9 +269,9 @@ namespace Ex {
             foreach (ExConnector.Function f in Enum.GetValues(typeof(ExConnector.Function))) {
                 connectorsFunctionsStr[f] = f.ToString();
             }
-
+            
             filePath     = string.Format("{0}/exp_log.txt", ExVR.Paths().designerLogDir);
-            prevFilePath = string.Format("{0}/exp_log_previous.txt", ExVR.Paths().designerLogDir);
+            prevFilePath = string.Format("{0}/exp_log_previous_{1}.txt", ExVR.Paths().designerLogDir, DateTime.Now.ToString("yyyy-MM-dd_hh-mm-ss"));
 
             // copy previous log file
             if (File.Exists(filePath)) {

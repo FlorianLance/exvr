@@ -25,11 +25,206 @@
 // system
 using System.Threading;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
+using UnityEngine;
+using UnityEngine.Profiling;
 
 using MP     = Biopac.API.MPDevice.MPDevImports;
 using MPCODE = Biopac.API.MPDevice.MPDevImports.MPRETURNCODE;
 
 namespace Ex {
+
+    //internal static class StringBuilderCache {
+    //    // The value 360 was chosen in discussion with performance experts as a compromise between using
+    //    // as litle memory (per thread) as possible and still covering a large part of short-lived
+    //    // StringBuilder creations on the startup path of VS designers.
+    //    private const int MAX_BUILDER_SIZE = 360;
+
+    //    [ThreadStatic]
+    //    private static StringBuilder CachedInstance;
+
+    //    public static StringBuilder Acquire(int capacity = StringBuilder.DefaultCapacity) {
+    //        if (capacity <= MAX_BUILDER_SIZE) {
+    //            StringBuilder sb = StringBuilderCache.CachedInstance;
+    //            if (sb != null) {
+    //                // Avoid stringbuilder block fragmentation by getting a new StringBuilder
+    //                // when the requested size is larger than the current capacity
+    //                if (capacity <= sb.Capacity) {
+    //                    StringBuilderCache.CachedInstance = null;
+    //                    sb.Clear();
+    //                    return sb;
+    //                }
+    //            }
+    //        }
+    //        return new StringBuilder(capacity);
+    //    }
+
+    //    public static void Release(StringBuilder sb) {
+    //        if (sb.Capacity <= MAX_BUILDER_SIZE) {
+    //            StringBuilderCache.CachedInstance = sb;
+    //        }
+    //    }
+
+    //    public static string GetStringAndRelease(StringBuilder sb) {
+    //        string result = sb.ToString();
+    //        Release(sb);
+    //        return result;
+    //    }
+    //}
+
+
+    public class BiopacProcessingThread : ThreadedJob {
+
+        public int enabledChannelsNb;
+        public bool readDigitalEnabled;
+        public string headerLine;
+
+        volatile public bool doLoop = false;
+        volatile public bool addHeaderLine = false;
+        CustomSampler s1 = CustomSampler.Create("biopac1");
+        CustomSampler s2 = CustomSampler.Create("biopac2");
+        CustomSampler s3 = CustomSampler.Create("biopac3");
+
+
+        ConcurrentQueue<BiopacData> dataList = new ConcurrentQueue<BiopacData>();
+        ConcurrentQueue<List<string>> linesList = new ConcurrentQueue<List<string>>();
+
+        private static readonly string timestampStrAccuracy = "G8";
+
+        public void add_data(BiopacData data) {
+            if(data == null) {
+                return;
+            }
+            dataList.Enqueue(data);     
+        }
+
+        public List<string> get_lines() {
+            List<string> newLines = null;
+            if (linesList.TryDequeue(out newLines)) {
+                return newLines;
+            }
+            return null;
+        }
+
+        protected override void ThreadFunction() {
+
+            Thread.CurrentThread.Name = "BiopacProcessingThread";
+            Profiler.BeginThreadProfiling("BiopacProcessingThread", "BiopacProcessingThread 1");
+
+            while (doLoop) {
+                BiopacData currentData = null;
+                if(dataList.TryDequeue(out currentData)) {
+                    linesList.Enqueue(data_to_string(currentData));
+                }
+                Thread.Sleep(1);
+            }
+            Profiler.EndThreadProfiling();
+
+        }
+
+        private List<string> data_to_string(BiopacData bData) {
+
+            int countLines = 0;
+            for (int idF = 0; idF < bData.times.Count; ++idF) {
+                var data = bData.channelsData[idF];
+                int nbValuesPerChannel = data.Length / enabledChannelsNb;
+                countLines += nbValuesPerChannel;
+            }
+
+            // init lines array
+            int nbLines = countLines + (addHeaderLine ? 1 : 0);
+
+            List<string> dataStr = new List<string>(nbLines);
+            for (int ii = 0; ii < nbLines; ++ii) {
+                dataStr.Add(null);
+            }
+
+            int idLines = 0;
+            if (addHeaderLine) {
+                dataStr[idLines++] = headerLine;
+                addHeaderLine = false;
+            }
+
+            if (bData.times.Count == 0) {
+                return dataStr;
+            }
+
+            var firstTime = ExVR.Time().ms_since_start_experiment(bData.times[0].startingTick);
+            var lastTime = ExVR.Time().ms_since_start_experiment(bData.times[bData.times.Count - 1].afterDataReadingTick);
+            var interval = (lastTime - firstTime) / countLines;
+
+
+            System.Text.StringBuilder digitalInputStrF = new System.Text.StringBuilder();
+            System.Text.StringBuilder dataStrF = new System.Text.StringBuilder(1000);
+
+            int idLinesMinusHeader = 0;
+            for (int idF = 0; idF < bData.times.Count; ++idF) {
+
+
+                var data = bData.channelsData[idF];
+                var digital = bData.digitalInputData[idF];
+                int nbValuesPerChannel = data.Length / enabledChannelsNb;
+
+                // retrieve digital line
+
+                string digitalInputStr = "";
+                if (readDigitalEnabled) {
+
+                    digitalInputStrF.Clear();
+                    for (int idC = 0; idC < enabledChannelsNb; ++idC) {
+                        if (idC < enabledChannelsNb - 1) {
+                            digitalInputStrF.Append(digital[idC] ? '1' : '0').Append('\t');
+                        } else {
+                            digitalInputStrF.Append(digital[idC] ? '1' : '0');
+                        }
+                    }
+                    digitalInputStr = digitalInputStrF.ToString();
+                }
+                                
+                int idData = 0;                                
+                for (int idValue = 0; idValue < nbValuesPerChannel; idValue++) {
+
+                    // add time
+                    s1.Begin();
+                    dataStrF.Clear();
+                    dataStrF.Append((firstTime + idLinesMinusHeader * interval).ToString(timestampStrAccuracy)).Append('\t');
+                    idLinesMinusHeader++;
+                    s1.End();
+
+                    s2.Begin();
+
+                    // add values
+                    for (int idChannel = 0; idChannel < enabledChannelsNb; ++idChannel) {
+
+                        dataStrF.Append(data[idData++].ToString());
+
+                        if (readDigitalEnabled || (idChannel < enabledChannelsNb - 1)) {         
+                            dataStrF.Append('\t');
+                        }
+                    }
+                    s2.End();
+
+                    s3.Begin();
+
+                    // add digital
+                    if (readDigitalEnabled) {
+                        dataStrF.Append(digitalInputStr);
+                    }
+
+                    // add full line
+                    dataStr[idLines++] = dataStrF.ToString();
+
+                    s3.End();
+                }
+
+            }
+
+            return dataStr;
+        }
+
+
+    }
+
 
     public class BiopacComponent : ExComponent{
 
@@ -38,6 +233,7 @@ namespace Ex {
 
         // thread
         public BiopacAcquisitionThread acquisitionThread = null;
+        public BiopacProcessingThread processThread = null;
 
         // signals
         private static readonly string lastValueChannelStr       = "channelX last value";
@@ -51,15 +247,16 @@ namespace Ex {
 
         private List<System.Tuple<double, List<double>>> m_debugData = null;
         private int m_currentDebugId = 0;
-        private bool m_addHeaderLine = false;
+        //private bool m_addHeaderLine = false;
         private LoggerComponent m_logger = null;
         private bool m_debugBypass = false;
 
-        private System.Text.StringBuilder digitalInputStrF = new System.Text.StringBuilder();
-        private System.Text.StringBuilder dataStrF = new System.Text.StringBuilder();
+
+
+        //private System.Text.StringBuilder dataStrF = new System.Text.StringBuilder();
 
         private static readonly string tab = "\t";
-        private static readonly string timestampStrAccuracy = "G8";
+        
 
         #region ex_functions
 
@@ -166,16 +363,23 @@ namespace Ex {
                     titleLineB.AppendFormat("[Tr-{0}]\t", bSettings.channelsName[ii]);
                 }
             }
-            bSettings.headerLine = titleLineB.ToString(); ;
 
-
-            // init thread
+            // init threads
             acquisitionThread             = new BiopacAcquisitionThread();
             acquisitionThread.bSettings   = bSettings;
             acquisitionThread.processData = false;
             acquisitionThread.doLoop      = true;            
             acquisitionThread.start();
             acquisitionThread.set_priority(System.Threading.ThreadPriority.AboveNormal);
+
+            processThread = new BiopacProcessingThread();
+            processThread.doLoop = true;
+            processThread.headerLine = titleLineB.ToString();
+            processThread.readDigitalEnabled = bSettings.readDigitalEnabled;
+            processThread.enabledChannelsNb = bSettings.enabledChannelsNb;
+            processThread.start();
+            processThread.set_priority(System.Threading.ThreadPriority.AboveNormal);
+
 
             return true;
         }
@@ -198,7 +402,9 @@ namespace Ex {
         }
 
         protected override void start_experiment() {
-            m_addHeaderLine  = true;
+
+            processThread.addHeaderLine = true;
+            //m_addHeaderLine  = true;
             m_currentDebugId = 0;
             if (m_debugBypass) {
                 return;
@@ -213,8 +419,18 @@ namespace Ex {
             }
 
             if (acquisitionThread.askWrite) {
-                write_data();                
+                Profiler.BeginSample("biopac getdata");
+                var data = acquisitionThread.get_data();
+                Profiler.EndSample();
+
+                Profiler.BeginSample("biopac add data");
+                processThread.add_data(data);
+                Profiler.EndSample();
             }
+
+            Profiler.BeginSample("biopac write data");
+            write_data();
+            Profiler.EndSample();
         }
 
         protected override void stop_experiment() {
@@ -345,8 +561,12 @@ namespace Ex {
             // kill thread            
             acquisitionThread.processData = false;
             acquisitionThread.doLoop      = false;
-            Thread.Sleep(1000);
+            Thread.Sleep(500);
             acquisitionThread.stop();
+
+            processThread.doLoop = false;
+            Thread.Sleep(500);
+            processThread.stop();
 
             MPCODE retval = MP.stopAcquisition();
             if (retval != MPCODE.MPSUCCESS) {
@@ -358,98 +578,20 @@ namespace Ex {
                 log_error(string.Format("Cannot disconnect biopac, error: {0}", BiopacSettings.code_to_string(retval)));
             }
         }
-        private void write_data() {
 
-            if (m_debugBypass) {
-                if (m_logger != null) {
-                    m_logger.write("Generated-biopac-debug-line");
-                }
+        private void write_data() {
+            if (m_logger == null) {
                 return;
             }
-            
-            var bData = acquisitionThread.get_data();
-            if (m_logger != null) {
-                var strData = data_to_string(bData, m_addHeaderLine);
-                m_addHeaderLine = false;
-                if (strData != null) {
-                    m_logger.write_lines(strData);
-                }
-            }
-        }
-        public List<string> data_to_string(BiopacData bData, bool addHeaderLine) {
 
-            int countLines = 0;
-            for (int idF = 0; idF < bData.times.Count; ++idF) {
-                var data = bData.channelsData[idF];
-                int nbValuesPerChannel = data.Length / bSettings.enabledChannelsNb;
-                countLines += nbValuesPerChannel;
+            if (m_debugBypass) {
+                m_logger.write("Generated-biopac-debug-line");
             }
 
-            // init lines array
-            List<string> dataStr = new List<string>(countLines + (addHeaderLine ? 1 : 0));
-            if (addHeaderLine) {
-                dataStr.Add(bSettings.headerLine);
+            var lines = processThread.get_lines();
+            if (lines != null && lines.Count > 0) {
+                m_logger.write_lines(lines);
             }
-
-            if (bData.times.Count == 0) {
-                return dataStr;
-            }
-
-            var firstTime = ExVR.Time().ms_since_start_experiment(bData.times[0].startingTick);
-            var lastTime  = ExVR.Time().ms_since_start_experiment(bData.times[bData.times.Count-1].afterDataReadingTick);
-            var interval = (lastTime - firstTime) / countLines;
-
-            // fill lines
-            int idL = 0;
-            for (int idF = 0; idF < bData.times.Count; ++idF) {
-
-                var data                = bData.channelsData[idF];
-                var digital             = bData.digitalInputData[idF];
-                int nbValuesPerChannel  = data.Length / bSettings.enabledChannelsNb;
-
-                // compute times
-                List<string> timesPerLine = new List<string>(nbValuesPerChannel);
-                for (int idV = 0; idV < nbValuesPerChannel; ++idV) {
-                    var time = firstTime + idL * interval;
-                    timesPerLine.Add(string.Concat(Converter.to_string(time, timestampStrAccuracy), tab));
-                    ++idL;
-                }
-
-                // retrieve digital line
-                if (bSettings.readDigitalEnabled) {
-                digitalInputStrF.Clear();
-                    for (int idC = 0; idC < bSettings.enabledChannelsNb; ++idC) {
-                        if (idC < bSettings.enabledChannelsNb - 1) {
-                            digitalInputStrF.Append(string.Concat(Converter.to_string(digital[idC], false), tab));
-                        } else {
-                            digitalInputStrF.Append(Converter.to_string(digital[idC], false));
-                        }
-                    }
-                }
-
-                int idD = 0;
-                for (int idV = 0; idV < nbValuesPerChannel; ++idV) {
-
-                    // retrieve data line
-                    dataStrF.Clear();
-                    for (int idC = 0; idC < bSettings.enabledChannelsNb; ++idC) {
-                        if (bSettings.readDigitalEnabled || (idC < bSettings.enabledChannelsNb - 1)) {
-                            dataStrF.Append(string.Concat(Converter.to_string(data[idD++]), tab));
-                        } else {
-                            dataStrF.Append(Converter.to_string(data[idD++]));
-                        }
-                    }
-
-                    // create full line
-                    if (bSettings.readDigitalEnabled) {
-                        dataStr.Add(string.Concat(timesPerLine[idV], dataStrF.ToString(), digitalInputStrF.ToString()));
-                    } else {
-                        dataStr.Add(string.Concat(timesPerLine[idV], dataStrF.ToString()));
-                    }
-                }
-            }
-            
-            return dataStr;
         }
 
 

@@ -53,7 +53,6 @@ ExVrController::ExVrController(const QString &nVersion, bool lncoComponents){
     // signal/slots/types
     qRegisterMetaType<tool::ex::Arg>("tool::ex::Arg");
     qRegisterMetaType<tool::ex::RowId>("tool::ex::RowId");
-//    qRegisterMetaType<tool::ex::UiElementKey>("tool::ex::UiElementKey");
     qRegisterMetaType<tool::ex::SetKey>("tool::ex::SetKey");
     qRegisterMetaType<tool::ex::ActionKey>("tool::ex::ActionKey");
     qRegisterMetaType<tool::ex::ConfigKey>("tool::ex::ConfigKey");
@@ -68,7 +67,8 @@ ExVrController::ExVrController(const QString &nVersion, bool lncoComponents){
     qRegisterMetaType<tool::ex::Settings>("tool::ex::Settings");
     qRegisterMetaType<std::pair<SecondsTS,SecondsTS>>("std::pair<SecondsTS,SecondsTS>>");
 
-    qRegisterMetaType<std::vector<std::tuple<tool::ex::ElementKey, tool::ex::ConditionKey, tool::ex::ConfigKey, bool, bool>>>("std::vector<std::tuple<tool::ex::ElementKey, tool::ex::ConditionKey, tool::ex::ConfigKey, bool, bool>>");
+    qRegisterMetaType<std::vector<std::tuple<tool::ex::ElementKey, tool::ex::ConditionKey, tool::ex::ConfigKey, bool, bool>>>
+        ("std::vector<std::tuple<tool::ex::ElementKey, tool::ex::ConditionKey, tool::ex::ConfigKey, bool, bool>>");
 
     qRegisterMetaType<QStringView>("QStringView");
 
@@ -113,7 +113,6 @@ ExVrController::ExVrController(const QString &nVersion, bool lncoComponents){
 
     // dialogs
     m_documentationD.enable_lnco_components(lncoComponents);
-//    m_settingsD.setParent(ui());
     m_benchmarkD     = std::make_unique<BenchmarkDialog>();
 
     // connections
@@ -1085,6 +1084,7 @@ void ExVrController::generate_global_signals_connections(){
     // # elements
     connect(s, &GSignals::select_element_signal,                            exp(), &EXP::select_element);
     connect(s, &GSignals::select_element_id_signal,                         exp(), &EXP::select_element_id);
+    connect(s, &GSignals::select_element_id_no_nodes_signal,                exp(), &EXP::select_element_id_no_nodes);
     connect(s, &GSignals::unselect_element_signal,                          exp(), &EXP::unselect_all_elements);        
     connect(s, &GSignals::add_element_signal,                               exp(), &EXP::add_element);
     connect(s, &GSignals::remove_selected_element_signal,                   exp(), &EXP::remove_selected_element);
