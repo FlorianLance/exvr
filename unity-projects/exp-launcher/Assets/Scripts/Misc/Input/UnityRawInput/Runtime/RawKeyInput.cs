@@ -66,65 +66,82 @@ namespace UnityRawInput{
 
         private static bool SetHook (){
 
-            if (hookPtr == IntPtr.Zero)
-            {
-                if (WorkInBackground) hookPtr = Win32API.SetWindowsHookEx(HookType.WH_KEYBOARD_LL, HandleLowLevelHookProc, IntPtr.Zero, 0);
-                else hookPtr = Win32API.SetWindowsHookEx(HookType.WH_KEYBOARD, HandleHookProc, IntPtr.Zero, (int)Win32API.GetCurrentThreadId());
+            if (hookPtr == IntPtr.Zero){
+                if (WorkInBackground) {
+                    hookPtr = Win32API.SetWindowsHookEx(HookType.WH_KEYBOARD_LL, HandleLowLevelHookProc, IntPtr.Zero, 0);
+                } else {
+                    hookPtr = Win32API.SetWindowsHookEx(HookType.WH_KEYBOARD, HandleHookProc, IntPtr.Zero, (int)Win32API.GetCurrentThreadId());
+                }
             }
 
-            if (hookPtr == IntPtr.Zero) return false;
+            if (hookPtr == IntPtr.Zero) {
+                return false;
+            }
 
             return true;
         }
 
         private static void RemoveHook (){
 
-            if (hookPtr != IntPtr.Zero)
-            {
+            if (hookPtr != IntPtr.Zero){
                 Win32API.UnhookWindowsHookEx(hookPtr);
                 hookPtr = IntPtr.Zero;
             }
         }
 
         [AOT.MonoPInvokeCallback(typeof(Win32API.HookProc))]
-        private static int HandleHookProc (int code, IntPtr wParam, IntPtr lParam)
-        {
-            if (code < 0) return Win32API.CallNextHookEx(hookPtr, code, wParam, lParam);
+        private static int HandleHookProc (int code, IntPtr wParam, IntPtr lParam){
+
+            if (code < 0) {
+                return Win32API.CallNextHookEx(hookPtr, code, wParam, lParam);
+            }
 
             var isKeyDown = ((int)lParam & (1 << 31)) == 0;
             var key = (RawKey)wParam;
 
-            if (isKeyDown) HandleKeyDown(key);
-            else HandleKeyUp(key);
+            if (isKeyDown) {
+                HandleKeyDown(key);
+            } else {
+                HandleKeyUp(key);
+            }
 
             return InterceptMessages ? 1 : Win32API.CallNextHookEx(hookPtr, 0, wParam, lParam);
         }
 
         [AOT.MonoPInvokeCallback(typeof(Win32API.HookProc))]
-        private static int HandleLowLevelHookProc (int code, IntPtr wParam, IntPtr lParam)
-        {
-            if (code < 0) return Win32API.CallNextHookEx(hookPtr, code, wParam, lParam);
+        private static int HandleLowLevelHookProc (int code, IntPtr wParam, IntPtr lParam){
+
+            if (code < 0) {
+                return Win32API.CallNextHookEx(hookPtr, code, wParam, lParam);
+            }
 
             var kbd = KBDLLHOOKSTRUCT.CreateFromPtr(lParam);
             var keyState = (RawKeyState)wParam;
             var key = (RawKey)kbd.vkCode;
 
-            if (keyState == RawKeyState.KeyDown || keyState == RawKeyState.SysKeyDown) HandleKeyDown(key);
-            else HandleKeyUp(key);
+            if (keyState == RawKeyState.KeyDown || keyState == RawKeyState.SysKeyDown) {
+                HandleKeyDown(key);
+            } else {
+                HandleKeyUp(key);
+            }
 
             return InterceptMessages ? 1 : Win32API.CallNextHookEx(hookPtr, 0, wParam, lParam);
         }
 
-        private static void HandleKeyDown (RawKey key)
-        {
+        private static void HandleKeyDown (RawKey key){
+
             var added = pressedKeys.Add(key);
-            if (added && OnKeyDown != null) OnKeyDown.Invoke(key);
+            if (added && OnKeyDown != null) {
+                OnKeyDown.Invoke(key);
+            }
         }
 
-        private static void HandleKeyUp (RawKey key)
-        {
+        private static void HandleKeyUp (RawKey key){
+
             pressedKeys.Remove(key);
-            if (OnKeyUp != null) OnKeyUp.Invoke(key);
+            if (OnKeyUp != null) {
+                OnKeyUp.Invoke(key);
+            }
         }
     }
 }

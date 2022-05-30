@@ -193,7 +193,7 @@ namespace Ex.Input {
             return lastTimeDown > 0.0;
         }
 
-        public double current_time_pressed() {
+        public double current_exp_time_pressed() {
             if(is_pressed()) {
                 return ExVR.Time().ellapsed_exp_ms() - lastTimeDown;
             }            
@@ -203,13 +203,14 @@ namespace Ex.Input {
 
     public class KeyboardButtonEvent {
 
-        public KeyboardButtonEvent(KeyCode code) {
+        public KeyboardButtonEvent(KeyCode code, Button.State state = Button.State.None, double expTime = 0.0, double elemTime = 0.0) {
             this.code = code;
-            state = Button.State.None;
-            triggeredExperimentTime = 0.0;
+            this.state = state;
+            triggeredExperimentTime = expTime;
+            triggeredElementTime = elemTime;
         }
 
-        public void update(bool pressed, double currentTime) {
+        public void update(bool pressed, double currentExpTime, double currentElementTime) {
 
             if (state == Input.Button.State.None) {
                 if (pressed) {
@@ -235,12 +236,18 @@ namespace Ex.Input {
             }
 
             if (state != Input.Button.State.None) {
-                triggeredExperimentTime = currentTime;
+                triggeredExperimentTime = currentExpTime;
+                triggeredElementTime    = currentElementTime;
             }
+        }
+
+        public KeyboardButtonEvent copy() {
+            return new KeyboardButtonEvent(code, state, triggeredExperimentTime, triggeredElementTime);
         }
 
         public KeyCode code;
         public Button.State state;
         public double triggeredExperimentTime;
+        public double triggeredElementTime;
     }
 }

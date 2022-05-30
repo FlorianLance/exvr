@@ -27,6 +27,7 @@ using System;
 using System.Threading;
 using System.Diagnostics;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 
 // unity
 using UnityEngine.Profiling;
@@ -99,11 +100,11 @@ namespace Ex {
         public bool[] channelsState      = null; // size: nbMaxChannels
         public List<string> channelsName = null; // size: enabledChannelsNb
         public List<int> channelsId      = null; // size: enabledChannelsNb
-        public int writeEveryNbLines = 10000;
+        //public int writeEveryNbLines = 10000;
 
         public int nbSamplesPerCall = 10;
         public double samplingRate = 0.0;
-        public int capacityChannelSeconds = 0;        
+        //public int capacityChannelSeconds = 0;        
         public uint numberOfDataPoints = 0;
 
         public static string code_to_string(MPCODE code) {
@@ -155,7 +156,7 @@ namespace Ex {
 
     public class BiopacData {
 
-        public int lastFrameReadId = 0;
+        //public int lastFrameReadId = 0;
         public List<double[]> channelsData = null;
         public List<bool[]> digitalInputData = null;
         public List<FrameTimestamp> times = null;
@@ -164,10 +165,11 @@ namespace Ex {
             reset(bps);
         }
         public void reset(BiopacSettings bps) {
-            int capacity = bps.capacityChannelSeconds * (int)bps.samplingRate / bps.nbSamplesPerCall;
-            channelsData = new List<double[]>(capacity);
+            //int capacity = bps.capacityChannelSeconds * (int)bps.samplingRate / bps.nbSamplesPerCall;
+            int capacity     = 2 * (int)bps.samplingRate / bps.nbSamplesPerCall;
+            channelsData     = new List<double[]>(capacity);
             digitalInputData = new List<bool[]>(capacity);
-            times = new List<FrameTimestamp>(bps.capacityChannelSeconds);
+            times            = new List<FrameTimestamp>();// bps.capacityChannelSeconds);
         }
     }
 
@@ -182,6 +184,10 @@ namespace Ex {
         volatile public bool askWrite       = false;
 
         private ReaderWriterLock rwl        = new ReaderWriterLock();
+
+        CustomSampler initDataSampler       = CustomSampler.Create("[biopac] acquisition init_data");
+        CustomSampler retrievePointsSampler = CustomSampler.Create("[biopac] acquisition retrieve_points");        
+        CustomSampler insertDataSampler     = CustomSampler.Create("[biopac] acquisition insert_data");
 
         protected override void ThreadFunction() {
 
@@ -205,16 +211,20 @@ namespace Ex {
                 FrameTimestamp times = new FrameTimestamp();
 
                 // raw data
+                initDataSampler.Begin();
                 var buffer = new double[bSettings.numberOfDataPoints];
                 var digitalIO = new bool[bSettings.enabledChannelsNb];
                 for (int ii = 0; ii < digitalIO.Length; ++ii) {
                     digitalIO[ii] = false;
                 }
+                initDataSampler.End();
 
                 // retrieve points
+                retrievePointsSampler.Begin();
                 times.startingTick          = Stopwatch.GetTimestamp();
                 MPCODE retval               = MP.receiveMPData(buffer, bSettings.numberOfDataPoints, out uint received);
                 times.afterDataReadingTick  = Stopwatch.GetTimestamp();
+                retrievePointsSampler.End();
 
                 // check for error condition
                 if (retval != MPCODE.MPSUCCESS ) {
@@ -238,12 +248,16 @@ namespace Ex {
                         }
                     }
                 }
-                times.afterDigitalIoReadingTick = Stopwatch.GetTimestamp();               
+                times.afterDigitalIoReadingTick = Stopwatch.GetTimestamp();
 
                 // store values
+                insertDataSampler.Begin();
                 try {
-                    rwl.AcquireWriterLock(1000); // 5
+                    rwl.AcquireWriterLock(1000);
                     try {
+                        //if(bData == null) {
+                        //    bData = new BiopacData(bSettings);
+                        //}
 
                         // time
                         bData.times.Add(times);
@@ -259,49 +273,50 @@ namespace Ex {
                 } catch (ApplicationException) {
                     ExVR.Log().error("Can't get writer lock.");
                 }
+                insertDataSampler.End();
 
-                askWrite = (1f* bData.channelsData.Count * bSettings.numberOfDataPoints / bSettings.enabledChannelsNb) > bSettings.writeEveryNbLines;
+                //askWrite = (1f* bData.channelsData.Count * bSettings.numberOfDataPoints / bSettings.enabledChannelsNb) > bSettings.writeEveryNbLines;
             }
 
             Profiler.EndThreadProfiling();
         }
 
-        public Tuple<List<FrameTimestamp>, List<double[]>> get_last_values() {
+        //public Tuple<List<FrameTimestamp>, List<double[]>> get_last_values() {
 
-            List<FrameTimestamp> lastTimes = null;
-            List<double[]> lastData = null;
+        //    List<FrameTimestamp> lastTimes = null;
+        //    List<double[]> lastData = null;
 
-            try {
-                rwl.AcquireReaderLock(10); // 1☺
-                try {
-                    int startId = bData.lastFrameReadId;
-                    int count   = bData.times.Count - bData.lastFrameReadId;
+        //    try {
+        //        rwl.AcquireWriterLock(5); 
+        //        try {
+        //            int startId = bData.lastFrameReadId;
+        //            int count   = bData.times.Count - bData.lastFrameReadId;
 
-                    lastTimes = bData.times.GetRange(startId, count);
-                    lastData  = bData.channelsData.GetRange(startId, count);
-                    bData.lastFrameReadId = bData.times.Count;
-                } finally {
-                    rwl.ReleaseReaderLock();
-                }
-            } catch (ApplicationException) {
-                return null;
-            }
+        //            lastTimes = bData.times.GetRange(startId, count);
 
-            return Tuple.Create(lastTimes, lastData);
-        }
+        //            lastData  = bData.channelsData.GetRange(startId, count);
+        //            bData.lastFrameReadId = bData.times.Count; // test
+        //        } finally {
+        //            rwl.ReleaseWriterLock();
+        //        }
+        //    } catch (ApplicationException) {
+        //        return null;
+        //    }
+
+        //    return Tuple.Create(lastTimes, lastData);
+        //}
 
 
         public BiopacData get_data() {
 
             BiopacData retievedBData = null;
-            BiopacData newBData      = new BiopacData(bSettings);
+            BiopacData newBData = new BiopacData(bSettings);
 
-            // swap data
             try {
-                rwl.AcquireWriterLock(1000);
+                rwl.AcquireWriterLock(5);
                 try {
                     retievedBData = bData;
-                    bData         = newBData;
+                    bData = newBData;
 
                 } finally {
                     rwl.ReleaseWriterLock();
@@ -311,5 +326,161 @@ namespace Ex {
             }
             return retievedBData;
         }        
+    }
+
+
+
+    public class BiopacProcessingThread : ThreadedJob {
+
+        public int enabledChannelsNb;
+        public bool readDigitalEnabled;
+        public string headerLine;
+
+        volatile public bool doLoop = false;
+        volatile public bool addHeaderLine = false;
+
+        CustomSampler fullSampler = CustomSampler.Create("[biopac] processing full");        
+        CustomSampler appendDigitalSampler = CustomSampler.Create("[biopac] processing append_digital");
+        CustomSampler appendChannelsSampler = CustomSampler.Create("[biopac] processing append_channels");
+
+        ConcurrentQueue<BiopacData> dataList = new ConcurrentQueue<BiopacData>();
+        ConcurrentQueue<List<string>> linesList = new ConcurrentQueue<List<string>>();
+
+        private static readonly string timestampStrAccuracy = "G8";
+
+        public void add_data(BiopacData data) {
+            if (data == null) {
+                return;
+            }
+            dataList.Enqueue(data);
+        }
+
+        public List<string> get_lines() {
+            List<string> newLines = null;
+            if (linesList.TryDequeue(out newLines)) {
+                return newLines;
+            }
+            return null;
+        }
+
+        protected override void ThreadFunction() {
+
+            Thread.CurrentThread.Name = "BiopacProcessingThread";
+            Profiler.BeginThreadProfiling("BiopacProcessingThread", "BiopacProcessingThread 1");
+
+            while (doLoop) {
+                BiopacData currentData = null;
+                if (dataList.TryDequeue(out currentData)) {
+                    linesList.Enqueue(data_to_string(currentData));
+                }
+                Thread.Sleep(1);
+            }
+            Profiler.EndThreadProfiling();
+
+        }
+
+        private List<string> data_to_string(BiopacData bData) {
+
+            
+
+            int countLines = 0;
+            for (int idF = 0; idF < bData.times.Count; ++idF) {
+                var data = bData.channelsData[idF];
+                int nbValuesPerChannel = data.Length / enabledChannelsNb;
+                countLines += nbValuesPerChannel;
+            }
+
+            // init lines array
+            int nbLines = countLines + (addHeaderLine ? 1 : 0);
+
+            List<string> dataStr = new List<string>(nbLines);
+            for (int ii = 0; ii < nbLines; ++ii) {
+                dataStr.Add(null);
+            }
+
+            int idLines = 0;
+            if (addHeaderLine) {
+                dataStr[idLines++] = headerLine;
+                addHeaderLine = false;
+            }
+
+            if (bData.times.Count == 0) {
+                return dataStr;
+            }
+
+            fullSampler.Begin();
+
+            var firstTime = ExVR.Time().ms_since_start_experiment(bData.times[0].startingTick);
+            var lastTime = ExVR.Time().ms_since_start_experiment(bData.times[bData.times.Count - 1].afterDataReadingTick);
+            var interval = (lastTime - firstTime) / countLines;
+
+
+            System.Text.StringBuilder digitalInputStrF = new System.Text.StringBuilder();
+            System.Text.StringBuilder dataStrF = new System.Text.StringBuilder(1000);
+
+            int idLinesMinusHeader = 0;
+
+
+            for (int idF = 0; idF < bData.times.Count; ++idF) {
+
+
+                appendDigitalSampler.Begin();
+
+                var data = bData.channelsData[idF];
+                var digital = bData.digitalInputData[idF];
+                int nbValuesPerChannel = data.Length / enabledChannelsNb;
+
+                // retrieve digital line
+                string digitalInputStr = "";
+                if (readDigitalEnabled) {
+
+                    digitalInputStrF.Clear();
+                    for (int idC = 0; idC < enabledChannelsNb; ++idC) {
+                        if (idC < enabledChannelsNb - 1) {
+                            digitalInputStrF.Append(digital[idC] ? '1' : '0').Append('\t');
+                        } else {
+                            digitalInputStrF.Append(digital[idC] ? '1' : '0');
+                        }
+                    }
+                    digitalInputStr = digitalInputStrF.ToString();
+                }
+
+                appendDigitalSampler.End();
+
+                appendChannelsSampler.Begin();
+                int idData = 0;
+                for (int idValue = 0; idValue < nbValuesPerChannel; idValue++) {
+
+                    // add time                    
+                    dataStrF.Clear();
+                    dataStrF.Append((firstTime + idLinesMinusHeader * interval).ToString(timestampStrAccuracy)).Append('\t');
+                    idLinesMinusHeader++;
+
+                    // add values
+                    for (int idChannel = 0; idChannel < enabledChannelsNb; ++idChannel) {
+
+                        dataStrF.Append(data[idData++].ToString());
+
+                        if (readDigitalEnabled || (idChannel < enabledChannelsNb - 1)) {
+                            dataStrF.Append('\t');
+                        }
+                    }
+
+                    // add digital
+                    if (readDigitalEnabled) {
+                        dataStrF.Append(digitalInputStr);
+                    }
+
+                    // add full line
+                    dataStr[idLines++] = dataStrF.ToString();
+
+                }
+                appendChannelsSampler.End();
+
+            }
+
+            fullSampler.End();
+            return dataStr;
+        }
     }
 }

@@ -126,6 +126,7 @@ namespace Ex {
         // connections
         protected void add_signal(string name){m_connections.add_signal(name);}
         protected void add_slot(string name, System.Action<object> action) {m_connections.add_slot(name, action);}
+        public bool is_signal_connected(string name) {return m_connections.is_signal_connected(name);}
         public void invoke_signal(string name, object arg = null) {m_connections.invoke_signal(name, arg);}
 
         // configs

@@ -41,7 +41,7 @@ namespace Ex {
 
             // connections
             connections().add_slot("input", (input) => {
-                invoke_signal("output", m_currentMethod.Invoke(null, new object[1] { input }));
+                invoke_signal("output", call_function(input));
             });
             connections().add_signal("output");
 
@@ -188,10 +188,24 @@ namespace Ex {
 
         #region public_functions
 
-        public void call_function(object value) {
+        private void display_exception(System.Exception e) {
+            log_error(string.Format("[ERROR-EXCEPTION] "), true, false);
+            log_error(string.Format("[MESSAGE] {0}", e.Message), false, false);
+            log_warning(string.Format("\t[SOURCE] {0}", e.Source), false, false);
+            log_warning(string.Format("\t[TARGET] {0}", e.TargetSite.ToString()), false, false);
+            log_warning(string.Format("\t[STACK]: {0}", e.StackTrace), false, false);
+        }
+
+        public object call_function(object value) {
             if (m_currentMethod != null) {
-                m_currentMethod.Invoke(null, new object[1] { value });
+                try {
+                    return m_currentMethod.Invoke(null, new object[1] { value });
+                } catch (System.Exception e) {
+                    display_exception(e);
+                }
+                
             }
+            return null;
         }
 
         #endregion

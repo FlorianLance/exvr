@@ -92,6 +92,11 @@ namespace Ex{
         private static readonly System.Type lObjT       = typeof(List<object>);
 
         public static T to<T>(object value) {
+
+            if (value == null) {
+                return default(T);
+            }
+
             var toType = typeof(T);
             if (conv.ContainsKey(toType)) {
                 return to<T>(conv[toType], value);
@@ -102,6 +107,11 @@ namespace Ex{
             }
         }
         public static T to<T>(Dictionary<System.Type, Func<object, object>> toConvF, object value) {
+
+            if(value == null) {
+                return default(T);
+            }
+
             var fromType = value.GetType();
             if (toConvF.ContainsKey(fromType)) {
                 return (T)(object)toConvF[fromType](value);

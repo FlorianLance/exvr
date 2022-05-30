@@ -109,7 +109,7 @@ namespace Ex{
             // start/stop raw input events reading
             UnityRawInput.RawKeyInput.Stop();
             if (catchExternalKeyboardEvents) {
-                UnityRawInput.RawKeyInput.Start(catchExternalKeyboardEvents);
+                UnityRawInput.RawKeyInput.Start(true);
             }
 
             // set debug display mode

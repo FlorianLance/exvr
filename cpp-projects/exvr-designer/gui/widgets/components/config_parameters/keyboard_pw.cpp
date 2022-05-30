@@ -85,10 +85,12 @@ void KeyboardInitConfigParametersW::update_with_info(QStringView id, QStringView
     if(id == QSL("buttons_state_info")){
 
         QString keys;
-        for(const auto &split : value.split(',')){
-            auto buttonName = input::Keyboard::get_name(split.toInt());
-            if(buttonName.has_value()){
-                keys += from_view(buttonName.value()) % QSL(" ");
+        for(const auto &split : value.split(' ')){
+            if(split.length() > 0){
+                auto buttonName = input::Keyboard::get_name(split.toInt());
+                if(buttonName.has_value()){
+                    keys += from_view(buttonName.value()) % QSL(" ");
+                }
             }
         }
         m_p->lastKeys.w->setText(keys);

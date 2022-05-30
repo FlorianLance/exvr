@@ -86,6 +86,7 @@ namespace Ex{
                 result = provider.CompileAssemblyFromFileBatch(param, files);
             } catch (Exception ex) {
                 ExVR.Log().error(error : string.Format("[COMPILER] Cannot compile csharp scripts files: {0}", ex.Message), addExtraInfo : false, append : false);
+                return null;
             }
 
             if (result != null) {

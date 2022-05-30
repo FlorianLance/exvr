@@ -25,11 +25,76 @@
 // system
 using System.Text;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
+using System.Threading;
+
 // unity
 using UnityEngine;
 using UnityRawInput;
+using UnityEngine.Profiling;
 
 namespace Ex{
+
+    public class RawKeyboardGetterThread : ThreadedJob {
+
+        volatile public bool doLoop  = false;
+        volatile public bool process = false;
+
+        private Dictionary<RawKey, bool> rawKeyboardGetReturn = new Dictionary<RawKey, bool>();
+        private Dictionary<RawKey, Input.KeyboardButtonEvent> rawButtonsEvent = new Dictionary<RawKey, Input.KeyboardButtonEvent>();
+        public ConcurrentQueue<List<Input.KeyboardButtonEvent>> newEvents = new ConcurrentQueue<List<Input.KeyboardButtonEvent>>();
+
+        protected override void ThreadFunction() {
+
+            Thread.CurrentThread.Name = "RawKeyboardGetterThread";
+            Profiler.BeginThreadProfiling("RawKeyboardGetterThread", "RawKeyboardGetterThread 1");
+
+            foreach (var button in Input.Keyboard.RawCodesCorrespondence) {
+                rawKeyboardGetReturn[button.Key] = false;
+                rawButtonsEvent[button.Key] = new Input.KeyboardButtonEvent(button.Value);
+            }
+
+            // 1 tick is 100 nanoseconds
+            // 1000 ticks is 10000 nanoseconds -> 0.1 ms
+            var ts = new System.TimeSpan(1000);
+            while (doLoop) {
+      
+                foreach (var button in Input.Keyboard.RawCodesCorrespondence) {
+                    rawKeyboardGetReturn[button.Key] = RawKeyInput.IsKeyDown(button.Key);
+                }
+
+                if (process) {
+
+                    List<Input.KeyboardButtonEvent> events = null;
+
+                    // update events
+                    var currentExpTime     = ExVR.Time().ellapsed_exp_ms();
+                    var currentElementTime = ExVR.Time().ellapsed_element_ms();
+                    foreach (var codePair in Input.Keyboard.RawCodesCorrespondence) {
+
+                        var currentEvent = rawButtonsEvent[codePair.Key];
+                        currentEvent.update(rawKeyboardGetReturn[codePair.Key], currentExpTime, currentElementTime);
+
+                        if (currentEvent.state != Input.Button.State.None) {
+                            if (events == null) {
+                                events = new List<Input.KeyboardButtonEvent>();
+                            }
+                            events.Add(currentEvent.copy());
+                        }
+                    }
+
+                    if(events != null) { 
+                        newEvents.Enqueue(events);
+                    }
+                }
+
+                System.Threading.Thread.Sleep(ts);
+            }
+
+            Profiler.EndThreadProfiling();
+        }
+    }
+
 
     public class KeyboardComponent : ExComponent{
 
@@ -42,28 +107,39 @@ namespace Ex{
 
         // events
         // # buttons
+        private Dictionary<KeyCode, bool> keyboardGetReturn = new Dictionary<KeyCode, bool>();
         private Dictionary<KeyCode,  Input.KeyboardButtonEvent> buttonsEvent  = new Dictionary<KeyCode, Input.KeyboardButtonEvent>();
-        // #raw buttons
-        private Dictionary<RawKey, Input.KeyboardButtonEvent> rawButtonsEvent = new Dictionary<RawKey, Input.KeyboardButtonEvent>();
 
-        // states 
-        public Dictionary<KeyCode, Input.KeyboardButtonState> buttonsState = new Dictionary<KeyCode, Input.KeyboardButtonState>();
-
+        RawKeyboardGetterThread rawKeyGetterJob = null;
 
         protected override bool initialize() {
 
             add_signal(buttonOnGuiSignal);
 
-            foreach (var code in Input.Keyboard.Codes) {
-                buttonsEvent[code]  = new Input.KeyboardButtonEvent(code);
-                buttonsState[code] = new Input.KeyboardButtonState(code);
-            }
 
-            foreach (var button in Input.Keyboard.RawCodesCorrespondence) {                
-                rawButtonsEvent[button.Key] = new Input.KeyboardButtonEvent(button.Value);
+            if (!ExVR.GuiSettings().catchExternalKeyboardEvents) {
+
+                foreach (var code in Input.Keyboard.Codes) {
+                    buttonsEvent[code]      = new Input.KeyboardButtonEvent(code);
+                    keyboardGetReturn[code] = false;
+                }
+
+            } else {
+                rawKeyGetterJob = new RawKeyboardGetterThread();
+                rawKeyGetterJob.doLoop = true;
+                rawKeyGetterJob.start();
             }
 
             return true;
+        }
+
+        protected override void clean() {
+
+            if (ExVR.GuiSettings().catchExternalKeyboardEvents) {
+                rawKeyGetterJob.doLoop = false;
+                rawKeyGetterJob.stop();
+                rawKeyGetterJob = null;
+            }
         }
 
 
@@ -74,121 +150,110 @@ namespace Ex{
 
         protected override void set_update_state(bool doUpdate) {
 
-            if (!doUpdate) {
+            if (!ExVR.GuiSettings().catchExternalKeyboardEvents && !doUpdate) {
 
                 // reset states
-                var currentTime = time().ellapsed_exp_ms();
+                var currentExpTime     = time().ellapsed_exp_ms();
+                var currentElementTime = time().ellapsed_element_ms();
                 foreach (KeyCode keyCode in Input.Keyboard.Codes) {
-                    buttonsEvent[keyCode].update(false, currentTime);
-                    buttonsState[keyCode].update(false, currentTime);
+                    buttonsEvent[keyCode].update(false, currentExpTime, currentElementTime);
                 }
 
-                foreach (var codePair in Input.Keyboard.RawCodesCorrespondence) {
-                    rawButtonsEvent[codePair.Key].update(false, currentTime);
-                    buttonsState[codePair.Value].update(false, currentTime);
-                }
+            } else if(ExVR.GuiSettings().catchExternalKeyboardEvents) {
+                rawKeyGetterJob.process = doUpdate;
             }
         }
 
         protected override void on_gui() {
 
-            var eventType = Event.current.type;
+            var eventType = Event.current.type;           
             if (eventType != EventType.KeyDown && eventType != EventType.KeyUp && eventType != EventType.Repaint) {
                 return;
             }
 
-            var currentTime  = time().ellapsed_exp_ms();
 
-            // retrieve keys states
-            int keyInputChanged = 0;
             if (!ExVR.GuiSettings().catchExternalKeyboardEvents) {
 
+                // retrieve current return value
+                var currentExpTime     = time().ellapsed_exp_ms();
+                var currentElementTime = time().ellapsed_element_ms();
                 foreach (KeyCode keyCode in Input.Keyboard.Codes) {
-
-                    bool pressed = UnityEngine.Input.GetKey(keyCode);
-
-                    // update event
-                    var currentEvent = buttonsEvent[keyCode];
-                    var currentState = buttonsState[keyCode];
-                    var previousState = currentEvent.state;
-                    currentEvent.update(pressed, currentTime);
-                    currentState.update(pressed, currentTime);
-
-                    if (previousState != currentEvent.state) {
-                        ++keyInputChanged;
-                    }
-
-                    if (currentEvent.state != Input.Button.State.None) {
-                        invoke_signal(buttonOnGuiSignal, currentEvent);
-                    }                 
+                    keyboardGetReturn[keyCode] = UnityEngine.Input.GetKey(keyCode);
                 }
 
+                // update events
+                foreach (KeyCode keyCode in Input.Keyboard.Codes) {                    
+                    buttonsEvent[keyCode].update(keyboardGetReturn[keyCode], currentExpTime, currentElementTime);   
+                }
+
+                // send triggers
+                foreach (KeyCode keyCode in Input.Keyboard.Codes) {
+                    var currentEvent = buttonsEvent[keyCode];
+                    if (currentEvent.state != Input.Button.State.None) {
+                        invoke_signal(buttonOnGuiSignal, currentEvent);
+                    }
+                }
+
+
                 // send infos only once per frame
-                if (keyInputChanged > 0 && sendInfos) {
+                if (sendInfos) {
 
                     StringBuilder infos = new StringBuilder();
-                    int currentKey = 0;
                     foreach (KeyCode button in Input.Keyboard.Codes) {
                         var buttonState = buttonsEvent[button];
                         if (buttonState.state == Input.Button.State.Pressed || buttonState.state == Input.Button.State.Down) {
-                            if (currentKey != keyInputChanged - 1) {
-                                infos.AppendFormat("{0},", ((int)button).ToString());
-                            } else {
-                                infos.Append(((int)button).ToString());
-                            }
-                            ++currentKey;
+                            infos.AppendFormat("{0} ", ((int)button).ToString());
                         }
                     }
-
-                    send_infos_to_gui_init_config(infosSignal, infos.ToString());
+                    
+                    if (infos.Length > 0) {
+                        send_infos_to_gui_init_config(infosSignal, infos.ToString());
+                    }
                     sendInfos = false;
                 }
 
-            } else { 
-            
-                foreach (var codePair in Input.Keyboard.RawCodesCorrespondence) {
+            } else {
 
-                    bool pressed = RawKeyInput.IsKeyDown(codePair.Key);
+                // retrieve triggers
+                var allEvents = new List<List<Input.KeyboardButtonEvent>>();
+                var keysEvents = new List<Input.KeyboardButtonEvent>();
+                while (rawKeyGetterJob.newEvents.TryDequeue(out keysEvents)) {
+                    allEvents.Add(keysEvents);
+                }
 
-                    // update event
-                    var currentEvent = rawButtonsEvent[codePair.Key];
-                    var currentState = buttonsState[codePair.Value];
-                    var previousState = currentEvent.state;
-
-                    currentEvent.update(pressed, currentTime);                    
-                    currentState.update(pressed, currentTime);
-
-                    if (previousState != currentEvent.state) {
-                        ++keyInputChanged;
-                    }
-
-                    if (currentEvent.state != Input.Button.State.None) {
-                        invoke_signal(buttonOnGuiSignal, currentEvent);
+                // send triggers
+                foreach(var events in allEvents) {
+                    foreach(var keyEvent in events) {
+                        invoke_signal(buttonOnGuiSignal, keyEvent);
                     }
                 }
 
                 // send infos only once per frame
-                if (keyInputChanged > 0 && sendInfos) {
-                    StringBuilder infos = new StringBuilder();
-                    int currentKey = 0;
+                if (sendInfos) {
 
-                    foreach(var codePair in Input.Keyboard.RawCodesCorrespondence) {
-                        var buttonState = rawButtonsEvent[codePair.Key];
-                        if (buttonState.state == Input.Button.State.Pressed || buttonState.state == Input.Button.State.Down) {
-                            if (currentKey != keyInputChanged - 1) {
-                                infos.AppendFormat("{0},", ((int)codePair.Value).ToString());
-                            } else {
-                                infos.Append(((int)codePair.Value).ToString());
+                    HashSet<KeyCode> toSend = null;  
+                    foreach (var events in allEvents) {
+                        foreach (var keyEvent in events) {
+                            var buttonState = keyEvent;
+                            if (buttonState.state == Input.Button.State.Pressed || buttonState.state == Input.Button.State.Down) {
+                                if(toSend == null) {
+                                    toSend = new HashSet<KeyCode>();
+                                }
+                                toSend.Add(buttonState.code);                                
                             }
-                            ++currentKey;
                         }
                     }
 
-                    send_infos_to_gui_init_config(infosSignal, infos.ToString());
+                    if (toSend != null) {
+                        StringBuilder infos = new StringBuilder();
+                        foreach (var code in toSend) {
+                            infos.AppendFormat("{0} ", ((int)code).ToString());
+                        }        
+                        send_infos_to_gui_init_config(infosSignal, infos.ToString());       
+                    }
                     sendInfos = false;
                 }
-
             }
-        }
+        }        
     }
 }

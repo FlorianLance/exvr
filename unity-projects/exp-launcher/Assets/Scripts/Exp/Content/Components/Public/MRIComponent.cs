@@ -76,16 +76,21 @@ namespace Ex{
                 if (b.state == Input.Button.State.Down) {
                     if (b.code == triggerCode) {
 
+                        //var ms = time().ellapsed_exp_ms();
+                        //UnityEngine.Debug.LogError("SS -> " + Converter.to_string(ms - b.triggeredExperimentTime) + " " + time().frame_id());
+
                         string triggerLine = string.Format("TRIGGER,{0},{1},{2},{3}",
                             currentRoutine.name,
                             currentCondition.name,
-                            Converter.to_string(time().ellapsed_exp_ms()),
-                            Converter.to_string(time().ellapsed_element_ms())
+                            Converter.to_string(b.triggeredExperimentTime),
+                            Converter.to_string(b.triggeredElementTime)
                         );
-                        log_message(triggerLine);
+                                                
                         foreach (var logger in m_loggers) {
                             logger.write(triggerLine, true);
                         }
+
+                        log_message(triggerLine);
 
                         if (current_config().get<bool>("trigger_go_next")) {
                             command().next();

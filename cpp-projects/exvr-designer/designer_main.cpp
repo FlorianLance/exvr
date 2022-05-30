@@ -40,14 +40,8 @@ using namespace tool::ex;
 
 int main(int argc, char *argv[]){
 
-//    std::vector<int> c = {1,2,3,4,5};
-
-//    auto evenNumbers = c | std::ranges::views::filter([]( auto v) {
-//        return v % 2 == 0;
-//    });
-
     // build parameters
-    const QString numVersion = "1.0a43";
+    const QString numVersion = "1.0a44";
     bool lncoComponents = true;
 
     // compiler check
@@ -71,3 +65,10 @@ int main(int argc, char *argv[]){
     return ret;
 }
 
+
+
+//    std::vector<int> c = {1,2,3,4,5};
+
+//    auto evenNumbers = c | std::ranges::views::filter([]( auto v) {
+//        return v % 2 == 0;
+//    });

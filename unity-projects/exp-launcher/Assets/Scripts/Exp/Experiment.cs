@@ -418,11 +418,14 @@ namespace Ex{
             ExVR.GuiSettings().read_from_xml(m_xmlExperiment.Settings);
 
             // generate resources
-            experimentResourcesManager.generate_from_xml(m_xmlExperiment);
+            if (!experimentResourcesManager.generate_from_xml(m_xmlExperiment)) {
+                log_error("Experiment loading failed. Please solve errors and start loading again.");
+                generationTimer.Stop();
+                return false;
+            }
 
             // generate components 
             log_message(string.Format("Load components: {0}", m_xmlExperiment.Components.Component.Count));
-            //ExVR.ExpLog().exp(string.Format("Load components: {0}", m_xmlExperiment.Components.Component.Count), true, false, false);
             if (!ExVR.Components().generate(m_xmlExperiment.Components)) {
                 log_error("Experiment loading failed. Please solve errors and start loading again.");
                 generationTimer.Stop();
@@ -431,7 +434,6 @@ namespace Ex{
 
             // generate flow elements 
             log_message(string.Format("Load elements: {0}", (m_xmlExperiment.FlowElements.Routines.Routine.Count + m_xmlExperiment.FlowElements.ISIs.Isi.Count)));
-            //ExVR.ExpLog().exp(string.Format("Load elements: {0}", (m_xmlExperiment.FlowElements.Routines.Routine.Count + m_xmlExperiment.FlowElements.ISIs.Isi.Count)), true, false, false);
             routines.generate_from_xml(m_xmlExperiment.FlowElements.Routines);
             ISIs.generate_from_xml(m_xmlExperiment.FlowElements.ISIs);
 

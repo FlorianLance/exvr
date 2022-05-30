@@ -190,7 +190,7 @@ namespace Ex {
             return true;
         }
 
-        public void generate_from_xml(XML.Experiment xmlExperiment) {
+        public bool generate_from_xml(XML.Experiment xmlExperiment) {
 
 
             XML.Resources xmlResources = xmlExperiment.Resources;
@@ -326,7 +326,9 @@ namespace Ex {
                 // compile assembly from scripts
                 if (scriptsFiles.Count > 0) {
                     log_message(string.Format("Compile C# scripts [{0}]...", scriptsFiles.Count));                    
-                    CSharpScriptResource.compile_assembly_from_scripts_files(scriptsFiles.ToArray());
+                    if(CSharpScriptResource.compile_assembly_from_scripts_files(scriptsFiles.ToArray()) == null) {
+                        return false;
+                    }
                 }
             }
 
@@ -342,6 +344,8 @@ namespace Ex {
                     }
                 }
             }
+
+            return true;
         }
 
         public ExResource get_resource_file_data(int key) {

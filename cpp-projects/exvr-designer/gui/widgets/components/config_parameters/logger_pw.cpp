@@ -39,7 +39,6 @@ struct LoggerInitConfigParametersW::Impl{
 
     ExResourceW resource{"directory"};
 
-    ExCheckBoxW streamToFile{"stream_to_file"};
     ExCheckBoxW addCurrentInstanceToFileName{"add_current_instance_to_file_name"};
     ExCheckBoxW addDateToFileName{"add_date_to_file_name"};
     ExCheckBoxW dontWriteIfFileExists{"dont_write_if_file_exists"};
@@ -64,7 +63,7 @@ void LoggerInitConfigParametersW::insert_widgets(){
 
     add_widget(F::gen(L::VB(),{m_p->resource()}, LStretch{false}));
     add_widget(F::gen(L::VB(),
-        {m_p->streamToFile(), m_p->dontWriteIfFileExists(), m_p->insertNewRoutineInfo(), m_p->replaceIfFileExists(), m_p->addToEndIfFileExists()},
+        {m_p->dontWriteIfFileExists(), m_p->insertNewRoutineInfo(), m_p->replaceIfFileExists(), m_p->addToEndIfFileExists()},
         LStretch{false}, LMargins{true}, QFrame::Box)
     );
 
@@ -85,7 +84,6 @@ void LoggerInitConfigParametersW::insert_widgets(){
 void LoggerInitConfigParametersW::init_and_register_widgets(){
 
     add_input_ui(m_p->resource.init_widget(Resource::Type::Directory, "Directory to use:"));
-    add_input_ui(m_p->streamToFile.init_widget("Stream to file", true));
     add_input_ui(m_p->addCurrentInstanceToFileName.init_widget("Add current instance to name", true));
     add_input_ui(m_p->addDateToFileName.init_widget("Add current date to name", true));
     add_input_ui(m_p->dontWriteIfFileExists.init_widget("Dont write if file already exists", false));
@@ -129,7 +127,6 @@ struct LoggerColumnsInitConfigParametersW::Impl{
 
     ExResourceW resource{"directory"};
 
-    ExCheckBoxW streamToFile{"stream_to_file"};
     ExCheckBoxW addCurrentInstanceToFileName{"add_current_instance_to_file_name"};
     ExCheckBoxW addDateToFileName{"add_date_to_file_name"};
     ExCheckBoxW dontWriteIfFileExists{"dont_write_if_file_exists"};
@@ -156,7 +153,7 @@ void LoggerColumnsInitConfigParametersW::insert_widgets(){
 
     add_widget(F::gen(L::VB(),{m_p->resource()}, LStretch{false}));
     add_widget(F::gen(L::VB(),
-        {m_p->streamToFile(), m_p->dontWriteIfFileExists(), m_p->replaceIfFileExists(), m_p->addToEndIfFileExists(), m_p->writeAtEnfOfEachFrame()},
+        {m_p->dontWriteIfFileExists(), m_p->replaceIfFileExists(), m_p->addToEndIfFileExists(), m_p->writeAtEnfOfEachFrame()},
         LStretch{false}, LMargins{true}, QFrame::Box)
     );
 
@@ -178,7 +175,6 @@ void LoggerColumnsInitConfigParametersW::insert_widgets(){
 void LoggerColumnsInitConfigParametersW::init_and_register_widgets(){
 
     add_input_ui(m_p->resource.init_widget(Resource::Type::Directory, "Directory to use:"));
-    add_input_ui(m_p->streamToFile.init_widget("Stream to file", true));
     add_input_ui(m_p->addCurrentInstanceToFileName.init_widget("Add current instance to name", true));
     add_input_ui(m_p->addDateToFileName.init_widget("Add current date to name", true));
     add_input_ui(m_p->dontWriteIfFileExists.init_widget("Dont write if file already exists", false));
@@ -225,7 +221,6 @@ struct LoggerConditionInitConfigParametersW::Impl{
 
     ExResourceW resource{"directory"};
 
-    ExCheckBoxW streamToFile{"stream_to_file"};
     ExCheckBoxW dontWriteIfFileExists{"dont_write_if_file_exists"};
     ExCheckBoxW addCurrentInstanceToFileName{"add_current_instance_to_file_name"};
 
@@ -252,7 +247,7 @@ void LoggerConditionInitConfigParametersW::insert_widgets(){
 
     add_widget(F::gen(L::VB(),{m_p->resource()}, LStretch{false}));
     add_widget(F::gen(L::VB(),
-        {m_p->streamToFile(), m_p->dontWriteIfFileExists(), m_p->replaceIfFileExists(), m_p->addToEndIfFileExists()},
+        {m_p->dontWriteIfFileExists(), m_p->replaceIfFileExists(), m_p->addToEndIfFileExists()},
         LStretch{false}, LMargins{true}, QFrame::Box)
     );
 
@@ -284,7 +279,6 @@ void LoggerConditionInitConfigParametersW::init_and_register_widgets(){
 
     add_input_ui(m_p->addCurrentInstanceToFileName.init_widget("Add current instance to name", true));
     add_input_ui(m_p->resource.init_widget(Resource::Type::Directory, "Directory to use:"));
-    add_input_ui(m_p->streamToFile.init_widget("Stream to file", true));
 
     add_input_ui(m_p->dontWriteIfFileExists.init_widget("Dont write if file already exists", false));
 
@@ -323,7 +317,6 @@ struct LoggerExperimentInitConfigParametersW::Impl{
 
     ExResourceW resource{"directory"};
 
-    ExCheckBoxW streamToFile{"stream_to_file"};
     ExCheckBoxW addCurrentInstanceToFileName{"add_current_instance_to_file_name"};
     ExCheckBoxW addDateToFileName{"add_date_to_file_name"};
     ExCheckBoxW dontWriteIfFileExists{"dont_write_if_file_exists"};
@@ -357,7 +350,7 @@ void LoggerExperimentInitConfigParametersW::insert_widgets(){
 
     add_widget(F::gen(L::VB(),{m_p->resource()}, LStretch{false}));
     add_widget(F::gen(L::VB(),
-        {m_p->streamToFile(), m_p->dontWriteIfFileExists(), m_p->replaceIfFileExists(), m_p->addToEndIfFileExists()},
+        {m_p->dontWriteIfFileExists(), m_p->replaceIfFileExists(), m_p->addToEndIfFileExists()},
         LStretch{false}, LMargins{true}, QFrame::Box)
     );
 
@@ -388,7 +381,6 @@ void LoggerExperimentInitConfigParametersW::insert_widgets(){
 void LoggerExperimentInitConfigParametersW::init_and_register_widgets(){
 
     add_input_ui(m_p->resource.init_widget(Resource::Type::Directory, "Directory to use:"));
-    add_input_ui(m_p->streamToFile.init_widget("Stream to file", true));
     add_input_ui(m_p->addCurrentInstanceToFileName.init_widget("Add current instance to name", true));
     add_input_ui(m_p->addDateToFileName.init_widget("Add current date to name", true));
     add_input_ui(m_p->dontWriteIfFileExists.init_widget("Dont write if file already exists", false));
