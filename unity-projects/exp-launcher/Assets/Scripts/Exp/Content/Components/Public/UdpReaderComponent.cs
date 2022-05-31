@@ -51,7 +51,7 @@ namespace Ex {
         protected override void update() {
 
             var messages = m_udpReceiver.read_all_messages();
-            if(messages.Count > 0) {
+            if(messages != null) {
                 invoke_signal("last message received", messages[messages.Count - 1]);                
             }
         }

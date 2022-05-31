@@ -24,220 +24,209 @@
 
 // system
 using System;
-using System.Threading;
 using System.Text;
 using System.Net;
 using System.Net.Sockets;
-using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
+using System.Threading;
+
+// unity
+using UnityEngine.Profiling;
 
 namespace Ex {
 
     public class UdpReceiver : ThreadedJob {
+        
+        public bool m_initialized = false;        
 
-        public bool readingEnabled = false;
-        public bool initialized = false;
+        // socket
+        private int m_readingPort;
+        private IPAddress m_readingAddress = null;
+        private IPEndPoint m_clientIpEndPoint = null;
+        private Socket m_clientSocket = null;
 
-        public int readingPort;
-        public IPAddress readingAddress = null;
-        private IPEndPoint clientIpEndPoint = null;
-
-        private Socket clientSocket = null;
-        private const int bufSize = 8 * 1024;
-        private byte[] buffer = new byte[bufSize];
-
-        public ReaderWriterLock rwl = new ReaderWriterLock();
-        public Queue queue = new Queue();
-
+        // buffer
+        private const int m_bufSize = 8 * 1024;
+        private byte[] m_buffer = new byte[m_bufSize];
         private int m_readSizeBuffer = -1;
-        public void reset_buffer_size_to_read(int readSizeBuffer) {
-            m_readSizeBuffer = readSizeBuffer;
-            buffer = new byte[readSizeBuffer];
-        }
+
+        // concurrency
+        private ConcurrentQueue<string> m_messages = new ConcurrentQueue<string>();
+        private volatile bool m_doLoop          = false;
+        private volatile bool m_processMessages = false;
+        static private volatile int m_counter = 0;
 
         public bool initialize(int port, IPAddress ipAddress, int timeoutMs = 10) {
 
-            readingPort = port;
-            readingAddress = ipAddress;
-            initialized = false;
-
-            clientIpEndPoint = new IPEndPoint(ipAddress, readingPort);
-            clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-            clientSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
-            clientSocket.Bind(clientIpEndPoint);
-            clientSocket.ReceiveTimeout = timeoutMs;
-
-            return initialized = true;
-        }
-
-        public void set_reading_state(bool readingState) {
-
-            if (!initialized) {
-                return;
-            }
+            m_readingPort      = port;
+            m_readingAddress   = ipAddress;
+            m_initialized      = false;
 
             try {
-                rwl.AcquireWriterLock(1000);
-                if (readingEnabled) {
-                    if (readingState) {
-                        // do nothing
-                    } else {
-                        stop(); // stop thread
-                        readingEnabled = false;
-                    }
-                } else {
-                    if (!readingState) {
-                        // do nothing
-                    } else {
-                        readingEnabled = true;
-                        start(); // start thread
-                    }
-                }
-            } catch (ApplicationException e) {
-                // timeout
-                UnityEngine.Debug.LogError(string.Format("Set reading state locker error: {0}", e.Message));
+                m_clientIpEndPoint = new IPEndPoint(ipAddress, m_readingPort);
+                m_clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+                m_clientSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+                m_clientSocket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReceiveTimeout, 100);
+                m_clientSocket.Bind(m_clientIpEndPoint);
+                m_clientSocket.ReceiveTimeout = timeoutMs;
+            } catch (SocketException e) {
+                UnityEngine.Debug.LogError(string.Format("Cannot initialize UDP receiver with adresse [{0}] and port [{1}], error message [{1}]",
+                    ipAddress.ToString(),
+                    m_readingPort.ToString(),
+                    e.Message)
+                );
+            } catch (Exception e) {
+                UnityEngine.Debug.LogError(string.Format("Cannot initialize UDP receiver with adresse [{0}] and port [{1}], error message [{1}]",
+                    ipAddress.ToString(),
+                    m_readingPort.ToString(),
+                    e.Message)
+                );
             } finally {
-                rwl.ReleaseWriterLock();
+                m_initialized = true;
             }
+
+            // start thread
+            m_doLoop = true;
+            start(); 
+
+            return m_initialized;
+        }
+        public void reset_buffer_size_to_read(int readSizeBuffer) {
+            m_readSizeBuffer = readSizeBuffer;
+            m_buffer = new byte[readSizeBuffer];
+        }
+        public bool initialized() {
+            return m_initialized;
+        }
+
+        public int reading_port() {
+            return m_readingPort;
+        }
+
+        public IPAddress reading_address() {
+            return m_readingAddress;
         }
 
         public string read_message() {
 
-            string message = "";
-            if (clientSocket == null) {
+            string message;
+            if (m_messages.TryDequeue(out message)) {
                 return message;
             }
-
-            try {
-                rwl.AcquireWriterLock(5);
-                if (queue.Count > 0) {
-                    message = (string)queue.Dequeue();
-                }
-            } catch (ApplicationException) {
-                // timeout
-            } finally {
-                rwl.ReleaseWriterLock();
-            }
-
-            return message;
+            return null;
         }
 
         public List<string> read_all_messages() {
 
-            if (clientSocket == null) {
-                return new List<string>();
-            }
-
             List<string> messages = null;
-            try {
-                rwl.AcquireWriterLock(5);
-
-                var queueA = queue.ToArray();
-                messages = new List<string>(queueA.Length);
-                foreach (var message in queueA) {
-                    messages.Add((string)message);
+            string message;
+            int size = m_messages.Count;
+            while (m_messages.TryDequeue(out message)) {
+                if (messages == null) {
+                    messages = new List<string>(size);
                 }
-                queue.Clear();
-
-            } catch (ApplicationException) {
-                // timeout
-            } finally {
-                rwl.ReleaseWriterLock();
+                messages.Add(message);
             }
-
-            if (messages == null) {
-                return new List<string>();
-            }
-
             return messages;
+        }
+
+        public void set_reading_state(bool readingState) {
+            m_processMessages = readingState;
         }
 
         public void clean() {
 
-            readingEnabled = false;
-            stop();
+            // stop thread 
+            m_processMessages = false;
+            m_doLoop          = false;
+            if (!join(100)) {
+                UnityEngine.Debug.LogError(string.Format("Stop UDP reading thread timeout."));
+            }
 
-            try { 
-                rwl.AcquireWriterLock(300);
+            // clean socket
+            if (m_clientSocket != null) {
 
-                if (clientSocket != null) {
-                    clientSocket.Close();
-                    clientSocket.Dispose();
-                    clientSocket = null;
-                    clientIpEndPoint = null;
-                    initialized = false;
-                    queue.Clear();
+                try {
+                    m_clientSocket.Close();
+                    m_clientSocket.Dispose();                    
+                } catch (SocketException e) {
+                    UnityEngine.Debug.LogError(string.Format("Clean socket error: [{0}]", e.Message));
+                } catch (Exception e) {
+                    UnityEngine.Debug.LogError(string.Format("Clean socket error: [{0}]", e.Message));
                 }
 
-            } catch (ApplicationException e) {
-                // timeout
-                UnityEngine.Debug.LogError(string.Format("Clean locker error: {0}", e.Message));
-            } finally {
-                rwl.ReleaseWriterLock();
+                m_clientSocket = null;
             }
+
+            m_clientIpEndPoint  = null;
+            m_initialized       = false;
+            m_messages          = new ConcurrentQueue<string>();
         }
 
-        protected override void OnFinished() { }
 
-        protected override void ThreadFunction() {
+        protected override void thread_function() {
+
+            if (!m_initialized) {
+                return;
+            }
+
+            int id = m_counter++;
+            Thread.CurrentThread.Name = string.Concat("UdpReceiver ", id);
+            Profiler.BeginThreadProfiling("UdpReceiver", Thread.CurrentThread.Name);
 
             byte[] endByte = Encoding.ASCII.GetBytes(new char[] { '\0' });
-            while (readingEnabled) {
+            while (m_doLoop) {
 
                 // receive a message 
                 bool messageReceived = false;
                 int count = 0;
                 try {                    
                     if (m_readSizeBuffer == -1) {
-                        count = clientSocket.Receive(buffer);
+                        count = m_clientSocket.Receive(m_buffer);
                     } else {                        
-                        count = clientSocket.Receive(buffer, 0, m_readSizeBuffer, SocketFlags.None);
+                        count = m_clientSocket.Receive(m_buffer, 0, m_readSizeBuffer, SocketFlags.None);
                     }
                     messageReceived = true;
                 } catch (SocketException e) {
                     if (e.SocketErrorCode != SocketError.TimedOut) {
-                        UnityEngine.Debug.LogError(string.Format("Receive socket error: {0}", e.Message));
-                    } else {
-                        // timeout
+                        UnityEngine.Debug.LogError(string.Format("Receive socket error: [{0}]", e.Message));
                     }
                 } catch (ArgumentNullException e) {
-                    UnityEngine.Debug.LogError(string.Format("Receive argument null error: {0}", e.Message));
+                    UnityEngine.Debug.LogError(string.Format("Receive argument null error: [{0}]", e.Message));
                 } catch (ArgumentOutOfRangeException e) {
-                    UnityEngine.Debug.LogError(string.Format("Receive argument out of range error: {0}", e.Message));
+                    UnityEngine.Debug.LogError(string.Format("Receive argument out of range error: [{0}]", e.Message));
                 } catch (ObjectDisposedException e) {
-                    UnityEngine.Debug.LogError(string.Format("Receive object disposed error: {0}", e.Message));
+                    UnityEngine.Debug.LogError(string.Format("Receive object disposed error: [{0}]", e.Message));
                 } catch (System.Security.SecurityException e) {
-                    UnityEngine.Debug.LogError(string.Format("Receive security error: {0}", e.Message));
+                    UnityEngine.Debug.LogError(string.Format("Receive security error: [{0}]", e.Message));
                 } catch(Exception e) {
                     // TODO: replace abort thread
-                    //UnityEngine.Debug.LogError(string.Format("Receive error: {0}", e.Message));
+                    UnityEngine.Debug.LogError(string.Format("Receive error: [{0}]", e.Message));
                 }
 
                 if (messageReceived) {
 
-                    int endId = Array.IndexOf(buffer, endByte[0]);
-                    if (endId < count) {
-                        count = endId;
-                    }
+                    if (m_processMessages) {
+                        int endId = Array.IndexOf(m_buffer, endByte[0]);
+                        if (endId < count) {
+                            count = endId;
+                        }
 
-                    if (readingEnabled) {
-                        try {
-                            rwl.AcquireWriterLock(10);
-                            queue.Enqueue(Encoding.UTF8.GetString(buffer, 0, count));
-                        } catch (DecoderFallbackException e) {
-                            UnityEngine.Debug.LogError(string.Format("GetString decoder error: {0}", e.Message));
-                        } catch (ArgumentException e) {
-                            UnityEngine.Debug.LogError(string.Format("GetString argument error: {0}", e.Message));
-                        } catch (ApplicationException e) {
-                            UnityEngine.Debug.LogError(string.Format("Writer lock error: {0}", e.Message));
-                        } finally {
-                            rwl.ReleaseWriterLock();
+                        if (count > 0) {
+                            try {
+                                m_messages.Enqueue(Encoding.UTF8.GetString(m_buffer, 0, count));
+                            } catch (DecoderFallbackException e) {
+                                UnityEngine.Debug.LogError(string.Format("GetString decoder error: {0}", e.Message));
+                            } catch (ArgumentException e) {
+                                UnityEngine.Debug.LogError(string.Format("GetString argument error: {0}", e.Message));
+                            }
                         }
                     }
-                } else {
-                    Thread.Sleep(5);
                 }
             }
+
+            Profiler.EndThreadProfiling();
         }
     }
 }

@@ -227,10 +227,8 @@ namespace Ex{
             logTrigger = true;
 
             if (m_keyboard != null) {
-                // trigger event                
-                var slot = connections().get_slot("keyboard button");
-                var signal = m_keyboard.connections().get_signal("button");
-                slot.connect(signal);
+                // trigger event
+                connections().get_slot("keyboard button").connect(m_keyboard.connections().get_signal("button"));
             }
 
             if (initAvatarTr == null) {

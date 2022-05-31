@@ -57,7 +57,6 @@ namespace Ex {
 
         private List<System.Tuple<double, List<double>>> m_debugData = null;
         private int m_currentDebugId = 0;
-        //private bool m_addHeaderLine = false;
         private LoggerComponent m_logger = null;
         private bool m_debugBypass = false;
 
@@ -67,21 +66,13 @@ namespace Ex {
         protected override bool initialize() {
 
             // initialize signals/slots
-            add_slot(readDataStr, (nullArg) => { 
-                //trigger_channels(); 
-            });
+            add_slot(readDataStr, (nullArg) => {  /** TODO: to remove from signals list */});
             add_signal(lastValueChannelStr);
             add_signal(lastRangeValuesChannelStr);
             add_signal(callDurationAPIStr);
 
             // retrieve components
             m_logger = initC.get_component<LoggerComponent>("logger");
-
-            // debug
-            if (m_debugBypass = initC.get<bool>("debug_bypass")) {
-                read_debug_file();
-                return true;
-            }
 
             // init settings
             bSettings = new BiopacSettings();
@@ -124,23 +115,9 @@ namespace Ex {
                 return false;
             }
 
-            // initialize device
-            if (!connect_device()) {
-                return false;
-            }
-
-            if (!setup_device()) {
-                return false;
-            }
-
-            if (!start_acquisition()) {
-                return false;
-            }
-
-            // initialize thread
-            bSettings.nbSamplesPerCall          = initC.get<int>("nb_samples_per_call");
-            bSettings.samplingRate              = samplingRateValues[initC.get<int>("sampling_rate_id")];
-            bSettings.numberOfDataPoints        = (uint)(bSettings.nbSamplesPerCall * bSettings.enabledChannelsNb);
+            bSettings.nbSamplesPerCall      = initC.get<int>("nb_samples_per_call");
+            bSettings.samplingRate          = samplingRateValues[initC.get<int>("sampling_rate_id")];
+            bSettings.numberOfDataPoints    = (uint)(bSettings.nbSamplesPerCall * bSettings.enabledChannelsNb);
 
             var digitalMode = initC.get<int>("read_digital_mode");
             if (digitalMode != 0) {
@@ -168,22 +145,37 @@ namespace Ex {
                 }
             }
 
+            // debug
+            if (m_debugBypass = initC.get<bool>("debug_bypass")) {
+                read_debug_file();
+                return true;
+            }
+
+            // initialize biopac device
+            if (!connect_device()) {
+                return false;
+            }
+            if (!setup_device()) {
+                return false;
+            }
+            if (!start_acquisition()) {
+                return false;
+            }
+
             // init threads
-            acquisitionThread             = new BiopacAcquisitionThread();
-            acquisitionThread.bSettings   = bSettings;
-            acquisitionThread.processData = false;
-            acquisitionThread.doLoop      = true;            
-            acquisitionThread.start();
-            acquisitionThread.set_priority(System.Threading.ThreadPriority.AboveNormal);
-
-            processThread = new BiopacProcessingThread();
-            processThread.doLoop = true;
-            processThread.headerLine = titleLineB.ToString();
-            processThread.readDigitalEnabled = bSettings.readDigitalEnabled;
-            processThread.enabledChannelsNb = bSettings.enabledChannelsNb;
-            processThread.start();
-            processThread.set_priority(System.Threading.ThreadPriority.AboveNormal);
-
+            // # acquisition
+            acquisitionThread                   = new BiopacAcquisitionThread();
+            acquisitionThread.bSettings         = bSettings;
+            acquisitionThread.processData       = false;
+            acquisitionThread.doLoop            = true;            
+            acquisitionThread.start(ThreadPriority.AboveNormal);
+            // # process
+            processThread                       = new BiopacProcessingThread();
+            processThread.doLoop                = true;
+            processThread.headerLine            = titleLineB.ToString();
+            processThread.readDigitalEnabled    = bSettings.readDigitalEnabled;
+            processThread.enabledChannelsNb     = bSettings.enabledChannelsNb;
+            processThread.start(ThreadPriority.Normal);
 
             return true;
         }
@@ -207,11 +199,12 @@ namespace Ex {
 
         protected override void start_experiment() {
 
-            processThread.addHeaderLine = true;
             m_currentDebugId = 0;
             if (m_debugBypass) {
                 return;
             }
+
+            processThread.addHeaderLine = true;
             acquisitionThread.bData.reset(bSettings);
         }
 
@@ -223,23 +216,16 @@ namespace Ex {
                 return;
             }
 
-            Profiler.BeginSample("[biopac] get_data");
-            var data = acquisitionThread.get_data();
-            Profiler.EndSample();
-
-            Profiler.BeginSample("[biopac] main trigger");
+            var data = acquisitionThread.get_data();            
             if (data != null) {
+                Profiler.BeginSample("[biopac] main trigger");
                 trigger_channels(data);
+                Profiler.EndSample();
             }
-            Profiler.EndSample();
-
-            Profiler.BeginSample("[biopac] main add_data");
+            
             processThread.add_data(data);
-            Profiler.EndSample();
 
-            Profiler.BeginSample("[biopac] main write_data");
             write_data();
-            Profiler.EndSample();
         }
 
         protected override void stop_experiment() {
@@ -367,15 +353,20 @@ namespace Ex {
                 return;
             }
 
-            // kill thread            
+            // stop threads
             acquisitionThread.processData = false;
             acquisitionThread.doLoop      = false;
-            Thread.Sleep(500);
-            acquisitionThread.stop();
+            processThread.doLoop          = false;
 
-            processThread.doLoop = false;
-            Thread.Sleep(500);
-            processThread.stop();
+            if (!acquisitionThread.join(500)) {
+                log_error(string.Format("Stop acquisition thread timeout."));
+            }
+            acquisitionThread = null;
+
+            if (!processThread.join(500)) {
+                log_error(string.Format("Stop process thread timeout."));
+            }
+            processThread = null;
 
             MPCODE retval = MP.stopAcquisition();
             if (retval != MPCODE.MPSUCCESS) {
@@ -389,6 +380,7 @@ namespace Ex {
         }
 
         private void write_data() {
+
             if (m_logger == null) {
                 return;
             }
@@ -398,7 +390,7 @@ namespace Ex {
             }
 
             var lines = processThread.get_lines();
-            if (lines != null && lines.Count > 0) {
+            if (lines != null){
                 m_logger.write_lines(lines);
             }
         }

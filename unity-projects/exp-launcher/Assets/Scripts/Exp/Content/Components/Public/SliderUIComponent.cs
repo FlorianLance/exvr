@@ -245,7 +245,11 @@ namespace Ex{
             // update text ui
             currentC.update_text("tvalue", m_sliderValueText);
             if (currentC.get<bool>("display_min_max_value")) {
-                m_sliderValueText.text = (!whole ? value : (int)value).ToString();
+                if (whole) {
+                    m_sliderValueText.text = ((int)value).ToString();
+                } else {
+                    m_sliderValueText.text = value.ToString("G4");
+                }
             } else {
                 m_sliderValueText.text = "";
             }

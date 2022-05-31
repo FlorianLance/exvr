@@ -23,16 +23,14 @@
 ************************************************************************************/
 
 // system
-using System.Linq;
 using System.Collections.Generic;
 
 namespace Ex{
 
     public class UdpCommunication{
 
-        private UdpReceiver m_receiver = null;
-        private UdpSender m_sender = null;
-
+        private UdpReceiver m_receiver  = null;
+        private UdpSender m_sender      = null;
         private List<byte[]> m_messagesToSend = new List<byte[]>(1000);
 
         public UdpCommunication(bool write, bool read, int wPort, string wAddress, int rPort, string rAddress) {
@@ -41,8 +39,7 @@ namespace Ex{
             var rIp = NetworkInfo.get_ip_addresses(rAddress, false);
 
             if (wIp.Count == 0 || rIp.Count == 0) {
-                UnityEngine.Debug.LogError("Cannot found ip addreses.");
-                m_receiver = null;                
+                UnityEngine.Debug.LogError("Cannot found ip addreses.");          
                 return;
             }
 
@@ -59,7 +56,7 @@ namespace Ex{
                     for (rPort = wPort + 1; rPort < wPort + 10; ++rPort) {  // try to find aumatically the good reading port
 
                         m_receiver.initialize(rPort, rIp[0]);
-                        if (m_receiver.initialized) {
+                        if (m_receiver.initialized()) {
                             break;
                         }   
                     }
@@ -67,7 +64,7 @@ namespace Ex{
                     m_receiver.initialize(rPort, rIp[0]);
                 }
 
-                if (!m_receiver.initialized) {
+                if (!m_receiver.initialized()) {
                     m_receiver = null;
                     UnityEngine.Debug.LogError("UDP receiver error with : " + rAddress + ":" + rPort);
                 }
@@ -84,14 +81,14 @@ namespace Ex{
 
         public int receiver_port() {
             if (receiver_initialized()) {
-                return m_receiver.readingPort;
+                return m_receiver.reading_port();
             }
             return 0;
         }
 
         public int sender_port() {
             if (sender_initialized()) {
-                return m_sender.writingPort;
+                return m_sender.m_writingPort;
             }            
             return 0;
         }
@@ -102,17 +99,15 @@ namespace Ex{
             }
         }
 
-        public int send_message(string message) {
+        public void send_message(string message) {
             if (sender_initialized()) {
-                return m_sender.send_message(message);
+                m_sender.send_message(message);
             }
-            return -1;
         }
-        public int send_message(byte[] bytes) {
+        public void send_message(byte[] bytes) {
             if (sender_initialized()) {
-                return m_sender.send_bytes(bytes);
+                m_sender.send_bytes(bytes);
             }
-            return -1;
         }
 
         public void append_message(string message) {
@@ -142,20 +137,24 @@ namespace Ex{
             if (receiver_initialized()) {
                 return m_receiver.read_message();
             }
-            return "";
+            return null;
         }
 
         public List<string> read_all_messages() {
-
             if (receiver_initialized()) {
                 return m_receiver.read_all_messages();
             }
-            return new List<string>();
+            return null;
         }
 
         public void clean() {
             if (receiver_initialized()) {
                 m_receiver.clean();
+                m_receiver = null;
+            }
+            if (sender_initialized()) {
+                m_sender.clean();
+                m_sender = null;
             }
         }
     }

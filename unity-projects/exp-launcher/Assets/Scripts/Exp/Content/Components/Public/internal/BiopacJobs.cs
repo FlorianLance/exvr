@@ -37,52 +37,6 @@ using MPCODE    = Biopac.API.MPDevice.MPDevImports.MPRETURNCODE;
 
 namespace Ex {
 
-    //  Advanced Data Transfer Functions
-    //  getMPDaemonLastError()
-    //  startMPAcqDaemon()
-    //  receiveMPData()
-    //
-    //  This set of functions improves the usability of the API.The function startMPAcqDaemon() s
-    //  tarts a virtual server that will stream acquired data to the client once the startAcquisition() has been invoked.
-    //  The client program can read the stream by calling the receiveMPData() function. This allows for real-time processing of data while a
-    //  dedicated thread downloads, caches and streams the data to the client program.The thread is spawned from the same process that attached to the DLL.
-    //  If a call to receiveMPData() fails, the client program can query what happened to the acquisition daemon by calling getMPDaemonLastError().
-    //  If the user decides to use this data transfer mechanism, the function startMPAcqDaemon() must called before the startAcquisition().
-    //  Simple Data Transfer Functions should not be used in conjunction with this set of functions per acquisitio
-
-
-    // sample:
-    // create a buffer that is 3 time the frequency in Hz
-    // this is large enough to hold 1 second of 
-    // samples from all three acquisition channels
-    // uint numberOfDataPoints = (uint)sampleFreq * 3;
-    // double[] buffer = new double[numberOfDataPoints];
-    // while(true) {
-    //  retval = MP.receiveMPData(buffer,numberOfDataPoints, out received);
-    //  // ...
-    // }
-
-
-    //MPSUCCESS = 1,
-    //MPDRVERR,
-    //MPDLLBUSY,
-    //MPINVPARA,
-    //MPNOTCON,
-    //MPREADY,
-    //MPWPRETRIG,
-    //MPWTRIG,
-    //MPBUSY,
-    //MPNOACTCH,
-    //MPCOMERR,
-    //MPINVTYPE,
-    //MPNOTINNET,
-    //MPSMPLDLERR,
-    //MPMEMALLOCERR,
-    //MPSOCKERR,
-    //MPUNDRFLOW,
-    //MPPRESETERR,
-    //MPPARSERERR
-
     public struct FrameTimestamp {
         public long startingTick;
         public long afterDataReadingTick;
@@ -100,11 +54,9 @@ namespace Ex {
         public bool[] channelsState      = null; // size: nbMaxChannels
         public List<string> channelsName = null; // size: enabledChannelsNb
         public List<int> channelsId      = null; // size: enabledChannelsNb
-        //public int writeEveryNbLines = 10000;
 
         public int nbSamplesPerCall = 10;
-        public double samplingRate = 0.0;
-        //public int capacityChannelSeconds = 0;        
+        public double samplingRate = 0.0;   
         public uint numberOfDataPoints = 0;
 
         public static string code_to_string(MPCODE code) {
@@ -176,12 +128,11 @@ namespace Ex {
 
     public class BiopacAcquisitionThread : ThreadedJob {
 
-        public BiopacSettings bSettings = null;
-        public BiopacData bData     = null;
+        public BiopacSettings bSettings     = null;
+        public BiopacData bData             = null;
         
         volatile public bool doLoop         = false;
         volatile public bool processData    = false;
-        volatile public bool askWrite       = false;
 
         private ReaderWriterLock rwl        = new ReaderWriterLock();
 
@@ -189,7 +140,7 @@ namespace Ex {
         CustomSampler retrievePointsSampler = CustomSampler.Create("[biopac] acquisition retrieve_points");        
         CustomSampler insertDataSampler     = CustomSampler.Create("[biopac] acquisition insert_data");
 
-        protected override void ThreadFunction() {
+        protected override void thread_function() {
 
             Thread.CurrentThread.Name = "BiopacAcquisitionThread";
             Profiler.BeginThreadProfiling("BiopacAcquisitionThread", "BiopacAcquisitionThread 1");
@@ -252,59 +203,29 @@ namespace Ex {
 
                 // store values
                 insertDataSampler.Begin();
+
                 try {
+
                     rwl.AcquireWriterLock(1000);
-                    try {
-                        //if(bData == null) {
-                        //    bData = new BiopacData(bSettings);
-                        //}
 
-                        // time
-                        bData.times.Add(times);
-                        // data
-                        bData.channelsData.Add(buffer);
-                        // digital line IO
-                        bData.digitalInputData.Add(digitalIO);
-
-                    } finally {
-                        // Ensure that the lock is released.
-                        rwl.ReleaseWriterLock();
-                    }
+                    // time
+                    bData.times.Add(times);
+                    // data
+                    bData.channelsData.Add(buffer);
+                    // digital line IO
+                    bData.digitalInputData.Add(digitalIO);
                 } catch (ApplicationException) {
                     ExVR.Log().error("Can't get writer lock.");
+                } finally {
+                    rwl.ReleaseWriterLock();
                 }
+                              
                 insertDataSampler.End();
-
-                //askWrite = (1f* bData.channelsData.Count * bSettings.numberOfDataPoints / bSettings.enabledChannelsNb) > bSettings.writeEveryNbLines;
             }
 
             Profiler.EndThreadProfiling();
         }
 
-        //public Tuple<List<FrameTimestamp>, List<double[]>> get_last_values() {
-
-        //    List<FrameTimestamp> lastTimes = null;
-        //    List<double[]> lastData = null;
-
-        //    try {
-        //        rwl.AcquireWriterLock(5); 
-        //        try {
-        //            int startId = bData.lastFrameReadId;
-        //            int count   = bData.times.Count - bData.lastFrameReadId;
-
-        //            lastTimes = bData.times.GetRange(startId, count);
-
-        //            lastData  = bData.channelsData.GetRange(startId, count);
-        //            bData.lastFrameReadId = bData.times.Count; // test
-        //        } finally {
-        //            rwl.ReleaseWriterLock();
-        //        }
-        //    } catch (ApplicationException) {
-        //        return null;
-        //    }
-
-        //    return Tuple.Create(lastTimes, lastData);
-        //}
 
 
         public BiopacData get_data() {
@@ -314,16 +235,17 @@ namespace Ex {
 
             try {
                 rwl.AcquireWriterLock(5);
-                try {
-                    retievedBData = bData;
-                    bData = newBData;
 
-                } finally {
-                    rwl.ReleaseWriterLock();
-                }
+                retievedBData = bData;
+                bData = newBData;
+
             } catch (ApplicationException) {
+                // timeout
                 return null;
+            } finally {
+                rwl.ReleaseWriterLock();
             }
+
             return retievedBData;
         }        
     }
@@ -356,14 +278,14 @@ namespace Ex {
         }
 
         public List<string> get_lines() {
-            List<string> newLines = null;
+            List<string> newLines;
             if (linesList.TryDequeue(out newLines)) {
                 return newLines;
             }
             return null;
         }
 
-        protected override void ThreadFunction() {
+        protected override void thread_function() {
 
             Thread.CurrentThread.Name = "BiopacProcessingThread";
             Profiler.BeginThreadProfiling("BiopacProcessingThread", "BiopacProcessingThread 1");
@@ -380,8 +302,6 @@ namespace Ex {
         }
 
         private List<string> data_to_string(BiopacData bData) {
-
-            
 
             int countLines = 0;
             for (int idF = 0; idF < bData.times.Count; ++idF) {
@@ -410,15 +330,13 @@ namespace Ex {
 
             fullSampler.Begin();
 
-            var firstTime = ExVR.Time().ms_since_start_experiment(bData.times[0].startingTick);
-            var lastTime = ExVR.Time().ms_since_start_experiment(bData.times[bData.times.Count - 1].afterDataReadingTick);
-            var interval = (lastTime - firstTime) / countLines;
-
-
-            System.Text.StringBuilder digitalInputStrF = new System.Text.StringBuilder();
-            System.Text.StringBuilder dataStrF = new System.Text.StringBuilder(1000);
+            var digitalInputStrF = new System.Text.StringBuilder();
+            var dataStrF = new System.Text.StringBuilder(1000);
 
             int idLinesMinusHeader = 0;
+            double firstTime = ExVR.Time().ms_since_start_experiment(bData.times[0].startingTick);
+            double lastTime = ExVR.Time().ms_since_start_experiment(bData.times[bData.times.Count - 1].afterDataReadingTick);
+            double interval = (lastTime - firstTime) / countLines;
 
 
             for (int idF = 0; idF < bData.times.Count; ++idF) {
@@ -484,3 +402,51 @@ namespace Ex {
         }
     }
 }
+
+
+
+//  Advanced Data Transfer Functions
+//  getMPDaemonLastError()
+//  startMPAcqDaemon()
+//  receiveMPData()
+//
+//  This set of functions improves the usability of the API.The function startMPAcqDaemon() s
+//  tarts a virtual server that will stream acquired data to the client once the startAcquisition() has been invoked.
+//  The client program can read the stream by calling the receiveMPData() function. This allows for real-time processing of data while a
+//  dedicated thread downloads, caches and streams the data to the client program.The thread is spawned from the same process that attached to the DLL.
+//  If a call to receiveMPData() fails, the client program can query what happened to the acquisition daemon by calling getMPDaemonLastError().
+//  If the user decides to use this data transfer mechanism, the function startMPAcqDaemon() must called before the startAcquisition().
+//  Simple Data Transfer Functions should not be used in conjunction with this set of functions per acquisitio
+
+
+// sample:
+// create a buffer that is 3 time the frequency in Hz
+// this is large enough to hold 1 second of 
+// samples from all three acquisition channels
+// uint numberOfDataPoints = (uint)sampleFreq * 3;
+// double[] buffer = new double[numberOfDataPoints];
+// while(true) {
+//  retval = MP.receiveMPData(buffer,numberOfDataPoints, out received);
+//  // ...
+// }
+
+
+//MPSUCCESS = 1,
+//MPDRVERR,
+//MPDLLBUSY,
+//MPINVPARA,
+//MPNOTCON,
+//MPREADY,
+//MPWPRETRIG,
+//MPWTRIG,
+//MPBUSY,
+//MPNOACTCH,
+//MPCOMERR,
+//MPINVTYPE,
+//MPNOTINNET,
+//MPSMPLDLERR,
+//MPMEMALLOCERR,
+//MPSOCKERR,
+//MPUNDRFLOW,
+//MPPRESETERR,
+//MPPARSERERR

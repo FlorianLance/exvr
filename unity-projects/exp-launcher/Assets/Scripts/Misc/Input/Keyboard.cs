@@ -170,84 +170,68 @@ namespace Ex.Input {
         };
     }
 
-    public class KeyboardButtonState {
-
-        public KeyCode code;
-        public double lastTimeDown = 0.0;
-        public int nbTimesPressed = 0;
-
-        public KeyboardButtonState(KeyCode code) {
-            this.code = code;
-        }
-
-        public void update(bool pressed, double currentTime) {
-            if (pressed && !is_pressed()) {
-                ++nbTimesPressed;
-                lastTimeDown = currentTime;
-            } else if (!pressed) {
-                lastTimeDown = -1.0;
-            }
-        }
-
-        public bool is_pressed() {
-            return lastTimeDown > 0.0;
-        }
-
-        public double current_exp_time_pressed() {
-            if(is_pressed()) {
-                return ExVR.Time().ellapsed_exp_ms() - lastTimeDown;
-            }            
-            return 0.0;
-        }
-    }
-
     public class KeyboardButtonEvent {
 
-        public KeyboardButtonEvent(KeyCode code, Button.State state = Button.State.None, double expTime = 0.0, double elemTime = 0.0) {
-            this.code = code;
-            this.state = state;
-            triggeredExperimentTime = expTime;
-            triggeredElementTime = elemTime;
+        public KeyboardButtonEvent(KeyCode code, Button.State state = Button.State.None, double triggeredExperimentTime = 0.0, double triggeredElementTime = 0.0, double lastTimeDown = -1.0) {
+            this.code                       = code;
+            this.state                      = state;
+            this.triggeredExperimentTime    = triggeredExperimentTime;
+            this.triggeredElementTime       = triggeredElementTime;
+            this.lastTimeDown               = lastTimeDown;
         }
 
         public void update(bool pressed, double currentExpTime, double currentElementTime) {
 
-            if (state == Input.Button.State.None) {
+            if (state == Button.State.None) {
                 if (pressed) {
-                    state = Input.Button.State.Down;
+                    state        = Button.State.Down;
+                    lastTimeDown = currentExpTime;
                 }
-            } else if (state == Input.Button.State.Down) {
+            } else if (state == Button.State.Down) {
                 if (pressed) {
-                    state = Input.Button.State.Pressed;
+                    state = Button.State.Pressed;
                 } else {
-                    state = Input.Button.State.Up;
+                    state = Button.State.Up;
+                    lastTimeDown = -1.0;
                 }
 
-            } else if (state == Input.Button.State.Pressed) {
+            } else if (state == Button.State.Pressed) {
                 if (!pressed) {
-                    state = Input.Button.State.Up;
+                    state = Button.State.Up;
                 }
-            } else if (state == Input.Button.State.Up) {
+            } else if (state == Button.State.Up) {
                 if (pressed) {
-                    state = Input.Button.State.Down;
+                    state = Button.State.Down;
                 } else {
-                    state = Input.Button.State.None;
+                    state = Button.State.None;
                 }
             }
 
-            if (state != Input.Button.State.None) {
+            if (state != Button.State.None) {
                 triggeredExperimentTime = currentExpTime;
                 triggeredElementTime    = currentElementTime;
             }
         }
 
         public KeyboardButtonEvent copy() {
-            return new KeyboardButtonEvent(code, state, triggeredExperimentTime, triggeredElementTime);
+            return new KeyboardButtonEvent(code, state, triggeredExperimentTime, triggeredElementTime, lastTimeDown);
+        }
+
+        public bool is_pressed() {
+            return state == Button.State.Pressed || state == Button.State.Down;
+        }
+
+        public double current_time_pressed_ms() {
+            if (is_pressed()) {
+                return ExVR.Time().ellapsed_exp_ms() - lastTimeDown;
+            }
+            return 0.0;
         }
 
         public KeyCode code;
         public Button.State state;
         public double triggeredExperimentTime;
         public double triggeredElementTime;
+        public double lastTimeDown = 0.0;
     }
 }

@@ -89,14 +89,13 @@ namespace Ex.Events{
             }
         }
 
-        public void add_signal(string name){
+        public Signal add_signal(string name){
 
             if (signals.ContainsKey(name)) {
                 log_error(string.Format("Signal [{0}] already exists.", name));
-                return;
-            } else {
-                signals[name] = new Signal(string.Format("{0} | {1}", nameParent, name));//, nbArgs);
+                return null;
             } 
+            return (signals[name] = new Signal(string.Format("{0} | {1}", nameParent, name)));                
         }
 
         public void invoke_signal(string name, object arg = null) {
@@ -111,12 +110,12 @@ namespace Ex.Events{
             return null;
         }
 
-        public void add_slot(string name, System.Action<object> action) {
+        public Slot add_slot(string name, System.Action<object> action) {
             if (slots.ContainsKey(name)) {
                 log_error(string.Format("Slot [{0}] already exists.", name));
-                return;
+                return null;
             }
-            slots[name] = new Slot(nameParent + " | " + name, action);
+            return (slots[name] = new Slot(nameParent + " | " + name, action));
         }
 
         public static bool connect(Signal signal, Slot slot) {

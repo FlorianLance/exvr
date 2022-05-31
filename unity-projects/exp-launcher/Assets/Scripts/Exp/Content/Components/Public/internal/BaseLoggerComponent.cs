@@ -76,22 +76,22 @@ namespace Ex {
         public void add_lines(List<string> lines) {
             m_linesList.Enqueue(new Tuple<List<string>, bool>(lines, true));
         }
-        protected override void ThreadFunction() {
+        protected override void thread_function() {
 
-            ++counter;
-            System.Threading.Thread.CurrentThread.Name = "WritingFileThread " + counter;
+            int id = counter++;
+            System.Threading.Thread.CurrentThread.Name = string.Concat("WritingFileThread ", id);
             Profiler.BeginThreadProfiling("WritingFileThread", System.Threading.Thread.CurrentThread.Name);
 
             while (doLoop) {
 
-                Tuple<List<string>, bool> lines = null;
+                Tuple<List<string>, bool> lines;
                 if(m_linesList.TryDequeue(out lines)) {
                     write_to_file(lines);
                 }
                 System.Threading.Thread.Sleep(1);
             }
 
-            Tuple<List<string>, bool> lastLines = null;
+            Tuple<List<string>, bool> lastLines;
             while (m_linesList.TryDequeue(out lastLines)) {                
                 write_to_file(lastLines);
             }
@@ -165,10 +165,15 @@ namespace Ex {
         }
 
         protected override void stop_experiment() {
-            m_canWrite = false;
-            writingJob.doLoop = false;
-            System.Threading.Thread.Sleep(10);
-            writingJob.stop();
+
+            m_canWrite        = false;
+            if (writingJob != null) {
+                writingJob.doLoop = false;
+                if (!writingJob.join(100)) {
+                    log_error(string.Format("Stop writing thread timeout."));
+                }
+                writingJob = null;
+            }
         }
 
         #endregion
@@ -263,16 +268,18 @@ namespace Ex {
 
         public void write_lines(List<string> values) {
 
-            if (!m_canWrite) {
+            if (!m_canWrite || values == null) {
                 return;
             }
 
-            writingJob.add_lines(values);           
+            if (values.Count > 0) {
+                writingJob.add_lines(values);
+            }
         }
 
         public void write(object value, bool line = true) {
 
-            if (!m_canWrite) {
+            if (!m_canWrite || value == null) {
                 return;
             }
 

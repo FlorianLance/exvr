@@ -55,8 +55,6 @@ namespace Ex{
             connectToFirst = initC.get<bool>("connect_to_first");
 
             connect();
-            //Thread thread = new Thread(connect);
-            //thread.Start();
 
             return true;
         }

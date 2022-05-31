@@ -122,10 +122,13 @@ namespace Ex{
             if (m_udpCommunication == null) {
                 return;
             }
-      
+
             // read all
-            foreach(var message in m_udpCommunication.read_all_messages()) {
-                ExVR.Events().gui.MessageFromGUI.Invoke(message);
+            var messages = m_udpCommunication.read_all_messages();
+            if(messages != null) {
+                foreach (var message in messages) {
+                    ExVR.Events().gui.MessageFromGUI.Invoke(message);
+                }
             }
 
             // send all

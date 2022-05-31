@@ -47,7 +47,6 @@ namespace Ex{
         public Button bNext = null;
         public Button bPrevious = null;
         public Button bToggleCam = null;
-        public Button bFPS = null;
 
         public GameObject debugIndicator = null;
 
@@ -126,12 +125,7 @@ namespace Ex{
             bToggleCam.onClick.AddListener(() => {
                 update_runtime_debug_camera();
             });
- 
 
-            bFPS.onClick.AddListener(() => {
-                var goG = ExVR.GO().DebugScene.transform.Find("[Graphy]").gameObject;
-                goG.SetActive(!goG.activeSelf);
-            });
 
             runtimeDebugCamera.hide();
         }

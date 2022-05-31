@@ -39,28 +39,28 @@ namespace Ex{
 
         volatile public bool doLoop  = false;
         volatile public bool process = false;
-
-        private Dictionary<RawKey, bool> rawKeyboardGetReturn = new Dictionary<RawKey, bool>();
-        private Dictionary<RawKey, Input.KeyboardButtonEvent> rawButtonsEvent = new Dictionary<RawKey, Input.KeyboardButtonEvent>();
         public ConcurrentQueue<List<Input.KeyboardButtonEvent>> newEvents = new ConcurrentQueue<List<Input.KeyboardButtonEvent>>();
 
-        protected override void ThreadFunction() {
+        private Dictionary<RawKey, bool> m_rawKeyboardGetReturn = new Dictionary<RawKey, bool>();
+        private Dictionary<RawKey, Input.KeyboardButtonEvent> m_rawButtonsEvent = new Dictionary<RawKey, Input.KeyboardButtonEvent>();        
+
+        protected override void thread_function() {
 
             Thread.CurrentThread.Name = "RawKeyboardGetterThread";
             Profiler.BeginThreadProfiling("RawKeyboardGetterThread", "RawKeyboardGetterThread 1");
 
             foreach (var button in Input.Keyboard.RawCodesCorrespondence) {
-                rawKeyboardGetReturn[button.Key] = false;
-                rawButtonsEvent[button.Key] = new Input.KeyboardButtonEvent(button.Value);
+                m_rawKeyboardGetReturn[button.Key] = false;
+                m_rawButtonsEvent[button.Key] = new Input.KeyboardButtonEvent(button.Value);
             }
 
             // 1 tick is 100 nanoseconds
             // 1000 ticks is 10000 nanoseconds -> 0.1 ms
-            var ts = new System.TimeSpan(1000);
+            //var ts = new System.TimeSpan(1000);
             while (doLoop) {
       
                 foreach (var button in Input.Keyboard.RawCodesCorrespondence) {
-                    rawKeyboardGetReturn[button.Key] = RawKeyInput.IsKeyDown(button.Key);
+                    m_rawKeyboardGetReturn[button.Key] = RawKeyInput.IsKeyDown(button.Key);
                 }
 
                 if (process) {
@@ -72,8 +72,8 @@ namespace Ex{
                     var currentElementTime = ExVR.Time().ellapsed_element_ms();
                     foreach (var codePair in Input.Keyboard.RawCodesCorrespondence) {
 
-                        var currentEvent = rawButtonsEvent[codePair.Key];
-                        currentEvent.update(rawKeyboardGetReturn[codePair.Key], currentExpTime, currentElementTime);
+                        var currentEvent = m_rawButtonsEvent[codePair.Key];
+                        currentEvent.update(m_rawKeyboardGetReturn[codePair.Key], currentExpTime, currentElementTime);
 
                         if (currentEvent.state != Input.Button.State.None) {
                             if (events == null) {
@@ -88,7 +88,7 @@ namespace Ex{
                     }
                 }
 
-                System.Threading.Thread.Sleep(ts);
+                Thread.Sleep(1);
             }
 
             Profiler.EndThreadProfiling();
@@ -108,9 +108,8 @@ namespace Ex{
         // events
         // # buttons
         private Dictionary<KeyCode, bool> keyboardGetReturn = new Dictionary<KeyCode, bool>();
-        private Dictionary<KeyCode,  Input.KeyboardButtonEvent> buttonsEvent  = new Dictionary<KeyCode, Input.KeyboardButtonEvent>();
-
-        RawKeyboardGetterThread rawKeyGetterJob = null;
+        private Dictionary<KeyCode, Input.KeyboardButtonEvent> buttonsEvent  = new Dictionary<KeyCode, Input.KeyboardButtonEvent>();
+        private RawKeyboardGetterThread m_rawKeyGetterJob = null;
 
         protected override bool initialize() {
 
@@ -125,9 +124,9 @@ namespace Ex{
                 }
 
             } else {
-                rawKeyGetterJob = new RawKeyboardGetterThread();
-                rawKeyGetterJob.doLoop = true;
-                rawKeyGetterJob.start();
+                m_rawKeyGetterJob = new RawKeyboardGetterThread();
+                m_rawKeyGetterJob.doLoop = true;
+                m_rawKeyGetterJob.start();
             }
 
             return true;
@@ -136,9 +135,11 @@ namespace Ex{
         protected override void clean() {
 
             if (ExVR.GuiSettings().catchExternalKeyboardEvents) {
-                rawKeyGetterJob.doLoop = false;
-                rawKeyGetterJob.stop();
-                rawKeyGetterJob = null;
+                m_rawKeyGetterJob.doLoop = false;
+                if (!m_rawKeyGetterJob.join(100)) {
+                    log_error(string.Format("Stop raw key getter thread timeout."));
+                }
+                m_rawKeyGetterJob = null;
             }
         }
 
@@ -160,7 +161,7 @@ namespace Ex{
                 }
 
             } else if(ExVR.GuiSettings().catchExternalKeyboardEvents) {
-                rawKeyGetterJob.process = doUpdate;
+                m_rawKeyGetterJob.process = doUpdate;
             }
         }
 
@@ -216,8 +217,8 @@ namespace Ex{
 
                 // retrieve triggers
                 var allEvents = new List<List<Input.KeyboardButtonEvent>>();
-                var keysEvents = new List<Input.KeyboardButtonEvent>();
-                while (rawKeyGetterJob.newEvents.TryDequeue(out keysEvents)) {
+                List<Input.KeyboardButtonEvent> keysEvents;
+                while (m_rawKeyGetterJob.newEvents.TryDequeue(out keysEvents)) {
                     allEvents.Add(keysEvents);
                 }
 

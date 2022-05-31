@@ -443,7 +443,7 @@ struct Component {
 
     using TComponentSignals = std::tuple<
         CT,                             FunctionN,                     CNT,                            Doc>;
-    static constexpr TupleArray<65, TComponentSignals> componentsSignals = {{
+    static constexpr TupleArray<66, TComponentSignals> componentsSignals = {{
         TComponentSignals
         // Audio
         {T::AudioSource,               "sample value channel"sv,       CNT::id_any_t,                  "..."sv},
@@ -469,6 +469,7 @@ struct Component {
         // Network
         {T::Serial_port_reader,        "integer message"sv,            CNT::integer_t,                 "..."sv},
         {T::Serial_port_reader,        "string message"sv,             CNT::string_t,                  "..."sv},
+        {T::Serial_port_reader,        "trigger exp time"sv,           CNT::real_t,                    "..."sv},
         {T::Udp_reader,                "last message received"sv,      CNT::string_t,                  "..."sv},
         {T::Udp_writer,                "nb bytes sent"sv,              CNT::integer_t,                 "..."sv},                                                                                
         // Resource

@@ -1,4 +1,5 @@
 ﻿
+
 /***********************************************************************************
 ** exvr-exp                                                                       **
 ** MIT License                                                                    **
@@ -22,44 +23,61 @@
 ** SOFTWARE.                                                                      **
 ************************************************************************************/
 
-namespace Ex{
+// system
+using System;
+using System.Diagnostics;
+using System.Collections.Generic;
 
-    public class UdpWriterComponent : ExComponent{
+// unity
+using UnityEngine;
 
-        private UdpSender m_udpSender = null;
+namespace Ex {
 
-        protected override bool initialize() {
+    public class FPSCounter : MonoBehaviour {
 
-            // signals
-            add_slot("send message", (message) => { send_message((string)message);});
-            add_signal("nb bytes sent"); // TODO: remove signal
+        TMPro.TextMeshProUGUI text = null;
+        Queue<Tuple<long, float>> lastValues = new Queue<Tuple<long, float>>();
+        Stopwatch sw = new Stopwatch();
 
-            bool ipv6 = false; // initC.get<bool>("ipv6");
-            var ipAddresses = NetworkInfo.get_ip_addresses(initC.get<string>("writing_address"),ipv6);
-            if (ipAddresses.Count == 0) {
-                log_error("Cannot find any ip address from: " + initC.get<string>("writing_address"));
-                return false;
+        private Color veryLow = Color.red;
+        private Color low     = Color.yellow;
+        private Color ok      = Color.green;
+
+        private void Start() {
+            text = GetComponent<TMPro.TextMeshProUGUI>();
+            sw.Start();
+        }
+        void Update() {
+
+            var currentTime = sw.ElapsedMilliseconds;
+            float fps       = 1f / Time.unscaledDeltaTime;
+
+            lastValues.Enqueue(new Tuple<long, float>(currentTime, fps));
+            bool removeFirst = (currentTime - lastValues.Peek().Item1) > 1000;
+            
+            while (removeFirst) {
+                lastValues.Dequeue();
+                removeFirst = (currentTime - lastValues.Peek().Item1) > 1000;
             }
 
-            m_udpSender = new UdpSender();
-            m_udpSender.initialize(initC.get<int>("writing_port"), ipAddresses[0]);
-            return true;
-        }
-
-        protected override void clean() {
-            m_udpSender.clean();
-        }
-
-        public void send_message(string message) {
-            if (is_updating()) {
-                m_udpSender.send_message(message);
+            float total = 0f;
+            foreach(var value in lastValues) {
+                total += value.Item2;
             }
-        }
+            total /= lastValues.Count;            
 
-        public void send_bytes(byte[] bytes) {
-            if (is_updating()) {
-                m_udpSender.send_bytes(bytes);
-            }
+            int currenRate = Screen.currentResolution.refreshRate;
+            text.SetText(Converter.to_string(total, total < 100 ? "00.0" : "000."));
+            if(total > currenRate * 0.95f) {
+                text.faceColor    = ok;
+                text.outlineColor = ok;
+            } else if(total > currenRate * 0.8f) {
+                text.faceColor = low;
+                text.outlineColor = low;
+            } else {
+                text.faceColor = veryLow;
+                text.outlineColor = veryLow;
+            }  
         }
     }
 }

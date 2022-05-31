@@ -31,7 +31,6 @@ using UnityEngine;
 
 namespace Ex{
 
-
     public class ParallelPortWriterComponent : ExComponent{
 
         [DllImport("inpoutx64.dll", EntryPoint = "IsInpOutDriverOpen")]

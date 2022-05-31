@@ -71,6 +71,9 @@ namespace Ex {
         public ComponentConfig current_config() { return p.current_config(); }
         public ComponentInitConfig init_config() { return p.init_config(); }
 
+        // connections
+        public Events.Connections connections() {return p.connections();}       
+
         // states
         public bool is_visible() { return p.is_visible(); }
         public bool is_updating() { return p.is_updating(); }
