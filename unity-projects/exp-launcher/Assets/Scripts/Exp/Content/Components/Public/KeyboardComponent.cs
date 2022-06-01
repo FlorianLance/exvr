@@ -35,6 +35,8 @@ using UnityEngine.Profiling;
 
 namespace Ex{
 
+
+
     public class RawKeyboardGetterThread : ThreadedJob {
 
         volatile public bool doLoop  = false;
@@ -54,11 +56,13 @@ namespace Ex{
                 m_rawButtonsEvent[button.Key] = new Input.KeyboardButtonEvent(button.Value);
             }
 
+            //System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
             // 1 tick is 100 nanoseconds
             // 1000 ticks is 10000 nanoseconds -> 0.1 ms
-            //var ts = new System.TimeSpan(1000);
+            var ts = new System.TimeSpan(1000);
             while (doLoop) {
-      
+
+
                 foreach (var button in Input.Keyboard.RawCodesCorrespondence) {
                     m_rawKeyboardGetReturn[button.Key] = RawKeyInput.IsKeyDown(button.Key);
                 }
@@ -88,7 +92,11 @@ namespace Ex{
                     }
                 }
 
-                Thread.Sleep(1);
+
+                //sw.Restart();
+                Thread.Sleep(ts);
+                //Thread.Sleep(10);
+                //UnityEngine.Debug.Log("elapsed: " + sw.ElapsedMilliseconds + " " + sw.ElapsedTicks);
             }
 
             Profiler.EndThreadProfiling();
@@ -223,9 +231,17 @@ namespace Ex{
                 }
 
                 // send triggers
-                foreach(var events in allEvents) {
+                HashSet<KeyCode> pressedSent = new HashSet<KeyCode>();
+                foreach (var events in allEvents) {
                     foreach(var keyEvent in events) {
-                        invoke_signal(buttonOnGuiSignal, keyEvent);
+                        if(keyEvent.state == Input.Button.State.Pressed) {
+                            if (!pressedSent.Contains(keyEvent.code)) {
+                                invoke_signal(buttonOnGuiSignal, keyEvent);
+                                pressedSent.Add(keyEvent.code);
+                            }
+                        } else {
+                            invoke_signal(buttonOnGuiSignal, keyEvent);
+                        }                        
                     }
                 }
 
