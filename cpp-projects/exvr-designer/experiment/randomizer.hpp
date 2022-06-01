@@ -27,15 +27,7 @@
 // std
 #include <memory>
 #include <random>
-#include <algorithm>
-#include <deque>
-
-// Qt
-#include <QStringList>
-#include <QVector>
-
-// base
-#include "utility/vector.hpp"
+#include <vector>
 
 namespace tool::ex {
 
@@ -45,94 +37,42 @@ class Randomizer{
 
 public :
 
-    Randomizer(unsigned int seed){
-        gen = std::make_unique<std::mt19937>(seed);
-    }
+    Randomizer(unsigned int seed);
+    Randomizer( std::random_device &rd);
 
-    Randomizer( std::random_device &rd) {
-        gen = std::make_unique<std::mt19937>(rd());
-    }
-
-
-    size_t randomize_start(size_t containerSize) const{
-        std::uniform_int_distribution<> dist(0, static_cast<int>(containerSize)-1);
-        return static_cast<size_t>(dist(*gen));
-    }
+    std::vector<int> generate_shuffle_ids(size_t nbValues, size_t reps, bool noFollowingValue)const;
+    std::vector<int> generate_random_ids(size_t nbValues, size_t reps, bool noFollowingValue)const;
+    size_t randomize_start(size_t containerSize) const;
 
     template<typename T>
-    std::vector<T> shuffle(const std::vector<T> &values, size_t reps) const{
+    std::vector<T> shuffle(const std::vector<T> &values, size_t reps, bool noFollowingValue) const{
 
-        std::vector<int> res;
-        res.reserve(reps);
-        std::vector<int> ids(values.size());
-
-        while(res.size() < reps){
-
-            std::iota(ids.begin(),ids.end(),0);
-            std::shuffle(ids.begin(),ids.end(), *gen);
-
-            for(auto &id : ids){
-                if(res.size() == reps){
-                    break;
-                }
-                res.push_back(id);
-            }
-        }
-
-        std::vector<T> randomSet;
-        randomSet.reserve(res.size());
-        for(auto &id : res){
-            randomSet.push_back(values[id]);
-        }
-        return randomSet;
-    }
-
-    template<typename T>
-    std::vector<T> shuffle_no_following_duplicates(const std::vector<T> &values, size_t reps) const{
-
-        std::vector<int> res;
-        res.reserve(reps);
-        std::vector<int> ids(values.size());
-
-        if(values.size() == 1){
-            std::fill(res.begin(), res.end(), 0);
-        }else if (values.size() == 2){
-
-            std::iota(ids.begin(),ids.end(),0);
-            std::shuffle(ids.begin(),ids.end(), *gen);
-
-            for(int ii = 0; ii < reps; ++ii){
-
-            }
-
-        }else{
-
-        }
-
-        std::vector<T> randomSet;
-        randomSet.reserve(res.size());
-        for(auto &id : res){
-            randomSet.push_back(values[id]);
-        }
-        return randomSet;
-    }
-
-
-    template<typename T>
-    std::vector<T> randomize(const std::vector<T> &values, size_t reps) const{
-
-        std::vector<T> res;
+        std::vector<T> shuffleSet;
         if(values.size() == 0 || reps <= 0){
-            return res;
+            return shuffleSet;
         }
-        res.reserve(reps);
+        shuffleSet.reserve(reps);
 
-        std::uniform_int_distribution<> dist(0,static_cast<int>(values.size())-1);
-        for(size_t ii = 0; ii < reps; ++ii){
-            res.push_back(values[dist(*gen)]);
+        for(auto id : generate_shuffle_ids(values.size(), reps, noFollowingValue)){
+            shuffleSet.push_back(values[id]);
         }
+        return shuffleSet;
+    }
 
-        return  res;
+
+    template<typename T>
+    std::vector<T> randomize(const std::vector<T> &values, size_t reps, bool noFollowingValue) const{
+
+        std::vector<T> randomSet;
+        if(values.size() == 0 || reps <= 0){
+            return randomSet;
+        }
+        randomSet.reserve(reps);
+
+        for(auto id : generate_random_ids(values.size(), reps, noFollowingValue)){
+            randomSet.push_back(values[id]);
+        }
+        return  randomSet;
     }
 
 };

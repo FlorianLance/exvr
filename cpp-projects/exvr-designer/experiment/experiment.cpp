@@ -1512,8 +1512,6 @@ void Experiment::modify_loop_nb_reps(ElementKey loopKey, int nbReps){
 
     if(auto loop = get_loop(loopKey); loop != nullptr){
         loop->set_nb_reps(to_unsigned(nbReps));
-        update_conditions();
-        add_to_update_flag(UpdateSelection);
     }
 }
 
@@ -1521,8 +1519,12 @@ void Experiment::modify_loop_N(ElementKey loopKey, int N){
 
     if(auto loop = get_loop(loopKey); loop != nullptr){
         loop->set_N(N);
-        update_conditions();
-        add_to_update_flag(UpdateSelection);
+    }
+}
+
+void Experiment::modify_loop_no_following_value(ElementKey loopKey, bool state){
+    if(auto loop = get_loop(loopKey); loop != nullptr){
+        loop->noFollowingValues = state;
     }
 }
 

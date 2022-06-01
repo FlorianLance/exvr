@@ -46,12 +46,11 @@ Loop::Loop(QString n, ElementKey id, QString infos) : FlowElement(Type::Loop, n,
 std::unique_ptr<Loop> Loop::copy_with_new_element_id(const Loop &loopToCopy, const QString &newName){
 
     auto loop = std::make_unique<Loop>(newName, ElementKey{-1}, loopToCopy.informations);
-
-    loop->nbReps = loopToCopy.nbReps;
-    loop->mode = loopToCopy.mode;
-    loop->filePath = loopToCopy.filePath;
-
-    loop->currentSetName = loopToCopy.currentSetName;
+    loop->nbReps            = loopToCopy.nbReps;
+    loop->mode              = loopToCopy.mode;
+    loop->filePath          = loopToCopy.filePath;
+    loop->noFollowingValues = loopToCopy.noFollowingValues;
+    loop->currentSetName    = loopToCopy.currentSetName;
 
     loop->sets.reserve(loopToCopy.sets.size());
     for(const auto &setToCopy : loopToCopy.sets){
@@ -71,16 +70,16 @@ void Loop::set_nodes(LoopNode *start, LoopNode *end){
     this->end   = end;
 }
 
-void Loop::set_nb_reps(size_t nb) noexcept{
-    nbReps = nb;
+void Loop::set_nb_reps(size_t nbReps) noexcept{
+    this->nbReps = nbReps;
 }
 
 void Loop::set_N(int N) noexcept{
     this->N = N;
 }
 
-void Loop::set_loop_type(Loop::Mode m) noexcept{
-    mode = m;
+void Loop::set_loop_type(Loop::Mode mode) noexcept{
+    this->mode = mode;
 }
 
 bool Loop::is_default() const{

@@ -105,13 +105,11 @@ Instance::Instance(const Randomizer *randomizer, const std::vector<FlowElement*>
                 }
             break;}case Loop::Mode::Shuffle:{
 
-                setsNames = randomizer->shuffle(setsOccurenciesStr, totalNbReps);
-
-                // auto previousID;
+                setsNames = randomizer->shuffle(setsOccurenciesStr, totalNbReps, loop->noFollowingValues);
 
             break;}case Loop::Mode::Random:{
 
-                setsNames = randomizer->randomize(setsOccurenciesStr, totalNbReps);
+                setsNames = randomizer->randomize(setsOccurenciesStr, totalNbReps, loop->noFollowingValues);
 
             break;}case Loop::Mode::FixedRandomStart:{
 
@@ -133,7 +131,7 @@ Instance::Instance(const Randomizer *randomizer, const std::vector<FlowElement*>
                 // generate
                 if(idInstance == 0){
                     onlyOnceRandomLoopSets[loop->key()] = {};
-                    for(auto set : randomizer->randomize(setsOccurenciesStr, totalNbReps)){
+                    for(auto set : randomizer->randomize(setsOccurenciesStr, totalNbReps, loop->noFollowingValues)){
                         onlyOnceRandomLoopSets[loop->key()].push_back(set);
                     }
                 }
@@ -148,7 +146,7 @@ Instance::Instance(const Randomizer *randomizer, const std::vector<FlowElement*>
                 // generate
                 if(idInstance == 0) {
                     onlyOnceShuffleLoopSets[loop->key()] = {};
-                    for(auto set : randomizer->shuffle(setsOccurenciesStr, totalNbReps)){
+                    for(auto set : randomizer->shuffle(setsOccurenciesStr, totalNbReps, loop->noFollowingValues)){
                         onlyOnceShuffleLoopSets[loop->key()].push_back(set);
                     }
                 }
@@ -168,7 +166,7 @@ Instance::Instance(const Randomizer *randomizer, const std::vector<FlowElement*>
                         everyNRandomLoopSets[loop->key()] = {};
                     }
 
-                    for(auto set : randomizer->randomize(setsOccurenciesStr, totalNbReps)){
+                    for(auto set : randomizer->randomize(setsOccurenciesStr, totalNbReps, loop->noFollowingValues)){
                         everyNRandomLoopSets[loop->key()].push_back(set);
                     }
                 }
@@ -187,7 +185,7 @@ Instance::Instance(const Randomizer *randomizer, const std::vector<FlowElement*>
                          everyNShuffleLoopSets[loop->key()] = {};
                      }
 
-                    for(auto set : randomizer->shuffle(setsOccurenciesStr, totalNbReps)){
+                    for(auto set : randomizer->shuffle(setsOccurenciesStr, totalNbReps, loop->noFollowingValues)){
                         everyNShuffleLoopSets[loop->key()].push_back(set);
                     }
                 }
@@ -231,7 +229,7 @@ Instance::Instance(const Randomizer *randomizer, const std::vector<FlowElement*>
         const size_t totalNbReps = multiplier;
         if(randomizeOnce){
             if(isi->randomized){
-                for(auto &isi : randomizer->randomize(isi->intervals, totalNbReps)){
+                for(auto &isi : randomizer->randomize(isi->intervals, totalNbReps, false)){
                     intervals.emplace_back(std::move(isi));
                 }
             }else{

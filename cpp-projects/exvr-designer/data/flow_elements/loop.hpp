@@ -102,9 +102,9 @@ struct Loop : public FlowElement {
     bool is_file_mode() const noexcept;
 
     void set_nodes(LoopNode *start, LoopNode *end);
-    void set_nb_reps(size_t nb) noexcept;
+    void set_nb_reps(size_t nbReps) noexcept;
     void set_N(int N) noexcept;
-    void set_loop_type(Mode m) noexcept;
+    void set_loop_type(Mode mode) noexcept;
 
     bool is_default() const;
     void set_sets(QStringList sets);
@@ -130,6 +130,7 @@ struct Loop : public FlowElement {
     Mode mode = Mode::Fixed;
     QString filePath; /**< path for FILE loop mode */
     int N = 1;
+    bool noFollowingValues = false; /**< for random and shuffle only */
 
     // sets
     QString currentSetName;

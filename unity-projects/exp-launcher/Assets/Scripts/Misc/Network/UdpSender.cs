@@ -67,7 +67,8 @@ namespace Ex {
             try {
                 m_endPoint = new IPEndPoint(ipAddress, port);
                 m_sender = new UdpClient(ipv6 ? AddressFamily.InterNetworkV6 : AddressFamily.InterNetwork);
-            }catch(SocketException e) {
+                m_sender.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.SendBuffer, 10000);
+            } catch(SocketException e) {
                 UnityEngine.Debug.LogError(string.Format("Cannot initialize UDP sender with adresse [{0}] and port [{1}], error message [{1}]",
                     ipAddress.ToString(),
                     m_writingPort.ToString(),
@@ -106,7 +107,7 @@ namespace Ex {
                     m_sender.Close();
                     m_sender.Dispose();
                 } catch (SocketException e) {
-                    UnityEngine.Debug.LogError(string.Format("Clean sender error: [{0}]", e.Message));
+                    UnityEngine.Debug.LogError(string.Format("Clean sender socket error: [{0}]", e.Message));
                 } catch (Exception e) {
                     UnityEngine.Debug.LogError(string.Format("Clean sender error: [{0}]", e.Message));
                 }
@@ -134,7 +135,14 @@ namespace Ex {
 
                 byte[] bytesToSend;
                 while(m_messages.TryDequeue(out bytesToSend)) {
-                    m_sender.Send(bytesToSend, bytesToSend.Length, m_endPoint);
+                    try {
+                        m_sender.Send(bytesToSend, bytesToSend.Length, m_endPoint);
+                    } catch (SocketException e) {
+                        UnityEngine.Debug.LogError(string.Format("Send socket error: [{0}] for message of size [{1}]", e.Message, bytesToSend.Length));
+                    } catch(Exception e) {
+                        UnityEngine.Debug.LogError(string.Format("Send error: [{0}] for message of size [{1}]", e.Message, bytesToSend.Length));
+                    }
+                    
                 }
                 Thread.Sleep(1);
             }

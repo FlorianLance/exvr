@@ -256,6 +256,7 @@ public slots:
     void modify_loop_type(ElementKey loopKey, Loop::Mode type);
     void modify_loop_nb_reps(ElementKey loopKey, int nbReps);
     void modify_loop_N(ElementKey loopKey, int N);
+    void modify_loop_no_following_value(ElementKey loopKey, bool state);
     void remove_set(ElementKey loopKey, RowId id);
     void sort_loop_sets_lexico(ElementKey loopKey);
     void sort_loop_sets_num(ElementKey loopKey);

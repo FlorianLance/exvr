@@ -24,6 +24,7 @@ cpp-projects/_build/bin/**/*.ilk
 cpp-projects/_build/bin/**/*.pdb
 cpp-projects/_build/bin/**/*.exp
 cpp-projects/_build/bin/**/*logs.html
+
 cpp-projects/_build/bin/exvr-designer/data/temp
 cpp-projects/_build/bin/exvr-designer/logs
 cpp-projects/_build/bin/exvr-designer/exp-launcher/ExVR-exp_Data
@@ -53,6 +54,8 @@ cpp-projects/_build/bin/exvr-designer/exp-launcher/**/*.bat
 cpp-projects/_build/bin/exvr-designer/exp-launcher/**/*.browser
 cpp-projects/_build/bin/exvr-designer/exp-launcher/**/*.aspx
 cpp-projects/_build/bin/exvr-designer/exp-launcher/temp_generated/*.cs
+
+cpp-projects/_build/bin/exvr-test/logs
 
 
 ## temp

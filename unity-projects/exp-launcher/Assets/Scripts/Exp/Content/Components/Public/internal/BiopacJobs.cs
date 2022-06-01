@@ -112,16 +112,16 @@ namespace Ex {
         public List<double[]> channelsData = null;
         public List<bool[]> digitalInputData = null;
         public List<FrameTimestamp> times = null;
+        public int id = 0;
+        private static int counter = 0;
 
         public BiopacData(BiopacSettings bps) {
-            reset(bps);
-        }
-        public void reset(BiopacSettings bps) {
             //int capacity = bps.capacityChannelSeconds * (int)bps.samplingRate / bps.nbSamplesPerCall;
-            int capacity     = 2 * (int)bps.samplingRate / bps.nbSamplesPerCall;
-            channelsData     = new List<double[]>(capacity);
+            int capacity = 2 * (int)bps.samplingRate / bps.nbSamplesPerCall;
+            channelsData = new List<double[]>(capacity);
             digitalInputData = new List<bool[]>(capacity);
-            times            = new List<FrameTimestamp>();// bps.capacityChannelSeconds);
+            times = new List<FrameTimestamp>();// bps.capacityChannelSeconds);
+            id = counter++;
         }
     }
 

@@ -123,6 +123,7 @@ signals:
     void select_loop_set_signal(tool::ex::ElementKey loopKey, QString set);
     void modify_loop_nb_reps_signal(tool::ex::ElementKey loopKey, int nbReps);
     void modify_loop_n_signal(tool::ex::ElementKey loopKey, int nbReps);
+    void modify_loop_no_following_value_signal(tool::ex::ElementKey loopKey, bool state);
     void modify_loop_type_signal(tool::ex::ElementKey loopKey, tool::ex::Loop::Mode mode);
     void modify_loop_set_name_signal(tool::ex::ElementKey loopKey, QString set, tool::ex::RowId idSet);
     void modify_loop_set_occurrencies_nb_signal(tool::ex::ElementKey loopKey, int occurenciesNb, tool::ex::RowId idSet);

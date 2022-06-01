@@ -246,6 +246,10 @@ void ElementViewerW::init_loop_ui(){
     connect(ui->sbN, QOverload<int>::of(&QSpinBox::valueChanged), this, [&](int value){
         emit GSignals::get()->modify_loop_n_signal(m_currentElementId, value);
     });
+    // following values
+    connect(ui->cbNoFollowingValues, &QCheckBox::clicked, this, [&](bool checked){
+        emit GSignals::get()->modify_loop_no_following_value_signal(m_currentElementId, checked);
+    });
 
     // style
     connect(ui->cbLoopStyle,QOverload<int>::of( &QComboBox::currentIndexChanged),[=](int index){
@@ -508,6 +512,10 @@ void ElementViewerW::update_loop_ui(Loop *loop){
     ui->sbNbReps->blockSignals(true);
     ui->sbNbReps->setValue(to_signed(loop->nbReps));
     ui->sbNbReps->blockSignals(false);
+
+    ui->cbNoFollowingValues->blockSignals(true);
+    ui->cbNoFollowingValues->setChecked(loop->noFollowingValues);
+    ui->cbNoFollowingValues->blockSignals(false);
 
     ui->sbN->setEnabled(loop->mode == Loop::Mode::RandomEveryNInstances || loop->mode == Loop::Mode::ShuffleEveryNInstances);
     ui->sbN->blockSignals(true);

@@ -1145,6 +1145,7 @@ void XmlIoManager::write_loop(const Loop *loop) {
     w->writeAttribute(QSL("type"), from_view(Loop::get_name(loop->mode)));
     w->writeAttribute(QSL("nbReps"), QString::number(loop->nbReps));
     w->writeAttribute(QSL("N"), QString::number(loop->N));
+    w->writeAttribute(QSL("noFollowingValues"), loop->noFollowingValues ? "1" : "0");
     w->writeAttribute(QSL("informations"), loop->informations);
 
     if(loop->mode == Loop::Mode::File){
@@ -1186,8 +1187,12 @@ std::tuple<std::unique_ptr<LoopNode>, std::unique_ptr<Loop>, std::unique_ptr<Loo
         return std::make_tuple(nullptr,nullptr,nullptr);
     }
 
-    assign_attribute(loop->nbReps , QSL("nbReps"), true);
-    assign_attribute(loop->N , QSL("N"), false);
+    assign_attribute(loop->nbReps,            QSL("nbReps"),            true);
+    assign_attribute(loop->N,                 QSL("N"),                 false);
+
+    if(auto noFollowingValues = read_attribute<bool>(QSL("noFollowingValues"), false); noFollowingValues.has_value()){
+        loop->noFollowingValues = noFollowingValues.value();
+    }
 
     // init loop start
     std::unique_ptr<LoopNode> startLoop = std::make_unique<LoopNode>(loop.get(), true);

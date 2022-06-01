@@ -57,7 +57,7 @@ namespace tool::ex{
         template<class T> std::optional<T> read_attribute(const QString &name, bool raiseError); // primary template
 
         bool has_attribute(const QStringList &names) const{
-            for(const auto &name : names){
+            for(const auto &name : names){                                
                 if(r->attributes().hasAttribute(name)){
                     return true;
                 }

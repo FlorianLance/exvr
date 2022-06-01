@@ -330,6 +330,7 @@ SOURCES += \
     # controller
     controller/exvr_controller.cpp \
     # launcher
+    experiment/randomizer.cpp \
     gui/dialogs/import_sub_exp_dialog.cpp \
     gui/dialogs/keys_dialog.cpp \
     gui/objects/add_button_object.cpp \

@@ -202,7 +202,7 @@ namespace Ex {
             }
 
             processThread.addHeaderLine = true;
-            acquisitionThread.bData.reset(bSettings);
+            acquisitionThread.bData = new BiopacData(bSettings);
         }
 
 
@@ -213,7 +213,7 @@ namespace Ex {
                 return;
             }
 
-            var data = acquisitionThread.get_data();            
+            var data = acquisitionThread.get_data();
             if (data != null) {
                 Profiler.BeginSample("[biopac] main trigger");
                 trigger_channels(data);
@@ -435,23 +435,34 @@ namespace Ex {
                 int nbChannels = bSettings.enabledChannelsNb;
                 List<double[]> data = bData.channelsData;
 
-                if (sendLastValue) {
+                if (sendLastValue && data.Count > 0) {
 
-                    if (data.Count > 0) {
-                        for (int II = 0; II < data[data.Count - 1].Length; ++II) {
+                    // init channel list
+                    List<double> channelsLastValue= new List<double>(nbChannels);
+                    for (int ii = 0; ii < nbChannels; ++ii) {
+                        channelsLastValue.Add(0);
+                    }
 
-                            int idChannel = II % nbChannels;
-                            invoke_signal(lastValueChannelStr,
-                                new IdAny(
-                                    bSettings.channelsId[idChannel] + 1,
-                                    data[data.Count - 1][II]
-                                )
-                            );
+                    // copy data
+                    for (int ii = data.Count-1; ii < data.Count; ++ii) {
+                        for (int jj = data[ii].Length- nbChannels; jj < data[ii].Length; ++jj) {
+                            int idChannel = jj % nbChannels;
+                            channelsLastValue[idChannel] = data[ii][jj];
                         }
+                    }
+
+                    // send values
+                    for (int ii = 0; ii < nbChannels; ++ii) {
+                        invoke_signal(lastValueChannelStr,
+                            new IdAny(
+                                ii + 1,
+                                channelsLastValue[ii]
+                            )
+                        );
                     }
                 }
 
-                if (sendRange) {
+                if (sendRange && data.Count > 0) {
 
                     // count values
                     int nbValues = 0;
