@@ -92,10 +92,18 @@ public :
 
         std::vector<int> res;
         res.reserve(reps);
+        std::vector<int> ids(values.size());
 
         if(values.size() == 1){
-
+            std::fill(res.begin(), res.end(), 0);
         }else if (values.size() == 2){
+
+            std::iota(ids.begin(),ids.end(),0);
+            std::shuffle(ids.begin(),ids.end(), *gen);
+
+            for(int ii = 0; ii < reps; ++ii){
+
+            }
 
         }else{
 
