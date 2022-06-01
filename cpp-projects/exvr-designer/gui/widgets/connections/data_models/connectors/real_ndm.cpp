@@ -94,4 +94,36 @@ void RealNodeDataModel::init_ports_caption(){
     }
 }
 
+void RandomRealNodeDataModel::init_ports_caption(){
+    const auto io = Connector::get_io(m_type);
+    inPortsInfo[0].caption = QSL("min (") % get_name(io.inTypes[0]) % QSL(")");
+    inPortsInfo[1].caption = QSL("max (") % get_name(io.inTypes[1]) % QSL(")");
+    inPortsInfo[2].caption = QSL("generate (") % get_name(io.inTypes[2]) % QSL(")");
+    outPortsInfo[0].caption = QSL("out (") % get_name(io.outTypes[0]) % QSL(")");
+}
+
+
+void RandomRealNodeDataModel::compute(){
+
+    if(check_infinity_loop()){
+        return;
+    }
+
+    auto inputs = get_inputs();
+    if(!inputs[0] && !inputs[1]){
+        set_invalid_state(QSL("Missing entrees #1,#2"));
+    }else if(!inputs[0]){
+        set_invalid_state(QSL("Missing entrees #1"));
+    }else if(!inputs[1]){
+        set_invalid_state(QSL("Missing entrees #2"));
+    }else{
+        set_valid_state();
+    }
+
+    propagate_default_runtime({std::make_shared<RealData>()});
+}
+
+
 #include "moc_real_ndm.cpp"
+
+

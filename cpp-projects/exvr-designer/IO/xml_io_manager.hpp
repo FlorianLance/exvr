@@ -239,7 +239,7 @@ namespace tool::ex{
         std::unique_ptr<Resource> read_resource();
 
         RoutineUP           read_routine();
-        std::tuple<LoopNodeUP, LoopUP, LoopNodeUP> read_loop();
+        std::tuple<std::unique_ptr<LoopNode>, std::unique_ptr<Loop>, std::unique_ptr<LoopNode>> read_loop();
         std::unique_ptr<Set> read_set();
         IsiUP               read_isi();
         std::vector<std::unique_ptr<Config>> read_configs();
@@ -263,8 +263,8 @@ namespace tool::ex{
 
         std_v1<RoutineUP>  readXmlRoutines;
         std_v1<IsiUP>      readXmlISIs;
-        std_v1<LoopNodeUP> readXmlStartLoops;
-        std_v1<LoopNodeUP> readXmlEndLoops;
+        std_v1<std::unique_ptr<LoopNode>> readXmlStartLoops;
+        std_v1<std::unique_ptr<LoopNode>> readXmlEndLoops;
 
         QString expFileToLoad;
         QString expFileToSave;

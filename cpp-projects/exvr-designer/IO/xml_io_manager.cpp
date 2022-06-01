@@ -1162,7 +1162,7 @@ void XmlIoManager::write_loop(const Loop *loop) {
     w->writeEndElement(); // /Loop
 }
 
-std::tuple<LoopNodeUP, LoopUP, LoopNodeUP> XmlIoManager::read_loop(){
+std::tuple<std::unique_ptr<LoopNode>, std::unique_ptr<Loop>, std::unique_ptr<LoopNode>> XmlIoManager::read_loop(){
 
     const auto key          = read_attribute<int>(QSL("key"), true);
     const auto name         = read_attribute<QString>(QSL("name"), true);
@@ -1174,7 +1174,7 @@ std::tuple<LoopNodeUP, LoopUP, LoopNodeUP> XmlIoManager::read_loop(){
         return std::make_tuple(nullptr,nullptr,nullptr);
     }
 
-    LoopUP loop = std::make_unique<Loop>(name.value(), ElementKey{key.value()});    
+    std::unique_ptr<Loop> loop = std::make_unique<Loop>(name.value(), ElementKey{key.value()});    
     if(auto informations  = read_attribute<QString>(QSL("informations"), false); informations.has_value()){
         loop->informations = std::move(informations.value());
     }
@@ -1190,8 +1190,8 @@ std::tuple<LoopNodeUP, LoopUP, LoopNodeUP> XmlIoManager::read_loop(){
     assign_attribute(loop->N , QSL("N"), false);
 
     // init loop start
-    LoopNodeUP startLoop = std::make_unique<LoopNode>(loop.get(), true);
-    LoopNodeUP endLoop   = std::make_unique<LoopNode>(loop.get(), false);
+    std::unique_ptr<LoopNode> startLoop = std::make_unique<LoopNode>(loop.get(), true);
+    std::unique_ptr<LoopNode> endLoop   = std::make_unique<LoopNode>(loop.get(), false);
     loop->set_nodes(startLoop.get(), endLoop.get());
 
     // old set system

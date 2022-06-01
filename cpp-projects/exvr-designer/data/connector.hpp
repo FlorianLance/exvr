@@ -80,7 +80,7 @@ struct Connector{
     // Connectors types
     enum class Type : int {
         Component, // Component
-        Boolean, Integer,Real, String, Vector3, Transform, Id_any, String_any,  // Generator
+        Boolean, Integer,Real, String, Vector3, Transform, Id_any, String_any, Random_real,// Generator
         Reals_to_vec2, Reals_to_vec3, Vec2_to_reals, Vec3_to_reals, String_list_to_id_any, Transform_to_vectors, Vectors_to_transform,// Convertor
         Curve_x, Logger, Post_it, // Display
         Decimal_trigonometry, Decimal_counter, Delay, Variable_delay, // Function
@@ -148,6 +148,7 @@ struct Connector{
         {T::Transform,              "Transform"sv,                  "Transform"sv},
         {T::Id_any,                 "IdAny"sv,                      "Id any"sv},
         {T::String_any,             "StringAny"sv,                  "String any"sv},
+        {T::Random_real,            "RandomReal"sv,                 "Random real"sv},
         // # Link
         {T::Pass_values,            "PassValues"sv,                 "Pass values"sv},
         {T::Pass_value_trigger,     "PassValueTrigger"sv,           "Pass value trigger"sv},
@@ -314,6 +315,7 @@ struct Connector{
         {T::Transform,              C::Generator, M, {1,{t_transform},             1,{t_transform}},          {v,{v},       {v}},     IN, PO, 1, PT},
         {T::Id_any,                 C::Generator, M, {1,{t_any},                   1,{t_id_any}},             {v,{v},       {v}},     IN, FO, 1, PT},
         {T::String_any,             C::Generator, M, {1,{t_any},                   1,{t_str_any}},            {v,{v},       {v}},     IN, FO, 1, PT},
+        {T::Random_real,            C::Generator, M, {3,{t_real, t_real, t_void},  1,{t_real}},               {v,{v,v,v},   {v}},     LO, FO, 2, PT},
         // # Operator
         {T::Decimal_operation,      C::Operator,  M, {2,{t_dec,t_dec},             1,{t_variant}},            {v,{v,v},     {v}},     IN, FO, 1, PT},
         {T::Binary_operation,       C::Operator,  M, {2,{t_bool,t_bool},           1,{t_bool}},               {v,{v,v},     {v}},     IN, FO, 1, PT},

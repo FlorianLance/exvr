@@ -435,6 +435,9 @@ std::unique_ptr<ConnectorNodeDataModel> DataNodeModels::generate_connector_data_
     case T::Vector3:
         connectorDataModel = std::make_unique<Vector3NodeDataModel>();
         break;
+    case T::Random_real:
+        connectorDataModel = std::make_unique<RandomRealNodeDataModel>();
+        break;
     case T::Reals_to_vec2:
         connectorDataModel = std::make_unique<RealsToVector2NodeDataModel>();
         break;

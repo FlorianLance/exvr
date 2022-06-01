@@ -733,7 +733,7 @@ Isi *Experiment::get_isi(ElementKey isiKey) const{
 
 Loop *Experiment::get_loop(ElementKey loopKey) const{
 
-    auto loopFound = std::find_if(loops.begin(), loops.end(), [loopKey](const LoopUP &loop){
+    auto loopFound = std::find_if(loops.begin(), loops.end(), [loopKey](const std::unique_ptr<Loop> &loop){
         return loop->key() == loopKey.v;
     });
 

@@ -60,37 +60,60 @@ public :
     }
 
     template<typename T>
-    std_v1<T> shuffle(const std_v1<T> &values, size_t reps) const{
+    std::vector<T> shuffle(const std::vector<T> &values, size_t reps) const{
 
-        std_v1<int> res;
+        std::vector<int> res;
         res.reserve(reps);
-        std_v1<int> ids(values.size());
+        std::vector<int> ids(values.size());
 
         while(res.size() < reps){
 
             std::iota(ids.begin(),ids.end(),0);
             std::shuffle(ids.begin(),ids.end(), *gen);
 
-            for(auto & id : ids){
+            for(auto &id : ids){
                 if(res.size() == reps){
                     break;
                 }
-                res.emplace_back(id);
+                res.push_back(id);
             }
         }
 
-        std_v1<T> randomSet;
+        std::vector<T> randomSet;
         randomSet.reserve(res.size());
         for(auto &id : res){
-            randomSet.emplace_back(values[id]);
+            randomSet.push_back(values[id]);
         }
         return randomSet;
     }
 
     template<typename T>
-    std_v1<T> randomize(const std_v1<T> &values, size_t reps) const{
+    std::vector<T> shuffle_no_following_duplicates(const std::vector<T> &values, size_t reps) const{
 
-        std_v1<T> res;        
+        std::vector<int> res;
+        res.reserve(reps);
+
+        if(values.size() == 1){
+
+        }else if (values.size() == 2){
+
+        }else{
+
+        }
+
+        std::vector<T> randomSet;
+        randomSet.reserve(res.size());
+        for(auto &id : res){
+            randomSet.push_back(values[id]);
+        }
+        return randomSet;
+    }
+
+
+    template<typename T>
+    std::vector<T> randomize(const std::vector<T> &values, size_t reps) const{
+
+        std::vector<T> res;
         if(values.size() == 0 || reps <= 0){
             return res;
         }
@@ -98,7 +121,7 @@ public :
 
         std::uniform_int_distribution<> dist(0,static_cast<int>(values.size())-1);
         for(size_t ii = 0; ii < reps; ++ii){
-            res.emplace_back(values[dist(*gen)]);
+            res.push_back(values[dist(*gen)]);
         }
 
         return  res;

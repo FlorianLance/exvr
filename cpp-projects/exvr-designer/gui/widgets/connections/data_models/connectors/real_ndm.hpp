@@ -49,4 +49,13 @@ public slots:
 public:
     void init_ports_caption() override;
 };
+
+class RandomRealNodeDataModel : public TypedConnectorDataModel<Connector::Type::Random_real, PlaceHolderEmbeddedW>{
+    Q_OBJECT
+public slots:
+    void compute() override;
+public:
+    void init_ports_caption() override;
+};
+
 }

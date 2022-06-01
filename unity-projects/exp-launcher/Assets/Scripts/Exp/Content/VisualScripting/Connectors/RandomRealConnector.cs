@@ -1,6 +1,6 @@
-
+﻿
 /***********************************************************************************
-** exvr-designer                                                                  **
+** exvr-exp                                                                       **
 ** MIT License                                                                    **
 ** Copyright (c) [2018] [Florian Lance][EPFL-LNCO]                                **
 ** Permission is hereby granted, free of charge, to any person obtaining a copy   **
@@ -22,51 +22,41 @@
 ** SOFTWARE.                                                                      **
 ************************************************************************************/
 
-#pragma once
+// system
+using System;
 
-// qt-utility
-#include "qt_str.hpp"
+namespace Ex {
 
-// local
-#include "experiment.hpp"
-#include "randomizer.hpp"
+    public class RandomRealConnector : ExConnector {
 
-namespace tool::ex {
+        private object minValue = null;
+        private object maxValue = null;
+        private static Random m_rand   = null;
+        
+        protected override bool initialize() {
+            add_signals(1);
+            add_slot(0, (arg) => { base_slot1(arg); });
+            add_slot(1, (arg) => { base_slot2(arg); });
+            add_slot(2, (arg) => { base_slot3(arg); });
+            if (m_rand == null) {
+                int seed = 0; // TODO
+                m_rand = new Random(seed);
+            }
+            return true;
+        }
 
-struct LoopInfo{
-    int currentRep = 0;
-    int idStart;
-    int idEnd;
-    QStringList set;
-    Loop *l = nullptr;
-};
+        protected override void slot1(object arg) {
+            minValue = arg;
+        }
 
-struct InstanceElement{
-    int elementIteration = 0;
-    int conditionIteration = 0;
-    FlowElement *elem;
-    QString condition;
-};
+        protected override void slot2(object arg) {
+            maxValue = arg;
+        }
 
-struct Instance {
-
-    Instance() = default;
-    Instance(const Randomizer *randomizer, const std::vector<FlowElement*> &elements, size_t idInstance);
-
-    static std::unique_ptr<Instance> generate_from_full_experiment(const Randomizer *randomizer, const Experiment &experiment, size_t idInstance);
-    static std::unique_ptr<Instance> generate_from_one_routine(Routine *routine);
-    static std::unique_ptr<Instance> generate_from_element_to_the_end(const Randomizer *randomizer, const Experiment &experiment, size_t idInstance);
-    static std::unique_ptr<Instance> generate_from_start_to_element(const Randomizer *randomizer, const Experiment &experiment, size_t idInstance);
-
-    static inline std::unordered_map<int, std::vector<QStringView>> onlyOnceShuffleLoopSets = {};
-    static inline std::unordered_map<int, std::vector<QStringView>> onlyOnceRandomLoopSets = {};
-    static inline std::unordered_map<int, std::vector<QStringView>> everyNShuffleLoopSets = {};
-    static inline std::unordered_map<int, std::vector<QStringView>> everyNRandomLoopSets = {};
-
-    QString filePath = "";
-    QString fileName = "debug-instance";
-    size_t idInstance = 0;
-    std::vector<InstanceElement> flow;
-};
-
+        protected override void slot3(object arg) {
+            if(minValue != null && maxValue != null) {
+                invoke_signal(0, m_rand.NextDouble() * ((double)maxValue - (double)minValue) + (double)minValue);
+            }
+        }
+    }
 }

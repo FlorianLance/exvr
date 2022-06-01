@@ -223,6 +223,7 @@
     <Compile Include="Assets\Scripts\Exp\Content\VisualScripting\Connectors\PreviousConnector.cs" />
     <Compile Include="Assets\Scripts\Exp\Content\VisualScripting\Connectors\PreviousElementWithCondConnector.cs" />
     <Compile Include="Assets\Scripts\Exp\Content\VisualScripting\Connectors\PreviousElementWithNameConnector.cs" />
+    <Compile Include="Assets\Scripts\Exp\Content\VisualScripting\Connectors\RandomRealConnector.cs" />
     <Compile Include="Assets\Scripts\Exp\Content\VisualScripting\Connectors\RealConnector.cs" />
     <Compile Include="Assets\Scripts\Exp\Content\VisualScripting\Connectors\RealsToVector2Connector.cs" />
     <Compile Include="Assets\Scripts\Exp\Content\VisualScripting\Connectors\RealsToVector3Connector.cs" />

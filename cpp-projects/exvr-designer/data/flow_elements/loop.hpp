@@ -48,11 +48,7 @@ namespace tool::ex {
 
 using namespace std::literals::string_view_literals;
 
-struct Loop;
-using LoopUP = std::unique_ptr<Loop>;
-
 struct LoopNode;
-using LoopNodeUP = std::unique_ptr<LoopNode>;
 
 
 struct Loop : public FlowElement {
@@ -60,14 +56,14 @@ struct Loop : public FlowElement {
     enum class Mode : int {
         Fixed=0,
         Random,
-        Shuffle,
-        File,
+        Shuffle,        
         FixedRandomStart,
         FixedInstanceShiftStart,
         RandomOneForAllInstances,
         ShuffleOneForAllInstances,
         RandomEveryNInstances,
         ShuffleEveryNInstances,
+        File,
         SizeEnum
     };
 
@@ -78,14 +74,14 @@ struct Loop : public FlowElement {
         TLoopMode
         {Mode::Fixed,                       "fixed"sv},
         {Mode::Random,                      "random"sv},
-        {Mode::Shuffle,                     "shuffle"sv},
-        {Mode::File,                        "file"sv},
+        {Mode::Shuffle,                     "shuffle"sv},        
         {Mode::FixedRandomStart,            "random_start_fixed"sv},
         {Mode::FixedInstanceShiftStart,     "instance_shift_start_fixed"sv},
         {Mode::RandomOneForAllInstances,    "only_once_random"sv},
         {Mode::ShuffleOneForAllInstances,   "only_once_shuffle"sv},
         {Mode::RandomEveryNInstances,       "every_n_instances_random"sv},
         {Mode::ShuffleEveryNInstances,      "every_n_instances_shuffle"sv},
+        {Mode::File,                        "file"sv},
     }};
 
     [[maybe_unused]] static Name get_name(Mode m) {
@@ -101,7 +97,7 @@ struct Loop : public FlowElement {
 
     inline QString to_string() const{return QSL("Loop(") % name() % QSL("|") % QString::number(key()) % QSL(")");}
 
-    static LoopUP copy_with_new_element_id(const Loop &loopToCopy, const QString &newName);
+    static std::unique_ptr<Loop> copy_with_new_element_id(const Loop &loopToCopy, const QString &newName);
 
     bool is_file_mode() const noexcept;
 

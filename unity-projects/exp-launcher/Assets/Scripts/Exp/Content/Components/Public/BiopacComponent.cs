@@ -34,8 +34,6 @@ using MPCODE = Biopac.API.MPDevice.MPDevImports.MPRETURNCODE;
 
 namespace Ex {
 
-
-
     public class BiopacComponent : ExComponent{
 
         // infos
@@ -59,7 +57,6 @@ namespace Ex {
         private int m_currentDebugId = 0;
         private LoggerComponent m_logger = null;
         private bool m_debugBypass = false;
-
 
         #region ex_functions
 
