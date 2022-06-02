@@ -438,14 +438,14 @@ namespace Ex {
                 if (sendLastValue && data.Count > 0) {
 
                     // init channel list
-                    List<double> channelsLastValue= new List<double>(nbChannels);
+                    List<double> channelsLastValue = new List<double>(nbChannels);
                     for (int ii = 0; ii < nbChannels; ++ii) {
                         channelsLastValue.Add(0);
                     }
 
                     // copy data
-                    for (int ii = data.Count-1; ii < data.Count; ++ii) {
-                        for (int jj = data[ii].Length- nbChannels; jj < data[ii].Length; ++jj) {
+                    for (int ii = data.Count - 1; ii < data.Count; ++ii) {
+                        for (int jj = data[ii].Length - nbChannels; jj < data[ii].Length; ++jj) {
                             int idChannel = jj % nbChannels;
                             channelsLastValue[idChannel] = data[ii][jj];
                         }
@@ -455,7 +455,7 @@ namespace Ex {
                     for (int ii = 0; ii < nbChannels; ++ii) {
                         invoke_signal(lastValueChannelStr,
                             new IdAny(
-                                ii + 1,
+                                bSettings.channelsId[ii] + 1,
                                 channelsLastValue[ii]
                             )
                         );
