@@ -47,13 +47,13 @@
   <PropertyGroup>
     <ProjectTypeGuids>{E097FAD1-6243-4DAD-9C02-E9B9EFC3FFC1};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <UnityProjectGenerator>Package</UnityProjectGenerator>
-    <UnityProjectGeneratorVersion>2.0.8</UnityProjectGeneratorVersion>
+    <UnityProjectGeneratorVersion>2.0.14</UnityProjectGeneratorVersion>
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>StandaloneWindows64:19</UnityBuildTarget>
     <UnityVersion>2019.4.36f1</UnityVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Analyzer Include="C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\Extensions\Microsoft\Visual Studio Tools for Unity\Analyzers\Microsoft.Unity.Analyzers.dll" />
+    <Analyzer Include="C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\Extensions\Microsoft\Visual Studio Tools for Unity\Analyzers\Microsoft.Unity.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\Builder.cs" />
@@ -320,6 +320,10 @@
     <Compile Include="Assets\Scripts\Utility\Container.cs" />
     <Compile Include="Assets\Scripts\Utility\GO.cs" />
     <Compile Include="Assets\Scripts\Utility\Maths.cs" />
+    <Compile Include="Assets\Scripts\Utility\RawInput\KeyboardHandler.cs" />
+    <Compile Include="Assets\Scripts\Utility\RawInput\RawInputDevice.cs" />
+    <Compile Include="Assets\Scripts\Utility\RawInput\RawInputHelper.cs" />
+    <Compile Include="Assets\Scripts\Utility\RawInput\RawInputNative.cs" />
     <Compile Include="Assets\Scripts\Utility\Text.cs" />
     <Compile Include="Assets\Scripts\Utility\Threads\ThreadJob.cs" />
     <Compile Include="Assets\Scripts\Utility\Types\AnyTypes.cs" />
@@ -1431,29 +1435,17 @@
     <Reference Include="Unity.Timeline.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.Timeline.Editor.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEditor.CacheServer">
-      <HintPath>Library\ScriptAssemblies\UnityEditor.CacheServer.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.ScriptableBuildPipeline.Editor">
-      <HintPath>Library\ScriptAssemblies\Unity.ScriptableBuildPipeline.Editor.dll</HintPath>
-    </Reference>
     <Reference Include="Unity.VSCode.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.VSCode.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.TextMeshPro.Editor.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.ResourceManager">
-      <HintPath>Library\ScriptAssemblies\Unity.ResourceManager.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEngine.UI">
       <HintPath>Library\ScriptAssemblies\UnityEngine.UI.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Timeline">
       <HintPath>Library\ScriptAssemblies\Unity.Timeline.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Addressables.Editor">
-      <HintPath>Library\ScriptAssemblies\Unity.Addressables.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Postprocessing.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.Postprocessing.Editor.dll</HintPath>
@@ -1466,12 +1458,6 @@
     </Reference>
     <Reference Include="Unity.VisualStudio.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.VisualStudio.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Addressables">
-      <HintPath>Library\ScriptAssemblies\Unity.Addressables.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.ScriptableBuildPipeline">
-      <HintPath>Library\ScriptAssemblies\Unity.ScriptableBuildPipeline.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro">
       <HintPath>Library\ScriptAssemblies\Unity.TextMeshPro.dll</HintPath>

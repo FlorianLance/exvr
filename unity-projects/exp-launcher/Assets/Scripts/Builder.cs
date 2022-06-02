@@ -68,7 +68,7 @@ namespace Ex {
         public Experiment experiment = null;
 
 
-        public void Awake() {
+    public void Awake() {
 
 
 #if EXVR
@@ -318,7 +318,7 @@ namespace Ex {
 
 //    //    var buffer = stackalloc char[2000];
 
-        
+
 //    //    var str1 = new string(buffer, 0, RyuCsharp.Ryu.d2s_buffered_n(val, buffer));
 //    //    double val1;
 //    //    var eq1 = RyuCsharp.Ryu.s2d_n(buffer, str1.Length, &val1);
@@ -402,3 +402,37 @@ namespace Ex {
 // unityVersion
 // version
 
+
+
+
+
+// https://eyeofrablog.wordpress.com/2017/06/11/windows-keylogger-part-1-attack-on-user-land/
+// https://github.com/VollRahm/NotEnoughHotkeys/blob/18315edd8dea200145c81d2127d68b517ac5df3f/src/NotEnoughHotkeys/NEHSubprocess/RawInputLib/RawInput.cs#L16
+//List<IntPtr> windowHandles = new List<IntPtr>();
+//var processes = System.Diagnostics.Process.GetProcesses();
+//Debug.LogError("processes " + processes.Length);
+
+//foreach (var window in processes) {
+//    //window.Refresh();
+//    //if (window.MainWindowHandle != IntPtr.Zero) {
+
+//    //}
+//    windowHandles.Add(window.MainWindowHandle);
+//    Debug.LogError("window.ProcessName " + window.ProcessName);
+//}
+//var current = System.Diagnostics.Process.GetCurrentProcess();
+
+
+//uint ipdw = 0;
+//var res = Native.GetWindowThreadProcessId(Native.GetForegroundWindow(), out ipdw);
+
+//Debug.LogError("ipdw " + ipdw + " " + res);
+//KeyboardHandler k = new KeyboardHandler(current.MainWindowHandle);
+//k.LoadDevices();
+
+//Native.RAWINPUTDEVICELIST[] list = new NotEnoughHotkeys.RawInputLib.Native.RAWINPUTDEVICELIST[10];
+//Native.GetRawInputDeviceList(list, ref numDevices, 10);
+
+//foreach(var l in list) {
+//    Debug.LogError("l " + l.hDevice);
+//}

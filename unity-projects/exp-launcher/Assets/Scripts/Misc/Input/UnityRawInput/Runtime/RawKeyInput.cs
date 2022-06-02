@@ -7,20 +7,17 @@ namespace UnityRawInput{
         /// <summary>
         /// Event invoked when user presses a key.
         /// </summary>
-        public static event Action<RawKey> OnKeyDown;
+        public static event Action<RawKey, double> OnKeyDown;
         /// <summary>
         /// Event invoked when user releases a key.
         /// </summary>
-        public static event Action<RawKey> OnKeyUp;
+        public static event Action<RawKey, double> OnKeyUp;
 
         /// <summary>
         /// Whether the service is running and input messages are being processed.
         /// </summary>
         public static bool IsRunning => hookPtr != IntPtr.Zero;
-        /// <summary>
-        /// Whether any key is currently pressed.
-        /// </summary>
-        public static bool AnyKeyDown => pressedKeys.Count > 0;
+
         /// <summary>
         /// Whether input messages should be handled when the application is not in focus.
         /// </summary>
@@ -31,7 +28,14 @@ namespace UnityRawInput{
         public static bool InterceptMessages { get; set; }
 
         private static IntPtr hookPtr = IntPtr.Zero;
-        private static HashSet<RawKey> pressedKeys = new HashSet<RawKey>();
+        private static bool m_saveEvents = false;
+
+        public static List<Tuple<RawKey, bool, double, double>> keyEvents = null;
+
+        public static void save_events_state(bool state) {
+            m_saveEvents = state;
+        }
+        
 
         /// <summary>
         /// Initializes the service and starts processing input messages.
@@ -43,9 +47,10 @@ namespace UnityRawInput{
             if (IsRunning) {
                 return false;
             }
+            keyEvents = new List<Tuple<RawKey, bool, double, double>>();
 
             WorkInBackground = workInBackround;
-            return SetHook();
+            return set_hook();
         }
 
         /// <summary>
@@ -53,18 +58,12 @@ namespace UnityRawInput{
         /// </summary>
         public static void Stop (){
 
-            RemoveHook();
-            pressedKeys.Clear();
+            remove_hook();
+            keyEvents = null;
         }
 
-        /// <summary>
-        /// Checks whether provided key is currently pressed.
-        /// </summary>
-        public static bool IsKeyDown (RawKey key){
-            return pressedKeys.Contains(key);
-        }
 
-        private static bool SetHook (){
+        private static bool set_hook (){
 
             if (hookPtr == IntPtr.Zero){
                 if (WorkInBackground) {
@@ -73,15 +72,10 @@ namespace UnityRawInput{
                     hookPtr = Win32API.SetWindowsHookEx(HookType.WH_KEYBOARD, HandleHookProc, IntPtr.Zero, (int)Win32API.GetCurrentThreadId());
                 }
             }
-
-            if (hookPtr == IntPtr.Zero) {
-                return false;
-            }
-
-            return true;
+            return hookPtr != IntPtr.Zero;
         }
 
-        private static void RemoveHook (){
+        private static void remove_hook (){
 
             if (hookPtr != IntPtr.Zero){
                 Win32API.UnhookWindowsHookEx(hookPtr);
@@ -96,13 +90,16 @@ namespace UnityRawInput{
                 return Win32API.CallNextHookEx(hookPtr, code, wParam, lParam);
             }
 
-            var isKeyDown = ((int)lParam & (1 << 31)) == 0;
-            var key = (RawKey)wParam;
+            var isKeyDown   = ((int)lParam & (1 << 31)) == 0;
+            var key         = (RawKey)wParam;
+
+            var expTime     = Ex.ExVR.Time().ellapsed_exp_ms();
+            var elementTime = Ex.ExVR.Time().ellapsed_element_ms();
 
             if (isKeyDown) {
-                HandleKeyDown(key);
+                HandleKeyDown(key, expTime, elementTime);
             } else {
-                HandleKeyUp(key);
+                HandleKeyUp(key, expTime, elementTime);
             }
 
             return InterceptMessages ? 1 : Win32API.CallNextHookEx(hookPtr, 0, wParam, lParam);
@@ -115,32 +112,41 @@ namespace UnityRawInput{
                 return Win32API.CallNextHookEx(hookPtr, code, wParam, lParam);
             }
 
-            var kbd = KBDLLHOOKSTRUCT.CreateFromPtr(lParam);
+            var kbd      = KBDLLHOOKSTRUCT.CreateFromPtr(lParam);
             var keyState = (RawKeyState)wParam;
-            var key = (RawKey)kbd.vkCode;
+            var key      = (RawKey)kbd.vkCode;
+
+            var expTime     = Ex.ExVR.Time().ellapsed_exp_ms();
+            var elementTime = Ex.ExVR.Time().ellapsed_element_ms();
 
             if (keyState == RawKeyState.KeyDown || keyState == RawKeyState.SysKeyDown) {
-                HandleKeyDown(key);
+                HandleKeyDown(key, expTime, elementTime);
             } else {
-                HandleKeyUp(key);
+                HandleKeyUp(key, expTime, elementTime);
             }
 
             return InterceptMessages ? 1 : Win32API.CallNextHookEx(hookPtr, 0, wParam, lParam);
         }
 
-        private static void HandleKeyDown (RawKey key){
+        private static void HandleKeyDown (RawKey key, double expTime, double elementTime){
 
-            var added = pressedKeys.Add(key);
-            if (added && OnKeyDown != null) {
-                OnKeyDown.Invoke(key);
+            if (m_saveEvents) {
+                keyEvents.Add(new Tuple<RawKey, bool, double, double>(key, true, expTime, elementTime));
             }
+
+            if (OnKeyDown != null) {
+                OnKeyDown.Invoke(key, expTime);
+            } 
         }
 
-        private static void HandleKeyUp (RawKey key){
+        private static void HandleKeyUp (RawKey key, double expTime, double elementTime) {
 
-            pressedKeys.Remove(key);
+            if (m_saveEvents) {
+                keyEvents.Add(new Tuple<RawKey, bool, double, double>(key, false, expTime, elementTime));
+            }
+
             if (OnKeyUp != null) {
-                OnKeyUp.Invoke(key);
+                OnKeyUp.Invoke(key, expTime);
             }
         }
     }

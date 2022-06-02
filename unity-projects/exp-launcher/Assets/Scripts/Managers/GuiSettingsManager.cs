@@ -107,10 +107,10 @@ namespace Ex{
             displayMode                 = (DisplayManager.DisplayMode)settings.Display.Mode;
 
             // start/stop raw input events reading
-            UnityRawInput.RawKeyInput.Stop();
-            if (catchExternalKeyboardEvents) {
-                UnityRawInput.RawKeyInput.Start(true);
-            }
+            //UnityRawInput.RawKeyInput.Stop();
+            //if (catchExternalKeyboardEvents) {
+            //    UnityRawInput.RawKeyInput.Start(true);                
+            //}
 
             // set debug display mode
             ExVR.Debug().displayExpInfos.set_debug_mode(debug);
@@ -120,7 +120,7 @@ namespace Ex{
         }
 
         public void OnDestroy() {
-            UnityRawInput.RawKeyInput.Stop();
+            //UnityRawInput.RawKeyInput.Stop();
         }
 
         private bool read_command_line_arguments() {
