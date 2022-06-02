@@ -102,7 +102,7 @@ struct Component {
         /** K */ Keyboard, Kinect_manager, Kinect_body_tracking,
         /** L */ Landmark, Leap_motion, Leap_motion_arms_display, Leap_motion_tracking, Lines, Logger, LoggerColumns, LoggerCondition, LoggerExperiment,
         /** M */ Mark_to_clean, Microphone, Mirror, Mouse, MRI, Multi_AB,
-        /** P */ Parallel_port_writer, Plot_resource, Python_script,
+        /** P */ Parallel_port_writer, Plot_resource, Post_process, Python_script,
         /** Q */ Qualisys,
         /** S */ Scaner_video, Scene_scaner, Serial_port_reader, Serial_port_writer, Sky, Slider_ui, Sonceboz_SG, Sphere,
         /** T */ Target_to_grab, Text_resource, Text_viewer, Thera_trainer_tracking, Thera_trainer_platform, Torus, TPP_avatar_camera,
@@ -181,6 +181,7 @@ struct Component {
         {T::Cloud,                    C::Cloud,       TO::V,     CO::B,   false,   R::OpenSource,   S::Sta, "Cloud"sv, "Cloud"sv, "Cloud"sv, ":/icons/Cloud"sv},
         {T::Scaner_video,             C::Cloud,       TO::B,     CO::B,   false,   R::LNCO,         S::Exp, "Scaner_video"sv, "Scaner video"sv, "ScanerVideo"sv, ":/icons/Video_cloud"sv},
         // Environment
+        {T::Post_process,             C::Environment, TO::N,     CO::C,   true,    R::OpenSource,   S::Exp, "Post_porcess"sv, "Post process"sv, "PostProcess"sv, ":/icons/Sky"sv},
         {T::Sky,                      C::Environment, TO::N,     CO::C,   true,    R::OpenSource,   S::Sta, "Sky"sv, "Sky"sv, "Sky"sv, ":/icons/Sky"sv},
         // Flow
         {T::Config,                   C::Flow,        TO::N,     CO::C,   false,   R::OpenSource,   S::Sta, "Config"sv, "Config"sv, "Config"sv, ":/icons/Config"sv},

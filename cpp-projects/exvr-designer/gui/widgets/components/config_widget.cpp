@@ -72,7 +72,7 @@
 #include "config_parameters/image_viewer_pw.hpp"
 #include "config_parameters/image_resource_pw.hpp"
 #include "config_parameters/video_generator_pw.hpp"
-#include "config_parameters/sky_pw.hpp"
+#include "config_parameters/environment_pw.hpp"
 #include "config_parameters/parallel_port_writer_pw.hpp"
 #include "config_parameters/cloud_pw.hpp"
 #include "config_parameters/scaner_video_pw.hpp"
@@ -96,6 +96,7 @@
 #include "config_parameters/buttons_ui_pw.hpp"
 
 using namespace tool::ex;
+
 
 
 ConfigW::ConfigW(Config *config, Component *component, bool initConfig, std::map<QStringView,Arg> &args) :
@@ -177,6 +178,8 @@ ConfigParametersW *ConfigW::generate_parameters(Component::Type type, bool initC
     case CT::Scaner_video:
         return gen_params_w<ScanerVideoInitConfigParametersW,ScanerVideoConfigParametersW>(initConfig);
     // ############################# Environment
+    case CT::Post_process:
+        return gen_params_w<PostProcessInitConfigParametersW,PostProcessConfigParametersW>(initConfig);
     case CT::Sky:
         return gen_params_w<SkyInitConfigParametersW,SkyConfigParametersW>(initConfig);
     // ############################# Flow

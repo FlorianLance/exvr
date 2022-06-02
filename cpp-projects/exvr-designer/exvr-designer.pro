@@ -107,6 +107,7 @@ HEADERS += \
     gui/objects/add_button_object.hpp \
     gui/objects/move_button_object.hpp \
     gui/objects/remove_button_object.hpp \
+    gui/widgets/components/config_parameters/environment_pw.hpp \
     gui/widgets/connections/data_models/base_node_data_model.hpp \
     utility/script_utility.hpp \
     utility/path_utility.hpp \
@@ -192,7 +193,6 @@ HEADERS += \
     gui/widgets/components/config_parameters/blend_fade_viewer_pw.hpp \
     gui/widgets/components/config_parameters/sub_parts_pw.hpp \
     gui/widgets/components/config_parameters/config_pw.hpp \
-    gui/widgets/components/config_parameters/sky_pw.hpp \
     gui/widgets/components/config_parameters/humanoid_controller_pw.hpp \
     gui/widgets/components/config_parameters/text_viewer_pw.hpp \
     gui/widgets/components/config_parameters/fixation_cross_viewer_pw.hpp \
@@ -336,6 +336,7 @@ SOURCES += \
     gui/objects/add_button_object.cpp \
     gui/objects/move_button_object.cpp \
     gui/objects/remove_button_object.cpp \
+    gui/widgets/components/config_parameters/environment_pw.cpp \
     launcher/exp_launcher.cpp \
     launcher/exp_launcher_communication.cpp \
     launcher/exp_launcher_process.cpp \
@@ -412,7 +413,6 @@ SOURCES += \
     gui/widgets/components/config_parameters/scene_scaner_pw.cpp \
     gui/widgets/components/config_parameters/thera_trainer_platform_pw.cpp \
     gui/widgets/components/config_parameters/sonceboz_sg_pw.cpp \
-    gui/widgets/components/config_parameters/sky_pw.cpp \
     gui/widgets/components/config_parameters/image_viewer_pw.cpp \
     gui/widgets/components/config_parameters/text_viewer_pw.cpp \
     gui/widgets/components/config_parameters/fixation_cross_viewer_pw.cpp \

@@ -119,6 +119,7 @@
     <Compile Include="Assets\Scripts\Exp\Content\Components\Public\OptitrackComponent.cs" />
     <Compile Include="Assets\Scripts\Exp\Content\Components\Public\ParallelPortWriterComponent.cs" />
     <Compile Include="Assets\Scripts\Exp\Content\Components\Public\PlotResourceComponent.cs" />
+    <Compile Include="Assets\Scripts\Exp\Content\Components\Public\PostProcessComponent.cs" />
     <Compile Include="Assets\Scripts\Exp\Content\Components\Public\PythonScriptComponent.cs" />
     <Compile Include="Assets\Scripts\Exp\Content\Components\Public\QualisysTrackingComponent.cs" />
     <Compile Include="Assets\Scripts\Exp\Content\Components\Public\SerialPortReaderComponent.cs" />

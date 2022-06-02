@@ -152,10 +152,11 @@ namespace Ex{
             ["Ex.FPPAvatarCameraComponent"] = gen_info(Category.Camera, Pritority.Low, Reserved.Closed),
             ["Ex.TPPAvatarCameraComponent"] = gen_info(Category.Camera, Pritority.Low, Reserved.Closed),
             // cloud
-            ["Ex.CloudComponent"] = gen_info(Category.Cloud, Pritority.Medium, Reserved.Public),
-            ["Ex.ScanerVideoComponent"] = gen_info(Category.Cloud, Pritority.Medium, Reserved.LNCO),            
+            ["Ex.CloudComponent"]       = gen_info(Category.Cloud, Pritority.Medium, Reserved.Public),
+            ["Ex.ScanerVideoComponent"] = gen_info(Category.Cloud, Pritority.Medium, Reserved.LNCO),
             // environment
-            ["Ex.SkyComponent"] = gen_info(Category.Environment, Pritority.Hight, Reserved.Public),
+            ["Ex.PostProcessComponent"] = gen_info(Category.Environment, Pritority.Hight, Reserved.Public),
+            ["Ex.SkyComponent"]         = gen_info(Category.Environment, Pritority.Hight, Reserved.Public),
             // environment
             ["Ex.ConfigComponent"] = gen_info(Category.Flow, Pritority.Hight, Reserved.Public),
             // input

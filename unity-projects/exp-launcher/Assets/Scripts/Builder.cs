@@ -67,13 +67,8 @@ namespace Ex {
         [Rename("Experiment")]
         public Experiment experiment = null;
 
-      
-
 
         public void Awake() {
-
- 
-
 
 
 #if EXVR
