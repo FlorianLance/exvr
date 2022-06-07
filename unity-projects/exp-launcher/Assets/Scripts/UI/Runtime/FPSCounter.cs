@@ -39,45 +39,45 @@ namespace Ex {
         Queue<Tuple<long, float>> lastValues = new Queue<Tuple<long, float>>();
         Stopwatch sw = new Stopwatch();
 
-        private Color veryLow = Color.red;
-        private Color low     = Color.yellow;
-        private Color ok      = Color.green;
+        private Color32 veryLow = Color.red;
+        private Color32 low     = Color.yellow;
+        private Color32 ok      = Color.green;
 
         private void Start() {
             text = GetComponent<TMPro.TextMeshProUGUI>();
             sw.Start();
         }
-        void Update() {
+        private void Update() {
 
             var currentTime = sw.ElapsedMilliseconds;
-            float fps       = 1f / Time.unscaledDeltaTime;
+            float fps = 1f / Time.unscaledDeltaTime;
 
             lastValues.Enqueue(new Tuple<long, float>(currentTime, fps));
             bool removeFirst = (currentTime - lastValues.Peek().Item1) > 1000;
-            
+
             while (removeFirst) {
                 lastValues.Dequeue();
                 removeFirst = (currentTime - lastValues.Peek().Item1) > 1000;
             }
 
             float total = 0f;
-            foreach(var value in lastValues) {
+            foreach (var value in lastValues) {
                 total += value.Item2;
             }
-            total /= lastValues.Count;            
+            total /= lastValues.Count;
 
             int currenRate = Screen.currentResolution.refreshRate;
             text.SetText(Converter.to_string(total, total < 100 ? "00.0" : "000."));
-            if(total > currenRate * 0.95f) {
-                text.faceColor    = ok;
+            if (total > currenRate * 0.95f) {
+                text.faceColor = ok;
                 text.outlineColor = ok;
-            } else if(total > currenRate * 0.8f) {
+            } else if (total > currenRate * 0.8f) {
                 text.faceColor = low;
                 text.outlineColor = low;
             } else {
                 text.faceColor = veryLow;
                 text.outlineColor = veryLow;
-            }  
+            }
         }
     }
 }
