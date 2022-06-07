@@ -109,6 +109,7 @@ HEADERS += \
     gui/objects/remove_button_object.hpp \
     gui/widgets/components/config_parameters/environment_pw.hpp \
     gui/widgets/connections/data_models/base_node_data_model.hpp \
+    gui/widgets/connections/data_models/connectors/from_time_any_ndm.hpp \
     utility/script_utility.hpp \
     utility/path_utility.hpp \
     # IO
@@ -337,6 +338,7 @@ SOURCES += \
     gui/objects/move_button_object.cpp \
     gui/objects/remove_button_object.cpp \
     gui/widgets/components/config_parameters/environment_pw.cpp \
+    gui/widgets/connections/data_models/connectors/from_time_any_ndm.cpp \
     launcher/exp_launcher.cpp \
     launcher/exp_launcher_communication.cpp \
     launcher/exp_launcher_process.cpp \

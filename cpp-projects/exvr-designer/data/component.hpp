@@ -468,11 +468,11 @@ struct Component {
         {T::Torus,                     "visibility changed"sv,         CNT::boolean_t,                 "Is triggered if the visibility of the component changed"sv},
         {T::Sphere,                    "visibility changed"sv,         CNT::boolean_t,                 "Is triggered if the visibility of the component changed"sv},        
         // Network
-        {T::Serial_port_reader,        "integer message"sv,            CNT::integer_t,                 "..."sv},
-        {T::Serial_port_reader,        "string message"sv,             CNT::string_t,                  "..."sv},
-        {T::Serial_port_reader,        "trigger exp time"sv,           CNT::real_t,                    "..."sv},
-        {T::Udp_reader,                "last message received"sv,      CNT::string_t,                  "..."sv},
-        {T::Udp_writer,                "nb bytes sent"sv,              CNT::integer_t,                 "..."sv},                                                                                
+        {T::Parallel_port_writer,      "trigger exp time"sv,           CNT::real_t,                    "..."sv},
+        {T::Serial_port_writer,        "trigger exp time"sv,           CNT::real_t,                    "..."sv},
+        {T::Serial_port_reader,        "message"sv,                    CNT::time_any_t,                "..."sv},
+        {T::Udp_reader,                "message"sv,                    CNT::time_any_t,                "..."sv},
+        {T::Udp_writer,                "trigger exp time"sv,           CNT::real_t,                    "..."sv},
         // Resource
         {T::Plot_resource,             "plot loaded"sv,                CNT::plot_t,                    "Loaded plot (called at routine start)"sv},
         {T::Plot_resource,             "plot loaded alias"sv,          CNT::string_t,                  "Alias of the loaded plot (called at routine start)"sv},

@@ -27,6 +27,7 @@ using System;
 using System.IO;
 using System.IO.Ports;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 
 namespace Ex {
 
@@ -37,17 +38,13 @@ namespace Ex {
         private ConcurrentQueue<Tuple<double,byte[]>> m_messagesReceived = null;
         private bool intMode = false;
         private bool stringMode = false;
-        private static readonly string intMessageSignalStr      = "integer message";
-        private static readonly string strMessageSignalStr      = "string message";
-        private static readonly string triggerExpTimeSignalStr  = "trigger exp time";
+        private static readonly string messageSignalStr      = "message";
 
         #region ex_functions
         protected override bool initialize() {
 
             // signals
-            add_signal(intMessageSignalStr);
-            add_signal(strMessageSignalStr);
-            add_signal(triggerExpTimeSignalStr);
+            add_signal(messageSignalStr);
 
             // init port
             m_port = new SerialPort(initC.get<string>("port_to_read"));
@@ -86,14 +83,27 @@ namespace Ex {
         }
 
         protected override void update() {
+            
+            List<Tuple<double, byte[]>> messages = null;
+            {
+                Tuple<double, byte[]> message;
+                while (m_messagesReceived.TryDequeue(out message)) {
 
-            Tuple<double, byte[]> message;
-            while (m_messagesReceived.TryDequeue(out message)) {
-                invoke_signal(triggerExpTimeSignalStr, message.Item1);
-                if (intMode) {
-                    invoke_signal(intMessageSignalStr, BitConverter.ToInt32(message.Item2, 0));
-                } else if (stringMode) {
-                    invoke_signal(strMessageSignalStr, BitConverter.ToString(message.Item2, 0));
+                    if (messages == null) {
+                        messages = new List<Tuple<double, byte[]>>();
+                    }
+                    messages.Add(message);
+
+                }
+            }
+
+            if(messages != null) {
+                foreach(var message in messages) {                    
+                    if (intMode) {
+                        invoke_signal(messageSignalStr, new TimeAny(message.Item1, BitConverter.ToInt32(message.Item2, 0)));
+                    } else if (stringMode) {
+                        invoke_signal(messageSignalStr, new TimeAny(message.Item1, BitConverter.ToString(message.Item2, 0)));
+                    }
                 }
             }
         }

@@ -52,7 +52,7 @@ namespace Ex {
         private int m_readSizeBuffer = -1;
 
         // concurrency
-        private ConcurrentQueue<string> m_messages = new ConcurrentQueue<string>();
+        private ConcurrentQueue<Tuple<double, string>> m_messages = new ConcurrentQueue<Tuple<double, string>>();
         private volatile bool m_doLoop          = false;
         private volatile bool m_processMessages = false;
         static private volatile int m_counter = 0;
@@ -108,23 +108,23 @@ namespace Ex {
             return m_readingAddress;
         }
 
-        public string read_message() {
+        public Tuple<double, string> read_message() {
 
-            string message;
+            Tuple<double,string> message;
             if (m_messages.TryDequeue(out message)) {
                 return message;
             }
             return null;
         }
 
-        public List<string> read_all_messages() {
+        public List<Tuple<double,string>> read_all_messages() {
 
-            List<string> messages = null;
-            string message;
+            List<Tuple<double, string>> messages = null;
+            Tuple<double, string> message;
             int size = m_messages.Count;
             while (m_messages.TryDequeue(out message)) {
                 if (messages == null) {
-                    messages = new List<string>(size);
+                    messages = new List<Tuple<double, string>>(size);
                 }
                 messages.Add(message);
             }
@@ -161,7 +161,7 @@ namespace Ex {
 
             m_clientIpEndPoint  = null;
             m_initialized       = false;
-            m_messages          = new ConcurrentQueue<string>();
+            m_messages = new ConcurrentQueue<Tuple<double, string>>();
         }
 
 
@@ -178,8 +178,9 @@ namespace Ex {
             byte[] endByte = Encoding.ASCII.GetBytes(new char[] { '\0' });
             while (m_doLoop) {
 
-                // receive a message 
+                // receive a message                
                 bool messageReceived = false;
+                double receivedTime = 0;
                 int count = 0;
                 try {                    
                     if (m_readSizeBuffer == -1) {
@@ -187,6 +188,7 @@ namespace Ex {
                     } else {                        
                         count = m_clientSocket.Receive(m_buffer, 0, m_readSizeBuffer, SocketFlags.None);
                     }
+                    receivedTime = ExVR.Time().ellapsed_exp_ms();
                     messageReceived = true;
                 } catch (SocketException e) {
                     if (e.SocketErrorCode != SocketError.TimedOut) {
@@ -215,7 +217,7 @@ namespace Ex {
 
                         if (count > 0) {
                             try {
-                                m_messages.Enqueue(Encoding.UTF8.GetString(m_buffer, 0, count));
+                                m_messages.Enqueue(new Tuple<double,string>(receivedTime, Encoding.UTF8.GetString(m_buffer, 0, count)));
                             } catch (DecoderFallbackException e) {
                                 UnityEngine.Debug.LogError(string.Format("GetString decoder error: {0}", e.Message));
                             } catch (ArgumentException e) {

@@ -51,6 +51,7 @@ namespace Ex{
 
         private float m_pulseTime = 1f;
         private string m_port = "0x378";
+        private static readonly string m_triggerExpTimeSignalStr = "trigger exp time";
 
         protected override bool initialize() {
 
@@ -62,6 +63,7 @@ namespace Ex{
             add_slot("send pulse", (value) => {
                 ExVR.Coroutines().start(send_pulse((int)value));
             });
+            add_signal(m_triggerExpTimeSignalStr);
 
             try {
                 m_available = is_inpout_driver_opened_x64() != 0;
@@ -108,8 +110,10 @@ namespace Ex{
             }
 
         }
-         public void write(int value) {
+         public void write(int value) {            
+            double expTime = time().ellapsed_exp_ms();
             write(value, m_port);
+            invoke_signal(m_triggerExpTimeSignalStr, expTime);
         }
     }
 }

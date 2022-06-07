@@ -619,8 +619,16 @@ namespace Ex {
             text.alignment = ConfigUtility.textAlignment[get<string>(baseArgName + "_alignment")];
 
             // colors
-            //text.color = get_color(baseArgName + "_color");
-            text.faceColor = get_color(baseArgName + "_face_color");
+            text.color = Color.white;// get_color(baseArgName + "_color");
+            text.faceColor = new Color32(255,0,0,255);// get_color(baseArgName + "_face_color");
+            //text.faceColor = Color.white;
+            //Debug.Log("before " + text.faceColor);
+            //var faceColor = get_color(baseArgName + "_face_color");
+            //Debug.Log("arg " + get_color(baseArgName + "_face_color"));
+
+            //Debug.Log("after " + text.faceColor);
+
+            //Debug.Log("update face color " + get_color(baseArgName + "_face_color") + " " + text.faceColor);
 
             // ouline         
             text.outlineColor = get_color(baseArgName + "_outline_color");
@@ -631,6 +639,8 @@ namespace Ex {
             text.lineSpacing = get<float>(baseArgName + "_line_spacing");
             text.wordSpacing = get<float>(baseArgName + "_word_spacing");
             text.characterSpacing = get<float>(baseArgName + "_character_spacing");
+
+            
 
             // check if input font exists in list
             // if not do nothing

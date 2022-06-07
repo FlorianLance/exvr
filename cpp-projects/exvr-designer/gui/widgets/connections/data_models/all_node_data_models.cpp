@@ -73,6 +73,7 @@
 #include "connectors/vectors_to_transform_ndm.hpp"
 #include "connectors/basic_ndm.hpp"
 #include "connectors/resources_ndm.hpp"
+#include "connectors/from_time_any_ndm.hpp"
 
 using namespace tool;
 using namespace tool::ex;
@@ -171,6 +172,7 @@ void DataNodeModels::initialize(){
     r->registerTypeConverter(std::make_pair(AnyData().type(),KinectBodyData().type()),TC{FromAnyConverter()});
     r->registerTypeConverter(std::make_pair(AnyData().type(),IdAnyData().type()),TC{FromAnyConverter()});
     r->registerTypeConverter(std::make_pair(AnyData().type(),StringAnyData().type()),TC{FromAnyConverter()});
+    r->registerTypeConverter(std::make_pair(AnyData().type(),TimeAnyData().type()),TC{FromAnyConverter()});
     r->registerTypeConverter(std::make_pair(AnyData().type(),PlotData().type()),TC{FromAnyConverter()});
     r->registerTypeConverter(std::make_pair(AnyData().type(),KeyboardButtonEventData().type()),TC{FromAnyConverter()});
     r->registerTypeConverter(std::make_pair(AnyData().type(),MouseButtonEventData().type()),TC{FromAnyConverter()});
@@ -404,6 +406,9 @@ std::unique_ptr<ConnectorNodeDataModel> DataNodeModels::generate_connector_data_
         break;
     case T::Check_id:
         connectorDataModel = std::make_unique<CheckIdNodeDataModel>();
+        break;
+    case T::From_time_any:
+        connectorDataModel = std::make_unique<FromTimeAnyNodeDataModel>();
         break;
     case T::String_list_to_id_any:
         connectorDataModel = std::make_unique<StringListToIdAnyNodeDataModel>();

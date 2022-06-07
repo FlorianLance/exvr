@@ -380,8 +380,8 @@ void DesignerWindow::create_actions(){
     connect(&m_importSubExperimentAct, &QAction::triggered, this, &DesignerWindow::import_experiment_subparts_signal);
 
     m_loadExperimentAct.setShortcuts(QKeySequence::Open);
-    m_loadExperimentAct.setStatusTip(tr("Open experiment file"));
-    m_loadExperimentAct.setText(tr("&Open experiment"));
+    m_loadExperimentAct.setStatusTip(tr("Load experiment"));
+    m_loadExperimentAct.setText(tr("&Load experiment"));
     m_loadExperimentAct.setIcon(QIcon(":/icons/Open"));
     connect(&m_loadExperimentAct, &QAction::triggered, this, &DesignerWindow::load_experiment_signal);
 
@@ -532,7 +532,7 @@ void DesignerWindow::create_actions(){
     m_openTempExpAct.setIcon(QIcon(":/icons/Open"));
     connect(&m_openTempExpAct, &QAction::triggered, this, &DesignerWindow::open_temp_experiment_file_signal);
 
-    m_openExpDirectoryAct.setText(tr("&Open examples directory"));
+    m_openExpDirectoryAct.setText(tr("&Open experiments directory"));
     m_openExpDirectoryAct.setStatusTip(tr("Open default experiments directory"));
     m_openExpDirectoryAct.setIcon(QIcon(":/icons/Open"));
     connect(&m_openExpDirectoryAct, &QAction::triggered, this, &DesignerWindow::open_experiment_directory_signal);

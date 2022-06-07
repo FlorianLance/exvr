@@ -68,8 +68,7 @@ void CheckIdNodeDataModel::compute(){
     // cast
     auto data1 = dcast<IdAnyData>(inputs[0]);
     if(!data1){
-        invalidate_data();
-        set_error_state(QSL("Invalid cast."));
+        set_invalid_cast();
         return;
     }
 

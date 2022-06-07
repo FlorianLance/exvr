@@ -22,43 +22,40 @@
 ** SOFTWARE.                                                                      **
 ************************************************************************************/
 
+// unity
+using UnityEngine;
+
 namespace Ex {
 
-    public class IdAny {
+    public class FromTimeAnyConnector : ExConnector {
 
-        public IdAny() { }
+        object input0 = null;
 
-        public IdAny(int id, object value) {
-            this.id = id;
-            this.value = value;
+        protected override bool initialize() {
+
+            add_signals(2);
+            add_slot(0, (input) => {       
+                base_slot1(input); }
+            );
+
+            return true;
         }
 
-        public int id = 0;
-        public object value = null;
-    }
-
-    public class StringAny {
-
-        public StringAny() { }
-
-        public StringAny(string str, object value) {
-            this.str = str;
-            this.value = value;
+        protected override void slot1(object arg) {
+            input0 = arg;
+            compute();
         }
 
-        public string str = "default";
-        public object value = null;
-    }
+        private void compute() {
 
-    public class TimeAny {
-
-        public TimeAny() { }
-        public TimeAny(double time, object value) {
-            this.time  = time;
-            this.value = value;
+            var timeAny = (TimeAny)input0;
+            invoke_signal(0, timeAny.time);
+            if (timeAny.value != null) {
+                invoke_signal(1, timeAny.value);
+                send_connector_infos_to_gui(string.Format("Type:{0}", Converter.get_type_name(timeAny.value.GetType())));                
+            } else {
+                send_connector_infos_to_gui("Type: NULL");
+            }            
         }
-
-        public double time = 0;
-        public object value = null;
     }
 }

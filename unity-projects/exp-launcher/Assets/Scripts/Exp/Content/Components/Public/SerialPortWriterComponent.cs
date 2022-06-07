@@ -46,8 +46,10 @@ namespace Ex{
 
         // concurrency
         private ConcurrentQueue<Tuple<bool, object>> m_messages = new ConcurrentQueue<Tuple<bool, object>>();
+        public ConcurrentQueue<double> triggerTimes = new ConcurrentQueue<double>();
+
         public volatile bool doLoop = false;
-        static private volatile int m_counter = 0;
+        static private volatile int m_counter = 0;        
 
         public bool initialize(string portToWrite, int baudRate) {
 
@@ -109,7 +111,9 @@ namespace Ex{
                         
                         var buffer = (byte[])messageToSend.Item2;
                         try {
+                            var time = ExVR.Time().ellapsed_exp_ms();
                             m_port.Write(buffer, 0, buffer.Length);
+                            triggerTimes.Enqueue(time);
                         } catch (ArgumentNullException e) {
                             ExVR.Log().error(string.Format("Write bytes ArgumentNullException::error: [{0}]", e.Message));
                         } catch (InvalidOperationException e) {
@@ -124,7 +128,9 @@ namespace Ex{
 
                         var message = (string)messageToSend.Item2;
                         try {
+                            var time = ExVR.Time().ellapsed_exp_ms();
                             m_port.Write(message);
+                            triggerTimes.Enqueue(time);
                         } catch (ArgumentNullException e) {
                             ExVR.Log().error(string.Format("Write string ArgumentNullException::error: [{0}]", e.Message));
                         } catch (InvalidOperationException e) {
@@ -146,6 +152,7 @@ namespace Ex{
         private string m_message = "";
         private List<byte> m_messageBytes = null;
         private SerialPortWriterJob m_serialWriterT = null;
+        static private readonly string m_triggerExpTimeSignalStr = "trigger exp time";
 
         #region ex_functions
         protected override bool initialize() {
@@ -162,6 +169,7 @@ namespace Ex{
             add_slot("write line message", (value) => {
                 write_line_str((string)value);
             });
+            add_signal(m_triggerExpTimeSignalStr);
 
             m_serialWriterT = new SerialPortWriterJob();
             if (!m_serialWriterT.initialize(initC.get<string>("port_to_write"), initC.get<int>("baud_rate"))) {
@@ -191,6 +199,24 @@ namespace Ex{
         protected override void update() {
             if (currentC.get<bool>("send_every_frame")) {
                 write();
+            }
+
+            if (m_serialWriterT != null) {
+
+                double triggerTime;
+                List<double> triggerTimes = null;
+                while(m_serialWriterT.triggerTimes.TryDequeue(out triggerTime)) {
+                    if(triggerTimes == null) {
+                        triggerTimes = new List<double>();
+                    }
+                    triggerTimes.Add(triggerTime);
+                }
+
+                if (triggerTimes != null) {
+                    foreach (var time in triggerTimes) {
+                        invoke_signal(m_triggerExpTimeSignalStr, time);
+                    }
+                }
             }
         }
 

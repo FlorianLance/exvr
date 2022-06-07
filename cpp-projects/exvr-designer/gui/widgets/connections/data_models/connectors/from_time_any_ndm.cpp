@@ -1,6 +1,6 @@
-﻿
+
 /***********************************************************************************
-** exvr-exp                                                                       **
+** exvr-designer                                                                  **
 ** MIT License                                                                    **
 ** Copyright (c) [2018] [Florian Lance][EPFL-LNCO]                                **
 ** Permission is hereby granted, free of charge, to any person obtaining a copy   **
@@ -22,43 +22,59 @@
 ** SOFTWARE.                                                                      **
 ************************************************************************************/
 
-namespace Ex {
+#include "from_time_any_ndm.hpp"
 
-    public class IdAny {
+using namespace tool::ex;
 
-        public IdAny() { }
+void FromTimeAnyNodeDataModel::compute(){
 
-        public IdAny(int id, object value) {
-            this.id = id;
-            this.value = value;
-        }
-
-        public int id = 0;
-        public object value = null;
+    if(check_infinity_loop()){
+        return;
     }
 
-    public class StringAny {
+    auto inputs = get_inputs();
 
-        public StringAny() { }
-
-        public StringAny(string str, object value) {
-            this.str = str;
-            this.value = value;
-        }
-
-        public string str = "default";
-        public object value = null;
+    // missing inputs
+    if(check_if_missing_inputs(inputs)){
+        return;
     }
 
-    public class TimeAny {
-
-        public TimeAny() { }
-        public TimeAny(double time, object value) {
-            this.time  = time;
-            this.value = value;
-        }
-
-        public double time = 0;
-        public object value = null;
+    // runtime inputs
+    if(check_if_runtime_inputs(inputs)){
+        propagate_default_runtime(
+            {
+                std::make_shared<RealData>(0.0),
+                generate_default_runtime_any_data()
+            });
+        return;
     }
+
+    // cast
+    auto data = dcast<TimeAnyData>(inputs[0]);
+    if(!data){
+        set_invalid_cast();
+        return;
+    }
+
+    // propagate
+    propagate_data(
+        "",
+        {
+             std::make_shared<RealData>(data->value().time),
+             generate_default_runtime_any_data()
+        } );
 }
+
+
+void FromTimeAnyNodeDataModel::init_ports_caption(){
+
+    const auto io = Connector::get_io(m_type);
+    inPortsInfo[0].caption = QSL("in (") % get_name(io.inTypes[0]) % QSL(")");
+
+    outPortsInfo[0].caption = QSL("time (") % get_name(io.outTypes[0]) % QSL(")");
+    outPortsInfo[1].caption = QSL("value (") % get_name(io.outTypes[1]) % QSL(")");
+}
+
+
+
+#include "moc_from_time_any_ndm.cpp"

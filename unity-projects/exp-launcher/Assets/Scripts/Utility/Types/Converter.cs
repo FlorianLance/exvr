@@ -75,6 +75,7 @@ namespace Ex{
         private static readonly System.Type decValT     = typeof(DecimalValue);
         private static readonly System.Type idAnyT      = typeof(IdAny);
         private static readonly System.Type strAnyT     = typeof(StringAny);
+        private static readonly System.Type timeAnyT    = typeof(TimeAny);        
         private static readonly System.Type trValT      = typeof(TransformValue);        
         // # unity
         private static readonly System.Type vec2T       = typeof(UnityEngine.Vector2);
@@ -90,6 +91,47 @@ namespace Ex{
         private static readonly System.Type lVec2T      = typeof(List<Vector2>);
         private static readonly System.Type lVec3T      = typeof(List<Vector3>);
         private static readonly System.Type lObjT       = typeof(List<object>);
+
+
+        public static readonly Dictionary<System.Type, string> namesTypes = new Dictionary<Type, string> {
+            // # builtin
+            [boolT]     = "bool",
+            [byteT]     = "byte",
+            [charT]     = "char",
+            [shortT]    = "short",
+            [intT]      = "integer",
+            [longT]     = "long",
+            [floatT]    = "float",
+            [doubleT]   = "double",
+            [stringT]   = "string",
+            // # custom
+            [decValT]   = "decimal",
+            [idAnyT]    = "id any",
+            [strAnyT]   = "str any",
+            [timeAnyT]  = "time any",
+            [trValT]    = "tr value",
+            // # unity
+            [vec2T]     = "vec2",
+            [vec3T]     = "vec3",
+            [colT]      = "color",
+            [aniCurveT] = "animation curve",
+            [trT]       = "transform",
+            // # lists
+            [lFloatT]   = "list float",
+            [lDoubleT]  = "list double",
+            [lStringT]  = "list string",
+            [lDecValT]  = "list decimal",
+            [lVec2T]    = "list vec2",
+            [lVec3T]    = "list vec3",
+            [lObjT]     = "list object",
+        };
+
+        public static string get_type_name(System.Type type) {
+            if (namesTypes.ContainsKey(type)) {
+                return namesTypes[type];
+            }
+            return type.ToString();
+        }
 
         public static T to<T>(object value) {
 
@@ -174,6 +216,7 @@ namespace Ex{
         public static DecimalValue to_decimal(object value) {return to<DecimalValue>(conv[decValT], value);}
         public static IdAny to_id_any(object value) {return to<IdAny>(conv[idAnyT], value);}
         public static StringAny to_string_any(object value) {return to<StringAny>(conv[strAnyT], value);}
+        public static TimeAny to_time_any(object value) { return to<TimeAny>(conv[timeAnyT], value); }
         public static TransformValue to_transform_value(object value, AxisOrder order = AxisOrder.PitchYawRoll) {
 
             var fromType = value.GetType();
@@ -386,6 +429,10 @@ namespace Ex{
             [strAnyT] = new Dictionary<Type, Func<object, object>>() {
                 [strAnyT]   = input => { return (StringAny)input; },
                 [stringT]   = input => { return new StringAny((string)input, null);},
+            },
+            [timeAnyT] = new Dictionary<Type, Func<object, object>>() {
+                [timeAnyT] = input => { return (TimeAny)input; },
+                [doubleT] = input => { return new TimeAny((double)input, null); },
             },
             #endregion
             #region unity_types

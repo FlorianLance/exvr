@@ -132,7 +132,10 @@ struct StringAny{
     QString str;
     std::shared_ptr<NodeData> data;
 };
-
+struct TimeAny{
+    qreal time;
+    std::shared_ptr<NodeData> data;
+};
 
 struct KeyboardButtonState{
     input::Keyboard::Button code;
@@ -192,6 +195,7 @@ private:
 using CNT                       = ConnectionNode::Type;
 using IdAnyData                 = TypeNodeData<CNT::id_any_t, IdAny>;
 using StringAnyData             = TypeNodeData<CNT::string_any_t, StringAny>;
+using TimeAnyData               = TypeNodeData<CNT::time_any_t, TimeAny>;
 using BoolData                  = TypeNodeData<CNT::boolean_t, bool>;
 using IntData                   = TypeNodeData<CNT::integer_t, int>;
 using FloatData                 = TypeNodeData<CNT::float_t, float>;

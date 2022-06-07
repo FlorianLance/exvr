@@ -47,6 +47,7 @@ namespace Ex {
 
         // concurrency
         private ConcurrentQueue<byte[]> m_messages = new ConcurrentQueue<byte[]>();
+        public ConcurrentQueue<double> triggerTimes = new ConcurrentQueue<double>();
         private volatile bool m_doLoop = false;
         static private volatile int m_counter = 0;
 
@@ -136,7 +137,11 @@ namespace Ex {
                 byte[] bytesToSend;
                 while(m_messages.TryDequeue(out bytesToSend)) {
                     try {
+                        var expTime = ExVR.Time().ellapsed_exp_ms();
                         m_sender.Send(bytesToSend, bytesToSend.Length, m_endPoint);
+                        if (triggerTimes.Count < 1000) {
+                            triggerTimes.Enqueue(expTime);
+                        }
                     } catch (SocketException e) {
                         UnityEngine.Debug.LogError(string.Format("Send socket error: [{0}] for message of size [{1}]", e.Message, bytesToSend.Length));
                     } catch(Exception e) {

@@ -1,6 +1,7 @@
-﻿
+
+
 /***********************************************************************************
-** exvr-exp                                                                       **
+** exvr-designer                                                                  **
 ** MIT License                                                                    **
 ** Copyright (c) [2018] [Florian Lance][EPFL-LNCO]                                **
 ** Permission is hereby granted, free of charge, to any person obtaining a copy   **
@@ -22,43 +23,19 @@
 ** SOFTWARE.                                                                      **
 ************************************************************************************/
 
-namespace Ex {
+#pragma once
 
-    public class IdAny {
 
-        public IdAny() { }
+// local
+#include "gui/widgets/connections/data_models/connectors/connector_node_data_model.hpp"
 
-        public IdAny(int id, object value) {
-            this.id = id;
-            this.value = value;
-        }
+namespace tool::ex {
 
-        public int id = 0;
-        public object value = null;
-    }
-
-    public class StringAny {
-
-        public StringAny() { }
-
-        public StringAny(string str, object value) {
-            this.str = str;
-            this.value = value;
-        }
-
-        public string str = "default";
-        public object value = null;
-    }
-
-    public class TimeAny {
-
-        public TimeAny() { }
-        public TimeAny(double time, object value) {
-            this.time  = time;
-            this.value = value;
-        }
-
-        public double time = 0;
-        public object value = null;
-    }
+class FromTimeAnyNodeDataModel : public TypedConnectorDataModel<Connector::Type::From_time_any, PlaceHolderEmbeddedW>{
+    Q_OBJECT
+public slots:
+    void compute() override;
+public:
+    void init_ports_caption() override;
+};
 }
