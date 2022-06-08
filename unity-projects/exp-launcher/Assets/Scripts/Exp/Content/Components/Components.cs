@@ -96,14 +96,16 @@ using static Ex.ExComponent;
 namespace Ex{
 
     public class ComponentInfo{
-        public ComponentInfo(Category category, Pritority priority, Reserved reserved) {
+        public ComponentInfo(Category category, Pritority priority, Reserved reserved, bool catchExceptions) {
             this.category = category;
             this.priority = priority;
             this.reserved = reserved;
+            this.catchExceptions = catchExceptions;
         }
         public Category category;
         public Pritority priority;
         public Reserved reserved;
+        public bool catchExceptions;
     }
 
     public class Components : MonoBehaviour{
@@ -131,8 +133,8 @@ namespace Ex{
             [Category.Viewer] = "[C:Viewer]"
         };
 
-        private static ComponentInfo gen_info(Category category, Pritority pritority, Reserved reserved) {
-            return new ComponentInfo(category, pritority, reserved);
+        private static ComponentInfo gen_info(Category category, Pritority pritority, Reserved reserved, bool catchExceptions = true) {
+            return new ComponentInfo(category, pritority, reserved, catchExceptions);
         }
 
         public static readonly Dictionary<string, ComponentInfo> Names2Info = new Dictionary<string, ComponentInfo> {
@@ -160,31 +162,31 @@ namespace Ex{
             // environment
             ["Ex.ConfigComponent"] = gen_info(Category.Flow, Pritority.Hight, Reserved.Public),
             // input
-            ["Ex.JoypadComponent"] = gen_info(Category.Input, Pritority.Hight, Reserved.Public),
-            ["Ex.MouseComponent"] = gen_info(Category.Input, Pritority.Hight, Reserved.Public),
-            ["Ex.KeyboardComponent"] = gen_info(Category.Input, Pritority.Hight, Reserved.Public),
+            ["Ex.JoypadComponent"] = gen_info(Category.Input, Pritority.Hight, Reserved.Public, false),
+            ["Ex.MouseComponent"] = gen_info(Category.Input, Pritority.Hight, Reserved.Public, false),
+            ["Ex.KeyboardComponent"] = gen_info(Category.Input, Pritority.Hight, Reserved.Public, false),
             // interaction
             ["Ex.FlagPoleComponent"] = gen_info(Category.Interaction, Pritority.Medium, Reserved.Public),
             ["Ex.MarkToCleanComponent"] = gen_info(Category.Interaction, Pritority.Medium, Reserved.Public),
             ["Ex.TargetToGrabComponent"] = gen_info(Category.Interaction, Pritority.Medium, Reserved.Public),
             // model
-            ["Ex.CubeComponent"] = gen_info(Category.Model, Pritority.Medium, Reserved.Public),
-            ["Ex.SphereComponent"] = gen_info(Category.Model, Pritority.Medium, Reserved.Public),
-            ["Ex.TorusComponent"] = gen_info(Category.Model, Pritority.Medium, Reserved.Public),
-            ["Ex.LinesComponent"] = gen_info(Category.Model, Pritority.Medium, Reserved.Public),
-            ["Ex.CylinderComponent"] = gen_info(Category.Model, Pritority.Medium, Reserved.Public),
-            ["Ex.LandmarkComponent"] = gen_info(Category.Model, Pritority.Medium, Reserved.Public),
+            ["Ex.CubeComponent"] = gen_info(Category.Model, Pritority.Medium, Reserved.Public, false),
+            ["Ex.SphereComponent"] = gen_info(Category.Model, Pritority.Medium, Reserved.Public, false),
+            ["Ex.TorusComponent"] = gen_info(Category.Model, Pritority.Medium, Reserved.Public, false),
+            ["Ex.LinesComponent"] = gen_info(Category.Model, Pritority.Medium, Reserved.Public, false),
+            ["Ex.CylinderComponent"] = gen_info(Category.Model, Pritority.Medium, Reserved.Public, false),
+            ["Ex.LandmarkComponent"] = gen_info(Category.Model, Pritority.Medium, Reserved.Public, false),
             // network
-            ["Ex.UdpReaderComponent"] = gen_info(Category.Network, Pritority.Hight, Reserved.Public),
-            ["Ex.UdpWriterComponent"] = gen_info(Category.Network, Pritority.Hight, Reserved.Public),
-            ["Ex.SerialPortReaderComponent"] = gen_info(Category.Network, Pritority.Hight, Reserved.Public),
-            ["Ex.SerialPortWriterComponent"] = gen_info(Category.Network, Pritority.Hight, Reserved.Public),
-            ["Ex.ParallelPortWriterComponent"] = gen_info(Category.Network, Pritority.Hight, Reserved.Public),
+            ["Ex.UdpReaderComponent"] = gen_info(Category.Network, Pritority.Hight, Reserved.Public, false),
+            ["Ex.UdpWriterComponent"] = gen_info(Category.Network, Pritority.Hight, Reserved.Public, false),
+            ["Ex.SerialPortReaderComponent"] = gen_info(Category.Network, Pritority.Hight, Reserved.Public, false),
+            ["Ex.SerialPortWriterComponent"] = gen_info(Category.Network, Pritority.Hight, Reserved.Public, false),
+            ["Ex.ParallelPortWriterComponent"] = gen_info(Category.Network, Pritority.Hight, Reserved.Public, false),
             // output
-            ["Ex.LoggerComponent"] = gen_info(Category.Output, Pritority.Hight, Reserved.Public),
-            ["Ex.LoggerConditionComponent"] = gen_info(Category.Output, Pritority.Hight, Reserved.Public),
-            ["Ex.LoggerColumnsComponent"] = gen_info(Category.Output, Pritority.Hight, Reserved.Public),
-            ["Ex.LoggerExperimentComponent"] = gen_info(Category.Output, Pritority.Hight, Reserved.Public),
+            ["Ex.LoggerComponent"] = gen_info(Category.Output, Pritority.Hight, Reserved.Public, false),
+            ["Ex.LoggerConditionComponent"] = gen_info(Category.Output, Pritority.Hight, Reserved.Public, false),
+            ["Ex.LoggerColumnsComponent"] = gen_info(Category.Output, Pritority.Hight, Reserved.Public, false),
+            ["Ex.LoggerExperimentComponent"] = gen_info(Category.Output, Pritority.Hight, Reserved.Public, false),
             // resource
             ["Ex.ImageResourceComponent"] = gen_info(Category.Resource, Pritority.Hight, Reserved.Public),
             ["Ex.PlotResourceComponent"] = gen_info(Category.Resource, Pritority.Hight, Reserved.Public),

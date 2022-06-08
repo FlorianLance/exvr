@@ -283,13 +283,13 @@ namespace Ex {
             // set members
             gameObject.name = xmlComponent.Name;
             key             = xmlComponent.Key;
-            keyStr = Converter.to_string(xmlComponent.Key);
-            catchExceptions = ExVR.GuiSettings().catchComponentsExceptions;
-
+            keyStr = Converter.to_string(xmlComponent.Key);            
 
             typeStr = string.Format("Ex.{0}Component", xmlComponent.Type);
             if (Components.Names2Info.ContainsKey(typeStr)) {
+
                 var infos = Components.Names2Info[typeStr];
+                catchExceptions = ExVR.GuiSettings().catchComponentsExceptions || infos.catchExceptions;
 
                 bool valid = false;
                 if (infos.reserved == Reserved.Public) {
@@ -311,8 +311,8 @@ namespace Ex {
                 category = infos.category;
                 priority = infos.priority;
             } else {
-                category = Category.Scene;
                 log_error("Component doesn't belong to a category.");
+                return false;
             }
             tag = string.Format("{0}Component", category.ToString());
 
@@ -404,17 +404,21 @@ namespace Ex {
 
             currentFunction = Function.initialize;
             m_initialized = false;
-            //try {
-                if (!initialize()) {
-                    log_error("Initialization failed.");
-                    return m_initialized;
+            if (catchExceptions) {
+                try {
+                    m_initialized = initialize();
+                } catch (Exception e) {
+                    display_exception(e);
                 }
-            //} catch (Exception e) {
-            //    display_exception(e);
-            //    return m_initialized;
-            //}
+            } else {
+                m_initialized = initialize();  
+            }
 
-            return m_initialized = true;
+            if (!m_initialized) {
+                log_error("Initialization failed.");
+            }
+
+            return m_initialized;
         }
 
         public void base_clean() {
@@ -440,7 +444,6 @@ namespace Ex {
         public void base_start_experiment() {
             
             currentFunction = Function.start_experiment;
-
             if (catchExceptions) {
                 try {
                     start_experiment();
