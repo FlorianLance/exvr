@@ -177,6 +177,39 @@ namespace Ex.Input {
             this.lastTimeDown               = lastTimeDown;
         }
 
+        public void update(bool pressed, long currentExpTicks, long currentElementTicks) {
+
+            if (state == Button.State.None) {
+                if (pressed) {
+                    state = Button.State.Down;
+                    lastTimeDown = currentExpTicks * 0.0001;
+                }
+            } else if (state == Button.State.Down) {
+                if (pressed) {
+                    state = Button.State.Pressed;
+                } else {
+                    state = Button.State.Up;
+                    lastTimeDown = -1.0;
+                }
+
+            } else if (state == Button.State.Pressed) {
+                if (!pressed) {
+                    state = Button.State.Up;
+                }
+            } else if (state == Button.State.Up) {
+                if (pressed) {
+                    state = Button.State.Down;
+                } else {
+                    state = Button.State.None;
+                }
+            }
+
+            if (state != Button.State.None) {
+                triggeredExperimentTime = currentExpTicks     * 0.0001;
+                triggeredElementTime    = currentElementTicks * 0.0001;
+            }
+        }
+
         public void update(bool pressed, double currentExpTime, double currentElementTime) {
 
             if (state == Button.State.None) {

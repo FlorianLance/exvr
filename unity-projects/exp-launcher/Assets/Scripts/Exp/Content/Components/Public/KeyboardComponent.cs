@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Collections.Concurrent;
+using System.Diagnostics;
 
 // unity
 using UnityEngine;
@@ -43,6 +44,7 @@ namespace Ex {
 
         volatile public bool doLoop = false;
         volatile public bool process = false;
+        public HashSet<KeyCode> keysToFIlter = null;
         public ConcurrentQueue<Input.KeyboardButtonEvent> newEvents = new ConcurrentQueue<Input.KeyboardButtonEvent>();
         private Dictionary<Input.VirtualButton, Input.KeyboardButtonEvent> m_keyEvents = new Dictionary<Input.VirtualButton, Input.KeyboardButtonEvent>();
 
@@ -55,33 +57,80 @@ namespace Ex {
             Profiler.BeginThreadProfiling("VirtualKeyGetterThread", "VirtualKeyGetterThread 1");
            
             foreach (var corr in Input.Keyboard.vrCodeCorrespondence) {
-                m_keyEvents[corr.Key] = new Input.KeyboardButtonEvent(corr.Value);
+                if (keysToFIlter != null) {
+                    if (keysToFIlter.Contains(corr.Value)) {
+                        m_keyEvents[corr.Key] = new Input.KeyboardButtonEvent(corr.Value);
+                    }
+                } else {
+                    m_keyEvents[corr.Key] = new Input.KeyboardButtonEvent(corr.Value);
+                }                    
             }
+
+            Stopwatch sw = new Stopwatch();
+            sw.Restart();
+            //long totalMs = 0;
+            //long totalTicsk = 0;
+            //long nb = 0;
+            //long superior1 = 0;
+            //long superior2 = 0;
+            //long superior5 = 0;
 
             // 1 tick is 100 nanoseconds
             // 1000 ticks is 10000 nanoseconds -> 0.1 ms
-            var ts = new System.TimeSpan(3000); // 1000
+            //long ticks = 1;
+            //var ts = new System.TimeSpan(ticks); // 1000
+            //long maxT = -10;
+            //long minT = 100000;
+            long count = 0;
+            var tm = ExVR.Time();
+
+            long expTicks = 0;
+            long elementTicks = 0;
             while (doLoop) {
 
                 if (process) {
                     
-                    var expTime     = ExVR.Time().ellapsed_exp_ms();
-                    var elementTime = ExVR.Time().ellapsed_element_ms();
+                    expTicks     = tm.ellapsed_exp_ticks();
+                    elementTicks = tm.ellapsed_element_ticks();
 
                     foreach (var keyEvent in m_keyEvents) {
-                        bool keyPressed = Converter.to_bool(GetAsyncKeyState((int)keyEvent.Key) & 0x8001);
-                        keyEvent.Value.update(keyPressed, expTime, elementTime);
-
+                        keyEvent.Value.update(System.Convert.ToBoolean(GetAsyncKeyState((int)keyEvent.Key) & 0x8001), expTicks, elementTicks);
                         if(keyEvent.Value.state != Input.Button.State.None) {
                             newEvents.Enqueue(keyEvent.Value.copy());
                         }
                     }
                 }
 
-                
-                Thread.Sleep(ts);
-                //Thread.Sleep(10);
+
+                //Thread.Sleep(ts);
+                Thread.SpinWait(1);
+                ++count;
+                //var nbMs = sw.ElapsedMilliseconds;
+                //if (nbMs != 0) {
+                //    UnityEngine.Debug.Log("nbMs" + nbMs);
+                //}
+                //var nbTicks = sw.ElapsedTicks;
+                //if(maxT < nbTicks) {
+                //    maxT = nbTicks;
+                //}
+                //if(minT > nbTicks){
+                //    minT = nbTicks;
+                //}
+                //totalMs += nbMs;
+                //totalTicsk += nbTicks;
+                //if(nbMs >= 0) {
+                //    superior1++;
+                //}
+                //if (nbMs >= 1) {
+                //    superior2++;
+                //}
+                //if (nbMs >= 5) {
+                //    superior5++;
+                //}
+                //++nb;
             }
+            //ExVR.Log().error("total: " + ticks + " " + (1.0 * totalMs / nb) + " " + (1.0 * totalTicsk / nb) +" " + superior1 +" " + superior2 + " "+ superior5);
+            ExVR.Log().error("-> average ms " + (1.0 * sw.ElapsedMilliseconds / count));
 
             Profiler.EndThreadProfiling();
         }
@@ -110,23 +159,39 @@ namespace Ex {
 
             add_signal(buttonOnGuiSignal);
 
+            HashSet<KeyCode> keysToFIlter = null;
+            if (initC.get<bool>("filter")) {
+                keysToFIlter = new HashSet<KeyCode>();
+                foreach (var line in Text.split_lines(initC.get<string>("keys_to_filter"), true)) {
+                    KeyCode code;
+                    var codeSstr = line.Contains("KeyCode.") ? line.Substring(8) : line;
+                    if (System.Enum.TryParse(codeSstr, out code)) {
+                        keysToFIlter.Add(code);                        
+                    }
+                }
+            }
+            
 
             if (!ExVR.GuiSettings().catchExternalKeyboardEvents) {
 
-                foreach (var code in Input.Keyboard.Codes) {
-                    m_buttonsEvent[code]      = new Input.KeyboardButtonEvent(code);
-                    m_keyboardGetReturn[code] = false;
+                if (keysToFIlter == null) {
+                    foreach (var code in Input.Keyboard.Codes) {
+                        m_buttonsEvent[code] = new Input.KeyboardButtonEvent(code);
+                        m_keyboardGetReturn[code] = false;
+                    }
+                } else {
+                    foreach (var code in keysToFIlter) {
+                        m_buttonsEvent[code] = new Input.KeyboardButtonEvent(code);
+                        m_keyboardGetReturn[code] = false;
+                    }
                 }
 
             } else {
 
-                //foreach (var button in Input.Keyboard.RawCodesCorrespondence) {
-                //    m_rawButtonsEvent[button.Key] = new Input.KeyboardButtonEvent(button.Value);
-                //}
-
                 thread = new VirtualKeyGetterThread();
+                thread.keysToFIlter = keysToFIlter;
                 thread.doLoop = true;
-                thread.start();
+                thread.start(System.Threading.ThreadPriority.AboveNormal);
             }
 
 
@@ -146,13 +211,12 @@ namespace Ex {
                 // reset states
                 var currentExpTime     = time().ellapsed_exp_ms();
                 var currentElementTime = time().ellapsed_element_ms();
-                foreach (KeyCode keyCode in Input.Keyboard.Codes) {
-                    m_buttonsEvent[keyCode].update(false, currentExpTime, currentElementTime);
+                foreach (var kEvent in m_buttonsEvent) {
+                    kEvent.Value.update(false, currentExpTime, currentElementTime);
                 }
 
             } else if(ExVR.GuiSettings().catchExternalKeyboardEvents) {
 
-                //RawKeyInput.save_events_state(doUpdate);
                 thread.process = doUpdate;
             }
         }
@@ -164,38 +228,34 @@ namespace Ex {
                 return;
             }
 
-
             if (!ExVR.GuiSettings().catchExternalKeyboardEvents) {
 
                 // retrieve current return value
                 var currentExpTime     = time().ellapsed_exp_ms();
                 var currentElementTime = time().ellapsed_element_ms();
-                foreach (KeyCode keyCode in Input.Keyboard.Codes) {
-                    m_keyboardGetReturn[keyCode] = UnityEngine.Input.GetKey(keyCode);
+                foreach (var kEvent in m_buttonsEvent) {
+                    m_keyboardGetReturn[kEvent.Key] = UnityEngine.Input.GetKey(kEvent.Key);
                 }
 
                 // update events
-                foreach (KeyCode keyCode in Input.Keyboard.Codes) {                    
-                    m_buttonsEvent[keyCode].update(m_keyboardGetReturn[keyCode], currentExpTime, currentElementTime);   
+                foreach (var kEvent in m_buttonsEvent) {
+                    kEvent.Value.update(m_keyboardGetReturn[kEvent.Key], currentExpTime, currentElementTime);   
                 }
 
                 // send triggers
-                foreach (KeyCode keyCode in Input.Keyboard.Codes) {
-                    var currentEvent = m_buttonsEvent[keyCode];
-                    if (currentEvent.state != Input.Button.State.None) {
-                        invoke_signal(buttonOnGuiSignal, currentEvent);
+                foreach (var kEvent in m_buttonsEvent) {
+                    if (kEvent.Value.state != Input.Button.State.None) {
+                        invoke_signal(buttonOnGuiSignal, kEvent.Value);
                     }
                 }
-
 
                 // send infos only once per frame
                 if (sendInfos) {
 
                     StringBuilder infos = new StringBuilder();
-                    foreach (KeyCode button in Input.Keyboard.Codes) {
-                        var buttonState = m_buttonsEvent[button];
-                        if (buttonState.state == Input.Button.State.Pressed || buttonState.state == Input.Button.State.Down) {
-                            infos.AppendFormat("{0} ", ((int)button).ToString());
+                    foreach (var kEvent in m_buttonsEvent) {                        
+                        if (kEvent.Value.state == Input.Button.State.Pressed || kEvent.Value.state == Input.Button.State.Down) {
+                            infos.AppendFormat("{0} ", ((int)kEvent.Key).ToString());
                         }
                     }
                     

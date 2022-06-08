@@ -261,8 +261,8 @@ namespace Ex {
         volatile public bool doLoop = false;
         volatile public bool addHeaderLine = false;
 
-        CustomSampler fullSampler = CustomSampler.Create("[biopac] processing full");        
-        CustomSampler appendDigitalSampler = CustomSampler.Create("[biopac] processing append_digital");
+        CustomSampler fullSampler           = CustomSampler.Create("[biopac] processing full");        
+        CustomSampler appendDigitalSampler  = CustomSampler.Create("[biopac] processing append_digital");
         CustomSampler appendChannelsSampler = CustomSampler.Create("[biopac] processing append_channels");
 
         ConcurrentQueue<BiopacData> dataList = new ConcurrentQueue<BiopacData>();
@@ -335,8 +335,8 @@ namespace Ex {
 
             int idLinesMinusHeader = 0;
             double firstTime = ExVR.Time().ms_since_start_experiment(bData.times[0].startingTick);
-            double lastTime = ExVR.Time().ms_since_start_experiment(bData.times[bData.times.Count - 1].afterDataReadingTick);
-            double interval = (lastTime - firstTime) / countLines;
+            double lastTime  = ExVR.Time().ms_since_start_experiment(bData.times[bData.times.Count - 1].afterDataReadingTick);
+            double interval  = (lastTime - firstTime) / countLines;
 
 
             for (int idF = 0; idF < bData.times.Count; ++idF) {

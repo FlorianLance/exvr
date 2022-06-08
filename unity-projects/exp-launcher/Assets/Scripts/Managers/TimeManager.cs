@@ -74,8 +74,15 @@ namespace Ex{
             return m_programTimer.Elapsed.TotalMilliseconds;
         }
 
+        public long ellapsed_exp_ticks() {
+            return m_experimentTimer.Elapsed.Ticks;
+        }
+
         public double ellapsed_exp_ms() {
             return m_experimentTimer.Elapsed.TotalMilliseconds;
+        }
+        public long ellapsed_element_ticks() {
+            return m_elementTimer.Elapsed.Ticks;
         }
 
         public double ellapsed_element_ms() {
