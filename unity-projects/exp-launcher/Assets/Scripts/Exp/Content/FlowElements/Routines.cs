@@ -207,6 +207,7 @@ namespace Ex{
             }
 
             // call stop experiment function for all components
+            ExVR.Components().pre_stop_experiment();
             ExVR.Components().stop_experiment();
         }
 

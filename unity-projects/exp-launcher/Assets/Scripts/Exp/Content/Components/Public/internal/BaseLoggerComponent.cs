@@ -109,7 +109,7 @@ namespace Ex {
                 m_locker.AcquireWriterLock(1000);
                 try {
                     foreach (var line in lines.Item1) {
-                        if (lines.Item2) {
+                        if (lines.Item2) {                            
                             m_steamWriter.WriteLine(line);
                         } else {
                             m_steamWriter.Write(line);
@@ -165,7 +165,7 @@ namespace Ex {
         }
 
         protected override void stop_experiment() {
-
+            
             m_canWrite        = false;
             if (writingJob != null) {
                 writingJob.doLoop = false;

@@ -433,6 +433,24 @@ namespace Ex{
             ExVR.ExpLog().components(Function.start_experiment, false);
         }
 
+        public void pre_stop_experiment() {
+
+            ExVR.ExpLog().components(Function.pre_stop_experiment, true);
+            foreach (var component in reverseSortedComponents) {
+
+                if (component.is_function_defined(Function.pre_stop_experiment)) {
+                    ExVR.ExpLog().log_and_add_to_stacktrace(component, Function.pre_stop_experiment, true, true, true, true);
+                }
+
+                component.base_pre_stop_experiment();
+
+                if (component.is_function_defined(Function.pre_stop_experiment)) {
+                    ExVR.ExpLog().log_and_add_to_stacktrace(component, Function.pre_stop_experiment, false, true, true, true);
+                }
+            }
+            ExVR.ExpLog().components(Function.pre_stop_experiment, false);
+
+        }
 
         public void stop_experiment() {
 

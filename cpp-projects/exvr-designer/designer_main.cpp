@@ -41,8 +41,8 @@ using namespace tool::ex;
 int main(int argc, char *argv[]){
 
     // build parameters
-    const QString numVersion = "1.0a49";
-    bool lncoComponents = true;
+    const QString numVersion = "1.0a50";
+    bool lncoComponents = false;
 
     // compiler check
     std::cout << tool::fmt("Start ExVR-designer v{}\n", numVersion.toStdString()); // c++20 check

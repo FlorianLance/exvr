@@ -54,6 +54,7 @@ namespace Ex {
             play,
             pause,
             stop_routine,
+            pre_stop_experiment,
             stop_experiment,
             clean,
             slot1,
@@ -368,6 +369,7 @@ namespace Ex {
             functionsDefined[Function.clean] = (derivedType.GetMethod("clean", flagPrivate).DeclaringType == derivedType);
 
             functionsDefined[Function.start_experiment] = (derivedType.GetMethod("start_experiment", flagPrivate).DeclaringType == derivedType);
+            functionsDefined[Function.pre_stop_experiment] = (derivedType.GetMethod("pre_stop_experiment", flagPrivate).DeclaringType == derivedType);
             functionsDefined[Function.stop_experiment] = (derivedType.GetMethod("stop_experiment", flagPrivate).DeclaringType == derivedType);
 
             functionsDefined[Function.set_current_config] = (derivedType.GetMethod("set_current_config", flagPrivate).DeclaringType == derivedType);
@@ -456,6 +458,18 @@ namespace Ex {
         }
 
         // This function is called only once at the end of an experiment 
+        public void base_pre_stop_experiment() {
+            currentFunction = Function.pre_stop_experiment;
+            if (catchExceptions) {
+                try {
+                    pre_stop_experiment();
+                } catch (Exception e) {
+                    display_exception(e);
+                }
+            } else {
+                pre_stop_experiment();
+            }
+        }
         public void base_stop_experiment() {
     
             currentFunction = Function.stop_experiment;
@@ -759,6 +773,7 @@ namespace Ex {
 
         // once per experiment
         protected virtual void start_experiment() { }
+        protected virtual void pre_stop_experiment() { }
         protected virtual void stop_experiment() { }
 
         // once per routine
