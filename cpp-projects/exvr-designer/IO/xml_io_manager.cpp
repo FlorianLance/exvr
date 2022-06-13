@@ -1004,7 +1004,12 @@ void XmlIoManager::write_condition(const Condition *condition){
     w->writeStartElement(QSL("Condition"));
     w->writeAttribute(QSL("key"), QString::number(condition->key()));
     w->writeAttribute(QSL("name"), condition->name);
-    w->writeAttribute(QSL("duration"),  QString::number(condition->duration.v));
+
+    if(!m_debugNoDuration){
+        w->writeAttribute(QSL("duration"),  QString::number(condition->duration.v));
+    }else{
+        w->writeAttribute(QSL("duration"),  "0.0");
+    }
     w->writeAttribute(QSL("ui_scale"),  QString::number(condition->scale));
     w->writeAttribute(QSL("ui_size"),   QString::number(condition->uiFactorSize));
 

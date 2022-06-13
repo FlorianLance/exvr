@@ -492,6 +492,11 @@ void DesignerWindow::create_actions(){
         abort();
     });
 
+    m_fullLoadWith0DurationAct.setText(tr("&Load with 0 duration"));
+    m_fullLoadWith0DurationAct.setStatusTip(tr("&Load full experiment with default instance (0s duration for each routine)"));
+    connect(&m_fullLoadWith0DurationAct, &QAction::triggered, this, &DesignerWindow::load_full_exp_with_0duration_signal);
+
+
     m_displayKeysAct.setText(tr("&Display keys"));
     m_displayKeysAct.setStatusTip(tr("Display keys"));
     connect(&m_displayKeysAct, &QAction::triggered, this, [&]{
@@ -671,6 +676,7 @@ void DesignerWindow::create_menu(){
     menu->addAction(&m_crashAct);
     menu->addAction(&m_deleteUnusedComponentAct);
     menu->addAction(&m_displayKeysAct);
+    menu->addAction(&m_fullLoadWith0DurationAct);
     // doc
     menu = menuBar()->addMenu(tr("&?"));
     menu->addAction(&m_showDocumentationEditorAct);

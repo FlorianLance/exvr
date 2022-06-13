@@ -163,6 +163,8 @@ namespace Ex {
 
         // once per experiment
         public virtual void start_experiment() { }
+        public virtual void post_start_experiment() { }        
+        public virtual void pre_stop_experiment() { }
         public virtual void stop_experiment() { }
 
         // once per routine

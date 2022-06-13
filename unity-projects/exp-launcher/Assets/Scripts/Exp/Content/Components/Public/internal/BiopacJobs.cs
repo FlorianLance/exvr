@@ -108,7 +108,8 @@ namespace Ex {
 
     public class BData {
 
-        public int id                   = 0;        
+        public int id                   = 0;
+        public int currentElementOrder  = 0;
         public double beforeExpTime     = 0.0;
         public double afterExpTime      = 0.0;
         public double[] channelsData    = null;
@@ -128,31 +129,31 @@ namespace Ex {
         }
     }
 
-
     public class BiopacAcquisitionThread : ThreadedJob {
+        
+        public BiopacSettings bSettings    = null;
+        public ConcurrentQueue<BData> data = null;
 
-        volatile public bool doLoop = false;
-        volatile public bool processData = false;
-        volatile private bool loopFinished = false;
-
-        public BiopacSettings bSettings     = null;
-        public ConcurrentQueue<BData> data = new ConcurrentQueue<BData>();
+        volatile public bool record = false;
+        volatile private bool m_doLoop = false;
+        volatile private bool m_isAcquiring = false;
 
         private CustomSampler retrievePointsSampler = CustomSampler.Create("[biopac] acquisition retrieve_points");        
         private CustomSampler insertDataSampler     = CustomSampler.Create("[biopac] acquisition insert_data");
-
-        public List<BData> force() {
-
-            while (processData) {
+        private int m_errorsCount = 0;
+        public void stop_recording() {
+            record = false;
+            while (m_isAcquiring) {
                 Thread.Sleep(1);
             }
+        }
 
-            List<BData> dataRemaining = new List<BData>();
-            BData bData;
-            while (data.TryDequeue(out bData)) {
-                dataRemaining.Add(bData);
+        public void stop_loop() {
+            record   = false;
+            m_doLoop = false;
+            while (!isDone) {
+                Thread.Sleep(1);
             }
-            return dataRemaining;
         }
 
         protected override void thread_function() {
@@ -160,55 +161,88 @@ namespace Ex {
             Thread.CurrentThread.Name = "BiopacAcquisitionThread";
             Profiler.BeginThreadProfiling("BiopacAcquisitionThread", "BiopacAcquisitionThread 1");
 
-            // start reading loop
             var waitBuffer = new double[bSettings.enabledChannelsNb];
 
-            while (doLoop) {
-                
-                if (!processData) { // read only minimum data
+            var timeM     = ExVR.Time();
+            var scheduler = ExVR.Scheduler();
+            m_doLoop      = true;
+            m_isAcquiring = false;
+            data          = new ConcurrentQueue<BData>();
+            m_errorsCount = 0;
+            BData.reset_counter();
+
+            // start reading loop
+            while (m_doLoop) {
+
+                while (!record && m_doLoop) {
                     MP.receiveMPData(waitBuffer, (uint)bSettings.enabledChannelsNb, out uint notUsed);
                     continue;
-                } else {
+                }
 
-                    // retrieve points
-                    retrievePointsSampler.Begin();
-                    BData d = new BData(bSettings);
-     
-                    d.beforeExpTime = ExVR.Time().ellapsed_exp_ms();
-                    MPCODE retval = MP.receiveMPData(d.channelsData, bSettings.numberOfDataPoints, out uint received);                    
-                    d.afterExpTime = ExVR.Time().ellapsed_exp_ms();
+                m_isAcquiring = true;
 
-                    // check for error condition
-                    if (retval != MPCODE.MPSUCCESS) {
-                        ExVR.Log().error(string.Format("Biopack receiveMPData error code: {0}", BiopacSettings.code_to_string(retval)));
-                        continue;
+                // retrieve points
+                retrievePointsSampler.Begin();
+                BData d = new BData(bSettings);
+                d.currentElementOrder = scheduler.current_element_order();
+                d.beforeExpTime       = timeM.ellapsed_exp_ms();
+                
+                MPCODE retval = MP.receiveMPData(d.channelsData, bSettings.numberOfDataPoints, out uint received);                    
+                d.afterExpTime = timeM.ellapsed_exp_ms();
+
+                // check for error condition
+                if (retval != MPCODE.MPSUCCESS) {
+                    if (m_errorsCount < 30) {
+                        ExVR.Log().error(string.Format("Biopack receiveMPData error code: {0}", BiopacSettings.code_to_string(retval)));                        
+                    }else if(m_errorsCount == 30) {
+                        ExVR.Log().error("Biopac receiveMPData, too many errors. Stop displaying logs.");
                     }
+                    ++m_errorsCount;
+                    System.Threading.Thread.Sleep(1);
+                    m_isAcquiring = false;
+                    continue;
+                }
 
-                    // check number of points read
-                    if (received != bSettings.numberOfDataPoints) {
+                // check number of points read
+                if (received != bSettings.numberOfDataPoints) {
+                    if (m_errorsCount < 30) {
                         ExVR.Log().error(string.Format("Biopack receiveMPData warning, received {0} values instead of {1}", received, bSettings.numberOfDataPoints));
-                        continue;
+                    } else if (m_errorsCount == 30) {
+                        ExVR.Log().error("Biopac receiveMPData, too many errors. Stop displaying logs.");
                     }
+                    ++m_errorsCount;
+                    System.Threading.Thread.Sleep(1);
+                    m_isAcquiring = false;
+                    continue;
+                }
 
-                    // retrieve values from the Digital Lines
-                    if (bSettings.readDigitalEnabled) {
-                        for (int ii = 0; ii < bSettings.channelsId.Count; ++ii) {
-                            retval = MP.getDigitalIO((uint)bSettings.channelsId[ii], out d.digitalInputsData[ii], bSettings.readDigitalMode);
-                            if (retval != MPCODE.MPSUCCESS) {
+                // retrieve values from the Digital Lines
+                if (bSettings.readDigitalEnabled) {
+                    for (int ii = 0; ii < bSettings.channelsId.Count; ++ii) {
+                        retval = MP.getDigitalIO((uint)bSettings.channelsId[ii], out d.digitalInputsData[ii], bSettings.readDigitalMode);
+                        if (retval != MPCODE.MPSUCCESS) {
+                            if (m_errorsCount < 30) {
                                 ExVR.Log().error(string.Format("Biopack getDigitalIO({0}) error code {1} ",
-                                    bSettings.channelsId[ii], 
+                                    bSettings.channelsId[ii],
                                     BiopacSettings.code_to_string(retval))
                                 );
-                                continue;
+                                System.Threading.Thread.Sleep(1);
+                            } else if (m_errorsCount == 30) {
+                                ExVR.Log().error("Biopac getDigitalIO, too many errors. Stop displaying logs.");
                             }
+                            ++m_errorsCount;
+                            m_isAcquiring = false;
+                            continue;
                         }
                     }
-                    retrievePointsSampler.End();
-
-                    insertDataSampler.Begin();
-                    data.Enqueue(d);
-                    insertDataSampler.End();
                 }
+                retrievePointsSampler.End();
+
+                insertDataSampler.Begin();
+                data.Enqueue(d);
+                insertDataSampler.End();
+
+                m_isAcquiring = false;
             }
 
             Profiler.EndThreadProfiling();
@@ -217,49 +251,31 @@ namespace Ex {
 
     public class BiopacProcessingThread : ThreadedJob {
 
+        volatile public bool addHeaderLine = false;
         public string headerLine;
         public BiopacSettings bSettings = null;
+        public BiopacAcquisitionThread acquisitionThread = null;
+        public LoggerComponent logger = null;
+        public ConcurrentQueue<BData> dataList = null;
 
-        volatile public bool doLoop = false;
-        volatile public bool addHeaderLine = false;
-        volatile private bool loopFinished = false;
-
+        volatile private bool m_doLoop = false;
         private double m_firstExpTime = 0.0;
+        private int m_prevOrder = -1;        
 
-        CustomSampler fullSampler           = CustomSampler.Create("[biopac] processing full");        
-        CustomSampler appendDigitalSampler  = CustomSampler.Create("[biopac] processing append_digital");
-        CustomSampler appendChannelsSampler = CustomSampler.Create("[biopac] processing append_channels");
+        private StringBuilder m_digitalInputStrF = new StringBuilder();
+        private StringBuilder m_dataStrF = new StringBuilder(1000);        
 
-        ConcurrentQueue<BData> dataList = new ConcurrentQueue<BData>();
-        ConcurrentQueue<List<string>> linesList = new ConcurrentQueue<List<string>>();
+        private CustomSampler m_fullSampler = CustomSampler.Create("[biopac] processing full");
+        private CustomSampler m_appendDigitalSampler = CustomSampler.Create("[biopac] processing append_digital");
+        private CustomSampler m_appendChannelsSampler = CustomSampler.Create("[biopac] processing append_channels");
 
-        StringBuilder digitalInputStrF = new StringBuilder();
-        StringBuilder dataStrF = new StringBuilder(1000);
+        private static readonly string m_timestampStrAccuracy = "G8";
 
-        private static readonly string timestampStrAccuracy = "G8";
-
-
-        public List<string> force(List<BData> bData) {
-
-            foreach(var data in bData) {
-                linesList.Enqueue(data_to_string(data));
+        public void stop_loop() {
+            m_doLoop = false;
+            while (!isDone) {
+                Thread.Sleep(1);
             }
-            return get_lines();
-        }
-
-        public void add_data(BData data) {
-            if (data == null) {
-                return;
-            }
-            dataList.Enqueue(data);
-        }
-
-        public List<string> get_lines() {
-            List<string> newLines;
-            if (linesList.TryDequeue(out newLines)) {
-                return newLines;
-            }
-            return null;
         }
 
         protected override void thread_function() {
@@ -267,21 +283,32 @@ namespace Ex {
             Thread.CurrentThread.Name = "BiopacProcessingThread";
             Profiler.BeginThreadProfiling("BiopacProcessingThread", "BiopacProcessingThread 1");
 
-            BData data;
-            loopFinished = false;
-            while (doLoop) {
-                
-                while(dataList.TryDequeue(out data)) {
-                    linesList.Enqueue(data_to_string(data));                        
+            m_doLoop     = true;
+            dataList = new ConcurrentQueue<BData>();
+
+            BData lastData;
+            while (m_doLoop) {
+                if (acquisitionThread.data != null) {
+                    while (acquisitionThread.data.TryDequeue(out lastData)) {
+
+                        dataList.Enqueue(lastData);
+                        if (logger != null) {
+                            logger.write_lines(data_to_string(lastData));
+                        }
+
+                        if (dataList.Count > 1000) {
+                            dataList.TryDequeue(out lastData);
+                        }
+                    }
                 }
                 Thread.Sleep(1);
             }
 
-            while (dataList.TryDequeue(out data)) {
-                linesList.Enqueue(data_to_string(data));
+            if(logger != null) {
+                while (logger.is_writing()) {
+                    Thread.Sleep(1);
+                }
             }
-
-            loopFinished = true;
 
             Profiler.EndThreadProfiling();
         }
@@ -303,81 +330,93 @@ namespace Ex {
                 addHeaderLine = false;
             }
    
-            fullSampler.Begin();
+            m_fullSampler.Begin();
 
-            digitalInputStrF.Clear();
-            dataStrF.Clear();
+            m_digitalInputStrF.Clear();
+            m_dataStrF.Clear();
 
-            appendDigitalSampler.Begin();
+            m_appendDigitalSampler.Begin();
             string digitalInputStr = "";
             var digital = data.digitalInputsData;
             if (bSettings.readDigitalEnabled) {
 
-                digitalInputStrF.Clear();
+                m_digitalInputStrF.Clear();
                 for (int idC = 0; idC < bSettings.enabledChannelsNb; ++idC) {
                     if (idC < bSettings.enabledChannelsNb - 1) {
-                        digitalInputStrF.Append(digital[idC] ? '1' : '0').Append('\t');
+                        m_digitalInputStrF.Append(digital[idC] ? '1' : '0').Append('\t');
                     } else {
-                        digitalInputStrF.Append(digital[idC] ? '1' : '0');
+                        m_digitalInputStrF.Append(digital[idC] ? '1' : '0');
                     }
                 }
-                digitalInputStr = digitalInputStrF.ToString();
+                digitalInputStr = m_digitalInputStrF.ToString();
             }
-            appendDigitalSampler.End();
+            m_appendDigitalSampler.End();
 
-            appendChannelsSampler.Begin();
+            m_appendChannelsSampler.Begin();
 
             int idLinesMinusHeader = 0;
             int idData = 0;
             double rate = 1000.0 / bSettings.samplingRate;
             var idTotal = (data.id * bSettings.nbSamplesPerCall);
 
-            var beforeExpTimeStr       = data.beforeExpTime.ToString(timestampStrAccuracy);
-            var durationAcquisitionStr = (data.afterExpTime - data.beforeExpTime).ToString(timestampStrAccuracy);
+            var beforeExpTimeStr       = data.beforeExpTime.ToString(m_timestampStrAccuracy);
+            var durationAcquisitionStr = (data.afterExpTime - data.beforeExpTime).ToString(m_timestampStrAccuracy);
 
             if(data.id == 0) {
                 m_firstExpTime = data.beforeExpTime;
+                m_prevOrder = -1;
             }
 
             for (int idSample = 0; idSample < bSettings.nbSamplesPerCall; ++idSample, ++idTotal) {
                               
-                dataStrF.Clear();
+                m_dataStrF.Clear();
 
+                // order
+                m_dataStrF.Append(data.currentElementOrder.ToString()).Append('\t');
+                // routine-condition
+                if (m_prevOrder != data.currentElementOrder) {
+                    m_dataStrF.Append(((RoutineInfo)ExVR.Scheduler().instance.element_order(data.currentElementOrder)).full_name()).Append('\t');
+                    m_prevOrder = data.currentElementOrder;
+                } else {
+                    m_dataStrF.Append('-').Append('\t');
+                }
+                // total id sample
+                m_dataStrF.Append(idTotal).Append('\t');
                 // id packet
-                dataStrF.Append(data.id).Append('\t');
+                m_dataStrF.Append(data.id).Append('\t');
                 // id sample
-                dataStrF.Append(idSample).Append('\t');
+                m_dataStrF.Append(idSample).Append('\t');
                 // sample exp time
                 var time = (idTotal * rate);
-                dataStrF.Append((time + m_firstExpTime).ToString(timestampStrAccuracy)).Append('\t');
+                m_dataStrF.Append((time + m_firstExpTime).ToString(m_timestampStrAccuracy)).Append('\t');
                 // sample time
-                dataStrF.Append(time.ToString(timestampStrAccuracy)).Append('\t');
+                m_dataStrF.Append(time.ToString(m_timestampStrAccuracy)).Append('\t');
                 // before acquisition timestamp
-                dataStrF.Append(beforeExpTimeStr).Append('\t');
+                m_dataStrF.Append(beforeExpTimeStr).Append('\t');
                 // duration acquisition
-                dataStrF.Append(durationAcquisitionStr).Append('\t');
+                m_dataStrF.Append(durationAcquisitionStr).Append('\t');
                 
                 idLinesMinusHeader++;
 
                 // add values
                 for (int idChannel = 0; idChannel < bSettings.enabledChannelsNb; ++idChannel) {
-                    dataStrF.Append(data.channelsData[idData++].ToString());
+                    m_dataStrF.Append(data.channelsData[idData++].ToString());
                     if (bSettings.readDigitalEnabled || (idChannel < bSettings.enabledChannelsNb - 1)) {
-                        dataStrF.Append('\t');
+                        m_dataStrF.Append('\t');
                     }
                 }
 
                 // add digital
                 if (bSettings.readDigitalEnabled) {
-                    dataStrF.Append(digitalInputStr);
+                    m_dataStrF.Append(digitalInputStr);
                 }
 
                 // add full line
-                dataStr[idLines++] = dataStrF.ToString();
+                dataStr[idLines++] = m_dataStrF.ToString();
             }
-            appendChannelsSampler.End();           
+            m_appendChannelsSampler.End();           
 
-            fullSampler.End();
+            m_fullSampler.End();
             return dataStr;
         }
     }

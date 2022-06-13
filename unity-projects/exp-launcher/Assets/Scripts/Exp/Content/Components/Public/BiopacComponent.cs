@@ -55,7 +55,6 @@ namespace Ex {
 
         private List<System.Tuple<double, List<double>>> m_debugData = null;
         private int m_currentDebugId = 0;
-        private LoggerComponent m_logger = null;
         private bool m_debugBypass = false;
        
 
@@ -69,8 +68,7 @@ namespace Ex {
             add_signal(lastRangeValuesChannelStr);
             add_signal(callDurationAPIStr);
 
-            // retrieve components
-            m_logger = initC.get_component<LoggerComponent>("logger");
+
 
             // init settings
             bSettings = new BiopacSettings();
@@ -129,6 +127,9 @@ namespace Ex {
             System.Text.StringBuilder titleLineB = new System.Text.StringBuilder();
 
             // # id and times           
+            titleLineB.Append("[Element order]\t");
+            titleLineB.Append("[Routine-condition]\t");
+            titleLineB.Append("[Total Id sample]\t");
             titleLineB.Append("[Id packet]\t");
             titleLineB.Append("[Id sample]\t");
             titleLineB.Append("[Sample exp time (ms)]\t");
@@ -169,26 +170,16 @@ namespace Ex {
             // # acquisition
             acquisitionThread                   = new BiopacAcquisitionThread();
             acquisitionThread.bSettings         = bSettings;
-            acquisitionThread.processData       = false;
-            acquisitionThread.doLoop            = true;            
             acquisitionThread.start(ThreadPriority.AboveNormal);
+
             // # process
-            processThread                       = new BiopacProcessingThread();
-            processThread.doLoop                = true;
+            processThread                       = new BiopacProcessingThread();            
             processThread.headerLine            = titleLineB.ToString();
             processThread.bSettings             = bSettings;
-            processThread.start(ThreadPriority.Normal);
+            processThread.acquisitionThread     = acquisitionThread;
+            processThread.logger                = initC.get_component<LoggerComponent>("logger");
 
             return true;
-        }
-
-        protected override void set_update_state(bool doUpdate) {
-
-            if (m_debugBypass) {
-                return;
-            }
-
-            acquisitionThread.processData = doUpdate;
         }
        
         protected override void clean() {
@@ -197,46 +188,33 @@ namespace Ex {
                 return;
             }
 
+            // join threads
+            //acquisitionThread.stop_loop();
+            acquisitionThread.stop_loop();
+            if (!acquisitionThread.join(500)) {
+                log_error(string.Format("Stop acquisition thread timeout."));
+            }
+            acquisitionThread = null;
+
+            if (!processThread.join(500)) {
+                log_error(string.Format("Stop process thread timeout."));
+            }
+            processThread = null;
+
             stop_acquisition();
         }
 
-        protected override void start_experiment() {
+        protected override void post_start_experiment() {
 
-            m_currentDebugId = 0;
+            m_currentDebugId   = 0;            
             if (m_debugBypass) {
                 return;
             }
 
-            processThread.addHeaderLine = true;
-            BData.reset_counter();
-        }
+            acquisitionThread.record = true;
 
-
-        protected override void update() {
-
-            if (m_debugBypass) {
-                trigger_debug();
-                return;
-            }
-
-
-            BData lastData;
-            List<BData> data = null; 
-            while(acquisitionThread.data.TryDequeue(out lastData)) {
-                if(data == null) {
-                    data = new List<BData>();
-                }
-                data.Add(lastData);
-                processThread.add_data(lastData);
-            }
-
-            if (data != null) {
-                Profiler.BeginSample("[biopac] main trigger");
-                trigger_channels(data);
-                Profiler.EndSample();
-            }
-
-            write_data(processThread.get_lines());
+            processThread.addHeaderLine = true;                        
+            processThread.start(ThreadPriority.Normal);                        
         }
 
         protected override void pre_stop_experiment() {
@@ -245,11 +223,32 @@ namespace Ex {
                 return;
             }
 
-            List<BData> bData = acquisitionThread.force();
-            var lines = processThread.force(bData);
+            acquisitionThread.stop_recording();
+            processThread.stop_loop();
+        }
 
-            write_data(lines);
 
+        protected override void update() {
+
+            if (m_debugBypass) {
+                trigger_debug();
+                return;
+            }            
+
+            BData lastData;
+            List<BData> data = null; 
+            while(processThread.dataList.TryDequeue(out lastData)) {
+                if(data == null) {
+                    data = new List<BData>();
+                }
+                data.Add(lastData);
+            }
+
+            if (data != null) {
+                Profiler.BeginSample("[biopac] main trigger");
+                trigger_channels(data);
+                Profiler.EndSample();
+            }
         }
 
 
@@ -365,24 +364,6 @@ namespace Ex {
 
         private void stop_acquisition() {
 
-            if (acquisitionThread == null) {
-                return;
-            }
-
-            // stop threads
-            acquisitionThread.processData = false;
-            acquisitionThread.doLoop      = false;
-            processThread.doLoop          = false;
-
-            if (!acquisitionThread.join(500)) {
-                log_error(string.Format("Stop acquisition thread timeout."));
-            }
-            acquisitionThread = null;
-
-            if (!processThread.join(500)) {
-                log_error(string.Format("Stop process thread timeout."));
-            }
-            processThread = null;
 
             MPCODE retval = MP.stopAcquisition();
             if (retval != MPCODE.MPSUCCESS) {
@@ -394,22 +375,6 @@ namespace Ex {
                 log_error(string.Format("Cannot disconnect biopac, error: {0}", BiopacSettings.code_to_string(retval)));
             }
         }
-
-        private void write_data(List<string> lines) {
-
-            if (m_logger == null) {
-                return;
-            }
-
-            if (m_debugBypass) {
-                m_logger.write("Generated-biopac-debug-line");
-            }
-
-            if (lines != null) { 
-                m_logger.write_lines(lines);
-            }
-        }
-
 
         void read_debug_file() {
 

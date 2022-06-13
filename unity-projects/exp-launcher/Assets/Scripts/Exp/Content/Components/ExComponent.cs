@@ -39,6 +39,7 @@ namespace Ex {
         public enum Function{
             initialize,
             start_experiment,
+            post_start_experiment,
             set_current_config,
             pre_start_routine,
             start_routine,
@@ -109,6 +110,7 @@ namespace Ex {
 
         protected bool m_visibility = false; // is visible ?
         protected bool m_updating = false;   // call update function ?
+        protected bool m_alwaysCallUpdate = false; // call update everytime, do not consider the timeline
         private bool m_started = false;      // has associated routine started ?
         private bool m_closed = false;       // is closed ? (cannot be enabled anymore until next routine)
         private bool m_initialized = false;  // has initialization failed ? 
@@ -140,7 +142,7 @@ namespace Ex {
         // states
         public bool is_started() {return m_started;}
         public bool is_visible() {return m_visibility;}
-        public bool is_updating() {return m_updating;}
+        public bool is_updating() {return m_updating || m_alwaysCallUpdate;}
         public bool is_closed() {return m_closed;}
         public void set_closed_flag(bool closed) { m_closed = closed; }
         public void close() { components().close(this); }
@@ -369,6 +371,7 @@ namespace Ex {
             functionsDefined[Function.clean] = (derivedType.GetMethod("clean", flagPrivate).DeclaringType == derivedType);
 
             functionsDefined[Function.start_experiment] = (derivedType.GetMethod("start_experiment", flagPrivate).DeclaringType == derivedType);
+            functionsDefined[Function.post_start_experiment] = (derivedType.GetMethod("post_start_experiment", flagPrivate).DeclaringType == derivedType);            
             functionsDefined[Function.pre_stop_experiment] = (derivedType.GetMethod("pre_stop_experiment", flagPrivate).DeclaringType == derivedType);
             functionsDefined[Function.stop_experiment] = (derivedType.GetMethod("stop_experiment", flagPrivate).DeclaringType == derivedType);
 
@@ -456,6 +459,22 @@ namespace Ex {
                 start_experiment();
             }      
         }
+        public void base_post_start_experiment() {
+
+            currentFunction = Function.post_start_experiment;
+            if (catchExceptions) {
+                try {
+                    post_start_experiment();
+                } catch (Exception e) {
+                    display_exception(e);
+                }
+            } else {
+                post_start_experiment();
+            }
+        }
+
+
+        
 
         // This function is called only once at the end of an experiment 
         public void base_pre_stop_experiment() {
@@ -773,6 +792,7 @@ namespace Ex {
 
         // once per experiment
         protected virtual void start_experiment() { }
+        protected virtual void post_start_experiment() { }
         protected virtual void pre_stop_experiment() { }
         protected virtual void stop_experiment() { }
 

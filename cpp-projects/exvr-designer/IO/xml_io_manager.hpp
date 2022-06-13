@@ -48,6 +48,14 @@ namespace tool::ex{
         XmlIoManager(Experiment *experiment) : m_experiment(experiment){
         }
 
+
+        void force_no_duration(){
+            m_debugNoDuration = true;
+        }
+        void cancel_no_duration(){
+            m_debugNoDuration = false;
+        }
+
     private :
 
         bool check_start_node(QString nodeName);
@@ -255,8 +263,10 @@ namespace tool::ex{
 
         void check_read_elements();
 
+
     private:
 
+        bool m_debugNoDuration = false;
         Experiment *m_experiment = nullptr;
         std::unique_ptr<QXmlStreamReader> r = nullptr;
         std::unique_ptr<QXmlStreamWriter> w = nullptr;

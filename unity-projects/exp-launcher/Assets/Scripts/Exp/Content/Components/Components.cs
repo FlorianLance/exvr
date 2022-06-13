@@ -32,67 +32,6 @@ using UnityEngine;
 using static Ex.ExComponent;
 
 
-//#if UNITY_EDITOR
-//using UnityEditor;
-//namespace Ex{
-
-//    [CustomEditor(typeof(Components))]
-//    public class ComponentsEditor : Editor{
-
-//        public override bool RequiresConstantRepaint() {
-//            return true;
-//        }
-
-//        public override void OnInspectorGUI() {
-
-//            base.OnInspectorGUI();
-
-//            if (!Application.isPlaying) {
-//                return;
-//            }
-
-//            //EditorGUILayout.LabelField("Current element:");
-//            //var currentElementInfo = ExVR.Schreduler().current_element_info();
-//            //if (currentElementInfo != null) {
-//            //    if (currentElementInfo.type() == FlowElement.FlowElementType.Routine) {
-
-//            //        var routineInfo = (RoutineInfo)currentElementInfo;
-//            //        var routine = (Routine)routineInfo.element;
-//            //        if (routine != null) {
-//            //            EditorGUILayout.LabelField("[Routine] with id " + (currentElementInfo.key()).ToString());
-//            //            EditorGUILayout.ObjectField(routine, typeof(Routine), true);
-
-//            //            var condition = routine.current_condition();
-//            //            if (condition != null) {
-//            //                EditorGUILayout.LabelField("With condition:");
-//            //                EditorGUILayout.ObjectField(condition, typeof(Condition), true);
-//            //            } else {
-//            //                EditorGUILayout.LabelField("...");
-//            //            }
-
-//            //        } else {
-//            //            EditorGUILayout.LabelField("...");
-//            //        }
-//            //    } else {
-
-//            //        var isiInfo = (ISIInfo)currentElementInfo;
-//            //        var isi = (ISI)isiInfo.element;
-//            //        if (isi != null) {
-//            //            EditorGUILayout.LabelField("[ISI] with id " + (currentElementInfo.key()).ToString());
-//            //            EditorGUILayout.ObjectField(isi, typeof(ISI), true);
-//            //        } else {
-//            //            EditorGUILayout.LabelField("...");
-//            //        }
-//            //        //currentCondition = isi.current_condition();
-//            //    }
-//            //} else {
-//            //    EditorGUILayout.LabelField("...");
-//            //}
-//        }
-//    }
-//}
-//#endif
-
 namespace Ex{
 
     public class ComponentInfo{
@@ -433,6 +372,26 @@ namespace Ex{
             ExVR.ExpLog().components(Function.start_experiment, false);
         }
 
+        public void post_start_experiment() {
+
+            ExVR.ExpLog().components(Function.post_start_experiment, true);
+
+            foreach (var component in sortedComponents) {
+
+                if (component.is_function_defined(Function.post_start_experiment)) {
+                    ExVR.ExpLog().log_and_add_to_stacktrace(component, Function.post_start_experiment, true, true);
+                }
+                component.base_post_start_experiment();
+
+                if (component.is_function_defined(Function.post_start_experiment)) {
+                    ExVR.ExpLog().log_and_add_to_stacktrace(component, Function.post_start_experiment, false, true);
+                }
+            }
+
+            ExVR.ExpLog().components(Function.post_start_experiment, false);
+        }
+
+
         public void pre_stop_experiment() {
 
             ExVR.ExpLog().components(Function.pre_stop_experiment, true);
@@ -497,7 +456,9 @@ namespace Ex{
                 component.base_clean();
 
                 // destroy gameobject
-                Destroy(component.gameObject);
+                if (component.gameObject != null) {
+                    Destroy(component.gameObject);
+                }
             }
             ExVR.ExpLog().components(Function.clean, false);
 
@@ -694,3 +655,65 @@ namespace Ex{
 
     }
 }
+
+
+//#if UNITY_EDITOR
+//using UnityEditor;
+//namespace Ex{
+
+//    [CustomEditor(typeof(Components))]
+//    public class ComponentsEditor : Editor{
+
+//        public override bool RequiresConstantRepaint() {
+//            return true;
+//        }
+
+//        public override void OnInspectorGUI() {
+
+//            base.OnInspectorGUI();
+
+//            if (!Application.isPlaying) {
+//                return;
+//            }
+
+//            //EditorGUILayout.LabelField("Current element:");
+//            //var currentElementInfo = ExVR.Schreduler().current_element_info();
+//            //if (currentElementInfo != null) {
+//            //    if (currentElementInfo.type() == FlowElement.FlowElementType.Routine) {
+
+//            //        var routineInfo = (RoutineInfo)currentElementInfo;
+//            //        var routine = (Routine)routineInfo.element;
+//            //        if (routine != null) {
+//            //            EditorGUILayout.LabelField("[Routine] with id " + (currentElementInfo.key()).ToString());
+//            //            EditorGUILayout.ObjectField(routine, typeof(Routine), true);
+
+//            //            var condition = routine.current_condition();
+//            //            if (condition != null) {
+//            //                EditorGUILayout.LabelField("With condition:");
+//            //                EditorGUILayout.ObjectField(condition, typeof(Condition), true);
+//            //            } else {
+//            //                EditorGUILayout.LabelField("...");
+//            //            }
+
+//            //        } else {
+//            //            EditorGUILayout.LabelField("...");
+//            //        }
+//            //    } else {
+
+//            //        var isiInfo = (ISIInfo)currentElementInfo;
+//            //        var isi = (ISI)isiInfo.element;
+//            //        if (isi != null) {
+//            //            EditorGUILayout.LabelField("[ISI] with id " + (currentElementInfo.key()).ToString());
+//            //            EditorGUILayout.ObjectField(isi, typeof(ISI), true);
+//            //        } else {
+//            //            EditorGUILayout.LabelField("...");
+//            //        }
+//            //        //currentCondition = isi.current_condition();
+//            //    }
+//            //} else {
+//            //    EditorGUILayout.LabelField("...");
+//            //}
+//        }
+//    }
+//}
+//#endif

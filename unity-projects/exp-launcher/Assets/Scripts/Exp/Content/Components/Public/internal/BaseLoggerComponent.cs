@@ -41,6 +41,10 @@ namespace Ex {
         private System.Collections.Concurrent.ConcurrentQueue<Tuple<List<string>, bool>> m_linesList = new System.Collections.Concurrent.ConcurrentQueue<Tuple<List<string>, bool>>();
         private System.Threading.ReaderWriterLock m_locker = new System.Threading.ReaderWriterLock();
 
+        public bool is_writing() {
+            return !m_linesList.IsEmpty;
+        }
+
         public bool open_file(string filePath) {
 
             bool success = false;
@@ -137,7 +141,7 @@ namespace Ex {
         protected bool m_canWrite = false;
 
 
-        protected WritingFileThread writingJob = null;
+        protected WritingFileThread m_writingJob = null;
 
         #region ex_functions
 
@@ -153,26 +157,26 @@ namespace Ex {
                 return;
             }
 
-            writingJob = new WritingFileThread();
-            writingJob.doLoop = true;
+            m_writingJob = new WritingFileThread();
+            m_writingJob.doLoop = true;
 
-            if (!writingJob.open_file(m_fileFullPath)) {                
+            if (!m_writingJob.open_file(m_fileFullPath)) {                
                 log_error(string.Format("Cannot open stream writer with path [{0}].", m_fileFullPath));
                 return;
             }
-            writingJob.start();
+            m_writingJob.start();
             m_canWrite = true;
         }
 
         protected override void stop_experiment() {
             
             m_canWrite        = false;
-            if (writingJob != null) {
-                writingJob.doLoop = false;
-                if (!writingJob.join(100)) {
+            if (m_writingJob != null) {
+                m_writingJob.doLoop = false;
+                if (!m_writingJob.join(100)) {
                     log_error(string.Format("Stop writing thread timeout."));
                 }
-                writingJob = null;
+                m_writingJob = null;
             }
         }
 
@@ -254,6 +258,10 @@ namespace Ex {
 
         #region public_functions
 
+        public bool is_writing() {
+            return m_writingJob.is_writing();
+        }
+
         public string parent_directory_path() {
             return m_directoryPath;
         }
@@ -273,7 +281,7 @@ namespace Ex {
             }
 
             if (values.Count > 0) {
-                writingJob.add_lines(values);
+                m_writingJob.add_lines(values);
             }
         }
 
@@ -284,9 +292,9 @@ namespace Ex {
             }
 
             if (line) {
-                writingJob.add_line(Converter.to_string(value));
+                m_writingJob.add_line(Converter.to_string(value));
             } else {
-                writingJob.add_text(Converter.to_string(value));
+                m_writingJob.add_text(Converter.to_string(value));
             }
         }
 

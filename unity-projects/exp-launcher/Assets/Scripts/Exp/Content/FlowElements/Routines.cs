@@ -144,6 +144,7 @@ namespace Ex{
         }
 
         public void update_current_routine() {
+            
             if (m_currentRoutine != null) {
                 m_currentRoutine.update();
             }
@@ -190,6 +191,7 @@ namespace Ex{
         public void start_experiment() {
             ExVR.ExpLog().routines_message("Start experiment.");
             ExVR.Components().start_experiment();
+            ExVR.Components().post_start_experiment();            
         }
 
         public void stop_experiment() {

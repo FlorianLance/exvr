@@ -68,6 +68,8 @@ namespace Ex{
             functionsDefined[Function.clean] = (runtimeType.GetMethod("clean", flagPublic).DeclaringType == runtimeType);
 
             functionsDefined[Function.start_experiment] = (runtimeType.GetMethod("start_experiment", flagPublic).DeclaringType == runtimeType);
+            functionsDefined[Function.post_start_experiment] = (runtimeType.GetMethod("post_start_experiment", flagPublic).DeclaringType == runtimeType);            
+            functionsDefined[Function.pre_stop_experiment] = (runtimeType.GetMethod("pre_stop_experiment", flagPublic).DeclaringType == runtimeType);
             functionsDefined[Function.stop_experiment] = (runtimeType.GetMethod("stop_experiment", flagPublic).DeclaringType == runtimeType);
 
             functionsDefined[Function.set_current_config] = (runtimeType.GetMethod("set_current_config", flagPublic).DeclaringType == runtimeType);
@@ -176,6 +178,8 @@ namespace Ex{
 
         // once per experiment
         protected override void start_experiment() {compiledComponent.start_experiment();}
+        protected override void post_start_experiment() { compiledComponent.post_start_experiment(); }
+        protected override void pre_stop_experiment() { compiledComponent.pre_stop_experiment(); }
         protected override void stop_experiment() {compiledComponent.stop_experiment();}
 
         // once per routine

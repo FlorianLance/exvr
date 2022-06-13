@@ -108,7 +108,7 @@ namespace Ex {
 
         // flow elements
         [SerializeField]
-        private int m_currentElementId = 0;
+        private volatile int m_currentElementId = 0;
 
         [SerializeField]
         private FlowElementInfo m_currentElementInfo = null;

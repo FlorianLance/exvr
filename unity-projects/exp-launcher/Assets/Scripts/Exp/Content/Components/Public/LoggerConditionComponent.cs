@@ -105,15 +105,15 @@ namespace Ex {
                 }
             }
 
-            writingJob = new WritingFileThread();
-            writingJob.doLoop = true;
-            writingJob.start();
+            m_writingJob = new WritingFileThread();
+            m_writingJob.doLoop = true;
+            m_writingJob.start();
         }
 
         protected override void pre_start_routine() {
 
             m_fileFullPath = get_file_path(currentRoutine.name, currentCondition.name);
-            if (!writingJob.open_file(m_fileFullPath)) {
+            if (!m_writingJob.open_file(m_fileFullPath)) {
                 log_error(string.Format("Cannot open stream writer with path [{0}].", m_fileFullPath));
                 m_canWrite = false;
             } else {
