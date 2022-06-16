@@ -340,7 +340,7 @@ struct Component {
 
     using TComponentSlots = std::tuple<
         T,                             FunctionN,                      CNT,                    Doc>;
-    static constexpr TupleArray<95,TComponentSlots> componentsSlots = {{
+    static constexpr TupleArray<97,TComponentSlots> componentsSlots = {{
         TComponentSlots
         // Audio
         {T::AudioSource,               "play"sv,                       CNT::void_t,            "..."sv},
@@ -356,6 +356,8 @@ struct Component {
         {T::Camera,                    "set eye cam"sv,                CNT::transform_t,       "Set the eye camera transform"sv},
         {T::Camera,                    "set neutral cam"sv,            CNT::transform_t,       "Set the start neutral camera transform"sv},
         {T::Camera_target,             "set factor"sv,                 CNT::float_t,           "..."sv},
+        {T::Camera_target,             "set target offset pos"sv,      CNT::vector3_t,         "..."sv},
+        {T::Camera_target,             "set target offset rot"sv,      CNT::vector3_t,         "..."sv},
         // Interaction
         {T::Flag_pole,                 "hoist"sv,                      CNT::float_t,           "Hoist the flag."sv},
         {T::Mark_to_clean,             "erase"sv,                      CNT::gameobject_list_t, "Erase the parts of the mark close to the objects position."sv},

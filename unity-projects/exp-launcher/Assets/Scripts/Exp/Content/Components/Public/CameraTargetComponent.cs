@@ -43,7 +43,11 @@ namespace Ex{
         public Vector3 posTarget;
         public Vector3 eulerTarget;
         public Quaternion rotTarget;
-        public Transform trTarget;        
+        public Transform trTarget;
+
+        // 
+        //public Vector3 initCalibPos;
+        //public Quaternion initCalibRot;        
     }
 
     public class CameraTargetComponent : ExComponent{
@@ -58,19 +62,35 @@ namespace Ex{
         private float movementFactor = 0f;
         private bool doLoop = false;
 
-        public Vector3 offset = Vector3.zero;
+        public Vector3 targetOffsetposition = Vector3.zero;
+        public Vector3 targetOffsetEulerRotation = Vector3.zero;
+        
 
         // trajectories
         private Queue<Trajectory> savedTrajectories = new Queue<Trajectory>();        
 
         public void set_factor(float factor) {
-            movementFactor = Mathf.Clamp01(factor);            
+            float value = ((float)factor + currentC.get<float>("factor_offset")) * currentC.get<float>("factor_factor");
+            movementFactor = Mathf.Clamp01(value);            
+        }
+
+        public void set_target_offset_position(Vector3 postionOffset) {
+            targetOffsetposition = postionOffset;
+        }
+
+        public void set_target_offset_rotation(Vector3 eulerRotationOffset) {
+            targetOffsetEulerRotation = eulerRotationOffset;
         }
 
         protected override bool initialize() {
             add_slot("set factor", (factor) => {
-                float value = ((float)factor + currentC.get<float>("factor_offset")) * currentC.get<float>("factor_factor");
-                set_factor(Mathf.Clamp01(value));
+                set_factor((float)factor);
+            });
+            add_slot("set target offset pos", (offsetPos) => {
+                set_target_offset_position((Vector3)offsetPos);
+            });
+            add_slot("set target offset rot", (offsetEulerRot) => {
+                set_target_offset_rotation((Vector3)offsetEulerRot);
             });
             return true;
         }
@@ -79,6 +99,8 @@ namespace Ex{
             movementStarted = false;
             speedCurve      = currentC.get_curve("speed_curve");
             movementFactor  = 0f;
+            targetOffsetposition      = Vector3.zero;
+            targetOffsetEulerRotation = Vector3.zero;
         }
 
         protected override void stop_routine() {
@@ -109,7 +131,7 @@ namespace Ex{
             settings.teleport = currentC.get<bool>("teleport");
 
             string targetComponent = currentC.get<string>("target_component");
-            if (targetComponent.Length == 0) { // no component traget to follow, move to defined position/rotation
+            if (targetComponent.Length == 0) { // no component target to follow, move to defined position/rotation
                 if (currentC.get<bool>("absolute")) {
                     settings.posTarget = currentC.get_vector3("target_pos");
                     settings.eulerTarget = currentC.get_vector3("target_rot");
@@ -202,6 +224,7 @@ namespace Ex{
                         value = 1f;
                     } else {
                         value = deltaFactor / (1f - speedCurve.Evaluate(totalFactor));
+                        //value = speedCurve.Evaluate(movementFactor);
                     }  
                 }
 
@@ -211,18 +234,18 @@ namespace Ex{
 
                 // get current                
                 var cPos = s.neutral ? CameraUtility.calibration_position() : CameraUtility.eye_camera_position();
-                var cRos = s.neutral ? CameraUtility.calibration_rotation() : CameraUtility.eye_camera_rotation();
+                var cRot = s.neutral ? CameraUtility.calibration_rotation() : CameraUtility.eye_camera_rotation();
 
                 // compute current target
                 if (s.trTarget == null) { // use pos and rot as target
 
-                    pos = Interpolate.vector(cPos, s.posTarget, value, s.sphericalInterpolation);
+                    pos = Interpolate.vector(cPos, s.posTarget + targetOffsetposition, value, s.sphericalInterpolation);
 
                     // remove inused axies from rotation
                     if (!s.pitch || !s.yaw || !s.roll) {
 
-                        var cEuler = cRos.eulerAngles;
-                        rot = Interpolate.rotation(cRos,
+                        var cEuler = cRot.eulerAngles;
+                        rot = Interpolate.rotation(cRot,
                             Quaternion.Euler(new Vector3(
                                 s.pitch ? s.eulerTarget.x : cEuler.x, 
                                 s.yaw   ? s.eulerTarget.y : cEuler.y, 
@@ -230,25 +253,25 @@ namespace Ex{
                             value, s.sphericalInterpolation);
 
                     } else {
-                        rot = Interpolate.rotation(cRos, s.rotTarget, value, s.sphericalInterpolation);
+                        rot = Interpolate.rotation(cRot, s.rotTarget * Quaternion.Euler(targetOffsetEulerRotation), value, s.sphericalInterpolation);
                     }
                         
                 } else { // using transform as target
 
-                    pos = Interpolate.vector(cPos, s.trTarget.position, value, s.sphericalInterpolation);
+                    pos = Interpolate.vector(cPos, s.trTarget.position + targetOffsetposition, value, s.sphericalInterpolation);
       
                     // remove inused axies from rotation
                     if (!s.pitch || !s.yaw || !s.roll) {
                         var trEuler = s.trTarget.eulerAngles;
-                        var cEuler = cRos.eulerAngles;
-                        rot = Interpolate.rotation(cRos, 
+                        var cEuler = cRot.eulerAngles;
+                        rot = Interpolate.rotation(cRot, 
                             Quaternion.Euler(new Vector3(
                                 s.pitch ? trEuler.x : cEuler.x, 
                                 s.yaw   ? trEuler.y : cEuler.y, 
                                 s.roll  ? trEuler.z : cEuler.z)), 
                             value, s.sphericalInterpolation);
                     } else {
-                        rot = Interpolate.rotation(cRos, s.trTarget.rotation, value, s.sphericalInterpolation);
+                        rot = Interpolate.rotation(cRot, s.trTarget.rotation * Quaternion.Euler(targetOffsetEulerRotation), value, s.sphericalInterpolation);
                     }
                 }
 
