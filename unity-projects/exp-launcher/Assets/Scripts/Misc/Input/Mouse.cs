@@ -125,7 +125,6 @@ namespace Ex.Input {
         public double triggeredExperimentTime;
     }
 
-
     static public class MouseAxis {
         public enum Code {
             Horizontal, Vertical

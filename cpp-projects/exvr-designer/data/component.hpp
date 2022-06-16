@@ -192,9 +192,9 @@ struct Component {
         // Flow
         {T::Config,                   C::Flow,        TO::N, CO::C, N, N, R::OpenSource,   S::Sta, "Config"sv, "Config"sv, "Config"sv, ":/icons/Config"sv},
         // Input
-        {T::Joypad,                   C::Input,       TO::U, CO::I, Y, N, R::OpenSource,   S::Sta, "Joypad"sv, "Joypad"sv, "Joypad"sv,":/icons/Joypad"sv},
-        {T::Keyboard,                 C::Input,       TO::U, CO::I, Y, N, R::OpenSource,   S::Sta, "Keyboard"sv, "Keyboard"sv, "Keyboard"sv, ":/icons/Keyboard"sv},
-        {T::Mouse,                    C::Input,       TO::U, CO::I, Y, N, R::OpenSource,   S::Sta, "Mouse"sv, "Mouse"sv, "Mouse"sv, ":/icons/Mouse"sv},
+        {T::Joypad,                   C::Input,       TO::U, CO::I, Y, Y, R::OpenSource,   S::Sta, "Joypad"sv, "Joypad"sv, "Joypad"sv,":/icons/Joypad"sv},
+        {T::Keyboard,                 C::Input,       TO::U, CO::I, Y, Y, R::OpenSource,   S::Sta, "Keyboard"sv, "Keyboard"sv, "Keyboard"sv, ":/icons/Keyboard"sv},
+        {T::Mouse,                    C::Input,       TO::U, CO::I, Y, Y, R::OpenSource,   S::Sta, "Mouse"sv, "Mouse"sv, "Mouse"sv, ":/icons/Mouse"sv},
         // Interaction
         {T::Flag_pole,                C::Interaction, TO::B, CO::B, N, N, R::OpenSource,   S::Sta, "Flag_pole"sv, "Flag pole"sv, "FlagPole"sv, ":/icons/Flag_pole"sv},
         {T::Mark_to_clean,            C::Interaction, TO::B, CO::B, N, N, R::OpenSource,   S::Exp, "Mark_to_clean"sv, "Mark to clean"sv, "MarkToClean"sv, ":/icons/Mark_to_clean"sv},

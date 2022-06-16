@@ -92,14 +92,14 @@ namespace Ex {
             Undefined
         };
 
-        public enum Pritority { Low, Medium, Hight};
+        public enum Priority { Low, Medium, Hight};
         public enum Reserved {Public, Closed, LNCO};
 
         public int key = -1; // id component
         public string keyStr;
         public string typeStr;
         public Category category = Category.Undefined;
-        public Pritority priority = Pritority.Medium;
+        public Priority priority = Priority.Medium;
         public Function currentFunction = Function.undefined;
         public Dictionary<Function, bool> functionsDefined = null;
         
@@ -110,7 +110,8 @@ namespace Ex {
 
         protected bool m_visibility = false; // is visible ?
         protected bool m_updating = false;   // call update function ?
-        protected bool m_alwaysCallUpdate = false; // call update everytime, do not consider the timeline
+        protected bool m_alwaysCallUpdate = false; // call update even if not in timeline
+        protected bool m_global = false;           // call update even if not in condition
         private bool m_started = false;      // has associated routine started ?
         private bool m_closed = false;       // is closed ? (cannot be enabled anymore until next routine)
         private bool m_initialized = false;  // has initialization failed ? 
@@ -142,7 +143,11 @@ namespace Ex {
         // states
         public bool is_started() {return m_started;}
         public bool is_visible() {return m_visibility;}
-        public bool is_updating() {return m_updating || m_alwaysCallUpdate;}
+        public bool is_updating() { return m_updating; }
+
+        public bool is_global() { return m_global; }
+
+        public bool always_call_update() { return m_alwaysCallUpdate; }
         public bool is_closed() {return m_closed;}
         public void set_closed_flag(bool closed) { m_closed = closed; }
         public void close() { components().close(this); }
@@ -286,7 +291,8 @@ namespace Ex {
             // set members
             gameObject.name = xmlComponent.Name;
             key             = xmlComponent.Key;
-            keyStr = Converter.to_string(xmlComponent.Key);            
+            keyStr = Converter.to_string(xmlComponent.Key);
+            m_global = xmlComponent.Global;
 
             typeStr = string.Format("Ex.{0}Component", xmlComponent.Type);
             if (Components.Names2Info.ContainsKey(typeStr)) {

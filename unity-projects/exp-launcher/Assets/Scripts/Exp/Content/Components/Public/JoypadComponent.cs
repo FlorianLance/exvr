@@ -62,6 +62,8 @@ namespace Ex{
 
         protected override bool initialize() {
 
+            m_alwaysCallUpdate = true;
+
             add_signal(axisOnGuiSignal);
             add_signal(buttonOnGuiSignal);
 
@@ -89,29 +91,9 @@ namespace Ex{
         }
 
         protected override void update() {
-            // reset states infos
-            sendInfos = true;
-        }
-
-        protected override void set_update_state(bool doUpdate) {
-
-            if (!doUpdate) {
-
-                // reset states
-                var currentTime = time().ellapsed_exp_ms();
-                foreach (Input.JoypadButton.Code buttonCode in Input.JoypadButton.Codes) {
-                    var currentEvent = buttonsEvent[buttonCode];
-                    var currentState = buttonsState[buttonCode];
-                    currentEvent.update(false, currentTime);
-                    currentState.update(false, currentTime);
-                }
-
-                foreach (Input.JoypadAxis.Code axisCode in Input.JoypadAxis.Codes) {
-                    var currentEvent = axisEvent[axisCode];
-                    var currentState = axisState[axisCode];
-                    currentEvent.update(0f, currentTime);
-                    currentState.update(0f, currentTime);
-                }
+            if (is_updating()) {
+                // reset states infos
+                sendInfos = true;
             }
         }
 
@@ -122,8 +104,6 @@ namespace Ex{
                 return;
             }
             var currentTime = time().ellapsed_exp_ms();
-
-
             var buttonsCodeInfoToSend = new List<Input.JoypadButton.Code>();
             foreach (Input.JoypadButton.Code buttonCode in Input.JoypadButton.Codes) {
 
@@ -136,13 +116,15 @@ namespace Ex{
                 currentEvent.update(pressed, currentTime);
                 currentState.update(pressed, currentTime);
 
-                bool notNone = currentEvent.state != Input.Button.State.None;
-                if (notNone || (previousState != currentEvent.state)) {
-                    buttonsCodeInfoToSend.Add(buttonCode);
-                }
+                if (is_updating()) {
+                    bool notNone = currentEvent.state != Input.Button.State.None;
+                    if (notNone || (previousState != currentEvent.state)) {
+                        buttonsCodeInfoToSend.Add(buttonCode);
+                    }
 
-                if (notNone) {
-                    invoke_signal(buttonOnGuiSignal, currentEvent);
+                    if (notNone) {
+                        invoke_signal(buttonOnGuiSignal, currentEvent);
+                    }
                 }
             }
 
@@ -161,46 +143,49 @@ namespace Ex{
                 currentEvent.update(value, currentTime);
                 currentState.update(value, currentTime);
 
-                bool notNone = currentEvent.value != 0f;
-                if (notNone || (previousValue != currentEvent.value)) {
-                    axisCodeInfoToSend.Add(axisCode);
-                }
+                if (is_updating()) {
+                    bool notNone = currentEvent.value != 0f;
+                    if (notNone || (previousValue != currentEvent.value)) {
+                        axisCodeInfoToSend.Add(axisCode);
+                    }
 
-                if (notNone) { 
-                    invoke_signal(axisOnGuiSignal, currentEvent);
+                    if (notNone) {
+                        invoke_signal(axisOnGuiSignal, currentEvent);
+                    }
                 }
             }
 
             // send infos only once per frame
-            if (sendInfos) {
-                StringBuilder infos = new StringBuilder();
-                int currentCode = 0;
-                foreach (var code in buttonsCodeInfoToSend) {           
-                    if (currentCode != buttonsCodeInfoToSend.Count-1) {
-                        infos.AppendFormat("{0},", ((int)code).ToString());
-                    } else {
-                        infos.Append(((int)code).ToString());
+            if (is_updating()) {
+                if (sendInfos) {
+                    StringBuilder infos = new StringBuilder();
+                    int currentCode = 0;
+                    foreach (var code in buttonsCodeInfoToSend) {
+                        if (currentCode != buttonsCodeInfoToSend.Count - 1) {
+                            infos.AppendFormat("{0},", ((int)code).ToString());
+                        } else {
+                            infos.Append(((int)code).ToString());
+                        }
+                        ++currentCode;
                     }
-                    ++currentCode;
+                    send_infos_to_gui_init_config(buttonsInfoSignal, buttonsInfos = infos.ToString());
                 }
-                send_infos_to_gui_init_config(buttonsInfoSignal, buttonsInfos = infos.ToString());
-            }
-            if(sendInfos) {
-                StringBuilder infos = new StringBuilder();
-                int currentCode = 0;
-                foreach (var code in axisCodeInfoToSend) {
-                    var axeEvent = axisEvent[code];
-                    if (currentCode != axisCodeInfoToSend.Count - 1) {
-                        infos.AppendFormat("{0},{1}%", ((int)code).ToString(), Converter.to_string(axeEvent.value, "0.00"));
-                    } else {
-                        infos.AppendFormat("{0},{1}", ((int)code).ToString(), Converter.to_string(axeEvent.value, "0.00"));
+                if (sendInfos) {
+                    StringBuilder infos = new StringBuilder();
+                    int currentCode = 0;
+                    foreach (var code in axisCodeInfoToSend) {
+                        var axeEvent = axisEvent[code];
+                        if (currentCode != axisCodeInfoToSend.Count - 1) {
+                            infos.AppendFormat("{0},{1}%", ((int)code).ToString(), Converter.to_string(axeEvent.value, "0.00"));
+                        } else {
+                            infos.AppendFormat("{0},{1}", ((int)code).ToString(), Converter.to_string(axeEvent.value, "0.00"));
+                        }
+                        ++currentCode;
                     }
-                    ++currentCode;
+                    send_infos_to_gui_init_config(axisInfoSignal, axisInfos = infos.ToString());
                 }
-                send_infos_to_gui_init_config(axisInfoSignal, axisInfos = infos.ToString());
-            }
-
-            sendInfos = false;
+                sendInfos = false;
+            }            
         }
 
         void send_joystick_info() {

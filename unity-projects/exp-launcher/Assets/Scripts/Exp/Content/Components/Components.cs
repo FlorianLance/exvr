@@ -35,14 +35,14 @@ using static Ex.ExComponent;
 namespace Ex{
 
     public class ComponentInfo{
-        public ComponentInfo(Category category, Pritority priority, Reserved reserved, bool catchExceptions) {
+        public ComponentInfo(Category category, Priority priority, Reserved reserved, bool catchExceptions) {
             this.category = category;
             this.priority = priority;
             this.reserved = reserved;
             this.catchExceptions = catchExceptions;
         }
         public Category category;
-        public Pritority priority;
+        public Priority priority;
         public Reserved reserved;
         public bool catchExceptions;
     }
@@ -72,110 +72,110 @@ namespace Ex{
             [Category.Viewer] = "[C:Viewer]"
         };
 
-        private static ComponentInfo gen_info(Category category, Pritority pritority, Reserved reserved, bool catchExceptions = true) {
+        private static ComponentInfo gen_info(Category category, Priority pritority, Reserved reserved, bool catchExceptions = true) {
             return new ComponentInfo(category, pritority, reserved, catchExceptions);
         }
 
         public static readonly Dictionary<string, ComponentInfo> Names2Info = new Dictionary<string, ComponentInfo> {
             // audio
-            ["Ex.MicrophoneComponent"] = gen_info(Category.Audio, Pritority.Medium, Reserved.Public),
-            ["Ex.AudioSourceComponent"] = gen_info(Category.Audio, Pritority.Medium, Reserved.Public),
-            ["Ex.AudioListenerComponent"] = gen_info(Category.Audio, Pritority.Medium, Reserved.Public),
+            ["Ex.MicrophoneComponent"] = gen_info(Category.Audio, Priority.Medium, Reserved.Public),
+            ["Ex.AudioSourceComponent"] = gen_info(Category.Audio, Priority.Medium, Reserved.Public),
+            ["Ex.AudioListenerComponent"] = gen_info(Category.Audio, Priority.Medium, Reserved.Public),
             // avatar
-            ["Ex.HumanoidAvatarComponent"] = gen_info(Category.Avatar, Pritority.Medium, Reserved.Closed),
-            ["Ex.HumanoidControllerComponent"] = gen_info(Category.Avatar, Pritority.Low, Reserved.Closed),
+            ["Ex.HumanoidAvatarComponent"] = gen_info(Category.Avatar, Priority.Medium, Reserved.Closed),
+            ["Ex.HumanoidControllerComponent"] = gen_info(Category.Avatar, Priority.Low, Reserved.Closed),
             // camera
-            ["Ex.CameraTargetComponent"] = gen_info(Category.Camera, Pritority.Low, Reserved.Public),
-            ["Ex.FPPCameraComponent"]   = gen_info(Category.Camera, Pritority.Low, Reserved.Public),
-            ["Ex.CameraTrajectoryComponent"] = gen_info(Category.Camera, Pritority.Low, Reserved.Public),
-            ["Ex.CameraTrajectoryFileComponent"] = gen_info(Category.Camera, Pritority.Low, Reserved.Public),
-            ["Ex.CameraComponent"] = gen_info(Category.Camera, Pritority.Low, Reserved.Public),
-            ["Ex.FPPAvatarCameraComponent"] = gen_info(Category.Camera, Pritority.Low, Reserved.Closed),
-            ["Ex.TPPAvatarCameraComponent"] = gen_info(Category.Camera, Pritority.Low, Reserved.Closed),
+            ["Ex.CameraTargetComponent"] = gen_info(Category.Camera, Priority.Low, Reserved.Public),
+            ["Ex.FPPCameraComponent"]   = gen_info(Category.Camera, Priority.Low, Reserved.Public),
+            ["Ex.CameraTrajectoryComponent"] = gen_info(Category.Camera, Priority.Low, Reserved.Public),
+            ["Ex.CameraTrajectoryFileComponent"] = gen_info(Category.Camera, Priority.Low, Reserved.Public),
+            ["Ex.CameraComponent"] = gen_info(Category.Camera, Priority.Low, Reserved.Public),
+            ["Ex.FPPAvatarCameraComponent"] = gen_info(Category.Camera, Priority.Low, Reserved.Closed),
+            ["Ex.TPPAvatarCameraComponent"] = gen_info(Category.Camera, Priority.Low, Reserved.Closed),
             // cloud
-            ["Ex.CloudComponent"]       = gen_info(Category.Cloud, Pritority.Medium, Reserved.Public),
-            ["Ex.ScanerVideoComponent"] = gen_info(Category.Cloud, Pritority.Medium, Reserved.LNCO),
+            ["Ex.CloudComponent"]       = gen_info(Category.Cloud, Priority.Medium, Reserved.Public),
+            ["Ex.ScanerVideoComponent"] = gen_info(Category.Cloud, Priority.Medium, Reserved.LNCO),
             // environment
-            ["Ex.PostProcessComponent"] = gen_info(Category.Environment, Pritority.Hight, Reserved.Public),
-            ["Ex.SkyComponent"]         = gen_info(Category.Environment, Pritority.Hight, Reserved.Public),
+            ["Ex.PostProcessComponent"] = gen_info(Category.Environment, Priority.Hight, Reserved.Public),
+            ["Ex.SkyComponent"]         = gen_info(Category.Environment, Priority.Hight, Reserved.Public),
             // environment
-            ["Ex.ConfigComponent"] = gen_info(Category.Flow, Pritority.Hight, Reserved.Public),
+            ["Ex.ConfigComponent"] = gen_info(Category.Flow, Priority.Hight, Reserved.Public),
             // input
-            ["Ex.JoypadComponent"] = gen_info(Category.Input, Pritority.Hight, Reserved.Public, false),
-            ["Ex.MouseComponent"] = gen_info(Category.Input, Pritority.Hight, Reserved.Public, false),
-            ["Ex.KeyboardComponent"] = gen_info(Category.Input, Pritority.Hight, Reserved.Public, false),
+            ["Ex.JoypadComponent"] = gen_info(Category.Input, Priority.Hight, Reserved.Public, false),
+            ["Ex.MouseComponent"] = gen_info(Category.Input, Priority.Hight, Reserved.Public, false),
+            ["Ex.KeyboardComponent"] = gen_info(Category.Input, Priority.Hight, Reserved.Public, false),
             // interaction
-            ["Ex.FlagPoleComponent"] = gen_info(Category.Interaction, Pritority.Medium, Reserved.Public),
-            ["Ex.MarkToCleanComponent"] = gen_info(Category.Interaction, Pritority.Medium, Reserved.Public),
-            ["Ex.TargetToGrabComponent"] = gen_info(Category.Interaction, Pritority.Medium, Reserved.Public),
+            ["Ex.FlagPoleComponent"] = gen_info(Category.Interaction, Priority.Medium, Reserved.Public),
+            ["Ex.MarkToCleanComponent"] = gen_info(Category.Interaction, Priority.Medium, Reserved.Public),
+            ["Ex.TargetToGrabComponent"] = gen_info(Category.Interaction, Priority.Medium, Reserved.Public),
             // model
-            ["Ex.CubeComponent"] = gen_info(Category.Model, Pritority.Medium, Reserved.Public, false),
-            ["Ex.SphereComponent"] = gen_info(Category.Model, Pritority.Medium, Reserved.Public, false),
-            ["Ex.TorusComponent"] = gen_info(Category.Model, Pritority.Medium, Reserved.Public, false),
-            ["Ex.LinesComponent"] = gen_info(Category.Model, Pritority.Medium, Reserved.Public, false),
-            ["Ex.CylinderComponent"] = gen_info(Category.Model, Pritority.Medium, Reserved.Public, false),
-            ["Ex.LandmarkComponent"] = gen_info(Category.Model, Pritority.Medium, Reserved.Public, false),
+            ["Ex.CubeComponent"] = gen_info(Category.Model, Priority.Medium, Reserved.Public, false),
+            ["Ex.SphereComponent"] = gen_info(Category.Model, Priority.Medium, Reserved.Public, false),
+            ["Ex.TorusComponent"] = gen_info(Category.Model, Priority.Medium, Reserved.Public, false),
+            ["Ex.LinesComponent"] = gen_info(Category.Model, Priority.Medium, Reserved.Public, false),
+            ["Ex.CylinderComponent"] = gen_info(Category.Model, Priority.Medium, Reserved.Public, false),
+            ["Ex.LandmarkComponent"] = gen_info(Category.Model, Priority.Medium, Reserved.Public, false),
             // network
-            ["Ex.UdpReaderComponent"] = gen_info(Category.Network, Pritority.Hight, Reserved.Public, false),
-            ["Ex.UdpWriterComponent"] = gen_info(Category.Network, Pritority.Hight, Reserved.Public, false),
-            ["Ex.SerialPortReaderComponent"] = gen_info(Category.Network, Pritority.Hight, Reserved.Public, false),
-            ["Ex.SerialPortWriterComponent"] = gen_info(Category.Network, Pritority.Hight, Reserved.Public, false),
-            ["Ex.ParallelPortWriterComponent"] = gen_info(Category.Network, Pritority.Hight, Reserved.Public, false),
+            ["Ex.UdpReaderComponent"] = gen_info(Category.Network, Priority.Hight, Reserved.Public, false),
+            ["Ex.UdpWriterComponent"] = gen_info(Category.Network, Priority.Hight, Reserved.Public, false),
+            ["Ex.SerialPortReaderComponent"] = gen_info(Category.Network, Priority.Hight, Reserved.Public, false),
+            ["Ex.SerialPortWriterComponent"] = gen_info(Category.Network, Priority.Hight, Reserved.Public, false),
+            ["Ex.ParallelPortWriterComponent"] = gen_info(Category.Network, Priority.Hight, Reserved.Public, false),
             // output
-            ["Ex.LoggerComponent"] = gen_info(Category.Output, Pritority.Hight, Reserved.Public, false),
-            ["Ex.LoggerConditionComponent"] = gen_info(Category.Output, Pritority.Hight, Reserved.Public, false),
-            ["Ex.LoggerColumnsComponent"] = gen_info(Category.Output, Pritority.Hight, Reserved.Public, false),
-            ["Ex.LoggerExperimentComponent"] = gen_info(Category.Output, Pritority.Hight, Reserved.Public, false),
+            ["Ex.LoggerComponent"] = gen_info(Category.Output, Priority.Hight, Reserved.Public, false),
+            ["Ex.LoggerConditionComponent"] = gen_info(Category.Output, Priority.Hight, Reserved.Public, false),
+            ["Ex.LoggerColumnsComponent"] = gen_info(Category.Output, Priority.Hight, Reserved.Public, false),
+            ["Ex.LoggerExperimentComponent"] = gen_info(Category.Output, Priority.Hight, Reserved.Public, false),
             // resource
-            ["Ex.ImageResourceComponent"] = gen_info(Category.Resource, Pritority.Hight, Reserved.Public),
-            ["Ex.PlotResourceComponent"] = gen_info(Category.Resource, Pritority.Hight, Reserved.Public),
-            ["Ex.TextResourceComponent"] = gen_info(Category.Resource, Pritority.Hight, Reserved.Public),
-            ["Ex.VideoResourceComponent"] = gen_info(Category.Resource, Pritority.Hight, Reserved.Public),
-            ["Ex.AudioResourceComponent"] = gen_info(Category.Resource, Pritority.Hight, Reserved.Public),
-            ["Ex.DirectoryResourceComponent"] = gen_info(Category.Resource, Pritority.Hight, Reserved.Public),            
+            ["Ex.ImageResourceComponent"] = gen_info(Category.Resource, Priority.Hight, Reserved.Public),
+            ["Ex.PlotResourceComponent"] = gen_info(Category.Resource, Priority.Hight, Reserved.Public),
+            ["Ex.TextResourceComponent"] = gen_info(Category.Resource, Priority.Hight, Reserved.Public),
+            ["Ex.VideoResourceComponent"] = gen_info(Category.Resource, Priority.Hight, Reserved.Public),
+            ["Ex.AudioResourceComponent"] = gen_info(Category.Resource, Priority.Hight, Reserved.Public),
+            ["Ex.DirectoryResourceComponent"] = gen_info(Category.Resource, Priority.Hight, Reserved.Public),            
             // scene
-            ["Ex.AssetBundleComponent"] = gen_info(Category.Scene, Pritority.Hight, Reserved.Public),
-            ["Ex.MultiABComponent"] = gen_info(Category.Scene, Pritority.Hight, Reserved.Public),
-            ["Ex.FallingSpheresComponent"] = gen_info(Category.Scene, Pritority.Medium, Reserved.Public),
-            ["Ex.MirrorComponent"] = gen_info(Category.Scene, Pritority.Medium, Reserved.Public),
-            ["Ex.FlashingDotComponent"] = gen_info(Category.Scene, Pritority.Medium, Reserved.Public),
-            ["Ex.MRIComponent"] = gen_info(Category.Scene, Pritority.Medium, Reserved.Public),
+            ["Ex.AssetBundleComponent"] = gen_info(Category.Scene, Priority.Hight, Reserved.Public),
+            ["Ex.MultiABComponent"] = gen_info(Category.Scene, Priority.Hight, Reserved.Public),
+            ["Ex.FallingSpheresComponent"] = gen_info(Category.Scene, Priority.Medium, Reserved.Public),
+            ["Ex.MirrorComponent"] = gen_info(Category.Scene, Priority.Medium, Reserved.Public),
+            ["Ex.FlashingDotComponent"] = gen_info(Category.Scene, Priority.Medium, Reserved.Public),
+            ["Ex.MRIComponent"] = gen_info(Category.Scene, Priority.Medium, Reserved.Public),
             // script
-            ["Ex.CSharpFunctionComponent"] = gen_info(Category.Script, Pritority.Low, Reserved.Public),
-            ["Ex.CSharpScriptComponent"] = gen_info(Category.Script, Pritority.Low, Reserved.Public),
-            ["Ex.PythonScriptComponent"] = gen_info(Category.Script, Pritority.Medium, Reserved.Public),
+            ["Ex.CSharpFunctionComponent"] = gen_info(Category.Script, Priority.Low, Reserved.Public),
+            ["Ex.CSharpScriptComponent"] = gen_info(Category.Script, Priority.Low, Reserved.Public),
+            ["Ex.PythonScriptComponent"] = gen_info(Category.Script, Priority.Medium, Reserved.Public),
             // tracking
-            ["Ex.SceneScanerComponent"] = gen_info(Category.Tracking, Pritority.Medium, Reserved.LNCO),
-            ["Ex.LeapMotionComponent"] = gen_info(Category.Tracking, Pritority.Hight, Reserved.Public),
-            ["Ex.LeapMotionTrackingComponent"] = gen_info(Category.Tracking, Pritority.Medium, Reserved.Public),
-            ["Ex.LeapMotionArmsDisplayComponent"] = gen_info(Category.Tracking, Pritority.Medium, Reserved.Closed),
-            ["Ex.BiopacComponent"] = gen_info(Category.Tracking, Pritority.Hight, Reserved.Public),
-            ["Ex.TheraTrainerTrackingComponent"] = gen_info(Category.Tracking, Pritority.Medium, Reserved.LNCO),
-            ["Ex.TheraTrainerPlatformComponent"] = gen_info(Category.Tracking, Pritority.Medium, Reserved.LNCO),
-            ["Ex.KinectManagerComponent"] = gen_info(Category.Tracking, Pritority.Hight, Reserved.LNCO),
-            ["Ex.KinectBodyTrackingComponent"] = gen_info(Category.Tracking, Pritority.Hight, Reserved.LNCO),
-            ["Ex.OptitrackComponent"] = gen_info(Category.Tracking, Pritority.Hight, Reserved.Public),
-            ["Ex.AttachObjectToHandComponent"] = gen_info(Category.Tracking, Pritority.Medium, Reserved.Public),
-            ["Ex.QualisysTrackingComponent"] = gen_info(Category.Tracking, Pritority.Hight, Reserved.Public),
-            ["Ex.SoncebozSGComponent"] = gen_info(Category.Tracking, Pritority.Hight, Reserved.LNCO),
-            ["Ex.FOPRobotComponent"] = gen_info(Category.Tracking, Pritority.Hight, Reserved.LNCO),
-            ["Ex.ViveProEyeTrackingComponent"] = gen_info(Category.Tracking, Pritority.Hight, Reserved.Public),            
+            ["Ex.SceneScanerComponent"] = gen_info(Category.Tracking, Priority.Medium, Reserved.LNCO),
+            ["Ex.LeapMotionComponent"] = gen_info(Category.Tracking, Priority.Hight, Reserved.Public),
+            ["Ex.LeapMotionTrackingComponent"] = gen_info(Category.Tracking, Priority.Medium, Reserved.Public),
+            ["Ex.LeapMotionArmsDisplayComponent"] = gen_info(Category.Tracking, Priority.Medium, Reserved.Closed),
+            ["Ex.BiopacComponent"] = gen_info(Category.Tracking, Priority.Hight, Reserved.Public),
+            ["Ex.TheraTrainerTrackingComponent"] = gen_info(Category.Tracking, Priority.Medium, Reserved.LNCO),
+            ["Ex.TheraTrainerPlatformComponent"] = gen_info(Category.Tracking, Priority.Medium, Reserved.LNCO),
+            ["Ex.KinectManagerComponent"] = gen_info(Category.Tracking, Priority.Hight, Reserved.LNCO),
+            ["Ex.KinectBodyTrackingComponent"] = gen_info(Category.Tracking, Priority.Hight, Reserved.LNCO),
+            ["Ex.OptitrackComponent"] = gen_info(Category.Tracking, Priority.Hight, Reserved.Public),
+            ["Ex.AttachObjectToHandComponent"] = gen_info(Category.Tracking, Priority.Medium, Reserved.Public),
+            ["Ex.QualisysTrackingComponent"] = gen_info(Category.Tracking, Priority.Hight, Reserved.Public),
+            ["Ex.SoncebozSGComponent"] = gen_info(Category.Tracking, Priority.Hight, Reserved.LNCO),
+            ["Ex.FOPRobotComponent"] = gen_info(Category.Tracking, Priority.Hight, Reserved.LNCO),
+            ["Ex.ViveProEyeTrackingComponent"] = gen_info(Category.Tracking, Priority.Hight, Reserved.Public),            
             // UI
-            ["Ex.SliderUIComponent"] = gen_info(Category.UI, Pritority.Medium, Reserved.Public),
-            ["Ex.ButtonsUIComponent"] = gen_info(Category.UI, Pritority.Medium, Reserved.Public),            
+            ["Ex.SliderUIComponent"] = gen_info(Category.UI, Priority.Medium, Reserved.Public),
+            ["Ex.ButtonsUIComponent"] = gen_info(Category.UI, Priority.Medium, Reserved.Public),            
             // video
-            ["Ex.VideoFileComponent"] = gen_info(Category.Video, Pritority.Medium, Reserved.Public),
-            ["Ex.VideoFileCameraViewerComponent"] = gen_info(Category.Video, Pritority.Medium, Reserved.Public),
-            ["Ex.WebcamComponent"] = gen_info(Category.Video, Pritority.Medium, Reserved.Public),
-            ["Ex.VideoSaverComponent"] = gen_info(Category.Video, Pritority.Medium, Reserved.Public),
-            ["Ex.VolumetricVideoComponent"] = gen_info(Category.Video, Pritority.Hight, Reserved.LNCO),
+            ["Ex.VideoFileComponent"] = gen_info(Category.Video, Priority.Medium, Reserved.Public),
+            ["Ex.VideoFileCameraViewerComponent"] = gen_info(Category.Video, Priority.Medium, Reserved.Public),
+            ["Ex.WebcamComponent"] = gen_info(Category.Video, Priority.Medium, Reserved.Public),
+            ["Ex.VideoSaverComponent"] = gen_info(Category.Video, Priority.Medium, Reserved.Public),
+            ["Ex.VolumetricVideoComponent"] = gen_info(Category.Video, Priority.Hight, Reserved.LNCO),
             // viewer
-            ["Ex.FixationCrossViewerComponent"] = gen_info(Category.Viewer, Pritority.Low, Reserved.Public),
-            ["Ex.ImageViewerComponent"] = gen_info(Category.Viewer, Pritority.Low, Reserved.Public),
-            ["Ex.TextViewerComponent"] = gen_info(Category.Viewer, Pritority.Low, Reserved.Public),
-            ["Ex.WebcamViewerComponent"] = gen_info(Category.Viewer, Pritority.Low, Reserved.Public),
-            ["Ex.FovSimulatorComponent"] = gen_info(Category.Viewer, Pritority.Hight, Reserved.Public),
-            ["Ex.BlendFadeViewerComponent"] = gen_info(Category.Viewer, Pritority.Hight, Reserved.Public)
+            ["Ex.FixationCrossViewerComponent"] = gen_info(Category.Viewer, Priority.Low, Reserved.Public),
+            ["Ex.ImageViewerComponent"] = gen_info(Category.Viewer, Priority.Low, Reserved.Public),
+            ["Ex.TextViewerComponent"] = gen_info(Category.Viewer, Priority.Low, Reserved.Public),
+            ["Ex.WebcamViewerComponent"] = gen_info(Category.Viewer, Priority.Low, Reserved.Public),
+            ["Ex.FovSimulatorComponent"] = gen_info(Category.Viewer, Priority.Hight, Reserved.Public),
+            ["Ex.BlendFadeViewerComponent"] = gen_info(Category.Viewer, Priority.Hight, Reserved.Public)
         };
 
         // sort by priority
@@ -213,27 +213,37 @@ namespace Ex{
                 
             }
 
+            // fill global components
+            Condition.globalComponents = new Dictionary<int, ExComponent>();
+            foreach (var component in components) {
+                if (component.is_global()) {
+                    Condition.globalComponents[component.key] = component;
+                }
+            }
+
             // sort components by priority
             sortedComponents.Clear();
-            reverseSortedComponents.Clear();
+            reverseSortedComponents.Clear();            
 
             foreach (var component in components) {
-                if(component.priority == Pritority.Hight) {
+                if(component.priority == Priority.Hight) {
                     sortedComponents.Add(component);
-                } else if (component.priority == Pritority.Low) {
+
+
+                } else if (component.priority == Priority.Low) {
                     reverseSortedComponents.Add(component);
                 }
             }
             foreach (var component in components) {
-                if (component.priority == Pritority.Medium) {
+                if (component.priority == Priority.Medium) {
                     sortedComponents.Add(component);
                     reverseSortedComponents.Add(component);
                 } 
             }
             foreach (var component in components) {
-                if (component.priority == Pritority.Low) {
+                if (component.priority == Priority.Low) {
                     sortedComponents.Add(component);
-                } else if (component.priority == Pritority.Hight) {
+                } else if (component.priority == Priority.Hight) {
                     reverseSortedComponents.Add(component);
                 }
             }

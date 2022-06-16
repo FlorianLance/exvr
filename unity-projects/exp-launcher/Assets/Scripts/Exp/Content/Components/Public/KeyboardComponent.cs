@@ -32,7 +32,6 @@ using System.Diagnostics;
 
 // unity
 using UnityEngine;
-using UnityRawInput;
 using UnityEngine.Profiling;
 
 
@@ -56,6 +55,7 @@ namespace Ex {
             Thread.CurrentThread.Name = "VirtualKeyGetterThread";
             Profiler.BeginThreadProfiling("VirtualKeyGetterThread", "VirtualKeyGetterThread 1");
            
+            // generate key events
             foreach (var corr in Input.Keyboard.vrCodeCorrespondence) {
                 if (keysToFIlter != null) {
                     if (keysToFIlter.Contains(corr.Value)) {
@@ -151,14 +151,17 @@ namespace Ex {
         // # buttons
         private Dictionary<KeyCode, bool> m_keyboardGetReturn = new Dictionary<KeyCode, bool>();
         private Dictionary<KeyCode, Input.KeyboardButtonEvent> m_buttonsEvent  = new Dictionary<KeyCode, Input.KeyboardButtonEvent>();
-
-        //private Dictionary<RawKey, Input.KeyboardButtonEvent> m_rawButtonsEvent = new Dictionary<RawKey, Input.KeyboardButtonEvent>();
-
-        VirtualKeyGetterThread thread = null;
+        
+        private VirtualKeyGetterThread m_thread = null;
         protected override bool initialize() {
 
+            // update functions will be called even if not in timeline
+            m_alwaysCallUpdate = true;
+
+            // add signal
             add_signal(buttonOnGuiSignal);
 
+            // generate filter
             HashSet<KeyCode> keysToFIlter = null;
             if (initC.get<bool>("filter")) {
                 keysToFIlter = new HashSet<KeyCode>();
@@ -174,6 +177,7 @@ namespace Ex {
 
             if (!ExVR.GuiSettings().catchExternalKeyboardEvents) {
 
+                // generate key events
                 if (keysToFIlter == null) {
                     foreach (var code in Input.Keyboard.Codes) {
                         m_buttonsEvent[code] = new Input.KeyboardButtonEvent(code);
@@ -188,38 +192,48 @@ namespace Ex {
 
             } else {
 
-                thread = new VirtualKeyGetterThread();
-                thread.keysToFIlter = keysToFIlter;
-                thread.doLoop = true;
-                thread.start(System.Threading.ThreadPriority.AboveNormal);
+                // init thread
+                m_thread = new VirtualKeyGetterThread();
+                m_thread.keysToFIlter = keysToFIlter;
+                m_thread.doLoop = true;
+                m_thread.start(System.Threading.ThreadPriority.AboveNormal);
             }
 
 
             return true;
         }
 
-
-        protected override void update() {
-            // reset states infos
-            sendInfos = true;
+        protected override void start_experiment() {
+            if (ExVR.GuiSettings().catchExternalKeyboardEvents) {
+                m_thread.process = true;
+            }
+        }
+        
+        protected override void stop_experiment() {
+            if (ExVR.GuiSettings().catchExternalKeyboardEvents) {
+                m_thread.process = false;
+            }
         }
 
-        protected override void set_update_state(bool doUpdate) {
+        protected override void clean() {
 
-            //log_error("KEYBOARD " + doUpdate);
+            if (ExVR.GuiSettings().catchExternalKeyboardEvents) {
 
-            if (!ExVR.GuiSettings().catchExternalKeyboardEvents && !doUpdate) {
-
-                // reset states
-                var currentExpTime     = time().ellapsed_exp_ms();
-                var currentElementTime = time().ellapsed_element_ms();
-                foreach (var kEvent in m_buttonsEvent) {
-                    kEvent.Value.update(false, currentExpTime, currentElementTime);
+                // stop thread
+                m_thread.process = false;
+                m_thread.doLoop = false;
+                if (!m_thread.join(500)) {
+                    log_error(string.Format("Stop acquisition thread timeout."));
                 }
+                m_thread = null;
+            }
+        }
 
-            } else if(ExVR.GuiSettings().catchExternalKeyboardEvents) {
+        protected override void update() {
 
-                thread.process = doUpdate;
+            if (is_updating()) {
+                // reset states infos
+                sendInfos = true;
             }
         }
 
@@ -244,27 +258,30 @@ namespace Ex {
                     kEvent.Value.update(m_keyboardGetReturn[kEvent.Key], currentExpTime, currentElementTime);   
                 }
 
-                // send triggers
-                foreach (var kEvent in m_buttonsEvent) {
-                    if (kEvent.Value.state != Input.Button.State.None) {
-                        invoke_signal(buttonOnGuiSignal, kEvent.Value);
-                    }
-                }
+                if (is_updating()) {
 
-                // send infos only once per frame
-                if (sendInfos) {
-
-                    StringBuilder infos = new StringBuilder();
-                    foreach (var kEvent in m_buttonsEvent) {                        
-                        if (kEvent.Value.state == Input.Button.State.Pressed || kEvent.Value.state == Input.Button.State.Down) {
-                            infos.AppendFormat("{0} ", ((int)kEvent.Key).ToString());
+                    // send triggers
+                    foreach (var kEvent in m_buttonsEvent) {
+                        if (kEvent.Value.state != Input.Button.State.None) {
+                            invoke_signal(buttonOnGuiSignal, kEvent.Value);
                         }
                     }
-                    
-                    if (infos.Length > 0) {
-                        send_infos_to_gui_init_config(infosSignal, infos.ToString());
+
+                    // send infos only once per frame
+                    if (sendInfos) {
+
+                        StringBuilder infos = new StringBuilder();
+                        foreach (var kEvent in m_buttonsEvent) {
+                            if (kEvent.Value.state == Input.Button.State.Pressed || kEvent.Value.state == Input.Button.State.Down) {
+                                infos.AppendFormat("{0} ", ((int)kEvent.Key).ToString());
+                            }
+                        }
+
+                        if (infos.Length > 0) {
+                            send_infos_to_gui_init_config(infosSignal, infos.ToString());
+                        }
+                        sendInfos = false;
                     }
-                    sendInfos = false;
                 }
 
             } else if (ExVR.GuiSettings().catchExternalKeyboardEvents) {
@@ -276,7 +293,7 @@ namespace Ex {
                 Dictionary<KeyCode, Input.KeyboardButtonEvent> KPressedEvents = null;
                 {
                     Input.KeyboardButtonEvent kEvent;
-                    while (thread.newEvents.TryDequeue(out kEvent)) {
+                    while (m_thread.newEvents.TryDequeue(out kEvent)) {
         
                         if (kEvent.state == Input.Button.State.Pressed) { // keep only the last pressed event every frame
 
@@ -302,56 +319,45 @@ namespace Ex {
                     }
                 }
 
-                StringBuilder infos = null;
-                if (sendInfos) {
-                    infos = new StringBuilder();
-                }
+                if (is_updating()) {
 
-                // send signals
-                if (kDownEvents != null) {
-                    foreach (var kEvent in kDownEvents) {
-                        invoke_signal(buttonOnGuiSignal, kEvent);
+                    StringBuilder infos = null;
+                    if (sendInfos) {
+                        infos = new StringBuilder();
+                    }
 
-                        if (infos != null) {
-                            infos.AppendFormat("{0} ", ((int)kEvent.code).ToString());
+                    // send signals
+                    if (kDownEvents != null) {
+                        foreach (var kEvent in kDownEvents) {
+                            invoke_signal(buttonOnGuiSignal, kEvent);
+
+                            if (infos != null) {
+                                infos.AppendFormat("{0} ", ((int)kEvent.code).ToString());
+                            }
                         }
                     }
-                }
-                if (KPressedEvents != null) {
-                    foreach (var kEvent in KPressedEvents) {
-                        invoke_signal(buttonOnGuiSignal, kEvent.Value);
+                    if (KPressedEvents != null) {
+                        foreach (var kEvent in KPressedEvents) {
+                            invoke_signal(buttonOnGuiSignal, kEvent.Value);
 
-                        if (infos != null) {
-                            infos.AppendFormat("{0} ", ((int)kEvent.Key).ToString());
+                            if (infos != null) {
+                                infos.AppendFormat("{0} ", ((int)kEvent.Key).ToString());
+                            }
                         }
                     }
-                }
-                if (kUpEvents != null) {
-                    foreach (var kEvent in kUpEvents) {
-                        invoke_signal(buttonOnGuiSignal, kEvent);
+                    if (kUpEvents != null) {
+                        foreach (var kEvent in kUpEvents) {
+                            invoke_signal(buttonOnGuiSignal, kEvent);
+                        }
+                    }
+
+                    if (sendInfos) {
+                        if (infos.Length > 0) {
+                            send_infos_to_gui_init_config(infosSignal, infos.ToString());
+                        }
+                        sendInfos = false;
                     }
                 }
-
-                if (sendInfos) {
-                    if (infos.Length > 0) {
-                        send_infos_to_gui_init_config(infosSignal, infos.ToString());
-                    }
-                    sendInfos = false;
-                }
-            }
-        }
-
-        protected override void clean() {
-
-            if (ExVR.GuiSettings().catchExternalKeyboardEvents) {
-                // stop threads
-                thread.process = false;
-                thread.doLoop = false;
-
-                if (!thread.join(500)) {
-                    log_error(string.Format("Stop acquisition thread timeout."));
-                }
-                thread = null;
             }
         }
     }

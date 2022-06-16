@@ -1098,11 +1098,6 @@ void Experiment::add_action(ElementKey routineKey, ConditionKey conditionKey, Co
         return;
     }
 
-    if(Component::is_global(component->type)){
-        QtLogger::error(QSL("[Experiment::add_action] Component of type [") % from_view(Component::get_type_name(component->type)) % QSL("] is global and cannot be included in a condition."));
-        return;
-    }
-
     if(auto routine = get_routine(routineKey); routine != nullptr){
 
         if(routine->isARandomizer){
@@ -1134,11 +1129,6 @@ void Experiment::add_action_to_all_conditions(ElementKey routineKey, ComponentKe
         return;
     }
 
-    if(Component::is_global(component->type)){
-        QtLogger::error(QSL("[Experiment::add_action_to_all_conditions] Component of type [") % from_view(Component::get_type_name(component->type)) % QSL("] is global and cannot be included in a condition."));
-        return;
-    }
-
     if(auto routine = get_routine(routineKey); routine != nullptr){
 
         if(routine->isARandomizer){
@@ -1167,11 +1157,6 @@ void Experiment::add_action_to_all_routines_conditions(ComponentKey componentKey
         return;
     }
 
-    if(Component::is_global(component->type)){
-        QtLogger::error(QSL("[Experiment::add_action_to_all_routines_conditions] Component of type [") % from_view(Component::get_type_name(component->type)) % QSL("] is global and cannot be included in a condition."));
-        return;
-    }
-
     for(auto &routine : get_elements_from_type<Routine>()){
 
         if(routine->isARandomizer){
@@ -1196,11 +1181,6 @@ void Experiment::insert_action_to(ComponentKey componentKey, std::vector<std::tu
     auto component = compM.get_component(componentKey);
     if(component == nullptr){
         QtLogger::error(QSL("Cannot insert action.)"));
-        return;
-    }
-
-    if(Component::is_global(component->type)){
-        QtLogger::error(QSL("[Experiment::insert_action_to] Component of type [") % from_view(Component::get_type_name(component->type)) % QSL("] is global and cannot be included in a condition."));
         return;
     }
 
