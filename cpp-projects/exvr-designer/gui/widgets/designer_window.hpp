@@ -173,6 +173,9 @@ private:
     Ui::ExVrMainUI m_ui;
 
     // generated ui
+    // # docks
+    QDockWidget *m_dwComponents         = nullptr;
+    QDockWidget *m_dwLogs               = nullptr;
     // # experiment widgets
     FlowDiagramWUP m_flowDiagramW       = nullptr;
     ElementDisplayWUP m_elementViewerW  = nullptr;
@@ -281,7 +284,8 @@ private:
     QTimer m_logTimer;
 
     // logs
-    QStringList logs;   
+    QStringList logs;
+    QTextBrowser *m_tbLogs = nullptr;
 };
 }
 

@@ -223,7 +223,7 @@ void ComponentsManager::insert_copy_of_component(Component *component, std::vect
 bool ComponentsManager::insert_new_component(Component::Type type, RowId id){
 
     if(Component::get_unicity(type) && count(type) > 0){
-        QtLogger::error(QSL("[ComponentsManager::insert_new_component] Unique component already inside experiment."));
+        QtLogger::error(QSL("[ComponentsManager::insert_new_component] Component of type [") % from_view(Component::get_type_name(type)) % QSL("] can only be included once per experiment."));
         return false;
     }
 

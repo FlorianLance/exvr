@@ -597,7 +597,7 @@ void ExVrController::show_component_informations_dialog(ComponentKey componentKe
                         size_t nbUpdateIntervals = 0;
                         if(action->timelineUpdate){
                             nbUpdateIntervals = action->timelineUpdate->nb_intervals();
-                            lengthUpdate = action->timelineUpdate->sum_intervals();
+                            lengthUpdate      = action->timelineUpdate->sum_intervals();
                         }
                         double lengthVisibility = 0.;
                         size_t nbVisibilityIntervals = 0;
@@ -613,6 +613,10 @@ void ExVrController::show_component_informations_dialog(ComponentKey componentKe
                             if(nbUpdateIntervals > 0){
                                 timelineTxt += QSL(" with **[") % QString::number(nbUpdateIntervals) % QSL("]** intervals of total length  **[")
                                                % QString::number(lengthUpdate) % QSL("]** for update timeline");
+
+//                                if(lengthUpdate == condition->duration.v){
+//                                    timelineTxt += QSL(" [FULL]");
+//                                }
                             }else{
                                 timelineTxt += QSL(" with no interval for update timeline");
                             }
@@ -620,6 +624,9 @@ void ExVrController::show_component_informations_dialog(ComponentKey componentKe
                             if(nbVisibilityIntervals > 0){
                                 timelineTxt += QSL(" with  **[") % QString::number(nbVisibilityIntervals) % QSL("]** intervals of total length  **[") %
                                                QString::number(lengthVisibility) % QSL("]** for visibility timeline");
+//                                if(lengthVisibility == condition->duration.v){
+//                                    timelineTxt +=  QSL(" [FULL]");
+//                                }
                             }else{
                                 timelineTxt += QSL(" with no interval for visibility timeline");
                             }
@@ -645,7 +652,8 @@ void ExVrController::show_component_informations_dialog(ComponentKey componentKe
                             timelineTxt += QSL(" (Timeline-less)");
                         }
 
-                        insideTxt += QSL(" * Condition **[") % condition->name % QSL("]** with config **[") % action->config->name % QSL("]** ") % timelineTxt %
+                        insideTxt += QSL(" * Condition **[") % condition->name % QSL("]** with config **[") % action->config->name % QSL("]** and duration **[") %
+                                     QString::number(condition->duration.v) % QSL("]**") % timelineTxt %
                                       (action->nodeUsed ? QSL(" **(Node used)**") : QSL(""))  % QSL("<br />");
                     }
                 }
@@ -1049,8 +1057,8 @@ void ExVrController::generate_global_signals_connections(){
     connect(s, &GSignals::show_component_custom_menu_signal,          componentsM, &COM::show_howering_component_custom_menu);
     connect(s, &GSignals::toggle_component_parameters_signal,         componentsM, &COM::toggle_component_parameters_dialog);
     connect(s, &GSignals::toggle_selection_component_signal,          componentsM, &COM::toggle_component_selection);
-    connect(s, &GSignals::enter_component_signal,                     componentsM, &COM::update_style);
-    connect(s, &GSignals::leave_component_signal,                     componentsM, &COM::update_style);
+//    connect(s, &GSignals::enter_component_signal,                     componentsM, &COM::update_style);
+//    connect(s, &GSignals::leave_component_signal,                     componentsM, &COM::update_style);
 
     // -> experiment
     // # ui

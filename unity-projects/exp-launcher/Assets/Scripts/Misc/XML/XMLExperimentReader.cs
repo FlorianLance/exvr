@@ -110,6 +110,9 @@ namespace Ex{
             [XmlAttribute(AttributeName = "type")]
             public string Type { get; set; }
 
+            [XmlAttribute(AttributeName = "global")]
+            public bool Global { get; set; }
+
             // elements
             [XmlElement(ElementName = "InitConfig")]
             public InitConfig InitConfig { get; set; }

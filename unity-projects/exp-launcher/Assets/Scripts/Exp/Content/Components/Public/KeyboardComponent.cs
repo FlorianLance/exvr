@@ -206,6 +206,8 @@ namespace Ex {
 
         protected override void set_update_state(bool doUpdate) {
 
+            //log_error("KEYBOARD " + doUpdate);
+
             if (!ExVR.GuiSettings().catchExternalKeyboardEvents && !doUpdate) {
 
                 // reset states

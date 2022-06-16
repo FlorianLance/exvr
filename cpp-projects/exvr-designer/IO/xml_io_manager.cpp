@@ -562,10 +562,10 @@ std::unique_ptr<Component> XmlIoManager::read_component(){
 
 std::unique_ptr<Resource> XmlIoManager::read_resource(){
 
-    const auto key   = read_attribute<int>(QSL("key"), true);
-    const auto typeStr = read_attribute<QString>(QSL("type"), true);
-    const auto alias = read_attribute<QString>(QSL("alias"), true);
-    const auto path  = read_attribute<QString>(QSL("path"), true);
+    const auto key      = read_attribute<int>(QSL("key"), true);
+    const auto typeStr  = read_attribute<QString>(QSL("type"), true);
+    const auto alias    = read_attribute<QString>(QSL("alias"), true);
+    const auto path     = read_attribute<QString>(QSL("path"), true);
 
     if(!key.has_value() || !typeStr.has_value() || !alias.has_value()  || !path.has_value()){
         QtLogger::error(QSL("[XML] Invalid resource at line: ") % QString::number(r->lineNumber()));
@@ -627,9 +627,11 @@ std::unique_ptr<Resource> XmlIoManager::read_resource(){
 void XmlIoManager::write_component(const Component *component) {
 
     w->writeStartElement(QSL("Component"));
-    w->writeAttribute(QSL("key"),                QString::number(component->key()));
-    w->writeAttribute(QSL("name"),               component->name());
-    w->writeAttribute(QSL("type"),               from_view(Component::get_unity_name(component->type)));
+    w->writeAttribute(QSL("key"),    QString::number(component->key()));
+    w->writeAttribute(QSL("name"),   component->name());
+    w->writeAttribute(QSL("type"),   from_view(Component::get_unity_name(component->type)));
+    w->writeAttribute(QSL("global"), Component::is_global(component->type) ? QSL("1") : QSL("0"));
+
     write_config(component->initConfig.get(), true);
     w->writeStartElement(QSL("Configs"));
     for(const auto &config : component->configs){

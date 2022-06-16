@@ -82,8 +82,8 @@ signals:
     void toggle_component_parameters_signal(tool::ex::ComponentKey key);
     void remove_component_signal(tool::ex::ComponentKey key);
     void duplicate_component_signal(tool::ex::ComponentKey componentKey);
-    void enter_component_signal(tool::ex::ComponentKey key);
-    void leave_component_signal(tool::ex::ComponentKey key);
+//    void enter_component_signal(tool::ex::ComponentKey key);
+//    void leave_component_signal(tool::ex::ComponentKey key);
     void show_component_informations_signal(tool::ex::ComponentKey componentKey);
     void copy_component_signal(tool::ex::Component *component, std::vector<tool::ex::ConfigKey> configKeys, tool::ex::RowId to);
 

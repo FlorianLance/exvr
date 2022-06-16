@@ -60,13 +60,13 @@ DesignerWindow::DesignerWindow(bool lncoComponents, QWidget *parent) : QMainWind
     m_ui.setupUi(this);        
     setAcceptDrops(true);
 
+    // create widgets
     create_flow_diagram();
-    create_components_manager(lncoComponents);
+    create_logger();
+    create_components_manager(lncoComponents);    
     create_routines_manager();
     create_element_viewer();
-
-    // create widgets
-    create_logger();
+    resizeDocks({m_dwLogs, m_dwComponents}, {3, 5}, Qt::Vertical);
 
     // create toolbar/menu
     create_actions();
@@ -82,6 +82,7 @@ DesignerWindow::DesignerWindow(bool lncoComponents, QWidget *parent) : QMainWind
 
     // settings
     set_window_settings();
+
 }
 
 void DesignerWindow::set_window_settings(){
@@ -513,7 +514,7 @@ void DesignerWindow::create_actions(){
     m_clearLogsAct.setStatusTip(tr("Erase logs"));
     m_clearLogsAct.setIcon(QIcon(":/icons/Eraser"));
     connect(&m_clearLogsAct, &QAction::triggered, this, [&]{
-        m_ui.tbLogs->clear();
+        m_tbLogs->clear();
     });
 
     m_showHelpAct.setText(tr("&Show help"));
@@ -686,6 +687,11 @@ void DesignerWindow::create_menu(){
 void DesignerWindow::create_toolbar(){
 
     QToolBar* tb = addToolBar(tr("Toolbar"));
+    tb->setStyleSheet("QToolBar {background-color: rgb(45,45,45);}QToolButton:hover {background-color: lightgray; }");
+    tb->setFixedHeight(45);
+//    ui->mainToolBar->setStyleSheet("QToolButton:hover {background-color: darkgray; }"
+//                                   " QToolBar {background: rgb(30, 30, 30) }");
+
     tb->setMovable(false);
     tb->setFloatable(false);
     tb->setAllowedAreas(Qt::ToolBarArea::TopToolBarArea);
@@ -801,14 +807,15 @@ void DesignerWindow::create_toolbar(){
 
 void DesignerWindow::create_logger(){
 
-    m_ui.tbLogs->zoomIn(2);
-    m_ui.tbLogs->setStyleSheet("background-color: rgb(45,45,45);");
-    m_ui.tbLogs->setAcceptDrops(false);
-    m_ui.tbLogs->setOpenLinks(false);
-    m_ui.tbLogs->setUndoRedoEnabled(false);
-    m_ui.tbLogs->setReadOnly(true);
-    m_ui.tbLogs->setContextMenuPolicy(Qt::NoContextMenu);
-    m_ui.tbLogs->document()->setMaximumBlockCount(400);
+    m_tbLogs = new QTextBrowser();
+    m_tbLogs->zoomIn(2);
+    m_tbLogs->setStyleSheet("background-color: rgb(45,45,45); font: 11px");
+    m_tbLogs->setAcceptDrops(false);
+    m_tbLogs->setOpenLinks(false);
+    m_tbLogs->setUndoRedoEnabled(false);
+    m_tbLogs->setReadOnly(true);
+    m_tbLogs->setContextMenuPolicy(Qt::NoContextMenu);
+    m_tbLogs->document()->setMaximumBlockCount(400);
 
     // TODO: crash when quit
     connect(&m_logTimer, &QTimer::timeout, this, [&]{
@@ -818,7 +825,7 @@ void DesignerWindow::create_logger(){
         }
 
         QTextBlockFormat format;
-        QTextCursor cursor = m_ui.tbLogs->textCursor();
+        QTextCursor cursor = m_tbLogs->textCursor();
         cursor.movePosition(QTextCursor::End);
         cursor.insertBlock(format);
         for(int ii = 0; ii < logs.size(); ++ii){
@@ -831,9 +838,22 @@ void DesignerWindow::create_logger(){
         }
 
         logs.clear();
-        m_ui.tbLogs->setTextCursor(cursor); // TODO: UI settings
+        m_tbLogs->setTextCursor(cursor); // TODO: UI settings
 
     });
+
+    m_dwLogs = new QDockWidget(this);
+    m_dwLogs->setWindowTitle("Logs");
+    using QWA = Qt::DockWidgetArea;
+    using QWF = QDockWidget::DockWidgetFeature;
+    m_dwLogs->setFeatures(QWF::DockWidgetFloatable | QWF::DockWidgetMovable);
+    m_dwLogs->setAllowedAreas(QWA::LeftDockWidgetArea | QWA::RightDockWidgetArea | QWA::TopDockWidgetArea | QWA::BottomDockWidgetArea);
+    m_dwLogs->setStyleSheet("QDockWidget{background-color: rgb(51, 51, 51);;color: white;font: bold 14px;}");
+    addDockWidget(Qt::DockWidgetArea::LeftDockWidgetArea,m_dwLogs);
+    setCorner(Qt::Corner::TopLeftCorner, Qt::DockWidgetArea::LeftDockWidgetArea);
+    m_dwLogs->setWidget(m_tbLogs);
+
+
     m_logTimer.start(1000/15);
 }
 
@@ -847,7 +867,17 @@ void DesignerWindow::create_flow_diagram(){
 void DesignerWindow::create_components_manager(bool lncoComponents){
 
     m_componentsW = std::make_unique<ComponentsManagerW>(lncoComponents);
-    m_ui.vlComponents->addWidget(m_componentsW.get());
+
+    m_dwComponents = new QDockWidget(this);
+    m_dwComponents->setWindowTitle("Components");
+    using QWA = Qt::DockWidgetArea;
+    using QWF = QDockWidget::DockWidgetFeature;
+    m_dwComponents->setFeatures(QWF::DockWidgetFloatable | QWF::DockWidgetMovable);
+    m_dwComponents->setAllowedAreas(QWA::LeftDockWidgetArea | QWA::RightDockWidgetArea);
+    m_dwComponents->setStyleSheet("QDockWidget{background-color: rgb(51, 51, 51);;color: white;font: bold 14px;}");
+    addDockWidget(Qt::DockWidgetArea::LeftDockWidgetArea,m_dwComponents);
+    setCorner(Qt::Corner::BottomLeftCorner, Qt::DockWidgetArea::LeftDockWidgetArea);
+    m_dwComponents->setWidget(m_componentsW.get());
 }
 
 void DesignerWindow::create_routines_manager(){
