@@ -51,7 +51,7 @@ ComponentW::ComponentW(Component *component) : key(component->c_key()), type(com
     // frame icon
     // setMinimumHeight(45);
 
-    icon = QIcon(from_view(Component::get_icon_path(type)));
+    icon = QIcon(Component::get_icon_path(type));
 
     m_iconButton = new QPushButton(icon,"");
     m_iconButton->setIconSize(QSize(15,15));

@@ -100,21 +100,35 @@ namespace Ex {
         public string typeStr;
         public Category category = Category.Undefined;
         public Priority priority = Priority.Medium;
+
+        [SerializeField]
+        private Reserved reserved = Reserved.Public;
+
         public Function currentFunction = Function.undefined;
-        public Dictionary<Function, bool> functionsDefined = null;
-        
+        public Dictionary<Function, bool> functionsDefined = null;       
+
         public Routine currentRoutine = null;
         public Condition currentCondition = null;
-        public TimeLine currentTimeline = null;                
+        public TimeLine currentTimeline = null;
+
+        [SerializeField]
         protected Events.Connections m_connections = null;
 
+        [SerializeField]
         protected bool m_visibility = false; // is visible ?
+        [SerializeField]
         protected bool m_updating = false;   // call update function ?
+        [SerializeField]
         protected bool m_alwaysCallUpdate = false; // call update even if not in timeline
+        [SerializeField]
         protected bool m_global = false;           // call update even if not in condition
+        [SerializeField]
         private bool m_started = false;      // has associated routine started ?
+        [SerializeField]
         private bool m_closed = false;       // is closed ? (cannot be enabled anymore until next routine)
+        [SerializeField]
         private bool m_initialized = false;  // has initialization failed ? 
+        [SerializeField]
         protected bool catchExceptions = false;
 
         // access        
@@ -291,39 +305,31 @@ namespace Ex {
             // set members
             gameObject.name = xmlComponent.Name;
             key             = xmlComponent.Key;
-            keyStr = Converter.to_string(xmlComponent.Key);
-            m_global = xmlComponent.Global;
+            keyStr          = Converter.to_string(xmlComponent.Key);
+            m_global        = xmlComponent.Global;
+            priority        = (Priority)xmlComponent.Priority;
+            tag             = string.Format("{0}Component", xmlComponent.Category);
+            typeStr         = string.Format("Ex.{0}Component", xmlComponent.Type);
+            category        = (Category)Enum.Parse(typeof(Category), xmlComponent.Category);
+            reserved        = (Reserved)xmlComponent.Restricted;
+            catchExceptions = ExVR.GuiSettings().catchComponentsExceptions || xmlComponent.Exceptions;
 
-            typeStr = string.Format("Ex.{0}Component", xmlComponent.Type);
-            if (Components.Names2Info.ContainsKey(typeStr)) {
-
-                var infos = Components.Names2Info[typeStr];
-                catchExceptions = ExVR.GuiSettings().catchComponentsExceptions || infos.catchExceptions;
-
-                bool valid = false;
-                if (infos.reserved == Reserved.Public) {
-                    valid = true;
-                }else if (infos.reserved == Reserved.Closed) {
+            bool valid = false;
+            if (reserved == Reserved.Public) {
+                valid = true;
+            } else if (reserved == Reserved.Closed) {
 #if CLOSED_COMPONENTS
-                    valid = true;
+                valid = true;
 #endif
-                }else if (infos.reserved == Reserved.LNCO) {
+            } else if (reserved == Reserved.LNCO) {
 #if LNCO_COMPONENTS
-                    valid = true;
+                valid = true;
 #endif
-                }
-                if (!valid) {
-                    log_error("Component is restricted and not available for this ExVR build.");
-                    return false;
-                }
-                
-                category = infos.category;
-                priority = infos.priority;
-            } else {
-                log_error("Component doesn't belong to a category.");
+            }
+            if (!valid) {
+                log_error("Component is restricted and not available for this ExVR build.");
                 return false;
             }
-            tag = string.Format("{0}Component", category.ToString());
 
             // set parent
             if(Components.Category2Transform.ContainsKey(category)){

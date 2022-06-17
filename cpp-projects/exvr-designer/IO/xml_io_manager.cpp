@@ -627,10 +627,15 @@ std::unique_ptr<Resource> XmlIoManager::read_resource(){
 void XmlIoManager::write_component(const Component *component) {
 
     w->writeStartElement(QSL("Component"));
-    w->writeAttribute(QSL("key"),    QString::number(component->key()));
-    w->writeAttribute(QSL("name"),   component->name());
-    w->writeAttribute(QSL("type"),   from_view(Component::get_unity_name(component->type)));
-    w->writeAttribute(QSL("global"), Component::is_global(component->type) ? QSL("1") : QSL("0"));
+    w->writeAttribute(QSL("key"),               QString::number(component->key()));
+    w->writeAttribute(QSL("name"),              component->name());
+    w->writeAttribute(QSL("category"),          from_view(Component::to_string(component->category)));
+    w->writeAttribute(QSL("type"),              from_view(Component::get_unity_name(component->type)));
+    w->writeAttribute(QSL("global"),            Component::is_global(component->type) ? QSL("1") : QSL("0"));
+    w->writeAttribute(QSL("always_updating"),   Component::is_alsways_updating(component->type) ? QSL("1") : QSL("0"));
+    w->writeAttribute(QSL("exceptions"),        Component::get_exceptions(component->type) ? QSL("1") : QSL("0"));
+    w->writeAttribute(QSL("restricted"),        QString::number(static_cast<int>(Component::get_restricted(component->type))));
+    w->writeAttribute(QSL("priority"),          QString::number(static_cast<int>(Component::get_priority(component->type))));
 
     write_config(component->initConfig.get(), true);
     w->writeStartElement(QSL("Configs"));

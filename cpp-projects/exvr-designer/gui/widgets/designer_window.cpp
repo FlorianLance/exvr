@@ -632,6 +632,16 @@ void DesignerWindow::create_menu(){
 
     // file
     QMenu *menu = menuBar()->addMenu(tr("&File"));
+
+//    menuBar()->setStyleSheet(
+//        "background-color: rgb(45,45,45); color: rgb(200,200,200); "
+//        "font: bold 14px; "
+        //"QMenuBar::item:selected{background-color: rgb(255,255,255);color: rgb(0,0,0);}"
+
+//        "QMenuBar::item:selected{background-color: rgb(0,255,255);color: rgb(0,0,255);}"
+//        "QMenu::item:selected{background-color: rgb(255,0,255);color: rgb(0,255,0);}"
+//    );
+
     menu->addAction(&m_newExperimentAct);
     menu->addSeparator();
     menu->addAction(&m_saveExperimentAct);

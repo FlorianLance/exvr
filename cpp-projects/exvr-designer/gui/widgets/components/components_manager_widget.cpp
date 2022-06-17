@@ -313,7 +313,7 @@ void ComponentsManagerW::initialize_menues(){
             for(const auto &componentT : componentsT[category]){
 
                 QAction *action = new QAction();
-                action->setIcon(QIcon(from_view(Component::get_icon_path(componentT))));
+                action->setIcon(QIcon(Component::get_icon_path(componentT)));
                 action->setText(from_view(Component::get_full_name(componentT)));
                 typesMenu->addAction(action);
 
