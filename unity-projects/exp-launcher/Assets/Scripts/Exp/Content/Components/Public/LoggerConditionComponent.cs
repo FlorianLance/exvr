@@ -100,25 +100,19 @@ namespace Ex {
 
             foreach (var fileName in m_filesNames) {
 
-                if (!create_file(fileName, initC.get<bool>("add_header_line") ? initC.get<string>("header_line") : string.Empty)) {
+                if (!FileLogger.create_file(
+                    fileName,
+                    initC.get<bool>("add_header_line") ? initC.get<string>("header_line") : string.Empty,
+                    initC.get<bool>("dont_write_if_file_exists"),
+                    initC.get<bool>("add_to_end_if_file_exists"))) {
                     return;
                 }
             }
-
-            m_writingJob = new WritingFileThread();
-            m_writingJob.doLoop = true;
-            m_writingJob.start();
+            m_fileLogger.start_logging();
         }
 
         protected override void pre_start_routine() {
-
-            m_fileFullPath = get_file_path(currentRoutine.name, currentCondition.name);
-            if (!m_writingJob.open_file(m_fileFullPath)) {
-                log_error(string.Format("Cannot open stream writer with path [{0}].", m_fileFullPath));
-                m_canWrite = false;
-            } else {
-                m_canWrite = true;
-            }
+            m_fileLogger.open_file(get_file_path(currentRoutine.name, currentCondition.name));
         }
     }
 }

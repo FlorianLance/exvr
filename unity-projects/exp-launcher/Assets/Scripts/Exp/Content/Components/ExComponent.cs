@@ -102,7 +102,7 @@ namespace Ex {
         public Priority priority = Priority.Medium;
 
         [SerializeField]
-        private Reserved reserved = Reserved.Public;
+        private Reserved m_reserved = Reserved.Public;
 
         public Function currentFunction = Function.undefined;
         public Dictionary<Function, bool> functionsDefined = null;       
@@ -311,17 +311,18 @@ namespace Ex {
             tag             = string.Format("{0}Component", xmlComponent.Category);
             typeStr         = string.Format("Ex.{0}Component", xmlComponent.Type);
             category        = (Category)Enum.Parse(typeof(Category), xmlComponent.Category);
-            reserved        = (Reserved)xmlComponent.Restricted;
+            m_reserved        = (Reserved)xmlComponent.Restricted;
             catchExceptions = ExVR.GuiSettings().catchComponentsExceptions || xmlComponent.Exceptions;
+            m_alwaysCallUpdate = xmlComponent.AlwaysUpdating;            
 
             bool valid = false;
-            if (reserved == Reserved.Public) {
+            if (m_reserved == Reserved.Public) {
                 valid = true;
-            } else if (reserved == Reserved.Closed) {
+            } else if (m_reserved == Reserved.Closed) {
 #if CLOSED_COMPONENTS
                 valid = true;
 #endif
-            } else if (reserved == Reserved.LNCO) {
+            } else if (m_reserved == Reserved.LNCO) {
 #if LNCO_COMPONENTS
                 valid = true;
 #endif
@@ -833,6 +834,10 @@ namespace Ex {
         protected virtual void update_parameter_from_gui(string updatedArgName) {}
         protected virtual void action_from_gui(bool initConfig, string action) {}
 
+
+        // logging
+
+        public virtual string format_data_for_global_logger() { return null; }
 
 
         // transform related function

@@ -86,7 +86,7 @@ struct Connector{
         Decimal_trigonometry, Decimal_counter, Delay, Variable_delay, // Function
         Binary_operation, Decimal_operation, String_operation, // Operator
         Pass_value_trigger, Conditional_trigger, Pass_values, Conditional_gate, Check_id, Check_str, // Link
-        Filter_keyboard_button, Check_joypad_button, Check_joypad_axis, Check_mouse_button, Check_keyboard_button, // Event
+        Filter_keyboard_button, Check_joypad_button, Check_joypad_axis, Check_mouse_button, Check_mouse_axis, Check_keyboard_button, // Event
         Next, Previous, Stop, Pause, Next_with_name, Next_with_cond, Previous_with_name, Previous_with_cond, Force_component_config, // Action
         Time, Start_routine, Stop_routine, Update_routine, Pre_update_routine, Post_update_routine, Routine_condition,// Flow
         Image_resource,Text_resource, // Resource
@@ -127,6 +127,7 @@ struct Connector{
         {T::Check_joypad_button,    "CheckJoypadButton"sv,          "Check joypad button"sv},
         {T::Check_joypad_axis,      "CheckJoypadAxis"sv,            "Check joypad axis"sv},
         {T::Check_mouse_button,     "CheckMouseButton"sv,           "Check mouse button"sv},
+        {T::Check_mouse_axis,       "CheckMouseAxis"sv,             "Check mouse axis"sv},
         // # Flow
         {T::Time,                   "Time"sv,                       "Time"sv},
         {T::Start_routine,          "StartRoutine"sv,               "Start routine"sv},
@@ -267,6 +268,7 @@ struct Connector{
     static constexpr auto t_joy_ax_s    = CNT::joypad_axis_event_t;
     static constexpr auto t_key_but_s   = CNT::keyboard_button_event_t;
     static constexpr auto t_mou_but_s   = CNT::mouse_button_event_t;
+    static constexpr auto t_mou_ax_s    = CNT::mouse_axis_event_t;
 
     static constexpr auto L = P::Low;
     static constexpr auto M = P::Medium;
@@ -331,11 +333,12 @@ struct Connector{
         {T::Conditional_trigger,    C::Link,      M, {1,{t_bool},                  1,{t_void}},               {v,{v},       {v}},     LO, FO, 1, PT},
         {T::Conditional_gate,       C::Link,      M, {2,{t_any, t_bool},           1,{t_any}},                {v,{v,v},     {v}},     IN, FO, 1, PT},
         // # Event
-        {T::Check_keyboard_button,  C::Event,     M, {1,{t_key_but_s},             3,{t_real,t_real,t_real}},  {v,{v},       {v,v,v}}, IN, FO, 1, PT},
-        {T::Filter_keyboard_button, C::Event,     M, {1,{t_key_but_s},             1,{t_key_but_s}},           {v,{v},       {v}},     IN, FO, 1, PT},
-        {T::Check_joypad_button,    C::Event,     M, {1,{t_joy_but_s},             3,{t_real,t_real,t_real}},  {v,{v},       {v,v,v}}, IN, FO, 1, PT},
-        {T::Check_joypad_axis,      C::Event,     M, {1,{t_joy_ax_s},              2,{t_float,t_real}},        {v,{v},       {v,v}},   IN, FO, 1, PT},
-        {T::Check_mouse_button,     C::Event,     M, {1,{t_mou_but_s},             3,{t_real,t_real,t_real}},  {v,{v},       {v,v,v}}, IN, FO, 1, PT},
+        {T::Check_keyboard_button,  C::Event,     M, {1,{t_key_but_s},             3,{t_real,t_real,t_real}}, {v,{v},       {v,v,v}}, IN, FO, 1, PT},
+        {T::Filter_keyboard_button, C::Event,     M, {1,{t_key_but_s},             1,{t_key_but_s}},          {v,{v},       {v}},     IN, FO, 1, PT},
+        {T::Check_joypad_button,    C::Event,     M, {1,{t_joy_but_s},             3,{t_real,t_real,t_real}}, {v,{v},       {v,v,v}}, IN, FO, 1, PT},
+        {T::Check_joypad_axis,      C::Event,     M, {1,{t_joy_ax_s},              2,{t_float,t_real}},       {v,{v},       {v,v}},   IN, FO, 1, PT},
+        {T::Check_mouse_button,     C::Event,     M, {1,{t_mou_but_s},             3,{t_real,t_real,t_real}}, {v,{v},       {v,v,v}}, IN, FO, 1, PT},
+        {T::Check_mouse_axis,       C::Event,     M, {1,{t_mou_ax_s},              2,{t_float,t_real}},       {v,{v},       {v,v}},   IN, FO, 1, PT},
         // # Action
         {T::Next,                   C::Action,    M, {1,{t_void},                  0,{}},                     {v,{v},       {}},      LO, FO, 0, PT},
         {T::Next_with_name,         C::Action,    M, {1,{t_void},                  0,{}},                     {v,{v},       {}},      IN, FO, 0, PT},

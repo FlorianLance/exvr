@@ -334,6 +334,26 @@ namespace Ex {
             return components;
         }
 
+        public List<ExComponent> get_components_list(string argName){
+
+            List<ExComponent> components = new List<ExComponent>();
+            if (!has(argName)) {
+                log_error(string.Format("Argument {0} of type ComponentsList doesn't exist.", argName));
+                return components;
+            }
+
+            var split = ((List<object>)args[argName].value);
+            foreach (var keyStr in split) {
+                int key = Converter.to_int((string)keyStr);
+                var component = ExVR.Components().get_from_key(key);
+                if (component != null) {
+                    components.Add(component);
+                }
+            }
+            return components;
+        }
+
+
         #endregion
 
         #region get_resources_data

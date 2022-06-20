@@ -40,7 +40,7 @@ struct ConnectionNode{
         any_t, void_t,
         id_any_t, string_any_t, time_any_t,
         lm_frame_t, lm_hands_frame_t, image_t, plot_t, variant_t, kinect_body_t, component_out_data_t,
-        keyboard_button_event_t, joypad_button_event_t, joypad_axis_event_t, mouse_button_event_t,
+        keyboard_button_event_t, joypad_button_event_t, joypad_axis_event_t, mouse_button_event_t, mouse_axis_event_t,
         SizeEnum};
 
     using T = Type;
@@ -75,7 +75,8 @@ struct ConnectionNode{
         {T::keyboard_button_event_t,    "keyboard_button"sv,       "k. button"sv},
         {T::joypad_button_event_t,      "joypad_button"sv,         "j. button."sv},
         {T::joypad_axis_event_t,        "joypad_axis"sv,           "j. axis."sv},
-        {T::mouse_button_event_t,       "mouse_button"sv,          "m. button."sv}
+        {T::mouse_button_event_t,       "mouse_button"sv,          "m. button."sv},
+        {T::mouse_axis_event_t,         "mouse_axis"sv,            "m. axis."sv},
     }};
 
     static Type get_type_from_name(std::string_view name) {

@@ -633,14 +633,28 @@ void DesignerWindow::create_menu(){
     // file
     QMenu *menu = menuBar()->addMenu(tr("&File"));
 
-//    menuBar()->setStyleSheet(
-//        "background-color: rgb(45,45,45); color: rgb(200,200,200); "
-//        "font: bold 14px; "
-        //"QMenuBar::item:selected{background-color: rgb(255,255,255);color: rgb(0,0,0);}"
+    menuBar()->setStyleSheet(
+        "QMenuBar{font: bold 12px; }"
+        "QMenuBar::item {color:rgb(255,255,255); background-color: rgb(45,45,45);}"
+        "QMenuBar::item:selected{background-color: rgb(255,255,255);color: rgb(0,0,0);}"
+    );
 
-//        "QMenuBar::item:selected{background-color: rgb(0,255,255);color: rgb(0,0,255);}"
-//        "QMenu::item:selected{background-color: rgb(255,0,255);color: rgb(0,255,0);}"
-//    );
+
+//    menu->setStyleSheet("QMenu {background-color: #ABABAB; /* sets background of the menu */border: 1px solid black;}");
+//    QMenu {
+//        background-color: #ABABAB; /* sets background of the menu */
+//    border: 1px solid black;
+//    }
+
+//    QMenu::item {
+//        /* sets background of menu item. set this to something non-transparent
+//        if you want menu color and menu item color to be different */
+//        background-color: transparent;
+//    }
+
+//    QMenu::item:selected { /* when user selects item using mouse or keyboard */
+//        background-color: #654321;
+//    }
 
     menu->addAction(&m_newExperimentAct);
     menu->addSeparator();

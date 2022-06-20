@@ -23,12 +23,18 @@
 ************************************************************************************/
 
 // system
-using System;
+using System.Collections.Generic;
 
 namespace Ex {
 
-    public class GlobalLoggerComponent : BaseLoggerComponent {
+    public class GlobalLoggerComponent : ExComponent {
 
+        // parameters
+        //protected bool m_addDateToFileName;
+        //protected string m_dateTimeFormat;
+
+
+        private List<ExComponent> inputComponents = null;
         //protected bool m_addDateToFileName;
         //protected string m_dateTimeFormat;
         //private string m_separator;
@@ -46,35 +52,37 @@ namespace Ex {
 
         #region ex_functions
 
-        //protected override bool initialize() {
+        protected override bool initialize() {
 
-        //    if (!read_common_init_parameters()) {
-        //        return false;
-        //    }
+            //if (!read_common_init_parameters()) {
+            //    return false;
+            //}
+            //m_addDateToFileName = initC.get<bool>("add_date_to_file_name");
+            //m_dateTimeFormat = initC.get<string>("date_time_format");
 
-        //    m_addDateToFileName = initC.get<bool>("add_date_to_file_name");
-        //    m_dateTimeFormat = initC.get<string>("date_time_format");
-        //    m_separator = initC.get<string>("separator");
-        //    m_eachFrame = initC.get<bool>("each_frame");
+            inputComponents = initC.get_components_list("inputs_components");
 
-        //    if (m_addTimeExp = initC.get<bool>("time_exp")) { m_countColumns++; }
-        //    if (m_addTimeRoutine = initC.get<bool>("time_routine")) { m_countColumns++; }
-        //    if (m_addRoutine = initC.get<bool>("routine")) { m_countColumns++; }
-        //    if (m_addRoutineIter = initC.get<bool>("routine_iter")) { m_countColumns++; }
-        //    if (m_addCondition = initC.get<bool>("condition")) { m_countColumns++; }
-        //    if (m_addConditionIter = initC.get<bool>("condition_iter")) { m_countColumns++; }
-        //    if (m_addFrameId = initC.get<bool>("frame_id")) { m_countColumns++; }
 
-        //    return true;
-        //}
+            //    m_addDateToFileName = initC.get<bool>("add_date_to_file_name");
+            //    m_dateTimeFormat = initC.get<string>("date_time_format");
+            //    m_separator = initC.get<string>("separator");
+            //    m_eachFrame = initC.get<bool>("each_frame");
 
-        //protected override void start_experiment() {
+            //    if (m_addTimeExp = initC.get<bool>("time_exp")) { m_countColumns++; }
+            //    if (m_addTimeRoutine = initC.get<bool>("time_routine")) { m_countColumns++; }
+            //    if (m_addRoutine = initC.get<bool>("routine")) { m_countColumns++; }
+            //    if (m_addRoutineIter = initC.get<bool>("routine_iter")) { m_countColumns++; }
+            //    if (m_addCondition = initC.get<bool>("condition")) { m_countColumns++; }
+            //    if (m_addConditionIter = initC.get<bool>("condition_iter")) { m_countColumns++; }
+            //    if (m_addFrameId = initC.get<bool>("frame_id")) { m_countColumns++; }
 
-        //    base.start_experiment();
-        //    if (initC.get<bool>("add_header_line")) {
-        //        write_header_line();
-        //    }
-        //}
+            return true;
+        }
+
+        protected override void start_experiment() {
+
+            //base.start_experiment();
+        }
 
         //protected override void start_routine() {
 
@@ -83,14 +91,17 @@ namespace Ex {
         //    }
         //}
         protected override void post_update() {
-            //    if (initC.get<bool>("each_frame")) {
-            //        write_line();
-            //    }
+
+            if(inputComponents != null) {
+                foreach(var inputComponent in inputComponents){
+                    var formatedData = inputComponent.format_data_for_global_logger();
+                    if(formatedData != null) {
+                        log_message(formatedData);
+                    }
+                }
+            }
         }
 
-        //protected override void stop_experiment() {
-        //    base.stop_experiment();
-        //}
 
         #endregion
 

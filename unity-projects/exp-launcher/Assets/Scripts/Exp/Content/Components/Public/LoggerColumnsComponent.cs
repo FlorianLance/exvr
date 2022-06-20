@@ -79,10 +79,6 @@ namespace Ex {
             }
         }
 
-        protected override void stop_experiment() {
-            base.stop_experiment();
-        }
-
         #endregion
 
         #region private_functions
@@ -99,7 +95,7 @@ namespace Ex {
         #region public_functions
 
         public void write_current_colums() {
-            write(String.Join(m_columnsSeparator, columnsValue), true);
+            write(string.Join(m_columnsSeparator, columnsValue), true);
         }
 
         public void update_column_value(int idColumn, object value) {

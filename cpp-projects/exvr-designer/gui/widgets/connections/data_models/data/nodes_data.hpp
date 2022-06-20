@@ -151,6 +151,11 @@ struct MouseButtonState{
     bool firstFrameUp;
 };
 
+struct MouseAxisState{
+    input::Mouse::Axis code;
+    float value;
+};
+
 struct JoypadButtonState{
     input::Joypad::Button code;
     bool pressed;
@@ -210,6 +215,7 @@ using KeyboardButtonEventData   = TypeNodeData<CNT::keyboard_button_event_t, Key
 using JoypadButtonEventData     = TypeNodeData<CNT::joypad_button_event_t, JoypadButtonState>;
 using JoypadAxisEventData       = TypeNodeData<CNT::joypad_axis_event_t, JoypadAxisState>;
 using MouseButtonEventData      = TypeNodeData<CNT::mouse_button_event_t, MouseButtonState>;
+using MouseAxisEventData        = TypeNodeData<CNT::mouse_axis_event_t, MouseAxisState>;
 
 
 using VoidData                  = TypeNodeData<CNT::void_t, VoidV>;

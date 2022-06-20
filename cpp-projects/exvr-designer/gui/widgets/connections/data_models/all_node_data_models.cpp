@@ -176,6 +176,7 @@ void DataNodeModels::initialize(){
     r->registerTypeConverter(std::make_pair(AnyData().type(),PlotData().type()),TC{FromAnyConverter()});
     r->registerTypeConverter(std::make_pair(AnyData().type(),KeyboardButtonEventData().type()),TC{FromAnyConverter()});
     r->registerTypeConverter(std::make_pair(AnyData().type(),MouseButtonEventData().type()),TC{FromAnyConverter()});
+    r->registerTypeConverter(std::make_pair(AnyData().type(),MouseAxisEventData().type()),TC{FromAnyConverter()});
     r->registerTypeConverter(std::make_pair(AnyData().type(),JoypadButtonEventData().type()),TC{FromAnyConverter()});
     r->registerTypeConverter(std::make_pair(AnyData().type(),JoypadAxisEventData().type()),TC{FromAnyConverter()});
     r->registerTypeConverter(std::make_pair(AnyData().type(),GameObjectListData().type()),TC{FromAnyConverter()});
@@ -191,6 +192,9 @@ void DataNodeModels::initialize(){
     // ### mouse button state
     r->registerTypeConverter(std::make_pair(MouseButtonEventData().type(),AnyData().type()),TC{ToAnyConverter()});
     r->registerTypeConverter(std::make_pair(MouseButtonEventData().type(),VoidData().type()),TC{ToVoidConverter()});
+    // ### mouse axis state
+    r->registerTypeConverter(std::make_pair(MouseAxisEventData().type(),AnyData().type()),TC{ToAnyConverter()});
+    r->registerTypeConverter(std::make_pair(MouseAxisEventData().type(),VoidData().type()),TC{ToVoidConverter()});
     // ### joypad button state
     r->registerTypeConverter(std::make_pair(JoypadButtonEventData().type(),AnyData().type()),TC{ToAnyConverter()});
     r->registerTypeConverter(std::make_pair(JoypadButtonEventData().type(),VoidData().type()),TC{ToVoidConverter()});
@@ -517,6 +521,9 @@ std::unique_ptr<ConnectorNodeDataModel> DataNodeModels::generate_connector_data_
         break;
     case T::Check_mouse_button:
         connectorDataModel = std::make_unique<CheckMouseButtonNodeDataModel>();
+        break;
+    case T::Check_mouse_axis:
+        connectorDataModel = std::make_unique<CheckMouseAxisNodeDataModel>();
         break;
     case T::Start_routine:
         connectorDataModel = std::make_unique<StartRoutineNodeDataModel>();

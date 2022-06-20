@@ -37,142 +37,133 @@ namespace Ex{
         public string buttonsInfos = "";
         public string axisInfos = "";
 
-        private bool sendInfos = false;
-        
-
         // signals
-        private static readonly string axisOnGuiSignal   = "axis";
-        private static readonly string buttonOnGuiSignal = "button";
+        private static readonly string buttonOnGuiSignal    = "button";
+        private static readonly string axisOnGuiSignal      = "axis";
+        private static readonly string positionOnGuiSignal  = "position";
         // infos
-        private static readonly string axisInfoSignal    = "axes_state_info";
-        private static readonly string buttonsInfoSignal = "buttons_state_info";
+        private static readonly string buttonsInfoSignal    = "buttons_state_info";
+        private static readonly string axisInfoSignal       = "axis_state_info";
+        private static readonly string positionInfoSignal   = "position_state_info";
 
         // events
         // # axis
-        private Dictionary<Input.MouseAxis.Code, Input.MouseAxisEvent> axisEvent = new Dictionary<Input.MouseAxis.Code, Input.MouseAxisEvent>();
+        public Dictionary<Input.MouseAxis.Code, Input.MouseAxisEvent> axisEvent = new Dictionary<Input.MouseAxis.Code, Input.MouseAxisEvent>();
         // # buttons
-        private Dictionary<KeyCode, Input.MouseButtonEvent> buttonsEvent = new Dictionary<KeyCode, Input.MouseButtonEvent>();
-
-        // states
-        public Dictionary<Input.MouseAxis.Code, Input.MouseAxisState> axisState = new Dictionary<Input.MouseAxis.Code, Input.MouseAxisState>();
-        public Dictionary<KeyCode, Input.MouseButtonState> buttonsState = new Dictionary<KeyCode, Input.MouseButtonState>();
-
+        public Dictionary<KeyCode, Input.MouseButtonEvent> buttonsEvent = new Dictionary<KeyCode, Input.MouseButtonEvent>();
+        // # position
+        public Vector2 currentMousePosition = Vector2.zero;
 
         protected override bool initialize() {
 
-            m_alwaysCallUpdate = true;
-
-            add_signal(axisOnGuiSignal);
             add_signal(buttonOnGuiSignal);
+            add_signal(axisOnGuiSignal);            
+            add_signal(positionOnGuiSignal);
 
             foreach (var code in Input.MouseAxis.Codes) {
                 axisEvent[code] = new Input.MouseAxisEvent(code);
-                axisState[code] = new Input.MouseAxisState(code);
             }
 
             foreach (var code in Input.MouseButton.Codes) {
                 buttonsEvent[code] = new Input.MouseButtonEvent(code);
-                buttonsState[code] = new Input.MouseButtonState(code);
             }
 
             return true;
         }
 
-        protected override void update() {
-            if (is_updating()) {
-                // reset states infos
-                sendInfos = true;
-            }
-        }
-
         protected override void on_gui() {
 
             var eventType = Event.current.type;
-            if (eventType != EventType.MouseDown && eventType != EventType.MouseUp && eventType != EventType.MouseMove) {
-                return;
-            }
-            var currentTime = time().ellapsed_exp_ms();
+            
+            // get times
+            var currentExpTime  = time().ellapsed_exp_ms();
+            var currentElemTime = time().ellapsed_element_ms();
 
-            var buttonsCodeInfoToSend = new List<KeyCode>();
-            foreach (KeyCode buttonCode in Input.MouseButton.Codes) {
 
-                bool pressed = UnityEngine.Input.GetKey(buttonCode);
+            if (eventType == EventType.MouseDown || eventType == EventType.MouseUp) { // mouse button
 
-                // update event
-                var currentEvent = buttonsEvent[buttonCode];
-                var currentState = buttonsState[buttonCode];
-                var previousState = currentEvent.state;
-                currentEvent.update(pressed, currentTime);
-                currentState.update(pressed, currentTime);
+                // update events
+                foreach (var bEvent in buttonsEvent) {
+                    bEvent.Value.update(UnityEngine.Input.GetKey(bEvent.Key), currentExpTime, currentElemTime);
+                }
 
                 if (is_updating()) {
 
-                    bool notNone = currentEvent.state != Input.Button.State.None;
-                    if (notNone || (previousState != currentEvent.state)) {
-                        buttonsCodeInfoToSend.Add(buttonCode);
+                    var buttonsCodeInfoToSend = new List<KeyCode>();
+                    foreach (var bEvent in buttonsEvent) {
+
+                        // trigger signals
+                        if (bEvent.Value.triggerSignals) {
+                            invoke_signal(buttonOnGuiSignal, bEvent.Value);
+                        }
+                        // store key code of info to send
+                        if (bEvent.Value.sendInfos) {
+                            buttonsCodeInfoToSend.Add(bEvent.Key);
+                        }
                     }
 
-                    if (notNone) {
-                        invoke_signal(buttonOnGuiSignal, currentEvent);
+                    // send infos
+                    if (buttonsCodeInfoToSend.Count > 0) {
+                        StringBuilder infos = new StringBuilder();
+                        int currentCode = 0;
+                        foreach (var code in buttonsCodeInfoToSend) {
+                            if (currentCode != buttonsCodeInfoToSend.Count - 1) {
+                                infos.AppendFormat("{0},", ((int)code).ToString());
+                            } else {
+                                infos.Append(((int)code).ToString());
+                            }
+                            ++currentCode;
+                        }
+                        send_infos_to_gui_init_config(buttonsInfoSignal, buttonsInfos = infos.ToString());
                     }
+
                 }
-            }
+            } else if (eventType == EventType.Repaint) { // mouse axis (once per frame)
 
-            var axisCodeInfoToSend = new List<Input.MouseAxis.Code>();
-            foreach (Input.MouseAxis.Code axisCode in Input.MouseAxis.Codes) {
+                foreach (var aEvent in axisEvent) {
+                    aEvent.Value.update(UnityEngine.Input.GetAxis(Input.MouseAxis.CodesNames[aEvent.Key]), currentExpTime, currentElemTime);
+                }
 
-                float value = UnityEngine.Input.GetAxis(Input.MouseAxis.CodesNames[axisCode]);
-
-                var currentEvent = axisEvent[axisCode];
-                var currentState = axisState[axisCode];
-                var previousValue = currentEvent.value;
-                currentEvent.update(value, currentTime);
-                currentState.update(value, currentTime);
+                var previousMousePosition = currentMousePosition;
+                currentMousePosition = UnityEngine.Input.mousePosition;
 
                 if (is_updating()) {
 
-                    bool notNone = currentEvent.value != 0f;
-                    if (notNone || (previousValue != currentEvent.value)) {
-                        axisCodeInfoToSend.Add(axisCode);
+                    var axisCodeInfoToSend = new List<Input.MouseAxis.Code>();
+                    foreach (var aEvent in axisEvent) {
+                        // trigger signals
+                        if (aEvent.Value.triggerSignals) {
+                            invoke_signal(axisOnGuiSignal, aEvent.Value);
+                        }
+                        // store key code of info to send
+                        if (aEvent.Value.sendInfos) {
+                            axisCodeInfoToSend.Add(aEvent.Key);
+                        }
+                    }
+                    // trigger mouse position
+                    invoke_signal(positionOnGuiSignal, currentMousePosition);
+
+                    // send infos
+                    if (axisCodeInfoToSend.Count > 0) {
+                        StringBuilder infos = new StringBuilder();
+                        int currentCode = 0;
+                        foreach (var code in axisCodeInfoToSend) {
+                            var axeEvent = axisEvent[code];
+                            if (currentCode != axisCodeInfoToSend.Count - 1) {
+                                infos.AppendFormat("{0},{1}%", ((int)code).ToString(), Converter.to_string(axeEvent.value, "0.00"));
+                            } else {
+                                infos.AppendFormat("{0},{1}", ((int)code).ToString(), Converter.to_string(axeEvent.value, "0.00"));
+                            }
+                            ++currentCode;
+                        }
+                        send_infos_to_gui_init_config(axisInfoSignal, axisInfos = infos.ToString());
                     }
 
-                    if (notNone) {
-                        invoke_signal(axisOnGuiSignal, currentState);
-                    }
+                    if(previousMousePosition != currentMousePosition) {
+                        send_infos_to_gui_init_config(positionInfoSignal, Converter.to_string(currentMousePosition));
+                    }                    
                 }
-            }
-
-            // send infos only once per frame
-            if (is_updating()) {
-                if (sendInfos) {
-                    StringBuilder infos = new StringBuilder();
-                    int currentCode = 0;
-                    foreach (var code in buttonsCodeInfoToSend) {
-                        if (currentCode != buttonsCodeInfoToSend.Count - 1) {
-                            infos.AppendFormat("{0},", ((int)code).ToString());
-                        } else {
-                            infos.Append(((int)code).ToString());
-                        }
-                        ++currentCode;
-                    }
-                    send_infos_to_gui_init_config(buttonsInfoSignal, buttonsInfos = infos.ToString());
-                }
-                if (sendInfos) {
-                    StringBuilder infos = new StringBuilder();
-                    int currentCode = 0;
-                    foreach (var code in axisCodeInfoToSend) {
-                        var axeEvent = axisEvent[code];
-                        if (currentCode != axisCodeInfoToSend.Count - 1) {
-                            infos.AppendFormat("{0},{1}%", ((int)code).ToString(), Converter.to_string(axeEvent.value, "0.00"));
-                        } else {
-                            infos.AppendFormat("{0},{1}", ((int)code).ToString(), Converter.to_string(axeEvent.value, "0.00"));
-                        }
-                        ++currentCode;
-                    }
-                    send_infos_to_gui_init_config(axisInfoSignal, axisInfos = infos.ToString());
-                }
-                sendInfos = false;
-            }            
+            }  
         }
     }
 }

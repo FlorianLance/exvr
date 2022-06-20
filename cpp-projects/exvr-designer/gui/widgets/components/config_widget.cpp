@@ -224,6 +224,8 @@ ConfigParametersW *ConfigW::generate_parameters(Component::Type type, bool initC
     case CT::Udp_writer:
         return gen_params_w<UdpWriterInitConfigParametersW,UdpWriterConfigParametersW>(initConfig);
     // ############################# Output
+    case CT::Global_logger:
+        return gen_params_w<GlobalLoggerInitConfigParametersW,GlobalLoggerConfigParametersW>(initConfig);
     case CT::Logger:
         return gen_params_w<LoggerInitConfigParametersW,LoggerConfigParametersW>(initConfig);
     case CT::LoggerColumns:

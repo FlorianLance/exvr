@@ -1,6 +1,6 @@
-
+﻿
 /***********************************************************************************
-** exvr-designer                                                                  **
+** exvr-exp                                                                       **
 ** MIT License                                                                    **
 ** Copyright (c) [2018] [Florian Lance][EPFL-LNCO]                                **
 ** Permission is hereby granted, free of charge, to any person obtaining a copy   **
@@ -22,47 +22,37 @@
 ** SOFTWARE.                                                                      **
 ************************************************************************************/
 
-#pragma once
+// system
+using System;
 
-// Qt
-#include <QFrame>
-#include <QComboBox>
+namespace Ex {
 
-// local
-#include "ex_component_w.hpp"
-#include "gui/widgets/list_widget.hpp"
+    public class CheckMouseAxisConnector : ExConnector {
+
+        Input.MouseAxis.Code codeToCompare;
+
+        protected override bool initialize() {
+
+            update_from_gui();
+
+            add_signals(2);
+            add_slot(0, (arg) => { base_slot1(arg); });
+            return true;
+        }
 
 
-namespace tool::ex{
+        protected override void update_from_gui() {
+            codeToCompare = (Input.MouseAxis.Code)Enum.Parse(typeof(Input.MouseAxis.Code), m_config.get<string>(valueStr));
+        }
 
+        protected override void slot1(object arg) {
 
-class ExComponentsListW : public ExItemW<QFrame>{
-
-    Q_OBJECT
-public:
-
-    ExComponentsListW(QString name ="");
-    ExComponentsListW *init_widget(Component::Type componentType, QString title, bool enabled = true);
-    ExComponentsListW *init_widget(Component::Category componentCategory, bool canBeLogged, QString title, bool enabled = true);
-
-    void update_from_arg(const Arg &arg) override;
-    Arg convert_to_arg() const override;
-    void update_from_components() override;
-
-private:
-
-    std::optional<Component::Type> m_componentType;
-    std::optional<Component::Category> m_componentCategory;
-    bool m_canBeLogged = false;
-
-    QPushButton *m_icon =  nullptr;
-    QLabel *m_title = nullptr;
-    QComboBox *m_componentNames = nullptr;
-    QPushButton *m_add = nullptr;
-    QPushButton *m_remove = nullptr;
-    ui::ListWidget *m_list = nullptr;
-
-    std_v1<int> m_componentsKeys;
-};
-
+            var state = (Input.MouseAxisEvent)arg;
+            if (state.code == codeToCompare) {
+                invoke_signal(1, state.triggeredExperimentTime);
+                invoke_signal(0, state.value); ;
+            }
+        }
+    }
 }
+

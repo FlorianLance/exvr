@@ -31,6 +31,8 @@
 
 // local
 #include "gui/ex_widgets/ex_resource_w.hpp"
+#include "gui/ex_widgets/ex_component_w.hpp"
+#include "gui/ex_widgets/ex_components_list_w.hpp"
 
 using namespace tool::ex;
 using namespace tool::ui;
@@ -425,4 +427,68 @@ void LoggerExperimentInitConfigParametersW::create_connections(){
 
 void LoggerExperimentInitConfigParametersW::late_update_ui(){
     m_p->dateTimeFormat.w->setEnabled(m_p->addDateToFileName.w->isChecked());
+}
+
+
+struct GlobalLoggerInitConfigParametersW::Impl{
+
+    ExResourceW resource{"directory"};
+
+    QWidget *mainW = nullptr;
+    QTabWidget *mainTab = nullptr;
+
+    QWidget *inputW = nullptr;
+    ExComponentsListW inputsComponents{"inputs_components"};
+
+    QWidget *networkW = nullptr;
+    ExComponentsListW networkComponents{"network_components"};
+
+    QWidget *uiW = nullptr;
+    ExComponentsListW uiComponents{"ui_components"};
+
+    QWidget *trackingW = nullptr;
+    ExComponentsListW trackingComponents{"tracking_components"};
+
+};
+
+GlobalLoggerInitConfigParametersW::GlobalLoggerInitConfigParametersW() :  ConfigParametersW(), m_p(std::make_unique<Impl>()){
+}
+
+void GlobalLoggerInitConfigParametersW::insert_widgets(){
+
+    add_widget(F::gen(L::VB(),{m_p->resource()}, LStretch{false}));
+
+    auto tw = new QTabWidget();
+    tw->addTab(m_p->mainW = new QWidget(), "Exp");
+    tw->addTab(m_p->inputW = new QWidget(), "Input");
+    tw->addTab(m_p->networkW = new QWidget(), "Network");
+    tw->addTab(m_p->uiW = new QWidget(), "UI");
+    tw->addTab(m_p->trackingW = new QWidget(), "Tracking");
+
+    auto l = ui::L::VB();
+    m_p->inputW->setLayout(l);
+    l->addWidget(F::gen(L::VB(),{m_p->inputsComponents()}, LStretch{false}));
+
+    l = ui::L::VB();
+    m_p->networkW->setLayout(l);
+    l->addWidget(F::gen(L::VB(),{m_p->networkComponents()}, LStretch{false}));
+
+    l = ui::L::VB();
+    m_p->uiW->setLayout(l);
+    l->addWidget(F::gen(L::VB(),{m_p->uiComponents()}, LStretch{false}));
+
+    l = ui::L::VB();
+    m_p->trackingW->setLayout(l);
+    l->addWidget(F::gen(L::VB(),{m_p->trackingComponents()}, LStretch{false}));
+
+    add_widget(F::gen(L::VB(),{tw}, LStretch{false}));
+
+}
+
+void GlobalLoggerInitConfigParametersW::init_and_register_widgets(){
+
+    add_input_ui(m_p->inputsComponents.init_widget(Component::Category::Input, true, "Input components to log"));
+    add_input_ui(m_p->networkComponents.init_widget(Component::Category::Network, true, "Network components to log"));
+    add_input_ui(m_p->uiComponents.init_widget(Component::Category::UI, true, "UI components to log"));
+    add_input_ui(m_p->trackingComponents.init_widget(Component::Category::Tracking, true, "Tracking components to log"));
 }

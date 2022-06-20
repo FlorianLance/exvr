@@ -306,6 +306,21 @@ std::vector<Component *> ComponentsManager::get_components(Component::Type type)
     return componentsPtr;
 }
 
+std::vector<Component *> ComponentsManager::get_components(Component::Category category, bool canBeLogged) const{
+    std::vector<Component*> componentsPtr;
+    componentsPtr.reserve(count(category));
+    for(auto component : m_componentsPerCategory.at(category)){
+        if(canBeLogged){
+            if(Component::can_be_logged(component.second->type)){
+                componentsPtr.push_back(component.second);
+            }
+        }else{
+            componentsPtr.push_back(component.second);
+        }
+    }
+    return componentsPtr;
+}
+
 bool ComponentsManager::is_key_used(ComponentKey key) const noexcept{
     return m_componentsPerKey.contains(key);
 }

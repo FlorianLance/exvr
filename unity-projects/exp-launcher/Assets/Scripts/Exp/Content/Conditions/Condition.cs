@@ -441,8 +441,8 @@ namespace Ex{
             }
 
             // call on_gui for actions
-            foreach (var action in actions) {
-                if (!globalComponents.ContainsKey(action.component().key)) {
+            foreach (var action in actions) {                
+                if (!action.component().is_global()) {
                     Profiler.BeginSample(string.Format("[ExVR][Component][{0}] on_gui", action.component().name));
                     action.on_gui();
                     Profiler.EndSample();
@@ -464,7 +464,7 @@ namespace Ex{
 
             // call pre_update for actions       
             foreach (var action in actions) {
-                if (!globalComponents.ContainsKey(action.component().key)) {
+                if (!action.component().is_global()) {
                     Profiler.BeginSample(string.Format("[ExVR][Component][{0}] pre_update", action.component().name));
                     action.pre_update();
                     Profiler.EndSample();
