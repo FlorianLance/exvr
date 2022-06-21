@@ -595,17 +595,23 @@ namespace Ex {
             Apply.to_transform(args[argName].value, transform, local, position, rotation, scale);
         }
 
-        public void update_text(string baseArgName, TMPro.TextMeshProUGUI text) {
+        public void update_text(string baseArgName, TMPro.TextMeshProUGUI textMeshPro, string text = null) {
 
             string argName = baseArgName + "_text_resource";
-            if (has(argName)) { // check if contain text input
+            if (has(argName) && text == null){ // check if contain text input
+
+                textMeshPro.richText = get<bool>(baseArgName + "_rich_text");
+
                 string textAlias = get_resource_alias(argName);
                 if (textAlias.Length == 0) {
-                    text.SetText(get<string>(baseArgName + "_text"));
+                    textMeshPro.SetText(get<string>(baseArgName + "_text"));
                 } else {
-                    text.SetText(ExVR.Resources().get_text_file_data(textAlias).content);
-                }
-                text.richText = get<bool>(baseArgName + "_rich_text");
+                    textMeshPro.SetText(ExVR.Resources().get_text_file_data(textAlias).content);
+                }               
+            }
+
+            if (text != null) {
+                textMeshPro.SetText(text);
             }
 
             // set font style
@@ -628,35 +634,35 @@ namespace Ex {
             if (get<bool>(baseArgName + "_under_line")) {
                 fontStyle |= TMPro.FontStyles.Underline;
             }
-            text.fontStyle = fontStyle;
+            textMeshPro.fontStyle = fontStyle;
 
             // set font size
-            text.fontSize = get<float>(baseArgName + "_font_size");
-            text.enableAutoSizing = get<bool>(baseArgName + "_auto_size");
-            text.enableWordWrapping = get<bool>(baseArgName + "_wrap");
+            textMeshPro.fontSize = get<float>(baseArgName + "_font_size");
+            textMeshPro.enableAutoSizing = get<bool>(baseArgName + "_auto_size");
+            textMeshPro.enableWordWrapping = get<bool>(baseArgName + "_wrap");
 
             // alignment
-            text.alignment = ConfigUtility.textAlignment[get<string>(baseArgName + "_alignment")];
+            textMeshPro.alignment = ConfigUtility.textAlignment[get<string>(baseArgName + "_alignment")];
 
             // face
             var fc = get_color(baseArgName + "_face_color");
             if (fc == Color.white) { // bug if face color is white, it's not applied
-                text.faceColor = new Color32(255, 255, 255, 254);
+                textMeshPro.faceColor = new Color32(255, 255, 255, 254);
             } else {
-                text.faceColor = fc;
+                textMeshPro.faceColor = fc;
             }            
 
             // ouline
-            text.outlineColor = get_color(baseArgName + "_outline_color");
-            text.outlineWidth = get<float>(baseArgName + "_outline_width");
+            textMeshPro.outlineColor = get_color(baseArgName + "_outline_color");
+            textMeshPro.outlineWidth = get<float>(baseArgName + "_outline_width");
 
             // spacing
-            text.paragraphSpacing = get<float>(baseArgName + "_paragraph_spacing");
-            text.lineSpacing = get<float>(baseArgName + "_line_spacing");
-            text.wordSpacing = get<float>(baseArgName + "_word_spacing");
-            text.characterSpacing = get<float>(baseArgName + "_character_spacing");
+            textMeshPro.paragraphSpacing = get<float>(baseArgName + "_paragraph_spacing");
+            textMeshPro.lineSpacing = get<float>(baseArgName + "_line_spacing");
+            textMeshPro.wordSpacing = get<float>(baseArgName + "_word_spacing");
+            textMeshPro.characterSpacing = get<float>(baseArgName + "_character_spacing");
 
-            text.UpdateFontAsset();
+            textMeshPro.UpdateFontAsset();
 
             // check if input font exists in list
             // if not do nothing

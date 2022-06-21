@@ -2402,7 +2402,7 @@ void Experiment::update_exp_state(ExpState state, QStringView infos){
                 }
 
                 if(auto condition = routine->get_condition(conditionKey); condition != nullptr){
-                    states.currentTypeSpecificInfo = condition->name;
+                    states.currentTypeSpecificInfo = clamp(condition->name, 15);
                     if(condition->key() != states.currentConditionKey){
                         states.currentConditionKey = condition->key();
                         updateCurrentCondition = true;

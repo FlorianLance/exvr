@@ -37,7 +37,7 @@ namespace Ex{
             cppDll.parent = this;
 
             // force catch exception for csharp scripts components
-            catchExceptions = true;
+            m_catchExceptions = true;
 
             // slots
             //add_slot("slot1", (arg) => {

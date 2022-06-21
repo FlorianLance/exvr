@@ -634,6 +634,8 @@ void XmlIoManager::write_component(const Component *component) {
     w->writeAttribute(QSL("global"),            Component::is_global(component->type) ? QSL("1") : QSL("0"));
     w->writeAttribute(QSL("always_updating"),   Component::is_alsways_updating(component->type) ? QSL("1") : QSL("0"));
     w->writeAttribute(QSL("exceptions"),        Component::get_exceptions(component->type) ? QSL("1") : QSL("0"));
+    w->writeAttribute(QSL("frame_logging"),     Component::has_frame_logging(component->type) ? QSL("1") : QSL("0"));
+    w->writeAttribute(QSL("trigger_logging"),   Component::has_trigger_logging(component->type) ? QSL("1") : QSL("0"));
     w->writeAttribute(QSL("restricted"),        QString::number(static_cast<int>(Component::get_restricted(component->type))));
     w->writeAttribute(QSL("priority"),          QString::number(static_cast<int>(Component::get_priority(component->type))));
 

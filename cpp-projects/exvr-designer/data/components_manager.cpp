@@ -311,7 +311,7 @@ std::vector<Component *> ComponentsManager::get_components(Component::Category c
     componentsPtr.reserve(count(category));
     for(auto component : m_componentsPerCategory.at(category)){
         if(canBeLogged){
-            if(Component::can_be_logged(component.second->type)){
+            if(Component::has_frame_logging(component.second->type) || Component::has_trigger_logging(component.second->type)){
                 componentsPtr.push_back(component.second);
             }
         }else{

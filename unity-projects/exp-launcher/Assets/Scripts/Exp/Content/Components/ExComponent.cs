@@ -129,7 +129,11 @@ namespace Ex {
         [SerializeField]
         private bool m_initialized = false;  // has initialization failed ? 
         [SerializeField]
-        protected bool catchExceptions = false;
+        protected bool m_catchExceptions = false;
+        [SerializeField]
+        protected bool m_frameLogging = false;
+        [SerializeField]
+        protected bool m_triggerLogging = false;
 
         // access        
         public Components components() { return ExVR.Components(); }
@@ -158,9 +162,9 @@ namespace Ex {
         public bool is_started() {return m_started;}
         public bool is_visible() {return m_visibility;}
         public bool is_updating() { return m_updating; }
-
         public bool is_global() { return m_global; }
-
+        public bool has_frame_logging() { return m_frameLogging; }
+        public bool has_trigger_logging() { return m_triggerLogging; }
         public bool always_call_update() { return m_alwaysCallUpdate; }
         public bool is_closed() {return m_closed;}
         public void set_closed_flag(bool closed) { m_closed = closed; }
@@ -303,17 +307,19 @@ namespace Ex {
         public bool setup_component_object(XML.Component xmlComponent) {
 
             // set members
-            gameObject.name = xmlComponent.Name;
-            key             = xmlComponent.Key;
-            keyStr          = Converter.to_string(xmlComponent.Key);
-            m_global        = xmlComponent.Global;
-            priority        = (Priority)xmlComponent.Priority;
-            tag             = string.Format("{0}Component", xmlComponent.Category);
-            typeStr         = string.Format("Ex.{0}Component", xmlComponent.Type);
-            category        = (Category)Enum.Parse(typeof(Category), xmlComponent.Category);
-            m_reserved        = (Reserved)xmlComponent.Restricted;
-            catchExceptions = ExVR.GuiSettings().catchComponentsExceptions || xmlComponent.Exceptions;
-            m_alwaysCallUpdate = xmlComponent.AlwaysUpdating;            
+            gameObject.name     = xmlComponent.Name;
+            key                 = xmlComponent.Key;
+            keyStr              = Converter.to_string(xmlComponent.Key);
+            m_global            = xmlComponent.Global;
+            priority            = (Priority)xmlComponent.Priority;
+            tag                 = string.Format("{0}Component", xmlComponent.Category);
+            typeStr             = string.Format("Ex.{0}Component", xmlComponent.Type);
+            category            = (Category)Enum.Parse(typeof(Category), xmlComponent.Category);
+            m_reserved          = (Reserved)xmlComponent.Restricted;
+            m_catchExceptions     = ExVR.GuiSettings().catchComponentsExceptions || xmlComponent.Exceptions;
+            m_alwaysCallUpdate  = xmlComponent.AlwaysUpdating;
+            m_frameLogging      = xmlComponent.FrameLogging;
+            m_triggerLogging    = xmlComponent.TriggerLogging;
 
             bool valid = false;
             if (m_reserved == Reserved.Public) {
@@ -422,7 +428,7 @@ namespace Ex {
 
             currentFunction = Function.initialize;
             m_initialized = false;
-            if (catchExceptions) {
+            if (m_catchExceptions) {
                 try {
                     m_initialized = initialize();
                 } catch (Exception e) {
@@ -446,7 +452,7 @@ namespace Ex {
             }
 
             currentFunction = Function.clean;
-            if (catchExceptions) {
+            if (m_catchExceptions) {
                 try {
                     clean();
                 } catch (Exception e) {
@@ -462,7 +468,7 @@ namespace Ex {
         public void base_start_experiment() {
             
             currentFunction = Function.start_experiment;
-            if (catchExceptions) {
+            if (m_catchExceptions) {
                 try {
                     start_experiment();
                 } catch (Exception e) {
@@ -475,7 +481,7 @@ namespace Ex {
         public void base_post_start_experiment() {
 
             currentFunction = Function.post_start_experiment;
-            if (catchExceptions) {
+            if (m_catchExceptions) {
                 try {
                     post_start_experiment();
                 } catch (Exception e) {
@@ -492,7 +498,7 @@ namespace Ex {
         // This function is called only once at the end of an experiment 
         public void base_pre_stop_experiment() {
             currentFunction = Function.pre_stop_experiment;
-            if (catchExceptions) {
+            if (m_catchExceptions) {
                 try {
                     pre_stop_experiment();
                 } catch (Exception e) {
@@ -505,7 +511,7 @@ namespace Ex {
         public void base_stop_experiment() {
     
             currentFunction = Function.stop_experiment;
-            if (catchExceptions) {
+            if (m_catchExceptions) {
                 try {
                     stop_experiment();
                 } catch (Exception e) {
@@ -544,7 +550,7 @@ namespace Ex {
 
             // call virtual function
             currentFunction = Function.set_current_config;
-            if (catchExceptions) {
+            if (m_catchExceptions) {
                 try {
                     set_current_config(config.name);
                 } catch (Exception e) {
@@ -558,7 +564,7 @@ namespace Ex {
         public void base_update_from_current_config() {
 
             currentFunction = Function.update_from_current_config;
-            if (catchExceptions) {
+            if (m_catchExceptions) {
                 try {
                     update_from_current_config();
                 } catch (Exception e) {
@@ -573,7 +579,7 @@ namespace Ex {
 
             m_started = true;
             currentFunction = Function.pre_start_routine;
-            if (catchExceptions) {
+            if (m_catchExceptions) {
                 try {
                     pre_start_routine();
                 } catch (Exception e) {
@@ -587,7 +593,7 @@ namespace Ex {
         public void base_start_routine() {
 
             currentFunction = Function.start_routine;
-            if (catchExceptions) {
+            if (m_catchExceptions) {
                 try {
                     start_routine();
                 } catch (Exception e) {
@@ -601,7 +607,7 @@ namespace Ex {
         public void base_post_start_routine() {
 
             currentFunction = Function.post_start_routine;
-            if (catchExceptions) {
+            if (m_catchExceptions) {
                 try {
                     post_start_routine();
                 } catch (Exception e) {
@@ -616,7 +622,7 @@ namespace Ex {
 
             m_started = false;
             currentFunction = Function.stop_routine;
-            if (catchExceptions) {
+            if (m_catchExceptions) {
                 try {
                     stop_routine();
                 } catch (Exception e) {
@@ -631,7 +637,7 @@ namespace Ex {
         public void base_on_gui() {
 
             currentFunction = Function.on_gui;
-            if (catchExceptions) {
+            if (m_catchExceptions) {
                 try {
                     on_gui();
                 } catch (Exception e) {
@@ -646,7 +652,7 @@ namespace Ex {
         public void base_pre_update() {
 
             currentFunction = Function.pre_update;
-            if (catchExceptions) {
+            if (m_catchExceptions) {
                 try {
                     pre_update();
                 } catch (Exception e) {
@@ -661,7 +667,7 @@ namespace Ex {
         public void base_update() {
  
             currentFunction = Function.update;
-            if (catchExceptions) {
+            if (m_catchExceptions) {
                 try {
                     update();
                 } catch (Exception e) {
@@ -677,7 +683,7 @@ namespace Ex {
         public void base_post_update() {
 
             currentFunction = Function.post_update;
-            if (catchExceptions) {
+            if (m_catchExceptions) {
                 try {
                     post_update();
                 } catch (Exception e) {
@@ -692,7 +698,7 @@ namespace Ex {
         public void base_play() {
 
             currentFunction = Function.play;
-            if (catchExceptions) {
+            if (m_catchExceptions) {
                 try {
                     play();
                 } catch (Exception e) {
@@ -707,7 +713,7 @@ namespace Ex {
         public void base_pause() {
 
             currentFunction = Function.pause;
-            if (catchExceptions) {
+            if (m_catchExceptions) {
                 try {
                     pause();
                 } catch (Exception e) {
@@ -723,7 +729,7 @@ namespace Ex {
             m_visibility = visibility;
             currentFunction = Function.set_visibility;
 
-            if (catchExceptions) {
+            if (m_catchExceptions) {
                 try {
                     set_visibility(m_visibility);
                 } catch (Exception e) {
@@ -739,7 +745,7 @@ namespace Ex {
             m_updating = doUpdate;
 
             currentFunction = Function.set_update_state;
-            if (catchExceptions) {
+            if (m_catchExceptions) {
                 try {
                     set_update_state(m_updating);
                 } catch (Exception e) {
@@ -754,7 +760,7 @@ namespace Ex {
         public void base_update_parameter_from_gui(string updatedArgName) {
             
             currentFunction = Function.update_parameter_from_gui;
-            if (catchExceptions) {
+            if (m_catchExceptions) {
                 try {
                     update_parameter_from_gui(updatedArgName);
                 } catch (Exception e) {
@@ -770,7 +776,7 @@ namespace Ex {
             currentFunction = Function.action_from_gui;
             if (initC.key == configKey) {
 
-                if (catchExceptions) {
+                if (m_catchExceptions) {
                     try {
                         action_from_gui(true, action);
                     } catch (Exception e) {
@@ -784,7 +790,7 @@ namespace Ex {
                 if (currentC != null) {
                     if (currentC.key == configKey) {
 
-                        if (catchExceptions) {
+                        if (m_catchExceptions) {
                             try {
                                 action_from_gui(false, action);
                             } catch (Exception e) {
@@ -836,8 +842,8 @@ namespace Ex {
 
 
         // logging
-
-        public virtual string format_data_for_global_logger() { return null; }
+        public virtual string format_frame_data_for_global_logger() { return null; }
+        public virtual List<Tuple<double, double, string>> format_trigger_data_for_global_logger() { return null; }
 
 
         // transform related function

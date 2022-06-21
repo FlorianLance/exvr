@@ -35,11 +35,9 @@ using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.Profiling;
 
-
 namespace Ex {
 
     public class VirtualKeyGetterThread : ThreadedJob {
-
 
 
         volatile public bool doLoop = false;
@@ -393,7 +391,24 @@ namespace Ex {
 
         #region public_functions
 
-        public override string format_data_for_global_logger() {
+        public override string format_frame_data_for_global_logger() {
+
+            StringBuilder sb = null;
+            foreach (var kEvent in buttonsEvent) {
+                if (kEvent.Value.state == Input.Button.State.Pressed) {
+                    if(sb == null) {
+                        sb = new StringBuilder();
+                    }
+                    sb.AppendFormat("{0} ", Enum.GetName(typeof(KeyCode), kEvent.Key));
+                }
+            }
+            if (sb == null) {
+                return null;
+            }
+            return sb.ToString();
+        }
+
+        public override List<Tuple<double, double, string>> format_trigger_data_for_global_logger() {
 
             if(downButtonsEvents == null && upButtonsEvents == null) {
                 return null;
@@ -410,22 +425,16 @@ namespace Ex {
                     events.Add(uEvent);
                 }
             }
-
-            events.Sort(delegate (Input.KeyboardButtonEvent e1, Input.KeyboardButtonEvent e2)
-            {
-                if(e1.triggeredExperimentTime < e2.triggeredExperimentTime) {
-                    return 1;
-                }else if(e1.triggeredExperimentTime > e2.triggeredExperimentTime) {
-                    return -1;
-                }
-                return 0;
-            });
-
-            StringBuilder sb = new StringBuilder();
+            
+            List<Tuple<double, double, string>> triggersStr = events.Count > 0 ? new List<Tuple<double, double, string>>(events.Count) : null;
             foreach (var bEvent in events) {
-                sb.AppendFormat("{0},{1},{2},{3}\n", bEvent.code, bEvent.state, bEvent.triggeredExperimentTime, bEvent.triggeredElementTime);
+                triggersStr.Add(new Tuple<double, double, string>
+                    (bEvent.triggeredExperimentTime, 
+                    bEvent.triggeredElementTime, 
+                    string.Format("{0}, {1}", Enum.GetName(typeof(KeyCode), bEvent.code), Enum.GetName(typeof(Input.Button.State),bEvent.state))
+                ));
             }
-            return sb.ToString();
+            return triggersStr;
         }
 
         #endregion

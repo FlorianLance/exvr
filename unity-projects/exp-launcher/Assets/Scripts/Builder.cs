@@ -211,6 +211,7 @@ namespace Ex {
 
         void OnApplicationQuit() {
 
+            networkManager.set_launcher_closing_state();
 
             ExVR.ExpLog().builder(string.Format("Application ending after {0} seconds -> {1}", Time.time, GlobalVariables.wantToLeave));
 

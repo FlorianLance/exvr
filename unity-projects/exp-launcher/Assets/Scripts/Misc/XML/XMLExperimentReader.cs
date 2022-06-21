@@ -122,6 +122,12 @@ namespace Ex{
             [XmlAttribute(AttributeName = "exceptions")]
             public bool Exceptions { get; set; }
 
+            [XmlAttribute(AttributeName = "frame_logging")]
+            public bool FrameLogging { get; set; }
+
+            [XmlAttribute(AttributeName = "trigger_logging")]
+            public bool TriggerLogging { get; set; }
+
             [XmlAttribute(AttributeName = "restricted")]
             public int Restricted { get; set; }
 

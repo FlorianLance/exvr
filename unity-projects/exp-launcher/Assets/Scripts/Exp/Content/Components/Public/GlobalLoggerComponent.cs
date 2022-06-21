@@ -23,36 +23,129 @@
 ************************************************************************************/
 
 // system
+using System;
 using System.Collections.Generic;
 
 namespace Ex {
 
     public class GlobalLoggerComponent : ExComponent {
 
-        // parameters
-        //protected bool m_addDateToFileName;
-        //protected string m_dateTimeFormat;
 
 
         private List<ExComponent> inputComponents = null;
-        //protected bool m_addDateToFileName;
-        //protected string m_dateTimeFormat;
-        //private string m_separator;
-        //private string m_headerLine;
-        //private bool m_eachFrame;
-        //private bool m_addTimeExp;
-        //private bool m_addTimeRoutine;
-        //private bool m_addRoutine;
-        //private bool m_addRoutineIter;
-        //private bool m_addCondition;
-        //private bool m_addConditionIter;
-        //private bool m_addFrameId;
-        //private int m_countColumns = 0;
-        //private static readonly string lineC = "{0}{1}";
+        private FileLogger inputFrameEventsFL   = null;     // log each frame
+        private FileLogger inputTriggerEventsFL = null;     // log when trigger
+
 
         #region ex_functions
 
         protected override bool initialize() {
+
+            string resourceDirectoryPath = initC.get_resource_path(ResourcesManager.ResourceType.Directory, "directory");
+            if (resourceDirectoryPath.Length == 0) {
+                log_error("No directory resource defined.");
+                return false;
+            }
+
+            string topSubDirPath = string.Format("{0}{1}{2}{3}",
+                string.Concat(resourceDirectoryPath, "/global_logs_"),
+                initC.get<string>("base_sub_directory_name"),
+                initC.get<bool>("add_current_instance_to_sub_directory_name") ? 
+                    string.Format("_{0}", ExVR.Experiment().instanceName) : "",
+                initC.get<bool>("add_date_to_sub_directory_name") ? 
+                    string.Format("_{0}", DateTime.Now.ToString(initC.get<string>("date_time_format"))) : ""
+            );
+
+            int count = 1;
+            string globalDirectoryPath = topSubDirPath;            
+            while (System.IO.Directory.Exists(topSubDirPath)) {
+                globalDirectoryPath = string.Format("{0}_{1}", topSubDirPath, count++);
+            }
+
+            var folder = System.IO.Directory.CreateDirectory(globalDirectoryPath);
+            if (!folder.Exists) {
+                log_error(string.Format("Cannot create top directory [{0}].", topSubDirPath));
+                return false;
+            }
+
+            // retrieve components
+            inputComponents = initC.get_components_list("inputs_components");
+            if(inputComponents.Count > 0) {
+
+                int countFrame = 0, countTrigger = 0;
+                foreach(var component in inputComponents) {
+                    if (component.has_frame_logging()) {
+                        countFrame++;
+                    }
+                    if (component.has_trigger_logging()) {
+                        countTrigger++;
+                    }
+                }
+
+                if (countFrame > 0) {
+
+                    string inputFrameLoggerFilePath = string.Format("{0}/log_frame_input{1}", globalDirectoryPath, initC.get<string>("file_extension"));        
+                    if (!FileLogger.create_file(inputFrameLoggerFilePath,"",false,false)) {
+                        return false;
+                    }
+
+                    inputFrameEventsFL = new FileLogger();
+                    if (!inputFrameEventsFL.open_file(inputFrameLoggerFilePath)) {
+                        return false;
+                    }
+                }
+
+                if (countTrigger > 0) {
+                    
+                    string inputTriggerLoggerFilePath = string.Format("{0}/log_trigger_input{1}", globalDirectoryPath, initC.get<string>("file_extension"));
+                    if (!FileLogger.create_file(inputTriggerLoggerFilePath, "", false, false)) {
+                        return false;
+                    }
+
+                    inputTriggerEventsFL = new FileLogger();
+                    if (!inputTriggerEventsFL.open_file(inputTriggerLoggerFilePath)) {
+                        return false;
+                    }
+                }
+            }
+
+            log_message("global -> " + (inputFrameEventsFL == null) + " " + (inputTriggerEventsFL == null));
+
+
+            //events.Sort(delegate (Input.KeyboardButtonEvent e1, Input.KeyboardButtonEvent e2)
+            //{
+            //    if(e1.triggeredExperimentTime < e2.triggeredExperimentTime) {
+            //        return 1;
+            //    }else if(e1.triggeredExperimentTime > e2.triggeredExperimentTime) {
+            //        return -1;
+            //    }
+            //    return 0;
+            //});
+
+
+
+            // global_logs/
+            //    base_instance_name
+
+
+
+
+            // data dir resource
+            // -> global_logs
+            //     -> experience
+            //         -> frame
+            //         -> trigger
+            //     -> input
+            //         -> frame
+            //         -> trigger
+            //     -> network
+            //         -> trigger
+            //     -> ui
+            //         -> frame
+            //         -> trigger
+            //     -> tracking
+            //         -> frame
+            //         -> trigger
 
             //if (!read_common_init_parameters()) {
             //    return false;
@@ -60,7 +153,7 @@ namespace Ex {
             //m_addDateToFileName = initC.get<bool>("add_date_to_file_name");
             //m_dateTimeFormat = initC.get<string>("date_time_format");
 
-            inputComponents = initC.get_components_list("inputs_components");
+
 
 
             //    m_addDateToFileName = initC.get<bool>("add_date_to_file_name");
@@ -94,7 +187,7 @@ namespace Ex {
 
             if(inputComponents != null) {
                 foreach(var inputComponent in inputComponents){
-                    var formatedData = inputComponent.format_data_for_global_logger();
+                    var formatedData = inputComponent.format_trigger_data_for_global_logger();
                     if(formatedData != null) {
                         log_message(formatedData);
                     }

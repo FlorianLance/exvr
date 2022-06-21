@@ -61,6 +61,10 @@ DesignerWindow::DesignerWindow(bool lncoComponents, QWidget *parent) : QMainWind
     setAcceptDrops(true);
 
     // create widgets
+    this->setStyleSheet(
+        "QMainWindow{background-color: #c0c0c0;}"
+        "QMainWindow::separator{background-color: #82a8bc;  width: 5px}"
+    );
     create_flow_diagram();
     create_logger();
     create_components_manager(lncoComponents);    
@@ -201,11 +205,15 @@ void DesignerWindow::insert_log_from_ui(QStringView log){
     logs.append(log.toUtf8());
 }
 
+
+
+
 void DesignerWindow::update_main_ui(Experiment *experiment){
 
-    const auto expLauncherState = experiment->states.explauncherState;
-    const auto expState = experiment->states.expState;
-    QString expStateDescription = from_view(get_description(expState));
+    const auto expLauncherState     = experiment->states.explauncherState;
+    const auto expState             = experiment->states.expState;
+    QString expStateDescription     = from_view(get_description(expState));
+    QString exvrExpStateDescription = from_view(get_description(expLauncherState));
 
     bool canStartLauncher = false;
     bool canExitLauncher  = false;
@@ -266,25 +274,26 @@ void DesignerWindow::update_main_ui(Experiment *experiment){
                     break;
                 }
 
-                QString n = QSL("<b>") % experiment->states.currentElementName % QSL("</b> (T: ") % nbCallsSplit[0] % QSL(")");
+
+                QString n = QSL("<b>") % clamp(experiment->states.currentElementName,15) % QSL("</b> (T: ") % nbCallsSplit[0] % QSL(")");
 
                 if(experiment->states.currentElementType == FlowElement::Type::Routine){
-                    elementName = QSL("Routine: ")      % n %
-                                  QSL(" - Condition: <b>") % experiment->states.currentTypeSpecificInfo % QSL("</b> (T: ") % nbCallsSplit[1] %
+                    elementName = QSL("[Routine] ")      % n %
+                                  QSL(" - [Condition] <b>") % experiment->states.currentTypeSpecificInfo % QSL("</b> (T: ") % nbCallsSplit[1] %
                                   QSL(") - ")            % experiment->states.currentOrder;
                 }else{
 
-                    elementName = QSL("ISI: ")          % n %
-                                  QSL(" - Duration: <b>")  % experiment->states.currentTypeSpecificInfo %
+                    elementName = QSL("[ISI] ")          % n %
+                                  QSL(" - [Duration] <b>")  % experiment->states.currentTypeSpecificInfo %
                                   QSL("</b> - ")            % experiment->states.currentOrder;
                 }
 
                 currentTime =
-                    QSL("Time: ") % QString::number(experiment->states.currentElementTimeS) %
-                    QSL(" / ") % QString::number(experiment->states.currentIntervalEndTimeS) % QSL("(s)");
+                    QSL("[Current] <b>") % QString::number(experiment->states.currentElementTimeS, 'f', 2) %
+                    QSL(" / ") % QString::number(experiment->states.currentIntervalEndTimeS, 'f', 2) % QSL("</b>");
 
                 expTime =
-                    QSL("Total exp time: ") % QString::number(experiment->states.experimentTimeS) % QSL("(s)");
+                    QSL("[Total] <b>") % QString::number(experiment->states.experimentTimeS, 'f', 2) % QSL("</b>");
 
                 progressbarValue = static_cast<int>((experiment->states.currentElementTimeS/experiment->states.currentIntervalEndTimeS)*100);
                 displayElementCurrentTime = true;
@@ -332,6 +341,7 @@ void DesignerWindow::update_main_ui(Experiment *experiment){
     }
 
     // update current element info
+    m_ui.laExVRExpState->setText(exvrExpStateDescription);
     m_ui.laExpState->setText(expStateDescription);
     m_ui.laElementName->setText(elementName);
     m_ui.laElementCurrentTime->setVisible(displayElementCurrentTime);
@@ -630,32 +640,21 @@ void DesignerWindow::create_actions(){
 
 void DesignerWindow::create_menu(){
 
-    // file
-    QMenu *menu = menuBar()->addMenu(tr("&File"));
-
     menuBar()->setStyleSheet(
-        "QMenuBar{font: bold 12px; }"
+        "QMenuBar{font: bold 12px;background-color: rgb(45,45,45); }"
         "QMenuBar::item {color:rgb(255,255,255); background-color: rgb(45,45,45);}"
         "QMenuBar::item:selected{background-color: rgb(255,255,255);color: rgb(0,0,0);}"
-    );
+        );
 
 
-//    menu->setStyleSheet("QMenu {background-color: #ABABAB; /* sets background of the menu */border: 1px solid black;}");
-//    QMenu {
-//        background-color: #ABABAB; /* sets background of the menu */
-//    border: 1px solid black;
-//    }
+    QString menuStyleSheet =
+        "QMenu{font: 12px;background-color: rgb(45,45,45); }"
+        "QMenu::item {color:rgb(255,255,255); background-color: rgb(45,45,45);}"
+        "QMenu::item:selected {color:rgb(0,0,0); background-color: rgb(255,255,255);}";
 
-//    QMenu::item {
-//        /* sets background of menu item. set this to something non-transparent
-//        if you want menu color and menu item color to be different */
-//        background-color: transparent;
-//    }
-
-//    QMenu::item:selected { /* when user selects item using mouse or keyboard */
-//        background-color: #654321;
-//    }
-
+    // file
+    QMenu *menu = menuBar()->addMenu(tr("&File"));
+    menu->setStyleSheet(menuStyleSheet);
     menu->addAction(&m_newExperimentAct);
     menu->addSeparator();
     menu->addAction(&m_saveExperimentAct);
@@ -670,6 +669,7 @@ void DesignerWindow::create_menu(){
     menu->addAction(&m_exitExVRAct);
     // experiment
     menu = menuBar()->addMenu(tr("&Exp launcher"));
+    menu->setStyleSheet(menuStyleSheet);
     menu->addAction(&m_startExperimentLauncherAct);
     menu->addAction(&m_exitExpLauncherAct);
     menu->addSeparator();
@@ -683,15 +683,18 @@ void DesignerWindow::create_menu(){
     menu->addAction(&m_switchModeAct);
     // resources
     menu = menuBar()->addMenu(tr("&Resources"));
+    menu->setStyleSheet(menuStyleSheet);
     menu->addAction(&m_showResourcesManagerDialogAct); 
     menu->addAction(&m_showCSharpScriptDirectoryAct);
     // logs
     menu = menuBar()->addMenu(tr("&Logs"));
+    menu->setStyleSheet(menuStyleSheet);
     menu->addAction(&m_openLogsDirectoryAct);
     menu->addAction(&m_openCurrentDesignerLogAct);
     menu->addAction(&m_openCurrentExpLauncherLogAct);
     // debug
     menu = menuBar()->addMenu(tr("&Debug"));
+    menu->setStyleSheet(menuStyleSheet);
     menu->addAction(&m_saveExpToTempAct);
     menu->addSeparator();
     menu->addAction(&m_openTempExpAct);
@@ -704,6 +707,7 @@ void DesignerWindow::create_menu(){
     menu->addAction(&m_fullLoadWith0DurationAct);
     // doc
     menu = menuBar()->addMenu(tr("&?"));
+    menu->setStyleSheet(menuStyleSheet);
     menu->addAction(&m_showDocumentationEditorAct);
     menu->addAction(&m_aboutAct);
 }
@@ -872,7 +876,9 @@ void DesignerWindow::create_logger(){
     using QWF = QDockWidget::DockWidgetFeature;
     m_dwLogs->setFeatures(QWF::DockWidgetFloatable | QWF::DockWidgetMovable);
     m_dwLogs->setAllowedAreas(QWA::LeftDockWidgetArea | QWA::RightDockWidgetArea | QWA::TopDockWidgetArea | QWA::BottomDockWidgetArea);
-    m_dwLogs->setStyleSheet("QDockWidget{background-color: rgb(51, 51, 51);;color: white;font: bold 14px;}");
+    m_dwLogs->setStyleSheet(
+        "QDockWidget{background-color: rgb(45, 45, 45);color: white;font: bold 14px;}"
+    );
     addDockWidget(Qt::DockWidgetArea::LeftDockWidgetArea,m_dwLogs);
     setCorner(Qt::Corner::TopLeftCorner, Qt::DockWidgetArea::LeftDockWidgetArea);
     m_dwLogs->setWidget(m_tbLogs);
@@ -898,7 +904,7 @@ void DesignerWindow::create_components_manager(bool lncoComponents){
     using QWF = QDockWidget::DockWidgetFeature;
     m_dwComponents->setFeatures(QWF::DockWidgetFloatable | QWF::DockWidgetMovable);
     m_dwComponents->setAllowedAreas(QWA::LeftDockWidgetArea | QWA::RightDockWidgetArea);
-    m_dwComponents->setStyleSheet("QDockWidget{background-color: rgb(51, 51, 51);;color: white;font: bold 14px;}");
+    m_dwComponents->setStyleSheet("QDockWidget{background-color: rgb(45, 45, 45);color: white;font: bold 14px;}");
     addDockWidget(Qt::DockWidgetArea::LeftDockWidgetArea,m_dwComponents);
     setCorner(Qt::Corner::BottomLeftCorner, Qt::DockWidgetArea::LeftDockWidgetArea);
     m_dwComponents->setWidget(m_componentsW.get());

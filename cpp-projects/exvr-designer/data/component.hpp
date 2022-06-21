@@ -148,136 +148,140 @@ struct Component {
     static constexpr bool Y = true;
     static constexpr bool N = false;
 
-    using SV            = std::string_view;
-    using TypeStr       = SV;
-    using FullStr       = SV;
-    using UnityStr      = SV;
-    using IconStr       = SV;
-    using Unicity       = bool;
-    using Global        = bool;
-    using AlwaysUpdate  = bool;
-    using Exceptions    = bool;
-    using CanBeLogged   = bool;
+    using SV                   = std::string_view;
+    using TypeStr              = SV;
+    using FullStr              = SV;
+    using UnityStr             = SV;
+    using IconStr              = SV;
+    using Unicity              = bool;
+    using Global               = bool;
+    using AlwaysUpdate         = bool;
+    using Exceptions           = bool;
+    using CanHasFrameLogging   = bool;
+    using CanHasTriggerLogging = bool;
 
-    static constexpr size_t ColType         = 0;
-    static constexpr size_t ColCategory     = 1;
-    static constexpr size_t ColTimelineO    = 2;
-    static constexpr size_t ColConfigO      = 3;
-    static constexpr size_t ColUnicity      = 4;
-    static constexpr size_t ColGlobal       = 5;
-    static constexpr size_t ColAlwaysUpdate = 6;
-    static constexpr size_t ColExceptions   = 7;
-    static constexpr size_t ColCanBeLogged  = 8;
-    static constexpr size_t ColPriority     = 9;
-    static constexpr size_t ColRestricted   = 10;
-    static constexpr size_t ColState        = 11;
-    static constexpr size_t ColTypeStr      = 12;
-    static constexpr size_t ColFullStr      = 13;
-    static constexpr size_t ColUnityStr     = 14;
-    static constexpr size_t ColIconStr      = 15;
+    static constexpr size_t ColType              = 0;
+    static constexpr size_t ColCategory          = 1;
+    static constexpr size_t ColTimelineO         = 2;
+    static constexpr size_t ColConfigO           = 3;
+    static constexpr size_t ColUnicity           = 4;
+    static constexpr size_t ColGlobal            = 5;
+    static constexpr size_t ColAlwaysUpdate      = 6;
+    static constexpr size_t ColExceptions        = 7;
+    static constexpr size_t ColHasFrameLogging   = 8;
+    static constexpr size_t ColHasTriggerLogging = 9;
+    static constexpr size_t ColPriority          = 10;
+    static constexpr size_t ColRestricted        = 11;
+    static constexpr size_t ColState             = 12;
+    static constexpr size_t ColTypeStr           = 13;
+    static constexpr size_t ColFullStr           = 14;
+    static constexpr size_t ColUnityStr          = 15;
+    static constexpr size_t ColIconStr           = 16;
 
     using TComponent = std::tuple<
-        Type, Category, TimelineO, ConfigO, Unicity, Global, AlwaysUpdate, Exceptions, CanBeLogged, Priority, Restricted, State, TypeStr, FullStr, UnityStr, IconStr>;
-    //  0     1         2          3        4        5       6             7           8            9         10          11     12       13       14        15
+        Type, Category, TimelineO, ConfigO, Unicity, Global, AlwaysUpdate, Exceptions, CanHasFrameLogging, CanHasTriggerLogging,
+    //  0     1         2          3        4        5       6             7           8                   9
+        Priority, Restricted, State, TypeStr, FullStr, UnityStr, IconStr>;
+    //  10        11          12     13       14       15        16
     static constexpr TupleArray<T::SizeEnum, TComponent> components ={{
         TComponent
-        // 0                          1               2      3      4  5  6  7  8  9    10      11 12 13 14
+        // 0                          1               2      3      4  5  6  7  8  9  10    11     12      13 14 15 16
         // Audio
-        {T::AudioListener,            C::Audio,       TO::U, CO::B, Y, N, N, Y, N, P::M, R::OS, S::Exp, "AudioListener"sv, "Audio listener"sv, "AudioListener"sv, "Sound"sv},
-        {T::AudioSource,              C::Audio,       TO::B, CO::B, N, N, N, Y, N, P::M, R::OS, S::Sta, "AudioSource"sv, "Audio source"sv, "AudioSource"sv, "Sound"sv},
-        {T::Microphone,               C::Audio,       TO::B, CO::B, N, N, N, Y, N, P::M, R::OS, S::Exp, "Microphone"sv, "Microphone"sv, "Microphone"sv, "Micro"sv},
+        {T::AudioListener,            C::Audio,       TO::U, CO::B, Y, N, N, Y, N, N, P::M, R::OS, S::Exp, "AudioListener"sv, "Audio listener"sv, "AudioListener"sv, "Sound"sv},
+        {T::AudioSource,              C::Audio,       TO::B, CO::B, N, N, N, Y, N, N, P::M, R::OS, S::Sta, "AudioSource"sv, "Audio source"sv, "AudioSource"sv, "Sound"sv},
+        {T::Microphone,               C::Audio,       TO::B, CO::B, N, N, N, Y, N, N, P::M, R::OS, S::Exp, "Microphone"sv, "Microphone"sv, "Microphone"sv, "Micro"sv},
         // Avatar
-        {T::Humanoid_avatar,          C::Avatar,      TO::B, CO::B, N, N, N, Y, N, P::M, R::CS, S::Sta, "Humanoid_avatar"sv, "Humanoid avatar"sv, "HumanoidAvatar"sv, "Avatar"sv},
-        {T::Humanoid_controller,      C::Avatar,      TO::B, CO::B, N, N, N, Y, N, P::L, R::CS, S::Leg, "Humanoid_controller"sv, "Humanoid controller"sv, "HumanoidController"sv, "Avatar"sv},
+        {T::Humanoid_avatar,          C::Avatar,      TO::B, CO::B, N, N, N, Y, N, N, P::M, R::CS, S::Sta, "Humanoid_avatar"sv, "Humanoid avatar"sv, "HumanoidAvatar"sv, "Avatar"sv},
+        {T::Humanoid_controller,      C::Avatar,      TO::B, CO::B, N, N, N, Y, N, N, P::L, R::CS, S::Leg, "Humanoid_controller"sv, "Humanoid controller"sv, "HumanoidController"sv, "Avatar"sv},
         // Camera
-        {T::Camera,                   C::Camera,      TO::U, CO::B, Y, N, N, Y, N, P::L, R::OS, S::Sta, "Camera"sv, "Camera"sv, "Camera"sv, "Camera"sv},
-        {T::Camera_target,            C::Camera,      TO::U, CO::C, N, N, N, Y, N, P::L, R::OS, S::Sta, "Camera_target"sv, "Camera target"sv, "CameraTarget"sv, "Camera"sv},
-        {T::Camera_trajectory,        C::Camera,      TO::B, CO::C, N, N, N, Y, N, P::L, R::OS, S::Leg, "Camera_trajectory"sv, "Camera trajectory"sv, "CameraTrajectory"sv, "Camera"sv},
-        {T::Camera_trajectory_file,   C::Camera,      TO::B, CO::C, N, N, N, Y, N, P::L, R::OS, S::Leg, "Camera_trajectory_file"sv, "Camera trajectory file"sv, "CameraTrajectoryFile"sv, "Camera"sv},
-        {T::FPP_avatar_camera,        C::Camera,      TO::U, CO::B, N, N, N, Y, N, P::L, R::CS, S::Sta, "FPP_avatar_camera"sv, "First person perspective avatar camera"sv, "FPPAvatarCamera"sv, "Camera"sv},
-        {T::TPP_avatar_camera,        C::Camera,      TO::U, CO::B, N, N, N, Y, N, P::L, R::CS, S::Sta, "TPP_avatar_camera"sv, "Third persond perspective avatar camera"sv, "TPPAvatarCamera"sv, "Camera"sv},
-        {T::FPP_camera,               C::Camera,      TO::U, CO::B, N, N, N, Y, N, P::L, R::OS, S::Sta, "FPP_camera"sv, "First person perspective camera"sv, "FPPCamera"sv, "Camera"sv},
+        {T::Camera,                   C::Camera,      TO::U, CO::B, Y, N, N, Y, N, N, P::L, R::OS, S::Sta, "Camera"sv, "Camera"sv, "Camera"sv, "Camera"sv},
+        {T::Camera_target,            C::Camera,      TO::U, CO::C, N, N, N, Y, N, N, P::L, R::OS, S::Sta, "Camera_target"sv, "Camera target"sv, "CameraTarget"sv, "Camera"sv},
+        {T::Camera_trajectory,        C::Camera,      TO::B, CO::C, N, N, N, Y, N, N, P::L, R::OS, S::Leg, "Camera_trajectory"sv, "Camera trajectory"sv, "CameraTrajectory"sv, "Camera"sv},
+        {T::Camera_trajectory_file,   C::Camera,      TO::B, CO::C, N, N, N, Y, N, N, P::L, R::OS, S::Leg, "Camera_trajectory_file"sv, "Camera trajectory file"sv, "CameraTrajectoryFile"sv, "Camera"sv},
+        {T::FPP_avatar_camera,        C::Camera,      TO::U, CO::B, N, N, N, Y, N, N, P::L, R::CS, S::Sta, "FPP_avatar_camera"sv, "First person perspective avatar camera"sv, "FPPAvatarCamera"sv, "Camera"sv},
+        {T::TPP_avatar_camera,        C::Camera,      TO::U, CO::B, N, N, N, Y, N, N, P::L, R::CS, S::Sta, "TPP_avatar_camera"sv, "Third persond perspective avatar camera"sv, "TPPAvatarCamera"sv, "Camera"sv},
+        {T::FPP_camera,               C::Camera,      TO::U, CO::B, N, N, N, Y, N, N, P::L, R::OS, S::Sta, "FPP_camera"sv, "First person perspective camera"sv, "FPPCamera"sv, "Camera"sv},
         // Cloud
-        {T::Cloud,                    C::Cloud,       TO::V, CO::B, N, N, N, Y, N, P::H, R::OS, S::Sta, "Cloud"sv, "Cloud"sv, "Cloud"sv, "Cloud"sv},
-        {T::Scaner_video,             C::Cloud,       TO::B, CO::B, N, N, N, Y, N, P::H, R::LN, S::Exp, "Scaner_video"sv, "Scaner video"sv, "ScanerVideo"sv, "Video_cloud"sv},
+        {T::Cloud,                    C::Cloud,       TO::V, CO::B, N, N, N, Y, N, N, P::H, R::OS, S::Sta, "Cloud"sv, "Cloud"sv, "Cloud"sv, "Cloud"sv},
+        {T::Scaner_video,             C::Cloud,       TO::B, CO::B, N, N, N, Y, N, N, P::H, R::LN, S::Exp, "Scaner_video"sv, "Scaner video"sv, "ScanerVideo"sv, "Video_cloud"sv},
         // Environment
-        {T::Post_process,             C::Environment, TO::N, CO::C, Y, N, N, Y, N, P::H, R::OS, S::Exp, "Post_porcess"sv, "Post process"sv, "PostProcess"sv, "Sky"sv},
-        {T::Sky,                      C::Environment, TO::N, CO::C, Y, N, N, Y, N, P::H, R::OS, S::Sta, "Sky"sv, "Sky"sv, "Sky"sv, "Sky"sv},
+        {T::Post_process,             C::Environment, TO::N, CO::C, Y, N, N, Y, N, N, P::H, R::OS, S::Exp, "Post_porcess"sv, "Post process"sv, "PostProcess"sv, "Sky"sv},
+        {T::Sky,                      C::Environment, TO::N, CO::C, Y, N, N, Y, N, N, P::H, R::OS, S::Sta, "Sky"sv, "Sky"sv, "Sky"sv, "Sky"sv},
         // Flow
-        {T::Config,                   C::Flow,        TO::N, CO::C, N, N, N, Y, N, P::H, R::OS, S::Sta, "Config"sv, "Config"sv, "Config"sv, "Config"sv},
+        {T::Config,                   C::Flow,        TO::N, CO::C, N, N, N, Y, N, N, P::H, R::OS, S::Sta, "Config"sv, "Config"sv, "Config"sv, "Config"sv},
         // Input
-        {T::Joypad,                   C::Input,       TO::U, CO::I, Y, Y, Y, N, Y, P::H, R::OS, S::Sta, "Joypad"sv, "Joypad"sv, "Joypad"sv,"Joypad"sv},
-        {T::Keyboard,                 C::Input,       TO::U, CO::I, Y, Y, Y, N, Y, P::H, R::OS, S::Sta, "Keyboard"sv, "Keyboard"sv, "Keyboard"sv, "Keyboard"sv},
-        {T::Mouse,                    C::Input,       TO::U, CO::I, Y, Y, Y, N, Y, P::H, R::OS, S::Sta, "Mouse"sv, "Mouse"sv, "Mouse"sv, "Mouse"sv},
+        {T::Joypad,                   C::Input,       TO::U, CO::I, Y, Y, Y, N, Y, Y, P::H, R::OS, S::Sta, "Joypad"sv, "Joypad"sv, "Joypad"sv,"Joypad"sv},
+        {T::Keyboard,                 C::Input,       TO::U, CO::I, Y, Y, Y, N, Y, Y, P::H, R::OS, S::Sta, "Keyboard"sv, "Keyboard"sv, "Keyboard"sv, "Keyboard"sv},
+        {T::Mouse,                    C::Input,       TO::U, CO::I, Y, Y, Y, N, Y, Y, P::H, R::OS, S::Sta, "Mouse"sv, "Mouse"sv, "Mouse"sv, "Mouse"sv},
         // Interaction
-        {T::Flag_pole,                C::Interaction, TO::B, CO::B, N, N, N, Y, N, P::M, R::OS, S::Sta, "Flag_pole"sv, "Flag pole"sv, "FlagPole"sv, "Flag_pole"sv},
-        {T::Mark_to_clean,            C::Interaction, TO::B, CO::B, N, N, N, Y, N, P::M, R::OS, S::Exp, "Mark_to_clean"sv, "Mark to clean"sv, "MarkToClean"sv, "Mark_to_clean"sv},
-        {T::Target_to_grab,           C::Interaction, TO::B, CO::B, N, N, N, Y, N, P::M, R::OS, S::Exp, "Target_to_grab"sv, "Target to grab"sv, "TargetToGrab"sv, "Grab_target"sv},
+        {T::Flag_pole,                C::Interaction, TO::B, CO::B, N, N, N, Y, N, N, P::M, R::OS, S::Sta, "Flag_pole"sv, "Flag pole"sv, "FlagPole"sv, "Flag_pole"sv},
+        {T::Mark_to_clean,            C::Interaction, TO::B, CO::B, N, N, N, Y, N, N, P::M, R::OS, S::Exp, "Mark_to_clean"sv, "Mark to clean"sv, "MarkToClean"sv, "Mark_to_clean"sv},
+        {T::Target_to_grab,           C::Interaction, TO::B, CO::B, N, N, N, Y, N, N, P::M, R::OS, S::Exp, "Target_to_grab"sv, "Target to grab"sv, "TargetToGrab"sv, "Grab_target"sv},
         // Model
-        {T::Cube,                     C::Model,       TO::V, CO::B, N, N, N, N, N, P::M, R::OS, S::Sta, "Cube"sv, "Cube"sv, "Cube"sv,"Cube"sv},
-        {T::Cylinder,                 C::Model,       TO::V, CO::B, N, N, N, N, N, P::M, R::OS, S::Sta, "Cylinder"sv, "Cylinder"sv, "Cylinder"sv,"Cylinder"sv},
-        {T::Landmark,                 C::Model,       TO::V, CO::B, N, N, N, N, N, P::M, R::OS, S::Sta, "Landmark"sv, "Landmark"sv, "Landmark"sv,"Landmark"sv},
-        {T::Lines,                    C::Model,       TO::V, CO::C, N, N, N, N, N, P::M, R::OS, S::Exp, "Lines"sv, "Lines"sv, "Lines"sv,"Line"sv},
-        {T::Sphere,                   C::Model,       TO::V, CO::B, N, N, N, N, N, P::M, R::OS, S::Sta, "Sphere"sv, "Sphere"sv, "Sphere"sv,"Sphere"sv},
-        {T::Torus,                    C::Model,       TO::V, CO::B, N, N, N, N, N, P::M, R::OS, S::Sta, "Torus"sv, "Torus"sv, "Torus"sv,"Torus"sv},
+        {T::Cube,                     C::Model,       TO::V, CO::B, N, N, N, N, N, N, P::M, R::OS, S::Sta, "Cube"sv, "Cube"sv, "Cube"sv,"Cube"sv},
+        {T::Cylinder,                 C::Model,       TO::V, CO::B, N, N, N, N, N, N, P::M, R::OS, S::Sta, "Cylinder"sv, "Cylinder"sv, "Cylinder"sv,"Cylinder"sv},
+        {T::Landmark,                 C::Model,       TO::V, CO::B, N, N, N, N, N, N, P::M, R::OS, S::Sta, "Landmark"sv, "Landmark"sv, "Landmark"sv,"Landmark"sv},
+        {T::Lines,                    C::Model,       TO::V, CO::C, N, N, N, N, N, N, P::M, R::OS, S::Exp, "Lines"sv, "Lines"sv, "Lines"sv,"Line"sv},
+        {T::Sphere,                   C::Model,       TO::V, CO::B, N, N, N, N, N, N, P::M, R::OS, S::Sta, "Sphere"sv, "Sphere"sv, "Sphere"sv,"Sphere"sv},
+        {T::Torus,                    C::Model,       TO::V, CO::B, N, N, N, N, N, N, P::M, R::OS, S::Sta, "Torus"sv, "Torus"sv, "Torus"sv,"Torus"sv},
         // Network
-        {T::Parallel_port_writer,     C::Network,     TO::N, CO::B, N, N, N, N, N, P::H, R::OS, S::Sta, "Parallel_port_writer"sv, "Parallel port writer"sv, "ParallelPortWriter"sv, "Parallel_port"sv},
-        {T::Serial_port_reader,       C::Network,     TO::U, CO::B, N, N, N, N, N, P::H, R::OS, S::Sta, "Serial_port_reader"sv, "Serial port reader"sv, "SerialPortReader"sv, "USB"sv},
-        {T::Serial_port_writer,       C::Network,     TO::U, CO::B, N, N, N, N, N, P::H, R::OS, S::Sta, "Serial_port_writer"sv, "Serial port writer"sv, "SerialPortWriter"sv, "USB"sv},
-        {T::Udp_reader,               C::Network,     TO::U, CO::I, N, N, N, N, N, P::H, R::OS, S::Sta, "Udp_reader"sv, "UDP reader"sv, "UdpReader"sv, "UDP"sv},
-        {T::Udp_writer,               C::Network,     TO::U, CO::I, N, N, N, N, N, P::H, R::OS, S::Sta, "Udp_writer"sv, "UDP writer"sv, "UdpWriter"sv, "UDP"sv},
+        {T::Parallel_port_writer,     C::Network,     TO::N, CO::B, N, N, N, N, N, N, P::H, R::OS, S::Sta, "Parallel_port_writer"sv, "Parallel port writer"sv, "ParallelPortWriter"sv, "Parallel_port"sv},
+        {T::Serial_port_reader,       C::Network,     TO::U, CO::B, N, N, N, N, N, Y, P::H, R::OS, S::Sta, "Serial_port_reader"sv, "Serial port reader"sv, "SerialPortReader"sv, "USB"sv},
+        {T::Serial_port_writer,       C::Network,     TO::U, CO::B, N, N, N, N, N, N, P::H, R::OS, S::Sta, "Serial_port_writer"sv, "Serial port writer"sv, "SerialPortWriter"sv, "USB"sv},
+        {T::Udp_reader,               C::Network,     TO::U, CO::I, N, N, N, N, N, Y, P::H, R::OS, S::Sta, "Udp_reader"sv, "UDP reader"sv, "UdpReader"sv, "UDP"sv},
+        {T::Udp_writer,               C::Network,     TO::U, CO::I, N, N, N, N, N, N, P::H, R::OS, S::Sta, "Udp_writer"sv, "UDP writer"sv, "UdpWriter"sv, "UDP"sv},
         // Output
-        {T::Global_logger,            C::Output,      TO::N, CO::I, Y, Y, Y, N, N, P::H, R::OS, S::Exp, "Global_logger"sv, "Global logger"sv, "GlobalLogger"sv, "Logger"sv},
-        {T::Logger,                   C::Output,      TO::N, CO::I, N, N, N, N, N, P::H, R::OS, S::Sta, "Logger"sv, "Logger"sv, "Logger"sv, "Logger"sv},
-        {T::LoggerColumns,            C::Output,      TO::N, CO::I, N, N, N, N, N, P::H, R::OS, S::Sta, "Logger_columns"sv, "Logger columns"sv, "LoggerColumns"sv, "Logger"sv},
-        {T::LoggerCondition,          C::Output,      TO::N, CO::I, N, N, N, N, N, P::H, R::OS, S::Sta, "Logger_condition"sv, "Logger condition"sv, "LoggerCondition"sv, "Logger"sv},
-        {T::LoggerExperiment,         C::Output,      TO::N, CO::I, N, N, N, N, N, P::H, R::OS, S::Sta, "Logger_experiment"sv, "Logger experiment"sv, "LoggerExperiment"sv, "Logger"sv},
+        {T::Global_logger,            C::Output,      TO::N, CO::I, Y, Y, Y, N, N, N, P::H, R::OS, S::Exp, "Global_logger"sv, "Global logger"sv, "GlobalLogger"sv, "Logger"sv},
+        {T::Logger,                   C::Output,      TO::N, CO::I, N, N, N, N, N, N, P::H, R::OS, S::Sta, "Logger"sv, "Logger"sv, "Logger"sv, "Logger"sv},
+        {T::LoggerColumns,            C::Output,      TO::N, CO::I, N, N, N, N, N, N, P::H, R::OS, S::Sta, "Logger_columns"sv, "Logger columns"sv, "LoggerColumns"sv, "Logger"sv},
+        {T::LoggerCondition,          C::Output,      TO::N, CO::I, N, N, N, N, N, N, P::H, R::OS, S::Sta, "Logger_condition"sv, "Logger condition"sv, "LoggerCondition"sv, "Logger"sv},
+        {T::LoggerExperiment,         C::Output,      TO::N, CO::I, N, N, N, N, N, N, P::H, R::OS, S::Sta, "Logger_experiment"sv, "Logger experiment"sv, "LoggerExperiment"sv, "Logger"sv},
         // Resource
-        {T::Image_resource,           C::Resource,    TO::N, CO::B, N, N, N, Y, N, P::H, R::OS, S::Sta, "Image_resource"sv, "Image resource"sv, "ImageResource"sv, "Image"sv},
-        {T::Plot_resource,            C::Resource,    TO::N, CO::C, N, N, N, Y, N, P::H, R::OS, S::Sta, "Plot_resource"sv,  "Plot resource"sv, "PlotResource"sv, "Plot"sv},
-        {T::Text_resource,            C::Resource,    TO::N, CO::C, N, N, N, Y, N, P::H, R::OS, S::Sta, "Text_resource"sv,  "Text resource"sv, "TextResource"sv, "Text"sv},
+        {T::Image_resource,           C::Resource,    TO::N, CO::B, N, N, N, Y, N, N, P::H, R::OS, S::Sta, "Image_resource"sv, "Image resource"sv, "ImageResource"sv, "Image"sv},
+        {T::Plot_resource,            C::Resource,    TO::N, CO::C, N, N, N, Y, N, N, P::H, R::OS, S::Sta, "Plot_resource"sv,  "Plot resource"sv, "PlotResource"sv, "Plot"sv},
+        {T::Text_resource,            C::Resource,    TO::N, CO::C, N, N, N, Y, N, N, P::H, R::OS, S::Sta, "Text_resource"sv,  "Text resource"sv, "TextResource"sv, "Text"sv},
         // Scene
-        {T::Falling_spheres,          C::Scene,       TO::B, CO::B, N, N, N, Y, N, P::M, R::OS, S::Exp, "Falling_spheres"sv, "Falling spheres"sv, "FallingSpheres"sv, "Falling_spheres"sv},
-        {T::Flashing_dot,             C::Scene,       TO::B, CO::B, N, N, N, Y, N, P::M, R::OS, S::Exp, "Flashing_dot"sv, "Flashing dot"sv, "FlashingDot"sv,"Dot"sv},
-        {T::Mirror,                   C::Scene,       TO::V, CO::C, N, N, N, Y, N, P::M, R::OS, S::Leg, "Mirror"sv, "Mirror"sv, "Mirror"sv, "Mirror"sv},
-        {T::MRI,                      C::Scene,       TO::B, CO::B, N, N, N, Y, N, P::M, R::OS, S::Exp, "MRI"sv, "MRI"sv, "MRI"sv, "MRI"sv},
-        {T::Multi_AB,                 C::Scene,       TO::V, CO::B, N, N, N, Y, N, P::H, R::OS, S::Sta, "Multi_AB"sv, "Multi assets bundles"sv, "MultiAB"sv, "Unity_scene_bundle"sv},
-        {T::Unity_asset_bundle,       C::Scene,       TO::V, CO::B, N, N, N, Y, N, P::H, R::OS, S::Sta, "Unity_asset_bundle"sv, "Unity asset bundle"sv, "AssetBundle"sv, "Unity_scene_bundle"sv},
+        {T::Falling_spheres,          C::Scene,       TO::B, CO::B, N, N, N, Y, N, N, P::M, R::OS, S::Exp, "Falling_spheres"sv, "Falling spheres"sv, "FallingSpheres"sv, "Falling_spheres"sv},
+        {T::Flashing_dot,             C::Scene,       TO::B, CO::B, N, N, N, Y, N, N, P::M, R::OS, S::Exp, "Flashing_dot"sv, "Flashing dot"sv, "FlashingDot"sv,"Dot"sv},
+        {T::Mirror,                   C::Scene,       TO::V, CO::C, N, N, N, Y, N, N, P::M, R::OS, S::Leg, "Mirror"sv, "Mirror"sv, "Mirror"sv, "Mirror"sv},
+        {T::MRI,                      C::Scene,       TO::B, CO::B, N, N, N, Y, N, N, P::M, R::OS, S::Exp, "MRI"sv, "MRI"sv, "MRI"sv, "MRI"sv},
+        {T::Multi_AB,                 C::Scene,       TO::V, CO::B, N, N, N, Y, N, N, P::H, R::OS, S::Sta, "Multi_AB"sv, "Multi assets bundles"sv, "MultiAB"sv, "Unity_scene_bundle"sv},
+        {T::Unity_asset_bundle,       C::Scene,       TO::V, CO::B, N, N, N, Y, N, N, P::H, R::OS, S::Sta, "Unity_asset_bundle"sv, "Unity asset bundle"sv, "AssetBundle"sv, "Unity_scene_bundle"sv},
         // Script
-        {T::CSharp_function,          C::Script,      TO::N, CO::B, N, N, N, Y, N, P::L, R::OS, S::Sta, "CSharp_function"sv, "CSharp function"sv, "CSharpFunction"sv, "CSharp"sv},
-        {T::CSharp_script,            C::Script,      TO::B, CO::B, N, N, N, Y, N, P::L, R::OS, S::Sta, "CSharp_script"sv, "CSharp script"sv, "CSharpScript"sv, "CSharp"sv},
-        {T::Python_script,            C::Script,      TO::B, CO::B, N, N, N, Y, N, P::M, R::OS, S::Exp, "Python_script"sv, "Python script"sv, "PythonScript"sv, "Python_script"sv},
+        {T::CSharp_function,          C::Script,      TO::N, CO::B, N, N, N, Y, N, N, P::L, R::OS, S::Sta, "CSharp_function"sv, "CSharp function"sv, "CSharpFunction"sv, "CSharp"sv},
+        {T::CSharp_script,            C::Script,      TO::B, CO::B, N, N, N, Y, N, N, P::L, R::OS, S::Sta, "CSharp_script"sv, "CSharp script"sv, "CSharpScript"sv, "CSharp"sv},
+        {T::Python_script,            C::Script,      TO::B, CO::B, N, N, N, Y, N, N, P::M, R::OS, S::Exp, "Python_script"sv, "Python script"sv, "PythonScript"sv, "Python_script"sv},
         // Tracking
-        {T::Attach_object_to_hand,    C::Tracking,    TO::B, CO::B, Y, N, N, Y, N, P::M, R::OS, S::Exp, "Attach_object_to_hand"sv, "Attach object to hand"sv, "AttachObjectToHand"sv, "Sponge"sv},
-        {T::Biopac,                   C::Tracking,    TO::U, CO::I, Y, N, N, Y, N, P::H, R::OS, S::Sta, "Biopac"sv, "Biopac device"sv, "Biopac"sv, "Physio"sv},
-        {T::Fop_robot,                C::Tracking,    TO::U, CO::B, Y, N, N, Y, N, P::H, R::LN, S::Sta, "Fop_robot"sv, "FOP robot"sv, "FOPRobot"sv,"Fop_robot"sv},
-        {T::Kinect_manager,           C::Tracking,    TO::U, CO::B, Y, N, N, Y, N, P::H, R::LN, S::Sta, "Kinect_manager"sv, "Kinect manager"sv, "KinectManager"sv,"Kinect"sv},
-        {T::Kinect_body_tracking,     C::Tracking,    TO::B, CO::B, Y, N, N, Y, N, P::H, R::LN, S::Exp, "Kinect_body_tracking"sv, "Kinect body tracking"sv, "KinectBodyTracking"sv,"Kinect"sv},
-        {T::Leap_motion,              C::Tracking,    TO::U, CO::C, Y, N, N, Y, N, P::H, R::OS, S::Leg, "Leap_motion"sv, "LeapMotion"sv, "LeapMotion"sv, "Hand"sv},
-        {T::Leap_motion_arms_display, C::Tracking,    TO::V, CO::B, Y, N, N, Y, N, P::M, R::CS, S::Leg, "Leap_motion_arms_display"sv, "LeapMotion realistic arms"sv, "LeapMotionArmsDisplay"sv, "Hand"sv},
-        {T::Leap_motion_tracking,     C::Tracking,    TO::V, CO::N, Y, N, N, Y, N, P::M, R::OS, S::Leg, "Leap_motion_tracking"sv, "LeapMotion tracking"sv, "LeapMotionTracking"sv, "Hand"sv},
-        {T::Qualisys,                 C::Tracking,    TO::B, CO::B, Y, N, N, Y, N, P::M, R::OS, S::Sta, "Qualisys_tracking"sv, "Qualisys tracking"sv, "QualisysTracking"sv, "Qualisys"sv},
-        {T::Scene_scaner,             C::Tracking,    TO::B, CO::B, Y, N, N, Y, N, P::M, R::LN, S::Sta, "Scene_scaner"sv, "Scene scaner"sv, "SceneScaner"sv,"Body_scanner"sv},
-        {T::Sonceboz_SG,              C::Tracking,    TO::U, CO::B, Y, N, N, Y, N, P::H, R::LN, S::Exp, "Sonceboz_SG"sv, "Sonceboz SG"sv, "SoncebozSG"sv,"Sonceboz"sv},
-        {T::Thera_trainer_tracking,   C::Tracking,    TO::U, CO::I, Y, N, N, Y, N, P::M, R::LN, S::Sta, "Thera_trainer_tracking"sv, "Thera trainer tracking"sv, "TheraTrainerTracking"sv, "Thera_trainer"sv},
-        {T::Thera_trainer_platform,   C::Tracking,    TO::B, CO::C, N, N, N, Y, N, P::M, R::LN, S::Sta, "Thera_trainer_platform"sv, "Thera trainer platform"sv, "TheraTrainerPlatform"sv, "Thera_trainer"sv},
-        {T::Vive_pro_eye_tracking,    C::Tracking,    TO::B, CO::C, N, N, N, Y, N, P::H, R::OS, S::Sta, "Vive_pro_eye_tracking"sv, "Vive pro eye tracking"sv, "ViveProEyeTracking"sv, "Thera_trainer"sv},
+        {T::Attach_object_to_hand,    C::Tracking,    TO::B, CO::B, Y, N, N, Y, N, N, P::M, R::OS, S::Exp, "Attach_object_to_hand"sv, "Attach object to hand"sv, "AttachObjectToHand"sv, "Sponge"sv},
+        {T::Biopac,                   C::Tracking,    TO::U, CO::I, Y, N, N, Y, N, N, P::H, R::OS, S::Sta, "Biopac"sv, "Biopac device"sv, "Biopac"sv, "Physio"sv},
+        {T::Fop_robot,                C::Tracking,    TO::U, CO::B, Y, N, N, Y, N, N, P::H, R::LN, S::Sta, "Fop_robot"sv, "FOP robot"sv, "FOPRobot"sv,"Fop_robot"sv},
+        {T::Kinect_manager,           C::Tracking,    TO::U, CO::B, Y, N, N, Y, N, N, P::H, R::LN, S::Sta, "Kinect_manager"sv, "Kinect manager"sv, "KinectManager"sv,"Kinect"sv},
+        {T::Kinect_body_tracking,     C::Tracking,    TO::B, CO::B, Y, N, N, Y, N, N, P::H, R::LN, S::Exp, "Kinect_body_tracking"sv, "Kinect body tracking"sv, "KinectBodyTracking"sv,"Kinect"sv},
+        {T::Leap_motion,              C::Tracking,    TO::U, CO::C, Y, N, N, Y, N, N, P::H, R::OS, S::Leg, "Leap_motion"sv, "LeapMotion"sv, "LeapMotion"sv, "Hand"sv},
+        {T::Leap_motion_arms_display, C::Tracking,    TO::V, CO::B, Y, N, N, Y, N, N, P::M, R::CS, S::Leg, "Leap_motion_arms_display"sv, "LeapMotion realistic arms"sv, "LeapMotionArmsDisplay"sv, "Hand"sv},
+        {T::Leap_motion_tracking,     C::Tracking,    TO::V, CO::N, Y, N, N, Y, N, N, P::M, R::OS, S::Leg, "Leap_motion_tracking"sv, "LeapMotion tracking"sv, "LeapMotionTracking"sv, "Hand"sv},
+        {T::Qualisys,                 C::Tracking,    TO::B, CO::B, Y, N, N, Y, N, N, P::M, R::OS, S::Sta, "Qualisys_tracking"sv, "Qualisys tracking"sv, "QualisysTracking"sv, "Qualisys"sv},
+        {T::Scene_scaner,             C::Tracking,    TO::B, CO::B, Y, N, N, Y, N, N, P::M, R::LN, S::Sta, "Scene_scaner"sv, "Scene scaner"sv, "SceneScaner"sv,"Body_scanner"sv},
+        {T::Sonceboz_SG,              C::Tracking,    TO::U, CO::B, Y, N, N, Y, N, N, P::H, R::LN, S::Exp, "Sonceboz_SG"sv, "Sonceboz SG"sv, "SoncebozSG"sv,"Sonceboz"sv},
+        {T::Thera_trainer_tracking,   C::Tracking,    TO::U, CO::I, Y, N, N, Y, N, N, P::M, R::LN, S::Sta, "Thera_trainer_tracking"sv, "Thera trainer tracking"sv, "TheraTrainerTracking"sv, "Thera_trainer"sv},
+        {T::Thera_trainer_platform,   C::Tracking,    TO::B, CO::C, N, N, N, Y, N, N, P::M, R::LN, S::Sta, "Thera_trainer_platform"sv, "Thera trainer platform"sv, "TheraTrainerPlatform"sv, "Thera_trainer"sv},
+        {T::Vive_pro_eye_tracking,    C::Tracking,    TO::B, CO::C, N, N, N, Y, N, N, P::H, R::OS, S::Sta, "Vive_pro_eye_tracking"sv, "Vive pro eye tracking"sv, "ViveProEyeTracking"sv, "Thera_trainer"sv},
         // UI
-        {T::Slider_ui,                C::UI,          TO::B, CO::B, N, N, N, Y, N, P::M, R::OS, S::Sta, "Slider_ui"sv, "Slider ui"sv, "SliderUI"sv, "Slider_overlay"sv},
-        {T::Buttons_ui,               C::UI,          TO::B, CO::B, N, N, N, Y, N, P::M, R::OS, S::Sta, "Buttons_ui"sv, "Buttons ui"sv, "ButtonsUI"sv, "Buttons"sv},
+        {T::Slider_ui,                C::UI,          TO::B, CO::B, N, N, N, Y, N, N, P::M, R::OS, S::Sta, "Slider_ui"sv, "Slider ui"sv, "SliderUI"sv, "Slider_overlay"sv},
+        {T::Buttons_ui,               C::UI,          TO::B, CO::B, N, N, N, Y, N, N, P::M, R::OS, S::Sta, "Buttons_ui"sv, "Buttons ui"sv, "ButtonsUI"sv, "Buttons"sv},
         // Video
-        {T::Video_file,               C::Video,       TO::U, CO::I, N, N, N, Y, N, P::M, R::OS, S::Sta, "Video_file"sv, "Video file"sv, "VideoFile"sv,"Video_file"sv},
-        {T::Video_file_camera_viewer, C::Video,       TO::B, CO::B, N, N, N, Y, N, P::M, R::OS, S::Exp, "Video_file_camera_viewer"sv, "Video file camera viewer"sv, "VideoFileCameraViewer"sv,"Video_file"sv},
-        {T::Video_saver,              C::Video,       TO::B, CO::B, N, N, N, Y, N, P::M, R::OS, S::Exp, "Video_saver"sv, "Video saver"sv, "VideoSaver"sv,"Video_record"sv},
-        {T::Webcam,                   C::Video,       TO::U, CO::I, N, N, N, Y, N, P::M, R::OS, S::Sta, "Webcam"sv, "Webcam"sv, "Webcam"sv,"Webcam"sv},
-        {T::Volumetric_video,         C::Video,       TO::B, CO::B, N, N, N, Y, N, P::H, R::LN, S::Exp, "Volumetric_video"sv,  "Volumetric video"sv, "VolumetricVideo"sv, "Video_cloud"sv},
+        {T::Video_file,               C::Video,       TO::U, CO::I, N, N, N, Y, N, N, P::M, R::OS, S::Sta, "Video_file"sv, "Video file"sv, "VideoFile"sv,"Video_file"sv},
+        {T::Video_file_camera_viewer, C::Video,       TO::B, CO::B, N, N, N, Y, N, N, P::M, R::OS, S::Exp, "Video_file_camera_viewer"sv, "Video file camera viewer"sv, "VideoFileCameraViewer"sv,"Video_file"sv},
+        {T::Video_saver,              C::Video,       TO::B, CO::B, N, N, N, Y, N, N, P::M, R::OS, S::Exp, "Video_saver"sv, "Video saver"sv, "VideoSaver"sv,"Video_record"sv},
+        {T::Webcam,                   C::Video,       TO::U, CO::I, N, N, N, Y, N, N, P::M, R::OS, S::Sta, "Webcam"sv, "Webcam"sv, "Webcam"sv,"Webcam"sv},
+        {T::Volumetric_video,         C::Video,       TO::B, CO::B, N, N, N, Y, N, N, P::H, R::LN, S::Exp, "Volumetric_video"sv,  "Volumetric video"sv, "VolumetricVideo"sv, "Video_cloud"sv},
         // Viewer
-        {T::Blend_fade_viewer,        C::Viewer,      TO::B, CO::C, N, N, N, Y, N, P::H, R::OS, S::Sta, "Blend_fade_viewer"sv, "Blend fade viewer"sv, "BlendFadeViewer"sv, "Blend"sv},
-        {T::Fixation_cross_viewer,    C::Viewer,      TO::B, CO::C, N, N, N, Y, N, P::L, R::OS, S::Sta, "Fixation_cross_viewer"sv, "Fixation cross viewer"sv, "FixationCrossViewer"sv, "Fixation_cross"sv},
-        {T::Fov_simulator_viewer,     C::Viewer,      TO::B, CO::B, N, N, N, Y, N, P::H, R::OS, S::Exp, "Fov_simulator"sv, "FOV simulator"sv, "FovSimulator"sv, "FOV"sv},
-        {T::Image_viewer,             C::Viewer,      TO::B, CO::C, N, N, N, Y, N, P::L, R::OS, S::Sta, "Image_viewer"sv, "Image viewer"sv, "ImageViewer"sv, "Image"sv},
-        {T::Text_viewer,              C::Viewer,      TO::B, CO::C, N, N, N, Y, N, P::L, R::OS, S::Sta, "Text_viewer"sv, "Text viewer"sv, "TextViewer"sv, "Text_camera"sv},
-        {T::Webcam_viewer,            C::Viewer,      TO::B, CO::B, N, N, N, Y, N, P::L, R::OS, S::Sta, "Webcam_viewer"sv, "Webcam viewer"sv, "WebcamViewer"sv, "Webcam"sv},
+        {T::Blend_fade_viewer,        C::Viewer,      TO::B, CO::C, N, N, N, Y, N, N, P::H, R::OS, S::Sta, "Blend_fade_viewer"sv, "Blend fade viewer"sv, "BlendFadeViewer"sv, "Blend"sv},
+        {T::Fixation_cross_viewer,    C::Viewer,      TO::B, CO::C, N, N, N, Y, N, N, P::L, R::OS, S::Sta, "Fixation_cross_viewer"sv, "Fixation cross viewer"sv, "FixationCrossViewer"sv, "Fixation_cross"sv},
+        {T::Fov_simulator_viewer,     C::Viewer,      TO::B, CO::B, N, N, N, Y, N, N, P::H, R::OS, S::Exp, "Fov_simulator"sv, "FOV simulator"sv, "FovSimulator"sv, "FOV"sv},
+        {T::Image_viewer,             C::Viewer,      TO::B, CO::C, N, N, N, Y, N, N, P::L, R::OS, S::Sta, "Image_viewer"sv, "Image viewer"sv, "ImageViewer"sv, "Image"sv},
+        {T::Text_viewer,              C::Viewer,      TO::B, CO::C, N, N, N, Y, N, N, P::L, R::OS, S::Sta, "Text_viewer"sv, "Text viewer"sv, "TextViewer"sv, "Text_camera"sv},
+        {T::Webcam_viewer,            C::Viewer,      TO::B, CO::B, N, N, N, Y, N, N, P::L, R::OS, S::Sta, "Webcam_viewer"sv, "Webcam viewer"sv, "WebcamViewer"sv, "Webcam"sv},
     }};
 
     static constexpr Category get_category(Type type) {
@@ -308,8 +312,12 @@ struct Component {
         return components.at<0,ColExceptions>(type);
     }
 
-    static constexpr bool can_be_logged(Type type) {
-        return components.at<0,ColCanBeLogged>(type);
+    static constexpr bool has_frame_logging(Type type) {
+        return components.at<0,ColHasFrameLogging>(type);
+    }
+
+    static constexpr bool has_trigger_logging(Type type) {
+        return components.at<0,ColHasTriggerLogging>(type);
     }
 
     static constexpr Priority get_priority(Type type) {

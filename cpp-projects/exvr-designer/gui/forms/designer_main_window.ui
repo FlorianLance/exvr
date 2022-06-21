@@ -97,7 +97,7 @@
             </property>
             <property name="styleSheet">
              <string notr="true">QFrame{
-	background-color:white;
+	background-color:rgb(45,45,45);
 }</string>
             </property>
             <property name="frameShape">
@@ -241,7 +241,10 @@
       </property>
       <property name="styleSheet">
        <string notr="true">QFrame{
-	background-color:white;
+	background-color:rgb(45,45,45);
+}
+QLabel{
+	color:rgb(255,255,255);
 }</string>
       </property>
       <property name="frameShape">
@@ -267,14 +270,34 @@
         <number>4</number>
        </property>
        <item>
+        <widget class="QLabel" name="laExVRExpState">
+         <property name="text">
+          <string>...</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="Line" name="line_2">
+         <property name="styleSheet">
+          <string notr="true">background-color: white;</string>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QLabel" name="laExpState">
          <property name="text">
-          <string>ExVR-exp is not running</string>
+          <string>...</string>
          </property>
         </widget>
        </item>
        <item>
         <widget class="Line" name="line_5">
+         <property name="styleSheet">
+          <string notr="true">background-color: white;</string>
+         </property>
          <property name="orientation">
           <enum>Qt::Vertical</enum>
          </property>
@@ -289,33 +312,16 @@
        </item>
        <item>
         <widget class="Line" name="line">
+         <property name="styleSheet">
+          <string notr="true">background-color: white;</string>
+         </property>
          <property name="orientation">
           <enum>Qt::Vertical</enum>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QProgressBar" name="pgbElementCurrentTIme">
-         <property name="maximumSize">
-          <size>
-           <width>150</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="value">
-          <number>0</number>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="laElementCurrentTime">
-         <property name="text">
-          <string>Time: ... (s)</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <spacer name="horizontalSpacer">
+        <spacer name="horizontalSpacer_2">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
@@ -328,9 +334,43 @@
         </spacer>
        </item>
        <item>
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>Times (s):</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="laElementCurrentTime">
+         <property name="text">
+          <string>[Current] ...</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QLabel" name="laExpTime">
          <property name="text">
-          <string>Total exp time: ... (s)</string>
+          <string>[Total] ...</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QProgressBar" name="pgbElementCurrentTIme">
+         <property name="maximumSize">
+          <size>
+           <width>150</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QProgressBar {
+	color : white;
+}
+
+</string>
+         </property>
+         <property name="value">
+          <number>0</number>
          </property>
         </widget>
        </item>
