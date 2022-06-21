@@ -56,7 +56,6 @@ struct CameraTargetConfigParametersW::Impl{
     ExRadioButtonW useNeutralCamera {"use_neutral"};
     ExRadioButtonW useEyeCamera{"use_eye"};
 
-    // # source
     QButtonGroup   modeButtonGroup;
     ExRadioButtonW initSourceOnce {"init_source_once"};
     ExRadioButtonW updateSourceEachFrame{"update_source_each_frame"};
@@ -92,6 +91,7 @@ void CameraTargetConfigParametersW::insert_widgets(){
     add_widget(ui::W::txt("<b>Camera</b>"));
     add_widget(ui::F::gen(ui::L::HB(), {m_p->useNeutralCamera(), m_p->useEyeCamera()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
     add_widget(ui::F::gen(ui::L::HB(), {m_p->pitch(), m_p->yaw(), m_p->roll()},LStretch{true}, LMargins{false},QFrame::NoFrame));
+    add_widget(ui::F::gen(ui::L::HB(), {m_p->initSourceOnce(), m_p->updateSourceEachFrame()}, LStretch{true}, LMargins{false}));
 
     add_widget(ui::W::txt("<b>Progress</b>"));
     add_widget(ui::F::gen(ui::L::HB(), {m_p->usingTime(), ui::W::txt("Movement duration: "), m_p->duration()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
@@ -100,9 +100,6 @@ void CameraTargetConfigParametersW::insert_widgets(){
 
     add_widget(ui::W::txt("<b>Interpolation</b>"));
     add_widget(ui::F::gen(ui::L::HB(), {m_p->sphericalInterpolation()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
-
-    add_widget(ui::W::txt("<b>Source</b>"));
-    add_widget(ui::F::gen(ui::L::HB(), {m_p->initSourceOnce(), m_p->updateSourceEachFrame()}, LStretch{true}, LMargins{false}));
 
     add_widget(ui::W::txt("<b>Target</b>"));
     add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Name of the component position to match: "), m_p->componentName()}, LStretch{false}, LMargins{false}));
