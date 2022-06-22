@@ -451,6 +451,29 @@ namespace Ex{
             Profiler.EndSample();
         }
 
+        public void end_of_frame() {
+
+            Profiler.BeginSample(string.Format("[ExVR][Condition][{0}] end_of_frame", name));
+
+            // call end_of_frame for global components
+            foreach (var component in globalComponents) {
+                Profiler.BeginSample(string.Format("[ExVR][Component][{0}] end_of_frame", component.Value.name));
+                Action.end_of_frame(component.Value);
+                Profiler.EndSample();
+            }
+
+            // call end_of_frame for actions
+            foreach (var action in actions) {
+                if (!action.component().is_global()) {
+                    Profiler.BeginSample(string.Format("[ExVR][Component][{0}] end_of_frame", action.component().name));
+                    action.end_of_frame();
+                    Profiler.EndSample();
+                }
+            }
+
+            Profiler.EndSample();
+        }
+
         public void update() {
 
             Profiler.BeginSample(string.Format("[ExVR][Condition][{0}] pre_update", name));

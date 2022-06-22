@@ -37,7 +37,6 @@ using UnityEngine.Profiling;
 namespace Ex{
 
     public class ScheduledAction{
-        
         public enum Source{
             Command, Gui
         }
@@ -75,7 +74,6 @@ namespace Ex{
         public XML.Arg arg = null;
     }
 
-
     public class Experiment : MonoBehaviour{
 
         [Rename("Components")]
@@ -102,7 +100,7 @@ namespace Ex{
         // states
         private bool m_experimentCleaned = false;
         private bool m_experimentLoaded = false;
-        private int m_onGuiCanceled = 0;
+        //private int m_onGuiCanceled = 0;
 
         // xml
         private XML.Experiment m_xmlExperiment = null;
@@ -123,6 +121,7 @@ namespace Ex{
         static private readonly string nullStr = "-";
 
 
+
         void Update() {
 
             if (!ExVR.Time().is_experiment_running()) {
@@ -131,80 +130,74 @@ namespace Ex{
                 return;
             }
 
-            ExVR.Time().start_new_frame();            
+            log_error("UP");
 
-            FlowElementInfo elementInfo;
-            {   // update current element
-                Profiler.BeginSample("[ExVR][Experiment] update_current_element");
-                elementInfo = schreduler.update_current_flow_element();
-                if (elementInfo == null) {                    
-                    stop_experiment();
-                    ExVR.Log().message("End of experiment");
-                    ExVR.ExpLog().exp("End", true, true, true);
-                    return;
-                }
-                Profiler.EndSample();
+            // start frame
+            ExVR.Time().start_new_frame();
+            StartCoroutine("end_of_frame");
+
+            // update current element
+            Profiler.BeginSample("[ExVR][Experiment] update_current_element");
+            FlowElementInfo elementInfo = schreduler.update_current_flow_element();
+            if (elementInfo == null) {                    
+                stop_experiment();
+                ExVR.Log().message("End of experiment");
+                ExVR.ExpLog().exp("End", true, true, true);
+                return;
             }
-
-            {   // update all components states
-                Profiler.BeginSample("[ExVR][Experiment] update_components_states");
-                if (elementInfo.type() == FlowElement.Type.Routine) {
-                    routines.update_components_states((RoutineInfo)elementInfo);
-                }else if (elementInfo.type() == FlowElement.Type.Isi){
-                    ExVR.Components().set_every_component_states_to_false();
-                }
-                Profiler.EndSample();                
+            Profiler.EndSample();
+       
+            // update all components states
+            Profiler.BeginSample("[ExVR][Experiment] update_components_states");
+            if (elementInfo.type() == FlowElement.Type.Routine) {
+                routines.update_components_states((RoutineInfo)elementInfo);
+            }else if (elementInfo.type() == FlowElement.Type.Isi){
+                ExVR.Components().set_every_component_states_to_false();
             }
+            Profiler.EndSample();                
+      
+            // update all components
+            Profiler.BeginSample("[ExVR][Experiment] update");
+            routines.update_current_routine();
+            Profiler.EndSample();
 
-            {   // update all components
-                Profiler.BeginSample("[ExVR][Experiment] update");
-                routines.update_current_routine();
-                Profiler.EndSample();
+            // trigger each time
+            Profiler.BeginSample("[ExVR][Experiment] trigger_update_signals");
+            if (elementInfo.type() == FlowElement.Type.Routine) {
+                routines.trigger_update_signals((RoutineInfo)elementInfo);
             }
-
-            // when switching to new element, we wait until we reach the end the update before allowing calls to OnGui
-            if (ExVR.Time().onGuiWait) {
-                m_onGuiCanceled = 0;
-                ExVR.Time().onGuiWait = false;
-            }            
-
-            {   // trigger each time
-                Profiler.BeginSample("[ExVR][Experiment] trigger_update_signals");
-                if (elementInfo.type() == FlowElement.Type.Routine) {
-                    routines.trigger_update_signals((RoutineInfo)elementInfo);
-                }
-                Profiler.EndSample();
-            }
-
-            {   // apply all scheduled actions from GUI or scripts
-                Profiler.BeginSample("[ExVR][Experiment] apply_scheduled_actions");                
-                apply_scheduled_actions();
-                Profiler.EndSample();
-            }
-
-            send_current_experiment_state_to_gui();
-
-            if(ExVR.ExpLog().size_flow() > 100) {
-                ExVR.ExpLog().write();
-            }
-
-            ExVR.Time().end_frame();
+            Profiler.EndSample();            
         }
 
         private void OnGUI() {
 
             if (!ExVR.Time().is_experiment_running()) {
                 return;
-            }            
-
-            if (ExVR.Time().onGuiWait) {
-                m_onGuiCanceled++;
-                return;
             }
-
+            log_error("ONGUI");
             routines.on_gui();
         }
 
+        IEnumerator end_of_frame() {
+            
+            yield return new WaitForEndOfFrame();
+
+            log_error("EOF");
+            routines.end_of_frame();
+
+            // apply all scheduled actions from GUI or scripts
+            apply_scheduled_actions();
+
+            // update gui
+            send_current_experiment_state_to_gui();
+
+            // write exp log
+            if (ExVR.ExpLog().size_flow() > 100) {
+                ExVR.ExpLog().write();
+            }
+
+            yield return null;
+        }
 
         #endregion unity
 

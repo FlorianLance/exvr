@@ -28,27 +28,46 @@ using System.Collections.Generic;
 
 namespace Ex {
 
+
+    public class CommonLoggingComponents {
+        public List<ExComponent> components  = null; // components to log
+        public FileLogger frameFileLogger    = null; // file logger of current state at each frame
+        public FileLogger triggersFileLogger = null; // file logger for triggers events
+    }
+
+
     public class GlobalLoggerComponent : ExComponent {
 
+        private FileLogger expFrameFileLogger    = null;
+        private FileLogger expTriggersFileLogger = null;
+        private string resourceDirectoryPath;
+        private int m_nbExpFrameColumns = 0;
 
-
-        private List<ExComponent> inputComponents = null;
-        private FileLogger inputFrameEventsFL   = null;     // log each frame
-        private FileLogger inputTriggerEventsFL = null;     // log when trigger
-
+        private Dictionary<Category, CommonLoggingComponents> loggingPerCategory = new Dictionary<Category, CommonLoggingComponents>() {
+            [Category.Input]    = new CommonLoggingComponents(),
+            [Category.Network]  = new CommonLoggingComponents(),
+            [Category.Tracking] = new CommonLoggingComponents(),
+            [Category.UI]       = new CommonLoggingComponents(),
+        };
 
         #region ex_functions
 
         protected override bool initialize() {
 
-            string resourceDirectoryPath = initC.get_resource_path(ResourcesManager.ResourceType.Directory, "directory");
+            resourceDirectoryPath = initC.get_resource_path(ResourcesManager.ResourceType.Directory, "directory");
             if (resourceDirectoryPath.Length == 0) {
                 log_error("No directory resource defined.");
                 return false;
             }
 
-            string topSubDirPath = string.Format("{0}{1}{2}{3}",
-                string.Concat(resourceDirectoryPath, "/global_logs_"),
+            return true;
+        }
+
+        protected override void start_experiment() {
+
+            // generate directory
+            string topSubDirPath = string.Format("{0}/{1}{2}{3}",
+                resourceDirectoryPath,
                 initC.get<string>("base_sub_directory_name"),
                 initC.get<bool>("add_current_instance_to_sub_directory_name") ? 
                     string.Format("_{0}", ExVR.Experiment().instanceName) : "",
@@ -64,275 +83,329 @@ namespace Ex {
 
             var folder = System.IO.Directory.CreateDirectory(globalDirectoryPath);
             if (!folder.Exists) {
-                log_error(string.Format("Cannot create top directory [{0}].", topSubDirPath));
-                return false;
+                log_error(string.Format("Cannot create top directory [{0}].", globalDirectoryPath));
+                return;
             }
 
-            // retrieve components
-            inputComponents = initC.get_components_list("inputs_components");
-            if(inputComponents.Count > 0) {
-
-                int countFrame = 0, countTrigger = 0;
-                foreach(var component in inputComponents) {
-                    if (component.has_frame_logging()) {
-                        countFrame++;
-                    }
-                    if (component.has_trigger_logging()) {
-                        countTrigger++;
-                    }
+            // init loggers
+            // # exp
+            // ## frame
+            string expFrameLoggerFilePath = string.Format("{0}/log_frame_exp.{1}",
+                globalDirectoryPath,
+                initC.get<string>("file_extension"));
+            if (!FileLogger.create_file(expFrameLoggerFilePath, "", false, false)) {
+                return;
+            }
+            expFrameFileLogger = new FileLogger();
+            expFrameFileLogger.start_logging();
+            if (!expFrameFileLogger.open_file(expFrameLoggerFilePath)) {
+                return;
+            } else {
+                List<string> values = new List<string>();                
+                if (initC.get<bool>("ellapsed_exp_time")) {
+                    values.Add("ellapsed_exp_time");
                 }
-
-                if (countFrame > 0) {
-
-                    string inputFrameLoggerFilePath = string.Format("{0}/log_frame_input{1}", globalDirectoryPath, initC.get<string>("file_extension"));        
-                    if (!FileLogger.create_file(inputFrameLoggerFilePath,"",false,false)) {
-                        return false;
-                    }
-
-                    inputFrameEventsFL = new FileLogger();
-                    if (!inputFrameEventsFL.open_file(inputFrameLoggerFilePath)) {
-                        return false;
-                    }
+                if (initC.get<bool>("frame_id")) {
+                    values.Add("frame_id");
                 }
+                if (initC.get<bool>("start_frame_time")) {
+                    values.Add("start_frame_time");
+                }
+                if (initC.get<bool>("ellapsed_element_time")) {
+                    values.Add("ellapsed_element_time");
+                }
+                if (initC.get<bool>("element_order")) {
+                    values.Add("element_order");
+                }
+                if (initC.get<bool>("routine_name")) {
+                    values.Add("routine_name");
+                }
+                if (initC.get<bool>("element_iteration")) {
+                    values.Add("element_iteration");
+                }
+                if (initC.get<bool>("condition_name")) {
+                    values.Add("condition_name");
+                }
+                if (initC.get<bool>("condition_nb_calls")) {
+                    values.Add("condition_nb_calls");
+                }
+                if (initC.get<bool>("actions_count")) {
+                    values.Add("actions_count");
+                }
+                if (initC.get<bool>("connectors_count")) {
+                    values.Add("connectors_count");
+                }
+                if (initC.get<bool>("connections_count")) {
+                    values.Add("connections_count");
+                }
+                if (initC.get<bool>("condition_duration")) {
+                    values.Add("condition_duration");
+                }
+                if (initC.get<bool>("eyes_camera")) {
+                    values.Add("eyes_camera_pos");
+                    values.Add("eyes_camera_rot");
+                }
+                if (initC.get<bool>("camera_calibration")) {
+                    values.Add("camera_calibration_pos");
+                    values.Add("camera_calibration_rot");
+                }
+                if (initC.get<bool>("camera_rig")) {
+                    values.Add("camera_rig_pos");
+                    values.Add("camera_rig_rot");
+                }
+                if (initC.get<bool>("framerate")) {
+                    values.Add("framerate");
+                }
+                m_nbExpFrameColumns = values.Count;
+                expFrameFileLogger.write(string.Join(",", values), true);
+            }
+            // ## triggers
+            string expTriggersLoggerFilePath = string.Format("{0}/log_triggers_exp.{1}",
+                globalDirectoryPath,
+                initC.get<string>("file_extension"));
+            if (!FileLogger.create_file(expTriggersLoggerFilePath, "", false, false)) {
+                return;
+            }
+            expTriggersFileLogger = new FileLogger();
+            expTriggersFileLogger.start_logging();
+            if (!expTriggersFileLogger.open_file(expTriggersLoggerFilePath)) {
+                return;
+            }
 
-                if (countTrigger > 0) {
-                    
-                    string inputTriggerLoggerFilePath = string.Format("{0}/log_trigger_input{1}", globalDirectoryPath, initC.get<string>("file_extension"));
-                    if (!FileLogger.create_file(inputTriggerLoggerFilePath, "", false, false)) {
-                        return false;
+            // # components
+            loggingPerCategory[Category.Input].components    = initC.get_components_list("inputs_components");
+            loggingPerCategory[Category.Network].components  = initC.get_components_list("network_components");
+            loggingPerCategory[Category.UI].components       = initC.get_components_list("ui_components");
+            loggingPerCategory[Category.Tracking].components = initC.get_components_list("tracking_components");
+
+            foreach(var logging in loggingPerCategory) {
+
+                if (logging.Value.components.Count > 0) {
+
+                    int countFrame = 0, countTrigger = 0;
+                    foreach (var component in logging.Value.components) {
+                        if (component.has_frame_logging()) {
+                            countFrame++;
+                        }
+                        if (component.has_trigger_logging()) {
+                            countTrigger++;
+                        }
+                    }
+                    if (countFrame > 0) {
+
+                        string frameLoggerFilePath = string.Format("{0}/log_frame_{1}.{2}", 
+                            globalDirectoryPath,
+                            Enum.GetName(typeof(Category), logging.Key).ToLower(),
+                            initC.get<string>("file_extension"));
+                        if (!FileLogger.create_file(frameLoggerFilePath, "", false, false)) {
+                            return;
+                        }
+
+                        logging.Value.frameFileLogger = new FileLogger();
+                        logging.Value.frameFileLogger.start_logging();
+                        if (!logging.Value.frameFileLogger.open_file(frameLoggerFilePath)) {
+                            return;
+                        }
                     }
 
-                    inputTriggerEventsFL = new FileLogger();
-                    if (!inputTriggerEventsFL.open_file(inputTriggerLoggerFilePath)) {
-                        return false;
+                    if (countTrigger > 0) {
+
+                        string triggerLoggerFilePath = string.Format("{0}/log_triggers_{1}.{2}",
+                            globalDirectoryPath,
+                            Enum.GetName(typeof(Category), logging.Key).ToLower(),
+                            initC.get<string>("file_extension"));
+                        if (!FileLogger.create_file(triggerLoggerFilePath, "", false, false)) {
+                            return;
+                        }
+
+                        logging.Value.triggersFileLogger = new FileLogger();
+                        logging.Value.triggersFileLogger.start_logging();
+                        if (!logging.Value.triggersFileLogger.open_file(triggerLoggerFilePath)) {
+                            return;
+                        }
                     }
                 }
             }
+        }
 
-            log_message("global -> " + (inputFrameEventsFL == null) + " " + (inputTriggerEventsFL == null));
+        protected override void end_of_frame() {
+
+            if (expFrameFileLogger != null) {
+
+                var routine        = ExVR.Routines().current();
+                var condition      = routine.current_condition();
+                var elementInfo    = ExVR.Scheduler().current_element_info();
+                var cameras        = ExVR.Display().cameras();
+                var eyeTr          = cameras.get_eye_camera_transform();
+                var calibTr        = cameras.get_calibration_transform();
+                var rigTr          = cameras.get_camera_rig_transform();
+
+                List<string> values = new List<string>(m_nbExpFrameColumns);
+                if (initC.get<bool>("ellapsed_exp_time")) {
+                    values.Add(Converter.to_string(time().ellapsed_exp_ms()));
+                }
+                if (initC.get<bool>("frame_id")) {
+                    values.Add(Converter.to_string(time().frame_id()));
+                }
+                if (initC.get<bool>("start_frame_time")) {
+                    values.Add(Converter.to_string(time().frame_start_since_experiment_ms()));
+                }
+                if (initC.get<bool>("ellapsed_element_time")) {
+                    values.Add(Converter.to_string(time().ellapsed_element_ms()));
+                }
+                if (initC.get<bool>("element_order")) {
+                    values.Add(Converter.to_string(elementInfo.order()));
+                }
+                if (initC.get<bool>("routine_name")) {
+                    values.Add(routine.name);
+                }
+                if (initC.get<bool>("element_iteration")) {
+                    values.Add(Converter.to_string(routine.element_iteration()));
+                }
+                if (initC.get<bool>("condition_name")) {
+                    values.Add(condition.name);
+                }
+                if (initC.get<bool>("condition_nb_calls")) {
+                    values.Add(Converter.to_string(condition.calls_nb()));
+                }
+                if (initC.get<bool>("actions_count")) {
+                    values.Add(Converter.to_string(condition.actions.Count));
+                }
+                if (initC.get<bool>("connectors_count")) {
+                    values.Add(Converter.to_string(condition.connectors.Count));
+                }
+                if (initC.get<bool>("connections_count")) {
+                    values.Add(Converter.to_string(condition.connections.Count));
+                }
+                if (initC.get<bool>("condition_duration")) {
+                    values.Add(Converter.to_string(condition.duration()));
+                }
+                if (initC.get<bool>("eyes_camera")) {
+                    values.Add(Converter.to_string(eyeTr.localPosition, Converter.g7, " "));
+                    values.Add(Converter.to_string(eyeTr.localEulerAngles, Converter.g7, " "));
+                }
+                if (initC.get<bool>("camera_calibration")) {
+                    values.Add(Converter.to_string(calibTr.localPosition, Converter.g7, " "));
+                    values.Add(Converter.to_string(calibTr.localEulerAngles, Converter.g7, " "));
+                }
+                if (initC.get<bool>("camera_rig")) {
+                    values.Add(Converter.to_string(rigTr.localPosition, Converter.g7, " "));
+                    values.Add(Converter.to_string(rigTr.localEulerAngles, Converter.g7, " "));
+                }
+                if (initC.get<bool>("framerate")) {
+                    values.Add(Converter.to_string(FPSCounter.framerate));
+                }
+
+                if (values.Count > 0) {
+                    expFrameFileLogger.write(string.Join(",", values), true);
+                }
+            }
+
+            foreach (var logging in loggingPerCategory) {
+
+                if (logging.Value.frameFileLogger != null) {
+
+                    // retrieve data
+                    List<string> values = null;
+                    foreach(var component in logging.Value.components) {
+                        var log = component.format_frame_data_for_global_logger();
+                        if(log != null) {
+                            if(values == null) {
+                                values = new List<string>();
+                            }
+                            values.Add(log);
+                        }
+                    }
+
+                    if(values != null) {
+                        logging.Value.frameFileLogger.write(string.Join(",", values), true);
+                    }
+                }
+
+                if (logging.Value.triggersFileLogger != null) {
+
+                    // retrieve data
+                    List<Tuple<double, double, string>> allTriggersLines = null;
+                    foreach (var component in logging.Value.components) {
+                        var triggersLines = component.format_trigger_data_for_global_logger();
+                        if (triggersLines == null) {
+                            continue;
+                        }
+
+                        if(allTriggersLines == null) {
+                            allTriggersLines = triggersLines;
+                        } else {
+                            foreach (var triggerLine in triggersLines) {
+                                allTriggersLines.Add(triggerLine);
+                            }
+                        }
+                    }
+
+                    if(allTriggersLines != null) {
+
+                        // sort by exp time
+                        allTriggersLines.Sort(delegate (Tuple<double, double, string> t1, Tuple<double, double, string> t2) {
+                            if (t1.Item1 < t2.Item1) {
+                                return 1;
+                            } else if (t1.Item1 > t2.Item1) {
+                                return -1;
+                            }
+                            return 0;
+                        });
+
+                        // format liens
+                        System.Text.StringBuilder sb = new System.Text.StringBuilder();
+                        foreach(var triggerLine in allTriggersLines) {
+                            sb.AppendFormat("{0},{1},{2}\n",
+                                Converter.to_string(triggerLine.Item1),
+                                Converter.to_string(triggerLine.Item2),
+                                triggerLine.Item3);
+                        }
+
+                        // write data
+                        logging.Value.triggersFileLogger.write(sb.ToString(), false);
+                    }
+
+                }
+            }
+
+            //log_message(currentRoutine.name + " " + currentCondition.name);
 
 
-            //events.Sort(delegate (Input.KeyboardButtonEvent e1, Input.KeyboardButtonEvent e2)
-            //{
-            //    if(e1.triggeredExperimentTime < e2.triggeredExperimentTime) {
-            //        return 1;
-            //    }else if(e1.triggeredExperimentTime > e2.triggeredExperimentTime) {
-            //        return -1;
+            //ExVR.Scheduler().current_element_info().order();
+            //if(inputComponents != null) {
+            //    foreach(var inputComponent in inputComponents){
+            //        var formatedData = inputComponent.format_trigger_data_for_global_logger();
+            //        if(formatedData != null) {
+            //            log_message(formatedData);
+            //        }
             //    }
-            //    return 0;
-            //});
-
-
-
-            // global_logs/
-            //    base_instance_name
-
-
-
-
-            // data dir resource
-            // -> global_logs
-            //     -> experience
-            //         -> frame
-            //         -> trigger
-            //     -> input
-            //         -> frame
-            //         -> trigger
-            //     -> network
-            //         -> trigger
-            //     -> ui
-            //         -> frame
-            //         -> trigger
-            //     -> tracking
-            //         -> frame
-            //         -> trigger
-
-            //if (!read_common_init_parameters()) {
-            //    return false;
             //}
-            //m_addDateToFileName = initC.get<bool>("add_date_to_file_name");
-            //m_dateTimeFormat = initC.get<string>("date_time_format");
-
-
-
-
-            //    m_addDateToFileName = initC.get<bool>("add_date_to_file_name");
-            //    m_dateTimeFormat = initC.get<string>("date_time_format");
-            //    m_separator = initC.get<string>("separator");
-            //    m_eachFrame = initC.get<bool>("each_frame");
-
-            //    if (m_addTimeExp = initC.get<bool>("time_exp")) { m_countColumns++; }
-            //    if (m_addTimeRoutine = initC.get<bool>("time_routine")) { m_countColumns++; }
-            //    if (m_addRoutine = initC.get<bool>("routine")) { m_countColumns++; }
-            //    if (m_addRoutineIter = initC.get<bool>("routine_iter")) { m_countColumns++; }
-            //    if (m_addCondition = initC.get<bool>("condition")) { m_countColumns++; }
-            //    if (m_addConditionIter = initC.get<bool>("condition_iter")) { m_countColumns++; }
-            //    if (m_addFrameId = initC.get<bool>("frame_id")) { m_countColumns++; }
-
-            return true;
         }
 
-        protected override void start_experiment() {
+        protected override void stop_experiment() {
 
-            //base.start_experiment();
-        }
+            if(expFrameFileLogger != null) {
+                expFrameFileLogger.stop_logging();
+            }
+            if (expFrameFileLogger != null) {
+                expTriggersFileLogger.stop_logging();
+            }
 
-        //protected override void start_routine() {
-
-        //    if (!initC.get<bool>("each_frame")) {
-        //        write_line();
-        //    }
-        //}
-        protected override void post_update() {
-
-            if(inputComponents != null) {
-                foreach(var inputComponent in inputComponents){
-                    var formatedData = inputComponent.format_trigger_data_for_global_logger();
-                    if(formatedData != null) {
-                        log_message(formatedData);
-                    }
+            foreach (var logging in loggingPerCategory) {
+                if(logging.Value.frameFileLogger != null) {
+                    logging.Value.frameFileLogger.stop_logging();
+                }
+                if (logging.Value.triggersFileLogger != null) {
+                    logging.Value.triggersFileLogger.stop_logging();
                 }
             }
         }
-
 
         #endregion
 
         #region private_functions
 
-        //protected override string generate_file_name() {
-        //    string dateStr = string.Format("_{0}", DateTime.Now.ToString(m_dateTimeFormat));
-        //    return string.Format("{0}{1}{2}.{3}", m_baseFileName, m_addInstanceToFileName ?
-        //        string.Concat("_", ExVR.Experiment().instanceName) : "", m_addDateToFileName ? dateStr : "", m_fileExtension);
-        //}
-
-        //private void write_header_line() {
-
-        //    System.Text.StringBuilder builder = new System.Text.StringBuilder();
-        //    int count = 0;
-        //    if (m_addTimeExp) {
-        //        if (count < m_countColumns - 1) {
-        //            builder.AppendFormat(lineC, "[time_exp(ms)]", m_separator);
-        //        } else {
-        //            builder.Append("[time_exp(ms)]");
-        //        }
-        //        ++count;
-        //    }
-        //    if (m_addTimeRoutine) {
-        //        if (count < m_countColumns - 1) {
-        //            builder.AppendFormat(lineC, "[time_routine(ms)]", m_separator);
-        //        } else {
-        //            builder.Append("[time_routine(ms)]");
-        //        }
-        //        ++count;
-        //    }
-        //    if (m_addRoutine) {
-        //        if (count < m_countColumns - 1) {
-        //            builder.AppendFormat(lineC, "[routine]", m_separator);
-        //        } else {
-        //            builder.Append("[routine]");
-        //        }
-        //        ++count;
-        //    }
-        //    if (m_addRoutineIter) {
-        //        if (count < m_countColumns - 1) {
-        //            builder.AppendFormat(lineC, "[routine_iter]", m_separator);
-        //        } else {
-        //            builder.Append("[routine_iter]");
-        //        }
-        //        ++count;
-        //    }
-        //    if (m_addCondition) {
-        //        if (count < m_countColumns - 1) {
-        //            builder.AppendFormat(lineC, "[condition]", m_separator);
-        //        } else {
-        //            builder.Append("[condition]");
-        //        }
-        //        ++count;
-        //    }
-        //    if (m_addConditionIter) {
-        //        if (count < m_countColumns - 1) {
-        //            builder.AppendFormat(lineC, "[condition_iter]", m_separator);
-        //        } else {
-        //            builder.Append("[condition_iter]");
-        //        }
-        //        ++count;
-        //    }
-        //    if (m_addFrameId) {
-        //        if (count < m_countColumns - 1) {
-        //            builder.AppendFormat(lineC, "[frame_id]", m_separator);
-        //        } else {
-        //            builder.Append("[frame_id]");
-        //        }
-        //        ++count;
-        //    }
-
-        //    write(builder.ToString(), true);
-        //}
-
-        //private void write_line() {
-
-        //    System.Text.StringBuilder builder = new System.Text.StringBuilder();
-        //    int count = 0;
-        //    if (m_addTimeExp) {
-        //        if (count < m_countColumns - 1) {
-        //            builder.AppendFormat(lineC, Converter.to_string(ExVR.Time().ellapsed_exp_ms()), m_separator);
-        //        } else {
-        //            builder.Append(Converter.to_string(ExVR.Time().ellapsed_exp_ms()));
-        //        }
-        //        ++count;
-        //    }
-        //    if (m_addTimeRoutine) {
-        //        if (count < m_countColumns - 1) {
-        //            builder.AppendFormat(lineC, Converter.to_string(ExVR.Time().ellapsed_element_ms()), m_separator);
-        //        } else {
-        //            builder.Append(Converter.to_string(ExVR.Time().ellapsed_element_ms()));
-        //        }
-        //        ++count;
-        //    }
-        //    if (m_addRoutine) {
-        //        if (count < m_countColumns - 1) {
-        //            builder.AppendFormat(lineC, currentRoutine.name, m_separator);
-        //        } else {
-        //            builder.Append(currentRoutine.name);
-        //        }
-        //        ++count;
-        //    }
-        //    if (m_addRoutineIter) {
-        //        if (count < m_countColumns - 1) {
-        //            builder.AppendFormat(lineC, Converter.to_string(currentRoutine.element_iteration()), m_separator);
-        //        } else {
-        //            builder.Append(Converter.to_string(currentRoutine.element_iteration()));
-        //        }
-        //        ++count;
-        //    }
-        //    if (m_addCondition) {
-        //        if (count < m_countColumns - 1) {
-        //            builder.AppendFormat(lineC, currentCondition.name, m_separator);
-        //        } else {
-        //            builder.Append(currentCondition.name);
-        //        }
-        //        ++count;
-        //    }
-        //    if (m_addConditionIter) {
-        //        if (count < m_countColumns - 1) {
-        //            builder.AppendFormat(lineC, Converter.to_string(currentRoutine.condition_iteration()), m_separator);
-        //        } else {
-        //            builder.Append(Converter.to_string(currentRoutine.condition_iteration()));
-        //        }
-        //        ++count;
-        //    }
-        //    if (m_addFrameId) {
-        //        if (count < m_countColumns - 1) {
-        //            builder.AppendFormat(lineC, Converter.to_string(ExVR.Time().frame_id()), m_separator);
-        //        } else {
-        //            builder.Append(Converter.to_string(ExVR.Time().frame_id()));
-        //        }
-        //        ++count;
-        //    }
-
-        //    write(builder.ToString(), true);
-        //}
 
         #endregion
     }

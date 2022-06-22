@@ -231,11 +231,11 @@ struct Component {
         {T::Udp_reader,               C::Network,     TO::U, CO::I, N, N, N, N, N, Y, P::H, R::OS, S::Sta, "Udp_reader"sv, "UDP reader"sv, "UdpReader"sv, "UDP"sv},
         {T::Udp_writer,               C::Network,     TO::U, CO::I, N, N, N, N, N, N, P::H, R::OS, S::Sta, "Udp_writer"sv, "UDP writer"sv, "UdpWriter"sv, "UDP"sv},
         // Output
-        {T::Global_logger,            C::Output,      TO::N, CO::I, Y, Y, Y, N, N, N, P::H, R::OS, S::Exp, "Global_logger"sv, "Global logger"sv, "GlobalLogger"sv, "Logger"sv},
+        {T::Global_logger,            C::Output,      TO::N, CO::I, Y, Y, Y, N, N, N, P::H, R::OS, S::Sta, "Global_logger"sv, "Global logger"sv, "GlobalLogger"sv, "Logger"sv},
         {T::Logger,                   C::Output,      TO::N, CO::I, N, N, N, N, N, N, P::H, R::OS, S::Sta, "Logger"sv, "Logger"sv, "Logger"sv, "Logger"sv},
         {T::LoggerColumns,            C::Output,      TO::N, CO::I, N, N, N, N, N, N, P::H, R::OS, S::Sta, "Logger_columns"sv, "Logger columns"sv, "LoggerColumns"sv, "Logger"sv},
         {T::LoggerCondition,          C::Output,      TO::N, CO::I, N, N, N, N, N, N, P::H, R::OS, S::Sta, "Logger_condition"sv, "Logger condition"sv, "LoggerCondition"sv, "Logger"sv},
-        {T::LoggerExperiment,         C::Output,      TO::N, CO::I, N, N, N, N, N, N, P::H, R::OS, S::Sta, "Logger_experiment"sv, "Logger experiment"sv, "LoggerExperiment"sv, "Logger"sv},
+        {T::LoggerExperiment,         C::Output,      TO::N, CO::I, N, N, N, N, N, N, P::H, R::OS, S::Leg, "Logger_experiment"sv, "Logger experiment"sv, "LoggerExperiment"sv, "Logger"sv},
         // Resource
         {T::Image_resource,           C::Resource,    TO::N, CO::B, N, N, N, Y, N, N, P::H, R::OS, S::Sta, "Image_resource"sv, "Image resource"sv, "ImageResource"sv, "Image"sv},
         {T::Plot_resource,            C::Resource,    TO::N, CO::C, N, N, N, Y, N, N, P::H, R::OS, S::Sta, "Plot_resource"sv,  "Plot resource"sv, "PlotResource"sv, "Plot"sv},

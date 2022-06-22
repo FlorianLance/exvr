@@ -750,8 +750,6 @@ void DesignerWindow::create_toolbar(){
         m_loadFullExpWithSpecificInstanceButton.setDefaultAction(&m_loadFullExpWithSpecificInstanceAct);
         tb->addWidget(&m_loadFullExpWithSpecificInstanceButton);
 
-    tb->addSeparator();
-
         m_loadFullExpWithDefaultInstanceButton.setDefaultAction(&m_loadFullExpWithDefaultInstanceAct);
         tb->addWidget(&m_loadFullExpWithDefaultInstanceButton);
 
@@ -788,6 +786,8 @@ void DesignerWindow::create_toolbar(){
 
         m_nextButton.setDefaultAction(&m_nextAct);
         tb->addWidget(&m_nextButton);
+
+    tb->addSeparator();
 
         m_gotoCurrentButton.setDefaultAction(&m_gotoCurrentAct);
         tb->addWidget(&m_gotoCurrentButton);
@@ -922,7 +922,21 @@ void DesignerWindow::create_routines_manager(){
 }
 
 void DesignerWindow::create_element_viewer(){
-    m_elementViewerW = std::make_unique<ElementViewerW>(m_ui.twSelectedElement);
+
+    QTabWidget *twSelectedElement = new QTabWidget();
+    m_elementViewerW = std::make_unique<ElementViewerW>(twSelectedElement);
+
+    m_dwElementViewer = new QDockWidget(this);
+    m_dwElementViewer->setWindowTitle("Element viewer");
+    using QWA = Qt::DockWidgetArea;
+    using QWF = QDockWidget::DockWidgetFeature;
+    m_dwElementViewer->setFeatures(QWF::DockWidgetFloatable | QWF::DockWidgetMovable);
+    m_dwElementViewer->setAllowedAreas(QWA::LeftDockWidgetArea | QWA::RightDockWidgetArea);
+    m_dwElementViewer->setStyleSheet(
+        "QDockWidget{background-color: rgb(45, 45, 45);color: white;font: bold 14px;}"
+    );
+    addDockWidget(Qt::DockWidgetArea::RightDockWidgetArea,m_dwElementViewer);
+    m_dwElementViewer->setWidget(twSelectedElement);
 }
 
 //#include "moc_designer_window.cpp"

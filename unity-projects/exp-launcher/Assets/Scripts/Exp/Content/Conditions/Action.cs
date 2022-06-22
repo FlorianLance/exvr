@@ -142,39 +142,6 @@ namespace Ex {
         }
 
 
-        public static void on_gui(ExComponent globalComponent) {
-
-            if (!globalComponent.is_updating() && !globalComponent.always_call_update()) {
-                return;
-            }
-
-            if (globalComponent.is_function_defined(ExComponent.Function.on_gui)) {
-                ExVR.ExpLog().log_and_add_to_stacktrace(globalComponent, ExComponent.Function.on_gui, true);
-            }
-
-            globalComponent.base_on_gui();
-
-            if (globalComponent.is_function_defined(ExComponent.Function.on_gui)) {
-                ExVR.ExpLog().log_and_add_to_stacktrace(globalComponent, ExComponent.Function.on_gui, false);
-            }
-        }
-        public void on_gui() {
-
-            if (!m_component.is_updating() && !m_component.always_call_update()) {
-                return;
-            }
-
-            if (m_component.is_function_defined(ExComponent.Function.on_gui)) {
-                ExVR.ExpLog().log_and_add_to_stacktrace(m_component, ExComponent.Function.on_gui, true);
-            }
-
-            m_component.base_on_gui();
-
-            if (m_component.is_function_defined(ExComponent.Function.on_gui)) {
-                ExVR.ExpLog().log_and_add_to_stacktrace(m_component, ExComponent.Function.on_gui, false);
-            }
-        }
-
         public static void pre_update(ExComponent globalComponent) {
 
             if (!globalComponent.is_updating() && !globalComponent.always_call_update()) {
@@ -271,6 +238,72 @@ namespace Ex {
 
             if (m_component.is_function_defined(ExComponent.Function.post_update)) {
                 ExVR.ExpLog().log_and_add_to_stacktrace(m_component, ExComponent.Function.post_update, false);
+            }
+        }
+
+        public static void on_gui(ExComponent globalComponent) {
+
+            if (!globalComponent.is_updating() && !globalComponent.always_call_update()) {
+                return;
+            }
+
+            if (globalComponent.is_function_defined(ExComponent.Function.on_gui)) {
+                ExVR.ExpLog().log_and_add_to_stacktrace(globalComponent, ExComponent.Function.on_gui, true);
+            }
+
+            globalComponent.base_on_gui();
+
+            if (globalComponent.is_function_defined(ExComponent.Function.on_gui)) {
+                ExVR.ExpLog().log_and_add_to_stacktrace(globalComponent, ExComponent.Function.on_gui, false);
+            }
+        }
+        public void on_gui() {
+
+            if (!m_component.is_updating() && !m_component.always_call_update()) {
+                return;
+            }
+
+            if (m_component.is_function_defined(ExComponent.Function.on_gui)) {
+                ExVR.ExpLog().log_and_add_to_stacktrace(m_component, ExComponent.Function.on_gui, true);
+            }
+
+            m_component.base_on_gui();
+
+            if (m_component.is_function_defined(ExComponent.Function.on_gui)) {
+                ExVR.ExpLog().log_and_add_to_stacktrace(m_component, ExComponent.Function.on_gui, false);
+            }
+        }
+
+        public static void end_of_frame(ExComponent globalComponent) {
+
+            if (!globalComponent.is_updating() && !globalComponent.always_call_update()) {
+                return;
+            }
+
+            if (globalComponent.is_function_defined(ExComponent.Function.end_of_frame)) {
+                ExVR.ExpLog().log_and_add_to_stacktrace(globalComponent, ExComponent.Function.end_of_frame, true);
+            }
+
+            globalComponent.base_end_of_frame();
+
+            if (globalComponent.is_function_defined(ExComponent.Function.end_of_frame)) {
+                ExVR.ExpLog().log_and_add_to_stacktrace(globalComponent, ExComponent.Function.end_of_frame, false);
+            }
+        }
+        public void end_of_frame() {
+
+            if (!m_component.is_updating() && !m_component.always_call_update()) {
+                return;
+            }
+
+            if (m_component.is_function_defined(ExComponent.Function.end_of_frame)) {
+                ExVR.ExpLog().log_and_add_to_stacktrace(m_component, ExComponent.Function.end_of_frame, true);
+            }
+
+            m_component.base_end_of_frame();
+
+            if (m_component.is_function_defined(ExComponent.Function.end_of_frame)) {
+                ExVR.ExpLog().log_and_add_to_stacktrace(m_component, ExComponent.Function.end_of_frame, false);
             }
         }
 

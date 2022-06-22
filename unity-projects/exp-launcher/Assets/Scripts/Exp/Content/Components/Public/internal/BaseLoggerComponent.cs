@@ -90,8 +90,7 @@ namespace Ex {
 
                 Tuple<List<string>, bool> lines;
                 if(m_linesList.TryDequeue(out lines)) {
-                    write_to_file(lines);
-                    
+                    write_to_file(lines);                    
                 }
                 System.Threading.Thread.Sleep(1);                
             }
@@ -101,7 +100,9 @@ namespace Ex {
                 write_to_file(lastLines);
             }
 
-            m_steamWriter.Close();
+            if (m_steamWriter != null) {
+                m_steamWriter.Close();
+            }
             --counter;
 
             Profiler.EndThreadProfiling();
@@ -144,6 +145,11 @@ namespace Ex {
 
         public bool open_file(string filePath) {
 
+            if (m_writingJob == null) {
+                ExVR.Log().error("Writing thread not started.");
+                return false;
+            }
+
             m_fileFullPath = filePath;
             if (!m_writingJob.open_file(m_fileFullPath)) {
                 ExVR.Log().error(string.Format("Cannot open stream writer with path [{0}].", m_fileFullPath));
@@ -157,14 +163,18 @@ namespace Ex {
 
         public void stop_logging() {
 
-            m_canWrite = false;
-            if (m_writingJob != null) {
-                m_writingJob.doLoop = false;
-                if (!m_writingJob.join(100)) {
-                    ExVR.Log().error(string.Format("Stop writing thread timeout."));
-                }
-                m_writingJob = null;
+            if (m_writingJob == null) {
+                ExVR.Log().error("Writing thread already stopped.");
+                return;
             }
+
+            m_canWrite = false;        
+            m_writingJob.doLoop = false;
+            if (!m_writingJob.join(100)) {
+                ExVR.Log().error(string.Format("Stop writing thread timeout."));
+            }
+            m_writingJob = null;
+           
         }
         public static bool create_file(string fileFullPath, string initLine, bool dontWriteIfExists, bool addToEndIfExists) {
 

@@ -231,159 +231,117 @@ namespace Ex {
 
         protected override void update() {
 
+            log_message("reset");
+            downButtonsEvents = new List<Input.KeyboardButtonEvent>();
+            upButtonsEvents = new List<Input.KeyboardButtonEvent>();
+
             if (is_updating()) {
                 // reset states infos
                 sendInfos = true;
             }
         }
 
-        protected override void on_gui() {
-
-            var eventType = Event.current.type;
+        protected override void post_update() {
 
             if (!ExVR.GuiSettings().catchExternalKeyboardEvents) {
-                if (eventType != EventType.KeyDown && eventType != EventType.KeyUp) { // call when key events happen
-                    return;
-                }
-            } else {
-                if (eventType != EventType.Repaint) { // only one call per frame
-                    return;
+                return;
+            }
+
+            Input.KeyboardButtonEvent kEvent;
+            while (m_keysGetterThread.newEvents.TryDequeue(out kEvent)) {
+
+                // update all events
+                buttonsEvent[kEvent.code].update(kEvent);
+
+                // store down and up events
+                if (kEvent.state == Input.Button.State.Down) {
+                    downButtonsEvents.Add(kEvent);
+                } else if (kEvent.state == Input.Button.State.Up) {
+                    upButtonsEvents.Add(kEvent);
                 }
             }
 
-            if (!ExVR.GuiSettings().catchExternalKeyboardEvents) {
+            if (is_updating()) {
+                send_signals_and_infos();
+            }
+        }
 
-                // retrieve current return value
-                var currentExpTime     = time().ellapsed_exp_ms();
-                var currentElementTime = time().ellapsed_element_ms();
-                foreach (var kEvent in buttonsEvent) {
-                    m_keyboardGetReturn[kEvent.Key] = UnityEngine.Input.GetKey(kEvent.Key);
+        protected override void on_gui() {
+
+            var eventType = Event.current.type;
+            if ((eventType != EventType.KeyDown && eventType != EventType.KeyUp) || ExVR.GuiSettings().catchExternalKeyboardEvents) { // call when key events happen
+                return;
+            }
+
+            log_error("on gui");
+
+            // retrieve current return value
+            var currentExpTime     = time().ellapsed_exp_ms();
+            var currentElementTime = time().ellapsed_element_ms();
+            foreach (var kEvent in buttonsEvent) {
+                m_keyboardGetReturn[kEvent.Key] = UnityEngine.Input.GetKey(kEvent.Key);
+            }
+
+            // update events
+            foreach (var kEvent in buttonsEvent) {
+
+                // update all events
+                kEvent.Value.update(m_keyboardGetReturn[kEvent.Key], currentExpTime, currentElementTime);
+
+                // store down and up events
+                if (kEvent.Value.state == Input.Button.State.Down) {
+                    log_message("add down");
+                    downButtonsEvents.Add(kEvent.Value);
+                } else if (kEvent.Value.state == Input.Button.State.Up) {
+                    log_message("add up");
+                    upButtonsEvents.Add(kEvent.Value);
                 }
+            }
 
-                // update events
-                downButtonsEvents = null;
-                upButtonsEvents = null;
+            if (is_updating()) {
+                send_signals_and_infos();
+            }
+        }
 
-                foreach (var kEvent in buttonsEvent) {
+        #endregion
 
-                    // update all events
-                    kEvent.Value.update(m_keyboardGetReturn[kEvent.Key], currentExpTime, currentElementTime);
+        #region private_functions
 
-                    // store down and up events
-                    if (kEvent.Value.state == Input.Button.State.Down) { // keep all down events
-
-                        if (downButtonsEvents == null) {
-                            downButtonsEvents = new List<Input.KeyboardButtonEvent>();
-                        }
-                        downButtonsEvents.Add(kEvent.Value);
-
-                    } else if (kEvent.Value.state == Input.Button.State.Up) { // keep all up events
-
-                        if (upButtonsEvents == null) {
-                            upButtonsEvents = new List<Input.KeyboardButtonEvent>();
-                        }
-                        upButtonsEvents.Add(kEvent.Value);
-                    }
-                }
-
-                if (is_updating()) {
-
-                    // send triggers
-                    foreach (var kEvent in buttonsEvent) {
-                        if (kEvent.Value.triggerSignals) {
-                            invoke_signal(buttonOnGuiSignal, kEvent.Value);
-                        }
-                    }
-
-                    // send infos only once per frame
-                    if (sendInfos) {
-
-                        StringBuilder infos = new StringBuilder();
-                        foreach (var kEvent in buttonsEvent) {
-                            if (kEvent.Value.sendInfos) {
-                                infos.AppendFormat("{0} ", ((int)kEvent.Key).ToString());
-                            }
-                        }
-
-                        if (infos.Length > 0) {
-                            send_infos_to_gui_init_config(infosSignal, infos.ToString());
-                        }
-                        sendInfos = false;
-                    }
-                }
-
-            } else if (ExVR.GuiSettings().catchExternalKeyboardEvents) {
+        private void send_signals_and_infos() {
 
 
-                // retrieve events
-                downButtonsEvents = null;
-                upButtonsEvents   = null;
-                {
-                    Input.KeyboardButtonEvent kEvent;
-                    while (m_keysGetterThread.newEvents.TryDequeue(out kEvent)) {
+            StringBuilder infos = null;
+            if (sendInfos) {
+                infos = new StringBuilder();
+            }
 
-                        if (kEvent.state == Input.Button.State.Down) { // keep all down events
+            // send signals
+            // # down
+            foreach (var kEvent in downButtonsEvents) {
+                invoke_signal(buttonOnGuiSignal, kEvent);
+            }
 
-                            if (downButtonsEvents == null) {
-                                downButtonsEvents = new List<Input.KeyboardButtonEvent>();
-                            }
-                            downButtonsEvents.Add(kEvent);
-
-                        } else if(kEvent.state == Input.Button.State.Up){ // keep all up events
-
-                            if(upButtonsEvents == null) {
-                                upButtonsEvents = new List<Input.KeyboardButtonEvent>();
-                            }
-                            upButtonsEvents.Add(kEvent);                            
-                        }
-
-                        // update events list
-                        buttonsEvent[kEvent.code].update(kEvent);
-                    }
-                }
-
-                if (is_updating()) {
-
-                    StringBuilder infos = null;
-                    if (sendInfos) {
-                        infos = new StringBuilder();
-                    }
-
-                    // send signals
-                    // # down
-                    if (downButtonsEvents != null) {
-                        foreach (var kEvent in downButtonsEvents) {
-                            invoke_signal(buttonOnGuiSignal, kEvent);
-
-                            if (infos != null) {
-                                infos.AppendFormat("{0} ", ((int)kEvent.code).ToString());
-                            }
-                        }
-                    }
-                    // # pressed
-                    foreach (var kEvent in buttonsEvent) {
-                        if (kEvent.Value.state == Input.Button.State.Pressed) {
-                            invoke_signal(buttonOnGuiSignal, kEvent.Value);
-
-                            if (infos != null) {
-                                infos.AppendFormat("{0} ", ((int)kEvent.Key).ToString());
-                            }
-                        }
-                    }
-                    // # up
-                    if (upButtonsEvents != null) {
-                        foreach (var kEvent in upButtonsEvents) {
-                            invoke_signal(buttonOnGuiSignal, kEvent);
-                        }
-                    }
+            // # pressed
+            foreach (var kEvent in buttonsEvent) {
+                if (kEvent.Value.state == Input.Button.State.Pressed) {
+                    invoke_signal(buttonOnGuiSignal, kEvent.Value);
 
                     if (sendInfos) {
-                        if (infos.Length > 0) {
-                            send_infos_to_gui_init_config(infosSignal, infos.ToString());
-                        }
-                        sendInfos = false;
+                        infos.AppendFormat("{0} ", ((int)kEvent.Key).ToString());
                     }
                 }
+            }
+            // # up
+            foreach (var kEvent in upButtonsEvents) {
+                invoke_signal(buttonOnGuiSignal, kEvent);
+            }
+
+            // send infos
+            if (sendInfos) {
+                if (infos.Length > 0) {
+                    send_infos_to_gui_init_config(infosSignal, infos.ToString());
+                }
+                sendInfos = false;
             }
         }
 
@@ -410,24 +368,29 @@ namespace Ex {
 
         public override List<Tuple<double, double, string>> format_trigger_data_for_global_logger() {
 
-            if(downButtonsEvents == null && upButtonsEvents == null) {
+            log_message("events " + downButtonsEvents.Count + " " + upButtonsEvents.Count);
+            List<Input.KeyboardButtonEvent> events = null; 
+            foreach (var dEvent in downButtonsEvents) {
+                if(events == null) {
+                    events = new List<Input.KeyboardButtonEvent>();
+                }
+                events.Add(dEvent);
+            }
+            foreach (var uEvent in upButtonsEvents) {
+                if(events == null) {
+                    events = new List<Input.KeyboardButtonEvent>();
+                }
+                events.Add(uEvent);
+            }
+
+            if(events == null) {
                 return null;
             }
 
-            List<Input.KeyboardButtonEvent> events = new List<Input.KeyboardButtonEvent>();
-            if(downButtonsEvents != null) {
-                foreach (var dEvent in downButtonsEvents) {
-                    events.Add(dEvent);
-                }
-            }
-            if (upButtonsEvents != null) {
-                foreach (var uEvent in upButtonsEvents) {
-                    events.Add(uEvent);
-                }
-            }
-            
-            List<Tuple<double, double, string>> triggersStr = events.Count > 0 ? new List<Tuple<double, double, string>>(events.Count) : null;
+            UnityEngine.Debug.LogError("events -> " + events.Count);
+            List <Tuple<double, double, string>> triggersStr = events.Count > 0 ? new List<Tuple<double, double, string>>(events.Count) : null;
             foreach (var bEvent in events) {
+                UnityEngine.Debug.LogError("-> " + bEvent.state + " " + bEvent.code);
                 triggersStr.Add(new Tuple<double, double, string>
                     (bEvent.triggeredExperimentTime, 
                     bEvent.triggeredElementTime, 

@@ -684,8 +684,9 @@ namespace Ex{
         public static string to_string(Vector2 value, string format) {
             return string.Format(vector2StrF, to_string(value.x, format), to_string(value.y, format));
         }
-        public static string to_string(Vector3 value, string format) {
-            return string.Format(vector3StrF, to_string(value.x, format), to_string(value.y, format), to_string(value.z, format));
+        public static string to_string(Vector3 value, string format, string sep = ",") {
+            return string.Join(sep, new string[] { to_string(value.x, format), to_string(value.y, format), to_string(value.z, format) });
+            //return string.Format(vector3StrF, to_string(value.x, format), to_string(value.y, format), to_string(value.z, format));
         }
         public static string to_string(TransformValue value, string format) {
             return string.Format(transformValueStrF, to_string(value.position, format), to_string(value.rotation.eulerAngles, format), to_string(value.scale, format));

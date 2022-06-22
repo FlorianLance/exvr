@@ -27,6 +27,7 @@
 // Qt
 #include <QMainWindow>
 #include <QDesktopWidget>
+#include <QDockWidget>
 
 // local
 // # experiment
@@ -176,6 +177,7 @@ private:
     // # docks
     QDockWidget *m_dwComponents         = nullptr;
     QDockWidget *m_dwLogs               = nullptr;
+    QDockWidget *m_dwElementViewer      = nullptr;
     // # experiment widgets
     FlowDiagramWUP m_flowDiagramW       = nullptr;
     ElementDisplayWUP m_elementViewerW  = nullptr;

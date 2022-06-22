@@ -64,6 +64,7 @@ namespace Ex {
             slot4,
             slot5,
             on_gui,
+            end_of_frame,
             undefined,
             not_defined_in_component
         }
@@ -396,16 +397,18 @@ namespace Ex {
 
             functionsDefined[Function.set_current_config] = (derivedType.GetMethod("set_current_config", flagPrivate).DeclaringType == derivedType);
             functionsDefined[Function.update_from_current_config] = (derivedType.GetMethod("update_from_current_config", flagPublic).DeclaringType == derivedType);
+
             functionsDefined[Function.pre_start_routine] = (derivedType.GetMethod("pre_start_routine", flagPrivate).DeclaringType == derivedType);
             functionsDefined[Function.start_routine] = (derivedType.GetMethod("start_routine", flagPrivate).DeclaringType == derivedType);
             functionsDefined[Function.post_start_routine] = (derivedType.GetMethod("post_start_routine", flagPrivate).DeclaringType == derivedType);
-
-            functionsDefined[Function.on_gui] = (derivedType.GetMethod("on_gui", flagPrivate).DeclaringType == derivedType);
+            
             functionsDefined[Function.pre_update] = (derivedType.GetMethod("pre_update", flagPrivate).DeclaringType == derivedType);
             functionsDefined[Function.update] = (derivedType.GetMethod("update", flagPrivate).DeclaringType == derivedType);
             functionsDefined[Function.post_update] = (derivedType.GetMethod("post_update", flagPrivate).DeclaringType == derivedType);
-            functionsDefined[Function.stop_routine] = (derivedType.GetMethod("stop_routine", flagPrivate).DeclaringType == derivedType);
+            functionsDefined[Function.on_gui] = (derivedType.GetMethod("on_gui", flagPrivate).DeclaringType == derivedType);
+            functionsDefined[Function.end_of_frame] = (derivedType.GetMethod("end_of_frame", flagPrivate).DeclaringType == derivedType);
 
+            functionsDefined[Function.stop_routine] = (derivedType.GetMethod("stop_routine", flagPrivate).DeclaringType == derivedType);
 
             functionsDefined[Function.set_update_state] = (derivedType.GetMethod("set_update_state", flagPrivate).DeclaringType == derivedType);
             functionsDefined[Function.set_visibility] = (derivedType.GetMethod("set_visibility", flagPrivate).DeclaringType == derivedType);
@@ -633,21 +636,6 @@ namespace Ex {
             }
         }
 
-        // Called several times per frame if component inside timeline
-        public void base_on_gui() {
-
-            currentFunction = Function.on_gui;
-            if (m_catchExceptions) {
-                try {
-                    on_gui();
-                } catch (Exception e) {
-                    display_exception(e);
-                }
-            } else {
-                on_gui();
-            }
-        }
-
         // Called at every frame if component inside timeline, will call child pre_update
         public void base_pre_update() {
 
@@ -693,6 +681,36 @@ namespace Ex {
                 post_update();
             }
         }
+
+        // Called several times per frame if component inside timeline
+        public void base_on_gui() {
+
+            currentFunction = Function.on_gui;
+            if (m_catchExceptions) {
+                try {
+                    on_gui();
+                } catch (Exception e) {
+                    display_exception(e);
+                }
+            } else {
+                on_gui();
+            }
+        }
+
+        // Called at every frame if component inside timeline, will call child enbd_of_frame
+        public void base_end_of_frame() {
+            currentFunction = Function.end_of_frame;
+            if (m_catchExceptions) {
+                try {
+                    end_of_frame();
+                } catch (Exception e) {
+                    display_exception(e);
+                }
+            } else {
+                end_of_frame();
+            }
+        }
+
 
         // Play command from the GUI, will resumed if on pause, will call child play
         public void base_play() {
@@ -830,11 +848,12 @@ namespace Ex {
         public virtual void pause() { }
 
 
-        // every frame or more
-        protected virtual void on_gui() {}
+        // every frame or more        
         protected virtual void pre_update() {}
         protected virtual void update() {}
         protected virtual void post_update() {}
+        protected virtual void on_gui() { }
+        protected virtual void end_of_frame() { }
 
         // from gui
         protected virtual void update_parameter_from_gui(string updatedArgName) {}
@@ -843,7 +862,10 @@ namespace Ex {
 
         // logging
         public virtual string format_frame_data_for_global_logger() { return null; }
-        public virtual List<Tuple<double, double, string>> format_trigger_data_for_global_logger() { return null; }
+        public virtual List<Tuple<double, double, string>> format_trigger_data_for_global_logger() { 
+            // exp time / routine time / data
+            return null; 
+        }
 
 
         // transform related function

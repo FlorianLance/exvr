@@ -143,6 +143,12 @@ namespace Ex{
             }
         }
 
+        public void end_of_frame() {
+            if (m_currentRoutine != null) {
+                m_currentRoutine.end_of_frame();
+            }
+        }
+
         public void update_current_routine() {
             
             if (m_currentRoutine != null) {

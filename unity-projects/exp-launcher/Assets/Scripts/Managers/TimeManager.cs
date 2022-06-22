@@ -34,8 +34,9 @@ namespace Ex{
         // states
         private bool m_isPaused = false;
         private bool m_isExperimentStarted = false;
-
+        private bool m_newFrameStarted = false;
         public bool onGuiWait = false;
+
 
         // timers        
         private Stopwatch m_programTimer = new Stopwatch();
@@ -130,13 +131,14 @@ namespace Ex{
             m_experimentTimer.Start();
             // frame
             previousStartFrameTimeMs = 0;
-            startFrameTimeMs = 0;
-            previousEndFrameTimeMs = 0;
-            endFrameTimeMs = 0;
-            idFrame = 0;
+            startFrameTimeMs         = 0;
+            previousEndFrameTimeMs   = 0;
+            endFrameTimeMs           = 0;
+            idFrame                  = 0;
             // states
             m_isPaused = false;
             m_isExperimentStarted = true;
+            m_newFrameStarted = false;
 
             // clean previous  play/pause timestamps
             pauseEventsExperimentTimestamp.Clear();
@@ -153,6 +155,9 @@ namespace Ex{
             // elem
             m_elementTimer.Stop();
             m_elementTimer.Reset();
+            // frame
+            m_frameTimer.Stop();
+            m_frameTimer.Reset();
             // states
             m_isPaused = false;
             m_isExperimentStarted = false;
@@ -209,26 +214,29 @@ namespace Ex{
 
         public void start_new_frame() {
 
+            if (m_newFrameStarted) {
+
+                // stop frame timer
+                m_frameTimer.Stop();
+
+                // retrieve frame end time
+                previousEndFrameTimeMs = endFrameTimeMs;
+                endFrameTimeMs = ellapsed_exp_ms();
+
+                // increment id frame
+                ++idFrame;
+            }
+
             // start frame timer
             m_frameTimer.Restart();
 
             // retrieve frame start time
             previousStartFrameTimeMs = startFrameTimeMs;
-            startFrameTimeMs = ellapsed_exp_ms();
+            startFrameTimeMs         = ellapsed_exp_ms();
+
+            m_newFrameStarted = true;
         }
 
-        public void end_frame() {
-
-            // stop frame timer
-            m_frameTimer.Stop();
-
-            // retrieve frame end time
-            previousEndFrameTimeMs = endFrameTimeMs;
-            endFrameTimeMs = ellapsed_exp_ms();
-
-            // increment id frame
-            ++idFrame;            
-        }
 
         public long to_ticks(Stopwatch timer) {
             return timer.ElapsedTicks;
