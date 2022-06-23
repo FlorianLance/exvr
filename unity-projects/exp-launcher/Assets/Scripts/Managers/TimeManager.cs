@@ -34,7 +34,7 @@ namespace Ex{
         // states
         private bool m_isPaused = false;
         private bool m_isExperimentStarted = false;
-        private bool m_newFrameStarted = false;
+        private bool m_currentFrameStarted = false;
         public bool onGuiWait = false;
 
 
@@ -138,7 +138,7 @@ namespace Ex{
             // states
             m_isPaused = false;
             m_isExperimentStarted = true;
-            m_newFrameStarted = false;
+            m_currentFrameStarted = false;
 
             // clean previous  play/pause timestamps
             pauseEventsExperimentTimestamp.Clear();
@@ -214,19 +214,6 @@ namespace Ex{
 
         public void start_new_frame() {
 
-            if (m_newFrameStarted) {
-
-                // stop frame timer
-                m_frameTimer.Stop();
-
-                // retrieve frame end time
-                previousEndFrameTimeMs = endFrameTimeMs;
-                endFrameTimeMs = ellapsed_exp_ms();
-
-                // increment id frame
-                ++idFrame;
-            }
-
             // start frame timer
             m_frameTimer.Restart();
 
@@ -234,7 +221,26 @@ namespace Ex{
             previousStartFrameTimeMs = startFrameTimeMs;
             startFrameTimeMs         = ellapsed_exp_ms();
 
-            m_newFrameStarted = true;
+            m_currentFrameStarted = true;
+        }
+
+        public void end_of_frame() {
+
+            // stop frame timer
+            m_frameTimer.Stop();
+
+            // retrieve frame end time
+            previousEndFrameTimeMs = endFrameTimeMs;
+            endFrameTimeMs = ellapsed_exp_ms();
+
+            // increment id frame
+            ++idFrame;
+
+            m_currentFrameStarted = false;
+        }
+
+        public bool is_current_frames_started() {
+            return m_currentFrameStarted;
         }
 
 

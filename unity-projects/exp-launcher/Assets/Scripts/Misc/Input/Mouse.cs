@@ -174,6 +174,9 @@ namespace Ex.Input {
             sendInfos = previousValue != newValue;
             value = newValue;
         }
+        public MouseAxisEvent copy() {
+            return new MouseAxisEvent(code, value, triggeredExperimentTime, triggeredElementTime, lastTimeDown);
+        }
 
         public bool is_moved() {
             return lastTimeDown > 0.0;

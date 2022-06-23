@@ -214,10 +214,20 @@ namespace Ex{
             }
 
             // fill global components
-            Condition.globalComponents = new Dictionary<int, ExComponent>();
+            Condition.sortedGlobalComponents = new Dictionary<int, ExComponent>();
             foreach (var component in components) {
-                if (component.is_global()) {
-                    Condition.globalComponents[component.key] = component;
+                if (component.is_global() && component.priority == Priority.Hight) {
+                    Condition.sortedGlobalComponents[component.key] = component;
+                }
+            }
+            foreach (var component in components) {
+                if (component.is_global() && component.priority == Priority.Medium) {
+                    Condition.sortedGlobalComponents[component.key] = component;
+                }
+            }
+            foreach (var component in components) {
+                if (component.is_global() && component.priority == Priority.Low) {
+                    Condition.sortedGlobalComponents[component.key] = component;
                 }
             }
 
@@ -228,8 +238,6 @@ namespace Ex{
             foreach (var component in components) {
                 if(component.priority == Priority.Hight) {
                     sortedComponents.Add(component);
-
-
                 } else if (component.priority == Priority.Low) {
                     reverseSortedComponents.Add(component);
                 }

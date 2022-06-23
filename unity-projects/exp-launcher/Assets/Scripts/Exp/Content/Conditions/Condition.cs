@@ -57,7 +57,7 @@ namespace Ex{
         public List<Action> reverseOrderActions = null;
 
         // global components (always call update functions even if not in current condition)
-        static public Dictionary<int, ExComponent> globalComponents = null;
+        static public Dictionary<int, ExComponent> sortedGlobalComponents = null;
 
         public Dictionary<ExComponent.Category, List<Action>> actionsPerComponentCategory = null;
         public Dictionary<Type, List<Action>> actionsPerComponentType   = null;        
@@ -434,7 +434,7 @@ namespace Ex{
             Profiler.BeginSample(string.Format("[ExVR][Condition][{0}] on_gui", name));
 
             // call on_gui for global components
-            foreach (var component in globalComponents) {
+            foreach (var component in sortedGlobalComponents) {
                 Profiler.BeginSample(string.Format("[ExVR][Component][{0}] on_gui", component.Value.name));
                 Action.on_gui(component.Value);
                 Profiler.EndSample();
@@ -456,7 +456,7 @@ namespace Ex{
             Profiler.BeginSample(string.Format("[ExVR][Condition][{0}] end_of_frame", name));
 
             // call end_of_frame for global components
-            foreach (var component in globalComponents) {
+            foreach (var component in sortedGlobalComponents) {
                 Profiler.BeginSample(string.Format("[ExVR][Component][{0}] end_of_frame", component.Value.name));
                 Action.end_of_frame(component.Value);
                 Profiler.EndSample();
@@ -479,7 +479,7 @@ namespace Ex{
             Profiler.BeginSample(string.Format("[ExVR][Condition][{0}] pre_update", name));
 
             // call pre_update for global component
-            foreach (var component in globalComponents) {
+            foreach (var component in sortedGlobalComponents) {
                 Profiler.BeginSample(string.Format("[ExVR][Component][{0}] pre_update", component.Value.name));
                 Action.pre_update(component.Value);
                 Profiler.EndSample();
@@ -499,7 +499,7 @@ namespace Ex{
             Profiler.BeginSample(string.Format("[ExVR][Condition][{0}] update", name));
 
             // call update for global components
-            foreach (var component in globalComponents) {
+            foreach (var component in sortedGlobalComponents) {
                 Profiler.BeginSample(string.Format("[ExVR][Component][{0}] update", component.Value.name));
                 Action.update(component.Value);
                 Profiler.EndSample();
@@ -507,7 +507,7 @@ namespace Ex{
 
             // call update for actions
             foreach (var action in actions) {
-                if (!globalComponents.ContainsKey(action.component().key)) {
+                if (!sortedGlobalComponents.ContainsKey(action.component().key)) {
                     Profiler.BeginSample(string.Format("[ExVR][Component][{0}] update", action.component().name));
                     action.update();
                     Profiler.EndSample();
@@ -518,7 +518,7 @@ namespace Ex{
             Profiler.BeginSample(string.Format("[ExVR][Condition][{0}] post_update", name));
 
             // call post_update for global components
-            foreach (var component in globalComponents) {
+            foreach (var component in sortedGlobalComponents) {
                 Profiler.BeginSample(string.Format("[ExVR][Component][{0}] post_update", component.Value.name));
                 Action.post_update(component.Value);
                 Profiler.EndSample();
@@ -526,7 +526,7 @@ namespace Ex{
 
             // call post_update for actions
             foreach (var action in actions) {
-                if (!globalComponents.ContainsKey(action.component().key)) {
+                if (!sortedGlobalComponents.ContainsKey(action.component().key)) {
                     Profiler.BeginSample(string.Format("[ExVR][Component][{0}] post_update", action.component().name));
                     action.post_update();
                     Profiler.EndSample();

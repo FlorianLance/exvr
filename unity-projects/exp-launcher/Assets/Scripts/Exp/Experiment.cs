@@ -100,7 +100,8 @@ namespace Ex{
         // states
         private bool m_experimentCleaned = false;
         private bool m_experimentLoaded = false;
-        //private int m_onGuiCanceled = 0;
+        private bool m_onGuiCallsEnabled = false;
+        private int m_layoutEventsNbCallsForCurrentFrame = 0;
 
         // xml
         private XML.Experiment m_xmlExperiment = null;
@@ -125,16 +126,18 @@ namespace Ex{
         void Update() {
 
             if (!ExVR.Time().is_experiment_running()) {
+                m_onGuiCallsEnabled = false;
                 apply_scheduled_actions();
                 send_current_experiment_state_to_gui();
                 return;
             }
-
-            log_error("UP");
+            m_onGuiCallsEnabled = true;
 
             // start frame
             ExVR.Time().start_new_frame();
             StartCoroutine("end_of_frame");
+
+            //log_error("UP");
 
             // update current element
             Profiler.BeginSample("[ExVR][Experiment] update_current_element");
@@ -171,19 +174,20 @@ namespace Ex{
 
         private void OnGUI() {
 
-            if (!ExVR.Time().is_experiment_running()) {
+            if (!ExVR.Time().is_experiment_running() || !m_onGuiCallsEnabled) {
                 return;
             }
-            log_error("ONGUI");
             routines.on_gui();
+
         }
 
         IEnumerator end_of_frame() {
             
             yield return new WaitForEndOfFrame();
 
-            log_error("EOF");
             routines.end_of_frame();
+
+            ExVR.Time().end_of_frame();
 
             // apply all scheduled actions from GUI or scripts
             apply_scheduled_actions();
@@ -196,6 +200,7 @@ namespace Ex{
                 ExVR.ExpLog().write();
             }
 
+            m_layoutEventsNbCallsForCurrentFrame = 0;
             yield return null;
         }
 

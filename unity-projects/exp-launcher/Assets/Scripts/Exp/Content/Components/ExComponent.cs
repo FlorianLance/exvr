@@ -135,6 +135,7 @@ namespace Ex {
         protected bool m_frameLogging = false;
         [SerializeField]
         protected bool m_triggerLogging = false;
+        private int m_layoutEventsNbCallsForCurrentFrame = 0;
 
         // access        
         public Components components() { return ExVR.Components(); }
@@ -682,17 +683,86 @@ namespace Ex {
             }
         }
 
+
+        private void process_event(Event cEvent) {
+
+            var eType = cEvent.type;
+
+            //  detect first event
+            if (eType == EventType.Layout) {
+                // A layout event.
+                // (This event is sent prior to anything else - this is a chance to perform any initialization. It is used by the automatic layout system
+                ++m_layoutEventsNbCallsForCurrentFrame;
+                if (m_layoutEventsNbCallsForCurrentFrame == 1) {
+                    first_event(!ExVR.Time().is_current_frames_started());
+                    return;
+                }
+            }
+
+            // process others events                        
+            switch (eType) {
+                // mouse events
+                case EventType.MouseDown:
+                    // Mouse button was pressed.
+                    // (This event gets sent when any mouse button is pressed. Use Event.button to determine which button was pressed down.)
+                    mouse_event(cEvent);
+                    return;
+                case EventType.MouseUp:
+                    // Mouse button was released.
+                    // (This event gets sent when any mouse button is released. Use Event.button to determine which button was pressed down.)
+                    mouse_event(cEvent);
+                    return;
+                case EventType.MouseMove:
+                    // Mouse was moved (Editor views only).
+                    // (The mouse was moved without any buttons being held down. Use Event.mousePosition and Event.delta to determine mouse motion.)
+                    // (Note that this event is only sent in the Editor for EditorWindow windows which have EditorWindow.wantsMouseMove set to true. Mouse move events are never sent in the games.)
+                    mouse_event(cEvent);
+                    return;
+                case EventType.MouseDrag: // editor view
+                    // Mouse was dragged.
+                    // (The mouse was moved with a button held down - a mouse drag. Use Event.mousePosition and Event.delta to determine mouse motion.)
+                    mouse_event(cEvent);
+                    return;
+                case EventType.ScrollWheel:
+                    // The scroll wheel was moved.
+                    // (Use Event.delta to determine X & Y scrolling amount.)
+                    mouse_event(cEvent);
+                    return;
+                // keyboard events
+                case EventType.KeyDown:
+                    // A keyboard key was pressed
+                    // (Use Event.character to find out what has been typed. Use Event.keyCode to handle arrow, home/end or other function keys, or to find out which physical key has been pressed.
+                    // This event is sent repeatedly depending on the end user's keyboard repeat settings.)
+                    // (Note that key presses can come as separate events, one with valid Event.keyCode, and another with valid Event.character. In case of keyboard layouts with dead keys,
+                    // multiple Event.keyCode events can generate a single Event.character event)
+                    keyboard_event(cEvent);
+                    return;
+                case EventType.KeyUp:
+                    // A keyboard key was released.
+                    // (Use Event.keyCode to find which physical key was released. Note that depending on the system and keyboard layout, Event.character might not contain any character for a key release event.)
+                    keyboard_event(cEvent);
+                    return;
+                case EventType.Repaint:
+                    // A repaint event. One is sent every frame. (All other events are processed first, then the repaint event is sent.)
+                    last_event();
+                    return;
+            }
+        }
+
         // Called several times per frame if component inside timeline
         public void base_on_gui() {
 
             currentFunction = Function.on_gui;
+            var cEvent = Event.current;
             if (m_catchExceptions) {
                 try {
+                    process_event(cEvent);
                     on_gui();
                 } catch (Exception e) {
                     display_exception(e);
                 }
             } else {
+                process_event(cEvent);
                 on_gui();
             }
         }
@@ -709,6 +779,8 @@ namespace Ex {
             } else {
                 end_of_frame();
             }
+
+            m_layoutEventsNbCallsForCurrentFrame = 0;
         }
 
 
@@ -854,6 +926,13 @@ namespace Ex {
         protected virtual void post_update() {}
         protected virtual void on_gui() { }
         protected virtual void end_of_frame() { }
+
+        // events
+        protected virtual void first_event(bool isCalledBeforeUpdate) {} // can be called before or after pre_update/update/post_update
+        protected virtual void keyboard_event(Event kEvent) { } // called before pre_update/update/post_update
+        protected virtual void mouse_event(Event mEvent) { } // called before pre_update/update/post_update
+        protected virtual void last_event() { } // called after pre_update/udpate/post_update
+
 
         // from gui
         protected virtual void update_parameter_from_gui(string updatedArgName) {}
