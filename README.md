@@ -72,6 +72,25 @@ https://visualstudio.microsoft.com/vs/community/).
  * The project is using QtCreator qmake files and the Qt library (Qt 5.15), you can get the opensource version [here](https://www.qt.io/download-thank-you).
 
  * Clone the project.
+ * Setup a QtCreator kit to use MSVC2019 (amd64) with the Qt 5.15 msvc2019_64 qmake exe file.
+ * Open exvr-all-exvr.pro project file
+    * Setup a relase config with ./exvr as working directory
+    * Wait for indexing process (only first time)
+    * Execute qmake on all-exvr project in the projects window
+    * Launch compilation on all-exvr project in the projects window
+    * Every subject project should have been compiled, so you can start them from QtCreator or by directly launching the relevant exe files
+       * exvr\toolbox\cpp-projects\_build/bin
+          * tool-tests (unit testing for the toolbox sub-project)
+          * demos/demos.exe (samples program for the toolbox sub-project)
+       * exvr\cpp-projects\_build\bin
+          * exvr-tests\exvr-test.exe (unit testing for exvr project)
+          * exvr-designer\exvr-designer.exe (exvr gui designer program)
+    * DLL projects
+       * exvr\cpp-projects\_build\bin
+          * exvr-export\exvr-export.dll (necessary for some ExVR components, copy it to exvr\unity-projects\exp-launcher for access from the unity editor of the ExVR exp launcher program and to exvr\cpp-projects\_build\bin\exvr-designer\exp-launcher for its built version)
+    
+          
+ 
 
 (TODO)
 
