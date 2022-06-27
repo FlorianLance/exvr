@@ -176,7 +176,6 @@ Arg ExComponentsListW::convert_to_arg() const{
 
 void ExComponentsListW::update_from_components(){
 
-    qDebug() << "ufc";
     m_componentNames->blockSignals(true);
 
     QString currentText = m_componentNames->currentText();

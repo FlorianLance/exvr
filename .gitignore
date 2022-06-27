@@ -11,6 +11,8 @@ unity-projects/exp-launcher/Assets/Scripts/Exp/Content/Components/LNCO.meta
 .qmake.stash
 Makefile
 
+.qtc_clangd
+
 ## bin
 cpp-projects/**/Makefile
 cpp-projects/**/Makefile*

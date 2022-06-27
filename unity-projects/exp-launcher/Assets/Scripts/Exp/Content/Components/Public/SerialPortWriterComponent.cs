@@ -160,8 +160,8 @@ namespace Ex{
             add_slot("send byte pulse", (value) => {
                 send_byte_pulse((int)value);
             });
-            add_slot("write byte", (value) => {
-                write_byte((byte)value);
+            add_slot("write byte", (value) => {                
+                write_byte(Converter.to_byte(value));
             });
             add_slot("write message", (value) => {
                 write_str((string)value);
@@ -197,27 +197,29 @@ namespace Ex{
         }
 
         protected override void update() {
+
+            if (m_serialWriterT == null) {
+                return;
+            }
+
             if (currentC.get<bool>("send_every_frame")) {
                 write();
             }
 
-            if (m_serialWriterT != null) {
-
-                double triggerTime;
-                List<double> triggerTimes = null;
-                while(m_serialWriterT.triggerTimes.TryDequeue(out triggerTime)) {
-                    if(triggerTimes == null) {
-                        triggerTimes = new List<double>();
-                    }
-                    triggerTimes.Add(triggerTime);
+            double triggerTime;
+            List<double> triggerTimes = null;
+            while(m_serialWriterT.triggerTimes.TryDequeue(out triggerTime)) {
+                if(triggerTimes == null) {
+                    triggerTimes = new List<double>();
                 }
-
-                if (triggerTimes != null) {
-                    foreach (var time in triggerTimes) {
-                        invoke_signal(m_triggerExpTimeSignalStr, time);
-                    }
-                }
+                triggerTimes.Add(triggerTime);
             }
+
+            if (triggerTimes != null) {
+                foreach (var time in triggerTimes) {
+                    invoke_signal(m_triggerExpTimeSignalStr, time);
+                }
+            }            
         }
 
         public override void update_from_current_config() {

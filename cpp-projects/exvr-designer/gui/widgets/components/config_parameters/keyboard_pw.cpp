@@ -56,13 +56,16 @@ void KeyboardInitConfigParametersW::insert_widgets(){
     }
     m_p->keys.w->addItems(keysList);
 
-    auto l2 = ui::F::gen(ui::L::HB(), {ui::W::txt("Keyboard buttons names:"), m_p->keys()}, LStretch{true}, LMargins{true}, QFrame::NoFrame);
-    auto l3 = ui::F::gen(ui::L::HB(), {ui::W::txt("C# key code:"), m_p->code()}, LStretch{false}, LMargins{true}, QFrame::NoFrame);
-    auto l4 = ui::F::gen(ui::L::HB(), {ui::W::txt("Value:"), m_p->value()}, LStretch{true}, LMargins{true}, QFrame::NoFrame);
-    auto l5 = ui::F::gen(ui::L::VB(), {ui::W::txt("Last buttons pressed:"), m_p->lastKeys()}, LStretch{false}, LMargins{true}, QFrame::NoFrame);
-    auto l6 = ui::F::gen(ui::L::VB(), {m_p->filter(), ui::W::txt("Keys to filter (one per line, use C# key code):"), m_p->keysToFilter()}, LStretch{false}, LMargins{true}, QFrame::NoFrame);
+    auto l1 = ui::F::gen(ui::L::HB(), {ui::W::txt("Keyboard buttons names:"), m_p->keys()}, LStretch{false}, LMargins{true}, QFrame::NoFrame);
+    auto l2 = ui::F::gen(ui::L::HB(), {ui::W::txt("C# key code:"), m_p->code()}, LStretch{false}, LMargins{true}, QFrame::NoFrame);
+    auto l3 = ui::F::gen(ui::L::HB(), {ui::W::txt("Value:"), m_p->value()}, LStretch{false}, LMargins{true}, QFrame::NoFrame);
+    auto l4 = ui::F::gen(ui::L::VB(), {ui::W::txt("Last buttons pressed:"), m_p->lastKeys()}, LStretch{false}, LMargins{true}, QFrame::NoFrame);
+    auto l5 = ui::F::gen(ui::L::VB(), {m_p->filter(), ui::W::txt("Keys to filter (one per line, use C# key code or button name, ex: \"KeyCode.A\# or \"A\"):"), m_p->keysToFilter()}, LStretch{false}, LMargins{true}, QFrame::NoFrame);
 
-    add_widget(ui::F::gen(ui::L::VB(), {l2,l3,l4,l5,l6}, LStretch{false}, LMargins{false}, QFrame::NoFrame));
+    add_widget(ui::F::gen(ui::L::VB(), {ui::W::txt("<b>Keys infos</b>"),l1,l2,l3}, LStretch{false}, LMargins{true}, QFrame::Box));
+    add_widget(ui::F::gen(ui::L::VB(), {ui::W::txt("<b>Runtime</b>"),l4}, LStretch{false}, LMargins{true}, QFrame::Box));
+    add_widget(ui::F::gen(ui::L::VB(), {ui::W::txt("<b>Settings</b>"),l5}, LStretch{false}, LMargins{true}, QFrame::Box));
+
     no_end_stretch();
 }
 
