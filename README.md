@@ -24,7 +24,7 @@ They both communicate between themselves and makes easy to operate changes and s
 Once the design done, the user can then share the full experiment by exporting it, allowing accurate replications on others computers.
 
 <p float="center">
-  <img src="main/captures/4-panel.png" width="800" />
+  <img src="captures/4-panel.png" width="800" />
 </p>
 
 ## Origin
