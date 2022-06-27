@@ -37,21 +37,21 @@ The project has been developped at [EPFL LNCO laboratory](https://www.epfl.ch/la
 **ExVR** is subdivided in two software:
 * **ExVR-designer**: a GUI for creating the experiments and controlling their execution
   * creation
-    * experimental flow (routines, loops, interstimulus state)
+    * experimental flow with routines for content and loops for randomization
     * components, configurations and their parameters
-    * randomization of the differents loops
+    * a wide range of advanced randomization settings
     * management of resources (scripts, images, sounds, 3D objects..)
     * actions (association of conditions and components using update/visibility timelines)   
     * scripting using (C#,Python)
-    * visual scripting using nodes
+    * visual scripting using nodes for linking components
     * global settings (display options and others)
-    * generation of the differents randomization (using instances files)
+    * generation of the differents randomizations instances for each subjet
     * saving/eport/loading functions
   * execution
     * load current exp (or a subpart) to the launcher
     * load default or specific randomization (using instance files)
     * play/pause/stop/next/previous/goto
-    * feedback (exp state, time, routine name, nodes states) from the exp-launcher
+    * feedback (exp state, time, routine name, nodes states...) from the exp-launcher
     * logs (messages, errors) from the software and the scripts
     * realtime update of components parameters
 * **ExVR-exp**: an exp launcher for executing experiments
