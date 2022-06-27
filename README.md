@@ -79,7 +79,7 @@ https://visualstudio.microsoft.com/vs/community/).
 
 * [General](cpp-projects/_build/bin/exvr-designer/data/documentation/doc_general.md) (TODO)
 * UI
-  * [Flow creation](cpp-projects/_build/bin/exvr-designer/data/documentation/doc_ui_flow_creation.md) (DONE)
+  * [Flow creation](cpp-projects/_build/bin/exvr-designer/data/documentation/doc_ui_flow_creation.md) (ONGOING)
   * [Element selection](cpp-projects/_build/bin/exvr-designer/data/documentation/doc_ui_element_selection.md) (TODO)
   * [Components list](cpp-projects/_build/bin/exvr-designer/data/documentation/doc_ui_component_list.md) (TODO)
   * [Routines conditions](cpp-projects/_build/bin/exvr-designer/data/documentation/doc_ui_routines_conditions.md) (TODO)
