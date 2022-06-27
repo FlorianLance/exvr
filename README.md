@@ -74,7 +74,7 @@ https://visualstudio.microsoft.com/vs/community/).
  * Clone the project.
  * Setup a QtCreator kit to use MSVC2019 (amd64) with the Qt 5.15 msvc2019_64 qmake exe file.
  * Open exvr-all-exvr.pro project file
-    * Setup a relase config with ./exvr as working directory
+    * Setup a release config with ./exvr as working directory
     * Wait for indexing process (only first time)
     * Execute qmake on all-exvr project in the projects window
     * Launch compilation on all-exvr project in the projects window
