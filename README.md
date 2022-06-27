@@ -77,7 +77,7 @@ https://visualstudio.microsoft.com/vs/community/).
 
 ## Documentation
 
-* [General](https://github.com/FlorianLance/exvr/blob/main/cpp-projects/_build/bin/exvr-designer/data/documentation/doc_general.md) (TODO)
+* [General](cpp-projects/_build/bin/exvr-designer/data/documentation/doc_general.md) (TODO)
 * UI
   * [Flow creation](https://github.com/FlorianLance/exvr/blob/main/cpp-projects/_build/bin/exvr-designer/data/documentation/doc_ui_flow_creation.md) (DONE)
   * [Element selection](https://github.com/FlorianLance/exvr/blob/main/cpp-projects/_build/bin/exvr-designer/data/documentation/doc_ui_element_selection.md) (TODO)
