@@ -3,14 +3,14 @@
 ## Summary
 
 * [Description](#description)
-* [Origin](https://github.com/FlorianLance/exvr#origin)
-* [Content](https://github.com/FlorianLance/exvr#content)
-* [How to install](https://github.com/FlorianLance/exvr#how-to-install)
-* [How to compile from code](https://github.com/FlorianLance/exvr#how-to-compile-from-code)
-* [Documentation](https://github.com/FlorianLance/exvr#documentation)
-* [Tutorials](https://github.com/FlorianLance/exvr#tutorials)
-* [Captures](https://github.com/FlorianLance/exvr#captures)
-* [Authors](https://github.com/FlorianLance/exvr#authors)
+* [Origin](#origin)
+* [Content](#content)
+* [How to install](#how-to-install)
+* [How to compile from code](#how-to-compile-from-code)
+* [Documentation](#documentation)
+* [Tutorials](#tutorials)
+* [Captures](#captures)
+* [Authors](#authors)
 
 ## Description
 
@@ -24,7 +24,7 @@ They both communicate between themselves and makes easy to operate changes and s
 Once the design done, the user can then share the full experiment by exporting it, allowing accurate replications on others computers.
 
 <p float="center">
-  <img src="https://github.com/FlorianLance/exvr/blob/main/captures/4-panel.png" width="800" />
+  <img src="main/captures/4-panel.png" width="800" />
 </p>
 
 ## Origin
@@ -62,7 +62,7 @@ The project has been developped at [EPFL LNCO laboratory](https://www.epfl.ch/la
 
 ## How to install
 
-Go [here](https://github.com/FlorianLance/exvr/releases/tag/1.0a17) to download the last release.
+Go [here](releases/tag/1.0a17) to download the last release.
 
 ## How to compile from code
 
@@ -79,22 +79,22 @@ https://visualstudio.microsoft.com/vs/community/).
 
 * [General](cpp-projects/_build/bin/exvr-designer/data/documentation/doc_general.md) (TODO)
 * UI
-  * [Flow creation](https://github.com/FlorianLance/exvr/blob/main/cpp-projects/_build/bin/exvr-designer/data/documentation/doc_ui_flow_creation.md) (DONE)
-  * [Element selection](https://github.com/FlorianLance/exvr/blob/main/cpp-projects/_build/bin/exvr-designer/data/documentation/doc_ui_element_selection.md) (TODO)
-  * [Components list](https://github.com/FlorianLance/exvr/blob/main/cpp-projects/_build/bin/exvr-designer/data/documentation/doc_ui_component_list.md) (TODO)
-  * [Routines conditions](https://github.com/FlorianLance/exvr/blob/main/cpp-projects/_build/bin/exvr-designer/data/documentation/doc_ui_routines_conditions.md) (TODO)
-  * [Resources manager](https://github.com/FlorianLance/exvr/blob/main/cpp-projects/_build/bin/exvr-designer/data/documentation/doc_ui_resources_manager.md) (TODO)
-  * [Randomization](https://github.com/FlorianLance/exvr/blob/main/cpp-projects/_build/bin/exvr-designer/data/documentation/doc_ui_randomization.md) (TODO)
-  * [Toolbar](https://github.com/FlorianLance/exvr/blob/main/cpp-projects/_build/bin/exvr-designer/data/documentation/doc_ui_toolboar.md) (TODO)
-  * [Logs](https://github.com/FlorianLance/exvr/blob/main/cpp-projects/_build/bin/exvr-designer/data/documentation/doc_ui_logs.md) (TODO)
-  * [Settings](https://github.com/FlorianLance/exvr/blob/main/cpp-projects/_build/bin/exvr-designer/data/documentation/doc_ui_settings.md) (TODO)
+  * [Flow creation](cpp-projects/_build/bin/exvr-designer/data/documentation/doc_ui_flow_creation.md) (DONE)
+  * [Element selection](cpp-projects/_build/bin/exvr-designer/data/documentation/doc_ui_element_selection.md) (TODO)
+  * [Components list](cpp-projects/_build/bin/exvr-designer/data/documentation/doc_ui_component_list.md) (TODO)
+  * [Routines conditions](cpp-projects/_build/bin/exvr-designer/data/documentation/doc_ui_routines_conditions.md) (TODO)
+  * [Resources manager](cpp-projects/_build/bin/exvr-designer/data/documentation/doc_ui_resources_manager.md) (TODO)
+  * [Randomization](cpp-projects/_build/bin/exvr-designer/data/documentation/doc_ui_randomization.md) (TODO)
+  * [Toolbar](cpp-projects/_build/bin/exvr-designer/data/documentation/doc_ui_toolboar.md) (TODO)
+  * [Logs](cpp-projects/_build/bin/exvr-designer/data/documentation/doc_ui_logs.md) (TODO)
+  * [Settings](pp-projects/_build/bin/exvr-designer/data/documentation/doc_ui_settings.md) (TODO)
 * Content
-  * [Components description](https://github.com/FlorianLance/exvr/blob/main/cpp-projects/_build/bin/exvr-designer/data/documentation/doc_content_components.md) (TODO)
-  * [Connectors description](https://github.com/FlorianLance/exvr/blob/main/cpp-projects/_build/bin/exvr-designer/data/documentation/doc_content_connectors.md) (TODO)
-  * [Scripting](https://github.com/FlorianLance/exvr/blob/main/cpp-projects/_build/bin/exvr-designer/data/documentation/doc_content_scripting.md) (TODO)
-  * [Visual scripting](https://github.com/FlorianLance/exvr/blob/main/cpp-projects/_build/bin/exvr-designer/data/documentation/doc_content_visual_scripting.md) (TODO)
-  * [Exp-launcher](https://github.com/FlorianLance/exvr/blob/main/cpp-projects/_build/bin/exvr-designer/data/documentation/doc_content_exp_launcher.md) (TODO)
-  * [Samples](https://github.com/FlorianLance/exvr/blob/main/cpp-projects/_build/bin/exvr-designer/data/documentation/doc_content_samples.md) (TODO)
+  * [Components description](cpp-projects/_build/bin/exvr-designer/data/documentation/doc_content_components.md) (TODO)
+  * [Connectors description](cpp-projects/_build/bin/exvr-designer/data/documentation/doc_content_connectors.md) (TODO)
+  * [Scripting](cpp-projects/_build/bin/exvr-designer/data/documentation/doc_content_scripting.md) (TODO)
+  * [Visual scripting](cpp-projects/_build/bin/exvr-designer/data/documentation/doc_content_visual_scripting.md) (TODO)
+  * [Exp-launcher](cpp-projects/_build/bin/exvr-designer/data/documentation/doc_content_exp_launcher.md) (TODO)
+  * [Samples](cpp-projects/_build/bin/exvr-designer/data/documentation/doc_content_samples.md) (TODO)
 
 (TODO)
 
