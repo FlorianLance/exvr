@@ -2,7 +2,7 @@
 
 ## Summary
 
-* [Description](https://github.com/FlorianLance/exvr#description)
+* [Description](#description)
 * [Origin](https://github.com/FlorianLance/exvr#origin)
 * [Content](https://github.com/FlorianLance/exvr#content)
 * [How to install](https://github.com/FlorianLance/exvr#how-to-install)
