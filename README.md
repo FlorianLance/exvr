@@ -66,13 +66,15 @@ Go [here](https://github.com/FlorianLance/exvr/releases) to download the last pu
 
 ## How to compile from code
 
- * Visual Studio 2019 Version 16.10 is requested for compiling, you can get it [here](
+ * Visual Studio 2019 Version 16.10 (or newer) is requested for compiling, you can get it [here](
 https://visualstudio.microsoft.com/vs/community/). 
 
  * The project is using QtCreator qmake files and the Qt library (Qt 5.15), you can get the opensource version [here](https://www.qt.io/download-thank-you).
 
  * Clone the project.
- * Setup a QtCreator kit to use MSVC2019 (amd64) with the Qt 5.15 msvc2019_64 qmake exe file.
+ * Open a command prompt, go to exvr directory and execute install_dependencies.cmd script, this will download and install the various dependencies for this project and toolbox subproject
+ * Open QtCreator
+ * Setup a kit to use MSVC2019 (amd64) with the Qt 5.15 msvc2019_64 qmake exe file.
  * Open exvr-all-exvr.pro project file
     * Setup a release config with ./exvr as working directory
     * Wait for indexing process (only first time)
@@ -88,11 +90,7 @@ https://visualstudio.microsoft.com/vs/community/).
     * DLL projects
        * exvr\cpp-projects\_build\bin
           * exvr-export\exvr-export.dll (necessary for some ExVR components, copy it to exvr\unity-projects\exp-launcher for access from the unity editor of the ExVR exp launcher program and to exvr\cpp-projects\_build\bin\exvr-designer\exp-launcher for its built version)
-    
-          
- 
-
-(TODO)
+              
 
 ## Documentation
 
