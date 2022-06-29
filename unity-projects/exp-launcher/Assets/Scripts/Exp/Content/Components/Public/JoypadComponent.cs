@@ -97,7 +97,7 @@ namespace Ex{
         }
 
 
-        public override string format_frame_data_for_global_logger() {
+        public override string format_frame_data_for_global_logger(bool header) {
 
             // axis != 0 | buttons pressed 
 

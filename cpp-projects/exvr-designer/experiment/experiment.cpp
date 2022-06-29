@@ -2307,6 +2307,9 @@ void Experiment::new_experiment(){
     elements.push_back(std::make_unique<NodeFlow>()); // init with one node
     compute_loops_levels();
     update_conditions();
+
+    add_new_component(Component::Type::Global_logger, RowId{0});
+
     add_to_update_flag(UpdateAll | ResetUI);
 }
 

@@ -164,7 +164,6 @@ namespace Ex {
         public void stop_logging() {
 
             if (m_writingJob == null) {
-                ExVR.Log().error("Writing thread already stopped.");
                 return;
             }
 

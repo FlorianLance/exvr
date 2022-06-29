@@ -511,7 +511,7 @@ void GlobalLoggerInitConfigParametersW::insert_widgets(){
             m_p->expRoutineName(), m_p->expElementIteration()},LStretch{false})}, LStretch{false}, LMargins{false}));
     l->addWidget(F::gen(L::VB(),{ui::W::txt("Condition:"),F::gen(L::VB(),{m_p->expConditionName(), m_p->expConditionNbCalls(),
             m_p->expActionsCount(), m_p->expConnectorsCount(), m_p->expConnectionsCount(), m_p->expConditionDuration()},LStretch{false})}, LStretch{false}, LMargins{false}));
-    l->addWidget(F::gen(L::VB(),{ui::W::txt("Camera:"), F::gen(L::VB(),{m_p->expEyesCamera(), m_p->expCalibration(), m_p->expCameraRig()},LStretch{false})}, LStretch{false}, LMargins{false}));
+    l->addWidget(F::gen(L::VB(),{ui::W::txt("Cameras (position,rotation):"), F::gen(L::VB(),{m_p->expEyesCamera(), m_p->expCalibration(), m_p->expCameraRig()},LStretch{false})}, LStretch{false}, LMargins{false}));
     l->addWidget(F::gen(L::VB(),{ui::W::txt("Misc:"), F::gen(L::VB(),{m_p->expFramerate()},LStretch{false})}, LStretch{false}, LMargins{false}));
     l->addStretch(0);
 

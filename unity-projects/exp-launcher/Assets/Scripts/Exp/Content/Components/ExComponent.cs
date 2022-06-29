@@ -940,7 +940,7 @@ namespace Ex {
 
 
         // logging
-        public virtual string format_frame_data_for_global_logger() { return null; }
+        public virtual string format_frame_data_for_global_logger(bool header) { return null; }
         public virtual List<Tuple<double, double, string>> format_trigger_data_for_global_logger() { 
             // exp time / routine time / data
             return null; 

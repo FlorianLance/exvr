@@ -168,7 +168,7 @@ namespace Ex {
                 foreach (var line in Text.split_lines(initC.get<string>("keys_to_filter"), true)) {
                     KeyCode code;
                     var codeSstr = line.Contains("KeyCode.") ? line.Substring(8) : line;
-                    if (System.Enum.TryParse(codeSstr, out code)) {
+                    if (Enum.TryParse(codeSstr, out code)) {
                         keysToFIlter.Add(code);                        
                     }
                 }
@@ -288,10 +288,14 @@ namespace Ex {
         }
 
 
-        public override string format_frame_data_for_global_logger() {
+        public override string format_frame_data_for_global_logger(bool header) {
+
+            if (header) {
+                return "keys_pressed";
+            }
 
             if (triggerEvents == null) {
-                return null;
+                return "none";
             }
 
             List<Input.KeyboardButtonEvent> events = null;
@@ -308,7 +312,7 @@ namespace Ex {
             }
 
             if (events == null) {
-                return null;
+                return "none";
             }
 
             StringBuilder sb = new StringBuilder();
@@ -340,10 +344,8 @@ namespace Ex {
                 return null;
             }
 
-            //UnityEngine.Debug.LogError("events -> " + events.Count);
             List<Tuple<double, double, string>> triggersStr = events.Count > 0 ? new List<Tuple<double, double, string>>(events.Count) : null;
             foreach (var bEvent in events) {
-                //UnityEngine.Debug.LogError("-> " + bEvent.state + " " + bEvent.code);
                 triggersStr.Add(new Tuple<double, double, string>
                     (bEvent.triggeredExperimentTime,
                     bEvent.triggeredElementTime,

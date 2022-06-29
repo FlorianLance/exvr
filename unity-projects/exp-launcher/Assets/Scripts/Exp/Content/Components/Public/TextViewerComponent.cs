@@ -22,9 +22,6 @@
 ** SOFTWARE.                                                                      **
 ************************************************************************************/
 
-// system
-using System.Collections.Generic;
-
 // unity
 using UnityEngine;
 
@@ -39,6 +36,7 @@ namespace Ex{
         private GameObject m_textGO = null;
         private TextMeshProUGUI m_text = null;
 
+        #region ex_functions
         protected override bool initialize() {
 
             // init slots
@@ -73,6 +71,9 @@ namespace Ex{
             resize_container();
         }
 
+        #endregion
+
+        #region public_functions
         public void resize_container() {
 
             m_textGO.transform.position = Vector3.zero;
@@ -118,6 +119,8 @@ namespace Ex{
             // text
             currentC.update_text("t", m_text);
         }
+
+        #endregion
     }
 }
 

@@ -56,8 +56,8 @@ namespace Ex {
 
             resourceDirectoryPath = initC.get_resource_path(ResourcesManager.ResourceType.Directory, "directory");
             if (resourceDirectoryPath.Length == 0) {
-                log_error("No directory resource defined.");
-                return false;
+                resourceDirectoryPath = ExVR.Paths().designerLogDir;
+                log_warning(string.Format("No directory resource defined. Log path of designer will be used instead [{0}]", resourceDirectoryPath));                
             }
 
             return true;
@@ -182,6 +182,7 @@ namespace Ex {
 
                 if (logging.Value.components.Count > 0) {
 
+                    // count components to be logged
                     int countFrame = 0, countTrigger = 0;
                     foreach (var component in logging.Value.components) {
                         if (component.has_frame_logging()) {
@@ -193,6 +194,7 @@ namespace Ex {
                     }
                     if (countFrame > 0) {
 
+                        // init frame logger
                         string frameLoggerFilePath = string.Format("{0}/log_frame_{1}.{2}", 
                             globalDirectoryPath,
                             Enum.GetName(typeof(Category), logging.Key).ToLower(),
@@ -206,10 +208,23 @@ namespace Ex {
                         if (!logging.Value.frameFileLogger.open_file(frameLoggerFilePath)) {
                             return;
                         }
+
+                        // write headers
+                        List<string> headers = new List<string>();
+                        headers.Add("frame_id");
+
+                        foreach (var component in logging.Value.components) {
+                            var header = component.format_frame_data_for_global_logger(true);
+                            if(header != null) {
+                                headers.Add(header);
+                            }
+                        }
+                        logging.Value.frameFileLogger.write(string.Join(",", headers), true);
                     }
 
                     if (countTrigger > 0) {
 
+                        // init trigger logger
                         string triggerLoggerFilePath = string.Format("{0}/log_triggers_{1}.{2}",
                             globalDirectoryPath,
                             Enum.GetName(typeof(Category), logging.Key).ToLower(),
@@ -306,13 +321,11 @@ namespace Ex {
                 if (logging.Value.frameFileLogger != null) {
 
                     // retrieve data
-                    List<string> values = null;
+                    List<string> values = new List<string>();
+                    values.Add(Converter.to_string(time().frame_id()));
                     foreach(var component in logging.Value.components) {
-                        var log = component.format_frame_data_for_global_logger();
-                        if(log != null) {
-                            if(values == null) {
-                                values = new List<string>();
-                            }
+                        var log = component.format_frame_data_for_global_logger(false);
+                        if(log != null) {        
                             values.Add(log);
                         }
                     }
@@ -353,7 +366,7 @@ namespace Ex {
                             return 0;
                         });
 
-                        // format liens
+                        // format lines
                         System.Text.StringBuilder sb = new System.Text.StringBuilder();
                         foreach(var triggerLine in allTriggersLines) {
                             sb.AppendFormat("{0},{1},{2}\n",
@@ -368,19 +381,6 @@ namespace Ex {
 
                 }
             }
-
-            //log_message(currentRoutine.name + " " + currentCondition.name);
-
-
-            //ExVR.Scheduler().current_element_info().order();
-            //if(inputComponents != null) {
-            //    foreach(var inputComponent in inputComponents){
-            //        var formatedData = inputComponent.format_trigger_data_for_global_logger();
-            //        if(formatedData != null) {
-            //            log_message(formatedData);
-            //        }
-            //    }
-            //}
         }
 
         protected override void stop_experiment() {
@@ -401,11 +401,6 @@ namespace Ex {
                 }
             }
         }
-
-        #endregion
-
-        #region private_functions
-
 
         #endregion
     }
