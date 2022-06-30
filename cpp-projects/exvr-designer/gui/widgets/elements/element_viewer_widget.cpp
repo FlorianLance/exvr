@@ -26,6 +26,7 @@
 
 // local
 #include "experiment/global_signals.hpp"
+#include "gui/settings/display.hpp"
 
 // Qt
 #include <QFileDialog>
@@ -45,18 +46,74 @@ ElementViewerW::ElementViewerW(QTabWidget *twCurrentElement) :  m_layout(new QHB
     // init ui
     m_routineUI->setupUi(&m_routineW);
     m_loopUI->setupUi(&m_loopW);
+
+    twCurrentElement->setStyleSheet(
+        "QTabBar::tab:selected{color: white;background-color: rgb(45,45,45);}"
+//        "QTabWidget{background-color: rgb(45,45,45);}"
+        "QTabWidget::pane{background-color: rgb(45,45,45);}"
+    );
+
+    m_loopW.setStyleSheet(
+        display::Styles::qlabel() %
+        display::Styles::qcheck_box() %
+        display::Styles::qspin_box() %
+        display::Styles::qtext_edit()
+//        "QComboBox{color: black; background-color: rgb(189,189,189);}"
+//        "QComboBox QAbstractItemView {border: 1px solid darkgray; color: black; selection-color: black; background-color: lightGray; selection-background-color: white;}"
+//        QSL("QWidget{background-color: rgb(45,45,45);}") %
+//        QSL("QCheckBox{color: white; background-color: rgb(45,45,45);}")
+    );
+
+
 //    m_loopW.setStyleSheet(
-//        "QLabel{color: red;}"
-//        "QComboBox{color: red;}"
-//        "QCheckBox{color: red;}"
-//        "QSpinBox{color: red;}"
-//        "QTextEdit{color: red;}"
-//        "QTableWidget{color: red;}"
-//        "QPushButton{color: red;}"
-//        "QTabWidget{color: blue;}"
-//        "QTabBar::tab:selected, QTabBar::tab:hover{color: green;}"
-//        "QTabBar::tab:!selected{color: yellow;}"
+//        "QWidget{background-color: rgb(45,45,45);}"
+//        "QLabel{color: white;}"
+//        "QComboBox{color: black; background-color: rgb(189,189,189);}"
+//        "QComboBox QAbstractItemView {border: 2px solid darkgray;selection-background-color: lightgray;}"
+//        "QCheckBox{color: black; background-color: rgb(189,189,189);}"
+//        "QSpinBox{color: black; background-color: rgb(189,189,189);}"
+//        "QTextEdit{color: black; background-color: rgb(189,189,189);}"
+//        "QTableWidget{color: white;}"
+
+////        "QPushButton:enabled{border: 3px; color: black; background-color: rgb(189,189,189);}"
+////        "QPushButton:disabled{border: 3px; color: blue; background-color: red;}"
+////        "QPushButton:enabled:hover:pressed{border: 3px; color: red; background-color: rgb(0,45,45);}"
+////        "QPushButton:enabled:hover:!pressed{border: 3px; color: white; background-color: rgb(45,45,45);}"
+
 //    );
+
+//    QCheckBox::indicator:unchecked {
+//    image: url(:/images/checkbox_unchecked.png);
+//    }
+
+//    QCheckBox::indicator:unchecked:hover {
+//    image: url(:/images/checkbox_unchecked_hover.png);
+//    }
+
+//    QCheckBox::indicator:unchecked:pressed {
+//    image: url(:/images/checkbox_unchecked_pressed.png);
+//    }
+
+//    QCheckBox::indicator:checked {
+//    image: url(:/images/checkbox_checked.png);
+//    }
+
+//    QCheckBox::indicator:checked:hover {
+//    image: url(:/images/checkbox_checked_hover.png);
+//    }
+
+//    QCheckBox::indicator:checked:pressed {
+//    image: url(:/images/checkbox_checked_pressed.png);
+//    }
+
+//    QCheckBox::indicator:indeterminate:hover {
+//    image: url(:/images/checkbox_indeterminate_hover.png);
+//    }
+
+//    QCheckBox::indicator:indeterminate:pressed {
+//    image: url(:/images/checkbox_indeterminate_pressed.png);
+//    }
+
         // background: background-color: rgb(45,45,45);}"
 //        "QPushButton{background-color: red;}"
 //        "QPushButton:pressed{background-color: blue;}"
@@ -546,7 +603,7 @@ void ElementViewerW::update_loop_ui(Loop *loop){
     m_currentLoopIndex = ui->cbLoopStyle->currentIndex();
 
     // line edit
-    ui->laName->setText(loop->name());
+    ui->laName->setText(QSL("<b>") % loop->name() % QSL("</b>"));
 
     // labels
     ui->laSetList->setText(QSL("Set List (") % QString::number(tw->rowCount()) % QSL(" elements)"));

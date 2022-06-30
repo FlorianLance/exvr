@@ -49,7 +49,7 @@ trV.rotation = Quaternion.Euler(new Vector3(30f,0,0));
 trV.scale    = Vector3.one;
 modelConfig.set_transform("transform", trV);
 
-// # with a Transform
+// # a Transform
 Transform tr = someGameObject.transform;
 modelConfig.set_transform("transform", tr);
 
