@@ -29,6 +29,8 @@ cpp-projects/_build/bin/exvr-export
 cpp-projects/_build/bin/exvr-test
 cpp-projects/_build/bin/exvr-designer/*.exe
 cpp-projects/_build/bin/exvr-designer/*.dll
+cpp-projects/_build/bin/exvr-designer/*.lib
+cpp-projects/_build/bin/exvr-designer/*.exp
 cpp-projects/_build/bin/exvr-designer/styles
 cpp-projects/_build/bin/exvr-designer/printsupport
 cpp-projects/_build/bin/exvr-designer/platforms

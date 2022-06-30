@@ -25,9 +25,8 @@ SET "TOOLBOX_SCRIPT=%TOOLBOX_DIR%\install_dependencies.cmd"
 Rem Tools
 SET "UNZIP_EXE=%TOOLBOX_DIR%\tools\unzip.exe"
 
-cd %TOOLBOX_DIR%
-%TOOLBOX_SCRIPT%
-exit /b %ERRORLEVEL%
+
+
 
 Rem Debug paths
 rem echo %BUILD_ZIP%
@@ -146,3 +145,6 @@ IF EXIST %THIRDPARTY_DIR% (
 
 echo "ExVR dependencies installation finished."
 
+Rem Toolbox dependencies installation
+cd %TOOLBOX_DIR%
+%TOOLBOX_SCRIPT%
