@@ -97,7 +97,6 @@ void KeyboardInitConfigParametersW::update_with_info(QStringView id, QStringView
 
     if(id == QSL("buttons_state_info")){
 
-        qDebug() << id << value;
         QString keys;
         for(const auto &split : value.split(' ')){
             if(split.length() > 0){

@@ -218,12 +218,12 @@ struct Component {
         {T::Mark_to_clean,            C::Interaction, TO::B, CO::B, N, N, N, Y, N, N, P::M, R::OS, S::Exp, "Mark_to_clean"sv, "Mark to clean"sv, "MarkToClean"sv, "Mark_to_clean"sv},
         {T::Target_to_grab,           C::Interaction, TO::B, CO::B, N, N, N, Y, N, N, P::M, R::OS, S::Exp, "Target_to_grab"sv, "Target to grab"sv, "TargetToGrab"sv, "Grab_target"sv},
         // Model
-        {T::Cube,                     C::Model,       TO::V, CO::B, N, N, N, N, N, N, P::M, R::OS, S::Sta, "Cube"sv, "Cube"sv, "Cube"sv,"Cube"sv},
-        {T::Cylinder,                 C::Model,       TO::V, CO::B, N, N, N, N, N, N, P::M, R::OS, S::Sta, "Cylinder"sv, "Cylinder"sv, "Cylinder"sv,"Cylinder"sv},
-        {T::Landmark,                 C::Model,       TO::V, CO::B, N, N, N, N, N, N, P::M, R::OS, S::Sta, "Landmark"sv, "Landmark"sv, "Landmark"sv,"Landmark"sv},
+ /**OK*/{T::Cube,                     C::Model,       TO::V, CO::B, N, N, N, N, N, N, P::M, R::OS, S::Sta, "Cube"sv, "Cube"sv, "Cube"sv,"Cube"sv},
+ /**OK*/{T::Cylinder,                 C::Model,       TO::V, CO::B, N, N, N, N, N, N, P::M, R::OS, S::Sta, "Cylinder"sv, "Cylinder"sv, "Cylinder"sv,"Cylinder"sv},
+ /**OK*/{T::Landmark,                 C::Model,       TO::V, CO::B, N, N, N, N, N, N, P::M, R::OS, S::Sta, "Landmark"sv, "Landmark"sv, "Landmark"sv,"Landmark"sv},
         {T::Lines,                    C::Model,       TO::V, CO::C, N, N, N, N, N, N, P::M, R::OS, S::Exp, "Lines"sv, "Lines"sv, "Lines"sv,"Line"sv},
-        {T::Sphere,                   C::Model,       TO::V, CO::B, N, N, N, N, N, N, P::M, R::OS, S::Sta, "Sphere"sv, "Sphere"sv, "Sphere"sv,"Sphere"sv},
-        {T::Torus,                    C::Model,       TO::V, CO::B, N, N, N, N, N, N, P::M, R::OS, S::Sta, "Torus"sv, "Torus"sv, "Torus"sv,"Torus"sv},
+ /**OK*/{T::Sphere,                   C::Model,       TO::V, CO::B, N, N, N, N, N, N, P::M, R::OS, S::Sta, "Sphere"sv, "Sphere"sv, "Sphere"sv,"Sphere"sv},
+ /**OK*/{T::Torus,                    C::Model,       TO::V, CO::B, N, N, N, N, N, N, P::M, R::OS, S::Sta, "Torus"sv, "Torus"sv, "Torus"sv,"Torus"sv},
         // Network
         {T::Parallel_port_writer,     C::Network,     TO::N, CO::B, N, N, N, N, N, N, P::H, R::OS, S::Sta, "Parallel_port_writer"sv, "Parallel port writer"sv, "ParallelPortWriter"sv, "Parallel_port"sv},
         {T::Serial_port_reader,       C::Network,     TO::U, CO::B, N, N, N, N, N, Y, P::H, R::OS, S::Sta, "Serial_port_reader"sv, "Serial port reader"sv, "SerialPortReader"sv, "USB"sv},
@@ -499,7 +499,7 @@ struct Component {
 
     using TComponentSignals = std::tuple<
         CT,                             FunctionN,                     CNT,                            Doc>;
-    static constexpr TupleArray<68, TComponentSignals> componentsSignals = {{
+    static constexpr TupleArray<63, TComponentSignals> componentsSignals = {{
         TComponentSignals
         // Audio
         {T::AudioSource,               "sample value channel"sv,       CNT::id_any_t,                  "..."sv},
@@ -519,11 +519,6 @@ struct Component {
         {T::Joypad,                    "button"sv,                     CNT::joypad_button_event_t,     "Joypad button event"sv},
         {T::Joypad,                    "axis"sv,                       CNT::joypad_axis_event_t,       "Joypad axis event"sv},
         // Model
-        {T::Cube,                      "visibility changed"sv,         CNT::boolean_t,                 "Is triggered if the visibility of the component changed"sv},
-        {T::Cylinder,                  "visibility changed"sv,         CNT::boolean_t,                 "Is triggered if the visibility of the component changed"sv},
-        {T::Landmark,                  "visibility changed"sv,         CNT::boolean_t,                 "Is triggered if the visibility of the component changed"sv},
-        {T::Torus,                     "visibility changed"sv,         CNT::boolean_t,                 "Is triggered if the visibility of the component changed"sv},
-        {T::Sphere,                    "visibility changed"sv,         CNT::boolean_t,                 "Is triggered if the visibility of the component changed"sv},        
         // Network
         {T::Parallel_port_writer,      "trigger exp time"sv,           CNT::real_t,                    "..."sv},
         {T::Serial_port_writer,        "trigger exp time"sv,           CNT::real_t,                    "..."sv},

@@ -97,11 +97,11 @@ static constexpr TupleArray<DocSection::SizeEnum, TDocSection> sections = {{
     {DocSection::ContentSamples,                15, UiDocType::TextBrowser, "doc_content_samples.md"sv,                "[Content] Samples"sv,              },
 }};
 
-static auto all_sections() {
+[[maybe_unused]] static auto all_sections() {
     return sections.tuple_column<0>();
 }
 
-static auto all_sections_names() {
+[[maybe_unused]] static auto all_sections_names() {
     return sections.tuple_column<4>();
 }
 
@@ -158,7 +158,7 @@ public slots:
     void show_window();    
     void show_components_section(Component::Type type, bool resetWindow);
     void show_connectors_section(Connector::Type type, bool resetWindow);
-    void show_section(DocSection section, bool resetWindow);
+    void show_section(tool::ex::DocSection section, bool resetWindow);
 
 private slots:
 
@@ -181,6 +181,11 @@ private:
     SectionW *documentationsCategoriesW = nullptr;
     // sub categories
     std::unordered_map<DocSection, QWidget*> sectionsWidgets;
+
+    // buttons
+    QPushButton *genPb = nullptr;
+    QPushButton *openPb = nullptr;
+    QString currentDocPath = "";
 
     // components    
     SectionW *componentsCategoriesSectionW = nullptr;

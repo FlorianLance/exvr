@@ -45,6 +45,23 @@ ElementViewerW::ElementViewerW(QTabWidget *twCurrentElement) :  m_layout(new QHB
     // init ui
     m_routineUI->setupUi(&m_routineW);
     m_loopUI->setupUi(&m_loopW);
+//    m_loopW.setStyleSheet(
+//        "QLabel{color: red;}"
+//        "QComboBox{color: red;}"
+//        "QCheckBox{color: red;}"
+//        "QSpinBox{color: red;}"
+//        "QTextEdit{color: red;}"
+//        "QTableWidget{color: red;}"
+//        "QPushButton{color: red;}"
+//        "QTabWidget{color: blue;}"
+//        "QTabBar::tab:selected, QTabBar::tab:hover{color: green;}"
+//        "QTabBar::tab:!selected{color: yellow;}"
+//    );
+        // background: background-color: rgb(45,45,45);}"
+//        "QPushButton{background-color: red;}"
+//        "QPushButton:pressed{background-color: blue;}"
+//    );
+
     m_isiUI->setupUi(&m_isiW);
 
     init_no_selection_ui();

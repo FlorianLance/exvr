@@ -48,8 +48,7 @@ namespace Ex{
                 transform.localRotation = transformV.rotation;
                 transform.localScale = transformV.scale;
             });
-            // signals
-            add_signal("visibility changed");
+
 
             // generate
             // # mesh renderer
@@ -92,7 +91,6 @@ namespace Ex{
 
         protected override void set_visibility(bool visibility) {
             mr.enabled = visibility;
-            invoke_signal("visibility changed", visibility);
         }
 
         #endregion

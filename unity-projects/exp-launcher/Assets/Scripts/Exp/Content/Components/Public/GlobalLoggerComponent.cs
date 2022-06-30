@@ -245,10 +245,11 @@ namespace Ex {
 
         protected override void end_of_frame() {
 
+            var routine   = ExVR.Routines().current();
+            var condition = routine.current_condition();
+
             if (expFrameFileLogger != null) {
 
-                var routine        = ExVR.Routines().current();
-                var condition      = routine.current_condition();
                 var elementInfo    = ExVR.Scheduler().current_element_info();
                 var cameras        = ExVR.Display().cameras();
                 var eyeTr          = cameras.get_eye_camera_transform();
@@ -337,6 +338,8 @@ namespace Ex {
 
                 if (logging.Value.triggersFileLogger != null) {
 
+                    var idFrameStr = Converter.to_string(time().frame_id());
+
                     // retrieve data
                     List<Tuple<double, double, string>> allTriggersLines = null;
                     foreach (var component in logging.Value.components) {
@@ -369,10 +372,14 @@ namespace Ex {
                         // format lines
                         System.Text.StringBuilder sb = new System.Text.StringBuilder();
                         foreach(var triggerLine in allTriggersLines) {
-                            sb.AppendFormat("{0},{1},{2}\n",
+                            sb.AppendFormat("{0},{1},{2},{3},{4},{5}\n",
+                                idFrameStr,
+                                routine.name,
+                                condition.name,
                                 Converter.to_string(triggerLine.Item1),
                                 Converter.to_string(triggerLine.Item2),
-                                triggerLine.Item3);
+                                triggerLine.Item3
+                            );
                         }
 
                         // write data

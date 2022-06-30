@@ -644,7 +644,7 @@ void DesignerWindow::create_menu(){
         "QMenuBar{font: bold 12px;background-color: rgb(45,45,45); }"
         "QMenuBar::item {color:rgb(255,255,255); background-color: rgb(45,45,45);}"
         "QMenuBar::item:selected{background-color: rgb(255,255,255);color: rgb(0,0,0);}"
-        );
+    );
 
 
     QString menuStyleSheet =
