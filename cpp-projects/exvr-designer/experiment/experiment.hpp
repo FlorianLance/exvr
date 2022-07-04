@@ -249,7 +249,6 @@ public slots:
     void update_element_informations(ElementKey elementKey, QString informations);
 
     // # loop
-    void select_loop_set(ElementKey loopKey, QString setName);
     void add_loop_sets(ElementKey loopKey, QString sets, RowId id);
     void modify_loop_set_name(ElementKey loopKey, QString setName, RowId id);
     void modify_loop_set_occurrencies_nb(ElementKey loopKey, int setOccuranciesNb, RowId id);
@@ -263,7 +262,6 @@ public slots:
     void move_loop_set_up(ElementKey loopKey, RowId id);
     void move_loop_set_down(ElementKey loopKey, RowId id);
     void load_loop_sets_file(ElementKey loopKey, QString path);
-    void reload_loop_sets_file(ElementKey loopKey);
 
     // # isi
     void add_isi_interval(ElementKey isiKey, qreal value, RowId id);

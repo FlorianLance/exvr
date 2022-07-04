@@ -257,7 +257,7 @@ struct Component {
         {T::Fop_robot,                C::Tracking,    TO::U, CO::B, Y, N, N, Y, N, N, P::H, R::LN, S::Sta, "Fop_robot"sv, "FOP robot"sv, "FOPRobot"sv,"Fop_robot"sv},
         {T::Kinect_manager,           C::Tracking,    TO::U, CO::B, Y, N, N, Y, N, N, P::H, R::LN, S::Sta, "Kinect_manager"sv, "Kinect manager"sv, "KinectManager"sv,"Kinect"sv},
         {T::Kinect_body_tracking,     C::Tracking,    TO::B, CO::B, Y, N, N, Y, N, N, P::H, R::LN, S::Exp, "Kinect_body_tracking"sv, "Kinect body tracking"sv, "KinectBodyTracking"sv,"Kinect"sv},
-        {T::Leap_motion,              C::Tracking,    TO::U, CO::C, Y, N, N, Y, N, N, P::H, R::OS, S::Leg, "Leap_motion"sv, "LeapMotion"sv, "LeapMotion"sv, "Hand"sv},
+        {T::Leap_motion,              C::Tracking,    TO::U, CO::C, Y, Y, Y, Y, Y, N, P::H, R::OS, S::Sta, "Leap_motion"sv, "LeapMotion"sv, "LeapMotion"sv, "Hand"sv},
         {T::Leap_motion_arms_display, C::Tracking,    TO::V, CO::B, Y, N, N, Y, N, N, P::M, R::CS, S::Leg, "Leap_motion_arms_display"sv, "LeapMotion realistic arms"sv, "LeapMotionArmsDisplay"sv, "Hand"sv},
         {T::Leap_motion_tracking,     C::Tracking,    TO::V, CO::N, Y, N, N, Y, N, N, P::M, R::OS, S::Leg, "Leap_motion_tracking"sv, "LeapMotion tracking"sv, "LeapMotionTracking"sv, "Hand"sv},
         {T::Qualisys,                 C::Tracking,    TO::B, CO::B, Y, Y, Y, Y, Y, N, P::M, R::OS, S::Sta, "Qualisys_tracking"sv, "Qualisys tracking"sv, "QualisysTracking"sv, "Qualisys"sv},

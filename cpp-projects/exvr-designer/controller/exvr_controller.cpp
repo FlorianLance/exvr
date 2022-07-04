@@ -1119,7 +1119,6 @@ void ExVrController::generate_global_signals_connections(){
     connect(s, &GSignals::move_isi_interval_up_signal,                exp(), &EXP::move_isi_interval_up);
     connect(s, &GSignals::move_isi_interval_down_signal,              exp(), &EXP::move_isi_interval_down);
     // ## loop
-    connect(s, &GSignals::select_loop_set_signal,                     exp(), &EXP::select_loop_set);
     connect(s, &GSignals::modify_loop_nb_reps_signal,                 exp(), &EXP::modify_loop_nb_reps);
     connect(s, &GSignals::modify_loop_n_signal,                       exp(), &EXP::modify_loop_N);
     connect(s, &GSignals::modify_loop_no_following_value_signal,      exp(), &EXP::modify_loop_no_following_value);
@@ -1130,7 +1129,6 @@ void ExVrController::generate_global_signals_connections(){
     connect(s, &GSignals::move_loop_set_up_signal,                    exp(), &EXP::move_loop_set_up);
     connect(s, &GSignals::move_loop_set_down_signal,                  exp(), &EXP::move_loop_set_down);
     connect(s, &GSignals::load_loop_sets_file_signal,                 exp(), &EXP::load_loop_sets_file);
-    connect(s, &GSignals::reload_loop_sets_file_signal,               exp(), &EXP::reload_loop_sets_file);
     connect(s, &GSignals::add_loop_sets_signal,                       exp(), &EXP::add_loop_sets);
     // ## routine
     connect(s, &GSignals::set_routine_as_randomizer_signal,           exp(), &EXP::set_routine_as_randomizer);

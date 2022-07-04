@@ -1162,17 +1162,9 @@ void XmlIoManager::write_loop(const Loop *loop) {
     w->writeAttribute(QSL("noFollowingValues"), loop->noFollowingValues ? "1" : "0");
     w->writeAttribute(QSL("informations"), loop->informations);
 
-    if(loop->mode == Loop::Mode::File){
-        w->writeAttribute(QSL("path"), loop->filePath);
-        for(const auto &set : loop->fileSets){
-            write_set(set.get());
-        }
-
-    }else{
-        for(const auto &set : loop->sets){
-            write_set(set.get());
-        }
-    }           
+    for(const auto &set : loop->sets){
+        write_set(set.get());
+    }
 
     w->writeEndElement(); // /Loop
 }

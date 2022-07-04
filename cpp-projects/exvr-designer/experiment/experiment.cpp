@@ -681,7 +681,7 @@ void Experiment::move_routine_condition_down(ElementKey routineKey, RowId id){
 
     if(auto routine = get_routine(routineKey); routine != nullptr){
         routine->move_condition_down(id);
-        add_to_update_flag(UpdateRoutines);
+        add_to_update_flag(UpdateRoutines | UpdateSelection);
     }
 }
 
@@ -689,7 +689,7 @@ void Experiment::move_routine_condition_up(ElementKey routineKey, RowId id){
 
     if(auto routine = get_routine(routineKey); routine != nullptr){
         routine->move_condition_up(id);
-        add_to_update_flag(UpdateRoutines);
+        add_to_update_flag(UpdateRoutines | UpdateSelection);
     }
 }
 
@@ -1446,37 +1446,22 @@ void Experiment::select_action_config(ElementKey routineKey, ConditionKey condit
     }
 }
 
-void Experiment::select_loop_set(ElementKey loopKey, QString setName){
-
-    if(auto loop = get_loop(loopKey); loop != nullptr){
-        if(setName != loop->currentSetName){
-            loop->currentSetName = setName;
-            add_to_update_flag(UpdateSelection | UpdateFlow | UpdateRoutines);
-        }
-    }
-}
-
 void Experiment::add_loop_sets(ElementKey loopKey, QString sets, RowId id){
 
     if(auto loop = get_loop(loopKey); loop != nullptr){
-        if(loop->is_file_mode()){
-            QtLogger::error(QSL("[EXP] Cannot add new set when file mode is used."));
+
+        if(loop->is_default()){
+            loop->set_sets(sets.split("\n"));
         }else{
-
-            if(loop->is_default()){
-                loop->set_sets(sets.split("\n"));
-            }else{
-                loop->add_sets(sets.split("\n"), id);
-            }
-
-            update_conditions();
-            add_to_update_flag(UpdateSelection | UpdateFlow | UpdateRoutines);
+            loop->add_sets(sets.split("\n"), id);
         }
+
+        update_conditions();
+        add_to_update_flag(UpdateSelection | UpdateFlow | UpdateRoutines);
     }
 }
 
 void Experiment::modify_loop_set_name(ElementKey loopKey, QString setName, RowId id){
-
     if(auto loop = get_loop(loopKey); loop != nullptr){        
         if(loop->modify_set_name(setName,id)){
             update_conditions();
@@ -1486,13 +1471,8 @@ void Experiment::modify_loop_set_name(ElementKey loopKey, QString setName, RowId
 }
 
 void Experiment::modify_loop_set_occurrencies_nb(ElementKey loopKey, int setOccuranciesNb, RowId id){
-
     if(auto loop = get_loop(loopKey); loop != nullptr){
-        if(loop->is_file_mode()){
-            QtLogger::error(QSL("[EXP] Cannot modify loop set when file mode is used."));
-        }else{
-            loop->modify_set_occurencies_nb(setOccuranciesNb, id);            
-        }
+        loop->modify_set_occurencies_nb(setOccuranciesNb, id);
         add_to_update_flag(UpdateSelection);
     }else{
         QtLogger::error(QSL("[Experiment::modify_loop_set_occurrencies_nb] Cannot get loop from key [") % QString::number(loopKey.v) % QSL("]"));
@@ -1500,7 +1480,6 @@ void Experiment::modify_loop_set_occurrencies_nb(ElementKey loopKey, int setOccu
 }
 
 void Experiment::modify_loop_type(ElementKey loopKey, Loop::Mode mode){
-
     if(auto loop = get_loop(loopKey); loop != nullptr){
         loop->set_loop_type(mode);
         update_conditions();
@@ -1509,7 +1488,6 @@ void Experiment::modify_loop_type(ElementKey loopKey, Loop::Mode mode){
 }
 
 void Experiment::modify_loop_nb_reps(ElementKey loopKey, int nbReps){
-
     if(auto loop = get_loop(loopKey); loop != nullptr){
         loop->set_nb_reps(to_unsigned(nbReps));
     }
@@ -1529,67 +1507,44 @@ void Experiment::modify_loop_no_following_value(ElementKey loopKey, bool state){
 }
 
 void Experiment::remove_set(ElementKey loopKey, RowId id){
-
     if(auto loop = get_loop(loopKey); loop != nullptr){
-        if(loop->is_file_mode()){
-            QtLogger::error(QSL("[EXP] Cannot remove loop set when file mode is used."));
-        }else{
-
-            loop->remove_set(id);
-            update_conditions();
-        }
+        loop->remove_set(id);
+        update_conditions();
         add_to_update_flag(UpdateRoutines | UpdateSelection | UpdateFlow);
     }
 }
 
 void Experiment::sort_loop_sets_lexico(ElementKey loopKey){
-
     if(auto loop = get_loop(loopKey); loop != nullptr){
-        if(loop->is_file_mode()){
-            QtLogger::error(QSL("[EXP] Cannot sort loop set when file mode is used."));
-        }else{
-            loop->sort_sets_lexico();
-            update_conditions();
-            add_to_update_flag(UpdateRoutines | UpdateSelection | UpdateFlow);
-        }
+        loop->sort_sets_lexico();
+        update_conditions();
+        add_to_update_flag(UpdateRoutines | UpdateSelection | UpdateFlow);
     }
 }
 
 void Experiment::sort_loop_sets_num(ElementKey loopKey){
     if(auto loop = get_loop(loopKey); loop != nullptr){
-        if(loop->is_file_mode()){
-            QtLogger::error(QSL("[EXP] Cannot sort loop set when file mode is used."));
-        }else{
-            loop->sort_sets_num();
-            update_conditions();
-            add_to_update_flag(UpdateRoutines | UpdateSelection | UpdateFlow);
-        }
+        loop->sort_sets_num();
+        update_conditions();
+        add_to_update_flag(UpdateRoutines | UpdateSelection | UpdateFlow);
     }
 }
 
 void Experiment::move_loop_set_up(ElementKey loopKey, RowId id){
 
     if(auto loop = get_loop(loopKey); loop != nullptr){
-        if(loop->is_file_mode()){
-            QtLogger::error(QSL("[EXP] Cannot move loop set when file mode is used."));
-        }else{
-            loop->move_set_up(id);
-            update_conditions();
-            add_to_update_flag(UpdateRoutines | UpdateSelection | UpdateFlow);
-        }
+        loop->move_set_up(id);
+        update_conditions();
+        add_to_update_flag(UpdateRoutines | UpdateSelection | UpdateFlow);
     }
 }
 
 void Experiment::move_loop_set_down(ElementKey loopKey, RowId id){
 
     if(auto loop = get_loop(loopKey); loop != nullptr){
-        if(loop->is_file_mode()){
-            QtLogger::error(QSL("[EXP] Cannot move loop set when file mode is used."));
-        }else{
-            loop->move_set_down(id);
-            update_conditions();
-            add_to_update_flag(UpdateRoutines | UpdateSelection | UpdateFlow);
-        }
+        loop->move_set_down(id);
+        update_conditions();
+        add_to_update_flag(UpdateRoutines | UpdateSelection | UpdateFlow);
     }
 }
 
@@ -1601,21 +1556,6 @@ void Experiment::load_loop_sets_file(ElementKey loopKey, QString path){
             add_to_update_flag(UpdateRoutines | UpdateSelection | UpdateFlow);
         }else{
             QtLogger::error(QSL("[EXP] Cannot load loops set file with path: ") % path);
-        }
-    }
-}
-
-void Experiment::reload_loop_sets_file(ElementKey loopKey){
-
-    if(auto loop = get_loop(loopKey); loop != nullptr){
-        if(loop->filePath.length() == 0){
-            return;
-        }
-        if(loop->load_file(loop->filePath)){
-            update_conditions();
-            add_to_update_flag(UpdateRoutines | UpdateSelection | UpdateFlow);
-        }else{
-            QtLogger::error(QSL("[EXP] Cannot reload loops set file with path: ") % loop->filePath);
         }
     }
 }
@@ -1801,23 +1741,14 @@ void Experiment::update_conditions(){
         for(const auto& insideLoop : routine->insideLoops){
 
             auto loop = dynamic_cast<Loop*>(insideLoop);
-            if(loop->is_file_mode()){
 
-                std::vector<QString> loopFileSetsId;
-                loopFileSetsId.reserve(loop->fileSets.size());
-                for(const auto &s : loop->fileSets){
-                    loopFileSetsId.push_back(QString::number(s->key()));
-                }
-                setsId.push_back(std::move(loopFileSetsId));
-            }else{
-
-                std::vector<QString> loopSetsId;
-                loopSetsId.reserve(loop->sets.size());
-                for(const auto &s : loop->sets){
-                    loopSetsId.push_back(QString::number(s->key()));
-                }
-                setsId.push_back(std::move(loopSetsId));
+            std::vector<QString> loopSetsId;
+            loopSetsId.reserve(loop->sets.size());
+            for(const auto &s : loop->sets){
+                loopSetsId.push_back(QString::number(s->key()));
             }
+            setsId.push_back(std::move(loopSetsId));
+
         }
 
         // mix new conditions keys

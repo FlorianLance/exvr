@@ -80,18 +80,9 @@ Instance::Instance(const Randomizer *randomizer, const std::vector<FlowElement*>
 
         // fill list of sets
         std::vector<QStringView> setsOccurenciesStr;
-        if(loop->mode != Loop::Mode::File){
-
-            for(const auto &set : loop->sets){
-                for(size_t ii = 0; ii < set->occurencies; ++ii){
-                    setsOccurenciesStr.push_back(set->name);
-                }
-            }
-        }else{
-            for(const auto &set : loop->fileSets){
-                for(size_t ii = 0; ii < set->occurencies; ++ii){
-                    setsOccurenciesStr.push_back(set->name);
-                }
+        for(const auto &set : loop->sets){
+            for(size_t ii = 0; ii < set->occurencies; ++ii){
+                setsOccurenciesStr.push_back(set->name);
             }
         }
 
@@ -194,13 +185,6 @@ Instance::Instance(const Randomizer *randomizer, const std::vector<FlowElement*>
                 setsNames.reserve(totalNbReps);
                 for(auto set : everyNShuffleLoopSets[loop->key()]){
                     setsNames.push_back(set);
-                }
-
-            break;}case Loop::Mode::File:{
-
-                setsNames.reserve(totalNbReps);
-                for(size_t ii = 0; ii < totalNbReps; ++ii){
-                    setsNames.push_back(setsOccurenciesStr[ii%setsOccurenciesStr.size()]);
                 }
 
             break;}

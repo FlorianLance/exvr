@@ -61,7 +61,8 @@ public :
 public slots:
 
     void update_from_current_element(FlowElement *elem);
-    void update_set_settings(QTableWidgetItem *item);
+    void update_set_name(RowId id);
+    void update_set_occurencies(RowId id);
 
 private:
 
@@ -89,8 +90,9 @@ private:
 
     // widgets
     QWidget m_noSelectionW;
-    QLabel *m_allElementLa = nullptr;
-    QListWidget *m_allElementsLW = nullptr;
+    QTableWidget *m_noSelectionTW = nullptr;
+    QLabel *m_allElementLa = nullptr;    
+//    QListWidget *m_allElementsLW = nullptr;
     QWidget m_routineW;
     QWidget m_loopW;
     QWidget m_isiW;

@@ -120,7 +120,6 @@ signals:
     void clean_current_routine_condition_signal(tool::ex::ElementKey routineKey);
     void clean_all_routine_conditions_signal(tool::ex::ElementKey routineKey);
     // # loops
-    void select_loop_set_signal(tool::ex::ElementKey loopKey, QString set);
     void modify_loop_nb_reps_signal(tool::ex::ElementKey loopKey, int nbReps);
     void modify_loop_n_signal(tool::ex::ElementKey loopKey, int nbReps);
     void modify_loop_no_following_value_signal(tool::ex::ElementKey loopKey, bool state);
@@ -132,7 +131,6 @@ signals:
     void move_loop_set_up_signal(tool::ex::ElementKey loopKey, tool::ex::RowId idSet);
     void move_loop_set_down_signal(tool::ex::ElementKey loopKey, tool::ex::RowId idSet);
     void load_loop_sets_file_signal(tool::ex::ElementKey loopKey, QString filePath);
-    void reload_loop_sets_file_signal(tool::ex::ElementKey loopKey);
     // # isi
     void set_isi_randomize_signal(tool::ex::ElementKey isiKey, bool checked);
     void add_isi_interval_signal(tool::ex::ElementKey isiKey, double interval, tool::ex::RowId idInterval);

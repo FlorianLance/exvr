@@ -65,7 +65,7 @@
       <widget class="QPushButton" name="pbSetName">
        <property name="minimumSize">
         <size>
-         <width>50</width>
+         <width>0</width>
          <height>0</height>
         </size>
        </property>
@@ -77,7 +77,7 @@
     </layout>
    </item>
    <item>
-    <widget class="Line" name="line_2">
+    <widget class="Line" name="l2">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
@@ -137,11 +137,6 @@
        <item>
         <property name="text">
          <string>Shuffle [every N instances]</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>File</string>
         </property>
        </item>
       </widget>
@@ -212,7 +207,7 @@
     </widget>
    </item>
    <item>
-    <widget class="Line" name="line">
+    <widget class="Line" name="l1">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
@@ -273,7 +268,7 @@
     </layout>
    </item>
    <item>
-    <widget class="Line" name="line_3">
+    <widget class="Line" name="l3">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
@@ -287,7 +282,7 @@
        <height>300</height>
       </size>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout_2" stretch="1,1,0,0,10">
+     <layout class="QVBoxLayout" name="verticalLayout_2" stretch="1,1,0,10">
       <property name="spacing">
        <number>6</number>
       </property>
@@ -318,13 +313,6 @@
          <property name="bottomMargin">
           <number>2</number>
          </property>
-         <item row="0" column="0">
-          <widget class="QLabel" name="laNewSet">
-           <property name="text">
-            <string>Sets to add (one per line)</string>
-           </property>
-          </widget>
-         </item>
          <item row="0" column="2">
           <spacer name="horizontalSpacer">
            <property name="orientation">
@@ -338,14 +326,14 @@
            </property>
           </spacer>
          </item>
-         <item row="0" column="3">
+         <item row="0" column="5">
           <widget class="QPushButton" name="pbAdd">
            <property name="enabled">
             <bool>false</bool>
            </property>
            <property name="minimumSize">
             <size>
-             <width>30</width>
+             <width>0</width>
              <height>0</height>
             </size>
            </property>
@@ -354,8 +342,25 @@
            </property>
           </widget>
          </item>
-         <item row="1" column="0" colspan="4">
+         <item row="1" column="0" colspan="6">
           <widget class="QTextEdit" name="teAdd"/>
+         </item>
+         <item row="0" column="4">
+          <widget class="QSpinBox" name="sbRowId"/>
+         </item>
+         <item row="0" column="0">
+          <widget class="QLabel" name="laNewSet">
+           <property name="text">
+            <string>Sets to add (one per line)</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="3">
+          <widget class="QLabel" name="label_3">
+           <property name="text">
+            <string>Row:</string>
+           </property>
+          </widget>
          </item>
         </layout>
        </widget>
@@ -363,14 +368,7 @@
       <item>
        <widget class="QWidget" name="wChooseFile" native="true">
         <layout class="QGridLayout" name="gridLayout">
-         <item row="1" column="1">
-          <widget class="QPushButton" name="pbReload">
-           <property name="text">
-            <string>Reload</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="4" rowspan="4">
+         <item row="0" column="3" rowspan="4">
           <spacer name="horizontalSpacer_5">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
@@ -383,10 +381,10 @@
            </property>
           </spacer>
          </item>
-         <item row="1" column="0">
-          <widget class="QPushButton" name="pbChooseFile">
+         <item row="0" column="4">
+          <widget class="QPushButton" name="pbInitFromFile">
            <property name="text">
-            <string>Choose file</string>
+            <string>Init from file</string>
            </property>
           </widget>
          </item>
@@ -397,13 +395,6 @@
        <widget class="QLabel" name="laSetList">
         <property name="text">
          <string>Set list</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="laCurrentFile">
-        <property name="text">
-         <string>...</string>
         </property>
        </widget>
       </item>
@@ -422,15 +413,21 @@
          <number>1</number>
         </property>
         <property name="columnCount">
-         <number>2</number>
+         <number>5</number>
         </property>
         <attribute name="horizontalHeaderVisible">
-         <bool>false</bool>
+         <bool>true</bool>
         </attribute>
         <attribute name="horizontalHeaderCascadingSectionResizes">
          <bool>false</bool>
         </attribute>
+        <attribute name="horizontalHeaderMinimumSectionSize">
+         <number>10</number>
+        </attribute>
         <attribute name="horizontalHeaderHighlightSections">
+         <bool>false</bool>
+        </attribute>
+        <attribute name="horizontalHeaderStretchLastSection">
          <bool>false</bool>
         </attribute>
         <attribute name="verticalHeaderVisible">
@@ -442,105 +439,16 @@
         <row/>
         <column/>
         <column/>
+        <column/>
+        <column/>
+        <column/>
        </widget>
       </item>
      </layout>
     </widget>
    </item>
    <item>
-    <widget class="QFrame" name="fMove">
-     <property name="frameShape">
-      <enum>QFrame::StyledPanel</enum>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Raised</enum>
-     </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_6">
-      <item>
-       <spacer name="horizontalSpacer_6">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pbUp">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>50</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>Up</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pbRemove">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>50</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>Del</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pbDown">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>50</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>Down</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <spacer name="horizontalSpacer_7">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
-    <widget class="Line" name="line_4">
+    <widget class="Line" name="l4">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
