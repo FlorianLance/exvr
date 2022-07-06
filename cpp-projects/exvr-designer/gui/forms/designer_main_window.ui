@@ -277,7 +277,7 @@ QLabel{
         </widget>
        </item>
        <item>
-        <widget class="Line" name="line_2">
+        <widget class="Line" name="line1">
          <property name="styleSheet">
           <string notr="true">background-color: white;</string>
          </property>
@@ -294,7 +294,7 @@ QLabel{
         </widget>
        </item>
        <item>
-        <widget class="Line" name="line_5">
+        <widget class="Line" name="line2">
          <property name="styleSheet">
           <string notr="true">background-color: white;</string>
          </property>
@@ -311,7 +311,7 @@ QLabel{
         </widget>
        </item>
        <item>
-        <widget class="Line" name="line">
+        <widget class="Line" name="line3">
          <property name="styleSheet">
           <string notr="true">background-color: white;</string>
          </property>

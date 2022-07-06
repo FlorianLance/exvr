@@ -98,6 +98,9 @@ private:
     QWidget m_isiW;
     QTabWidget *m_toolBox = nullptr;
 
+
+
+
     ElementKey m_currentElementId = {-1};
 
 };

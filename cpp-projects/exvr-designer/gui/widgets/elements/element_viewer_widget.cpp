@@ -35,7 +35,6 @@
 #include <QMessageBox>
 #include <QInputDialog>
 #include <QTableWidget>
-//#include <QItemDelegate>
 #include <QRegExpValidator>
 
 using namespace tool::ex;
@@ -43,68 +42,25 @@ using namespace tool::ex;
 ElementViewerW::ElementViewerW(QTabWidget *twCurrentElement) :  m_layout(new QHBoxLayout(this)),
     m_routineUI(std::make_unique<Ui::RoutineW>()), m_loopUI(std::make_unique<Ui::LoopW>()), m_isiUI(std::make_unique<Ui::IsiW>()), m_toolBox(twCurrentElement){
 
-    twCurrentElement->setStyleSheet(
-        "QTabBar::tab:selected{color: white;background-color: rgb(45,45,45);}"
-        "QTabWidget{background-color: rgb(45,45,45);}"
-        "QTabWidget::pane{background-color: rgb(45,45,45);}"
-    );
-
-    QString button =
-        "QPushButton {border-color: black; background-color: rgb(189,189,189);}"
-        "QPushButton:hover {border-color: rgb(92,142,188); background-color: rgb(143,187,188);}"
-        "QPushButton:pressed {border-color: rgb(92,142,188); background-color: rgb(92,142,188);}";
-    QString combo =
-        "QComboBox{background-color: rgb(189,189,189);}"
-        "QComboBox QAbstractItemView{background-color: rgb(189,189,189);}";
-    QString spin = "QSpinBox{background-color: rgb(189,189,189);}";
-    QString table = "QTableWidget{background-color: rgb(45,45,45);}";
-    QString list =
-        "QListWidget{background-color: rgb(45,45,45);}"
-        "QListWidget:item{background-color: rgb(189,189,189);}"
-        "QListWidget:item:selected{background-color: rgb(143,187,188);}";
-
-    QString header = "QHeaderView::section{background-color: rgb(45,45,45); color: white; font: bold;}";
-    QString line = "QFrame {border: none;border-bottom: 1px solid white;}";
-
-    QString style = QSL("QWidget{background-color: rgb(45,45,45);}") %
-        display::Styles::qlabel() %
-        display::Styles::qcheck_box() %
-        display::Styles::qtext_edit() %
-        button %
-        combo %
-        spin %
-        table % list %
-        header;
-
     // init ui and styles
     // # rouine
     m_routineUI->setupUi(&m_routineW);
-    m_routineW.setStyleSheet(style);
-    m_routineUI->l1->setStyleSheet(line);
-    m_routineUI->l2->setStyleSheet(line);
     init_routine_ui();
     // # loop
     m_loopUI->setupUi(&m_loopW);
-    m_loopUI->l1->setStyleSheet(line);
-    m_loopUI->l2->setStyleSheet(line);
-    m_loopUI->l3->setStyleSheet(line);
-    m_loopUI->l4->setStyleSheet(line);
-    m_loopW.setStyleSheet(style);
     init_loop_ui();
     // # ISI
     m_isiUI->setupUi(&m_isiW);
     init_isi_ui();
     // # no selection
     init_no_selection_ui();
-    m_noSelectionW.setStyleSheet(style);
 
     m_toolBox->removeTab(0);
     m_toolBox->insertTab(0, &m_noSelectionW, QSL("No selection"));
 }
 
 void ElementViewerW::reset(){
-
-
+    // ...
 }
 
 void ElementViewerW::update_from_current_element(FlowElement *elem){
@@ -182,11 +138,12 @@ void ElementViewerW::init_no_selection_ui(){
     vbl->addWidget(m_allElementLa = new QLabel("Current flow elements (0): "));
     vbl->addWidget(m_noSelectionTW = new QTableWidget());
 
+    m_noSelectionTW->verticalHeader()->setDefaultSectionSize(20);
     m_noSelectionTW->verticalHeader()->hide();
     m_noSelectionTW->setColumnCount(4);
     m_noSelectionTW->horizontalHeader()->setMinimumSectionSize(10);
     m_noSelectionTW->horizontalHeader()->setStretchLastSection(false);
-    m_noSelectionTW->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeMode::Fixed);
+    m_noSelectionTW->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeMode::Fixed);    
     m_noSelectionTW->setColumnWidth(0, 30); // id
     m_noSelectionTW->setColumnWidth(1, 20); // type
     m_noSelectionTW->setColumnWidth(2, 100); // name
@@ -262,20 +219,6 @@ void ElementViewerW::init_routine_ui(){
     ui->laName->setStyleSheet("QLabel{font: bold;}");
 }
 
-//class Delegate : public QItemDelegate {
-//public:
-//    QWidget* createEditor(QWidget *parent, const QStyleOptionViewItem &, const QModelIndex & index) const{
-
-//        QLineEdit *lineEdit = new QLineEdit(parent);
-//        if(index.column() == 0){
-////            lineEdit->setValidator(new QRegExpValidator(QRegExp("[^-\n\r]")));
-////            lineEdit->setValidator(new QRegExpValidator(QRegExp("-{0}")));
-//        }else if(index.column() == 1){
-//            lineEdit->setValidator(new QIntValidator(0, 10000));
-//        }
-//        return lineEdit;
-//    }
-//};
 
 void ElementViewerW::init_loop_ui(){
 
@@ -395,6 +338,7 @@ void ElementViewerW::init_isi_ui(){
     });
 }
 
+
 void ElementViewerW::update_no_selection_ui(){
 
 
@@ -403,7 +347,8 @@ void ElementViewerW::update_no_selection_ui(){
 
     m_noSelectionTW->blockSignals(true);
     m_noSelectionTW->clear();
-    m_noSelectionTW->setRowCount(static_cast<int>(exp->elements.size()));
+
+    m_noSelectionTW->setRowCount(static_cast<int>(exp->nb_elements_no_nodes()));
     m_noSelectionTW->setHorizontalHeaderLabels({"Id","T","Name","Loop level"});
 
     QImage rImage = QImage(20,20, QImage::Format_BGR888);
@@ -414,17 +359,19 @@ void ElementViewerW::update_no_selection_ui(){
     lImage.fill(Qt::darkBlue);
     QPixmap lIcon = QPixmap::fromImage(lImage);
 
+
     size_t row = 0;
     for(const auto &element : exp->elements){
-        using enum FlowElement::Type;
-//        QString base = QSL(" [ID:") % QString::number(element->key()) %
-//                    QSL("] [L:") % QString::number(element->insideLoops.size()) % QSL("]");
 
+        using enum FlowElement::Type;
         if(element->type() == Node){
             continue;
         }
 
-        m_noSelectionTW->setCellWidget(row, 0, new QLabel(QString::number(row)));
+        auto laId = new QLabel(QString::number(row));
+        laId->setStyleSheet(display::Styles::qtable_qlabel());
+        laId->setAlignment(Qt::AlignCenter);
+        m_noSelectionTW->setCellWidget(row, 0, laId);
 
         QString extra;
 
@@ -446,8 +393,13 @@ void ElementViewerW::update_no_selection_ui(){
         }
 
         m_noSelectionTW->setCellWidget(row, 1, ic);
-        m_noSelectionTW->setCellWidget(row, 2, new QLabel(element->name()%extra));
-        m_noSelectionTW->setCellWidget(row, 3, new QLabel(QString::number(element->insideLoops.size())));
+        auto laName =new QLabel(element->name()%extra);
+        laName->setStyleSheet(display::Styles::qtable_qlabel());
+        m_noSelectionTW->setCellWidget(row, 2, laName);
+        auto laIL = new QLabel(QString::number(element->insideLoops.size()));
+        laIL->setStyleSheet(display::Styles::qtable_qlabel());
+        laIL->setAlignment(Qt::AlignCenter);
+        m_noSelectionTW->setCellWidget(row, 3, laIL);
 
         ++row;
     }

@@ -60,11 +60,30 @@ DesignerWindow::DesignerWindow(bool lncoComponents, QWidget *parent) : QMainWind
     m_ui.setupUi(this);        
     setAcceptDrops(true);
 
+
+//    QString aaa =
+//        "QTabBar::tab:selected, QTabBar::tab:hover {"
+//        "background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,"
+//        "stop: 0 #fafafa, stop: 0.4 #f4f4f4,"
+//        "stop: 0.5 #e7e7e7, stop: 1.0 #fafafa);"
+//        "}"
+
+//        "QTabBar::tab:selected {"
+//        "border-color: #9B9B9B;"
+//        "border-bottom-color: #A287CB;" /* same as pane color */
+//        "}"
+//        "QTabBar::tab:!selected {"
+//        "margin-top: 2px;" /* make non-selected tabs look smaller */
+//        "}";
+
     // create widgets
     this->setStyleSheet(
-        "QMainWindow{background-color: #c0c0c0;}"
-        "QMainWindow::separator{background-color: #82a8bc;  width: 5px}"
+        QSL("QMainWindow{background-color: #c0c0c0;}"
+            "QMainWindow::separator{background-color: #82a8bc;  width: 5px}")
+
+//        % display::Styles::global()
     );
+
     create_flow_diagram();
     create_logger();
     create_components_manager(lncoComponents);    
@@ -638,6 +657,7 @@ void DesignerWindow::create_actions(){
 
 }
 
+
 void DesignerWindow::create_menu(){
 
     menuBar()->setStyleSheet(
@@ -646,15 +666,15 @@ void DesignerWindow::create_menu(){
         "QMenuBar::item:selected{background-color: rgb(255,255,255);color: rgb(0,0,0);}"
     );
 
-
-    QString menuStyleSheet =
-        "QMenu{font: 12px;background-color: rgb(45,45,45); }"
-        "QMenu::item {color:rgb(255,255,255); background-color: rgb(45,45,45);}"
-        "QMenu::item:selected {color:rgb(0,0,0); background-color: rgb(255,255,255);}";
+//    QString menuStyleSheet =
+//        "QMenu{font: 12px;background-color: rgb(45,45,45); }"
+//        "QMenu::item {color:rgb(255,255,255); background-color: rgb(45,45,45);}"
+//        "QMenu::item:selected {color:rgb(0,0,0); background-color: rgb(255,255,255);}";
 
     // file
     QMenu *menu = menuBar()->addMenu(tr("&File"));
-    menu->setStyleSheet(menuStyleSheet);
+    menuBar()->setStyleSheet(display::Styles::menu());
+//    menu->setStyleSheet(display::Styles::menu());
     menu->addAction(&m_newExperimentAct);
     menu->addSeparator();
     menu->addAction(&m_saveExperimentAct);
@@ -669,7 +689,7 @@ void DesignerWindow::create_menu(){
     menu->addAction(&m_exitExVRAct);
     // experiment
     menu = menuBar()->addMenu(tr("&Exp launcher"));
-    menu->setStyleSheet(menuStyleSheet);
+//    menu->setStyleSheet(display::Styles::menu());
     menu->addAction(&m_startExperimentLauncherAct);
     menu->addAction(&m_exitExpLauncherAct);
     menu->addSeparator();
@@ -683,18 +703,18 @@ void DesignerWindow::create_menu(){
     menu->addAction(&m_switchModeAct);
     // resources
     menu = menuBar()->addMenu(tr("&Resources"));
-    menu->setStyleSheet(menuStyleSheet);
+//    menu->setStyleSheet(display::Styles::menu());
     menu->addAction(&m_showResourcesManagerDialogAct); 
     menu->addAction(&m_showCSharpScriptDirectoryAct);
     // logs
     menu = menuBar()->addMenu(tr("&Logs"));
-    menu->setStyleSheet(menuStyleSheet);
+//    menu->setStyleSheet(display::Styles::menu());
     menu->addAction(&m_openLogsDirectoryAct);
     menu->addAction(&m_openCurrentDesignerLogAct);
     menu->addAction(&m_openCurrentExpLauncherLogAct);
     // debug
     menu = menuBar()->addMenu(tr("&Debug"));
-    menu->setStyleSheet(menuStyleSheet);
+//    menu->setStyleSheet(display::Styles::menu());
     menu->addAction(&m_saveExpToTempAct);
     menu->addSeparator();
     menu->addAction(&m_openTempExpAct);
@@ -707,18 +727,18 @@ void DesignerWindow::create_menu(){
     menu->addAction(&m_fullLoadWith0DurationAct);
     // doc
     menu = menuBar()->addMenu(tr("&?"));
-    menu->setStyleSheet(menuStyleSheet);
+//    menu->setStyleSheet(display::Styles::menu());
     menu->addAction(&m_showDocumentationEditorAct);
     menu->addAction(&m_aboutAct);
 }
 
+
 void DesignerWindow::create_toolbar(){
 
     QToolBar* tb = addToolBar(tr("Toolbar"));
-    tb->setStyleSheet("QToolBar {background-color: rgb(45,45,45);}QToolButton:hover {background-color: lightgray; }");
+
+    tb->setStyleSheet(display::Styles::toolbar());
     tb->setFixedHeight(45);
-//    ui->mainToolBar->setStyleSheet("QToolButton:hover {background-color: darkgray; }"
-//                                   " QToolBar {background: rgb(30, 30, 30) }");
 
     tb->setMovable(false);
     tb->setFloatable(false);
@@ -833,11 +853,13 @@ void DesignerWindow::create_toolbar(){
         tb->addWidget(&m_showHelpButton);
 }
 
+
 void DesignerWindow::create_logger(){
+
 
     m_tbLogs = new QTextBrowser();
     m_tbLogs->zoomIn(2);
-    m_tbLogs->setStyleSheet("background-color: rgb(45,45,45); font: 11px");
+    m_tbLogs->setStyleSheet( display::Styles::logger());
     m_tbLogs->setAcceptDrops(false);
     m_tbLogs->setOpenLinks(false);
     m_tbLogs->setUndoRedoEnabled(false);
@@ -870,15 +892,14 @@ void DesignerWindow::create_logger(){
 
     });
 
+
     m_dwLogs = new QDockWidget(this);
     m_dwLogs->setWindowTitle("Logs");
     using QWA = Qt::DockWidgetArea;
     using QWF = QDockWidget::DockWidgetFeature;
     m_dwLogs->setFeatures(QWF::DockWidgetFloatable | QWF::DockWidgetMovable);
     m_dwLogs->setAllowedAreas(QWA::LeftDockWidgetArea | QWA::RightDockWidgetArea | QWA::TopDockWidgetArea | QWA::BottomDockWidgetArea);
-    m_dwLogs->setStyleSheet(
-        "QDockWidget{background-color: rgb(45, 45, 45);color: white;font: bold 14px;}"
-    );
+    m_dwLogs->setStyleSheet(display::Styles::docks());
     addDockWidget(Qt::DockWidgetArea::LeftDockWidgetArea,m_dwLogs);
     setCorner(Qt::Corner::TopLeftCorner, Qt::DockWidgetArea::LeftDockWidgetArea);
     m_dwLogs->setWidget(m_tbLogs);
@@ -904,11 +925,12 @@ void DesignerWindow::create_components_manager(bool lncoComponents){
     using QWF = QDockWidget::DockWidgetFeature;
     m_dwComponents->setFeatures(QWF::DockWidgetFloatable | QWF::DockWidgetMovable);
     m_dwComponents->setAllowedAreas(QWA::LeftDockWidgetArea | QWA::RightDockWidgetArea);
-    m_dwComponents->setStyleSheet("QDockWidget{background-color: rgb(45, 45, 45);color: white;font: bold 14px;}");
+    m_dwComponents->setStyleSheet(display::Styles::docks());
     addDockWidget(Qt::DockWidgetArea::LeftDockWidgetArea,m_dwComponents);
     setCorner(Qt::Corner::BottomLeftCorner, Qt::DockWidgetArea::LeftDockWidgetArea);
     m_dwComponents->setWidget(m_componentsW.get());
 }
+
 
 void DesignerWindow::create_routines_manager(){
 
@@ -924,6 +946,8 @@ void DesignerWindow::create_routines_manager(){
 void DesignerWindow::create_element_viewer(){
 
     QTabWidget *twSelectedElement = new QTabWidget();
+    twSelectedElement->setStyleSheet(display::Styles::global());
+
     m_elementViewerW = std::make_unique<ElementViewerW>(twSelectedElement);
 
     m_dwElementViewer = new QDockWidget(this);
@@ -932,9 +956,7 @@ void DesignerWindow::create_element_viewer(){
     using QWF = QDockWidget::DockWidgetFeature;
     m_dwElementViewer->setFeatures(QWF::DockWidgetFloatable | QWF::DockWidgetMovable);
     m_dwElementViewer->setAllowedAreas(QWA::LeftDockWidgetArea | QWA::RightDockWidgetArea);
-    m_dwElementViewer->setStyleSheet(
-        "QDockWidget{background-color: rgb(45, 45, 45);color: white;font: bold 14px;}"
-    );
+    m_dwElementViewer->setStyleSheet(display::Styles::docks());
     addDockWidget(Qt::DockWidgetArea::RightDockWidgetArea,m_dwElementViewer);
     m_dwElementViewer->setWidget(twSelectedElement);
 }

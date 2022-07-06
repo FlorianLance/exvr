@@ -37,23 +37,31 @@ namespace tool::ex::display {
 
 struct Colors{
 
-    static inline QString blackHex     = "#000000";
-    static inline QString whiteHex     = "#FFFFFF";
-    static inline QString greenHex     = "#279340";
-    static inline QString navyBlueHex  = "#427B89";
-    static inline QString orangeHex    = "#FF8C00";
-    static inline QString lightGrayHex = "#BDBDBD";
-    static inline QString darkGrayHex  = "#2D2D2D";
+    static inline QString whiteH     = "#FFFFFF";
+    static inline QString lightGrayH = "#BDBDBD";
+    static inline QString darkGrayH  = "#2D2D2D";
+    static inline QString blackH     = "#000000";
+
+    static inline QString redH       = "#FF0000";
+    static inline QString greenH     = "#279340";
+    static inline QString orangeH    = "#FF8C00";
+
+    static inline QString lightBlueH = "#8FBBBC";
+    static inline QString blueH      = "#5C8EBC";
+    static inline QString navyBlueH  = "#427B89";
 
     using QC = QColor;
-    static inline QC blackC     = QC(blackHex);
-    static inline QC whiteC     = QC(whiteHex);
-    static inline QC greenC     = QC(greenHex);
-    static inline QC navyBlueC  = QC(navyBlueHex);
-    static inline QC orangeC    = QC(orangeHex);
-    static inline QC lightGrayC = QC(lightGrayHex);
-    static inline QC darkGrayC  = QC(darkGrayHex);
+    static inline QC whiteC     = QC(whiteH);
+    static inline QC lightGrayC = QC(lightGrayH);
+    static inline QC darkGrayC  = QC(darkGrayH);
+    static inline QC blackC     = QC(blackH);
 
+    static inline QC greenC     = QC(greenH);
+    static inline QC orangeC    = QC(orangeH);
+
+    static inline QC lightBlueC = QC(lightBlueH);
+    static inline QC blueC      = QC(blueH);
+    static inline QC navyBlueC  = QC(navyBlueH);
 
     struct FlowElementColors{
         QC selectedTextColor;
@@ -118,40 +126,75 @@ struct Styles{
 
     using C = Colors;
 
-    /**
-     * @brief Return stylesheet rgb color format string
-     */
-    static inline QString sc(const QColor &col){
-        return QString("rgb(%1,%2,%3)").arg(col.red(), col.green(), col.blue());
-    }
+    struct OName{QString value;};
+    struct BName{QString value;};
+    struct FCol{QString hexValue;};
+    struct BGCol{QString hexValue;};
+    struct BDCol{QString hexValue;};
 
-    static inline QString qlabel(QString objectName ="", QString colorHex = C::whiteHex, QString backgroundColorHex = C::darkGrayHex){
-        return QString("QLabel%1{color: %2; background-color: %3;}").arg((objectName.length() > 0 ? QString("[objectName=%1]").arg(objectName) : ""),
-            colorHex,backgroundColorHex
-        );
-    }
+    static QString object_name_b(const OName &objectName);
+    static QString object_name_contains_b(const BName &baseName);
+    static QString front_color_b(const FCol &fCol);
+    static QString background_color_b(const BGCol &bgCol);
+    static QString border_color(const BDCol &bdCol);
 
-    static inline QString qcheck_box(QString objectName ="", QString colorHex = C::whiteHex, QString backgroundColorHex = C::darkGrayHex){
-        return QString("QCheckBox%1{color: %2; background-color: %3;}").arg((objectName.length() > 0 ? QString("[objectName=%1]").arg(objectName) : ""),
-            colorHex, backgroundColorHex
-        );
-    }
+    static QString font_family(QString family);
+    static QString font_size(int fontSize = -1);
+    static QString font_style(QFont::Style style = QFont::Style::StyleNormal);
+    static QString font_weight(QFont::Weight weight);
 
-//    static inline QString qspin_box(QString objectName ="", QString colorHex = C::whiteHex, QString backgroundColorHex = C::darkGrayHex){
-//        return QString("QSpinBox%1{color: %2; background-color: %3;}").arg((objectName.length() > 0 ? QString("[objectName=%1]").arg(objectName) : ""),
-//            colorHex, backgroundColorHex
-//        );
-//    }
+    static QString qwidget(OName oName, BGCol bgCol);
+    static QString qlabel(OName oName, FCol fCol, BGCol bgCol);
+    static QString qcheck_box(OName oName, FCol fCol, BGCol bgCol);
+    static QString qspin_box(OName oName, BGCol bgCol);
+    static QString qdoublespin_box(OName oName, BGCol bgCol);
+    static QString qabstract_item_view(OName oName, BGCol bgCol);
+    static QString qcombo_box(OName oName, BGCol bgCol);
+    static QString qtext_edit(OName oName, FCol fCol, BGCol bgCol);
+    static QString qtable_widget(OName oName, BGCol bCol);
+    static QString qheader_view(OName oName, BGCol bgCol, FCol fCol, QFont::Weight weight = QFont::Weight:: Bold);
+    static QString qline(BName bName, BDCol bdColor);
+    static QString qtab_widget(OName oName, BGCol bgColor);
+    static QString qlist_widget(OName oName, BGCol bColor, BGCol bItemColor, BGCol bSelectedItemColor);
+    static QString qtoolbar(OName oName, BGCol bgColor);
+    static QString qtoolbutton(OName oName, BGCol bgColor);
 
-    static inline QString qtext_edit(QString objectName ="", QString colorHex = C::blackHex, QString backgroundColorHex = C::lightGrayHex){
-        return QString("QTextEdit%1{color: %2; background-color: %3;}").arg((objectName.length() > 0 ? QString("[objectName=%1]").arg(objectName) : ""),
-            colorHex, backgroundColorHex
-        );
-    }
+    static QString qpush_button(
+        OName oName,
+        BGCol bgColor, BGCol bgHoverColor, BGCol bgPressedColor,
+        BDCol bdColor, BDCol bdHoverColor, BDCol bdPressedColor);
 
-//    static inline QString qlabel    = QString("QLabel{color: %1}").arg(sc(C::whiteC));
-//    static inline QString qTextEditStyle = QString("QTextEdit{color: %1; background-color: %2;}").arg(sc(C::blackC),sc(C::lightGrayC));
+    static QString qtabbar(
+        OName oName,
+        BGCol bgColor, FCol fColor,
+        BGCol bgHoverColor, FCol fHoverColor,
+        BGCol bgSelectedColor, FCol fSelectedColor,
+        BGCol bgSelectedHoverColor, FCol fSelectedHoverColor);
 
+    static QString qtext_browser(
+        OName oName,
+        BGCol bgColor,
+        FCol fColor,
+        QFont::Weight w = QFont::Weight::Normal, int sizeFont = -1);
+
+    static QString qdock_widget(
+        OName oName,
+        BGCol bgColor,
+        FCol fColor,
+        QFont::Weight w = QFont::Weight::Normal, int sizeFont = -1);
+
+    static QString qmenu(
+        OName oName,
+        FCol fColor, FCol fItemColor, FCol fSelectedItemColor,
+        BGCol bgColor, BGCol bgItemColor, BGCol bgSelectedItemColor,
+        int sizeFont);
+
+    static QString qtable_qlabel();
+    static QString toolbar();
+    static QString logger();
+    static QString docks();
+    static QString menu();
+    static QString global();
 };
 
 }

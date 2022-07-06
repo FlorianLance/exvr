@@ -86,7 +86,7 @@
     </layout>
    </item>
    <item>
-    <widget class="Line" name="l1">
+    <widget class="Line" name="line1">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
@@ -193,7 +193,7 @@
     </widget>
    </item>
    <item>
-    <widget class="Line" name="l2">
+    <widget class="Line" name="line2">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
@@ -202,7 +202,7 @@
    <item>
     <widget class="QLabel" name="label">
      <property name="text">
-      <string>Infomations:</string>
+      <string>Informations displayed from tooltip:</string>
      </property>
     </widget>
    </item>

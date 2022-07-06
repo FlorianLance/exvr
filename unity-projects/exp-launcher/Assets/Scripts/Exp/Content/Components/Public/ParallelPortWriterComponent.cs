@@ -48,9 +48,6 @@ namespace Ex{
         //private bool m_x32Mode = false;
         private bool m_int16Mode = false;
         private bool m_available = false;
-
-        private float m_pulseTime = 1f;
-        private string m_port = "0x378";
         private static readonly string m_triggerExpTimeSignalStr = "trigger exp time";
 
         protected override bool initialize() {
@@ -79,40 +76,26 @@ namespace Ex{
    
         public IEnumerator send_pulse(int value) {
             write(value);
-            yield return new WaitForSeconds(m_pulseTime);
+            yield return new WaitForSeconds((float)currentC.get<double>("pulse_time"));
             write(0);
         }
 
-
-        public override void update_from_current_config() {
-            m_pulseTime = (float)currentC.get<double>("pulse_time");
-            m_port      = currentC.get<string>("port");
-        }
-
-        protected override void update_parameter_from_gui(string updatedArgName) {
-            update_from_current_config();
-        }
-
-
         private void write(int value, string port) {
+       
+            if (m_int16Mode) {
+                dl_port_write_port_ushort_x64(Convert.ToUInt16(port, 16), (ushort)value);
+            } else {
+                dl_port_write_port_ulong_x64(Convert.ToUInt32(port, 16), (uint)value);
+            }
+        }
+         public void write(int value) {
 
             if (!m_available) {
                 return;
             }
-       
-            if (m_int16Mode) {
 
-                dl_port_write_port_ushort_x64(Convert.ToUInt16(m_port, 16), (ushort)value);
-
-            } else {
-
-                dl_port_write_port_ulong_x64(Convert.ToUInt32(m_port, 16), (uint)value);
-            }
-
-        }
-         public void write(int value) {            
             double expTime = time().ellapsed_exp_ms();
-            write(value, m_port);
+            write(value, currentC.get<string>("port"));
             invoke_signal(m_triggerExpTimeSignalStr, expTime);
         }
     }

@@ -170,6 +170,17 @@ void Loop::add_sets(QStringList setsName, RowId id){
 
 void Loop::remove_set(RowId id){
     sets.erase(std::begin(sets) + id.v);
+
+    for(auto &set : sets){
+        if(set->occurencies > 0){
+            return;
+        }
+    }
+
+    if(sets.size() > 0){
+        sets[0]->occurencies = 1;
+        QtLogger::warning(QSL("[LOOP] No remaining set has an occurencies nb > 0, first set occurencies nb has been set to 1."));
+    }
 }
 
 bool Loop::modify_set_name(QString newSetName, RowId id){
@@ -241,9 +252,29 @@ bool Loop::load_file(QString path){
 
     QTextStream in(&file);
     std::vector<std::unique_ptr<Set>> filSets;
+    std::set<QString> validNames;
+
     while (!in.atEnd()){
         auto line = in.readLine();
-        filSets.push_back(std::make_unique<Set>(line,1, SetKey{-1}));
+        auto split = line.split(" ");
+        QString name;
+        if(split.length() > 0){
+            name = split[0];
+        }
+        if(name.length() == 0 || validNames.contains(name)){
+            continue;
+        }
+        validNames.insert(name);
+
+        int nbOcc = 1;
+        if(split.length() > 1){
+            bool ok;
+            nbOcc = split[1].toInt(&ok);
+            if(!ok){
+                nbOcc = 1;
+            }
+        }
+        filSets.push_back(std::make_unique<Set>(name,nbOcc, SetKey{-1}));
     }
     file.close();
 
