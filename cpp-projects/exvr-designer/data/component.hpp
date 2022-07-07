@@ -262,7 +262,7 @@ struct Component {
         {T::Leap_motion_tracking,     C::Tracking,    TO::V, CO::N, Y, N, N, Y, N, N, P::M, R::OS, S::Leg, "Leap_motion_tracking"sv, "LeapMotion tracking"sv, "LeapMotionTracking"sv, "Hand"sv},
         {T::Qualisys,                 C::Tracking,    TO::B, CO::B, Y, Y, Y, Y, Y, N, P::M, R::OS, S::Sta, "Qualisys_tracking"sv, "Qualisys tracking"sv, "QualisysTracking"sv, "Qualisys"sv},
         {T::Scene_scaner,             C::Tracking,    TO::B, CO::B, Y, N, N, Y, N, N, P::M, R::LN, S::Sta, "Scene_scaner"sv, "Scene scaner"sv, "SceneScaner"sv,"Body_scanner"sv},
-        {T::Sonceboz_SG,              C::Tracking,    TO::U, CO::B, Y, N, N, Y, N, N, P::H, R::LN, S::Exp, "Sonceboz_SG"sv, "Sonceboz SG"sv, "SoncebozSG"sv,"Sonceboz"sv},
+        {T::Sonceboz_SG,              C::Tracking,    TO::U, CO::B, Y, Y, Y, Y, Y, N, P::H, R::LN, S::Sta, "Sonceboz_SG"sv, "Sonceboz SG"sv, "SoncebozSG"sv,"Sonceboz"sv},
         {T::Thera_trainer_tracking,   C::Tracking,    TO::U, CO::I, Y, N, N, Y, N, N, P::M, R::LN, S::Sta, "Thera_trainer_tracking"sv, "Thera trainer tracking"sv, "TheraTrainerTracking"sv, "Thera_trainer"sv},
         {T::Thera_trainer_platform,   C::Tracking,    TO::B, CO::C, N, N, N, Y, N, N, P::M, R::LN, S::Sta, "Thera_trainer_platform"sv, "Thera trainer platform"sv, "TheraTrainerPlatform"sv, "Thera_trainer"sv},
         {T::Vive_pro_eye_tracking,    C::Tracking,    TO::B, CO::C, N, N, N, Y, N, N, P::H, R::OS, S::Sta, "Vive_pro_eye_tracking"sv, "Vive pro eye tracking"sv, "ViveProEyeTracking"sv, "Thera_trainer"sv},

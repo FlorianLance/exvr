@@ -349,7 +349,7 @@ namespace Ex {
                 triggersStr.Add(new Tuple<double, double, string>
                     (bEvent.triggeredExperimentTime,
                     bEvent.triggeredElementTime,
-                    string.Format("{0}, {1}", Enum.GetName(typeof(KeyCode), bEvent.code), Enum.GetName(typeof(Input.Button.State), bEvent.state))
+                    string.Format("{0} {1}", Enum.GetName(typeof(KeyCode), bEvent.code), Enum.GetName(typeof(Input.Button.State), bEvent.state))
                 ));
             }
             return triggersStr;

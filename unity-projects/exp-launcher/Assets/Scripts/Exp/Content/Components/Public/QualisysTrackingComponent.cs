@@ -177,7 +177,8 @@ namespace Ex{
         #region private_functions
         private void connect_to_qualisys() {
 
-            var servers = RTClient.GetInstance().GetServers();
+            m_rtClient  = RTClient.GetInstance();
+            var servers = m_rtClient.GetServers();
             if (servers.Count == 0) {
                 log_error("No Qualisys server found.", false);
                 return;
@@ -200,18 +201,19 @@ namespace Ex{
                         }
                     }
                 }
-                if(RTClient.GetInstance().Connect(server, server.Port, true, true, true, true, true, true)) { 
+                if(m_rtClient.Connect(server, server.Port, true, true, true, true, true, true)) { 
                 
                     log_message(
                         String.Format("Connected to Qualisys server {0}:{1}:{2} with {3} cameras.",
                         server.HostName, server.IpAddress, server.Port, server.CameraCount
                         ), false);
-                    m_rtClient = RTClient.GetInstance();
+                    
                     return;
                 }
             }
 
             log_error("Cannot connect to to any Qualisys server.", false);
+            m_rtClient = null;
         }
 
         public bool is_connected() {

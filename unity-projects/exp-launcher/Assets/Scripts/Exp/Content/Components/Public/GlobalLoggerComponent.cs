@@ -238,6 +238,8 @@ namespace Ex {
                         if (!logging.Value.triggersFileLogger.open_file(triggerLoggerFilePath)) {
                             return;
                         }
+                        logging.Value.triggersFileLogger.write(
+                            "frame_id,routine_name,condition_name,ellapsed_exp_time,ellapsed_element_time,trigger_info\n");
                     }
                 }
             }
