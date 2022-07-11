@@ -258,8 +258,8 @@ void Experiment::add_element(FlowElement::Type type, size_t index){
 
 
     auto typeElements = get_elements_from_type(type);
-    switch (type) {{
-    case FlowElement::Type::Routine:
+    switch (type) {
+    case FlowElement::Type::Routine:{
 
             QString name;
             size_t offset = 1;
@@ -281,9 +281,9 @@ void Experiment::add_element(FlowElement::Type type, size_t index){
 
             elements.insert(elements.begin() + static_cast<std_v1<std::unique_ptr<FlowElement>>::difference_type>(index + 1), std::move(routine));
             elements.insert(elements.begin() + static_cast<std_v1<std::unique_ptr<FlowElement>>::difference_type>(index + 2), std::make_unique<NodeFlow>());
-            select_element(ElementKey{routinePtr->key()}, false);
-    }break;{
-    case FlowElement::Type::Isi:
+            select_element(routinePtr->e_key(), false);
+    }break;
+    case FlowElement::Type::Isi:{
 
             QString name;
             size_t offset = 1;
@@ -305,9 +305,9 @@ void Experiment::add_element(FlowElement::Type type, size_t index){
             auto isiPtr = isi.get();
             elements.insert(elements.begin() + static_cast<std_v1<std::unique_ptr<FlowElement>>::difference_type>(index + 1), std::move(isi));
             elements.insert(elements.begin() + static_cast<std_v1<std::unique_ptr<FlowElement>>::difference_type>(index + 2), std::make_unique<NodeFlow>());
-            select_element(ElementKey{isiPtr->key()}, false);
-    }break;{
-    case FlowElement::Type::Loop:
+            select_element(isiPtr->e_key(), false);
+    }break;
+    case FlowElement::Type::Loop:{
 
             QString name;
             size_t offset = 1;
@@ -337,7 +337,7 @@ void Experiment::add_element(FlowElement::Type type, size_t index){
             elements.insert(elements.begin() + static_cast<std_v1<std::unique_ptr<FlowElement>>::difference_type>(index + 2), std::make_unique<NodeFlow>());
             elements.insert(elements.begin() + static_cast<std_v1<std::unique_ptr<FlowElement>>::difference_type>(index + 3), std::move(end));
             elements.insert(elements.begin() + static_cast<std_v1<std::unique_ptr<FlowElement>>::difference_type>(index + 4), std::make_unique<NodeFlow>());
-            select_element(ElementKey{loopPtr->key()}, false);
+            select_element(loopPtr->e_key(), false);
     }break;
     default:
         return;
@@ -349,7 +349,13 @@ void Experiment::add_element(FlowElement::Type type, size_t index){
     add_to_update_flag(UpdateFlow | UpdateSelection | UpdateRoutines);
 }
 
-void Experiment::remove_element(FlowElement *elemToDelete){
+void Experiment::remove_element(FlowElement *elemToDelete, bool updateConditions){
+
+    if(selectedElement != nullptr){
+        if(selectedElement->key() == elemToDelete->key()){
+            selectedElement = nullptr;
+        }
+    }
 
     if(elemToDelete->type() == FlowElement::Type::LoopStart || elemToDelete->type() == FlowElement::Type::LoopEnd){
         elemToDelete = dynamic_cast<LoopNode*>(elemToDelete)->loop;
@@ -381,17 +387,130 @@ void Experiment::remove_element(FlowElement *elemToDelete){
         remove_elements_not_in_flow();
     }
 
-    compute_loops_levels();
-    update_conditions();
-    selectedElement = nullptr;
+    if(updateConditions){
+        compute_loops_levels();
+        update_conditions();
+    }
 
     add_to_update_flag(UpdateFlow | UpdateSelection | UpdateRoutines);
 }
 
 void Experiment::remove_element_of_key(ElementKey elementKey){
-
     if(auto element = get_element(elementKey); element != nullptr){
         remove_element(element);
+    }
+}
+
+void Experiment::remove_everything_before_element_of_key(ElementKey elementKey){
+
+    if(auto firstNewElement = get_element(elementKey); firstNewElement != nullptr){
+
+        std::vector<ElementKey> elementsToRemove;
+        std::vector<ElementKey> loopsToRemove;
+        for(const auto &element : elements){
+
+            if(element->type() == FlowElement::Type::Node){
+                continue;
+            }
+
+            if(element->key() != firstNewElement->key()){
+
+                if(element->type() == FlowElement::Type::Routine || element->type() == FlowElement::Type::Isi){
+                    elementsToRemove.push_back(element->e_key());
+                }else if(element->type() == FlowElement::Type::LoopStart || element->type() == FlowElement::Type::LoopEnd){
+                    loopsToRemove.push_back(element->e_key());
+                }
+            }else{
+                break;
+            }
+        }
+
+        if(elementsToRemove.size() == 0){
+            return;
+        }
+
+        QMessageBox validateBox;
+        validateBox.setWindowTitle("Remove everything before selected element");
+        validateBox.setText(QString("This action will remove several elements from the flow, do you want to continue?"));
+        validateBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+        validateBox.setDefaultButton(QMessageBox::Cancel);
+        switch (validateBox.exec()) {
+        case QMessageBox::Ok:
+            for (ElementKey eKey : std::ranges::reverse_view(elementsToRemove)){
+                if(auto element = get_element(eKey, false); element != nullptr){
+                    remove_element(element, false);
+                }
+            }
+            for (ElementKey eKey : std::ranges::reverse_view(loopsToRemove)){
+                if(auto element = get_element(eKey, false); element != nullptr){
+                    remove_element(element, false);
+                }
+            }
+            compute_loops_levels();
+            update_conditions();
+            add_to_update_flag(UpdateFlow | UpdateSelection | UpdateRoutines);
+            return;
+        default:
+            return;
+        }
+    }
+}
+
+void Experiment::remove_everything_after_element_of_key(ElementKey elementKey){
+
+    if(auto firstNewElement = get_element(elementKey); firstNewElement != nullptr){
+
+        std::vector<ElementKey> elementsToRemove;
+        std::vector<ElementKey> loopsToRemove;
+        bool found = false;
+        for(const auto &element : elements){
+
+            if(element->type() == FlowElement::Type::Node){
+                continue;
+            }
+
+            if(element->key() == firstNewElement->key()){
+                found = true;
+                continue;
+            }
+
+            if(found){
+                if(element->type() == FlowElement::Type::Routine || element->type() == FlowElement::Type::Isi){
+                    elementsToRemove.push_back(element->e_key());
+                }else if(element->type() == FlowElement::Type::LoopStart || element->type() == FlowElement::Type::LoopEnd){
+                    loopsToRemove.push_back(element->e_key());
+                }
+            }
+        }
+
+        if(elementsToRemove.size() == 0){
+            return;
+        }
+
+        QMessageBox validateBox;
+        validateBox.setWindowTitle("Remove everything after selected element");
+        validateBox.setText(QString("This action will remove several elements from the flow, do you want to continue?"));
+        validateBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+        validateBox.setDefaultButton(QMessageBox::Cancel);
+        switch (validateBox.exec()) {
+        case QMessageBox::Ok:
+            for (ElementKey eKey : std::ranges::reverse_view(elementsToRemove)){
+                if(auto element = get_element(eKey, false); element != nullptr){
+                    remove_element(element, false);
+                }
+            }
+            for (ElementKey eKey : std::ranges::reverse_view(loopsToRemove)){
+                if(auto element = get_element(eKey, false); element != nullptr){
+                    remove_element(element, false);
+                }
+            }
+            compute_loops_levels();
+            update_conditions();
+            add_to_update_flag(UpdateFlow | UpdateSelection | UpdateRoutines);
+            return;
+        default:
+            return;
+        }
     }
 }
 

@@ -113,6 +113,8 @@ signals:
     void remove_selected_element_signal();
     void add_element_signal(tool::ex::FlowElement::Type type, size_t index);
     void remove_element_signal(tool::ex::ElementKey elementKey);
+    void remove_everything_before_signal(tool::ex::ElementKey elementKey);
+    void remove_everything_after_signal(tool::ex::ElementKey elementKey);
     void move_element_signal(tool::ex::ElementKey elementKey);
     void set_duration_for_all_routine_conditions_signal(tool::ex::ElementKey routineKey);
     void move_element_left_signal(size_t id);

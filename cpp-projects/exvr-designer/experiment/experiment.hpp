@@ -235,8 +235,10 @@ public slots:
     void select_element_id_no_nodes(RowId elementId, bool updateSignal = true);
     void select_element_from_ptr(FlowElement *element, bool updateSignal = true);
     void add_element(FlowElement::Type type, size_t index);
-    void remove_element(FlowElement *elemToDelete);    
+    void remove_element(FlowElement *elemToDelete, bool updateConditions = true);
     void remove_element_of_key(ElementKey elementKey);
+    void remove_everything_before_element_of_key(ElementKey elementKey);
+    void remove_everything_after_element_of_key(ElementKey elementKey);
     void duplicate_element(ElementKey elementKey);
     void clean_current_routine_condition(ElementKey routineKey);
     void clean_all_routine_conditions(ElementKey routineKey);

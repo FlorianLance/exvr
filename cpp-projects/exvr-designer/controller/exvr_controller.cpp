@@ -1106,6 +1106,9 @@ void ExVrController::generate_global_signals_connections(){
     connect(s, &GSignals::move_element_right_signal,                        exp(), &EXP::move_right);
     connect(s, &GSignals::duplicate_element_signal,                         exp(), &EXP::duplicate_element);
     connect(s, &GSignals::remove_element_signal,                            exp(), &EXP::remove_element_of_key);
+    connect(s, &GSignals::remove_everything_before_signal,                  exp(), &EXP::remove_everything_before_element_of_key);
+    connect(s, &GSignals::remove_everything_after_signal,                   exp(), &EXP::remove_everything_after_element_of_key);
+
     connect(s, &GSignals::clean_current_routine_condition_signal,           exp(), &EXP::clean_current_routine_condition);
     connect(s, &GSignals::clean_all_routine_conditions_signal,              exp(), &EXP::clean_all_routine_conditions);
     connect(s, &GSignals::set_duration_for_all_routine_conditions_signal,   exp(), &EXP::set_duration_for_all_routine_conditions);
