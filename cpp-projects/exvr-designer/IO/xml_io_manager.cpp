@@ -1403,10 +1403,22 @@ bool XmlIoManager::save_instance_file(const Instance &instance, QString instance
     QXmlStreamWriter stream( &instanceFile );
     stream.setAutoFormatting(true);
     stream.writeStartDocument();
+
+    stream.writeComment(QString("Nb routines: %1").arg(instance.routinesIterations.size()));
+    for(const auto &routineInfo : instance.routinesIterations){
+        auto routine = m_experiment->get_routine(routineInfo.first);
+        size_t nbConditions = instance.routinesConditionsIterations.at(routineInfo.first).size();
+        stream.writeComment(QString(" routine [%1] [%2] is called [%3] times and has [%4] conditions").arg(
+            routine->name(),QString::number(routineInfo.first.v), QString::number(routineInfo.second), QString::number(nbConditions)));
+        for(const auto &condInfo : instance.routinesConditionsIterations.at(routineInfo.first)){
+            stream.writeComment(QString("   condition [%1] is called [%2] times").arg(
+                condInfo.first, QString::number(condInfo.second)));
+        }
+    }
+
     stream.writeStartElement(QSL("ExperimentFlow"));
     stream.writeAttribute(QSL("id_instance"), QString::number(instance.idInstance));
-    for(auto &instElem : instance.flow){
-
+    for(const auto &instElem : instance.flow){
         QString type = (instElem.elem->type() == FlowElement::Type::Routine) ? QSL("routine") : QSL("isi");
         stream.writeStartElement(QSL("Element"));
         stream.writeAttribute(QSL("key"),  QString::number(instElem.elem->key()));
@@ -1525,7 +1537,7 @@ std::unique_ptr<Instance> XmlIoManager::load_instance_file(QString instanceFileP
     return nullptr;
 }
 
-RoutineUP XmlIoManager::read_routine(){
+std::unique_ptr<Routine> XmlIoManager::read_routine(){
 
     const auto key      = read_attribute<int>(QSL("key"), true);
     const auto name     = read_attribute<QString>(QSL("name"), true);
@@ -1535,7 +1547,7 @@ RoutineUP XmlIoManager::read_routine(){
         return nullptr;
     }
 
-    RoutineUP routine = std::make_unique<Routine>(name.value(), key.value());
+    auto routine = std::make_unique<Routine>(name.value(), key.value());
     if(auto informations  = read_attribute<QString>(QSL("informations"), false); informations.has_value()){
         routine->informations = std::move(informations.value());
     }
