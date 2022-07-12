@@ -110,7 +110,7 @@ namespace Ex {
 
         public void get(string argName, ref Color value) {
             if (has(argName)) {
-                value = Converter.to_color((List<object>)args[argName].value);
+                value = Converter.to_color(args[argName].value);
             } else {
                 value = Color.black;
                 log_error(string.Format("Argument {0} of type Color doesn't exist.", argName));
@@ -119,7 +119,7 @@ namespace Ex {
 
         public void get(string argName, ref Vector2 value) {
             if (has(argName)) {
-                value = Converter.to_vector2((List<object>)args[argName].value);
+                value = Converter.to_vector2(args[argName].value);
             } else {
                 value = Vector2.zero;
                 log_error(string.Format("Argument {0} of type Vector2 doesn't exist.", argName));
@@ -128,7 +128,7 @@ namespace Ex {
 
         public void get(string argName, ref Vector3 value) {
             if (has(argName)) {
-                value = Converter.to_vector3((List<object>)args[argName].value);
+                value = Converter.to_vector3(args[argName].value);
             } else {
                 value = Vector3.zero;
                 log_error(string.Format("Argument {0} of type Vector3 doesn't exist.", argName));
@@ -157,19 +157,19 @@ namespace Ex {
 
         public void get_if_exists(string argName, ref Color value) {
             if (has(argName)) {
-                value = Converter.to_color((List<object>)args[argName].value);
+                value = Converter.to_color(args[argName].value);
             }
         }
 
         public void get_if_exists(string argName, ref Vector2 value) {
             if (has(argName)) {
-                value = Converter.to_vector2((List<object>)args[argName].value);
+                value = Converter.to_vector2(args[argName].value);
             }
         }
 
         public void get_if_exists(string argName, ref Vector3 value) {
             if (has(argName)) {
-                value = Converter.to_vector3((List<object>)args[argName].value);
+                value = Converter.to_vector3(args[argName].value);
             }
         }
 
@@ -189,7 +189,8 @@ namespace Ex {
                 log_error(string.Format("Argument {0} of type Color doesn't exist.", argName));
                 return new Color(0f, 0f, 0f);
             }
-            return Converter.to_color((List<object>)args[argName].value);
+
+            return Converter.to_color(args[argName].value);
         }
 
         public Vector2 get_vector2(string argName) {
@@ -198,7 +199,7 @@ namespace Ex {
                 log_error(string.Format("Argument {0} of type Vector2 doesn't exist.", argName));
                 return new Vector2(0f, 0f);
             }
-            return Converter.to_vector2((List<object>)args[argName].value);
+            return Converter.to_vector2(args[argName].value);
         }
 
         public Vector3 get_vector3(string argName) {
@@ -207,7 +208,7 @@ namespace Ex {
                 log_error(string.Format("Argument {0} of type Vector3 doesn't exist.", argName));
                 return new Vector3(0f, 0f, 0f);
             }
-            return Converter.to_vector3((List<object>)args[argName].value);
+            return Converter.to_vector3(args[argName].value);
         }
 
         public Vector3 get_euler_angles(string argName, Converter.AxisOrder order = Converter.AxisOrder.PitchYawRoll) {

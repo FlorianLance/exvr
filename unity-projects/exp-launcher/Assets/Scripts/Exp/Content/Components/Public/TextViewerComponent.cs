@@ -43,6 +43,9 @@ namespace Ex{
             add_slot("set text", (text) => {
                 set_text((string)text);
             });
+            add_slot("set color", (color) => {
+                set_color((Color)color);
+            });
 
             // init gameObject
             m_textGO = ExVR.GlobalResources().instantiate_prebab("Components/TextViewer", transform);
@@ -58,11 +61,16 @@ namespace Ex{
         }
 
         public override void update_from_current_config() {
+
+            // container
             resize_container();
-            update_text();
+            // background
+            m_textGO.GetComponent<UnityEngine.UI.Image>().material.color = currentC.get_color("background_color");
+            // text
+            currentC.update_text("t", m_text);
         }
 
-        protected override void update_parameter_from_gui(string updatedArgName) {
+        protected override void update_parameter_from_gui(string updatedArgName) {            
             update_from_current_config();
         }
 
@@ -107,16 +115,13 @@ namespace Ex{
         }
 
         public void set_text(string text) {
-            currentC.set<string>("t_text", text);
-            update_text();
+            currentC.set("t_text", text);
+            currentC.update_text("t", m_text);
         }
 
-        public void update_text() {
-
-            // background
-            m_textGO.GetComponent<UnityEngine.UI.Image>().material.color = currentC.get_color("background_color");
-
-            // text
+        public void set_color(Color color) {
+            currentC.set("t_face_color", color);
+            currentC.set("t_outline_color", color);
             currentC.update_text("t", m_text);
         }
 

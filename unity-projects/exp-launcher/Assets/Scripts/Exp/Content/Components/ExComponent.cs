@@ -524,9 +524,6 @@ namespace Ex {
             } else {
                 stop_experiment();
             }
-
-            // disable the closing state
-            m_closed = false;
         }
 
         public void base_set_current_config(Condition condition, ComponentConfig config, TimeLine timeline) {
@@ -635,6 +632,9 @@ namespace Ex {
             } else {
                 stop_routine();
             }
+
+            // disable the closing state
+            set_closed_flag(false);
         }
 
         // Called at every frame if component inside timeline, will call child pre_update

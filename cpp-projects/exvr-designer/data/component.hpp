@@ -268,7 +268,7 @@ struct Component {
         {T::Vive_pro_eye_tracking,    C::Tracking,    TO::B, CO::C, N, N, N, Y, N, N, P::H, R::OS, S::Sta, "Vive_pro_eye_tracking"sv, "Vive pro eye tracking"sv, "ViveProEyeTracking"sv, "Thera_trainer"sv},
         // UI
         {T::Slider_ui,                C::UI,          TO::B, CO::B, N, N, N, Y, N, N, P::M, R::OS, S::Sta, "Slider_ui"sv, "Slider ui"sv, "SliderUI"sv, "Slider_overlay"sv},
-        {T::Buttons_ui,               C::UI,          TO::B, CO::B, N, N, N, Y, N, N, P::M, R::OS, S::Sta, "Buttons_ui"sv, "Buttons ui"sv, "ButtonsUI"sv, "Buttons"sv},
+        {T::Buttons_ui,               C::UI,          TO::B, CO::C, N, N, N, Y, N, N, P::M, R::OS, S::Sta, "Buttons_ui"sv, "Buttons ui"sv, "ButtonsUI"sv, "Buttons"sv},
         // Video
         {T::Video_file,               C::Video,       TO::U, CO::I, N, N, N, Y, N, N, P::M, R::OS, S::Sta, "Video_file"sv, "Video file"sv, "VideoFile"sv,"Video_file"sv},
         {T::Video_file_camera_viewer, C::Video,       TO::B, CO::B, N, N, N, Y, N, N, P::M, R::OS, S::Exp, "Video_file_camera_viewer"sv, "Video file camera viewer"sv, "VideoFileCameraViewer"sv,"Video_file"sv},
@@ -382,7 +382,7 @@ struct Component {
 
     using TComponentSlots = std::tuple<
         T,                             FunctionN,                      CNT,                    Doc>;
-    static constexpr TupleArray<97,TComponentSlots> componentsSlots = {{
+    static constexpr TupleArray<98,TComponentSlots> componentsSlots = {{
         TComponentSlots
         // Audio
         {T::AudioSource,               "play"sv,                       CNT::void_t,            "..."sv},
@@ -495,6 +495,7 @@ struct Component {
         // Viewer
         {T::Image_viewer,              "set image"sv,                  CNT::image_t,           "..."sv},
         {T::Text_viewer,               "set text"sv,                   CNT::string_t,          "..."sv},
+        {T::Text_viewer,               "set color"sv,                  CNT::color_t,           "..."sv},
     }};
 
     using TComponentSignals = std::tuple<

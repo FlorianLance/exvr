@@ -98,18 +98,9 @@ LIBS +=  \
 
 
 HEADERS += \
-    # global
     # controller
     controller/exvr_controller.hpp \
     # utility
-    gui/dialogs/import_sub_exp_dialog.hpp \
-    gui/dialogs/keys_dialog.hpp \
-    gui/objects/add_button_object.hpp \
-    gui/objects/move_button_object.hpp \
-    gui/objects/remove_button_object.hpp \
-    gui/widgets/components/config_parameters/environment_pw.hpp \
-    gui/widgets/connections/data_models/base_node_data_model.hpp \
-    gui/widgets/connections/data_models/connectors/from_time_any_ndm.hpp \
     utility/script_utility.hpp \
     utility/path_utility.hpp \
     # IO
@@ -158,6 +149,9 @@ HEADERS += \
     gui/objects/movable_flow_element_object.hpp \
     gui/objects/node_flow_element_object.hpp \
     gui/objects/routine_flow_element_object.hpp \
+    gui/objects/add_button_object.hpp \
+    gui/objects/move_button_object.hpp \
+    gui/objects/remove_button_object.hpp \
     ## dialogs
     gui/dialogs/add_component_to_conditions_dialog.hpp \
     gui/dialogs/benchmark_dialog.hpp \
@@ -166,7 +160,10 @@ HEADERS += \
     gui/dialogs/resources_manager_dialog.hpp \
     gui/dialogs/documentation_dialog.hpp \
     gui/dialogs/settings_dialog.hpp \
+    gui/dialogs/import_sub_exp_dialog.hpp \
+    gui/dialogs/keys_dialog.hpp \
     ## widgets
+    gui/widgets/components/config_parameters/environment_pw.hpp \
     ### main
     gui/widgets/designer_window.hpp\
     ### elements
@@ -262,6 +259,10 @@ HEADERS += \
     ### connections
     gui/widgets/connections/ex_flow_view_widget.hpp \
     gui/widgets/connections/connections_widget.hpp \
+    gui/widgets/connections/data_models/base_node_data_model.hpp \
+    gui/widgets/connections/data_models/connectors/from_time_any_ndm.hpp \
+    gui/widgets/connections/data_models/connectors/vector2_ndm.hpp \
+    gui/widgets/connections/data_models/connectors/color_ndm.hpp \
     gui/widgets/connections/data_models/connectors/resources_ndm.hpp \
     gui/widgets/connections/data_models/base_embedded_widget.hpp \
     gui/widgets/connections/data_models/data/nodes_data_converters.hpp \
@@ -328,18 +329,10 @@ SOURCES += \
     experiment/instance.cpp \
     experiment/global_signals.cpp \
     experiment/experiment.cpp \
+    experiment/randomizer.cpp \
     # controller
     controller/exvr_controller.cpp \
-    # launcher
-    experiment/randomizer.cpp \
-    gui/dialogs/import_sub_exp_dialog.cpp \
-    gui/dialogs/keys_dialog.cpp \
-    gui/objects/add_button_object.cpp \
-    gui/objects/move_button_object.cpp \
-    gui/objects/remove_button_object.cpp \
-    gui/widgets/components/config_parameters/environment_pw.cpp \
-    gui/widgets/components/config_parameters/mouse_pw.cpp \
-    gui/widgets/connections/data_models/connectors/from_time_any_ndm.cpp \
+    # launcher   
     launcher/exp_launcher.cpp \
     launcher/exp_launcher_communication.cpp \
     launcher/exp_launcher_process.cpp \
@@ -359,6 +352,9 @@ SOURCES += \
     gui/objects/movable_flow_element_object.cpp \
     gui/objects/node_flow_element_object.cpp \
     gui/objects/routine_flow_element_object.cpp \
+    gui/objects/add_button_object.cpp \
+    gui/objects/move_button_object.cpp \
+    gui/objects/remove_button_object.cpp \
     ## dialogs
     gui/dialogs/add_component_to_conditions_dialog.cpp \
     gui/dialogs/benchmark_dialog.cpp \
@@ -366,6 +362,8 @@ SOURCES += \
     gui/dialogs/generate_instances_dialog.cpp \
     gui/dialogs/resources_manager_dialog.cpp \
     gui/dialogs/documentation_dialog.cpp \
+    gui/dialogs/import_sub_exp_dialog.cpp \
+    gui/dialogs/keys_dialog.cpp \
     ## ex_widgets
     gui/ex_widgets/generation/gen_ui_item_dialog.cpp \
     gui/ex_widgets/ex_camera_target_w.cpp \
@@ -379,6 +377,9 @@ SOURCES += \
     gui/ex_widgets/ex_resources_list_w.cpp \
     ## widgets
     gui/widgets/designer_window.cpp \
+    gui/widgets/components/config_parameters/environment_pw.cpp \
+    gui/widgets/components/config_parameters/mouse_pw.cpp \
+    gui/widgets/connections/data_models/connectors/from_time_any_ndm.cpp \
     ### components
     gui/widgets/components/config_widget.cpp \
     gui/widgets/components/component_widget.cpp \
@@ -455,6 +456,8 @@ SOURCES += \
     gui/widgets/connections/data_models/connectors/integer_ndm.cpp \
     gui/widgets/connections/data_models/connectors/real_ndm.cpp \
     gui/widgets/connections/data_models/connectors/string_ndm.cpp \
+    gui/widgets/connections/data_models/connectors/color_ndm.cpp \
+    gui/widgets/connections/data_models/connectors/vector2_ndm.cpp \
     gui/widgets/connections/data_models/connectors/vector3_ndm.cpp \
     gui/widgets/connections/data_models/connectors/string_any_ndm.cpp \
     gui/widgets/connections/data_models/connectors/keyboard_ndm.cpp \

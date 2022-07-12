@@ -241,155 +241,174 @@ namespace Ex{
         public static List<Vector3> to_vec3_list(object value) { return to<List<Vector3>>(conv[lVec3T], value); }
         public static List<object> to_object_list(object value) { return to<List<object>>(conv[lObjT], value); }
 
+
+        private static Dictionary<Type, Func<object, object>> types_to_bool = new Dictionary<Type, Func<object, object>>() {
+            [boolT] = input => { return (bool)input; },
+            [byteT] = input => { return SC.ToBoolean((byte)input); },
+            [charT] = input => { return SC.ToBoolean(SC.ToInt32((char)input)); },
+            [shortT] = input => { return SC.ToBoolean((short)input); },
+            [intT] = input => { return SC.ToBoolean((int)input); },
+            [longT] = input => { return SC.ToBoolean((long)input); },
+            [floatT] = input => { return SC.ToBoolean((float)input); },
+            [doubleT] = input => { return SC.ToBoolean((double)input); },
+            [decValT] = input => { return ((DecimalValue)input).to_bool(); },
+            [stringT] = input => {
+                var strValue = (string)input;
+                if (strValue.Length == 1) {
+                    return strValue[0] != '0';
+                }
+                Boolean.TryParse(strValue, out bool result);
+                return result;
+            }
+        };
+
+        private static Dictionary<Type, Func<object, object>> types_to_byte = new Dictionary<Type, Func<object, object>>() {
+            [boolT] = input => { return SC.ToByte((bool)input); },
+            [byteT] = input => { return (byte)input; },
+            [charT] = input => { return SC.ToByte((char)input); },
+            [shortT] = input => { try { return SC.ToByte((short)input); } catch (SE e) { log_e(e.Message); } return default(byte); },
+            [intT] = input => { try { return SC.ToByte((int)input); } catch (SE e) { log_e(e.Message); } return default(byte); },
+            [longT] = input => { try { return SC.ToByte((long)input); } catch (SE e) { log_e(e.Message); } return default(byte); },
+            [floatT] = input => { try { return SC.ToByte((float)input); } catch (SE e) { log_e(e.Message); } return default(byte); },
+            [doubleT] = input => { try { return SC.ToByte((double)input); } catch (SE e) { log_e(e.Message); } return default(byte); },
+            [decValT] = input => { try { return SC.ToByte(((DecimalValue)input).to_int()); } catch (SE e) { log_e(e.Message); } return default(byte); },
+            [stringT] = input => { Byte.TryParse((string)input, out byte result); return result; }
+        };
+
+        private static Dictionary<Type, Func<object, object>> types_to_char = new Dictionary<Type, Func<object, object>>() {
+            [boolT]   = input => { return SC.ToChar(to_int((bool)input));},
+            [byteT]   = input => { return SC.ToChar((byte)input);},
+            [charT]   = input => { return (char)input;},
+            [shortT]  = input => { try { return SC.ToChar((short)input);}     catch (SE e) { log_e(e.Message);} return default(char);},
+            [intT]    = input => { try { return SC.ToChar((int)input);}       catch (SE e) { log_e(e.Message);} return default(char);},
+            [longT]   = input => { try { return SC.ToChar((long)input);}      catch (SE e) { log_e(e.Message);} return default(char);},
+            [floatT]  = input => { try { return SC.ToChar(to_int((float)input));}   catch (SE e) { log_e(e.Message);} return default(char);},
+            [doubleT] = input => { try { return SC.ToChar(to_int((double)input));}  catch (SE e) { log_e(e.Message);} return default(char);},
+            [decValT] = input => { try { return SC.ToChar(((DecimalValue)input).to_int());} catch (SE e) { log_e(e.Message);} return default(char);},
+            [stringT] = input => { Char.TryParse((string)input, out char result); return result;}
+        };
+
+        private static Dictionary<Type, Func<object, object>> types_to_short = new Dictionary<Type, Func<object, object>>() {
+            [boolT] = input => { return SC.ToInt16((bool)input); },
+            [byteT] = input => { return SC.ToInt16((byte)input); },
+            [charT] = input => { return SC.ToInt16((char)input); },
+            [shortT] = input => { return (short)input; },
+            [intT] = input => { try { return SC.ToInt16((int)input); } catch (SE e) { log_e(e.Message); } return default(short); },
+            [longT] = input => { try { return SC.ToInt16((long)input); } catch (SE e) { log_e(e.Message); } return default(short); },
+            [floatT] = input => { try { return SC.ToInt16((float)input); } catch (SE e) { log_e(e.Message); } return default(short); },
+            [doubleT] = input => { try { return SC.ToInt16((double)input); } catch (SE e) { log_e(e.Message); } return default(short); },
+            [decValT] = input => { try { return SC.ToInt16(((DecimalValue)input).to_int()); } catch (SE e) { log_e(e.Message); } return default(short); },
+            [stringT] = input => { Int16.TryParse((string)input, out short result); return result; }
+        };
+
+        private static Dictionary<Type, Func<object, object>> types_to_int = new Dictionary<Type, Func<object, object>>() {
+            [boolT] = input => { return SC.ToInt32((bool)input); },
+            [byteT] = input => { return SC.ToInt32((byte)input); },
+            [charT] = input => { return SC.ToInt32((char)input); },
+            [shortT] = input => { return SC.ToInt32((short)input); },
+            [intT] = input => { return (int)input; },
+            [longT] = input => { try { return SC.ToInt32((long)input); } catch (SE e) { log_e(e.Message); } return default(int); },
+            [floatT] = input => { try { return SC.ToInt32((float)input); } catch (SE e) { log_e(e.Message); } return default(int); },
+            [doubleT] = input => { try { return SC.ToInt32((double)input); } catch (SE e) { log_e(e.Message); } return default(int); },
+            [decValT] = input => { return ((DecimalValue)input).to_int(); },
+            [stringT] = input => { Int32.TryParse((string)input, out int result); return result; },
+        };
+
+        private static Dictionary<Type, Func<object, object>> types_to_long = new Dictionary<Type, Func<object, object>>() {
+            [boolT] = input => { return SC.ToInt64((bool)input); },
+            [byteT] = input => { return SC.ToInt64((byte)input); },
+            [charT] = input => { return SC.ToInt64((char)input); },
+            [shortT] = input => { return SC.ToInt64((short)input); },
+            [intT] = input => { return SC.ToInt64((int)input); },
+            [longT] = input => { return (long)input; },
+            [floatT] = input => { try { return SC.ToInt64((float)input); } catch (SE e) { log_e(e.Message); } return default(long); },
+            [doubleT] = input => { try { return SC.ToInt64((double)input); } catch (SE e) { log_e(e.Message); } return default(long); },
+            [decValT] = input => { return ((DecimalValue)input).to_long(); },
+            [stringT] = input => { Int64.TryParse((string)input, out long result); return result; },
+        };
+
+        private static Dictionary<Type, Func<object, object>> types_to_float = new Dictionary<Type, Func<object, object>>() {
+            [boolT] = input => { return SC.ToSingle((bool)input); },
+            [byteT] = input => { return SC.ToSingle((byte)input); },
+            [charT] = input => { return SC.ToSingle(SC.ToInt32((char)input)); },
+            [shortT] = input => { return SC.ToSingle((short)input); },
+            [intT] = input => { return SC.ToSingle((int)input); },
+            [longT] = input => { return SC.ToSingle((long)input); },
+            [floatT] = input => { return (float)input; },
+            [doubleT] = input => { try { return SC.ToSingle((double)input); } catch (SE e) { log_e(e.Message); } return default(float); },
+            [decValT] = input => { return ((DecimalValue)input).to_float(); },
+            [stringT] = input => {
+                var strValue = (string)input;
+                if (Single.TryParse(strValue, out float result1)) {
+                    return result1;
+                }
+                if (!Single.TryParse(strValue.Replace(",", "."), out float result2)) {
+                    log_e(string.Format("Float parse error: {0} -> {1}", strValue, result2));
+                }
+                return result2;
+            }
+        };
+
+        private static Dictionary<Type, Func<object, object>> types_to_double = new Dictionary<Type, Func<object, object>>() {
+            [boolT] = input => { return SC.ToDouble((bool)input); },
+            [byteT] = input => { return SC.ToDouble((byte)input); },
+            [charT] = input => { return SC.ToDouble(SC.ToInt32((char)input)); },
+            [shortT] = input => { return SC.ToDouble((short)input); },
+            [intT] = input => { return SC.ToDouble((int)input); },
+            [longT] = input => { return SC.ToDouble((long)input); },
+            [floatT] = input => { return SC.ToDouble((float)input); },
+            [doubleT] = input => { return (double)input; },
+            [decValT] = input => { return ((DecimalValue)input).to_double(); },
+            [stringT] = input => {
+                var strValue = (string)input;
+                if (double.TryParse(strValue, out double result1)) {
+                    return result1;
+                }
+                if (!double.TryParse(strValue.Replace(",", "."), out double result2)) {
+                    log_e(string.Format("Double parse error: {0} -> {1}", strValue, result2));
+                }
+                return result2;
+            }
+        };
+
+        private static Dictionary<Type, Func<object, object>> types_to_string = new Dictionary<Type, Func<object, object>>() {
+            [boolT] = input => { return to_string((bool)input, true); },
+            [byteT] = input => { return ((byte)input).ToString(); },
+            [charT] = input => { return ((char)input).ToString(); },
+            [shortT] = input => { return ((short)input).ToString(); },
+            [intT] = input => { return ((int)input).ToString(); },
+            [longT] = input => { return ((long)input).ToString(); },
+            [floatT] = input => { return to_string((float)input, g7); },
+            [doubleT] = input => { return to_string((double)input, g7); },
+            [decValT] = input => { return ((DecimalValue)input).to_string(g7); },
+            [stringT] = input => { return (string)input; },
+            [vec2T] = input => { return to_string((Vector2)input, g7); },
+            [vec3T] = input => { return to_string((Vector3)input, g7); },
+            [colT] = input => { return to_string((Color)input, g4); },
+            [trValT] = input => { return to_string((TransformValue)input, g7); },
+            [idAnyT] = input => {
+                var idA = (IdAny)input; return string.Format("Id:{0} Value:{1}", idA.value, to_string(idA.value));
+            },
+            [strAnyT] = input => {
+                var idA = (StringAny)input; return string.Format("Id:{0} Value:{1}", idA.value, to_string(idA.value));
+            },
+            [lFloatT] = input => { return to_string((List<float>)input, g7, ","); },
+            [lDoubleT] = input => { return to_string((List<double>)input, g7, ","); },
+            [lStringT] = input => { return to_string((List<string>)input, " "); }
+        };
+
         // to - from
         private static Dictionary<System.Type, Dictionary<System.Type, Func<object, object>>> conv = new Dictionary<Type, Dictionary<Type, Func<object, object>>> {
             #region builtin_types
-            [boolT] = new Dictionary<Type, Func<object, object>>() {
-                [boolT]   = input => { return (bool)input;},
-                [byteT]   = input => { return SC.ToBoolean((byte)input);},
-                [charT]   = input => { return SC.ToBoolean(SC.ToInt32((char)input));},
-                [shortT]  = input => { return SC.ToBoolean((short)input);},
-                [intT]    = input => { return SC.ToBoolean((int)input);},
-                [longT]   = input => { return SC.ToBoolean((long)input);},
-                [floatT]  = input => { return SC.ToBoolean((float)input);},
-                [doubleT] = input => { return SC.ToBoolean((double)input);},
-                [decValT] = input => { return ((DecimalValue)input).to_bool();},
-                [stringT] = input => {
-                    var strValue = (string)input;
-                    if (strValue.Length == 1) {
-                        return strValue[0] != '0';
-                    }
-                    Boolean.TryParse(strValue, out bool result);
-                    return result;
-                },
-            },
-            [byteT] = new Dictionary<Type, Func<object, object>>(){
-                [boolT]     = input => { return SC.ToByte((bool)input);},
-                [byteT]     = input => { return (byte)input;},
-                [charT]     = input => { return SC.ToByte((char)input);},
-                [shortT]    = input => { try { return SC.ToByte((short)input);}   catch (SE e) { log_e(e.Message);} return default(byte);},
-                [intT]      = input => { try { return SC.ToByte((int)input);}     catch (SE e) { log_e(e.Message);} return default(byte);},
-                [longT]     = input => { try { return SC.ToByte((long)input);}    catch (SE e) { log_e(e.Message);} return default(byte);},
-                [floatT]    = input => { try { return SC.ToByte((float)input);}   catch (SE e) { log_e(e.Message);} return default(byte);},
-                [doubleT]   = input => { try { return SC.ToByte((double)input);}  catch (SE e) { log_e(e.Message);} return default(byte);},
-                [decValT]   = input => { try { return SC.ToByte(((DecimalValue)input).to_int());} catch (SE e) { log_e(e.Message);} return default(byte);},
-                [stringT]   = input => { Byte.TryParse((string)input, out byte result); return result;},
-            },
-            [charT] = new Dictionary<Type, Func<object, object>>(){
-                [boolT]   = input => { return SC.ToChar(to_int((bool)input));},
-                [byteT]   = input => { return SC.ToChar((byte)input);},
-                [charT]   = input => { return (char)input;},
-                [shortT]  = input => { try { return SC.ToChar((short)input);}     catch (SE e) { log_e(e.Message);} return default(char);},
-                [intT]    = input => { try { return SC.ToChar((int)input);}       catch (SE e) { log_e(e.Message);} return default(char);},
-                [longT]   = input => { try { return SC.ToChar((long)input);}      catch (SE e) { log_e(e.Message);} return default(char);},
-                [floatT]  = input => { try { return SC.ToChar(to_int((float)input));}   catch (SE e) { log_e(e.Message);} return default(char);},
-                [doubleT] = input => { try { return SC.ToChar(to_int((double)input));}  catch (SE e) { log_e(e.Message);} return default(char);},
-                [decValT] = input => { try { return SC.ToChar(((DecimalValue)input).to_int());} catch (SE e) { log_e(e.Message);} return default(char);},
-                [stringT] = input => { Char.TryParse((string)input, out char result); return result;},
-            },
-            [shortT] = new Dictionary<Type, Func<object, object>>(){
-                [boolT]   = input => { return SC.ToInt16((bool)input);},
-                [byteT]   = input => { return SC.ToInt16((byte)input);},
-                [charT]   = input => { return SC.ToInt16((char)input);},
-                [shortT]  = input => { return (short)input;},
-                [intT]    = input => { try { return SC.ToInt16((int)input);}        catch (SE e) {log_e(e.Message);} return default(short);},
-                [longT]   = input => { try { return SC.ToInt16((long)input);}       catch (SE e) {log_e(e.Message);} return default(short);},
-                [floatT]  = input => { try { return SC.ToInt16((float)input);}      catch (SE e) {log_e(e.Message);} return default(short);},
-                [doubleT] = input => { try { return SC.ToInt16((double)input);}     catch (SE e) {log_e(e.Message);} return default(short);},
-                [decValT] = input => { try { return SC.ToInt16(((DecimalValue)input).to_int());} catch (SE e) { log_e(e.Message);}return default(short);},
-                [stringT] = input => { Int16.TryParse((string)input, out short result); return result;},
-            },
-            [intT] = new Dictionary<Type, Func<object, object>>(){
-                [boolT]   = input => { return SC.ToInt32((bool)input);},
-                [byteT]   = input => { return SC.ToInt32((byte)input);},
-                [charT]   = input => { return SC.ToInt32((char)input);},
-                [shortT]  = input => { return SC.ToInt32((short)input);},
-                [intT]    = input => { return (int)input;},
-                [longT]   = input => { try { return SC.ToInt32((long)input);}       catch (SE e) {log_e(e.Message);} return default(int);},
-                [floatT]  = input => { try { return SC.ToInt32((float)input);}      catch (SE e) {log_e(e.Message);} return default(int);},
-                [doubleT] = input => { try { return SC.ToInt32((double)input);}     catch (SE e) {log_e(e.Message);} return default(int);},
-                [decValT] = input => { return ((DecimalValue)input).to_int();},
-                [stringT] = input => { Int32.TryParse((string)input, out int result); return result;},
-            },
-            [longT] = new Dictionary<Type, Func<object, object>>(){
-                [boolT]   = input => { return SC.ToInt64((bool)input);},
-                [byteT]   = input => { return SC.ToInt64((byte)input);},
-                [charT]   = input => { return SC.ToInt64((char)input);},
-                [shortT]  = input => { return SC.ToInt64((short)input);},
-                [intT]    = input => { return SC.ToInt64((int)input);},
-                [longT]   = input => { return (long)input;},
-                [floatT]  = input => { try { return SC.ToInt64((float)input);}      catch (SE e) { log_e(e.Message);} return default(long);},
-                [doubleT] = input => { try { return SC.ToInt64((double)input);}     catch (SE e) { log_e(e.Message);} return default(long);},
-                [decValT] = input => { return ((DecimalValue)input).to_long();},
-                [stringT] = input => { Int64.TryParse((string)input, out long result); return result;},
-            },
-            [floatT] = new Dictionary<Type, Func<object, object>>() {
-                [boolT]   = input => { return SC.ToSingle((bool)input);},
-                [byteT]   = input => { return SC.ToSingle((byte)input);},
-                [charT]   = input => { return SC.ToSingle(SC.ToInt32((char)input));},
-                [shortT]  = input => { return SC.ToSingle((short)input);},
-                [intT]    = input => { return SC.ToSingle((int)input);},
-                [longT]   = input => { return SC.ToSingle((long)input);},
-                [floatT]  = input => { return (float)input;},
-                [doubleT] = input => { try { return SC.ToSingle((double)input);}    catch (SE e) { log_e(e.Message);} return default(float);},
-                [decValT] = input => { return ((DecimalValue)input).to_float();},
-                [stringT] = input => {
-                    var strValue = (string)input;
-                    if (Single.TryParse(strValue, out float result1)) {
-                        return result1;
-                    }
-                    if (!Single.TryParse(strValue.Replace(",", "."), out float result2)) {
-                        log_e(string.Format("Float parse error: {0} -> {1}", strValue, result2));
-                    }                  
-                    return result2;
-                },
-            },
-            [doubleT] = new Dictionary<Type, Func<object, object>>() {
-                [boolT]   = input => { return SC.ToDouble((bool)input);},
-                [byteT]   = input => { return SC.ToDouble((byte)input);},
-                [charT]   = input => { return SC.ToDouble(SC.ToInt32((char)input));},
-                [shortT]  = input => { return SC.ToDouble((short)input);},
-                [intT]    = input => { return SC.ToDouble((int)input);},
-                [longT]   = input => { return SC.ToDouble((long)input);},
-                [floatT]  = input => { return SC.ToDouble((float)input);},
-                [doubleT] = input => { return (double)input;},
-                [decValT] = input => { return ((DecimalValue)input).to_double();},
-                [stringT] = input => {
-                    var strValue = (string)input;
-                    if (double.TryParse(strValue, out double result1)) {
-                        return result1;
-                    }
-                    if (!double.TryParse(strValue.Replace(",", "."), out double result2)) {
-                        log_e(string.Format("Double parse error: {0} -> {1}", strValue, result2));
-                    }
-                    return result2;
-                },
-            },
-            [stringT] = new Dictionary<Type, Func<object, object>>() {
-                [boolT] = input => { return to_string((bool)input, true); },
-                [byteT] = input => { return ((byte)input).ToString(); },
-                [charT] = input => { return ((char)input).ToString(); },
-                [shortT] = input => { return ((short)input).ToString(); },
-                [intT] = input => { return ((int)input).ToString(); },
-                [longT] = input => { return ((long)input).ToString(); },
-                [floatT] = input => { return to_string((float)input, g7); },
-                [doubleT] = input => { return to_string((double)input, g7); },
-                [decValT] = input => { return ((DecimalValue)input).to_string(g7); },
-                [stringT] = input => { return (string)input; },
-                [vec2T] = input => { return to_string((Vector2)input, g7); },
-                [vec3T] = input => { return to_string((Vector3)input, g7); },
-                [colT] = input => { return to_string((Color)input, g4); },
-                [trValT] = input => { return to_string((TransformValue)input, g7); },
-                [idAnyT] = input => {
-                    var idA = (IdAny)input; return string.Format("Id:{0} Value:{1}", idA.value, to_string(idA.value));
-                },
-                [strAnyT] = input => {
-                    var idA = (StringAny)input; return string.Format("Id:{0} Value:{1}", idA.value, to_string(idA.value));
-                },
-                [lFloatT] = input => { return to_string((List<float>)input, g7, ","); },
-                [lDoubleT] = input => { return to_string((List<double>)input, g7, ","); },
-                [lStringT] = input => { return to_string((List<string>)input, " ");  },
-            },
+            [boolT]   = types_to_bool,
+            [byteT]   = types_to_byte,
+            [charT]   = types_to_char,
+            [shortT]  = types_to_short,
+            [intT]    = types_to_int,
+            [longT]   = types_to_long,
+            [floatT]  = types_to_float,
+            [doubleT] = types_to_double,
+            [stringT] = types_to_string,
             #endregion
             #region custom_types
             [decValT] = new Dictionary<Type, Func<object, object>>() {
@@ -487,9 +506,12 @@ namespace Ex{
             [colT] = new Dictionary<Type, Func<object, object>>() {
                 [colT]      = input => { return (Color)input; },
                 [stringT]   = input => {
-                    var colorStr = (string)input; var split = colorStr.Split(' ');
-                    if (split.Length >= 3) {
+                    var colorStr = (string)input; 
+                    var split = colorStr.Split(' ');
+                    if (split.Length == 4) {
                         return new Color(to_float(split[1]), to_float(split[2]), to_float(split[3]), to_float(split[0]));
+                    }else if(split.Length == 3) {
+                        return new Color(to_float(split[1]), to_float(split[2]), to_float(split[0]));
                     }
                     log_e(string.Format("Color parse error with input: {0}", colorStr));
                     return Color.black;

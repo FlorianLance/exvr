@@ -43,6 +43,7 @@ using QtNodes::NodeDataType;
 #include "utility/math.hpp"
 #include "utility/vector.hpp"
 #include "geometry/point2.hpp"
+#include "geometry/point4.hpp"
 
 // qt-utility
 #include "qt_convertors.hpp"
@@ -194,9 +195,6 @@ private:
     StringAny m_value;
 };
 
-
-
-
 using CNT                       = ConnectionNode::Type;
 using IdAnyData                 = TypeNodeData<CNT::id_any_t, IdAny>;
 using StringAnyData             = TypeNodeData<CNT::string_any_t, StringAny>;
@@ -210,6 +208,7 @@ using DecimalListData           = TypeNodeData<CNT::decimal_list_t, DecimalList>
 using RealListData              = TypeNodeData<CNT::real_list_t, RealList>;
 using Vector2Data               = TypeNodeData<CNT::vector2_t, geo::Pt2<float>>;
 using Vector3Data               = TypeNodeData<CNT::vector3_t, geo::Pt3<float>>;
+using ColorData                 = TypeNodeData<CNT::color_t, QColor>;
 using TransformData             = TypeNodeData<CNT::transform_t, Transform>;
 using KeyboardButtonEventData   = TypeNodeData<CNT::keyboard_button_event_t, KeyboardButtonState>;
 using JoypadButtonEventData     = TypeNodeData<CNT::joypad_button_event_t, JoypadButtonState>;

@@ -80,7 +80,7 @@ struct Connector{
     // Connectors types
     enum class Type : int {
         Component, // Component
-        Boolean, Integer,Real, String, Vector3, Transform, Id_any, String_any, Random_real,// Generator
+        Boolean, Integer,Real, String, Vector2, Vector3, Color, Transform, Id_any, String_any, Random_real,// Generator
         From_time_any, Reals_to_vec2, Reals_to_vec3, Vec2_to_reals, Vec3_to_reals, String_list_to_id_any, Transform_to_vectors, Vectors_to_transform,// Convertor
         Curve_x, Logger, Post_it, // Display
         Decimal_trigonometry, Decimal_counter, Delay, Variable_delay, // Function
@@ -146,7 +146,9 @@ struct Connector{
         {T::Integer,                "Integer"sv,                    "Integer"sv},
         {T::Real,                   "Real"sv,                       "Real"sv},
         {T::String,                 "String"sv,                     "String"sv},
+        {T::Vector2,                "Vector2"sv,                    "Vector2"sv},
         {T::Vector3,                "Vector3"sv,                    "Vector3"sv},
+        {T::Color,                  "Color"sv,                      "Color"sv},
         {T::Transform,              "Transform"sv,                  "Transform"sv},
         {T::Id_any,                 "IdAny"sv,                      "Id any"sv},
         {T::String_any,             "StringAny"sv,                  "String any"sv},
@@ -250,6 +252,7 @@ struct Connector{
     static constexpr auto t_real        = CNT::real_t;
     static constexpr auto t_vec2        = CNT::vector2_t;
     static constexpr auto t_vec3        = CNT::vector3_t;
+    static constexpr auto t_col         = CNT::color_t;
     static constexpr auto t_transform   = CNT::transform_t;
     static constexpr auto t_str         = CNT::string_t;
     static constexpr auto t_img         = CNT::image_t;
@@ -316,7 +319,9 @@ struct Connector{
         {T::Integer,                C::Generator, M, {1,{t_int},                   1,{t_int}},                {v,{v},       {v}},     IN, FO, 1, PT},
         {T::Real,                   C::Generator, M, {1,{t_real},                  1,{t_real}},               {v,{v},       {v}},     IN, FO, 1, PT},
         {T::String,                 C::Generator, M, {1,{t_str},                   1,{t_str}},                {v,{v},       {v}},     IN, FO, 1, PT},
+        {T::Vector2,                C::Generator, M, {1,{t_vec2},                  1,{t_vec2}},               {v,{v},       {v}},     IN, FO, 1, PT},
         {T::Vector3,                C::Generator, M, {1,{t_vec3},                  1,{t_vec3}},               {v,{v},       {v}},     IN, FO, 1, PT},
+        {T::Color,                  C::Generator, M, {1,{t_col},                   1,{t_col}},                {v,{v},       {v}},     IN, FO, 1, PT},
         {T::Transform,              C::Generator, M, {1,{t_transform},             1,{t_transform}},          {v,{v},       {v}},     IN, PO, 1, PT},
         {T::Id_any,                 C::Generator, M, {1,{t_any},                   1,{t_id_any}},             {v,{v},       {v}},     IN, FO, 1, PT},
         {T::String_any,             C::Generator, M, {1,{t_any},                   1,{t_str_any}},            {v,{v},       {v}},     IN, FO, 1, PT},
