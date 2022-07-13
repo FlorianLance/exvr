@@ -101,6 +101,7 @@ HEADERS += \
     # controller
     controller/exvr_controller.hpp \
     # utility
+    gui/ex_widgets/ex_condition_w.hpp \
     utility/script_utility.hpp \
     utility/path_utility.hpp \
     # IO
@@ -333,6 +334,7 @@ SOURCES += \
     # controller
     controller/exvr_controller.cpp \
     # launcher   
+    gui/ex_widgets/ex_condition_w.cpp \
     launcher/exp_launcher.cpp \
     launcher/exp_launcher_communication.cpp \
     launcher/exp_launcher_process.cpp \

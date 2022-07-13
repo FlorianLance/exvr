@@ -48,6 +48,14 @@ QString Styles::border_color(const BDCol &bdCol){
     return bdCol.hexValue.length() > 0 ? QString("border-color: %1;").arg(bdCol.hexValue) : "";
 }
 
+QString Styles::border_width(int pixelSize){
+    return pixelSize > -1 ? QString("border-width: %1;").arg(pixelSize) : "";
+}
+
+QString Styles::border_style(const QString &borderStyle){
+    return borderStyle.length() > 0 ? QString("border-style: %1;").arg(borderStyle) : "";
+}
+
 QString Styles::font_family(QString family){
     return family.length() > 0 ? QString("font-family: \"%1\";").arg(family) : "";
 }

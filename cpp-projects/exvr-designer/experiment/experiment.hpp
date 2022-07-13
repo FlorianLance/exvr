@@ -101,24 +101,7 @@ public:
     }
 
     auto get_elements() const -> std::vector<FlowElement*>;
-
-//    template <typename T>
-//    static constexpr FlowElement::Type get_type(){
-//        if constexpr(std::is_same<T, Routine>()){
-//            return FlowElement::Type::Routine;
-//        }else if constexpr(std::is_same<T, Isi>()){
-//            return FlowElement::Type::Isi;
-//        }else if constexpr(std::is_same<T, LoopNode>()){
-//            return FlowElement::Type::LoopStart;
-//        }
-//        return FlowElement::Type::Node;
-//    }
-
-    auto get_elements_from_type(FlowElement::Type type) const{
-        return elements | std::ranges::views::filter([type](const auto &element) {
-            return element->type() == type;
-        });
-    }
+    auto get_elements_of_type(FlowElement::Type type) const;
 
     template<FlowElementDerived T>
     auto get_elements_from_type() const -> std::vector<T*>{
@@ -134,6 +117,8 @@ public:
 
     // ## routine
     auto get_routine(ElementKey routineKey) const -> Routine*;
+    auto get_routine(RowId id) const -> Routine*;
+    auto get_routines_name() const -> std::vector<QStringView>;
     // ### condition
     auto get_condition(ConditionKey conditionKey) const -> Condition*;
     auto get_condition(ElementKey routineKey, ConditionKey conditionKey) const -> Condition*;

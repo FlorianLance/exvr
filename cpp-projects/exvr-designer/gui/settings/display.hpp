@@ -137,6 +137,10 @@ struct Styles{
     static QString front_color_b(const FCol &fCol);
     static QString background_color_b(const BGCol &bgCol);
     static QString border_color(const BDCol &bdCol);
+    static QString border_width(int pixelSize);
+    // dashed dot-dash dot-dot-dash dotted double groove inset outset ridge solid none
+    static QString border_style(const QString &borderStyle);
+
 
     static QString font_family(QString family);
     static QString font_size(int fontSize = -1);

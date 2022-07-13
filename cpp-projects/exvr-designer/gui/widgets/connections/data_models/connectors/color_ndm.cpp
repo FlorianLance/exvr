@@ -24,6 +24,10 @@
 
 #include "color_ndm.hpp"
 
+
+// local
+#include "gui/settings/display.hpp"
+
 using namespace tool::ex;
 
 void ColorEmbeddedW::initialize(){
@@ -38,7 +42,19 @@ void ColorEmbeddedW::initialize(){
     });
 
     // add widget to ui
-    add_row_in_dialog(QSL("C: "), w->w.get());
+    add_row_in_dialog(QSL("C: "), w->w.get());    
+    m_valueText.setStyleSheet(
+        display::Styles::border_color(display::Styles::BDCol{display::Colors::blackH}) %
+        display::Styles::border_width(1) %
+        display::Styles::border_style("solid")
+    );
+}
+
+bool ColorEmbeddedW::set_text_value(const QString &value){
+    QColor col = str::Convertor::to_color(value);
+    p.fill(col);
+    m_valueText.setPixmap(p);
+    return true;
 }
 
 void ColorNodeDataModel::compute(){

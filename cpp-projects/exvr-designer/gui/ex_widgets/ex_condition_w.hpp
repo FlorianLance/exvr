@@ -24,36 +24,45 @@
 
 #pragma once
 
+// Qt
+#include <QFrame>
+#include <QComboBox>
+
 // qt-utility
-#include "gui/ex_widgets/ex_select_color_w.hpp"
+#include "gui/ex_widgets/ex_item_w.hpp"
 
 // local
-#include "gui/widgets/connections/data_models/connectors/connector_node_data_model.hpp"
+#include "data/flow_elements/routine.hpp"
 
-namespace tool::ex {
+namespace tool::ex{
 
-class ColorEmbeddedW : public NodeContainerW<ExSelectColorW>{
+
+class ExConditionW : public ExItemW<QFrame>{
+
     Q_OBJECT
 public:
-    void initialize() override;
-//    bool update_with_info(QStringView value);
-    bool set_text_value(const QString &value) override;
+
+    ExConditionW(QString name = "");
+    ExConditionW *init_widget(bool enabled = true);
+
+    void update_from_arg(const Arg &arg) override;
+    Arg convert_to_arg() const override;
+    void update_from_components() override;
+
+    QString display()const;
 
 private:
-    QPixmap p = QPixmap(30,15);
+
+    void update_routines_list_widget();
+    void update_conditions_list_widget();
+
+    QLabel *m_routineTitle = nullptr;
+    QLabel *m_conditionTitle = nullptr;
+    QComboBox *m_routineNames = nullptr;
+    QComboBox *m_conditionNames = nullptr;
+
+    ElementKey m_currentRoutineKey = {-1};
+    ConditionKey m_currentConditionKey = {-1};
 };
 
-class ColorNodeDataModel : public TypedConnectorDataModel<Connector::Type::Color, ColorEmbeddedW>{
-    Q_OBJECT
-public slots:
-    void compute() override;
-public:
-    void init_ports_caption() override;
-
-//    void update_with_info(QStringView id, QStringView value) override{
-
-//    }
-};
 }
-
-

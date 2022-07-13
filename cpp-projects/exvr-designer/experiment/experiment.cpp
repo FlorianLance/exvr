@@ -106,33 +106,42 @@ auto Experiment::get_elements() const -> std::vector<FlowElement*>{
     return children;
 }
 
-//auto Experiment::get_elements_from_type(FlowElement::Type type) const -> std::vector<FlowElement*>{
+auto Experiment::get_elements_of_type(FlowElement::Type type) const{
+    return elements | std::ranges::views::filter([type](const auto &element) {
+        return element->type() == type;
+    });
+}
 
 
-////    auto elementsFromType = elements | std::ranges::views::filter([type](const auto &element) {
-////        return element->type() == type;
-////    });
-////    return elementsFromType;
-//    std::vector<FlowElement*> children;
-//    for(const auto &elem : elements){
-//        if(elem->type() == type){
-//            children.push_back(elem.get());
-//        }
-//    }
-//    return children;
-//}
 
 auto Experiment::get_routine(ElementKey routineKey) const -> Routine*{
-
     if(auto elementFound = std::find_if(elements.begin(), elements.end(), [routineKey](const auto &element){
             return element->key() == routineKey.v && element->is_routine();
         }); elementFound != elements.end()){
-
         return dynamic_cast<Routine*>(elementFound->get());
     }
-
-//    QtLogger::error(QSL("[EXP] Routine with key ") % QString::number(routineKey.v) % QSL(" not found."));
     return nullptr;
+}
+
+auto Experiment::get_routine(RowId id) const -> Routine*{
+    auto routines = get_elements_of_type(FlowElement::Type::Routine);
+    if(id.v < std::ranges::distance(routines)){
+        auto routinesIt = routines.begin();
+        std::ranges::advance(routinesIt, id.v);
+        return dynamic_cast<Routine*>(routinesIt->get());
+    }
+    return nullptr;
+}
+
+auto Experiment::get_routines_name() const -> std::vector<QStringView>{
+
+    auto routinesV = get_elements_of_type(FlowElement::Type::Routine);
+    std::vector<QStringView> names;
+    names.reserve(std::ranges::distance(routinesV));
+    for(auto it = routinesV.begin(); it != routinesV.end(); ++it){
+        names.push_back(it->get()->name());
+    }
+    return names;
 }
 
 
@@ -257,7 +266,7 @@ void Experiment::select_element_from_ptr(FlowElement *element, bool updateSignal
 void Experiment::add_element(FlowElement::Type type, size_t index){
 
 
-    auto typeElements = get_elements_from_type(type);
+    auto typeElements = get_elements_of_type(type);
     switch (type) {
     case FlowElement::Type::Routine:{
 
