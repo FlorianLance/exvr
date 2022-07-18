@@ -225,7 +225,7 @@ struct Component {
  /**OK*/{T::Sphere,                   C::Model,       TO::V, CO::B, N, N, N, N, N, N, P::M, R::OS, S::Sta, "Sphere"sv, "Sphere"sv, "Sphere"sv,"Sphere"sv},
  /**OK*/{T::Torus,                    C::Model,       TO::V, CO::B, N, N, N, N, N, N, P::M, R::OS, S::Sta, "Torus"sv, "Torus"sv, "Torus"sv,"Torus"sv},
         // Network
-        {T::Parallel_port_writer,     C::Network,     TO::N, CO::B, N, N, N, N, N, N, P::H, R::OS, S::Sta, "Parallel_port_writer"sv, "Parallel port writer"sv, "ParallelPortWriter"sv, "Parallel_port"sv},
+        {T::Parallel_port_writer,     C::Network,     TO::N, CO::B, N, N, N, N, N, Y, P::H, R::OS, S::Sta, "Parallel_port_writer"sv, "Parallel port writer"sv, "ParallelPortWriter"sv, "Parallel_port"sv},
         {T::Serial_port_reader,       C::Network,     TO::U, CO::B, N, N, N, N, N, Y, P::H, R::OS, S::Sta, "Serial_port_reader"sv, "Serial port reader"sv, "SerialPortReader"sv, "USB"sv},
         {T::Serial_port_writer,       C::Network,     TO::U, CO::B, N, N, N, N, N, N, P::H, R::OS, S::Sta, "Serial_port_writer"sv, "Serial port writer"sv, "SerialPortWriter"sv, "USB"sv},
         {T::Udp_reader,               C::Network,     TO::U, CO::I, N, N, N, N, N, Y, P::H, R::OS, S::Sta, "Udp_reader"sv, "UDP reader"sv, "UdpReader"sv, "UDP"sv},

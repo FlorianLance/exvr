@@ -252,6 +252,8 @@ namespace Ex {
 
                             var button = buttonGO.GetComponent<Button>();
                             button.GetComponent<UnityEngine.UI.Image>().material = m_buttonsMat;
+
+                            //button.GetComponent<UnityEngine.UI.Image>().sprite = new Sprite()
                             button.interactable = false;
                             buttonGO.SetActive(true);
 
@@ -278,6 +280,25 @@ namespace Ex {
                 for (int jj = 0; jj < buttonsName.Length; ++jj) {
                     if (buttonsName[jj].Length > 0) {
                         currentC.update_text("buttons_ts", m_buttonsText[ii][jj]);
+                        if (buttonsName[jj][0] == '#') {
+                            var alias = buttonsName[jj].Substring(1);
+                            var resource = ExVR.Resources().get_image_file_data(alias, false);
+                            if(resource != null) {
+
+                                var image = m_buttonsText[ii][jj].transform.parent.GetComponent<UnityEngine.UI.Image>();
+                                image.sprite = Sprite.Create(
+                                    resource.texture,
+                                    new Rect(0.0f, 0.0f, resource.texture.width, resource.texture.height),
+                                    new Vector2(0f, 0f),
+                                    100.0f,
+                                    0,
+                                    SpriteMeshType.FullRect
+                                );
+
+                                m_buttonsText[ii][jj].text = "";
+                                continue;
+                            }                            
+                        }
                         m_buttonsText[ii][jj].text = buttonsName[jj];
                     }
                 }

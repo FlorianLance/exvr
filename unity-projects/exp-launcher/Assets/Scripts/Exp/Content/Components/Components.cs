@@ -488,9 +488,9 @@ namespace Ex{
 
         public void update_states_from_time(Condition condition, double time) {
 
-            if(time > condition.duration()) {
-                ExVR.Log().error("DURATION 0 CONDITION " + time +" " + condition.duration());
-            }
+            //if(time > condition.duration()) {
+            //    ExVR.Log().error("DURATION 0 CONDITION " + time +" " + condition.duration());
+            //}
 
             // component inside condition
             HashSet<int> componentInsideCondition = new HashSet<int>();

@@ -239,7 +239,7 @@ namespace Ex {
                             return;
                         }
                         logging.Value.triggersFileLogger.write(
-                            "frame_id,routine_name,condition_name,ellapsed_exp_time,ellapsed_element_time,trigger_info\n");
+                            "frame_id,routine_name,condition_name,ellapsed_exp_time,ellapsed_element_time,trigger_info", true);
                     }
                 }
             }
