@@ -43,6 +43,12 @@ void Vector2EmbeddedW::initialize(){
     add_row_in_dialog(QSL("V: "), w->w.get());
 }
 
+bool Vector2EmbeddedW::set_text_value(const QString &value){
+    auto r = value;
+    m_valueText.setText(r.replace(" ", "\n"));
+    return true;
+}
+
 void Vector2NodeDataModel::compute(){
 
     if(check_infinity_loop()){

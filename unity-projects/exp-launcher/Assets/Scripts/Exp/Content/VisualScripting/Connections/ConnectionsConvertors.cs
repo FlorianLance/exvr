@@ -144,6 +144,11 @@ namespace Ex{
             ["vector3:any"] = input => { return input; },
             ["vector3:trigger"] = input => { return null; },
             ["vector3:string"] = input => { return Converter.to_string((Vector3)input); },
+            // # from color
+            ["color:any"] = input => { return input; },
+            ["color:trigger"] = input => { return null; },
+            ["color:string"] = input => { return Converter.to_string((Color)input); },
+            ["color:vector3"] = input => { return Converter.to_vector3((Color)input); },
             // # from transform
             ["transform:any"] = input => { return input; },
             ["transform:trigger"] = input => { return null; },

@@ -177,8 +177,6 @@ namespace Ex{
 
         public override void update_from_current_config() {
 
-
-
             audioSource.mute = currentC.get<bool>("mute");
             set_volume(currentC.get<float>("volume"));
 

@@ -559,6 +559,22 @@ DataSP ColorToStringConverter::operator()(DataSP data){
     return m_value;
 }
 
+DataSP ColorToVector3Converter::operator()(DataSP data){
+    if(is_from_component(data)){
+        auto v = std::make_shared<Vector3Data>();
+        v->set_runtime();
+        return m_value = v;;
+    }
+
+    if (auto inputData =std::dynamic_pointer_cast<ColorData>(data)){
+        m_value = std::make_shared<Vector3Data>(Convertor::to_vector3(inputData->value()));
+        propagate_runtime(inputData, m_value);
+    }else{
+        m_value.reset();
+    }
+    return m_value;
+}
+
 
 DataSP TransformToStringConverter::operator()(DataSP data){
     if(is_from_component(data)){

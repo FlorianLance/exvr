@@ -36,6 +36,8 @@ class Vector2EmbeddedW : public NodeContainerW<ExVector2dW>{
     Q_OBJECT
 public:
     void initialize() override;
+
+    bool set_text_value(const QString &value) override;
 };
 
 class Vector2NodeDataModel : public TypedConnectorDataModel<Connector::Type::Vector2, Vector2EmbeddedW>{

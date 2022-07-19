@@ -485,6 +485,7 @@ namespace Ex{
                 [doubleT]   = input => { var vf = to_float((double)input); return new Vector3(vf, vf, vf); },
                 [vec2T]     = input => { var v3 = ((Vector2)input); return new Vector3(v3.x, v3.y, 0); },
                 [vec3T]     = input => { return (Vector3)input; },
+                [colT]      = input => { var c = ((Color)input); return new Vector3(c.r,c.g,c.b); },
                 [stringT] = input => {
                     var vector3Str = (string)input;
                     var split = vector3Str.Split(' ');

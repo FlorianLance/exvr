@@ -228,6 +228,7 @@ void DataNodeModels::initialize(){
     r->registerTypeConverter(std::make_pair(ColorData().type(),AnyData().type()),TC{ToAnyConverter()});
     r->registerTypeConverter(std::make_pair(ColorData().type(),VoidData().type()),TC{ToVoidConverter()});
     r->registerTypeConverter(std::make_pair(ColorData().type(),StringData().type()),TC{ColorToStringConverter()});
+    r->registerTypeConverter(std::make_pair(ColorData().type(),Vector3Data().type()),TC{ColorToVector3Converter()});
     // ### transform
     r->registerTypeConverter(std::make_pair(TransformData().type(),AnyData().type()),TC{ToAnyConverter()});
     r->registerTypeConverter(std::make_pair(TransformData().type(),VoidData().type()),TC{ToVoidConverter()});
