@@ -899,7 +899,6 @@ namespace Ex{
             // quit the program
             if (quitAction != null) {
                 exp_log(quitAction.source, "quit");
-                GlobalVariables.wantToLeave = true;
 #if UNITY_EDITOR
                 UnityEditor.EditorApplication.isPlaying = false;
 #else

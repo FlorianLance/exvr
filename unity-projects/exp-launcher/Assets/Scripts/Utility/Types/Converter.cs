@@ -34,8 +34,9 @@ namespace Ex{
 
     using SC = System.Convert;
     using SE = System.SystemException;
-    public static class Converter {      
+    public static class Converter {
 
+        public const string g2 = "G2";
         public const string g4  = "G4";
         public const string g7  = "G7";
         public const string g15 = "G15";
