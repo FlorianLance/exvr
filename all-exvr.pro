@@ -28,10 +28,35 @@
 PROJECT_NAME = all-exvr
 
 TEMPLATE = subdirs
-CONFIG += ordered
 
-SUBDIRS = \        
-	toolbox\        
-        ../exvr\
+SUBDIRS = base opengl-utility 3d-engine qt-utility nodes tool-test demos \
+          exvr-designer exvr-components exvr-export exvr-test\
 
+# where to find the sub projects
+## toolbox
+base.subdir                     = toolbox/cpp-projects/base
+opengl-utility.subdir           = toolbox/cpp-projects/opengl-utility
+3d-engine.subdir                = toolbox/cpp-projects/3d-engine
+qt-utility.subdir               = toolbox/cpp-projects/qt-utility
+nodes.subdir                    = toolbox/cpp-projects/nodes
+tool-test.subdir                = toolbox/cpp-projects/tool-test
+demos.subdir                    = toolbox/cpp-projects/demos
+## exvr
+exvr-designer.subdir            = cpp-projects/exvr-designer
+exvr-components.subdir          = cpp-projects/exvr-components
+exvr-export.subdir              = cpp-projects/exvr-export
+exvr-test.subdir                = cpp-projects/exvr-test
 
+# dependencies
+## toolbox
+opengl-utility.depends          = base
+3d-engine.depends               = opengl-utility
+qt-utility.depends              = opengl-utility
+nodes.depends                   = base
+tool-test.depends               = opengl-utility
+demos.depends                   = 3d-engine
+## exvr
+exvr-designer.depends           = qt-utility nodes
+exvr-components                 = qt-utility
+exvr-export.depends             = exvr-components
+exvr-test.depends               = exvr-designer
