@@ -290,8 +290,11 @@ namespace Ex{
                     if (movementFactor >= 1f) {
                         doLoop = false;
                         value = 1f;
-                    } else {
+                    } else  if( movementFactor >= 0f){                        
                         value = Mathf.Clamp01(settings.speedCurve.Evaluate(movementFactor));
+                    } else {
+                        log_error("Movement factor invalid: " + movementFactor);
+                        value = 0f;
                     }
 
                 } else {

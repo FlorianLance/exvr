@@ -376,6 +376,15 @@ namespace Ex{
             // set connections between components and connectors
             set_connections();
 
+            // reset components current routine/condition/timeline/config
+            foreach(var component in ExVR.Components().componentPerName) {
+                component.Value.currentRoutine   = null;
+                component.Value.currentCondition = null;
+                component.Value.currentTimeline  = null;
+                component.Value.currentC         = null;
+            }
+
+
             // actions
             {
                 // set components config

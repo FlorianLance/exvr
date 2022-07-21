@@ -257,8 +257,12 @@ namespace Ex {
         // configs
         public ComponentInitConfig init_config() { return initC; }
 
+        public bool has_current_config() {
+            return currentC != null;
+        }
+
         public ComponentConfig current_config() {
-            if (currentC == null) {
+            if (!has_current_config()) {
                 log_error("No current config set, check if component has been added to this condition.");
             }
             return currentC;
@@ -267,6 +271,7 @@ namespace Ex {
             if (configsPerName.ContainsKey(configName)) {
                 return configsPerName[configName];
             }
+            log_error(string.Format("No config with name [{0}] available for this component.", configName));
             return null;
         }
 
@@ -274,6 +279,7 @@ namespace Ex {
             if (configsPerKey.ContainsKey(configKey)) {
                 return configsPerKey[configKey];
             }
+            log_error(string.Format("No config with key [{0}] available for this component.", configKey));
             return null;
         }
 
@@ -303,6 +309,28 @@ namespace Ex {
                 // update config of the action
                 action.set_config(config);
             }             
+        }
+
+        // routine
+        public bool has_current_routine() {
+            return currentRoutine != null;
+        }
+        public Routine current_routine() {
+            if (!has_current_routine()) {
+                log_error("No current routine set, check if component has been added to this condition.");
+            }
+            return currentRoutine;
+        }
+
+        // condition
+        public bool has_current_condition() {
+            return currentCondition != null;
+        }
+        public Condition current_condition() {
+            if (!has_current_condition()) {
+                log_error("No current condition set, check if component has been added to this condition.");
+            }
+            return currentCondition;
         }
 
         // setup component, parent, layer, configurations...
