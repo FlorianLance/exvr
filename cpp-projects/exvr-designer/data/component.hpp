@@ -225,11 +225,11 @@ struct Component {
  /**OK*/{T::Sphere,                   C::Model,       TO::V, CO::B, N, N, N, N, N, N, P::M, R::OS, S::Sta, "Sphere"sv, "Sphere"sv, "Sphere"sv,"Sphere"sv},
  /**OK*/{T::Torus,                    C::Model,       TO::V, CO::B, N, N, N, N, N, N, P::M, R::OS, S::Sta, "Torus"sv, "Torus"sv, "Torus"sv,"Torus"sv},
         // Network
-        {T::Parallel_port_writer,     C::Network,     TO::N, CO::B, N, N, N, N, N, Y, P::H, R::OS, S::Sta, "Parallel_port_writer"sv, "Parallel port writer"sv, "ParallelPortWriter"sv, "Parallel_port"sv},
-        {T::Serial_port_reader,       C::Network,     TO::U, CO::B, N, N, N, N, N, Y, P::H, R::OS, S::Sta, "Serial_port_reader"sv, "Serial port reader"sv, "SerialPortReader"sv, "USB"sv},
-        {T::Serial_port_writer,       C::Network,     TO::U, CO::B, N, N, N, N, N, N, P::H, R::OS, S::Sta, "Serial_port_writer"sv, "Serial port writer"sv, "SerialPortWriter"sv, "USB"sv},
-        {T::Udp_reader,               C::Network,     TO::U, CO::I, N, N, N, N, N, Y, P::H, R::OS, S::Sta, "Udp_reader"sv, "UDP reader"sv, "UdpReader"sv, "UDP"sv},
-        {T::Udp_writer,               C::Network,     TO::U, CO::I, N, N, N, N, N, N, P::H, R::OS, S::Sta, "Udp_writer"sv, "UDP writer"sv, "UdpWriter"sv, "UDP"sv},
+        {T::Parallel_port_writer,     C::Network,     TO::N, CO::B, N, N, Y, N, N, Y, P::H, R::OS, S::Sta, "Parallel_port_writer"sv, "Parallel port writer"sv, "ParallelPortWriter"sv, "Parallel_port"sv},
+        {T::Serial_port_reader,       C::Network,     TO::U, CO::B, N, N, Y, N, N, Y, P::H, R::OS, S::Sta, "Serial_port_reader"sv, "Serial port reader"sv, "SerialPortReader"sv, "USB"sv},
+        {T::Serial_port_writer,       C::Network,     TO::U, CO::B, N, N, Y, N, N, Y, P::H, R::OS, S::Sta, "Serial_port_writer"sv, "Serial port writer"sv, "SerialPortWriter"sv, "USB"sv},
+        {T::Udp_reader,               C::Network,     TO::U, CO::I, N, N, Y, N, N, Y, P::H, R::OS, S::Sta, "Udp_reader"sv, "UDP reader"sv, "UdpReader"sv, "UDP"sv},
+        {T::Udp_writer,               C::Network,     TO::U, CO::I, N, N, Y, N, N, Y, P::H, R::OS, S::Sta, "Udp_writer"sv, "UDP writer"sv, "UdpWriter"sv, "UDP"sv},
         // Output
         {T::Global_logger,            C::Output,      TO::N, CO::I, Y, Y, Y, N, N, N, P::H, R::OS, S::Sta, "Global_logger"sv, "Global logger"sv, "GlobalLogger"sv, "Logger"sv},
         {T::Logger,                   C::Output,      TO::N, CO::I, N, N, N, N, N, N, P::H, R::OS, S::Sta, "Logger"sv, "Logger"sv, "Logger"sv, "Logger"sv},
@@ -521,11 +521,11 @@ struct Component {
         {T::Joypad,                    "axis"sv,                       CNT::joypad_axis_event_t,       "Joypad axis event"sv},
         // Model
         // Network
-        {T::Parallel_port_writer,      "trigger exp time"sv,           CNT::real_t,                    "..."sv},
-        {T::Serial_port_writer,        "trigger exp time"sv,           CNT::real_t,                    "..."sv},
-        {T::Serial_port_reader,        "message"sv,                    CNT::time_any_t,                "..."sv},
-        {T::Udp_reader,                "message"sv,                    CNT::time_any_t,                "..."sv},
-        {T::Udp_writer,                "trigger exp time"sv,           CNT::real_t,                    "..."sv},
+        {T::Parallel_port_writer,      "message sent"sv,               CNT::time_any_t,                "..."sv},
+        {T::Serial_port_writer,        "message sent"sv,               CNT::time_any_t,                "..."sv},
+        {T::Serial_port_reader,        "message read"sv,               CNT::time_any_t,                "..."sv},
+        {T::Udp_reader,                "message read"sv,               CNT::time_any_t,                "..."sv},
+        {T::Udp_writer,                "message sent"sv,               CNT::time_any_t,                "..."sv},
         // Resource
         {T::Plot_resource,             "plot loaded"sv,                CNT::plot_t,                    "Loaded plot (called at routine start)"sv},
         {T::Plot_resource,             "plot loaded alias"sv,          CNT::string_t,                  "Alias of the loaded plot (called at routine start)"sv},

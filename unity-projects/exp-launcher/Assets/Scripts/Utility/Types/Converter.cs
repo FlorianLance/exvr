@@ -452,7 +452,7 @@ namespace Ex{
             },
             [timeAnyT] = new Dictionary<Type, Func<object, object>>() {
                 [timeAnyT] = input => { return (TimeAny)input; },
-                [doubleT] = input => { return new TimeAny((double)input, null); },
+                [doubleT] = input => { return new TimeAny((double)input, -1.0, null); },
             },
             #endregion
             #region unity_types

@@ -134,7 +134,8 @@ struct StringAny{
     std::shared_ptr<NodeData> data;
 };
 struct TimeAny{
-    qreal time;
+    qreal expTime;
+    qreal routineTime;
     std::shared_ptr<NodeData> data;
 };
 

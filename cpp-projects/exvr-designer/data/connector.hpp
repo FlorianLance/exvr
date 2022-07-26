@@ -297,7 +297,8 @@ struct Connector{
         // # Component
         {T::Component,              C::Component, M, {0,{},                        0,{}},                     {i,{},        {}},      LO, FO, 0, PT},
         // # Convertor
-        {T::From_time_any,          C::Convertor, M, {1,{t_time_any},              2,{t_real,t_any}},         {v,{v},       {v,v}},   LO, FO, 0, PT},
+        {T::From_time_any,          C::Convertor, M, {1,{t_time_any},              3,{t_real,t_real,t_any}},  {v,{v},       {v,v,v}},
+         LO, FO, 0, PT},
         {T::Reals_to_vec2,          C::Convertor, M, {2,{t_real,t_real},           1,{t_vec2}},               {v,{v,v},     {v}},     LO, FO, 0, PT},
         {T::Vec2_to_reals,          C::Convertor, M, {1,{t_vec2},                  2,{t_real,t_real}},        {v,{v},       {v,v}},   LO, FO, 0, PT},
         {T::Reals_to_vec3,          C::Convertor, M, {3,{t_real,t_real,t_real},    1,{t_vec3}},               {v,{v,v,v},   {v}},     LO, FO, 0, PT},

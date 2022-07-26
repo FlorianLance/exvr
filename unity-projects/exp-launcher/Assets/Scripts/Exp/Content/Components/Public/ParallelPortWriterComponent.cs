@@ -48,7 +48,7 @@ namespace Ex{
 
         private bool m_int16Mode = false;
         private bool m_available = false;
-        private static readonly string m_triggerExpTimeSignalStr = "trigger exp time";
+        private static readonly string m_messageSentSignalStr = "message sent";
         private List<Tuple<double, double, string>> triggerEvents = null;
 
         #region ex_functions
@@ -62,7 +62,7 @@ namespace Ex{
             add_slot("send pulse", (value) => {
                 send_pulse((int)value, (float)currentC.get<double>("pulse_time"), currentC.get<string>("port"));
             });
-            add_signal(m_triggerExpTimeSignalStr);
+            add_signal(m_messageSentSignalStr);
 
             try {
                 m_available = is_inpout_driver_opened_x64() != 0;
@@ -131,7 +131,7 @@ namespace Ex{
             ExVR.Coroutines().start(reset_pulse(pulseTime, port));
 
             // send trigger time
-            invoke_signal(m_triggerExpTimeSignalStr, expTime);
+            invoke_signal(m_messageSentSignalStr, new TimeAny(expTime, routineTime, value));
 
             // add trigger
             if (triggerEvents == null) {
@@ -159,7 +159,7 @@ namespace Ex{
             dll_write(value, port);
 
             // send trigger time
-            invoke_signal(m_triggerExpTimeSignalStr, expTime);
+            invoke_signal(m_messageSentSignalStr, new TimeAny(expTime, routineTime, value));
 
             // add trigger
             if(triggerEvents == null) {
