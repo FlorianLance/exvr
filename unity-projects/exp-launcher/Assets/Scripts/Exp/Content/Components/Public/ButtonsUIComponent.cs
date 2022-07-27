@@ -333,6 +333,11 @@ namespace Ex {
 
         #region public_functions
 
+        public void set_text(string text) {
+            currentC.set<string>("buttons_text", text);
+            update_from_current_config();
+        }
+
         public void select_next_button() {
 
             if (m_buttonsL.Count == 0) {

@@ -157,7 +157,7 @@ namespace Ex{
         private SerialPortWriterJob m_serialWriterT = null;
         static private readonly string m_messageSentSignalStr = "message sent";
 
-        private List<Tuple<double, double, string>> triggerEvents = null;
+        private List<Tuple<double, double, string>> m_triggerEvents = null;
 
         #region ex_functions
         protected override bool initialize() {
@@ -188,17 +188,21 @@ namespace Ex{
 
         protected override void start_routine() {
 
-            triggerEvents = null;
+            m_triggerEvents = null;
             if (currentC.get<bool>("send_new_routine")){
-                Debug.LogError("new routine");
                 write();
             }
         }
 
         protected override void set_update_state(bool doUpdate) {
+
+            if(currentC == null) {
+                return;
+            }
+
             if (doUpdate && currentC.get<bool>("send_new_update_block")) {
                 write();
-            }else if (!doUpdate && currentC.get<bool>("send_end_update_block")){
+            }else if (!doUpdate && currentC.get<bool>("send_end_update_block")) {
                 write();
             }            
         }
@@ -215,14 +219,14 @@ namespace Ex{
 
             Tuple<double,double,string> triggerSent;
             while(m_serialWriterT.triggersSent.TryDequeue(out triggerSent)) {
-                if(triggerEvents == null) {
-                    triggerEvents = new List<Tuple<double, double, string>>();
+                if(m_triggerEvents == null) {
+                    m_triggerEvents = new List<Tuple<double, double, string>>();
                 }
-                triggerEvents.Add(triggerSent);
+                m_triggerEvents.Add(triggerSent);
             }
 
-            if (triggerEvents != null) {
-                foreach (var time in triggerEvents) {
+            if (m_triggerEvents != null) {
+                foreach (var time in m_triggerEvents) {
                     invoke_signal(m_messageSentSignalStr, new TimeAny(time.Item1, time.Item2, time.Item3));
                 }
             }            
@@ -277,8 +281,8 @@ namespace Ex{
         }
 
         public override List<Tuple<double, double, string>> format_trigger_data_for_global_logger() {
-            var tEvents = triggerEvents;
-            triggerEvents = null;
+            var tEvents = m_triggerEvents;
+            m_triggerEvents = null;
             return tEvents;
         }
 

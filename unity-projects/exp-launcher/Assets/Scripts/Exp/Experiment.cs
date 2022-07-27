@@ -137,8 +137,6 @@ namespace Ex{
             ExVR.Time().start_new_frame();
             StartCoroutine("end_of_frame");
 
-            //log_error("UP");
-
             // update current element
             Profiler.BeginSample("[ExVR][Experiment] update_current_element");
             FlowElementInfo elementInfo = schreduler.update_current_flow_element();
