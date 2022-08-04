@@ -244,7 +244,7 @@ struct Component {
         {T::Falling_spheres,          C::Scene,       TO::B, CO::B, N, N, N, Y, N, N, P::M, R::OS, S::Exp, "Falling_spheres"sv, "Falling spheres"sv, "FallingSpheres"sv, "Falling_spheres"sv},
         {T::Flashing_dot,             C::Scene,       TO::B, CO::B, N, N, N, Y, N, N, P::M, R::OS, S::Exp, "Flashing_dot"sv, "Flashing dot"sv, "FlashingDot"sv,"Dot"sv},
         {T::Mirror,                   C::Scene,       TO::V, CO::C, N, N, N, Y, N, N, P::M, R::OS, S::Leg, "Mirror"sv, "Mirror"sv, "Mirror"sv, "Mirror"sv},
-        {T::MRI,                      C::Scene,       TO::B, CO::B, N, N, N, Y, N, N, P::M, R::OS, S::Exp, "MRI"sv, "MRI"sv, "MRI"sv, "MRI"sv},
+        {T::MRI,                      C::Scene,       TO::B, CO::B, N, N, N, Y, N, N, P::M, R::CS, S::Exp, "MRI"sv, "MRI"sv, "MRI"sv, "MRI"sv},
         {T::Multi_AB,                 C::Scene,       TO::V, CO::B, N, N, N, Y, N, N, P::H, R::OS, S::Sta, "Multi_AB"sv, "Multi assets bundles"sv, "MultiAB"sv, "Unity_scene_bundle"sv},
         {T::Unity_asset_bundle,       C::Scene,       TO::V, CO::B, N, N, N, Y, N, N, P::H, R::OS, S::Sta, "Unity_asset_bundle"sv, "Unity asset bundle"sv, "AssetBundle"sv, "Unity_scene_bundle"sv},
         // Script
