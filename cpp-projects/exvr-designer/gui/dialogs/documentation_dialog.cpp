@@ -53,6 +53,7 @@ DocumentationDialog::DocumentationDialog(){
 
     genPb = new QPushButton("Generate");
     openPb = new QPushButton("Open");
+    reloadPb = new QPushButton("Reload");
     connect(genPb, &QPushButton::clicked, this, [&]{
         QFile file(currentDocPath);
         if (file.open(QIODevice::ReadWrite)) {
@@ -67,8 +68,16 @@ DocumentationDialog::DocumentationDialog(){
     connect(openPb, &QPushButton::clicked, this, [&]{
         QDesktopServices::openUrl(QUrl(currentDocPath, QUrl::TolerantMode));
     });
+    connect(reloadPb, &QPushButton::clicked, this, [&]{
+        auto fileName = currentDocPath.split("/").last();
+        qDebug() << "filename " << fileName;
+        if(auto sec = get_doc_section(fileName.toStdString().c_str()); sec.has_value()){
+            qDebug() << "reload section "<< from_view(section_name(sec.value()));
+            reload_sub_section_markdown_file(sec.value(), true);
+        }
+    });
 
-    auto buttons = ui::F::gen(ui::L::HB(),{genPb, openPb}, LStretch{true},LMargins{false});
+    auto buttons = ui::F::gen(ui::L::HB(),{genPb, openPb, reloadPb}, LStretch{true},LMargins{false});
     mainLayout->addWidget(ui::F::gen(ui::L::VB(),{buttons, documentationsCategoriesW = new SectionW(QSL("<b>Sections:</b>"))}, LStretch{false}, LMargins{true}));
 
     QStringList items;
@@ -80,13 +89,11 @@ DocumentationDialog::DocumentationDialog(){
 
     connect(documentationsCategoriesW->lwContent, &QListWidget::currentRowChanged, this, [&](int index){
         if(auto section = get_doc_section(index); section.has_value()){
-//            reaload_sub_section_markdown_file(section.value(), false);
             show_section(section.value(), false);
         }
     });
     connect(documentationsCategoriesW->lwContent, &QListWidget::clicked, this, [&](QModelIndex index){
         if(auto section = get_doc_section(index.row()); section.has_value()){
-//            reaload_sub_section_markdown_file(section.value(), false);
             show_section(section.value(), false);
         }
     });
@@ -102,11 +109,6 @@ DocumentationDialog::DocumentationDialog(){
             browser->setOpenLinks(false);
 //
             connect(browser, &QTextBrowser::anchorClicked, this, [&](const QUrl &link){
-
-                qDebug() << "-> " <<link.toString();
-                qDebug() << "-> " <<link.adjusted(QUrl::UrlFormattingOption::None);
-                qDebug() << "-> " <<link.fileName();
-
                 if(link.toString().contains("https://www")){
                     QDesktopServices::openUrl(link);
                 }else{
@@ -581,7 +583,7 @@ void DocumentationDialog::update_current_category_components_list(){
     componentsSectionW->lwContent->blockSignals(false);
 }
 
-void DocumentationDialog::reaload_sub_section_markdown_file(DocSection section, bool forceReload){
+void DocumentationDialog::reload_sub_section_markdown_file(DocSection section, bool forceReload){
 
     if(section != DocSection::ContentComponentsDescription && section != DocSection::ContentConnectorsDescription){
         QTextBrowser *browser = dynamic_cast<QTextBrowser*>(sectionsWidgets[section]);

@@ -182,7 +182,7 @@ private slots:
 
 private:
 
-    void reaload_sub_section_markdown_file(DocSection section, bool forceReload);
+    void reload_sub_section_markdown_file(DocSection section, bool forceReload);
 
     bool m_lncoComponents = false;
 
@@ -197,6 +197,7 @@ private:
     // buttons
     QPushButton *genPb = nullptr;
     QPushButton *openPb = nullptr;
+    QPushButton *reloadPb = nullptr;
     QString currentDocPath = "";
 
     // components    
