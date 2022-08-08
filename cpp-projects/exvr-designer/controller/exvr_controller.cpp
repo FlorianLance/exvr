@@ -522,7 +522,7 @@ void ExVrController::load_until_selected_routine_with_default_instance_to_unity(
     emit load_experiment_unity_signal(Paths::tempExp, Paths::tempInstance);
 }
 
-void ExVrController::load_full_exp_with_0duration(){
+void ExVrController::load_full_exp_with_02duration(){
     xml()->force_no_duration();
     load_full_exp_with_default_instance_to_unity();
     xml()->cancel_no_duration();
@@ -1296,7 +1296,7 @@ void ExVrController::generate_main_window_connections(){
     connect(ui(), &DMW::save_experiment_to_temp_signal,                             this, &CON::save_full_exp_with_default_instance);    
     connect(ui(), &DMW::go_to_current_element_signal,                               this, &CON::go_to_current_specific_instance_element);
     connect(ui(), &DMW::go_to_specific_element_signal,                              this, &CON::show_got_to_specific_instance_element_dialog);
-    connect(ui(), &DMW::load_full_exp_with_0duration_signal,                        this, &CON::load_full_exp_with_0duration);
+    connect(ui(), &DMW::load_full_exp_with_02duration_signal,                        this, &CON::load_full_exp_with_02duration);
     connect(ui(), &DMW::start_experiment_launcher_signal,                           this, [&](){
         emit start_experiment_launcher_signal(*exp()->settings());
     });

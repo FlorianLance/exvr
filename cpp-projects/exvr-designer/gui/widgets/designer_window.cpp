@@ -522,9 +522,9 @@ void DesignerWindow::create_actions(){
         abort();
     });
 
-    m_fullLoadWith0DurationAct.setText(tr("&Load with 0 duration"));
-    m_fullLoadWith0DurationAct.setStatusTip(tr("&Load full experiment with default instance (0s duration for each routine)"));
-    connect(&m_fullLoadWith0DurationAct, &QAction::triggered, this, &DesignerWindow::load_full_exp_with_0duration_signal);
+    m_fullLoadWith0DurationAct.setText(tr("&Load with 0.2 duration"));
+    m_fullLoadWith0DurationAct.setStatusTip(tr("&Load full experiment with default instance (0.2s duration for each routine)"));
+    connect(&m_fullLoadWith0DurationAct, &QAction::triggered, this, &DesignerWindow::load_full_exp_with_02duration_signal);
 
 
     m_displayKeysAct.setText(tr("&Display keys"));

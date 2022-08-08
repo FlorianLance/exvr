@@ -109,6 +109,11 @@ static constexpr TupleArray<DocSection::SizeEnum, TDocSection> sections = {{
     return sections.optional_at<1,0>(id);
 }
 
+[[maybe_unused]] static std::optional<DocSection> get_doc_section(MarkdownFile mdf) {
+    return sections.optional_at<3,0>(mdf);
+}
+
+
 [[maybe_unused]] static Id section_id(DocSection ds) {
     return sections.at<0,1>(ds);
 }
@@ -133,6 +138,10 @@ public:
     SectionW(QString title);
 
     void set_current_row(const QString &txt);
+
+    void reload(){
+
+    }
 
     QLabel *laTitle  = nullptr;
     QListWidget *lwContent = nullptr;
@@ -173,6 +182,8 @@ private slots:
 
 private:
 
+    void reaload_sub_section_markdown_file(DocSection section, bool forceReload);
+
     bool m_lncoComponents = false;
 
     DocSection currentSection = DocSection::General;
@@ -181,6 +192,7 @@ private:
     SectionW *documentationsCategoriesW = nullptr;
     // sub categories
     std::unordered_map<DocSection, QWidget*> sectionsWidgets;
+    std::unordered_map<DocSection, QString> sectionsDocContent;
 
     // buttons
     QPushButton *genPb = nullptr;

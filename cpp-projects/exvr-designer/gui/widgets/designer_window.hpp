@@ -126,7 +126,7 @@ signals :
     void load_from_selected_routine_with_default_instance_signal();
     void load_until_selected_routine_with_default_instance_signal();
     // ## debug
-    void load_full_exp_with_0duration_signal();
+    void load_full_exp_with_02duration_signal();
     // # flow
     void play_experiment_signal();
     void play_pause_experiment_signal();

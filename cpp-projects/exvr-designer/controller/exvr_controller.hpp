@@ -88,7 +88,7 @@ private slots:
     void load_from_selected_routine_with_default_instance_to_unity();
     void load_until_selected_routine_with_default_instance_to_unity();
     // ## debug
-    void load_full_exp_with_0duration();
+    void load_full_exp_with_02duration();
     // # save
     void save_full_exp_with_default_instance();
     // # start

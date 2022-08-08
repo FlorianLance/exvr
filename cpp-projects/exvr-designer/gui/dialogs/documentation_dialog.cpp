@@ -80,23 +80,56 @@ DocumentationDialog::DocumentationDialog(){
 
     connect(documentationsCategoriesW->lwContent, &QListWidget::currentRowChanged, this, [&](int index){
         if(auto section = get_doc_section(index); section.has_value()){
+//            reaload_sub_section_markdown_file(section.value(), false);
+            show_section(section.value(), false);
+        }
+    });
+    connect(documentationsCategoriesW->lwContent, &QListWidget::clicked, this, [&](QModelIndex index){
+        if(auto section = get_doc_section(index.row()); section.has_value()){
+//            reaload_sub_section_markdown_file(section.value(), false);
             show_section(section.value(), false);
         }
     });
 
     // by id order
     for(const auto &section : all_sections()){
-        mainLayout->addWidget((sectionsWidgets[section] = (ui_doc_type(section) == UiDocType::TextBrowser ?  generate_text_browser() : new QWidget())));
+        auto sectionW = ui_doc_type(section) == UiDocType::TextBrowser ?  generate_text_browser() : new QWidget();
+        sectionsWidgets[section] = sectionW;
+        mainLayout->addWidget(sectionW);
 
         if(section != DocSection::ContentComponentsDescription && section != DocSection::ContentConnectorsDescription){
             QTextBrowser *browser = dynamic_cast<QTextBrowser*>(sectionsWidgets[section]);
+            browser->setOpenLinks(false);
+//
+            connect(browser, &QTextBrowser::anchorClicked, this, [&](const QUrl &link){
+
+                qDebug() << "-> " <<link.toString();
+                qDebug() << "-> " <<link.adjusted(QUrl::UrlFormattingOption::None);
+                qDebug() << "-> " <<link.fileName();
+
+                if(link.toString().contains("https://www")){
+                    QDesktopServices::openUrl(link);
+                }else{
+
+                    if(auto sec = get_doc_section(link.fileName().toStdString().c_str()); sec.has_value()){
+                        show_section(sec.value(), true);
+                    }
+//                    show_section();
+//                    qDebug() << "local " << link;
+                    // link.toString()
+                }
+            });
+
             const QString pathDocFile = Paths::documentationDir % QSL("/") % from_view(markdown_file(section));
             QFile docFile(pathDocFile);
             if(!docFile.open(QIODevice::ReadOnly | QIODevice::Text)){
-                browser->setText(QSL("No documentation file found: ") % pathDocFile);
+                QString defaultText = QSL("No documentation file found: ") % pathDocFile;
+                browser->setText(defaultText);
+                sectionsDocContent[section] = defaultText;
             }else {
                 QTextStream in(&docFile);
-                browser->setMarkdown(in.readAll());
+                sectionsDocContent[section] = in.readAll();
+                browser->setMarkdown(sectionsDocContent[section]);
             }
         }
     }
@@ -106,8 +139,9 @@ DocumentationDialog::DocumentationDialog(){
 
 QTextBrowser *DocumentationDialog::generate_text_browser(){
     auto docW = new QTextBrowser();
-    docW->setOpenExternalLinks(true);
-    docW->setStyleSheet("background-color: rgb(30,30,30); color: rgb(220,220,200);");
+    docW->setOpenExternalLinks(false);
+    docW->setOpenLinks(false);
+//    docW->setStyleSheet("background-color: rgb(30,30,30); color: rgb(220,220,200);");
     docW->zoomIn(2);
     docW->setReadOnly(true);
 
@@ -545,6 +579,25 @@ void DocumentationDialog::update_current_category_components_list(){
     }
     componentsSectionW->lwContent->addItems(componentsFullStr);
     componentsSectionW->lwContent->blockSignals(false);
+}
+
+void DocumentationDialog::reaload_sub_section_markdown_file(DocSection section, bool forceReload){
+
+    if(section != DocSection::ContentComponentsDescription && section != DocSection::ContentConnectorsDescription){
+        QTextBrowser *browser = dynamic_cast<QTextBrowser*>(sectionsWidgets[section]);
+        if(forceReload){
+            const QString pathDocFile = Paths::documentationDir % QSL("/") % from_view(markdown_file(section));
+            QFile docFile(pathDocFile);
+            if(!docFile.open(QIODevice::ReadOnly | QIODevice::Text)){
+                browser->setText(QSL("No documentation file found: ") % pathDocFile);
+            }else {
+                QTextStream in(&docFile);
+                browser->setMarkdown(in.readAll());
+            }
+        }else{
+            browser->setMarkdown(sectionsDocContent[section]);
+        }
+    }
 }
 
 

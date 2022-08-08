@@ -382,7 +382,7 @@ struct Component {
 
     using TComponentSlots = std::tuple<
         T,                             FunctionN,                      CNT,                    Doc>;
-    static constexpr TupleArray<98,TComponentSlots> componentsSlots = {{
+    static constexpr TupleArray<99,TComponentSlots> componentsSlots = {{
         TComponentSlots
         // Audio
         {T::AudioSource,               "play"sv,                       CNT::void_t,            "..."sv},
@@ -444,6 +444,7 @@ struct Component {
         {T::Logger,                    "write lines"sv,                CNT::string_list_t,     ""sv},
         {T::LoggerColumns,             "set column value"sv,           CNT::id_any_t,          ""sv},
         {T::LoggerColumns,             "write current line"sv,         CNT::void_t,            ""sv},
+        {T::LoggerColumns,             "reset all values"sv,           CNT::void_t,            ""sv},
         {T::LoggerCondition,           "write"sv,                      CNT::any_t,             ""sv},
         {T::LoggerCondition,           "write line"sv,                 CNT::any_t,             ""sv},
         {T::LoggerCondition,           "write lines"sv,                CNT::string_list_t,     ""sv},

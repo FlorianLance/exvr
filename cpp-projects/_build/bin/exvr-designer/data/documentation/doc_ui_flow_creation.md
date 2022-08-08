@@ -10,7 +10,7 @@ For adding a new element, first you need to chosse a node:
 
 ![Image](images/img_ui_flow_creation_01.png "icon")
 
-Then click on the black ball, it will display 3 differents choices:
+Then click on the black ball, it will display 2 differents choices:
 
 ![Image](images/img_ui_flow_creation_02.png "icon")
 
