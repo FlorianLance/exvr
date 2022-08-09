@@ -79,7 +79,7 @@ using TDocSection = std::tuple<
     DocSection,                                 Id, UiDocType,              MarkdownFile,                              SectionName>;
 static constexpr TupleArray<DocSection::SizeEnum, TDocSection> sections = {{
     TDocSection
-    {DocSection::General,                       0,  UiDocType::TextBrowser, "doc_general.md"sv,                        "General"sv,                        },
+    {DocSection::General,                       0,  UiDocType::TextBrowser, "doc_general.md"sv,                        "Index"sv,                          },
     {DocSection::UiFlowCreation,                1,  UiDocType::TextBrowser, "doc_ui_flow_creation.md"sv,               "[UI] Flow creation"sv,             },
     {DocSection::UiElementSelection,            2,  UiDocType::TextBrowser, "doc_ui_element_selection.md"sv,           "[UI] Element selection"sv,         },
     {DocSection::UiComponentsList,              3,  UiDocType::TextBrowser, "doc_ui_component_list.md"sv,              "[UI] Components list"sv,           },

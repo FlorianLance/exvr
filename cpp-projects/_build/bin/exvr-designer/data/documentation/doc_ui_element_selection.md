@@ -24,3 +24,11 @@ fzfe
 zfzze
 zfzzef
 
+
+# No selection
+
+fzfe
+zfzze
+zfzzef
+
+

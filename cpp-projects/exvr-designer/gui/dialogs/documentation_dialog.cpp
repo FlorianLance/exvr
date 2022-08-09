@@ -496,7 +496,7 @@ void DocumentationDialog::update_current_component_doc(Component::Type type){
         componentsCsharpScriptingW.w->setPlainText(QSL("No documentation file found: ") % csPath);
     }else {
         QTextStream in(&csFile);
-        componentsCsharpScriptingW.w->setPlainText(in.readAll());
+        componentsCsharpScriptingW.w->setPlainText(in.readAll().remove("&nbsp;").remove("```csharp").remove("```"));
     }
 
     //    QFile pyFile(pyPath);
