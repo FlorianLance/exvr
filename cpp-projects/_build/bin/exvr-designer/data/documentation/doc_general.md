@@ -2,8 +2,9 @@
 
 ### UI
   * [Flow creation](doc_ui_flow_creation.md)
-  * [Element selection](doc_ui_element_selection.md) (TODO)
-  * [Components list](doc_ui_component_list.md) (TODO)
+  * [Element selection](doc_ui_element_selection.md) (ONGOING)
+  * [Components list](doc_ui_component_list.md)
+  * [Connectors list](doc_ui_connectors_list.md)
   * [Routines conditions](doc_ui_routines_conditions.md) (TODO)
   * [Resources manager](doc_ui_resources_manager.md) (TODO)
   * [Randomization](doc_ui_randomization.md) (TODO)

@@ -69,11 +69,30 @@ DocumentationDialog::DocumentationDialog(){
         QDesktopServices::openUrl(QUrl(currentDocPath, QUrl::TolerantMode));
     });
     connect(reloadPb, &QPushButton::clicked, this, [&]{
+
         auto fileName = currentDocPath.split("/").last();
-        qDebug() << "filename " << fileName;
+
         if(auto sec = get_doc_section(fileName.toStdString().c_str()); sec.has_value()){
-            qDebug() << "reload section "<< from_view(section_name(sec.value()));
             reload_sub_section_markdown_file(sec.value(), true);
+        }else{
+
+            if(currentSection == DocSection::ContentComponentsDescription){
+                const QString componentTypeName = from_view(Component::get_type_name(currentComponent));
+                const QString basePath        = Paths::documentationDir % QSL("/") % from_view(markdown_file(currentSection));
+
+                if(fileName.contains("_csharp.md")){
+                    const QString csPath          = basePath % QSL("/") % componentTypeName % QSL("_csharp.md");
+                    reload_csharp_markdown_file(csPath);
+                }else if(fileName.contains("_connections.md")){
+                    const QString connectionsPath = basePath % QSL("/") % componentTypeName % QSL("_connections.md");
+                    reload_connections_file(connectionsPath);
+                }else if(fileName.contains("_info.md")){
+                    const QString infoPath        = basePath % QSL("/") % componentTypeName % QSL("_info.md");
+                    reload_info_file(infoPath);
+                }
+            }else if(currentSection == DocSection::ContentConnectorsDescription){
+                // ...
+            }
         }
     });
 
@@ -115,10 +134,21 @@ DocumentationDialog::DocumentationDialog(){
 
                     if(auto sec = get_doc_section(link.fileName().toStdString().c_str()); sec.has_value()){
                         show_section(sec.value(), true);
+                    }else if(link.toString().contains("components/")){
+                        auto name = link.toString().remove("components/").split("_").first();
+                        auto componentType = Component::get_type_from_unity_name(Component::UnityStr{name.toStdString().c_str()});
+                        if(componentType.has_value()){
+                            currentComponent = componentType.value();
+                            show_components_section(componentType.value(), false);
+                        }                        
+                    }else if(link.toString().contains("connectors/")){
+                        auto name = link.toString().remove("connectors/").split("_").first();
+                        auto connectorType = Connector::get_type_from_name(Connector::Name{name.toStdString().c_str()});
+                        if(connectorType.has_value()){
+                            currentConnector = connectorType.value();
+                            show_connectors_section(connectorType.value(), false);
+                        }
                     }
-//                    show_section();
-//                    qDebug() << "local " << link;
-                    // link.toString()
                 }
             });
 
@@ -475,29 +505,9 @@ void DocumentationDialog::update_current_component_doc(Component::Type type){
     const QString csPath          = basePath % QSL("/") % componentTypeName % QSL("_csharp.md");
     const QString pyPath          = basePath % QSL("/") % componentTypeName % QSL("_python.md");
 
-    QFile infoFile(infoPath);
-    if(!infoFile.open(QIODevice::ReadOnly | QIODevice::Text)){
-        componentsInfoW->setText(QSL("No documentation file found: ") % infoPath);
-    }else {
-        QTextStream in(&infoFile);
-        componentsInfoW->setMarkdown(in.readAll());
-    }
-
-    QFile connectionsFile(connectionsPath);
-    if(!connectionsFile.open(QIODevice::ReadOnly | QIODevice::Text)){
-        componentsConnectionsW->setText(QSL("No documentation file found: ") % connectionsPath);
-    }else {
-        QTextStream in(&connectionsFile);
-        componentsConnectionsW->setMarkdown(in.readAll());
-    }
-
-    QFile csFile(csPath);
-    if(!csFile.open(QIODevice::ReadOnly | QIODevice::Text)){
-        componentsCsharpScriptingW.w->setPlainText(QSL("No documentation file found: ") % csPath);
-    }else {
-        QTextStream in(&csFile);
-        componentsCsharpScriptingW.w->setPlainText(in.readAll().remove("&nbsp;").remove("```csharp").remove("```"));
-    }
+    reload_info_file(infoPath);
+    reload_connections_file(connectionsPath);
+    reload_csharp_markdown_file(csPath);
 
     //    QFile pyFile(pyPath);
     //    if(!pyFile.open(QIODevice::ReadOnly | QIODevice::Text)){
@@ -521,8 +531,6 @@ void DocumentationDialog::update_current_component_doc(Component::Type type){
 
     genPb->setEnabled(!QFile::exists(currentDocPath));
     openPb->setEnabled(QFile::exists(currentDocPath));
-
-
 }
 
 void DocumentationDialog::update_current_connector_doc(Connector::Type type){
@@ -599,6 +607,36 @@ void DocumentationDialog::reload_sub_section_markdown_file(DocSection section, b
         }else{
             browser->setMarkdown(sectionsDocContent[section]);
         }
+    }
+}
+
+void DocumentationDialog::reload_info_file(const QString &infoFilePath){
+    QFile infoFile(infoFilePath);
+    if(!infoFile.open(QIODevice::ReadOnly | QIODevice::Text)){
+        componentsInfoW->setText(QSL("No documentation file found: ") % infoFilePath);
+    }else {
+        QTextStream in(&infoFile);
+        componentsInfoW->setMarkdown(in.readAll());
+    }
+}
+
+void DocumentationDialog::reload_connections_file(const QString &connectionsFilePath){
+    QFile connectionsFile(connectionsFilePath);
+    if(!connectionsFile.open(QIODevice::ReadOnly | QIODevice::Text)){
+        componentsConnectionsW->setText(QSL("No documentation file found: ") % connectionsFilePath);
+    }else {
+        QTextStream in(&connectionsFile);
+        componentsConnectionsW->setMarkdown(in.readAll());
+    }
+}
+
+void DocumentationDialog::reload_csharp_markdown_file(const QString &csFilePath){
+    QFile csFile(csFilePath);
+    if(!csFile.open(QIODevice::ReadOnly | QIODevice::Text)){
+        componentsCsharpScriptingW.w->setPlainText(QSL("No documentation file found: ") % csFilePath);
+    }else {
+        QTextStream in(&csFile);
+        componentsCsharpScriptingW.w->setPlainText(in.readAll().remove("&nbsp;").remove("```csharp").remove("```"));
     }
 }
 

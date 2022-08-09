@@ -49,20 +49,40 @@ int main(int argc, char *argv[]){
 
 
     // doc generation
-//        Component::Category c = Component::Category::Viewer;
-//        for(auto t : Component::all_components_types()){
-//            auto fn = Component::get_full_name(t);
-//            auto un = Component::get_unity_name(t);
+//    Component::Category c = Component::Category::Viewer;
+//    for(auto t : Component::all_components_types()){
+//        auto fn = Component::get_full_name(t);
+//        auto un = Component::get_unity_name(t);
 
-//            std::string_view cn = "-";
-//            if(Component::get_category(t) != c){
-//                c = Component::get_category(t);
-//                cn = Component::to_string(c);
-//            }
-//            std::cout << std::format("|{}|{}|[link](components/{}_info.md)|[link](components/{}_csharp.md)|[link](components/{}_connections.md)|\n",
-//                cn, fn, un, un, un
-//            );
+//        std::string_view cn = "-";
+//        if(Component::get_category(t) != c){
+//            c = Component::get_category(t);
+//            cn = Component::to_string(c);
 //        }
+//        std::cout << std::format("|{}|{}|[link](components/{}_info.md)|[link](components/{}_csharp.md)|[link](components/{}_connections.md)|\n",
+//            cn, fn, un, un, un
+//        );
+//    }
+
+//    Connector::Category cc = Connector::Category::Resource;
+//    for(auto t : Connector::all_types()){
+
+//        auto n = Connector::get_caption(t);
+
+//        std::string_view ccn = "-";
+//        if(Connector::get_category(t) != cc){
+//            cc  = Connector::get_category(t);
+//            ccn = Connector::get_name(cc);
+//        }
+
+//        std::string_view cn = "-";
+//        std::cout << std::format("|{}|{}|[link](connectors/{}_info.md)|[link](connectors/{}_connections.md)|\n",
+//            ccn, n, ccn, ccn
+//        );
+//    }
+
+
+
 
 
     // build app

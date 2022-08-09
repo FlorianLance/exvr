@@ -1,4 +1,7 @@
 
+Previous page: [Element selection](doc_ui_flow_creation.md)
+<br />
+
 |Category|Component|Info|CSharp-scripting|Visual-scripting|
 |:---:|---|:---:|:---:|:---:|
 |Audio|Audio listener|[link](components/AudioListener_info.md)|[link](components/AudioListener_csharp.md)|[link](components/AudioListener_connections.md)|
@@ -79,3 +82,7 @@
 |-|Image viewer|[link](components/ImageViewer_info.md)|[link](components/ImageViewer_csharp.md)|[link](components/ImageViewer_connections.md)|
 |-|Text viewer|[link](components/TextViewer_info.md)|[link](components/TextViewer_csharp.md)|[link](components/TextViewer_connections.md)|
 |-|Webcam viewer|[link](components/WebcamViewer_info.md)|[link](components/WebcamViewer_csharp.md)|[link](components/WebcamViewer_connections.md)|
+
+<br />
+
+Next page: [Connectors list](doc_ui_connectors_list.md)
