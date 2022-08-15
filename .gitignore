@@ -62,9 +62,6 @@ unity-projects/exp-launcher/Assets/AssetBundles
 unity-projects/exp-launcher/Assets/Thirdparty/private
 unity-projects/exp-launcher/temp_generated
 
-
-
-
 unity-projects/exp-launcher/[Ll]ibrary/
 unity-projects/exp-launcher/[Tt]emp/
 unity-projects/exp-launcher/[Oo]bj/
@@ -72,6 +69,14 @@ unity-projects/exp-launcher/[Bb]uild/
 unity-projects/exp-launcher/[Bb]uilds/
 unity-projects/exp-launcher/[Ll]ogs/
 unity-projects/exp-launcher/[Uu]ser[Ss]ettings/
+
+unity-projects/exp-launcher-urp/[Ll]ibrary/
+unity-projects/exp-launcher-urp/[Tt]emp/
+unity-projects/exp-launcher-urp/[Oo]bj/
+unity-projects/exp-launcher-urp/[Bb]uild/
+unity-projects/exp-launcher-urp/[Bb]uilds/
+unity-projects/exp-launcher-urp/[Ll]ogs/
+unity-projects/exp-launcher-urp/[Uu]ser[Ss]ettings/
 
 # MemoryCaptures can get excessive in size.
 # They also could contain extremely sensitive data
@@ -107,6 +112,24 @@ unity-projects/exp-launcher/**/*.mdb
 unity-projects/exp-launcher/**/*.opendb
 unity-projects/exp-launcher/**/*.VC.db
 
+unity-projects/exp-launcher-urp/**/ExportedObj/
+unity-projects/exp-launcher-urp/**/.consulo/
+unity-projects/exp-launcher-urp/**/*.csproj
+unity-projects/exp-launcher-urp/**/*.unityproj
+unity-projects/exp-launcher-urp/**/*.sln
+unity-projects/exp-launcher-urp/**/*.suo
+unity-projects/exp-launcher-urp/**/*.tmp
+unity-projects/exp-launcher-urp/**/*.user
+unity-projects/exp-launcher-urp/**/*.userprefs
+unity-projects/exp-launcher-urp/**/*.pidb
+unity-projects/exp-launcher-urp/**/*.booproj
+unity-projects/exp-launcher-urp/**/*.svd
+unity-projects/exp-launcher-urp/**/*.pdb
+unity-projects/exp-launcher-urp/**/*.mdb
+unity-projects/exp-launcher-urp/**/*.opendb
+unity-projects/exp-launcher-urp/**/*.VC.db
+
+
 # Unity3D generated meta files
 *.pidb.meta
 *.pdb.meta
@@ -114,6 +137,7 @@ unity-projects/exp-launcher/**/*.VC.db
 
 # Unity3D generated file on crash reports
 unity-projects/exp-launcher/sysinfo.txt
+unity-projects/exp-launcher-urp/sysinfo.txt
 
 # Builds
 *.apk
