@@ -41,7 +41,7 @@ using namespace tool::ex;
 int main(int argc, char *argv[]){
 
     // build parameters
-    const QString numVersion = "1.0a58";
+    const QString numVersion = "1.0a59";
     bool lncoComponents = true;
 
     // compiler check
