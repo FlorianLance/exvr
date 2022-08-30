@@ -75,7 +75,6 @@ namespace Ex{
 
         protected override void update_parameter_from_gui(string updatedArgName) {
             if(updatedArgName == "image") {
-                log_message("update_parameter_from_gui");
                 load_image_from_resource(currentC.get_resource_alias(updatedArgName));
             }
             resize_image();

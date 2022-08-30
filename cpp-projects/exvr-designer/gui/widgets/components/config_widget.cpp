@@ -201,17 +201,19 @@ ConfigParametersW *ConfigW::generate_parameters(Component::Type type, bool initC
         return gen_params_w<TargetToGrabInitConfigParametersW,TargetToGrabConfigParametersW>(initConfig);
     // ############################# Model
     case CT::Cube:
-        return gen_params_w<CubeInitConfigParametersW,CubeConfigParametersW>(initConfig);
+        return gen_params_w<CubeInitConfigParametersW,ModelConfigParametersW>(initConfig);
     case CT::Cylinder:
-        return gen_params_w<CylinderInitConfigParametersW,CylinderConfigParametersW>(initConfig);
+        return gen_params_w<CylinderInitConfigParametersW,ModelConfigParametersW>(initConfig);
     case CT::Landmark:
         return gen_params_w<LandmarkInitConfigParametersW,LandmarkConfigParametersW>(initConfig);
     case CT::Lines:
         return gen_params_w<LinesInitConfigParametersW,LinesConfigParametersW>(initConfig);
+    case CT::Plane:
+        return gen_params_w<PlaneInitConfigParametersW,ModelConfigParametersW>(initConfig);
     case CT::Sphere:
-        return gen_params_w<SphereInitConfigParametersW,SphereConfigParametersW>(initConfig);
+        return gen_params_w<SphereInitConfigParametersW,ModelConfigParametersW>(initConfig);
     case CT::Torus:
-        return gen_params_w<TorusInitConfigParametersW,TorusConfigParametersW>(initConfig);
+        return gen_params_w<TorusInitConfigParametersW,ModelConfigParametersW>(initConfig);
     // ############################# Network
     case CT::Parallel_port_writer:
         return gen_params_w<ParallelPortWriterInitConfigParametersW,ParallelPortWriterConfigParametersW>(initConfig);

@@ -52,7 +52,7 @@ namespace Ex {
         private void Update() {
 
             var currentTime = sw.ElapsedMilliseconds;
-            float fps = 1f / Time.unscaledDeltaTime;
+            float fps = 1f / Time.deltaTime;
 
             lastValues.Enqueue(new Tuple<long, float>(currentTime, fps));
             bool removeFirst = (currentTime - lastValues.Peek().Item1) > 1000;

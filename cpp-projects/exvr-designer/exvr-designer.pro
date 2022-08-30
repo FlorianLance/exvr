@@ -335,6 +335,7 @@ SOURCES += \
     controller/exvr_controller.cpp \
     # launcher   
     gui/ex_widgets/ex_condition_w.cpp \
+    gui/widgets/components/config_parameters/primitives_model_pw.cpp \
     launcher/exp_launcher.cpp \
     launcher/exp_launcher_communication.cpp \
     launcher/exp_launcher_process.cpp \

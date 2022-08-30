@@ -33,32 +33,7 @@ namespace Ex {
         // parameters       
         private HashSet<string> m_filesNames = null;
 
-        private string get_file_path(string routineName, string conditionName) {
-
-            string idName = "";
-            if (initC.get<bool>("add_both")) {
-                idName = string.Format("{0}_{1}", routineName, conditionName);
-            } else if (initC.get<bool>("add_routine")) {
-                idName = routineName;
-            } else if (initC.get<bool>("add_condition")) {
-                idName = conditionName;
-            }
-
-            if (idName.Length != 0) {
-                if (m_addInstanceToFileName) {
-                    return string.Format("{0}/{1}_{2}_{3}.{4}", m_directoryPath, m_baseFileName, ExVR.Experiment().instanceName, idName, m_fileExtension);
-                } else {
-                    return string.Format("{0}/{1}_{2}.{3}", m_directoryPath, m_baseFileName, idName, m_fileExtension);
-                }
-            } else {
-                if (m_addInstanceToFileName) {
-                    return string.Format("{0}/{1}_{2}.{3}", m_directoryPath, m_baseFileName, ExVR.Experiment().instanceName,m_fileExtension);
-                } else {
-                    return string.Format("{0}/{1}.{2}", m_directoryPath, m_baseFileName, m_fileExtension);
-                }
-            }
-        }
-
+        #region ex_functions
         protected override bool initialize() {
 
             if (!read_common_init_parameters()) {
@@ -114,5 +89,38 @@ namespace Ex {
         protected override void pre_start_routine() {
             m_fileLogger.open_file(get_file_path(currentRoutine.name, currentCondition.name));
         }
+
+        #endregion
+
+        #region private_functions
+
+        private string get_file_path(string routineName, string conditionName) {
+
+            string idName = "";
+            if (initC.get<bool>("add_both")) {
+                idName = string.Format("{0}_{1}", routineName, conditionName);
+            } else if (initC.get<bool>("add_routine")) {
+                idName = routineName;
+            } else if (initC.get<bool>("add_condition")) {
+                idName = conditionName;
+            }
+
+            if (idName.Length != 0) {
+                if (m_addInstanceToFileName) {
+                    return string.Format("{0}/{1}_{2}_{3}.{4}", m_directoryPath, m_baseFileName, ExVR.Experiment().instanceName, idName, m_fileExtension);
+                } else {
+                    return string.Format("{0}/{1}_{2}.{3}", m_directoryPath, m_baseFileName, idName, m_fileExtension);
+                }
+            } else {
+                if (m_addInstanceToFileName) {
+                    return string.Format("{0}/{1}_{2}.{3}", m_directoryPath, m_baseFileName, ExVR.Experiment().instanceName,m_fileExtension);
+                } else {
+                    return string.Format("{0}/{1}.{2}", m_directoryPath, m_baseFileName, m_fileExtension);
+                }
+            }
+        }
+
+        #endregion
+
     }
 }

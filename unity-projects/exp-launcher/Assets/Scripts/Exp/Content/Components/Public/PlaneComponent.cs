@@ -27,18 +27,17 @@ using UnityEngine;
 
 namespace Ex{
 
-    public class CubeComponent : ModelComponent{  
+    public class PlaneComponent : ModelComponent{
 
         #region private_functions
         protected override void generate_mesh() {
-            mf.mesh = Ex.PrimitivesMesh.CubeBuilder.generate(initC.get<float>("size"));
+            mf.mesh = Ex.PrimitivesMesh.QuadBuilder.generate(initC.get<float>("width"), initC.get<float>("height"));
         }
 
         protected override void generate_collider() {
             c = gameObject.AddComponent<BoxCollider>();
         }
 
-        #endregion
-
+        #endregion      
     }
 }
