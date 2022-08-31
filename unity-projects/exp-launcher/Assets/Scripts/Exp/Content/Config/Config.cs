@@ -645,23 +645,16 @@ namespace Ex {
             // alignment
             textMeshPro.alignment = ConfigUtility.textAlignment[get<string>(baseArgName + "_alignment")];
 
-            // face
-            var fc = get_color(baseArgName + "_face_color");
-            if (fc == Color.white) { // bug if face color is white, it's not applied
-                textMeshPro.faceColor = new Color32(255, 255, 255, 254);
-            } else {
-                textMeshPro.faceColor = fc;
-            }            
-
-            // ouline
-            textMeshPro.outlineColor = get_color(baseArgName + "_outline_color");
-            textMeshPro.outlineWidth = get<float>(baseArgName + "_outline_width");
-
-            // spacing
+            // width / spacing
+            textMeshPro.fontMaterial.SetFloat("_OutlineWidth", get<float>(baseArgName + "_outline_width"));
             textMeshPro.paragraphSpacing = get<float>(baseArgName + "_paragraph_spacing");
             textMeshPro.lineSpacing = get<float>(baseArgName + "_line_spacing");
             textMeshPro.wordSpacing = get<float>(baseArgName + "_word_spacing");
             textMeshPro.characterSpacing = get<float>(baseArgName + "_character_spacing");
+
+            // colors
+            textMeshPro.fontMaterial.SetColor("_FaceColor", get_color(baseArgName + "_face_color"));
+            textMeshPro.fontMaterial.SetColor("_OutlineColor ", get_color(baseArgName + "_outline_color"));
 
             textMeshPro.UpdateFontAsset();
 

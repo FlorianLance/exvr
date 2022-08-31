@@ -34,6 +34,7 @@ namespace Ex{
 
 
         private GameObject m_textGO = null;
+        private RectTransform m_rectTr = null;
         private TextMeshProUGUI m_text = null;
 
         #region ex_functions
@@ -52,6 +53,7 @@ namespace Ex{
             m_textGO.name = "TextRect";
             m_textGO.GetComponent<UnityEngine.UI.Image>().material = ExVR.GlobalResources().instantiate_unlit_transparent_color_mat();
             m_text    = m_textGO.transform.Find("Text (TMP)").GetComponent<TMPro.TextMeshProUGUI>();
+            m_rectTr = m_textGO.GetComponent<RectTransform>();
 
             return m_textGO != null;
         }
@@ -87,31 +89,27 @@ namespace Ex{
             m_textGO.transform.position = Vector3.zero;
             m_textGO.transform.rotation = Quaternion.identity;
 
-            var rTr = m_textGO.GetComponent<RectTransform>();
-            rTr.pivot = new Vector2(0.5f, 0.5f);
+            m_rectTr.pivot = new Vector2(0.5f, 0.5f);
 
             if (currentC.get<bool>("use_eye_camera")) {
 
                 // move to head
                 Transform camTr = ExVR.Display().cameras().get_eye_camera_transform();
-                rTr.pivot = currentC.get_vector2("pivot");
-                rTr.rotation = camTr.rotation * Quaternion.Euler(currentC.get_vector3("rotation"));
-                rTr.position = camTr.position + camTr.forward * currentC.get<float>("distance");
+                m_rectTr.pivot = currentC.get_vector2("pivot");
+                m_rectTr.rotation = camTr.rotation * Quaternion.Euler(currentC.get_vector3("rotation"));
+                m_rectTr.position = camTr.position + camTr.forward * currentC.get<float>("distance");
 
             } else {
-                rTr.localPosition = currentC.get_vector3("position");
-                rTr.localEulerAngles = currentC.get_vector3("rotation");
+                m_rectTr.localPosition = currentC.get_vector3("position");
+                m_rectTr.localEulerAngles = currentC.get_vector3("rotation");
             }
 
-            rTr.sizeDelta = new Vector2(currentC.get<int>("width"), currentC.get<int>("height"));
+            m_rectTr.sizeDelta = new Vector2(currentC.get<int>("width"), currentC.get<int>("height"));
 
             var sf = currentC.get<float>("scale_factor")*0.01f;
-            rTr.localScale = new Vector3(
+            m_rectTr.localScale = new Vector3(
                 sf, sf, sf
             );
-
-            rTr = m_text.GetComponent<RectTransform>();
-            rTr.sizeDelta = new Vector2(currentC.get<int>("width"), currentC.get<int>("height"));
         }
 
         public void set_text(string text) {
@@ -124,6 +122,21 @@ namespace Ex{
             currentC.set("t_outline_color", color);
             currentC.update_text("t", m_text);
         }
+
+        public void set_pivot(Vector2 pivot) {
+            currentC.set_vector2("pivot", pivot);
+        }
+
+        public void set_scale_factor(float factor) {
+            currentC.set("scale_factor", factor);
+
+        }
+
+        public void set_size(Vector2 size) {
+            currentC.set("width", size.x);
+            currentC.set("height", size.y);
+        }
+
 
         #endregion
     }
