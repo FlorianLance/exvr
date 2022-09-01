@@ -156,6 +156,9 @@ namespace Ex{
             // # from id any
             ["id_any:any"] = input => { return input; },
             ["id_any:trigger"] = input => { return null; },
+            // # from id any
+            ["time_any:any"] = input => { return input; },
+            ["time_any:trigger"] = input => { return null; },
             // # from string any
             ["string_any:any"] = input => { return input; },
             ["string_any:trigger"] = input => { return null; },

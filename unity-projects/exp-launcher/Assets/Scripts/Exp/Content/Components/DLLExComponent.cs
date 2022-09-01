@@ -45,7 +45,6 @@ namespace Ex{
 
             set_exp_ex_element(_handle, ExVR.Experiment().cppDll.getHandle());
 
-            set(Parameters.Container.Global, "component_key", parent.key);
             foreach (KeyValuePair<string, Argument> arg in parent.initC.args) {
                 set(Parameters.Container.InitConfig, arg.Value);
             }

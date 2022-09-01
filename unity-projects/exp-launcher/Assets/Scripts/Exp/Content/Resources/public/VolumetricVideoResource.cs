@@ -106,6 +106,7 @@ namespace Ex {
                         maxNb = currentNb;
                     }
                 }
+
                 if (maxNbVerticesAllCameras < maxNb) {
                     maxNbVerticesAllCameras = maxNb;
                 }

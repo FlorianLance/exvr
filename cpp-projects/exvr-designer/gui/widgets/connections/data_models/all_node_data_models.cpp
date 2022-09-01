@@ -236,6 +236,9 @@ void DataNodeModels::initialize(){
     // ### id any
     r->registerTypeConverter(std::make_pair(IdAnyData().type(),AnyData().type()),TC{ToAnyConverter()});
     r->registerTypeConverter(std::make_pair(IdAnyData().type(),VoidData().type()),TC{ToVoidConverter()});
+    // ### time any
+    r->registerTypeConverter(std::make_pair(TimeAnyData().type(),AnyData().type()),TC{ToAnyConverter()});
+    r->registerTypeConverter(std::make_pair(TimeAnyData().type(),VoidData().type()),TC{ToVoidConverter()});
     // ### string any
     r->registerTypeConverter(std::make_pair(StringAnyData().type(),AnyData().type()),TC{ToAnyConverter()});
     r->registerTypeConverter(std::make_pair(StringAnyData().type(),VoidData().type()),TC{ToVoidConverter()});

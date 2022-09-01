@@ -32,9 +32,12 @@ namespace Ex{
 
     public class TextViewerComponent : CanvasWorldSpaceComponent{
 
+        private GameObject m_tvGO = null;
 
+        private GameObject m_panelGO = null;
+        private RectTransform m_panelRectTr = null;
         private GameObject m_textGO = null;
-        private RectTransform m_rectTr = null;
+        private RectTransform m_textRectTr = null;
         private TextMeshProUGUI m_text = null;
 
         #region ex_functions
@@ -49,17 +52,23 @@ namespace Ex{
             });
 
             // init gameObject
-            m_textGO = ExVR.GlobalResources().instantiate_prebab("Components/TextViewer", transform);
-            m_textGO.name = "TextRect";
-            m_textGO.GetComponent<UnityEngine.UI.Image>().material = ExVR.GlobalResources().instantiate_unlit_transparent_color_mat();
-            m_text    = m_textGO.transform.Find("Text (TMP)").GetComponent<TMPro.TextMeshProUGUI>();
-            m_rectTr = m_textGO.GetComponent<RectTransform>();
+            m_tvGO = ExVR.GlobalResources().instantiate_prebab("Components/TextViewer", transform);            
+            m_tvGO.name = "TextRect";            
+
+            m_panelGO = m_tvGO.transform.Find("Panel").gameObject;
+            m_panelGO.GetComponent<UnityEngine.UI.Image>().material = ExVR.GlobalResources().instantiate_unlit_transparent_color_mat();
+            m_panelRectTr = m_panelGO.GetComponent<RectTransform>();
+
+            m_textGO = m_tvGO.transform.Find("Text (TMP)").gameObject;
+            m_text   = m_textGO.GetComponent<TMPro.TextMeshProUGUI>();
+            m_textRectTr = m_textGO.GetComponent<RectTransform>();
+
 
             return m_textGO != null;
         }
 
         protected override void set_visibility(bool visibility) {
-            m_textGO.SetActive(visibility);
+            m_tvGO.SetActive(visibility);
         }
 
         public override void update_from_current_config() {
@@ -67,7 +76,7 @@ namespace Ex{
             // container
             resize_container();
             // background
-            m_textGO.GetComponent<UnityEngine.UI.Image>().material.color = currentC.get_color("background_color");
+            m_panelGO.GetComponent<UnityEngine.UI.Image>().material.SetColor("_Color", currentC.get_color("background_color"));
             // text
             currentC.update_text("t", m_text);
         }
@@ -89,27 +98,37 @@ namespace Ex{
             m_textGO.transform.position = Vector3.zero;
             m_textGO.transform.rotation = Quaternion.identity;
 
-            m_rectTr.pivot = new Vector2(0.5f, 0.5f);
+            m_panelRectTr.pivot = new Vector2(0.5f, 0.5f);
+            m_textRectTr.pivot = new Vector2(0.5f, 0.5f);
 
             if (currentC.get<bool>("use_eye_camera")) {
 
                 // move to head
                 Transform camTr = ExVR.Display().cameras().get_eye_camera_transform();
-                m_rectTr.pivot = currentC.get_vector2("pivot");
-                m_rectTr.rotation = camTr.rotation * Quaternion.Euler(currentC.get_vector3("rotation"));
-                m_rectTr.position = camTr.position + camTr.forward * currentC.get<float>("distance");
+                m_panelRectTr.pivot = currentC.get_vector2("pivot");
+                m_panelRectTr.rotation = camTr.rotation * Quaternion.Euler(currentC.get_vector3("rotation"));
+                m_panelRectTr.position = camTr.position + camTr.forward * currentC.get<float>("distance");
+
+                m_textRectTr.pivot = m_panelRectTr.pivot;
+                m_textRectTr.rotation = m_panelRectTr.rotation;
+                m_textRectTr.position = m_panelRectTr.position;
 
             } else {
-                m_rectTr.localPosition = currentC.get_vector3("position");
-                m_rectTr.localEulerAngles = currentC.get_vector3("rotation");
+                m_panelRectTr.localPosition = currentC.get_vector3("position");
+                m_panelRectTr.localEulerAngles = currentC.get_vector3("rotation");
+
+                m_textRectTr.localPosition = m_panelRectTr.localPosition;
+                m_textRectTr.localEulerAngles = m_panelRectTr.localEulerAngles;
             }
 
-            m_rectTr.sizeDelta = new Vector2(currentC.get<int>("width"), currentC.get<int>("height"));
+            m_panelRectTr.sizeDelta = new Vector2(currentC.get<int>("width"), currentC.get<int>("height"));
+            m_textRectTr.sizeDelta = m_panelRectTr.sizeDelta;
 
             var sf = currentC.get<float>("scale_factor")*0.01f;
-            m_rectTr.localScale = new Vector3(
+            m_panelRectTr.localScale = new Vector3(
                 sf, sf, sf
             );
+            m_textRectTr.localScale = m_panelRectTr.localScale*0.9f;
         }
 
         public void set_text(string text) {

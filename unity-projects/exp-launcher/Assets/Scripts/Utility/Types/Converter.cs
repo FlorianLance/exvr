@@ -84,7 +84,8 @@ namespace Ex{
         private static readonly System.Type colT        = typeof(UnityEngine.Color);
         private static readonly System.Type aniCurveT   = typeof(UnityEngine.AnimationCurve);
         private static readonly System.Type trT         = typeof(UnityEngine.Transform);
-        // # lists
+        // # lists        
+        private static readonly System.Type lIntT       = typeof(List<int>);
         private static readonly System.Type lFloatT     = typeof(List<float>);
         private static readonly System.Type lDoubleT    = typeof(List<double>);
         private static readonly System.Type lStringT    = typeof(List<string>);
@@ -118,6 +119,7 @@ namespace Ex{
             [aniCurveT] = "animation curve",
             [trT]       = "transform",
             // # lists
+            [lIntT]     = "list int",
             [lFloatT]   = "list float",
             [lDoubleT]  = "list double",
             [lStringT]  = "list string",
@@ -234,6 +236,7 @@ namespace Ex{
         public static Color to_color(object value) {return to<Color>(conv[colT], value);}
         public static AnimationCurve to_animation_curve(object value) { return to<AnimationCurve>(conv[aniCurveT], value); }
         // # lists
+        public static List<int> to_int_list(object value) { return to<List<int>>(conv[lIntT], value); }
         public static List<float> to_float_list(object value) { return to<List<float>>(conv[lFloatT], value); }
         public static List<double> to_double_list(object value) { return to<List<double>>(conv[lDoubleT], value); }
         public static List<string> to_string_list(object value) { return to<List<string>>(conv[lStringT], value); }
@@ -550,6 +553,50 @@ namespace Ex{
             },
             #endregion
             #region lists
+            [lIntT] = new Dictionary<Type, Func<object, object>>() {
+                [intT] = input => { return new List<int>() { (int)input }; },
+                [floatT] = input => { return new List<int>() { to_int((float)input) }; },
+                [doubleT] = input => { return new List<int>() { to_int((double)input) }; },
+                [decValT] = input => { return new List<int>() { ((DecimalValue)input).to_int() }; },
+                [vec2T] = input => { var v2 = (Vector2)input; return new List<int>() { to_int(v2.x), to_int(v2.y) }; },
+                [vec3T] = input => { var v3 = (Vector3)input; return new List<int>() { to_int(v3.x), to_int(v3.y), to_int(v3.z) }; },
+                [stringT] = input => {
+                    var split = Ex.Text.split((string)input, ','); List<int> list = new List<int>(split.Length);
+                    foreach (var strValue in split) { list.Add(to_int(strValue)); }
+                    return list;
+                },
+                [lIntT] = input => { return (List<int>)input; },
+                [lFloatT] = input => {
+                    var lStr = (List<float>)input; var list = new List<int>(lStr.Count);
+                    foreach (var value in lStr) { list.Add(to_int(value)); }
+                    return list;
+                },
+                [lDoubleT] = input => {
+                    var lStr = (List<double>)input; var list = new List<int>(lStr.Count);
+                    foreach (var value in lStr) { list.Add(to_int(value)); }
+                    return list;
+                },
+                [lStringT] = input => {
+                    var lStr = (List<String>)input; var list = new List<int>(lStr.Count);
+                    foreach (var value in lStr) { list.Add(to_int(value)); }
+                    return list;
+                },
+                [lVec2T] = input => {
+                    var lV2 = (List<Vector2>)input; var list = new List<int>(lV2.Count * 2);
+                    foreach (var value in lV2) { list.Add(to_int(value.x)); list.Add(to_int(value.y)); }
+                    return list;
+                },
+                [lVec3T] = input => {
+                    var lV3 = (List<Vector3>)input; var list = new List<int>(lV3.Count * 3);
+                    foreach (var value in lV3) { list.Add(to_int(value.x)); list.Add(to_int(value.y)); list.Add(to_int(value.z)); }
+                    return list;
+                },
+                [lObjT] = input => {
+                    var lObj = (List<object>)input; var list = new List<int>(lObj.Count);
+                    foreach (var value in lObj) { list.Add(to_int(value)); }
+                    return list;
+                },
+            },
             [lFloatT] = new Dictionary<Type, Func<object, object>>() {
                 [intT]      = input => { return new List<float>() { to_float((int)input) }; },
                 [floatT]    = input => { return new List<float>() {(float)input }; },
@@ -560,6 +607,11 @@ namespace Ex{
                 [stringT]   = input => {
                     var split = Ex.Text.split((string)input, ','); List<float> list = new List<float>(split.Length);
                     foreach (var strValue in split) { list.Add(to_float(strValue));} return list;
+                },
+                [lIntT] = input => {
+                    var lStr = (List<int>)input; var list = new List<float>(lStr.Count);
+                    foreach (var value in lStr) { list.Add(to_float(value)); }
+                    return list;
                 },
                 [lFloatT] = input => { return (List<float>)input; },
                 [lDoubleT]  = input => {
@@ -593,6 +645,11 @@ namespace Ex{
                 [stringT]   = input => {
                     var split = Ex.Text.split((string)input, ','); var list = new List<double>(split.Length);
                     foreach (var strValue in split) { list.Add(to_double(strValue)); }
+                    return list;
+                },
+                [lIntT] = input => {
+                    var lStr = (List<int>)input; var list = new List<double>(lStr.Count);
+                    foreach (var value in lStr) { list.Add(to_double(value)); }
                     return list;
                 },
                 [lFloatT] = input => {

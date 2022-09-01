@@ -176,13 +176,14 @@ namespace Ex {
 
                 switch (tCode) {
                     case TypeCode.Int32:
-                        set_array(pc, arg.xml.Name, (List<int>)arg.value, length);
+                        set_array(pc, arg.xml.Name, Converter.to_int_list(arg.value), length);
                         return;
                     case TypeCode.Single:
-                        set_array(pc, arg.xml.Name, (List<float>)arg.value, length);
+                       
+                        set_array(pc, arg.xml.Name, Converter.to_float_list(arg.value), length);
                         return;
                     case TypeCode.Double:
-                        set_array(pc, arg.xml.Name, (List<double>)arg.value, length);
+                        set_array(pc, arg.xml.Name, Converter.to_double_list(arg.value), length);
                         return;
 
                     default:
