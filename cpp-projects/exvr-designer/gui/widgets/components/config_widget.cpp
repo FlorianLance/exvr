@@ -94,6 +94,7 @@
 #include "config_parameters/tpp_avatar_camera_pw.hpp"
 #include "config_parameters/volumetric_video_pw.hpp"
 #include "config_parameters/buttons_ui_pw.hpp"
+#include "config_parameters/k4_manager_pw.hpp"
 
 using namespace tool::ex;
 

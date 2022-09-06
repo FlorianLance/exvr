@@ -102,6 +102,7 @@ HEADERS += \
     controller/exvr_controller.hpp \
     # utility
     gui/ex_widgets/ex_condition_w.hpp \
+    gui/widgets/components/config_parameters/k4_manager_pw.hpp \
     utility/script_utility.hpp \
     utility/path_utility.hpp \
     # IO
@@ -335,6 +336,7 @@ SOURCES += \
     controller/exvr_controller.cpp \
     # launcher   
     gui/ex_widgets/ex_condition_w.cpp \
+    gui/widgets/components/config_parameters/k4_manager_pw.cpp \
     gui/widgets/components/config_parameters/primitives_model_pw.cpp \
     launcher/exp_launcher.cpp \
     launcher/exp_launcher_communication.cpp \
