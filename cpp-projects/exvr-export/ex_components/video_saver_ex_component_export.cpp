@@ -1,6 +1,6 @@
 
 /***********************************************************************************
-** exvr-designer                                                                  **
+** exvr-export                                                                    **
 ** MIT License                                                                    **
 ** Copyright (c) [2018] [Florian Lance][EPFL-LNCO]                                **
 ** Permission is hereby granted, free of charge, to any person obtaining a copy   **
@@ -22,43 +22,18 @@
 ** SOFTWARE.                                                                      **
 ************************************************************************************/
 
-#pragma once
+#include "video_saver_ex_component_export.hpp"
 
-// local
-#include "config_pw.hpp"
+using namespace tool::ex;
 
-namespace tool::ex {
+VideoSaverExComponent *create_video_saver_ex_component(){
+    return new VideoSaverExComponent();
+}
 
-class KinectManagerInitConfigParametersW : public ConfigParametersW{
+void delete_video_saver_ex_component(VideoSaverExComponent *videoGeneratorExComponent){
+    delete videoGeneratorExComponent;
+}
 
-public :
-
-    KinectManagerInitConfigParametersW();
-
-    void insert_widgets() override;
-    void init_and_register_widgets() override;
-    void create_connections() override{}
-    void late_update_ui() override{}
-    void update_with_info(QStringView id, QStringView value) override;
-private:
-    struct Impl;
-    std::unique_ptr<Impl> m_p = nullptr;
-};
-
-
-class KinectManagerConfigParametersW : public ConfigParametersW{
-
-public :
-
-    KinectManagerConfigParametersW();
-
-    void insert_widgets() override;
-    void init_and_register_widgets() override;
-    void update_with_info(QStringView id, QStringView value) override;
-
-private:
-    struct Impl;
-    std::unique_ptr<Impl> m_p = nullptr;
-};
-
+int add_frame_video_saver_ex_component(VideoSaverExComponent *videoGeneratorExComponent, int width, int height, char *data, const char *format, int dataType){
+    return videoGeneratorExComponent->add_frame(width, height, data, format, dataType);
 }

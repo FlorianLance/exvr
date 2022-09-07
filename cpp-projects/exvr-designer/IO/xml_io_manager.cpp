@@ -518,6 +518,9 @@ std::unique_ptr<Component> XmlIoManager::read_component(){
         unityNameStr = unityNameStr.replace("SpatializedAudio", "AudioSource");
         unityNameStr = unityNameStr.replace("TextCamera", "TextViewer");
         unityNameStr = unityNameStr.replace("SliderCamera", "SliderUI");
+        unityNameStr = unityNameStr.replace("KinectManager", "K2Manager");
+        unityNameStr = unityNameStr.replace("KinectManager", "K2Manager");
+        unityNameStr = unityNameStr.replace("KinectBodyTracking", "K2BodyTracking");
 
         // try again with modifications
         type = Component::get_type_from_unity_name(unityNameStr.toStdString());

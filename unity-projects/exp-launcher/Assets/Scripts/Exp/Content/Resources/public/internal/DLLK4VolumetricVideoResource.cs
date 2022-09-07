@@ -31,24 +31,24 @@ using UnityEngine;
 
 namespace Ex {
 
-    public class DLLVolumetricVideoResource : ExResourceDll {
+    public class DLLK4VolumetricVideoResource : DLLExResource {
 
         public int nb_cameras() {
-            return get_cameras_nb_volumetric_video_resource(_handle);
+            return get_cameras_nb_k4_volumetric_video_ex_resource(_handle);
         }
 
         public int nb_frames(int idCamera) {
-            return get_nb_frames_volumetric_video_resource(_handle, idCamera);
+            return get_nb_frames_k4_volumetric_video_ex_resource(_handle, idCamera);
         }
 
         public float duration_ms(int idCamera) {
-            return get_duration_ms_volumetric_video_resource(_handle, idCamera);
+            return get_duration_ms_k4_volumetric_video_ex_resource(_handle, idCamera);
         }
 
         public Matrix4x4 model(int idCamera) {
 
             float[] t = new float[16];
-            get_camera_transform_volumetric_video_resource(_handle, idCamera, t);
+            get_camera_transform_k4_volumetric_video_ex_resource(_handle, idCamera, t);
             return new Matrix4x4(new Vector4(t[0], t[1], t[2], 0),     // c0
                                  new Vector4(t[4], t[5], t[6], 0),     // c1
                                  new Vector4(t[8], t[9], t[10], 0),    // c2
@@ -56,45 +56,45 @@ namespace Ex {
         }
 
         public int id_frame_from_time(int idCamera, float timeMs) {
-            return get_id_frame_from_time_ms_volumetric_video_resource(_handle, idCamera, timeMs);
+            return get_id_frame_from_time_ms_k4_volumetric_video_ex_resource(_handle, idCamera, timeMs);
         }
 
         public int valid_vertices_count(int idCamera, int idFrame) {
-            return get_valid_vertices_count_volumetric_video_resource(_handle, idCamera, idFrame);
+            return get_valid_vertices_count_k4_volumetric_video_ex_resource(_handle, idCamera, idFrame);
         }
 
         #region memory_management
 
-        public DLLVolumetricVideoResource() : base() {
+        public DLLK4VolumetricVideoResource() : base() {
         }
 
         protected override void create_DLL_class() {
-            _handle = new HandleRef(this, create_volumetric_video_resource());
+            _handle = new HandleRef(this, create_k4_volumetric_video_ex_resource());
         }
 
         #endregion memory_management  
         #region DllImport
 
-        [DllImport("lnco-exvr-export", EntryPoint = "create_volumetric_video_resource", CallingConvention = CallingConvention.Cdecl)]
-        static private extern IntPtr create_volumetric_video_resource();
+        [DllImport("lnco-exvr-export", EntryPoint = "create_k4_volumetric_video_ex_resource", CallingConvention = CallingConvention.Cdecl)]
+        static private extern IntPtr create_k4_volumetric_video_ex_resource();
 
-        [DllImport("lnco-exvr-export", EntryPoint = "get_cameras_nb_volumetric_video_resource", CallingConvention = CallingConvention.Cdecl)]
-        static private extern int get_cameras_nb_volumetric_video_resource(HandleRef volumetricVideoResource);
+        [DllImport("lnco-exvr-export", EntryPoint = "get_cameras_nb_k4_volumetric_video_ex_resource", CallingConvention = CallingConvention.Cdecl)]
+        static private extern int get_cameras_nb_k4_volumetric_video_ex_resource(HandleRef volumetricVideoResource);
 
-        [DllImport("lnco-exvr-export", EntryPoint = "get_nb_frames_volumetric_video_resource", CallingConvention = CallingConvention.Cdecl)]
-        static private extern int get_nb_frames_volumetric_video_resource(HandleRef volumetricVideoResource, int idCamera);
+        [DllImport("lnco-exvr-export", EntryPoint = "get_nb_frames_k4_volumetric_video_ex_resource", CallingConvention = CallingConvention.Cdecl)]
+        static private extern int get_nb_frames_k4_volumetric_video_ex_resource(HandleRef volumetricVideoResource, int idCamera);
 
-        [DllImport("lnco-exvr-export", EntryPoint = "get_duration_ms_volumetric_video_resource", CallingConvention = CallingConvention.Cdecl)]
-        static private extern float get_duration_ms_volumetric_video_resource(HandleRef volumetricVideoResource, int idCamera);
+        [DllImport("lnco-exvr-export", EntryPoint = "get_duration_ms_k4_volumetric_video_ex_resource", CallingConvention = CallingConvention.Cdecl)]
+        static private extern float get_duration_ms_k4_volumetric_video_ex_resource(HandleRef volumetricVideoResource, int idCamera);
 
-        [DllImport("lnco-exvr-export", EntryPoint = "get_camera_transform_volumetric_video_resource", CallingConvention = CallingConvention.Cdecl)]
-        static private extern void get_camera_transform_volumetric_video_resource(HandleRef volumetricVideoResource, int idCamera, float[] model);
+        [DllImport("lnco-exvr-export", EntryPoint = "get_camera_transform_k4_volumetric_video_ex_resource", CallingConvention = CallingConvention.Cdecl)]
+        static private extern void get_camera_transform_k4_volumetric_video_ex_resource(HandleRef volumetricVideoResource, int idCamera, float[] model);
 
-        [DllImport("lnco-exvr-export", EntryPoint = "get_id_frame_from_time_ms_volumetric_video_resource", CallingConvention = CallingConvention.Cdecl)]
-        static private extern int get_id_frame_from_time_ms_volumetric_video_resource(HandleRef volumetricVideoResource, int idCamera, float timeMs);
+        [DllImport("lnco-exvr-export", EntryPoint = "get_id_frame_from_time_ms_k4_volumetric_video_ex_resource", CallingConvention = CallingConvention.Cdecl)]
+        static private extern int get_id_frame_from_time_ms_k4_volumetric_video_ex_resource(HandleRef volumetricVideoResource, int idCamera, float timeMs);
 
-        [DllImport("lnco-exvr-export", EntryPoint = "get_valid_vertices_count_volumetric_video_resource", CallingConvention = CallingConvention.Cdecl)]
-        static private extern int get_valid_vertices_count_volumetric_video_resource(HandleRef volumetricVideoResource, int idCamera, int idFrame);
+        [DllImport("lnco-exvr-export", EntryPoint = "get_valid_vertices_count_k4_volumetric_video_ex_resource", CallingConvention = CallingConvention.Cdecl)]
+        static private extern int get_valid_vertices_count_k4_volumetric_video_ex_resource(HandleRef volumetricVideoResource, int idCamera, int idFrame);
 
         #endregion DllImport  
     }

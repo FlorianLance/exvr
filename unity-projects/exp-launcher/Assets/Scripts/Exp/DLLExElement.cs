@@ -33,7 +33,7 @@ namespace Ex {
         public enum Container { InitConfig = 0, CurrentConfig = 1, Dynamic = 2, Global = 3 };
     }
 
-    public abstract class CppExElement : CppDllImport {
+    public abstract class DLLExElement : DLLCppImport {
 
         //set_exp_ex_component(_handle, ExVR.Experiment().cppDll.getHandle());
 

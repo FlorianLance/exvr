@@ -28,11 +28,11 @@
 #include "utility/export.hpp"
 
 // components
-#include "ex_components/video_saver_component.hpp"
+#include "ex_components/python_script_ex_component.hpp"
+
 
 extern "C"{
 
-    DECL_EXPORT tool::ex::VideoSaverComponent* create_video_saver_component();
-    DECL_EXPORT void delete_video_saver_component(tool::ex::VideoSaverComponent *videoGeneratorComponent);
-    DECL_EXPORT int add_frame_video_saver_component(tool::ex::VideoSaverComponent *videoGeneratorComponent, int width, int height, char *data, const char *format, int dataType);
+    DECL_EXPORT tool::ex::PythonScriptExComponent* create_python_script_ex_component();
+    DECL_EXPORT void delete_python_script_ex_component(tool::ex::PythonScriptExComponent *pyComponent);
 }

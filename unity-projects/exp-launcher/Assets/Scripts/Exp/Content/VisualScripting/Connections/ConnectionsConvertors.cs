@@ -49,7 +49,7 @@ namespace Ex{
             ["any:list_string"] = input => { return Converter.to_string_list(input); },
             ["any:lm_frame"] = input => { return (Leap.Frame)input; },
             ["any:lm_hands_frame"] = input => { return (LeapMotionFrame)input; },
-            ["any:kinect_body"] = input => { return (KinectBodyData)input; },
+            ["any:kinect_body"] = input => { return (K2BodyData)input; },
             ["any:image"] = input => { return (ImageContainer)input; },
             ["any:real_list"] = input => { return Converter.to_double_list(input); },
             ["any:keyboard_button"] = input => { return (Input.KeyboardButtonEvent)input; },

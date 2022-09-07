@@ -77,8 +77,8 @@
 #include "config_parameters/cloud_pw.hpp"
 #include "config_parameters/scaner_video_pw.hpp"
 #include "config_parameters/humanoid_controller_pw.hpp"
-#include "config_parameters/kinect_manager_pw.hpp"
-#include "config_parameters/kinect_body_tracking_pw.hpp"
+#include "config_parameters/k2_manager_pw.hpp"
+#include "config_parameters/k2_body_tracking_pw.hpp"
 #include "config_parameters/plot_resource_pw.hpp"
 #include "config_parameters/qualisys_tracking_pw.hpp"
 #include "config_parameters/mri_pw.hpp"
@@ -275,10 +275,12 @@ ConfigParametersW *ConfigW::generate_parameters(Component::Type type, bool initC
         return gen_params_w<FopRobotInitConfigParametersW,FopRobotConfigParametersW>(initConfig);
     case CT::Qualisys:
         return gen_params_w<QualisysTrackingInitConfigParametersW,QualisysTrackingConfigParametersW>(initConfig);
-    case CT::Kinect_manager:
-        return gen_params_w<KinectManagerInitConfigParametersW,KinectManagerConfigParametersW>(initConfig);
-    case CT::Kinect_body_tracking:
-        return gen_params_w<KinectBodyTrackingInitConfigParametersW,KinectBodyTrackingConfigParametersW>(initConfig);
+    case CT::K2_manager:
+        return gen_params_w<K2ManagerInitConfigParametersW,K2ManagerConfigParametersW>(initConfig);
+    case CT::K2_body_tracking:
+        return gen_params_w<K2BodyTrackingInitConfigParametersW,K2BodyTrackingConfigParametersW>(initConfig);
+    case CT::K4_manager:
+        return gen_params_w<K4ManagerInitConfigParametersW,K4ManagerConfigParametersW>(initConfig);
     case CT::Leap_motion:
         return gen_params_w<LeapMotionInitConfigParametersW,LeapMotionConfigParametersW>(initConfig);
     case CT::Leap_motion_arms_display:

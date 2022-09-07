@@ -1,6 +1,6 @@
 
 /***********************************************************************************
-** exvr-designer                                                                  **
+** exvr-export                                                                    **
 ** MIT License                                                                    **
 ** Copyright (c) [2018] [Florian Lance][EPFL-LNCO]                                **
 ** Permission is hereby granted, free of charge, to any person obtaining a copy   **
@@ -24,55 +24,14 @@
 
 #pragma once
 
-// local
-#include "gui/ex_widgets/ex_component_w.hpp"
-#include "config_pw.hpp"
+// base
+#include "utility/export.hpp"
 
-namespace tool::ex {
+// components
+#include "ex_components/video_saver_ex_component.hpp"
 
-class KinectBodyTrackingInitConfigParametersW : public ConfigParametersW{
-
-public :
-
-
-    ExComponentW m_kinectManager{"kinect_manager"};
-
-    void insert_widgets() override{
-
-        add_widget(ui::F::gen(ui::L::HB(), {m_kinectManager()}, LStretch{false}, LMargins{true}, QFrame::Box));
-    }
-
-    void init_and_register_widgets() override{
-        add_input_ui(m_kinectManager.init_widget(Component::Type::Kinect_manager, "Kinect manager component: "));
-    }
-
-    void create_connections() override{
-    }
-
-    void late_update_ui() override{}
-};
-
-
-class KinectBodyTrackingConfigParametersW : public ConfigParametersW{
-
-public :
-
-    TransformSubPart m_tr {"global_transform"};
-
-    void insert_widgets() override{
-        add_sub_part_widget(m_tr);
-    }
-
-    void init_and_register_widgets() override{
-        map_sub_part(m_tr.init_widget("Global model transform"));
-    }
-
-    void create_connections() override{
-        // ...
-    }
-
-
-    void late_update_ui() override{}
-};
-
+extern "C"{
+    DECL_EXPORT tool::ex::VideoSaverExComponent* create_video_saver_ex_component();
+    DECL_EXPORT void delete_video_saver_ex_component(tool::ex::VideoSaverExComponent *videoGeneratorExComponent);
+    DECL_EXPORT int add_frame_video_saver_ex_component(tool::ex::VideoSaverExComponent *videoGeneratorExComponent, int width, int height, char *data, const char *format, int dataType);
 }

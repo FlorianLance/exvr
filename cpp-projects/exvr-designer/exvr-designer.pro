@@ -102,6 +102,8 @@ HEADERS += \
     controller/exvr_controller.hpp \
     # utility
     gui/ex_widgets/ex_condition_w.hpp \
+    gui/widgets/components/config_parameters/k2_body_tracking_pw.hpp \
+    gui/widgets/components/config_parameters/k2_manager_pw.hpp \
     gui/widgets/components/config_parameters/k4_manager_pw.hpp \
     utility/script_utility.hpp \
     utility/path_utility.hpp \
@@ -213,10 +215,8 @@ HEADERS += \
     gui/widgets/components/config_parameters/scene_scaner_pw.hpp \
     gui/widgets/components/config_parameters/leap_motion_arms_display_pw.hpp \
     gui/widgets/components/config_parameters/attach_object_to_hand_pw.hpp \
-    gui/widgets/components/config_parameters/kinect_body_tracking_pw.hpp \
     gui/widgets/components/config_parameters/thera_trainer_platform_pw.hpp \
     gui/widgets/components/config_parameters/thera_trainer_tracking_pw.hpp \
-    gui/widgets/components/config_parameters/kinect_manager_pw.hpp \
     gui/widgets/components/config_parameters/qualisys_tracking_pw.hpp \
     gui/widgets/components/config_parameters/cloud_pw.hpp \
     gui/widgets/components/config_parameters/scaner_video_pw.hpp \
@@ -336,6 +336,7 @@ SOURCES += \
     controller/exvr_controller.cpp \
     # launcher   
     gui/ex_widgets/ex_condition_w.cpp \
+    gui/widgets/components/config_parameters/k2_manager_pw.cpp \
     gui/widgets/components/config_parameters/k4_manager_pw.cpp \
     gui/widgets/components/config_parameters/primitives_model_pw.cpp \
     launcher/exp_launcher.cpp \
@@ -417,7 +418,6 @@ SOURCES += \
     gui/widgets/components/config_parameters/microphone_pw.cpp \
     gui/widgets/components/config_parameters/humanoid_controller_pw.cpp \
     gui/widgets/components/config_parameters/camera_pw.cpp \
-    gui/widgets/components/config_parameters/kinect_manager_pw.cpp \
     gui/widgets/components/config_parameters/qualisys_tracking_pw.cpp \
     gui/widgets/components/config_parameters/scene_scaner_pw.cpp \
     gui/widgets/components/config_parameters/thera_trainer_platform_pw.cpp \

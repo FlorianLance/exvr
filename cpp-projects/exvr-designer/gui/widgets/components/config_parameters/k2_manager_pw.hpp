@@ -1,6 +1,6 @@
 
 /***********************************************************************************
-** exvr-export                                                                    **
+** exvr-designer                                                                  **
 ** MIT License                                                                    **
 ** Copyright (c) [2018] [Florian Lance][EPFL-LNCO]                                **
 ** Permission is hereby granted, free of charge, to any person obtaining a copy   **
@@ -22,17 +22,43 @@
 ** SOFTWARE.                                                                      **
 ************************************************************************************/
 
-#include "python_script_component_export.hpp"
+#pragma once
+
+// local
+#include "config_pw.hpp"
+
+namespace tool::ex {
+
+class K2ManagerInitConfigParametersW : public ConfigParametersW{
+
+public :
+
+    K2ManagerInitConfigParametersW();
+
+    void insert_widgets() override;
+    void init_and_register_widgets() override;
+    void create_connections() override{}
+    void late_update_ui() override{}
+    void update_with_info(QStringView id, QStringView value) override;
+private:
+    struct Impl;
+    std::unique_ptr<Impl> m_p = nullptr;
+};
 
 
-using namespace tool::ex;
+class K2ManagerConfigParametersW : public ConfigParametersW{
 
-PythonScriptComponent *create_python_script_component(){
-    return new PythonScriptComponent();
+public :
+
+    K2ManagerConfigParametersW();
+
+    void insert_widgets() override;
+    void init_and_register_widgets() override;
+    void update_with_info(QStringView id, QStringView value) override;
+
+private:
+    struct Impl;
+    std::unique_ptr<Impl> m_p = nullptr;
+};
+
 }
-
-void delete_python_script_component(PythonScriptComponent *pyComponent){
-    delete pyComponent;
-}
-
-

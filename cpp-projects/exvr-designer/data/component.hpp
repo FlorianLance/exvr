@@ -45,7 +45,6 @@ using namespace std::literals::string_view_literals;
 
 struct Component {
 
-
     enum class Category : int {
         Audio, Avatar, Camera, Cloud, Environment, Flow,
         Input, Interaction, Model, Network, Output, Resource, Scene, Script, Tracking, UI, Video, Viewer,
@@ -100,7 +99,7 @@ struct Component {
         /** H */ Humanoid_avatar, Humanoid_controller,
         /** I */ Image_resource, Image_viewer,
         /** J */ Joypad,
-        /** K */ Keyboard, K4_manager, Kinect_manager, Kinect_body_tracking,
+        /** K */ Keyboard, K4_manager, K2_manager, K2_body_tracking,
         /** L */ Landmark, Leap_motion, Leap_motion_arms_display, Leap_motion_tracking, Lines, Logger, LoggerColumns, LoggerCondition, LoggerExperiment,
         /** M */ Mark_to_clean, Microphone, Mirror, Mouse, MRI, Multi_AB,
         /** P */ Parallel_port_writer, Plane, Plot_resource, Post_process, Python_script,
@@ -255,10 +254,10 @@ struct Component {
         // Tracking
         {T::Attach_object_to_hand,    C::Tracking,    TO::B, CO::B, Y, N, N, Y, N, N, P::M, R::OS, S::Exp, "Attach_object_to_hand"sv, "Attach object to hand"sv, "AttachObjectToHand"sv, "Sponge"sv},
         {T::Biopac,                   C::Tracking,    TO::U, CO::I, Y, N, N, Y, N, N, P::H, R::OS, S::Sta, "Biopac"sv, "Biopac device"sv, "Biopac"sv, "Physio"sv},
-        {T::Fop_robot,                C::Tracking,    TO::U, CO::B, Y, N, N, Y, N, N, P::H, R::LN, S::Sta, "Fop_robot"sv, "FOP robot"sv, "FOPRobot"sv,"Fop_robot"sv},
+        {T::Fop_robot,                C::Tracking,    TO::U, CO::B, Y, N, N, Y, N, N, P::H, R::LN, S::Sta, "Fop_robot"sv, "FOP robot"sv, "FOPRobot"sv,"Fop_robot"sv},        
+        {T::K2_body_tracking,         C::Tracking,    TO::B, CO::B, Y, N, N, Y, N, N, P::H, R::LN, S::Exp, "K2_body_tracking"sv, "K2 body tracking"sv, "K2BodyTracking"sv,"Kinect"sv},
+        {T::K2_manager,               C::Tracking,    TO::U, CO::B, Y, N, N, Y, N, N, P::H, R::LN, S::Sta, "K2_manager"sv, "K2 manager"sv, "K2Manager"sv,"Kinect"sv},
         {T::K4_manager,               C::Tracking,    TO::U, CO::B, Y, N, N, Y, N, N, P::H, R::LN, S::Sta, "K4_manager"sv, "K4 manager"sv, "K4Manager"sv,"Kinect"sv},
-        {T::Kinect_manager,           C::Tracking,    TO::U, CO::B, Y, N, N, Y, N, N, P::H, R::LN, S::Sta, "Kinect_manager"sv, "Kinect manager"sv, "KinectManager"sv,"Kinect"sv},
-        {T::Kinect_body_tracking,     C::Tracking,    TO::B, CO::B, Y, N, N, Y, N, N, P::H, R::LN, S::Exp, "Kinect_body_tracking"sv, "Kinect body tracking"sv, "KinectBodyTracking"sv,"Kinect"sv},
         {T::Leap_motion,              C::Tracking,    TO::U, CO::C, Y, Y, Y, Y, Y, N, P::H, R::OS, S::Sta, "Leap_motion"sv, "LeapMotion"sv, "LeapMotion"sv, "Hand"sv},
         {T::Leap_motion_arms_display, C::Tracking,    TO::V, CO::B, Y, N, N, Y, N, N, P::M, R::CS, S::Leg, "Leap_motion_arms_display"sv, "LeapMotion realistic arms"sv, "LeapMotionArmsDisplay"sv, "Hand"sv},
         {T::Leap_motion_tracking,     C::Tracking,    TO::V, CO::N, Y, N, N, Y, N, N, P::M, R::OS, S::Leg, "Leap_motion_tracking"sv, "LeapMotion tracking"sv, "LeapMotionTracking"sv, "Hand"sv},
@@ -563,7 +562,7 @@ struct Component {
         {T::Python_script,             "signal3"sv,                    CNT::any_t,                     "..."sv},
         {T::Python_script,             "signal4"sv,                    CNT::any_t,                     "..."sv},
         // Tracking
-        {T::Kinect_body_tracking,      "body"sv,                       CNT::kinect_body_t,             "..."sv},
+        {T::K2_body_tracking,      "body"sv,                       CNT::kinect_body_t,             "..."sv},
         {T::Leap_motion,               "new raw frame"sv,              CNT::lm_frame_t,                "..."sv},
         {T::Leap_motion,               "new hands frame"sv,            CNT::lm_hands_frame_t,          "..."sv},
         {T::Leap_motion_arms_display,  "current colliders"sv,          CNT::gameobject_list_t,         "Is triggered when trigger slot is called, will send the current enabled colliders"sv},

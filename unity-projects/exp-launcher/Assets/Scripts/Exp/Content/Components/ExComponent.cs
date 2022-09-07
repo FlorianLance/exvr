@@ -52,6 +52,7 @@ namespace Ex {
             pre_update,
             update,
             post_update,
+            global_update,
             play,
             pause,
             stop_routine,
@@ -434,6 +435,8 @@ namespace Ex {
             functionsDefined[Function.pre_update] = (derivedType.GetMethod("pre_update", flagPrivate).DeclaringType == derivedType);
             functionsDefined[Function.update] = (derivedType.GetMethod("update", flagPrivate).DeclaringType == derivedType);
             functionsDefined[Function.post_update] = (derivedType.GetMethod("post_update", flagPrivate).DeclaringType == derivedType);
+            functionsDefined[Function.global_update] = (derivedType.GetMethod("global_update", flagPublic).DeclaringType == derivedType);
+            
             functionsDefined[Function.on_gui] = (derivedType.GetMethod("on_gui", flagPrivate).DeclaringType == derivedType);
             functionsDefined[Function.end_of_frame] = (derivedType.GetMethod("end_of_frame", flagPrivate).DeclaringType == derivedType);
 
@@ -712,6 +715,21 @@ namespace Ex {
         }
 
 
+        public void base_global_update() {
+
+            currentFunction = Function.global_update;
+            if (m_catchExceptions) {
+                try {
+                    global_update();
+                } catch (Exception e) {
+                    display_exception(e);
+                }
+            } else {
+                global_update();
+            }
+        }
+
+
         private void process_event(Event cEvent) {
 
             var eType = cEvent.type;
@@ -952,6 +970,7 @@ namespace Ex {
         protected virtual void pre_update() {}
         protected virtual void update() {}
         protected virtual void post_update() {}
+        public virtual void global_update() { }
         protected virtual void on_gui() { }
         protected virtual void end_of_frame() { }
 

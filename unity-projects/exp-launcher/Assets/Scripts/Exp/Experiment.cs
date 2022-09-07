@@ -125,6 +125,8 @@ namespace Ex{
 
         void Update() {
 
+            ExVR.Components().call_global_update();
+
             if (!ExVR.Time().is_experiment_running()) {
                 m_onGuiCallsEnabled = false;
                 apply_scheduled_actions();

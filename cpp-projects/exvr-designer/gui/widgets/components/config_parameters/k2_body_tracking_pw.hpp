@@ -1,6 +1,6 @@
-﻿
+
 /***********************************************************************************
-** exvr-exp                                                                       **
+** exvr-designer                                                                  **
 ** MIT License                                                                    **
 ** Copyright (c) [2018] [Florian Lance][EPFL-LNCO]                                **
 ** Permission is hereby granted, free of charge, to any person obtaining a copy   **
@@ -22,24 +22,45 @@
 ** SOFTWARE.                                                                      **
 ************************************************************************************/
 
+#pragma once
+
+// local
+#include "gui/ex_widgets/ex_component_w.hpp"
+#include "config_pw.hpp"
+
+namespace tool::ex {
+
+class K2BodyTrackingInitConfigParametersW : public ConfigParametersW{
+
+public :
 
 
-namespace Ex {
+    ExComponentW m_kinectManager{"kinect_manager"};
 
-    public class VideoSaverComponent : CppExComponent {
+    void insert_widgets() override{
 
-        protected override bool initialize() {
-
-            // init dll
-            cppDll = new DLL.VideoSaver();
-            cppDll.parent = this;
-
-            // init slots
-            add_slot("add frame", (image) => {
-                ((DLL.VideoSaver)cppDll).add_frame((ImageContainer)image);
-            });
-
-            return cppDll.initialize();
-        }
+        add_widget(ui::F::gen(ui::L::HB(), {m_kinectManager()}, LStretch{false}, LMargins{true}, QFrame::Box));
     }
+
+    void init_and_register_widgets() override{
+        add_input_ui(m_kinectManager.init_widget(Component::Type::K2_manager, "Kinect manager component: "));
+    }
+};
+
+
+class K2BodyTrackingConfigParametersW : public ConfigParametersW{
+
+public :
+
+    TransformSubPart m_tr {"global_transform"};
+
+    void insert_widgets() override{
+        add_sub_part_widget(m_tr);
+    }
+
+    void init_and_register_widgets() override{
+        map_sub_part(m_tr.init_widget("Global model transform"));
+    }
+};
+
 }

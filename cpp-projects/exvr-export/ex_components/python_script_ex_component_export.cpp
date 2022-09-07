@@ -22,17 +22,17 @@
 ** SOFTWARE.                                                                      **
 ************************************************************************************/
 
-#pragma once
-
-// base
-#include "utility/export.hpp"
-
-// components
-#include "ex_components/python_script_component.hpp"
+#include "python_script_ex_component_export.hpp"
 
 
-extern "C"{
+using namespace tool::ex;
 
-    DECL_EXPORT tool::ex::PythonScriptComponent* create_python_script_component();
-    DECL_EXPORT void delete_python_script_component(tool::ex::PythonScriptComponent *pyComponent);
+PythonScriptExComponent *create_python_script_ex_component(){
+    return new PythonScriptExComponent();
 }
+
+void delete_python_script_ex_component(PythonScriptExComponent *pyComponent){
+    delete pyComponent;
+}
+
+

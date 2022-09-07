@@ -22,18 +22,33 @@
 ** SOFTWARE.                                                                      **
 ************************************************************************************/
 
-#include "video_saver_component_export.hpp"
+#pragma once
 
-using namespace tool::ex;
+// std
+#include <string>
+#include <memory>
 
-VideoSaverComponent *create_video_saver_component(){
-    return new VideoSaverComponent();
-}
+// base
+#include "exvr/ex_component.hpp"
 
-void delete_video_saver_component(VideoSaverComponent *videoGeneratorComponent){
-    delete videoGeneratorComponent;
-}
+// opencv
+#include <opencv2/highgui/highgui.hpp>  // Video write
 
-int add_frame_video_saver_component(VideoSaverComponent *videoGeneratorComponent, int width, int height, char *data, const char *format, int dataType){
-    return videoGeneratorComponent->add_frame(width, height, data, format, dataType);
+namespace tool::ex{
+
+class VideoSaverExComponent : public ExComponent{
+
+public :
+
+    void start_experiment() override;
+    void stop_experiment() override;
+
+    int add_frame(int width, int height, char *data, std::string format, int dataTYpe);
+
+private:
+
+    std::unique_ptr<cv::VideoWriter> m_video = nullptr;
+    std::string m_videoPath;
+    cv::Size m_videoSize;
+};
 }

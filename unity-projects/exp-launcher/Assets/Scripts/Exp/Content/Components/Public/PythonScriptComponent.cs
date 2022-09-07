@@ -22,9 +22,6 @@
 ** SOFTWARE.                                                                      **
 ************************************************************************************/
 
-// system
-using System.Collections.Generic;
-
 namespace Ex{
 
     public class PythonScriptComponent : CppExComponent{
@@ -33,7 +30,7 @@ namespace Ex{
         protected override bool initialize() {
 
             // init DLL
-            cppDll = new DLL.PythonScriptComponentDLL();
+            cppDll = new DLL.DLLPythonScriptComponent();
             cppDll.parent = this;
 
             // force catch exception for csharp scripts components

@@ -30,10 +30,9 @@ using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.Profiling;
 
-namespace Ex
-{
+namespace Ex{
 
-    public static class Kinect2{
+    public static class K2{
 
         public const int depthWidth = 512;
         public const int depthHeight = 424;
@@ -79,32 +78,32 @@ namespace Ex
 
     }
 
-    public class JointInfo{
+    public class K2JointInfo{
         public Vector3 position;
         public Quaternion rotation;
-        public Kinect2.TrackingState state;
+        public K2.TrackingState state;
     }
 
-    public class KinectBodyData{
+    public class K2BodyData{
         public bool tracked = false;
         public bool restricted = false;
         public long id = 0;
-        public Dictionary<Kinect2.BodyJointType, JointInfo> joints = new Dictionary<Kinect2.BodyJointType, JointInfo>();
+        public Dictionary<K2.BodyJointType, K2JointInfo> joints = new Dictionary<K2.BodyJointType, K2JointInfo>();
     }
 
-    public class KinectBodiesData{
-        public Dictionary<long, KinectBodyData> bodies = new Dictionary<long, KinectBodyData>();
+    public class K2BodiesData{
+        public Dictionary<long, K2BodyData> bodies = new Dictionary<long, K2BodyData>();
     }
 
-    public class BodyGO{
-        public BodyGO(GameObject topParent, Mesh sharedJointMesh) {
+    public class K2BodyGO{
+        public K2BodyGO(GameObject topParent, Mesh sharedJointMesh) {
 
             parent = topParent;
-            joints = new Dictionary<Kinect2.BodyJointType, GameObject>(); ;
+            joints = new Dictionary<K2.BodyJointType, GameObject>(); ;
 
-            for (int ii = 0; ii < Kinect2.nbJoints; ++ii) {
+            for (int ii = 0; ii < K2.nbJoints; ++ii) {
 
-                var type = (Kinect2.BodyJointType)ii;
+                var type = (K2.BodyJointType)ii;
 
                 // rotations avaiable only for theses joints:
                 // Neck
@@ -116,19 +115,19 @@ namespace Ex
                 // HipLeft / HipRight
                 // KneeLeft / KneeRight
 
-                if (type == Kinect2.BodyJointType.neck ||
-                    type == Kinect2.BodyJointType.spine_shoulder ||
-                    type == Kinect2.BodyJointType.spine_base ||
-                    type == Kinect2.BodyJointType.shoulder_left ||
-                    type == Kinect2.BodyJointType.shoulder_right ||
-                    type == Kinect2.BodyJointType.elbow_left ||
-                    type == Kinect2.BodyJointType.elbow_right ||
-                    type == Kinect2.BodyJointType.wrist_left ||
-                    type == Kinect2.BodyJointType.wrist_right ||
-                    type == Kinect2.BodyJointType.hip_left ||
-                    type == Kinect2.BodyJointType.hip_right ||
-                    type == Kinect2.BodyJointType.knee_left ||
-                    type == Kinect2.BodyJointType.knee_right){
+                if (type == K2.BodyJointType.neck ||
+                    type == K2.BodyJointType.spine_shoulder ||
+                    type == K2.BodyJointType.spine_base ||
+                    type == K2.BodyJointType.shoulder_left ||
+                    type == K2.BodyJointType.shoulder_right ||
+                    type == K2.BodyJointType.elbow_left ||
+                    type == K2.BodyJointType.elbow_right ||
+                    type == K2.BodyJointType.wrist_left ||
+                    type == K2.BodyJointType.wrist_right ||
+                    type == K2.BodyJointType.hip_left ||
+                    type == K2.BodyJointType.hip_right ||
+                    type == K2.BodyJointType.knee_left ||
+                    type == K2.BodyJointType.knee_right){
 
                     joints[type] = GO.generate_landmark("joint_" + type.ToString(), parent.transform, new Color(1, 0, 0));
                 } else {
@@ -148,29 +147,29 @@ namespace Ex
         }
 
         public GameObject parent = null;
-        public Dictionary<Kinect2.BodyJointType, GameObject> joints = null;
+        public Dictionary<K2.BodyJointType, GameObject> joints = null;
     }
 
-    public class BodiesGO{
+    public class K2BodiesGO{
 
-        public BodiesGO(GameObject topParent, Mesh sharedJointMesh) {
+        public K2BodiesGO(GameObject topParent, Mesh sharedJointMesh) {
             parent = topParent;
 
-            bodies = new List<BodyGO>(Kinect2.nbBodies);
-            bodiesParent = new List<GameObject>(Kinect2.nbBodies);
-            for (int ii = 0; ii < Kinect2.nbBodies; ++ii) {
+            bodies = new List<K2BodyGO>(K2.nbBodies);
+            bodiesParent = new List<GameObject>(K2.nbBodies);
+            for (int ii = 0; ii < K2.nbBodies; ++ii) {
                 GameObject bodyParent = GO.generate_empty_scene_object("body_" + ii, parent.transform, false);
-                bodies.Add(new BodyGO(bodyParent, sharedJointMesh));
+                bodies.Add(new K2BodyGO(bodyParent, sharedJointMesh));
                 bodiesParent.Add(bodyParent);
             }
         }
 
         public GameObject parent = null;
         public List<GameObject> bodiesParent = null;
-        public List<BodyGO> bodies = null;
+        public List<K2BodyGO> bodies = null;
     }
 
-    public class KinectCameraData{
+    public class K2CameraData{
 
         // common data from others cameras
         public List<int> commonIndices = null;
@@ -215,60 +214,60 @@ namespace Ex
         public Vector3[] jointsRot = null;
         public Matrix4x4 calibMatrix;
 
-        public KinectCameraData(int id, Matrix4x4 calibM, List<int> commonId) {
+        public K2CameraData(int id, Matrix4x4 calibM, List<int> commonId) {
 
             idCamera = id;
             calibMatrix = calibM;
             commonIndices = commonId;
 
             // colors
-            colors = new Color[Kinect2.depthCount];
+            colors = new Color[K2.depthCount];
             gcColors = GCHandle.Alloc(colors, GCHandleType.Pinned);
 
             // vertices
-            vertices = new Vector3[Kinect2.depthCount];
+            vertices = new Vector3[K2.depthCount];
             gcVertices = GCHandle.Alloc(vertices, GCHandleType.Pinned);
 
             // triangles
-            idTris = new int[3 * 2 * Kinect2.depthCount];
+            idTris = new int[3 * 2 * K2.depthCount];
             gcIdTris = GCHandle.Alloc(idTris, GCHandleType.Pinned);
 
             // bodies
-            bodiesInfo = new int[Kinect2.nbBodies * 4];
+            bodiesInfo = new int[K2.nbBodies * 4];
             gcBodiesInfo = GCHandle.Alloc(bodiesInfo, GCHandleType.Pinned);
             // joints
-            jointsId = new int[Kinect2.nbBodies * Kinect2.nbJoints];
+            jointsId = new int[K2.nbBodies * K2.nbJoints];
             gcJointsId = GCHandle.Alloc(jointsId, GCHandleType.Pinned);
-            jointsState = new int[Kinect2.nbBodies * Kinect2.nbJoints];
+            jointsState = new int[K2.nbBodies * K2.nbJoints];
             gcJointsState = GCHandle.Alloc(jointsState, GCHandleType.Pinned);
-            jointsPos = new Vector3[Kinect2.nbBodies * Kinect2.nbJoints];
+            jointsPos = new Vector3[K2.nbBodies * K2.nbJoints];
             gcJointsPos = GCHandle.Alloc(jointsPos, GCHandleType.Pinned);
-            jointsRot = new Vector3[Kinect2.nbBodies * Kinect2.nbJoints];
+            jointsRot = new Vector3[K2.nbBodies * K2.nbJoints];
             gcJointsRot = GCHandle.Alloc(jointsRot, GCHandleType.Pinned);
 
-            bodiesId = new long[Kinect2.nbBodies];
-            bodiesTracked = new bool[Kinect2.nbBodies];
-            bodiesRestricted = new bool[Kinect2.nbBodies];
+            bodiesId = new long[K2.nbBodies];
+            bodiesTracked = new bool[K2.nbBodies];
+            bodiesRestricted = new bool[K2.nbBodies];
         }
 
-        ~KinectCameraData() {
+        ~K2CameraData() {
             clean();
         }
 
-        public KinectBodyData generate_body_data(int bodyId, BodyGO bodyGo) {
+        public K2BodyData generate_body_data(int bodyId, K2BodyGO bodyGo) {
 
-            KinectBodyData data = new KinectBodyData();
+            K2BodyData data = new K2BodyData();
             data.tracked = bodiesTracked[bodyId];
             data.restricted = bodiesRestricted[bodyId];
             data.id = data.tracked ? bodiesId[bodyId] : -1;
 
-            for (int joint = 0; joint < Kinect2.nbJoints; ++joint) {
+            for (int joint = 0; joint < K2.nbJoints; ++joint) {
 
-                int globalId = bodyId * Kinect2.nbJoints + joint;                
-                Kinect2.BodyJointType jointType = (Kinect2.BodyJointType)jointsId[globalId];
+                int globalId = bodyId * K2.nbJoints + joint;                
+                K2.BodyJointType jointType = (K2.BodyJointType)jointsId[globalId];
 
-                JointInfo jointInfo = new JointInfo();
-                jointInfo.state = (Kinect2.TrackingState)jointsState[globalId];
+                K2JointInfo jointInfo = new K2JointInfo();
+                jointInfo.state = (K2.TrackingState)jointsState[globalId];
                 jointInfo.position = bodyGo.joints[jointType].transform.position;
                 jointInfo.rotation = bodyGo.joints[jointType].transform.rotation;
 
@@ -278,10 +277,10 @@ namespace Ex
             return data;
         }
 
-        public KinectBodiesData generate_bodies_data(BodiesGO bodiesGo) {
-            KinectBodiesData data = new KinectBodiesData();
+        public K2BodiesData generate_bodies_data(K2BodiesGO bodiesGo) {
+            K2BodiesData data = new K2BodiesData();
 
-            for (int idBody = 0; idBody < Kinect2.nbBodies; ++idBody) {
+            for (int idBody = 0; idBody < K2.nbBodies; ++idBody) {
                 var bodyData = generate_body_data(idBody, bodiesGo.bodies[idBody]);
                 data.bodies[bodyData.id] = bodyData;
             }
@@ -289,7 +288,7 @@ namespace Ex
             return data;
         }
 
-        public bool update_bodies(BodiesGO bodiesGO) {
+        public bool update_bodies(K2BodiesGO bodiesGO) {
 
             if (!doUpdate) {
                 return false;
@@ -306,7 +305,7 @@ namespace Ex
 
                 for (int idJoint = 0; idJoint < body.joints.Count; ++idJoint) {
 
-                    var joint = body.joints[(Kinect2.BodyJointType)idJoint];
+                    var joint = body.joints[(K2.BodyJointType)idJoint];
                     var pos = jointsPos[globalJoint];
                     var rot = jointsRot[globalJoint];
                     joint.transform.localPosition = new Vector3(pos.x, pos.y, pos.z);

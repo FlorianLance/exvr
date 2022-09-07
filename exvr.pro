@@ -33,10 +33,8 @@ SUBDIRS = exvr-designer exvr-components exvr-export exvr-test
 
 # where to find the sub projects
 exvr-designer.subdir    = cpp-projects/exvr-designer
-exvr-components.subdir  = cpp-projects/exvr-components
 exvr-export.subdir      = cpp-projects/exvr-export
 exvr-test.subdir        = cpp-projects/exvr-test
 
 # dependencies
-exvr-export.depends     = exvr-components
 exvr-test.depends       = exvr-designer

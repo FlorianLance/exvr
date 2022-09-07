@@ -346,6 +346,13 @@ namespace Ex{
             }
             ExVR.ExpLog().components(Function.stop_experiment, false);
         }
+
+        public void call_global_update() {
+            foreach(var component in sortedComponents) {
+                component.global_update();
+            }
+        }
+
         public void close(ExComponent componentToClose) {
 
             if (!componentToClose.is_closed()) {

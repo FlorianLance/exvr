@@ -73,7 +73,7 @@ namespace Ex{
     /// <summary>
     /// Base class for creating C++ Dll import classes
     /// </summary>
-    public abstract class CppDllImport : IDisposable{
+    public abstract class DLLCppImport : IDisposable{
 
         #region members
 
@@ -102,7 +102,7 @@ namespace Ex{
         /// <summary>
         /// CppDLLImportBase default constructor
         /// </summary>
-        public CppDllImport() {
+        public DLLCppImport() {
             create_DLL_class();
         }
 
@@ -110,7 +110,7 @@ namespace Ex{
         /// CppDLLImportBase constructor with an already allocated dll class
         /// </summary>
         /// <param name="ptr"></param>
-        public CppDllImport(IntPtr ptr) {
+        public DLLCppImport(IntPtr ptr) {
             _handle = new HandleRef(this, ptr);
         }
 
@@ -119,7 +119,7 @@ namespace Ex{
         // does not get called.
         // It gives your base class the opportunity to finalize.
         // Do not provide destructors in types derived from this class
-        ~CppDllImport() {
+        ~DLLCppImport() {
             // Do not re-create Dispose clean-up code here.
             // Calling Dispose(false) is optimal in terms of
             // readability and maintainability.

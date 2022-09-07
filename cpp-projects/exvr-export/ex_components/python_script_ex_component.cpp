@@ -1,11 +1,27 @@
 
-/*******************************************************************************
-** exvr-components                                                            **
-** No license (to be defined)                                                 **
-** Copyright (c) [2018] [Florian Lance][EPFL-LNCO]                            **
-********************************************************************************/
-
-#include "python_script_component.hpp"
+/***********************************************************************************
+** exvr-export                                                                    **
+** MIT License                                                                    **
+** Copyright (c) [2018] [Florian Lance][EPFL-LNCO]                                **
+** Permission is hereby granted, free of charge, to any person obtaining a copy   **
+** of this software and associated documentation files (the "Software"), to deal  **
+** in the Software without restriction, including without limitation the rights   **
+** to use, copy, modify, merge, publish, distribute, sublicense, and/or sell      **
+** copies of the Software, and to permit persons to whom the Software is          **
+** furnished to do so, subject to the following conditions:                       **
+**                                                                                **
+** The above copyright notice and this permission notice shall be included in all **
+** copies or substantial portions of the Software.                                **
+**                                                                                **
+** THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR     **
+** IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,       **
+** FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE    **
+** AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER         **
+** LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,  **
+** OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE  **
+** SOFTWARE.                                                                      **
+************************************************************************************/
+#include "python_script_ex_component.hpp"
 
 // std
 #include <iostream>
@@ -66,7 +82,7 @@ std::string extract_exception(){
     }
 }
 
-std::optional<bp::api::object> PythonScriptComponent::call_function(const std::string &funcName){
+std::optional<bp::api::object> PythonScriptExComponent::call_function(const std::string &funcName){
 
     try{
         return data->component.attr(funcName.c_str())();
@@ -77,7 +93,7 @@ std::optional<bp::api::object> PythonScriptComponent::call_function(const std::s
 }
 
 template<typename T>
-std::optional<bp::api::object> PythonScriptComponent::call_function(const std::string &funcName, T arg){
+std::optional<bp::api::object> PythonScriptExComponent::call_function(const std::string &funcName, T arg){
 
     try{
         return data->component.attr(funcName.c_str())(arg);
@@ -88,7 +104,7 @@ std::optional<bp::api::object> PythonScriptComponent::call_function(const std::s
 }
 
 template<typename T1, typename T2>
-std::optional<bp::api::object> PythonScriptComponent::call_function(const std::string &funcName, T1 arg1, T2 arg2){
+std::optional<bp::api::object> PythonScriptExComponent::call_function(const std::string &funcName, T1 arg1, T2 arg2){
 
     try{
         return data->component.attr(funcName.c_str())(arg1, arg2);
@@ -99,7 +115,7 @@ std::optional<bp::api::object> PythonScriptComponent::call_function(const std::s
 }
 
 
-bool PythonScriptComponent::initialize(){
+bool PythonScriptExComponent::initialize(){
 
     bool loadModuleSuccess = false;
     try{
@@ -167,49 +183,49 @@ bool PythonScriptComponent::initialize(){
     return false;
 }
 
-void PythonScriptComponent::start_experiment() {
+void PythonScriptExComponent::start_experiment() {
     call_function("start_experiment");
 }
 
-void PythonScriptComponent::stop_experiment() {
+void PythonScriptExComponent::stop_experiment() {
     call_function("stop_experiment");
 }
 
-void PythonScriptComponent::start_routine() {
+void PythonScriptExComponent::start_routine() {
     call_function("start_routine");
 }
 
-void PythonScriptComponent::stop_routine() {
+void PythonScriptExComponent::stop_routine() {
     call_function("stop_routine");
 }
 
-void PythonScriptComponent::set_visibility(bool visible){
+void PythonScriptExComponent::set_visibility(bool visible){
     call_function("set_visibility", visible);
 }
 
-void PythonScriptComponent::set_update_state(bool doUpdate){
+void PythonScriptExComponent::set_update_state(bool doUpdate){
     call_function("set_update_state", doUpdate);
 }
 
-void PythonScriptComponent::update() {
+void PythonScriptExComponent::update() {
     call_function("update");
 }
 
-void PythonScriptComponent::play() {
+void PythonScriptExComponent::play() {
     call_function("play");
 }
 
-void PythonScriptComponent::pause() {
+void PythonScriptExComponent::pause() {
     call_function("pause");
 }
 
-void PythonScriptComponent::clean() {
+void PythonScriptExComponent::clean() {
     call_function("clean");
     remove_module();
     // Do not call Py_Finalize() with Boost.Python.
 }
 
-void PythonScriptComponent::slot(int index){
+void PythonScriptExComponent::slot(int index){
 
     std::string valueName = std::string("slot") + std::to_string(index);
 //    log("PyComponent::slot(int index) : " + valueName + " " + std::to_string(dynamic.count(valueName)));
@@ -248,7 +264,7 @@ void PythonScriptComponent::slot(int index){
     log_error("No value with name " + valueName + " found.");
 }
 
-void PythonScriptComponent::remove_module(){
+void PythonScriptExComponent::remove_module(){
     PyRun_SimpleString(std::string("if '" + m_moduleName + "' in sys.modules:\n\tdel sys.modules[\"" + m_moduleName + "\"]").c_str());
     log_message("Module removed: " + m_moduleName);
 }
