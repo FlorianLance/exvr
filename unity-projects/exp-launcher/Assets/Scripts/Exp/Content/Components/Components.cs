@@ -348,7 +348,7 @@ namespace Ex{
         }
 
         public void call_global_update() {
-            foreach(var component in sortedComponents) {
+            foreach(var component in sortedComponents) {                
                 component.global_update();
             }
         }

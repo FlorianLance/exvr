@@ -25,11 +25,12 @@
 #include "k4_manager_pw.hpp"
 
 // qt-utility
-//#include "gui/ex_widgets/ex_combo_box_index_w.hpp"
+#include "gui/ex_widgets/ex_radio_button_w.hpp"
 #include "gui/ex_widgets/ex_checkbox_w.hpp"
 //#include "gui/ex_widgets/ex_line_edit_w.hpp"
 //#include "gui/ex_widgets/ex_spin_box_w.hpp"
 #include "gui/ex_widgets/ex_label_w.hpp"
+
 
 // local
 #include "gui/ex_widgets/ex_resource_w.hpp"
@@ -38,14 +39,26 @@ using namespace tool::ex;
 
 struct K4ManagerInitConfigParametersW::Impl{
     ExResourceW networkS{"network_settings"};
+
+    QButtonGroup deviceG;
+    ExRadioButtonW deviceDefault{"device_init_default"};
+    ExRadioButtonW deviceFile{"device_init_file"};
+    ExRadioButtonW deviceNothing{"device_init_nothing"};
     ExResourceW deviceS{"device_settings"};
+
+    QButtonGroup colorG;
+    ExRadioButtonW colorDefault{"color_init_default"};
+    ExRadioButtonW colorFile{"color_init_file"};
+    ExRadioButtonW colorNothing{"color_init_nothing"};
     ExResourceW colorS{"color_settings"};
+
+    QButtonGroup filtersG;
+    ExRadioButtonW filtersDefault{"filters_init_default"};
+    ExRadioButtonW filtersFile{"filters_init_file"};
+    ExRadioButtonW filtersNothing{"filters_init_nothing"};
     ExResourceW filters{"filters"};
+
     ExResourceW models{"models"};
-//    ExResourceW calib{"calib"};
-//    ExResourceW camera{"camera"};
-//    ExComboBoxIndexW mode{"mode"};
-//    ExLineEditW camarasToUse{"cameras_to_use"};
     ExCheckBoxW debugBypassDevice{"debug_bypass"};
     ExLabelW infos{"infos"};
 
@@ -64,8 +77,13 @@ K4ManagerInitConfigParametersW::K4ManagerInitConfigParametersW():  ConfigParamet
 }
 
 void K4ManagerInitConfigParametersW::insert_widgets(){
+
+    auto initDevice = ui::F::gen(ui::L::HB(), {ui::W::txt("Init device settings with:"), m_p->deviceFile(),m_p->deviceDefault(),m_p->deviceNothing()}, LStretch{true}, LMargins{false}, QFrame::NoFrame);
+    auto initColor = ui::F::gen(ui::L::HB(), {ui::W::txt("Init color settings with:"), m_p->colorFile(),m_p->colorDefault(),m_p->colorNothing()}, LStretch{true}, LMargins{false}, QFrame::NoFrame);
+    auto initFilters = ui::F::gen(ui::L::HB(), {ui::W::txt("Init filters settings with:"), m_p->filtersFile(),m_p->filtersDefault(),m_p->filtersNothing()}, LStretch{true}, LMargins{false}, QFrame::NoFrame);
+
     add_widget(ui::F::gen(ui::L::VB(),
-        {m_p->networkS(), ui::W::txt("Optional:"),m_p->deviceS(),m_p->colorS(),m_p->filters(),m_p->models()}, LStretch{false}, LMargins{true}, QFrame::Box)
+        {m_p->networkS(), initDevice,initFilters, initColor, ui::W::txt("Files:"), m_p->deviceS(), m_p->colorS(),m_p->filters(),m_p->models()}, LStretch{false}, LMargins{true}, QFrame::Box)
     );
 //    add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Cameras mode:"), m_p->mode()}, LStretch{false}, LMargins{true}, QFrame::NoFrame));
 //    add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Grabbers id to use (ex:\"0;1;2\"):"), m_p->camarasToUse()}, LStretch{false}, LMargins{true}, QFrame::NoFrame));
@@ -74,6 +92,11 @@ void K4ManagerInitConfigParametersW::insert_widgets(){
 }
 
 void K4ManagerInitConfigParametersW::init_and_register_widgets(){
+
+    add_inputs_ui(ExRadioButtonW::init_group_widgets(m_p->deviceG, {&m_p->deviceFile, &m_p->deviceDefault, &m_p->deviceNothing}, {"file", "default", "nothing"}, {true, false, false}));
+    add_inputs_ui(ExRadioButtonW::init_group_widgets(m_p->filtersG, {&m_p->filtersFile, &m_p->filtersDefault, &m_p->filtersNothing}, {"file", "default", "nothing"}, {true, false, false}));
+    add_inputs_ui(ExRadioButtonW::init_group_widgets(m_p->colorG, {&m_p->colorFile, &m_p->colorDefault, &m_p->colorNothing}, {"file", "default", "nothing"}, {true, false, false}));
+
 
     add_input_ui(m_p->networkS.init_widget(Resource::Type::Text, "Network settings file: "));
     add_input_ui(m_p->deviceS.init_widget(Resource::Type::Text, "Device settings file: "));

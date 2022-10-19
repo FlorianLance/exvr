@@ -162,6 +162,7 @@ namespace Ex {
         public Dictionary<string, ComponentConfig> configsPerName = null;
 
         // states
+        protected bool is_initialized() { return m_initialized; }
         public bool is_started() {return m_started;}
         public bool is_visible() {return m_visibility;}
         public bool is_updating() { return m_updating; }
