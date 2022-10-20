@@ -30,7 +30,7 @@
 //#include "gui/ex_widgets/ex_line_edit_w.hpp"
 //#include "gui/ex_widgets/ex_spin_box_w.hpp"
 #include "gui/ex_widgets/ex_label_w.hpp"
-
+#include "qt_logger.hpp"
 
 // local
 #include "gui/ex_widgets/ex_resource_w.hpp"
@@ -83,7 +83,7 @@ void K4ManagerInitConfigParametersW::insert_widgets(){
     auto initFilters = ui::F::gen(ui::L::HB(), {ui::W::txt("Init filters settings with:"), m_p->filtersFile(),m_p->filtersDefault(),m_p->filtersNothing()}, LStretch{true}, LMargins{false}, QFrame::NoFrame);
 
     add_widget(ui::F::gen(ui::L::VB(),
-        {m_p->networkS(), initDevice,initFilters, initColor, ui::W::txt("Files:"), m_p->deviceS(), m_p->colorS(),m_p->filters(),m_p->models()}, LStretch{false}, LMargins{true}, QFrame::Box)
+        {m_p->networkS(), initDevice,initFilters, initColor,m_p->deviceS(), m_p->colorS(),m_p->filters(),m_p->models()}, LStretch{false}, LMargins{true}, QFrame::Box)
     );
 //    add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Cameras mode:"), m_p->mode()}, LStretch{false}, LMargins{true}, QFrame::NoFrame));
 //    add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Grabbers id to use (ex:\"0;1;2\"):"), m_p->camarasToUse()}, LStretch{false}, LMargins{true}, QFrame::NoFrame));
@@ -133,17 +133,17 @@ void K4ManagerInitConfigParametersW::update_with_info(QStringView id, QStringVie
     }else if(id == QSL("grabber_infos")){
         auto split = value.split('%');
 
-        if(split.size() >= 2){
-            auto id = split[0].toInt();
-            while(id <= m_p->grabbersInfos.size()){
+        QtLogger::message(QString::number(split.size()) + " " + value.toString());
+        if(split.size() >= 3){
+            auto count = split[0].toInt();
+            auto id    = split[1].toInt();
+            auto connectedState = split[2].toInt() == 1;
+
+            while(m_p->grabbersInfos.size() < count){
                 m_p->grabbersInfos.append("");
             }
-            if(split[1].toInt() == 1){
-                m_p->grabbersInfos[id] = QString("Grabber [%1] connected.");
-            }else{
-                m_p->grabbersInfos[id] = QString("Grabber [%1] not connected.");
-            }
 
+            m_p->grabbersInfos[id] = connectedState ? QString("Grabber [%1] connected.").arg(id) :  QString("Grabber [%1] not connected.").arg(id);
             m_p->infos.w->setText(m_p->configInfos % QSL("\n") % m_p->grabbersInfos.join("\n"));
         }
     }

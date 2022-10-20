@@ -196,6 +196,8 @@ namespace Ex {
         }
 
         protected void send_infos_to_gui_init_config(string id, string infos) {
+            Debug.Log("----> " + id + " " + infos);
+
             ExVR.Network().gui_ipc().send_component_infos_to_GUI(keyStr, initC.keyStr, id, infos);
         }
         protected void send_infos_to_gui_current_config(string id, string infos) {
