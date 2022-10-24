@@ -1,4 +1,5 @@
 
+
 /***********************************************************************************
 ** exvr-designer                                                                  **
 ** MIT License                                                                    **
@@ -24,44 +25,37 @@
 
 #pragma once
 
-// local
-#include "config_pw.hpp"
 
-namespace tool::ex {
+// qt-utility
+#include "gui/ex_widgets/ex_item_w.hpp"
+#include "gui/ex_widgets/ex_select_color_w.hpp"
+#include "gui/ex_widgets/ex_transformation_w.hpp"
+#include "gui/ex_widgets/ex_checkbox_w.hpp"
 
-class K4ManagerInitConfigParametersW : public ConfigParametersW{
+namespace tool::ex{
 
-public :
 
-    K4ManagerInitConfigParametersW();
+class OBBFilteringW : public ExItemW<QFrame>{
 
-    void insert_widgets() override;
-    void init_and_register_widgets() override;
-    void create_connections() override{}
-    void late_update_ui() override{}
-    void update_with_info(QStringView id, QStringView value) override;
-private:
-    struct Impl;
-    std::unique_ptr<Impl> m_p = nullptr;
+public:
+
+    OBBFilteringW(QString name ="");
+    OBBFilteringW *init_widget(QColor color, bool enabled = true);
+
+    static std::vector<std::any> generate_init_any_array(QColor color){
+        return {
+            std::make_any<QColor>(color)
+        };
+    }
+
+    void update_from_arg(const Arg &arg) override;
+    Arg convert_to_arg() const override;
+    ExBaseW *init_widget_from_any_array(std::vector<std::any> &parameters) override;
+
+    ExCheckBoxW enableObb{"obb_enabled"};
+    ExCheckBoxW displayObb{"obb_display"};
+    ExSelectColorW obbColor{"obb_color"};
+    ExTransformationW obbTr{"obb_tr"};
 };
-
-
-class K4ManagerConfigParametersW : public ConfigParametersW{
-
-public :
-
-    K4ManagerConfigParametersW();
-
-    void insert_widgets() override;
-    void init_and_register_widgets() override;
-    void update_with_info(QStringView id, QStringView value) override;
-
-private:
-    struct Impl;
-    std::unique_ptr<Impl> m_p = nullptr;
-};
-
-
-
 
 }

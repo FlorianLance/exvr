@@ -102,8 +102,10 @@ HEADERS += \
     controller/exvr_controller.hpp \
     # utility
     gui/ex_widgets/ex_condition_w.hpp \
+    gui/ex_widgets/ex_oob_filtering_w.hpp \
     gui/widgets/components/config_parameters/k2_body_tracking_pw.hpp \
     gui/widgets/components/config_parameters/k2_manager_pw.hpp \
+    gui/widgets/components/config_parameters/k4_direct_multi_clouds_pw.hpp \
     gui/widgets/components/config_parameters/k4_manager_pw.hpp \
     utility/script_utility.hpp \
     utility/path_utility.hpp \
@@ -336,7 +338,9 @@ SOURCES += \
     controller/exvr_controller.cpp \
     # launcher   
     gui/ex_widgets/ex_condition_w.cpp \
+    gui/ex_widgets/ex_oob_filtering_w.cpp \
     gui/widgets/components/config_parameters/k2_manager_pw.cpp \
+    gui/widgets/components/config_parameters/k4_direct_multi_clouds_pw.cpp \
     gui/widgets/components/config_parameters/k4_manager_pw.cpp \
     gui/widgets/components/config_parameters/primitives_model_pw.cpp \
     launcher/exp_launcher.cpp \

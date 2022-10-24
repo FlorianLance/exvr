@@ -22,11 +22,11 @@
 ** SOFTWARE.                                                                      **
 ************************************************************************************/
 
-#include "scene_scaner_pw.hpp"
+#include "k4_direct_multi_clouds_pw.hpp"
 
 // qt-utility
-#include "gui/ex_widgets/ex_pushbutton_w.hpp"
-#include "gui/ex_widgets/ex_float_spin_box_w.hpp"
+#include "gui/ex_widgets/ex_radio_button_w.hpp"
+#include "gui/ex_widgets/ex_label_w.hpp"
 #include "gui/ex_widgets/ex_combo_box_index_w.hpp"
 #include "qt_logger.hpp"
 
@@ -39,32 +39,30 @@ using namespace tool;
 using namespace tool::ex;
 using namespace tool::ui;
 
-struct SceneScanerInitConfigParametersW::Impl{
-    ExComponentW kinectManager{"kinect_manager"};
+struct K4DirectMultiCloudsInitConfigParametersW::Impl{
+    ExComponentW kinectManager{"k4_manager"};
 };
 
-SceneScanerInitConfigParametersW::SceneScanerInitConfigParametersW() :  ConfigParametersW(), m_p(std::make_unique<Impl>()){
+K4DirectMultiCloudsInitConfigParametersW::K4DirectMultiCloudsInitConfigParametersW():  ConfigParametersW(), m_p(std::make_unique<Impl>()){
 }
 
-
-void SceneScanerInitConfigParametersW::insert_widgets(){
+void K4DirectMultiCloudsInitConfigParametersW::insert_widgets(){
     add_widget(F::gen(L::HB(), {m_p->kinectManager()}, LStretch{false}, LMargins{true}, QFrame::Box));
 }
 
-void SceneScanerInitConfigParametersW::init_and_register_widgets(){
-    add_input_ui(m_p->kinectManager.init_widget(Component::Type::K2_manager, "Kinect manager component: "));
+void K4DirectMultiCloudsInitConfigParametersW::init_and_register_widgets(){
+    add_input_ui(m_p->kinectManager.init_widget(Component::Type::K4_manager, "Kinect manager component: "));
 }
 
+void K4DirectMultiCloudsInitConfigParametersW::update_with_info(QStringView id, QStringView value){
 
+}
 
-
-struct SceneScanerConfigParametersW::Impl{
-
+struct K4DirectMultiCloudsConfigParametersW::Impl{
     TransformSubPart tr{"global_transform"};
 
     // display
     ExCheckBoxW displayClouds{"display_clouds"};
-    ExCheckBoxW displayColliders{"display_colliders"};
 
     // rendering
     ExFloatSpinBoxW sizePoints{"size_points"};
@@ -76,34 +74,32 @@ struct SceneScanerConfigParametersW::Impl{
 
     // filtering obb
     ExCheckBoxW filterPointsOutsideOBB{"filter_points_outside_obb"};
-    ExCheckBoxW displayFilteringOBB{"display_filtering_obb"};    
+    ExCheckBoxW displayFilteringOBB{"display_filtering_obb"};
     ExTabW<OBBFilteringW> filteringObbTab{"filtering_obb_tab"};
 
     QTabWidget *tw = nullptr;
 };
 
-SceneScanerConfigParametersW::SceneScanerConfigParametersW() :  ConfigParametersW(), m_p(std::make_unique<Impl>()){
+K4DirectMultiCloudsConfigParametersW::K4DirectMultiCloudsConfigParametersW():  ConfigParametersW(), m_p(std::make_unique<Impl>()){
 }
 
-
-void SceneScanerConfigParametersW::insert_widgets(){
-
+void K4DirectMultiCloudsConfigParametersW::insert_widgets(){
     add_sub_part_widget(m_p->tr);
 
     add_widget(m_p->tw = new QTabWidget());
     m_p->tw->addTab(
         F::gen(L::VB(),{
-            F::gen(L::HB(),{W::txt("Size points: "),m_p->sizePoints()}, LStretch{true}, LMargins{false},QFrame::NoFrame),
-            F::gen(L::HB(),{W::txt("Rendering: "), m_p->rendering()}, LStretch{true}, LMargins{false},QFrame::NoFrame),
-            F::gen(L::HB(),{W::txt("Points color tint: "), m_p->tint()}, LStretch{true}, LMargins{false},QFrame::NoFrame),
-            m_p->renderCircles(), m_p->parabloidFragCones(),
-            F::gen(L::HB(),{W::txt("Parbloid geo details: "), m_p->parabloidGeoDetails()}, LStretch{true}, LMargins{false},QFrame::NoFrame
+             F::gen(L::HB(),{W::txt("Size points: "),m_p->sizePoints()}, LStretch{true}, LMargins{false},QFrame::NoFrame),
+             F::gen(L::HB(),{W::txt("Rendering: "), m_p->rendering()}, LStretch{true}, LMargins{false},QFrame::NoFrame),
+             F::gen(L::HB(),{W::txt("Points color tint: "), m_p->tint()}, LStretch{true}, LMargins{false},QFrame::NoFrame),
+             m_p->renderCircles(), m_p->parabloidFragCones(),
+             F::gen(L::HB(),{W::txt("Parbloid geo details: "), m_p->parabloidGeoDetails()}, LStretch{true}, LMargins{false},QFrame::NoFrame
         )}, LStretch{true}, LMargins{true}, QFrame::NoFrame), "Rendering"
     );
 
     m_p->tw->addTab(
         F::gen(L::VB(),{
-            m_p->displayClouds(), m_p->displayColliders()
+            m_p->displayClouds()
         }, LStretch{true}, LMargins{true}, QFrame::NoFrame), "Display"
     );
 
@@ -115,7 +111,8 @@ void SceneScanerConfigParametersW::insert_widgets(){
     );
 }
 
-void SceneScanerConfigParametersW::init_and_register_widgets(){
+void K4DirectMultiCloudsConfigParametersW::init_and_register_widgets(){
+
     map_sub_part(m_p->tr.init_widget("Global model transform"));
     // rendering
     add_input_ui(m_p->sizePoints.init_widget(MinV<qreal>{0.0001}, V<qreal>{0.0030}, MaxV<qreal>{0.05}, StepV<qreal>{0.0001},4));
@@ -126,27 +123,13 @@ void SceneScanerConfigParametersW::init_and_register_widgets(){
     add_input_ui(m_p->parabloidFragCones.init_widget("Parabloid frag cones", true));
     // display
     add_input_ui(m_p->displayClouds.init_widget("Display clouds ", true));
-    add_input_ui(m_p->displayColliders.init_widget("Display colliders ", false));
     // filtering obb
     add_input_ui(m_p->filterPointsOutsideOBB.init_widget("Remove points outside", false));
     add_input_ui(m_p->displayFilteringOBB.init_widget("Display", false));
-
     add_input_ui(m_p->filteringObbTab.init_widget("Filtering OBBs", OBBFilteringW::generate_init_any_array(QColor(200,0,0,50)), 10, QTabWidget::TabPosition::North));
 
-//    DsbSettings pos   = {MinV<qreal>{-10000.}, V<qreal>{0.},MaxV<qreal>{10000.}, StepV<qreal>{0.1}, 3};
-//    DsbSettings rot   = {MinV<qreal>{-360.}, V<qreal>{0.},MaxV<qreal>{360.}, StepV<qreal>{0.1}, 2};
-//    DsbSettings scale = {MinV<qreal>{0}, V<qreal>{1.},MaxV<qreal>{10000.}, StepV<qreal>{0.1}, 3};
-
-//    add_input_ui(m_p->filteringObbTrTab.init_widget("Filtering OBBs",
-//        ExTransformationW::generate_init_any_array(
-//            "OBB transform",
-//            Vector3dSettings{pos,pos,pos},
-//            Vector3dSettings{rot,rot,rot},
-//            Vector3dSettings{scale,scale,scale},
-//            true
-//        ),
-//        10, QTabWidget::TabPosition::North)
-//    );
 }
 
+void K4DirectMultiCloudsConfigParametersW::update_with_info(QStringView id, QStringView value){
 
+}

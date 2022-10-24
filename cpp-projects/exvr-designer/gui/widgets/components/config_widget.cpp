@@ -95,6 +95,7 @@
 #include "config_parameters/volumetric_video_pw.hpp"
 #include "config_parameters/buttons_ui_pw.hpp"
 #include "config_parameters/k4_manager_pw.hpp"
+#include "config_parameters/k4_direct_multi_clouds_pw.hpp"
 
 using namespace tool::ex;
 
@@ -281,6 +282,8 @@ ConfigParametersW *ConfigW::generate_parameters(Component::Type type, bool initC
         return gen_params_w<K2BodyTrackingInitConfigParametersW,K2BodyTrackingConfigParametersW>(initConfig);
     case CT::K4_manager:
         return gen_params_w<K4ManagerInitConfigParametersW,K4ManagerConfigParametersW>(initConfig);
+    case CT::K4_direct_multi_clouds:
+        return gen_params_w<K4DirectMultiCloudsInitConfigParametersW,K4DirectMultiCloudsConfigParametersW>(initConfig);
     case CT::Leap_motion:
         return gen_params_w<LeapMotionInitConfigParametersW,LeapMotionConfigParametersW>(initConfig);
     case CT::Leap_motion_arms_display:

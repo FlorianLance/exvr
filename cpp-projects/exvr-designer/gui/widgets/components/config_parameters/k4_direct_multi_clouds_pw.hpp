@@ -29,11 +29,11 @@
 
 namespace tool::ex {
 
-class K4ManagerInitConfigParametersW : public ConfigParametersW{
+class K4DirectMultiCloudsInitConfigParametersW : public ConfigParametersW{
 
 public :
 
-    K4ManagerInitConfigParametersW();
+    K4DirectMultiCloudsInitConfigParametersW();
 
     void insert_widgets() override;
     void init_and_register_widgets() override;
@@ -46,11 +46,11 @@ private:
 };
 
 
-class K4ManagerConfigParametersW : public ConfigParametersW{
+class K4DirectMultiCloudsConfigParametersW : public ConfigParametersW{
 
 public :
 
-    K4ManagerConfigParametersW();
+    K4DirectMultiCloudsConfigParametersW();
 
     void insert_widgets() override;
     void init_and_register_widgets() override;
