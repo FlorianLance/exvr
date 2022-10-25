@@ -39,7 +39,7 @@ namespace Ex {
             // light
             m_light = gameObject.AddComponent<Light>();
             m_light.cullingMask = m_light.cullingMask & ~(1 << Layers.Debug);
-            m_light.lightmapBakeType = LightmapBakeType.Realtime;
+            //m_light.lightmapBakeType = LightmapBakeType.Realtime;
 
             // debug
             mr = gameObject.AddComponent<MeshRenderer>();
