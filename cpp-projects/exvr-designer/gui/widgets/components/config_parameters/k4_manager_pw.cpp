@@ -27,8 +27,7 @@
 // qt-utility
 #include "gui/ex_widgets/ex_radio_button_w.hpp"
 #include "gui/ex_widgets/ex_checkbox_w.hpp"
-//#include "gui/ex_widgets/ex_line_edit_w.hpp"
-//#include "gui/ex_widgets/ex_spin_box_w.hpp"
+#include "gui/ex_widgets/ex_line_edit_w.hpp"
 #include "gui/ex_widgets/ex_label_w.hpp"
 #include "qt_logger.hpp"
 
@@ -59,6 +58,8 @@ struct K4ManagerInitConfigParametersW::Impl{
     ExResourceW filters{"filters"};
 
     ExResourceW models{"models"};
+
+    ExLineEditW camarasToUse{"cameras_to_use"};
     ExCheckBoxW debugBypassDevice{"debug_bypass"};
     ExLabelW infos{"infos"};
 
@@ -70,7 +71,6 @@ struct K4ManagerInitConfigParametersW::Impl{
         "Color settings file loaded: -\n"
         "Models file loaded: -";
     QStringList grabbersInfos = {};
-
 };
 
 K4ManagerInitConfigParametersW::K4ManagerInitConfigParametersW():  ConfigParametersW(), m_p(std::make_unique<Impl>()){
@@ -85,8 +85,8 @@ void K4ManagerInitConfigParametersW::insert_widgets(){
     add_widget(ui::F::gen(ui::L::VB(),
         {m_p->networkS(), initDevice,initFilters, initColor,m_p->deviceS(), m_p->colorS(),m_p->filters(),m_p->models()}, LStretch{false}, LMargins{true}, QFrame::Box)
     );
-//    add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Cameras mode:"), m_p->mode()}, LStretch{false}, LMargins{true}, QFrame::NoFrame));
-//    add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Grabbers id to use (ex:\"0;1;2\"):"), m_p->camarasToUse()}, LStretch{false}, LMargins{true}, QFrame::NoFrame));
+
+    add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Grabbers id to use (ex:\"0;1;2\"):"), m_p->camarasToUse()}, LStretch{false}, LMargins{true}, QFrame::NoFrame));
     add_widget(m_p->debugBypassDevice());
     add_widget(ui::F::gen(ui::L::VB(), {ui::W::txt("Infos:"), m_p->infos()}, LStretch{false}, LMargins{true}, QFrame::Box));
 }
@@ -104,10 +104,8 @@ void K4ManagerInitConfigParametersW::init_and_register_widgets(){
     add_input_ui(m_p->filters.init_widget(Resource::Type::Text, "Filters file: "));
     add_input_ui(m_p->models.init_widget(Resource::Type::Text, "Models file: "));
 
-//    add_input_ui(m_p->mode.init_widget({"Cloud", "Mesh"}, 0));
-//    add_input_ui(m_p->camarasToUse.init_widget("0 1 2 3 4 5 6 7"));
+    add_input_ui(m_p->camarasToUse.init_widget("0;1;2;3;4"));
     add_input_ui(m_p->debugBypassDevice.init_widget("Enable it for testing the experiment without the device", false));
-//    //    add_input_ui(m_p->disableDisplayOnGrabber.init_widget("Disable display on grabber", true));
 }
 
 void K4ManagerInitConfigParametersW::update_with_info(QStringView id, QStringView value){
@@ -130,14 +128,12 @@ void K4ManagerInitConfigParametersW::update_with_info(QStringView id, QStringVie
             );
             m_p->infos.w->setText(m_p->configInfos % QSL("\n") % m_p->grabbersInfos.join("\n"));
         }
-    }else if(id == QSL("grabber_infos")){
-        auto split = value.split('%');
-
-        QtLogger::message(QString::number(split.size()) + " " + value.toString());
-        if(split.size() >= 3){
-            auto count = split[0].toInt();
-            auto id    = split[1].toInt();
-            auto connectedState = split[2].toInt() == 1;
+    }else if(id.contains(QSL("grabber_infos_"))){
+        auto splitId = id.split('_');
+        if(splitId.size() == 4){
+            auto id    = splitId[2].toInt();
+            auto count = splitId[3].toInt();
+            auto connectedState = value == QSL("1");
 
             while(m_p->grabbersInfos.size() < count){
                 m_p->grabbersInfos.append("");
@@ -150,46 +146,34 @@ void K4ManagerInitConfigParametersW::update_with_info(QStringView id, QStringVie
 }
 
 struct K4ManagerConfigParametersW::Impl{
-//    ExSpinBoxW fps{"fps"};
-//    ExCheckBoxW updateFromCameras{"update_cameras"};
-//    ExSpinBoxW maxDiffTime{"max_diff_time"};
-//    ExLabelW infos{"infos"};
-//    std::vector<QString> infosStr;
+    ExLabelW infos{"infos"};
+    QStringList frameInfos = {};
 };
 
 K4ManagerConfigParametersW::K4ManagerConfigParametersW():  ConfigParametersW(), m_p(std::make_unique<Impl>()){
 }
 
 void K4ManagerConfigParametersW::insert_widgets(){
-//    add_widget(ui::F::gen(ui::L::HB(),{m_p->updateFromCameras(), ui::W::txt("Camera ask frame rate: "), m_p->fps()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
-//    add_widget(ui::F::gen(ui::L::HB(),{ui::W::txt("Max diff time(ms): "), m_p->maxDiffTime()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
-//    add_widget(ui::F::gen(ui::L::VB(), {ui::W::txt("Infos:"), m_p->infos()}, LStretch{false}, LMargins{true}, QFrame::Box));
+    add_widget(ui::F::gen(ui::L::VB(), {ui::W::txt("Infos:"), m_p->infos()}, LStretch{false}, LMargins{true}, QFrame::Box));
 }
 
 void K4ManagerConfigParametersW::init_and_register_widgets(){
-//    add_input_ui(m_p->updateFromCameras.init_widget("Update cameras ", true));
-//    add_input_ui(m_p->fps.init_widget(MinV<int>{1}, V<int>{45}, MaxV<int>{90}, StepV<int>{1}));
-//    add_input_ui(m_p->maxDiffTime.init_widget(MinV<int>{1}, V<int>{100}, MaxV<int>{1000}, StepV<int>{1}));
 }
 
 void K4ManagerConfigParametersW::update_with_info(QStringView id, QStringView value){
-//    if(id == QSL("frame_info")){
-//        auto split = value.split('%');
-//        if(split.size() >= 5){
-//            auto id = split[0].toInt();
-//            if(id >= m_p->infosStr.size()){
-//                m_p->infosStr.resize(id+1);
-//            }
 
-//            m_p->infosStr[id] = QString("Grabber id: [%1], frame id: [%2], diff time: [%3], nb pts: [%4], nb tris: [%5]\n").arg(
-//                split[0], split[1], split[2], split[3], split[4]
-//                );
+    if(id.contains(QSL("frame_infos_"))){
+        auto splitId = id.split('_');
+        if(splitId.size() == 4){
+            auto id    = splitId[2].toInt();
+            auto count = splitId[3].toInt();
 
-//            QString infos;
-//            for(const auto &info : m_p->infosStr){
-//                infos += info;
-//            }
-//            m_p->infos.w->setText(infos);
-//        }
-//    }
+            while(m_p->frameInfos.size() < count){
+                m_p->frameInfos.append("");
+            }
+
+            m_p->frameInfos[id] = QString("[%1]: [%2]").arg(id).arg(value);
+            m_p->infos.w->setText(m_p->frameInfos.join("\n"));
+        }
+    }
 }

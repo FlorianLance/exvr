@@ -96,6 +96,7 @@
 #include "config_parameters/buttons_ui_pw.hpp"
 #include "config_parameters/k4_manager_pw.hpp"
 #include "config_parameters/k4_direct_multi_clouds_pw.hpp"
+#include "config_parameters/light_pw.hpp"
 
 using namespace tool::ex;
 
@@ -180,6 +181,8 @@ ConfigParametersW *ConfigW::generate_parameters(Component::Type type, bool initC
     case CT::Scaner_video:
         return gen_params_w<ScanerVideoInitConfigParametersW,ScanerVideoConfigParametersW>(initConfig);
     // ############################# Environment
+    case CT::Light:
+        return gen_params_w<LightInitConfigParametersW,LightConfigParametersW>(initConfig);
     case CT::Post_process:
         return gen_params_w<PostProcessInitConfigParametersW,PostProcessConfigParametersW>(initConfig);
     case CT::Sky:

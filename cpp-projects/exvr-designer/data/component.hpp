@@ -100,7 +100,7 @@ struct Component {
         /** I */ Image_resource, Image_viewer,
         /** J */ Joypad,
         /** K */ Keyboard, K2_manager, K2_body_tracking, K4_manager, K4_direct_multi_clouds,
-        /** L */ Landmark, Leap_motion, Leap_motion_arms_display, Leap_motion_tracking, Lines, Logger, LoggerColumns, LoggerCondition, LoggerExperiment,
+        /** L */ Landmark, Leap_motion, Leap_motion_arms_display, Leap_motion_tracking, Light, Lines, Logger, LoggerColumns, LoggerCondition, LoggerExperiment,
         /** M */ Mark_to_clean, Microphone, Mirror, Mouse, MRI, Multi_AB,
         /** P */ Parallel_port_writer, Plane, Plot_resource, Post_process, Python_script,
         /** Q */ Qualisys,
@@ -204,7 +204,8 @@ struct Component {
         {T::Cloud,                    C::Cloud,       TO::V, CO::B, N, N, N, Y, N, N, P::H, R::OS, S::Sta, "Cloud"sv, "Cloud"sv, "Cloud"sv, "Cloud"sv},
         {T::Scaner_video,             C::Cloud,       TO::B, CO::B, N, N, N, Y, N, N, P::H, R::LN, S::Exp, "Scaner_video"sv, "Scaner video"sv, "ScanerVideo"sv, "Video_cloud"sv},
         // Environment
-        {T::Post_process,             C::Environment, TO::N, CO::C, Y, N, N, Y, N, N, P::H, R::OS, S::Exp, "Post_porcess"sv, "Post process"sv, "PostProcess"sv, "Post_process"sv},
+        {T::Light,                    C::Environment, TO::B, CO::B, N, N, N, Y, N, N, P::L, R::OS, S::Sta, "Light"sv, "Light"sv, "Light"sv, "Light"sv},
+        {T::Post_process,             C::Environment, TO::N, CO::C, Y, N, N, Y, N, N, P::H, R::OS, S::Sta, "Post_porcess"sv, "Post process"sv, "PostProcess"sv, "Post_process"sv},
         {T::Sky,                      C::Environment, TO::N, CO::C, Y, N, N, Y, N, N, P::H, R::OS, S::Sta, "Sky"sv, "Sky"sv, "Sky"sv, "Sky"sv},
         // Flow
         {T::Config,                   C::Flow,        TO::N, CO::C, N, N, N, Y, N, N, P::H, R::OS, S::Sta, "Config"sv, "Config"sv, "Config"sv, "Config"sv},
