@@ -107,6 +107,7 @@ HEADERS += \
     gui/widgets/components/config_parameters/k2_manager_pw.hpp \
     gui/widgets/components/config_parameters/k4_direct_multi_clouds_pw.hpp \
     gui/widgets/components/config_parameters/k4_manager_pw.hpp \
+    gui/widgets/components/config_parameters/light_pw.hpp \
     utility/script_utility.hpp \
     utility/path_utility.hpp \
     # IO
@@ -342,6 +343,7 @@ SOURCES += \
     gui/widgets/components/config_parameters/k2_manager_pw.cpp \
     gui/widgets/components/config_parameters/k4_direct_multi_clouds_pw.cpp \
     gui/widgets/components/config_parameters/k4_manager_pw.cpp \
+    gui/widgets/components/config_parameters/light_pw.cpp \
     gui/widgets/components/config_parameters/primitives_model_pw.cpp \
     launcher/exp_launcher.cpp \
     launcher/exp_launcher_communication.cpp \

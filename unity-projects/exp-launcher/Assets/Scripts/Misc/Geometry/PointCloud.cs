@@ -27,8 +27,20 @@ using System.Collections.Generic;
 
 // unity
 using UnityEngine;
+using Unity.Collections;
 
 namespace Ex{
+
+    [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
+    public struct DLLVertex {
+        public Vector3 pos;
+        public Color32 col;
+    }
+
+    public class NativeIndices {
+        public int[] array;
+        public NativeArray<int> native;
+    }
 
     public class OBBFInfo {
         public bool enabled = false;
