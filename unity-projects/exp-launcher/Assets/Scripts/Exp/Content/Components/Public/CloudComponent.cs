@@ -33,17 +33,20 @@ namespace Ex{
 
     public class CloudComponent : ExComponent{
 
-        GameObject cloudGO = null;
+        private PointCloud pc = null;
 
         protected override bool initialize() {
 
             // slots
-            add_slot("set visibility", (visibility) => { set_visibility((bool)visibility); });
-            add_slot("set position", (position) => { transform.localPosition = (Vector3)position; });
-            add_slot("set rotation", (rotation) => { transform.localEulerAngles = (Vector3)rotation; });
-            add_slot("set scale", (scale) => { transform.localScale = (Vector3)scale; });
-            // signals
-            add_signal("visibility changed");
+            add_slot("visibility", (visibility) => { set_visibility((bool)visibility); });
+            add_slot("position", (position) => { transform.localPosition = (Vector3)position; });
+            add_slot("rotation", (rotation) => { transform.localEulerAngles = (Vector3)rotation; });
+            add_slot("scale", (scale) => { transform.localScale = (Vector3)scale; });
+            add_slot("transform", (value) => {
+                var transformV = (TransformValue)value;
+                transform.localPosition = transformV.position;
+                transform.localRotation = transformV.rotation;
+            });
 
             string alias = initC.get_resource_alias("cloud");
             if(alias.Length == 0) {
@@ -56,12 +59,9 @@ namespace Ex{
             string extension = System.IO.Path.GetExtension(path);
 
             List<Vector3> vertices = new List<Vector3>();
-            List<Color> colors = new List<Color>();
-
-            if (extension == ".ply") {
-                // ...
-            } else if (extension == ".asc") {
-
+            List<Color> colors     = new List<Color>();
+ 
+            if (extension == ".asc") {
                 var lines = File.ReadLines(path);
                 foreach (var line in lines) {
                     var split = line.Split(' ');
@@ -71,47 +71,54 @@ namespace Ex{
                     }
                 }
             } else {
-                ExVR.Log().error("Extension not managed.");
+                log_error(string.Format("Cloud extension not managed: [{0}]", extension));
+                return false;
+            }
+            //if (extension == ".ply") {
+            // ...
+
+            if (vertices.Count == 0) {
+                log_error("Empty cloud.");
                 return false;
             }
 
-            // generate cloud gameobject
-            cloudGO = GO.generate_empty_scene_object("cloud", transform, false);
-            var mRenderer = cloudGO.AddComponent<MeshRenderer>();
-            mRenderer.material = ExVR.GlobalResources().instantiate_mat("pointCloud");
+            pc = gameObject.AddComponent<PointCloud>();
+            return pc.set_points(vertices, colors, vertices.Count);
+        }
 
-            var mFilter   = cloudGO.AddComponent<MeshFilter>();
-            Mesh mesh = mFilter.mesh;
-            mesh.MarkDynamic();
-            mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
-
-            int sizeVertices = vertices.Count;
-            mesh.vertices = vertices.ToArray();
-            mesh.colors = colors.ToArray();
-            mesh.triangles = new int[0];
-
-            int[] indices = new int[sizeVertices];
-            for (int ii = 0; ii < sizeVertices; ++ii) {
-                indices[ii] = ii;
+        protected override void start_experiment() {
+            if (!initC.get<bool>("init_transform_do_not_apply")) {
+                initC.update_transform("init_transform", transform, true);
             }
-            mesh.SetIndices(indices, MeshTopology.Points, 0);
-
-            return true;
         }
 
         public override void update_from_current_config() {
             if (!currentC.get<bool>("transform_do_not_apply")) {
                 currentC.update_transform("transform", transform, true);
             }
+
+            float sizePoints = currentC.get<float>("size_points");
+            bool cones = currentC.get<bool>("cones");
+            bool circles = currentC.get<bool>("circles");
+            Color tintColor = currentC.get_color("tint");
+            var details = (PointCloud.ParabloidGeoDetails)currentC.get<int>("details");
+            var rendering = (PointCloud.RenderingType)currentC.get<int>("rendering");
+
+            pc.set_pt_size(sizePoints);
+            pc.set_rendering(rendering);
+            pc.set_obb_filtering_state(false);
+            pc.set_circles_state(circles);
+            pc.set_paraboloid_frag_cones_state(cones);
+            pc.set_paraboloid_geo_details(details);
+            pc.set_tint(tintColor);
         }
 
         protected override void update_parameter_from_gui(string updatedArgName) {
             update_from_current_config();
         }
 
-
         protected override void set_visibility(bool visibility) {
-            cloudGO.SetActive(visibility);
+            gameObject.GetComponent<MeshRenderer>().enabled = visibility;
         }
 
     }

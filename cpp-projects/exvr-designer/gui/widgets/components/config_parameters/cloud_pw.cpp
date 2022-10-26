@@ -1,4 +1,6 @@
 
+
+
 /***********************************************************************************
 ** exvr-designer                                                                  **
 ** MIT License                                                                    **
@@ -22,38 +24,53 @@
 ** SOFTWARE.                                                                      **
 ************************************************************************************/
 
-#pragma once
+#include "cloud_pw.hpp"
+
+// qt-utility
+//#include "gui/ex_widgets/ex_float_spin_box_w.hpp"
+//#include "gui/ex_widgets/ex_checkbox_w.hpp"
+//#include "gui/ex_widgets/ex_select_color_w.hpp"
+//#include "gui/ex_widgets/ex_spin_box_w.hpp"
+//#include "gui/ex_widgets/ex_combo_box_index_w.hpp"
 
 // local
-#include "config_pw.hpp"
+#include "gui/ex_widgets/ex_resource_w.hpp"
 
-namespace tool::ex {
+using namespace tool::ex;
+using namespace tool::ui;
 
-class CloudInitConfigParametersW : public ConfigParametersW{
-
-public :
-
-    CloudInitConfigParametersW();
-    void insert_widgets() override;
-    void init_and_register_widgets() override;
-
-private:
-    struct Impl;
-    std::unique_ptr<Impl> m_p = nullptr;
+struct CloudInitConfigParametersW::Impl{
+   TransformSubPart transfo{"init_transform"};
+    ExResourceW cloud{"cloud"};
 };
 
-class CloudConfigParametersW : public ConfigParametersW{
-
-public :
-
-    CloudConfigParametersW();
-    void insert_widgets() override;
-    void init_and_register_widgets() override;
-
-private:
-    struct Impl;
-    std::unique_ptr<Impl> m_p = nullptr;
-};
-
-
+CloudInitConfigParametersW::CloudInitConfigParametersW():  ConfigParametersW(), m_p(std::make_unique<Impl>()){
 }
+
+void CloudInitConfigParametersW::insert_widgets(){
+    add_sub_part_widget(m_p->transfo);
+    add_widget(ui::F::gen(ui::L::HB(), {m_p->cloud()}, LStretch{false}, LMargins{true}, QFrame::Box));
+}
+
+void CloudInitConfigParametersW::init_and_register_widgets(){
+    map_sub_part(m_p->transfo.init_widget(QSL("Init transform</b> (applied when experiment starts)<b>")));
+    add_input_ui(m_p->cloud.init_widget(Resource::Type::Cloud, "Cloud resource: "));
+}
+
+
+struct CloudConfigParametersW::Impl{
+    TransformSubPart transfo{"transform"};
+};
+
+CloudConfigParametersW::CloudConfigParametersW():  ConfigParametersW(), m_p(std::make_unique<Impl>()){
+}
+
+void CloudConfigParametersW::insert_widgets(){
+    add_sub_part_widget(m_p->transfo);
+}
+
+void CloudConfigParametersW::init_and_register_widgets(){
+    map_sub_part(m_p->transfo.init_widget(QSL("Config transform</b> (applied when routine starts)<b>")));
+}
+
+

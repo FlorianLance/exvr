@@ -46,7 +46,7 @@ using namespace std::literals::string_view_literals;
 struct Component {
 
     enum class Category : int {
-        Audio, Avatar, Camera, Cloud, Environment, Flow,
+        Audio, Avatar, Camera, Environment, Flow,
         Input, Interaction, Model, Network, Output, Resource, Scene, Script, Tracking, UI, Video, Viewer,
         SizeEnum};
     using C  = Category;
@@ -58,7 +58,6 @@ struct Component {
         {Category::Audio,       "Audio"sv         },
         {Category::Avatar,      "Avatar"sv        },
         {Category::Camera,      "Camera"sv        },
-        {Category::Cloud,       "Cloud"sv         },
         {Category::Environment, "Environment"sv   },
         {Category::Flow,        "Flow"sv          },
         {Category::Input,       "Input"sv         },
@@ -187,7 +186,7 @@ struct Component {
         // 0                          1               2      3      4  5  6  7  8  9  10    11     12      13 14 15 16
         // Audio
         {T::AudioListener,            C::Audio,       TO::U, CO::B, Y, N, N, Y, N, N, P::M, R::OS, S::Exp, "AudioListener"sv, "Audio listener"sv, "AudioListener"sv, "Sound"sv},
-        {T::AudioSource,              C::Audio,       TO::B, CO::B, N, N, N, Y, N, N, P::M, R::OS, S::Sta, "AudioSource"sv, "Audio source"sv, "AudioSource"sv, "Sound"sv},
+/**DOC*/{T::AudioSource,              C::Audio,       TO::B, CO::B, N, N, N, Y, N, N, P::M, R::OS, S::Sta, "AudioSource"sv, "Audio source"sv, "AudioSource"sv, "Sound"sv},
         {T::Microphone,               C::Audio,       TO::B, CO::B, N, N, N, Y, N, N, P::M, R::OS, S::Exp, "Microphone"sv, "Microphone"sv, "Microphone"sv, "Micro"sv},
         // Avatar
         {T::Humanoid_avatar,          C::Avatar,      TO::B, CO::B, N, N, N, Y, N, N, P::M, R::CS, S::Sta, "Humanoid_avatar"sv, "Humanoid avatar"sv, "HumanoidAvatar"sv, "Avatar"sv},
@@ -199,10 +198,7 @@ struct Component {
         {T::Camera_trajectory_file,   C::Camera,      TO::B, CO::C, N, N, N, Y, N, N, P::L, R::OS, S::Leg, "Camera_trajectory_file"sv, "Camera trajectory file"sv, "CameraTrajectoryFile"sv, "Camera"sv},
         {T::FPP_avatar_camera,        C::Camera,      TO::U, CO::B, N, N, N, Y, N, N, P::L, R::CS, S::Sta, "FPP_avatar_camera"sv, "First person perspective avatar camera"sv, "FPPAvatarCamera"sv, "Camera"sv},
         {T::TPP_avatar_camera,        C::Camera,      TO::U, CO::B, N, N, N, Y, N, N, P::L, R::CS, S::Sta, "TPP_avatar_camera"sv, "Third persond perspective avatar camera"sv, "TPPAvatarCamera"sv, "Camera"sv},
-        {T::FPP_camera,               C::Camera,      TO::U, CO::B, N, N, N, Y, N, N, P::L, R::OS, S::Sta, "FPP_camera"sv, "First person perspective camera"sv, "FPPCamera"sv, "Camera"sv},
-        // Cloud
-        {T::Cloud,                    C::Cloud,       TO::V, CO::B, N, N, N, Y, N, N, P::H, R::OS, S::Sta, "Cloud"sv, "Cloud"sv, "Cloud"sv, "Cloud"sv},
-        {T::Scaner_video,             C::Cloud,       TO::B, CO::B, N, N, N, Y, N, N, P::H, R::LN, S::Exp, "Scaner_video"sv, "Scaner video"sv, "ScanerVideo"sv, "Video_cloud"sv},
+        {T::FPP_camera,               C::Camera,      TO::U, CO::B, N, N, N, Y, N, N, P::L, R::OS, S::Sta, "FPP_camera"sv, "First person perspective camera"sv, "FPPCamera"sv, "Camera"sv},        
         // Environment
         {T::Light,                    C::Environment, TO::B, CO::B, N, N, N, Y, N, N, P::L, R::OS, S::Sta, "Light"sv, "Light"sv, "Light"sv, "Light"sv},
         {T::Post_process,             C::Environment, TO::N, CO::C, Y, N, N, Y, N, N, P::H, R::OS, S::Sta, "Post_porcess"sv, "Post process"sv, "PostProcess"sv, "Post_process"sv},
@@ -219,6 +215,7 @@ struct Component {
         {T::Target_to_grab,           C::Interaction, TO::B, CO::B, N, N, N, Y, N, N, P::M, R::OS, S::Exp, "Target_to_grab"sv, "Target to grab"sv, "TargetToGrab"sv, "Grab_target"sv},
         // Model
  /**OK*/{T::Cube,                     C::Model,       TO::V, CO::B, N, N, N, N, N, N, P::M, R::OS, S::Sta, "Cube"sv, "Cube"sv, "Cube"sv,"Cube"sv},
+        {T::Cloud,                    C::Model,       TO::V, CO::B, N, N, N, N, N, N, P::H, R::OS, S::Sta, "Cloud"sv, "Cloud"sv, "Cloud"sv, "Cloud"sv},
  /**OK*/{T::Cylinder,                 C::Model,       TO::V, CO::B, N, N, N, N, N, N, P::M, R::OS, S::Sta, "Cylinder"sv, "Cylinder"sv, "Cylinder"sv,"Cylinder"sv},
  /**OK*/{T::Landmark,                 C::Model,       TO::V, CO::B, N, N, N, N, N, N, P::M, R::OS, S::Sta, "Landmark"sv, "Landmark"sv, "Landmark"sv,"Landmark"sv},
         {T::Lines,                    C::Model,       TO::V, CO::C, N, N, N, N, N, N, P::M, R::OS, S::Exp, "Lines"sv, "Lines"sv, "Lines"sv,"Line"sv},
@@ -273,6 +270,7 @@ struct Component {
         {T::Slider_ui,                C::UI,          TO::B, CO::B, N, N, N, Y, N, N, P::M, R::OS, S::Sta, "Slider_ui"sv, "Slider ui"sv, "SliderUI"sv, "Slider_overlay"sv},
         {T::Buttons_ui,               C::UI,          TO::B, CO::C, N, N, N, Y, N, N, P::M, R::OS, S::Sta, "Buttons_ui"sv, "Buttons ui"sv, "ButtonsUI"sv, "Buttons"sv},
         // Video
+        {T::Scaner_video,             C::Video,       TO::B, CO::B, N, N, N, Y, N, N, P::H, R::LN, S::Exp, "Scaner_video"sv, "Scaner video"sv, "ScanerVideo"sv, "Video_cloud"sv},
         {T::Video_file,               C::Video,       TO::U, CO::I, N, N, N, Y, N, N, P::M, R::OS, S::Sta, "Video_file"sv, "Video file"sv, "VideoFile"sv,"Video_file"sv},
         {T::Video_file_camera_viewer, C::Video,       TO::B, CO::B, N, N, N, Y, N, N, P::M, R::OS, S::Exp, "Video_file_camera_viewer"sv, "Video file camera viewer"sv, "VideoFileCameraViewer"sv,"Video_file"sv},
         {T::Video_saver,              C::Video,       TO::B, CO::B, N, N, N, Y, N, N, P::M, R::OS, S::Exp, "Video_saver"sv, "Video saver"sv, "VideoSaver"sv,"Video_record"sv},
@@ -385,7 +383,7 @@ struct Component {
 
     using TComponentSlots = std::tuple<
         T,                             FunctionN,                      CNT,                    Doc>;
-    static constexpr TupleArray<109,TComponentSlots> componentsSlots = {{
+    static constexpr TupleArray<114,TComponentSlots> componentsSlots = {{
         TComponentSlots
         // Audio
         {T::AudioSource,               "play"sv,                       CNT::void_t,            "..."sv},
@@ -420,6 +418,11 @@ struct Component {
         {T::Plane,                     "scale"sv,                      CNT::vector3_t,         "Set the scale of the model"sv},
         {T::Plane,                     "transform"sv,                  CNT::transform_t,       "Set the transform of the model"sv},
         {T::Plane,                     "RGBA texture"sv,               CNT::image_t,           "Set the RGBA texture of the model"sv},
+        {T::Cloud,                     "visibility"sv,                 CNT::boolean_t,         "Set the visibility of the model"sv},
+        {T::Cloud,                     "position"sv,                   CNT::vector3_t,         "Set the position of the model"sv},
+        {T::Cloud,                     "rotation"sv,                   CNT::vector3_t,         "Set the rotation (euler angles) of the model"sv},
+        {T::Cloud,                     "scale"sv,                      CNT::vector3_t,         "Set the scale of the model"sv},
+        {T::Cloud,                     "transform"sv,                  CNT::transform_t,       "Set the transform of the model"sv},
         {T::Cylinder,                  "visibility"sv,                 CNT::boolean_t,         "Set the visibility of the model"sv},
         {T::Cylinder,                  "position"sv,                   CNT::vector3_t,         "Set the position of the model"sv},
         {T::Cylinder,                  "rotation"sv,                   CNT::vector3_t,         "Set the rotation (euler angles) of the model"sv},
