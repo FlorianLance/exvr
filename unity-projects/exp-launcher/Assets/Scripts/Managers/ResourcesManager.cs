@@ -358,7 +358,7 @@ namespace Ex {
                 }
             }
 
-            log_error(String.Format("Cannot read resource with key [{0}] from resources.", key));
+            log_error(string.Format("Cannot read resource with key [{0}] from resources.", key));
             return null;
         }
 
@@ -369,13 +369,13 @@ namespace Ex {
                     return resource.Value;
                 }
             }
-            log_error(String.Format("Cannot read resource with key [{0}] and type [{1}] from resources.", key, type.ToString()));
+            log_error(string.Format("Cannot read resource with key [{0}] and type [{1}] from resources.", key, type.ToString()));
             return null;
         }
 
         public ExResource get_resource_file_data(ResourceType type, string alias) {
             if (!m_aliasMappingResources[type].ContainsKey(alias)) {
-                log_error(String.Format("Cannot read resource with alias [{0}] and type [{1}] from resources.", alias, type.ToString()));
+                log_error(string.Format("Cannot read resource with alias [{0}] and type [{1}] from resources.", alias, type.ToString()));
                 return null;
             }
             return m_aliasMappingResources[type][alias];
@@ -383,7 +383,7 @@ namespace Ex {
 
         public ScanerVideoResource get_scaner_video_file_data(string alias) {
             if (!m_aliasMappingResources[ResourceType.ScanerVideo].ContainsKey(alias)) {
-                log_error(String.Format("Cannot read scaner video with alias [{0}] from resources.", alias ));
+                log_error(string.Format("Cannot read scaner video with alias [{0}] from resources.", alias ));
                 return null;
             }
             return ((ScanerVideoResource)m_aliasMappingResources[ResourceType.ScanerVideo][alias]);
@@ -391,7 +391,7 @@ namespace Ex {
 
         public CloudResource get_cloud_file_data(string alias) {
             if (!m_aliasMappingResources[ResourceType.Cloud].ContainsKey(alias)) {
-                log_error(String.Format("Cannot read cloud with alias [{0}] from resources.", alias));
+                log_error(string.Format("Cannot read cloud with alias [{0}] from resources.", alias));
                 return null;
             }
             return ((CloudResource)m_aliasMappingResources[ResourceType.Cloud][alias]);
@@ -400,7 +400,7 @@ namespace Ex {
         public TextResource get_text_file_data(string alias, bool showError = true) {
             if (!m_aliasMappingResources[ResourceType.Text].ContainsKey(alias)) {
                 if (showError) {
-                    log_error(String.Format("Cannot read text with alias [{0}] from resources.", alias));
+                    log_error(string.Format("Cannot read text with alias [{0}] from resources.", alias));
                 }
                 return null;
             }
@@ -408,7 +408,7 @@ namespace Ex {
         }
         public AudioResource get_audio_file_data(string alias) {
             if (!m_aliasMappingResources[ResourceType.Audio].ContainsKey(alias)) {
-                log_error(String.Format("Cannot read audio with alias [{0}] from resources.", alias));
+                log_error(string.Format("Cannot read audio with alias [{0}] from resources.", alias));
                 return null;
             }
             return ((AudioResource)m_aliasMappingResources[ResourceType.Audio][alias]);
@@ -416,7 +416,7 @@ namespace Ex {
 
         public VideoResource get_video_file_data(string alias) {
             if (!m_aliasMappingResources[ResourceType.Video].ContainsKey(alias)) {
-                log_error(String.Format("Cannot read video with alias [{0}] from resources.", alias));
+                log_error(string.Format("Cannot read video with alias [{0}] from resources.", alias));
                 return null;
             }
             return ((VideoResource)m_aliasMappingResources[ResourceType.Video][alias]);
@@ -424,7 +424,7 @@ namespace Ex {
 
         public PlotResource get_plot_file_data(string alias) {
             if (!m_aliasMappingResources[ResourceType.Plot].ContainsKey(alias)) {
-                log_error(String.Format("Cannot read plot with alias [{0}] from resources.", alias));
+                log_error(string.Format("Cannot read plot with alias [{0}] from resources.", alias));
                 return null;
             }
             return ((PlotResource)m_aliasMappingResources[ResourceType.Plot][alias]);
@@ -442,7 +442,7 @@ namespace Ex {
 
         public AssetBundleResource get_asset_bundle_file_data(string alias) {
             if (!m_aliasMappingResources[ResourceType.UnityAssetBundle].ContainsKey(alias)) {
-                log_error(String.Format("Cannot read asset bundle with alias [{0}] from resources.", alias));
+                log_error(string.Format("Cannot read asset bundle with alias [{0}] from resources.", alias));
                 return null;
             }
             return ((AssetBundleResource)m_aliasMappingResources[ResourceType.UnityAssetBundle][alias]);
@@ -450,7 +450,7 @@ namespace Ex {
 
         public VolumetricVideoResource get_volumetric_video_file_data(string alias) {
             if (!m_aliasMappingResources[ResourceType.VolumetricVideo].ContainsKey(alias)) {
-                log_error(String.Format("Cannot read volumetric video with alias [{0}] from resources.", alias));
+                log_error(string.Format("Cannot read volumetric video with alias [{0}] from resources.", alias));
                 return null;
             }
             return ((VolumetricVideoResource)m_aliasMappingResources[ResourceType.VolumetricVideo][alias]);
@@ -473,7 +473,7 @@ namespace Ex {
             
             // load asset from asset bundle
             if (assets == null) {
-                log_error(String.Format("Sub object [{0}] doesn't exist in loaded AssetBundle with alias: {1}", nameSubObject, alias));
+                log_error(string.Format("Sub object [{0}] doesn't exist in loaded AssetBundle with alias: {1}", nameSubObject, alias));
                 System.Threading.Thread.Sleep(50);
                 return null;
             }

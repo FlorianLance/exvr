@@ -114,9 +114,10 @@ CubeInitConfigParametersW::CubeInitConfigParametersW() :  ConfigParametersW(), m
 }
 
 void CubeInitConfigParametersW::insert_widgets(){
-    add_widget(F::gen(L::HB(), {W::txt("Cube size: "),m_p->dsbSize()}, LStretch{true}, LMargins{true}));
-    add_widget(F::gen(L::HB(), {m_p->transparent()}, LStretch{true}, LMargins{true}));
     add_sub_part_widget(m_p->transfo);
+    auto w1 = F::gen(L::HB(), {W::txt("Cube size: "),m_p->dsbSize()}, LStretch{true}, LMargins{true});
+    auto w2 = F::gen(L::HB(), {m_p->transparent()}, LStretch{true}, LMargins{true});
+    add_widget(F::gen(L::VB(), {W::txt("<b>Procedural generation:</b>"), w1,w2},  LStretch{false}, LMargins{true}, QFrame::Box));
 }
 
 void CubeInitConfigParametersW::init_and_register_widgets(){
@@ -138,10 +139,11 @@ PlaneInitConfigParametersW::PlaneInitConfigParametersW() :  ConfigParametersW(),
 }
 
 void PlaneInitConfigParametersW::insert_widgets(){
-    add_widget(F::gen(L::HB(), {W::txt("Width: "),m_p->width()}, LStretch{true}, LMargins{true}));
-    add_widget(F::gen(L::HB(), {W::txt("Height: "),m_p->height()}, LStretch{true}, LMargins{true}));
-    add_widget(F::gen(L::HB(), {m_p->transparent()}, LStretch{true}, LMargins{true}));
     add_sub_part_widget(m_p->transfo);
+    auto w1 = F::gen(L::HB(), {W::txt("Width: "),m_p->width()}, LStretch{true}, LMargins{true});
+    auto w2 = F::gen(L::HB(), {W::txt("Height: "),m_p->height()}, LStretch{true}, LMargins{true});
+    auto w3 = F::gen(L::HB(), {m_p->transparent()}, LStretch{true}, LMargins{true});
+    add_widget(F::gen(L::VB(), {W::txt("<b>Procedural generation:</b>"), w1,w2,w3},  LStretch{false}, LMargins{true}, QFrame::Box));
 }
 
 void PlaneInitConfigParametersW::init_and_register_widgets(){
@@ -164,11 +166,12 @@ CylinderInitConfigParametersW::CylinderInitConfigParametersW() :  ConfigParamete
 }
 
 void CylinderInitConfigParametersW::insert_widgets(){
-    add_widget(F::gen(L::HB(), {W::txt("Number sides: "),m_p->nbSides()}, LStretch{true}, LMargins{true}));
-    add_widget(F::gen(L::HB(), {W::txt("Radius: "),m_p->radius()}, LStretch{true}, LMargins{true}));
-    add_widget(F::gen(L::HB(), {W::txt("Length: "),m_p->length()}, LStretch{true}, LMargins{true}));
-    add_widget(F::gen(L::HB(), {m_p->transparent()}, LStretch{true}, LMargins{true}));
     add_sub_part_widget(m_p->transfo);
+    auto w1 = F::gen(L::HB(), {W::txt("Number sides: "),m_p->nbSides()}, LStretch{true}, LMargins{true});
+    auto w2 = F::gen(L::HB(), {W::txt("Radius: "),m_p->radius()}, LStretch{true}, LMargins{true});
+    auto w3 = F::gen(L::HB(), {W::txt("Length: "),m_p->length()}, LStretch{true}, LMargins{true});
+    auto w4 = F::gen(L::HB(), {m_p->transparent()}, LStretch{true}, LMargins{true});
+    add_widget(F::gen(L::VB(), {W::txt("<b>Procedural generation:</b>"), w1,w2,w3,w4},  LStretch{false}, LMargins{true}, QFrame::Box));
 }
 
 void CylinderInitConfigParametersW::init_and_register_widgets(){
@@ -193,11 +196,12 @@ SphereInitConfigParametersW::SphereInitConfigParametersW():  ConfigParametersW()
 }
 
 void SphereInitConfigParametersW::insert_widgets(){
-    add_widget(F::gen(L::HB(), {W::txt("Sphere radius: "),m_p->dsbRadius()}, LStretch{true}, LMargins{true}));
-    add_widget(F::gen(L::HB(), {W::txt("Long nb triangles: "),m_p->sbLong()}, LStretch{true}, LMargins{true}));
-    add_widget(F::gen(L::HB(), {W::txt("Lat nb triangles: "),m_p->sbLat()}, LStretch{true}, LMargins{true}));
-    add_widget(F::gen(L::HB(), {m_p->transparent()}, LStretch{true}, LMargins{true}));
     add_sub_part_widget(m_p->transfo);
+    auto w1 = F::gen(L::HB(), {W::txt("Sphere radius: "),m_p->dsbRadius()}, LStretch{true}, LMargins{true});
+    auto w2 = F::gen(L::HB(), {W::txt("Long nb triangles: "),m_p->sbLong()}, LStretch{true}, LMargins{true});
+    auto w3 = F::gen(L::HB(), {W::txt("Lat nb triangles: "),m_p->sbLat()}, LStretch{true}, LMargins{true});
+    auto w4 = F::gen(L::HB(), {m_p->transparent()}, LStretch{true}, LMargins{true});
+    add_widget(F::gen(L::VB(), {W::txt("<b>Procedural generation:</b>"), w1,w2,w3,w4},  LStretch{false}, LMargins{true}, QFrame::Box));
 }
 
 void SphereInitConfigParametersW::init_and_register_widgets(){
@@ -223,12 +227,13 @@ TorusInitConfigParametersW::TorusInitConfigParametersW():  ConfigParametersW(), 
 }
 
 void TorusInitConfigParametersW::insert_widgets(){
-    add_widget(F::gen(L::HB(), {W::txt("Outer radius: "),m_p->outerRadius()}, LStretch{true}, LMargins{true}));
-    add_widget(F::gen(L::HB(), {W::txt("Inner radius: "),m_p->innerRadius()}, LStretch{true}, LMargins{true}));
-    add_widget(F::gen(L::HB(), {W::txt("Sides count: "),m_p->sidesCount()}, LStretch{true}, LMargins{true}));
-    add_widget(F::gen(L::HB(), {W::txt("Rings count: "),m_p->ringsCount()}, LStretch{true}, LMargins{true}));
-    add_widget(F::gen(L::HB(), {m_p->transparent()}, LStretch{true}, LMargins{true}));
     add_sub_part_widget(m_p->transfo);
+    auto w1 = F::gen(L::HB(), {W::txt("Outer radius: "),m_p->outerRadius()}, LStretch{true}, LMargins{true});
+    auto w2 = F::gen(L::HB(), {W::txt("Inner radius: "),m_p->innerRadius()}, LStretch{true}, LMargins{true});
+    auto w3 = F::gen(L::HB(), {W::txt("Sides count: "),m_p->sidesCount()}, LStretch{true}, LMargins{true});
+    auto w4 = F::gen(L::HB(), {W::txt("Rings count: "),m_p->ringsCount()}, LStretch{true}, LMargins{true});
+    auto w5 = F::gen(L::HB(), {m_p->transparent()}, LStretch{true}, LMargins{true});
+    add_widget(F::gen(L::VB(), {W::txt("<b>Procedural generation:</b>"), w1,w2,w3,w4,w5},  LStretch{false}, LMargins{true}, QFrame::Box));
 }
 
 void TorusInitConfigParametersW::init_and_register_widgets(){

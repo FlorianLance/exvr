@@ -204,24 +204,26 @@ struct Component {
         {T::Post_process,             C::Environment, TO::N, CO::C, Y, N, N, Y, N, N, P::H, R::OS, S::Sta, "Post_porcess"sv, "Post process"sv, "PostProcess"sv, "Post_process"sv},
         {T::Sky,                      C::Environment, TO::N, CO::C, Y, N, N, Y, N, N, P::H, R::OS, S::Sta, "Sky"sv, "Sky"sv, "Sky"sv, "Sky"sv},
         // Flow
-        {T::Config,                   C::Flow,        TO::N, CO::C, N, N, N, Y, N, N, P::H, R::OS, S::Sta, "Config"sv, "Config"sv, "Config"sv, "Config"sv},
+        {T::Config,                   C::Flow,        TO::N, CO::C, N, N, N, Y, N, N, P::H, R::OS, S::Exp, "Config"sv, "Config"sv, "Config"sv, "Config"sv},
         // Input
         {T::Joypad,                   C::Input,       TO::U, CO::I, Y, Y, Y, N, Y, Y, P::H, R::OS, S::Sta, "Joypad"sv, "Joypad"sv, "Joypad"sv,"Joypad"sv},
         {T::Keyboard,                 C::Input,       TO::U, CO::I, Y, Y, Y, N, Y, Y, P::H, R::OS, S::Sta, "Keyboard"sv, "Keyboard"sv, "Keyboard"sv, "Keyboard"sv},
         {T::Mouse,                    C::Input,       TO::U, CO::I, Y, Y, Y, N, Y, Y, P::H, R::OS, S::Sta, "Mouse"sv, "Mouse"sv, "Mouse"sv, "Mouse"sv},
         // Interaction
-        {T::Flag_pole,                C::Interaction, TO::B, CO::B, N, N, N, Y, N, N, P::M, R::OS, S::Sta, "Flag_pole"sv, "Flag pole"sv, "FlagPole"sv, "Flag_pole"sv},
         {T::Mark_to_clean,            C::Interaction, TO::B, CO::B, N, N, N, Y, N, N, P::M, R::OS, S::Exp, "Mark_to_clean"sv, "Mark to clean"sv, "MarkToClean"sv, "Mark_to_clean"sv},
         {T::Target_to_grab,           C::Interaction, TO::B, CO::B, N, N, N, Y, N, N, P::M, R::OS, S::Exp, "Target_to_grab"sv, "Target to grab"sv, "TargetToGrab"sv, "Grab_target"sv},
         // Model
  /**OK*/{T::Cube,                     C::Model,       TO::V, CO::B, N, N, N, N, N, N, P::M, R::OS, S::Sta, "Cube"sv, "Cube"sv, "Cube"sv,"Cube"sv},
         {T::Cloud,                    C::Model,       TO::V, CO::B, N, N, N, N, N, N, P::H, R::OS, S::Sta, "Cloud"sv, "Cloud"sv, "Cloud"sv, "Cloud"sv},
  /**OK*/{T::Cylinder,                 C::Model,       TO::V, CO::B, N, N, N, N, N, N, P::M, R::OS, S::Sta, "Cylinder"sv, "Cylinder"sv, "Cylinder"sv,"Cylinder"sv},
+        {T::Flag_pole,                C::Model,       TO::B, CO::B, N, N, N, N, N, N, P::M, R::OS, S::Sta, "Flag_pole"sv, "Flag pole"sv, "FlagPole"sv, "Flag_pole"sv},
  /**OK*/{T::Landmark,                 C::Model,       TO::V, CO::B, N, N, N, N, N, N, P::M, R::OS, S::Sta, "Landmark"sv, "Landmark"sv, "Landmark"sv,"Landmark"sv},
         {T::Lines,                    C::Model,       TO::V, CO::C, N, N, N, N, N, N, P::M, R::OS, S::Exp, "Lines"sv, "Lines"sv, "Lines"sv,"Line"sv},
  /**OK*/{T::Plane,                    C::Model,       TO::V, CO::B, N, N, N, N, N, N, P::M, R::OS, S::Sta, "Plane"sv, "Plane"sv, "Plane"sv,"Plane"sv},
  /**OK*/{T::Sphere,                   C::Model,       TO::V, CO::B, N, N, N, N, N, N, P::M, R::OS, S::Sta, "Sphere"sv, "Sphere"sv, "Sphere"sv,"Sphere"sv},
  /**OK*/{T::Torus,                    C::Model,       TO::V, CO::B, N, N, N, N, N, N, P::M, R::OS, S::Sta, "Torus"sv, "Torus"sv, "Torus"sv,"Torus"sv},
+        {T::Unity_asset_bundle,       C::Model,       TO::V, CO::B, N, N, N, Y, N, N, P::H, R::OS, S::Sta, "Unity_asset_bundle"sv, "Unity asset bundle"sv, "AssetBundle"sv, "Unity_scene_bundle"sv},
+        {T::Multi_AB,                 C::Model,       TO::V, CO::B, N, N, N, Y, N, N, P::H, R::OS, S::Sta, "Multi_AB"sv, "Multi assets bundles"sv, "MultiAB"sv, "Unity_scene_bundle"sv},
         // Network
         {T::Parallel_port_writer,     C::Network,     TO::N, CO::B, N, N, Y, N, N, Y, P::H, R::OS, S::Sta, "Parallel_port_writer"sv, "Parallel port writer"sv, "ParallelPortWriter"sv, "Parallel_port"sv},
         {T::Serial_port_reader,       C::Network,     TO::U, CO::B, N, N, Y, N, N, Y, P::H, R::OS, S::Sta, "Serial_port_reader"sv, "Serial port reader"sv, "SerialPortReader"sv, "USB"sv},
@@ -243,8 +245,6 @@ struct Component {
         {T::Flashing_dot,             C::Scene,       TO::B, CO::B, N, N, N, Y, N, N, P::M, R::OS, S::Exp, "Flashing_dot"sv, "Flashing dot"sv, "FlashingDot"sv,"Dot"sv},
         {T::Mirror,                   C::Scene,       TO::V, CO::C, N, N, N, Y, N, N, P::M, R::OS, S::Leg, "Mirror"sv, "Mirror"sv, "Mirror"sv, "Mirror"sv},
         {T::MRI,                      C::Scene,       TO::B, CO::B, N, N, N, Y, N, N, P::M, R::CS, S::Exp, "MRI"sv, "MRI"sv, "MRI"sv, "MRI"sv},
-        {T::Multi_AB,                 C::Scene,       TO::V, CO::B, N, N, N, Y, N, N, P::H, R::OS, S::Sta, "Multi_AB"sv, "Multi assets bundles"sv, "MultiAB"sv, "Unity_scene_bundle"sv},
-        {T::Unity_asset_bundle,       C::Scene,       TO::V, CO::B, N, N, N, Y, N, N, P::H, R::OS, S::Sta, "Unity_asset_bundle"sv, "Unity asset bundle"sv, "AssetBundle"sv, "Unity_scene_bundle"sv},
         // Script
         {T::CSharp_function,          C::Script,      TO::N, CO::B, N, N, N, Y, N, N, P::L, R::OS, S::Sta, "CSharp_function"sv, "CSharp function"sv, "CSharpFunction"sv, "CSharp"sv},
         {T::CSharp_script,            C::Script,      TO::B, CO::B, N, N, N, Y, N, N, P::L, R::OS, S::Sta, "CSharp_script"sv, "CSharp script"sv, "CSharpScript"sv, "CSharp"sv},
@@ -383,7 +383,7 @@ struct Component {
 
     using TComponentSlots = std::tuple<
         T,                             FunctionN,                      CNT,                    Doc>;
-    static constexpr TupleArray<114,TComponentSlots> componentsSlots = {{
+    static constexpr TupleArray<120,TComponentSlots> componentsSlots = {{
         TComponentSlots
         // Audio
         {T::AudioSource,               "play"sv,                       CNT::void_t,            "..."sv},
@@ -402,7 +402,6 @@ struct Component {
         {T::Camera_target,             "set target offset pos"sv,      CNT::vector3_t,         "..."sv},
         {T::Camera_target,             "set target offset rot"sv,      CNT::vector3_t,         "..."sv},
         // Interaction
-        {T::Flag_pole,                 "hoist"sv,                      CNT::float_t,           "Hoist the flag."sv},
         {T::Mark_to_clean,             "erase"sv,                      CNT::gameobject_list_t, "Erase the parts of the mark close to the objects position."sv},
         {T::Mark_to_clean,             "set position"sv,               CNT::void_t,            "Reset the mark"sv},
         // Model
@@ -429,23 +428,35 @@ struct Component {
         {T::Cylinder,                  "scale"sv,                      CNT::vector3_t,         "Set the scale of the model"sv},
         {T::Cylinder,                  "transform"sv,                  CNT::transform_t,       "Set the transform of the model"sv},
         {T::Cylinder,                  "RGBA texture"sv,               CNT::image_t,           "Set the RGBA texture of the model"sv},
+        {T::Flag_pole,                 "visibility"sv,                 CNT::boolean_t,         "Set the visibility of the flag"sv},
+        {T::Flag_pole,                 "position"sv,                   CNT::vector3_t,         "Set the position of the flag"sv},
+        {T::Flag_pole,                 "rotation"sv,                   CNT::vector3_t,         "Set the rotation (euler angles) of the flag"sv},
+        {T::Flag_pole,                 "scale"sv,                      CNT::vector3_t,         "Set the scale of the flag"sv},
+        {T::Flag_pole,                 "transform"sv,                  CNT::transform_t,       "Set the transform of the flag"sv},
+        {T::Flag_pole,                 "flag texture"sv,               CNT::image_t,           "Set the RGBA texture of the flag"sv},
+        {T::Flag_pole,                 "hoist"sv,                      CNT::float_t,           "Hoist the flag."sv},
         {T::Landmark,                  "visibility"sv,                 CNT::boolean_t,         "Set the visibility of the model"sv},
         {T::Landmark,                  "position"sv,                   CNT::vector3_t,         "Set the position of the model"sv},
         {T::Landmark,                  "rotation"sv,                   CNT::vector3_t,         "Set the rotation (euler angles) of the model"sv},
         {T::Landmark,                  "scale"sv,                      CNT::vector3_t,         "Set the scale of the model"sv},
         {T::Landmark,                  "transform"sv,                  CNT::transform_t,       "Set the transform of the model"sv},
-        {T::Torus,                     "visibility"sv,                 CNT::boolean_t,         "Set the visibility of the model"sv},
-        {T::Torus,                     "position"sv,                   CNT::vector3_t,         "Set the position of the model"sv},
-        {T::Torus,                     "rotation"sv,                   CNT::vector3_t,         "Set the rotation (euler angles) of the model"sv},
-        {T::Torus,                     "scale"sv,                      CNT::vector3_t,         "Set the scale of the model"sv},
-        {T::Torus,                     "transform"sv,                  CNT::transform_t,       "Set the transform of the model"sv},
-        {T::Torus,                     "RGBA texture"sv,               CNT::image_t,           "Set the RGBA texture of the model"sv},
         {T::Sphere,                    "visibility"sv,                 CNT::boolean_t,         "Set the visibility of the model"sv},
         {T::Sphere,                    "position"sv,                   CNT::vector3_t,         "Set the position of the model"sv},
         {T::Sphere,                    "rotation"sv,                   CNT::vector3_t,         "Set the rotation (euler angles) of the model"sv},
         {T::Sphere,                    "scale"sv,                      CNT::vector3_t,         "Set the scale of the model"sv},
         {T::Sphere,                    "transform"sv,                  CNT::transform_t,       "Set the transform of the model"sv},
         {T::Sphere,                    "RGBA texture"sv,               CNT::image_t,           "Set the RGBA texture of the model"sv},
+        {T::Torus,                     "visibility"sv,                 CNT::boolean_t,         "Set the visibility of the model"sv},
+        {T::Torus,                     "position"sv,                   CNT::vector3_t,         "Set the position of the model"sv},
+        {T::Torus,                     "rotation"sv,                   CNT::vector3_t,         "Set the rotation (euler angles) of the model"sv},
+        {T::Torus,                     "scale"sv,                      CNT::vector3_t,         "Set the scale of the model"sv},
+        {T::Torus,                     "transform"sv,                  CNT::transform_t,       "Set the transform of the model"sv},
+        {T::Torus,                     "RGBA texture"sv,               CNT::image_t,           "Set the RGBA texture of the model"sv},
+        {T::Unity_asset_bundle,        "visibility"sv,                 CNT::boolean_t,         "Set the visibility of the model"sv},
+        {T::Unity_asset_bundle,        "position"sv,                   CNT::vector3_t,         "Set the position of the model"sv},
+        {T::Unity_asset_bundle,        "rotation"sv,                   CNT::vector3_t,         "Set the rotation (euler angles) of the model"sv},
+        {T::Unity_asset_bundle,        "scale"sv,                      CNT::vector3_t,         "Set the scale of the model"sv},
+        {T::Unity_asset_bundle,        "transform"sv,                  CNT::transform_t,       "Set the transform of the model"sv},
         // Network        
         {T::Parallel_port_writer,      "write"sv,                      CNT::integer_t,         "..."sv},
         {T::Parallel_port_writer,      "send pulse"sv,                 CNT::integer_t,         "..."sv},
@@ -469,11 +480,6 @@ struct Component {
         {T::Image_resource,            "image from alias"sv,           CNT::string_t,          ""sv},
         {T::Image_resource,            "image from id"sv,              CNT::integer_t,         ""sv},
         // Scene
-        {T::Unity_asset_bundle,        "visibility"sv,                 CNT::boolean_t,         "Set the visibility of the component"sv},
-        {T::Unity_asset_bundle,        "position"sv,                   CNT::vector3_t,         "Set the position of the component"sv},
-        {T::Unity_asset_bundle,        "rotation"sv,                   CNT::vector3_t,         "Set the rotation (euler angles) of the component"sv},
-        {T::Unity_asset_bundle,        "scale"sv,                      CNT::vector3_t,         "Set the scale of the component"sv},
-        {T::Unity_asset_bundle,        "transform"sv,                  CNT::transform_t,       "Set the transform of the component"sv},
         {T::MRI,                       "init knee"sv,                  CNT::string_any_t,      "..."sv},
         {T::MRI,                       "update knee"sv,                CNT::string_any_t,      "..."sv},
         // Script
@@ -517,7 +523,7 @@ struct Component {
 
     using TComponentSignals = std::tuple<
         CT,                             FunctionN,                     CNT,                            Doc>;
-    static constexpr TupleArray<63, TComponentSignals> componentsSignals = {{
+    static constexpr TupleArray<62, TComponentSignals> componentsSignals = {{
         TComponentSignals
         // Audio
         {T::AudioSource,               "sample value channel"sv,       CNT::id_any_t,                  "..."sv},
@@ -554,8 +560,6 @@ struct Component {
         {T::Text_resource,             "alias"sv,                      CNT::string_t,                  "Alias of the loaded text (called at routine start)"sv},
         {T::Text_resource,             "path"sv,                       CNT::string_t,                  "Path of the loaded text (called at routine start)"sv},
         {T::Text_resource,             "line"sv,                       CNT::string_t,                  "Current read line"sv},
-        // Scene
-        {T::Unity_asset_bundle,        "visibility changed"sv,         CNT::boolean_t,                 "Is triggered if the visibility of the component changed"sv},
         // Script
         {T::CSharp_function,           "output"sv,                     CNT::any_t,                     "..."sv},
         {T::CSharp_script,             "signal1"sv,                    CNT::any_t,                     "..."sv},

@@ -38,9 +38,38 @@ namespace Ex{
         public Color32 col;
     }
 
+    public class NativeDLLVertices {
+
+        public DLLVertex[] data = null;
+        public NativeArray<DLLVertex> native;
+
+        public NativeDLLVertices(int nbVertices) {
+            data = new DLLVertex[nbVertices];
+            native = new NativeArray<DLLVertex>(data, Allocator.Persistent);
+        }
+
+        public void clean() {
+            native.Dispose();
+        }
+    }
+
     public class NativeIndices {
-        public int[] array;
-        public NativeArray<int> native;
+
+        public int[] data = null;
+        public NativeArray<int> native ;
+
+        public NativeIndices(int nbIndices) {
+
+            data = new int[nbIndices];
+            for (int ii = 0; ii < nbIndices; ++ii) {
+                data[ii] = ii;
+            }
+            native  = new NativeArray<int>(data, Allocator.Persistent);
+        }
+
+        public void clean() {
+            native.Dispose();
+        }
     }
 
     public class OBBFInfo {
@@ -66,7 +95,7 @@ namespace Ex{
         private Shader paraboloidGeoWorld = null;
         private RenderingType currentRendering = RenderingType.ParabloidGeo;
 
-        public void Start() {
+        public void Awake() {
 
             Mesh mesh = new Mesh();
             mesh.triangles = new int[0];
@@ -78,7 +107,8 @@ namespace Ex{
             renderer.receiveShadows       = false;
             renderer.lightProbeUsage      = UnityEngine.Rendering.LightProbeUsage.Off;
             renderer.reflectionProbeUsage = UnityEngine.Rendering.ReflectionProbeUsage.Off;
-            
+            renderer.rendererPriority     = 3000;
+
             quadShader         = Shader.Find("Custom/Cloud/QuadGeoWorldSizeShader");
             paraboloidFrag     = Shader.Find("Custom/Cloud/ParaboloidFragWorldSizeShader");
             paraboloidGeoWorld = Shader.Find("Custom/Cloud/ParaboloidGeoWorldSizeShader");
@@ -93,7 +123,7 @@ namespace Ex{
 
         public bool set_points(List<Vector3> vertices, List<Color> colors, int count) {
 
-            if(count >= vertices.Count || count >= colors.Count) {
+            if(count > vertices.Count || count > colors.Count) {
                 ExVR.Log().error("PointCloud: Invalid inputs.");
                 return false;
             }
@@ -102,16 +132,18 @@ namespace Ex{
             for (int ii = 0; ii < count; ++ii) {
                 indices.Add(ii);
             }
-
+            
             return set_points(vertices, colors, indices, count);
         }
 
         public bool set_points(List<Vector3> vertices, List<Color> colors, List<int> indices, int count) {
 
-            if (count >= vertices.Count || count >= colors.Count || count >= indices.Count) {
+            if (count > vertices.Count || count > colors.Count || count > indices.Count) {
                 ExVR.Log().error("PointCloud: Invalid inputs.");
                 return false;
             }
+
+            ExVR.Log().message("-> " + vertices.Count + " " + colors.Count + " " + count);
 
             var mesh = GetComponent<MeshFilter>().mesh;
             mesh.Clear();
@@ -124,9 +156,9 @@ namespace Ex{
             return true;
         }
 
-        public bool set_points(NativeArray<DLLVertex> vertices, NativeArray<int> indices, int count) {
+        public bool set_points(NativeDLLVertices vertices, NativeIndices indices, int count) {
 
-            if(count >= vertices.Length || count >= indices.Length) {
+            if(count > vertices.data.Length || count > indices.data.Length) {
                 ExVR.Log().error("PointCloud: Invalid inputs.");
                 return false;
             }
@@ -145,9 +177,9 @@ namespace Ex{
             | MeshUpdateFlags.DontResetBoneBounds;
 
             mesh.SetVertexBufferParams(count, layout);
-            mesh.SetVertexBufferData(vertices, 0, 0, count, 0, flags);
+            mesh.SetVertexBufferData(vertices.native, 0, 0, count, 0, flags);
             mesh.SetIndexBufferParams(count, IndexFormat.UInt32);
-            mesh.SetIndexBufferData(indices, 0, 0, count, flags);
+            mesh.SetIndexBufferData(indices.native, 0, 0, count, flags);
             mesh.SetSubMesh(0, new SubMeshDescriptor(0, count, MeshTopology.Points), flags);
             mesh.bounds = mesh.GetSubMesh(0).bounds;
 

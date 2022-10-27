@@ -131,7 +131,7 @@ namespace Ex{
 
 
         ImageResource image(int id) {
-            if (id < images.Count) {
+            if (id < images.Count && id >= 0) {
                 return images[id];
             } 
             log_error(string.Format("No image with id {0} available in init config images resources list. ", id));

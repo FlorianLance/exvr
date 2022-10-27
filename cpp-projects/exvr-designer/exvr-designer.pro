@@ -341,6 +341,7 @@ SOURCES += \
     gui/ex_widgets/ex_condition_w.cpp \
     gui/ex_widgets/ex_oob_filtering_w.cpp \
     gui/widgets/components/config_parameters/cloud_pw.cpp \
+    gui/widgets/components/config_parameters/flag_pole_pw.cpp \
     gui/widgets/components/config_parameters/k2_manager_pw.cpp \
     gui/widgets/components/config_parameters/k4_direct_multi_clouds_pw.cpp \
     gui/widgets/components/config_parameters/k4_manager_pw.cpp \
