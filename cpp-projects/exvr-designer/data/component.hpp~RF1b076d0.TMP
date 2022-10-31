@@ -77,11 +77,11 @@ struct Component {
         {Category::Viewer,      "Viewer"sv,             "Viewer"sv},
     }};
 
-    [[maybe_unused]] static constexpr Name get_display_name(Category c) {
+    [[maybe_unused]] static constexpr Name to_string(Category c) {
         return categories.at<0,1>(c);
     }
     [[maybe_unused]] static constexpr Name get_unity_name(Category c) {
-        return categories.at<0,2>(c);
+        return categories.at<0,1>(c);
     }
     [[maybe_unused]] static constexpr std::optional<Category> get_category(const Name name) {
         return categories.optional_at<1,0>(name);

@@ -108,6 +108,7 @@ HEADERS += \
     gui/widgets/components/config_parameters/k4_direct_multi_clouds_pw.hpp \
     gui/widgets/components/config_parameters/k4_manager_pw.hpp \
     gui/widgets/components/config_parameters/light_pw.hpp \
+    gui/widgets/components/config_parameters/video_resource_pw.hpp \
     utility/script_utility.hpp \
     utility/path_utility.hpp \
     # IO
@@ -236,7 +237,6 @@ HEADERS += \
     gui/widgets/components/config_parameters/text_resource_pw.hpp \
     gui/widgets/components/config_parameters/image_resource_pw.hpp \
     gui/widgets/components/config_parameters/plot_resource_pw.hpp \
-    gui/widgets/components/config_parameters/video_file_pw.hpp \
     gui/widgets/components/config_parameters/webcam_pw.hpp \
     gui/widgets/components/config_parameters/video_generator_pw.hpp \
     gui/widgets/components/config_parameters/video_file_camera_pw.hpp \
@@ -347,6 +347,7 @@ SOURCES += \
     gui/widgets/components/config_parameters/k4_manager_pw.cpp \
     gui/widgets/components/config_parameters/light_pw.cpp \
     gui/widgets/components/config_parameters/primitives_model_pw.cpp \
+    gui/widgets/components/config_parameters/video_resource_pw.cpp \
     launcher/exp_launcher.cpp \
     launcher/exp_launcher_communication.cpp \
     launcher/exp_launcher_process.cpp \

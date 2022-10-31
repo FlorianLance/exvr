@@ -67,7 +67,7 @@
 #include "config_parameters/biopac_pw.hpp"
 #include "config_parameters/thera_trainer_tracking_pw.hpp"
 #include "config_parameters/thera_trainer_platform_pw.hpp"
-#include "config_parameters/video_file_pw.hpp"
+#include "config_parameters/video_resource_pw.hpp"
 #include "config_parameters/webcam_pw.hpp"
 #include "config_parameters/image_viewer_pw.hpp"
 #include "config_parameters/image_resource_pw.hpp"
@@ -176,8 +176,6 @@ ConfigParametersW *ConfigW::generate_parameters(Component::Type type, bool initC
     case CT::TPP_avatar_camera:
         return gen_params_w<TPPAvatarCameraInitConfigParametersW,TPPAvatarCameraConfigParametersW>(initConfig);
     // ############################# Cloud
-    case CT::Cloud:
-        return gen_params_w<CloudInitConfigParametersW,CloudConfigParametersW>(initConfig);
     case CT::Scaner_video:
         return gen_params_w<ScanerVideoInitConfigParametersW,ScanerVideoConfigParametersW>(initConfig);
     // ############################# Environment
@@ -190,7 +188,7 @@ ConfigParametersW *ConfigW::generate_parameters(Component::Type type, bool initC
     // ############################# Flow
     case CT::Config:
         return gen_params_w<ConfigParametersW,ConfigParametersW>(initConfig);
-    // ############################# Input
+    // ############################# User input
     case CT::Joypad:
         return gen_params_w<JoypadInitConfigParametersW,JoypadConfigParametersW>(initConfig);
     case CT::Keyboard:
@@ -198,17 +196,19 @@ ConfigParametersW *ConfigW::generate_parameters(Component::Type type, bool initC
     case CT::Mouse:
         return gen_params_w<MouseInitConfigParametersW,MouseConfigParametersW>(initConfig);
     // ############################# Interaction
-    case CT::Flag_pole:
-        return gen_params_w<FlagPoleInitConfigParametersW,FlagPoleConfigParametersW>(initConfig);
     case CT::Mark_to_clean:
         return gen_params_w<MarkToCleanInitConfigParametersW,MarkToCleanConfigParametersW>(initConfig);
     case CT::Target_to_grab:
         return gen_params_w<TargetToGrabInitConfigParametersW,TargetToGrabConfigParametersW>(initConfig);
     // ############################# Model
+    case CT::Cloud:
+        return gen_params_w<CloudInitConfigParametersW,CloudConfigParametersW>(initConfig);
     case CT::Cube:
         return gen_params_w<CubeInitConfigParametersW,ModelConfigParametersW>(initConfig);
     case CT::Cylinder:
         return gen_params_w<CylinderInitConfigParametersW,ModelConfigParametersW>(initConfig);
+    case CT::Flag_pole:
+        return gen_params_w<FlagPoleInitConfigParametersW,FlagPoleConfigParametersW>(initConfig);
     case CT::Landmark:
         return gen_params_w<LandmarkInitConfigParametersW,LandmarkConfigParametersW>(initConfig);
     case CT::Lines:
@@ -219,6 +219,10 @@ ConfigParametersW *ConfigW::generate_parameters(Component::Type type, bool initC
         return gen_params_w<SphereInitConfigParametersW,ModelConfigParametersW>(initConfig);
     case CT::Torus:
         return gen_params_w<TorusInitConfigParametersW,ModelConfigParametersW>(initConfig);
+    case CT::Multi_AB:
+        return gen_params_w<MultiABInitConfigParametersW,MultiABConfigParametersW>(initConfig);
+    case CT::Unity_asset_bundle:
+        return gen_params_w<AssetBundleInitConfigParametersW,AssetBundleConfigParametersW>(initConfig);
     // ############################# Network
     case CT::Parallel_port_writer:
         return gen_params_w<ParallelPortWriterInitConfigParametersW,ParallelPortWriterConfigParametersW>(initConfig);
@@ -248,6 +252,8 @@ ConfigParametersW *ConfigW::generate_parameters(Component::Type type, bool initC
         return gen_params_w<PlotResourceInitConfigParametersW,PlotResourceConfigParametersW>(initConfig);
     case CT::Text_resource:
         return gen_params_w<TextResourceInitConfigParametersW,TextResourceConfigParametersW>(initConfig);
+    case CT::Video_resource:
+        return gen_params_w<VideoResourceInitConfigParametersW,VideoResourceConfigParametersW>(initConfig);
     case CT::Volumetric_video:
         return gen_params_w<VolumetricVideoInitConfigParametersW,VolumetricVideoConfigParametersW>(initConfig);
     // ############################# Scene
@@ -259,10 +265,6 @@ ConfigParametersW *ConfigW::generate_parameters(Component::Type type, bool initC
         return gen_params_w<MirrorInitConfigParametersW,MirrorConfigParametersW>(initConfig);
     case CT::MRI:
         return gen_params_w<MriInitConfigParametersW,MriConfigParametersW>(initConfig);
-    case CT::Multi_AB:
-        return gen_params_w<MultiABInitConfigParametersW,MultiABConfigParametersW>(initConfig);
-    case CT::Unity_asset_bundle:
-        return gen_params_w<AssetBundleInitConfigParametersW,AssetBundleConfigParametersW>(initConfig);
     // ############################# Script
     case CT::CSharp_function:
         return gen_params_w<CSharpFunctionInitConfigParametersW,CSharpFunctionConfigParametersW>(initConfig);
@@ -305,8 +307,6 @@ ConfigParametersW *ConfigW::generate_parameters(Component::Type type, bool initC
     case CT::Slider_ui:
         return gen_params_w<SliderUiInitConfigParametersW,SliderUiConfigParametersW>(initConfig);
     // ############################# Video
-    case CT::Video_file:
-        return gen_params_w<VideoFileInitConfigParametersW,VideoFileConfigParametersW>(initConfig);
     case CT::Video_saver:
         return gen_params_w<VideoGeneratorInitConfigParametersW,VideoGeneratorConfigParametersW>(initConfig);
     case CT::Webcam:

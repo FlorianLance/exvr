@@ -1,6 +1,6 @@
-﻿
+
 /***********************************************************************************
-** exvr-exp                                                                       **
+** exvr-designer                                                                  **
 ** MIT License                                                                    **
 ** Copyright (c) [2018] [Florian Lance][EPFL-LNCO]                                **
 ** Permission is hereby granted, free of charge, to any person obtaining a copy   **
@@ -22,21 +22,41 @@
 ** SOFTWARE.                                                                      **
 ************************************************************************************/
 
-// system
-using System.Runtime.InteropServices;
+#include "video_resource_pw.hpp"
 
-namespace Ex {
+// qt-utility
+#include "gui/ex_widgets/ex_checkbox_w.hpp"
 
-    public class CppExResourceFile : ExResourceFile {
+// local
+#include "gui/ex_widgets/ex_resource_w.hpp"
 
-        protected DLLExResource cppDll = null;
 
-        public override void create(int key, string alias, string path){
-            base.create(key, alias, path);
-        }
+using namespace tool::ex;
 
-        public HandleRef get_dll_handle() {
-            return cppDll.getHandle();
-        }
-    }
+struct VideoResourceInitConfigParametersW::Impl{
+};
+
+VideoResourceInitConfigParametersW::VideoResourceInitConfigParametersW():  ConfigParametersW(), m_p(std::make_unique<Impl>()){
+}
+
+
+struct VideoResourceConfigParametersW::Impl{
+    ExResourceW video{"video"};
+    ExCheckBoxW playNewRoutine{"play_at_new_routine"};
+    ExCheckBoxW playImages{"play_images"};
+    ExCheckBoxW playAudio{"play_audio"};
+};
+
+VideoResourceConfigParametersW::VideoResourceConfigParametersW():  ConfigParametersW(), m_p(std::make_unique<Impl>()){
+}
+
+void VideoResourceConfigParametersW::insert_widgets(){
+    add_widget(ui::F::gen(ui::L::VB(), {m_p->video(), m_p->playNewRoutine(), m_p->playAudio(), m_p->playImages()}, LStretch{false}, LMargins{true}, QFrame::Box));
+}
+
+void VideoResourceConfigParametersW::init_and_register_widgets(){
+    add_input_ui(m_p->video.init_widget(Resource::Type::Video, "Video resource: "));
+    add_input_ui(m_p->playNewRoutine.init_widget("Play when routine starts", true));
+    add_input_ui(m_p->playImages.init_widget("Play images", true));
+    add_input_ui(m_p->playAudio.init_widget("Play audio", true));
 }

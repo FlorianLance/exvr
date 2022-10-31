@@ -36,6 +36,28 @@ namespace Ex {
         public List<Vector3> vertices = null;
         public List<Color> colors = null;
 
+        public override void create(int key, string alias, string path){
+
+            base.create(key, alias, path);
+
+            string extension = System.IO.Path.GetExtension(path).ToLower();
+            bool success = false;
+            if (extension == ".asc") {
+                success = load_asc_file(path);
+            } else if (extension == ".ply") {
+                success = load_ply_file(path);
+            } else if (extension == ".obj") {
+                success = load_obj_file(path);
+            } else {
+                log_error(string.Format("Cloud extension not managed: [{0}]", extension));
+            }
+
+            if (!success) {
+                vertices = new List<Vector3>();
+                colors = new List<Color>();
+            }
+        }
+
         private bool load_asc_file(string path) {
 
 
@@ -118,24 +140,5 @@ namespace Ex {
             return true;
         }
 
-        public CloudResource(int key, string alias, string path) : base(key, alias, path) {
-
-            string extension = System.IO.Path.GetExtension(path).ToLower();
-            bool success = false;
-            if(extension == ".asc") {
-                success = load_asc_file(path);
-            } else if(extension == ".ply") {
-                success= load_ply_file(path);
-            } else if (extension == ".obj") {
-                success = load_obj_file(path);
-            } else {
-                log_error(string.Format("Cloud extension not managed: [{0}]", extension));
-            }
-
-            if (!success) {
-                vertices = new List<Vector3>();
-                colors = new List<Color>();
-            }
-        }
     }
 }

@@ -76,7 +76,7 @@ namespace Ex {
             Camera,
             Environment,
             Flow,
-            Input,
+            InputDevice,
             Interaction,                        
             Model,
             Network,
@@ -86,10 +86,9 @@ namespace Ex {
             Scene,
             Settings,
             Text,
-            UI,
-            Tracking,
+            UserInterface,
+            TrackingDevice,
             Video,
-            Cloud,
             Viewer,
             Undefined
         };

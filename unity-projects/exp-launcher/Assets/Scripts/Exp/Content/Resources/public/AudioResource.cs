@@ -36,7 +36,9 @@ namespace Ex{
         public AudioClip clip = null;
         private static AudioClip m_lastAudioClipLoaded = null;
 
-        public AudioResource(int key, string alias, string path) : base(key, alias, path) {
+        public override void create(int key, string alias, string path){
+
+            base.create(key, alias, path);
 
             var enumerator = load_audio_clip(path); // load file in couroutine
             while (enumerator.MoveNext()) { // wait for the end

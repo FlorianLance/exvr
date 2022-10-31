@@ -110,11 +110,15 @@ namespace Ex {
         public void add_default_resources() {
 
             // images
-            var dImage = new ImageResource(-1, "default_texture", "");
+            var dImage = generate_resource(ResourceType.Image, -1, "default_texture", "");
+
+            //var dImage = new ImageResource(-1, "default_texture", "");
             dImage.read_data();
             dImage.initialize();
             dImage.doNotRemove = true;
             m_aliasMappingResources[ResourceType.Image]["default_texture"] = dImage;
+
+            dImage.transform.SetParent(transform);
             // ...
         }
 
@@ -123,68 +127,90 @@ namespace Ex {
             foreach(var resourcesType in m_aliasMappingResources) {
                 foreach (var resource in resourcesType.Value) {
                     resource.Value.clean();
+                    Destroy(resource.Value.gameObject);
                 }
             }
         }
 
+        //private ExResource generate_resource(ResourceType type, int key, string alias, string path) {
         private ExResource generate_resource(ResourceType type, int key, string alias, string path) {
 
+            GameObject resourceGO = GO.generate_empty_object(alias, null, true);
+
+            ExResource resource = null;
             // resource file exists
             switch (type) {
-                case ResourceType.Image:               
-                    return new ImageResource(key, alias, path);
+                case ResourceType.Image:
+                    (resource = resourceGO.AddComponent<ImageResource>()).create(key, alias, path); break;
+                //return new ImageResource(key, alias, path);
                 case ResourceType.Text:
-                    return new TextResource(key, alias, path);
+                    (resource = resourceGO.AddComponent<TextResource>()).create(key, alias, path); break;
+                //return new TextResource(key, alias, path);
                 case ResourceType.UnityAssetBundle:
-                    return new AssetBundleResource(key, alias, path);
+                    (resource = resourceGO.AddComponent<AssetBundleResource>()).create(key, alias, path); break;
+                //return new AssetBundleResource(key, alias, path);
                 case ResourceType.Video:
-                    return new VideoResource(key, alias, path);
+                    (resource = resourceGO.AddComponent<VideoResource>()).create(key, alias, path); break;
+                //return new VideoResource(key, alias, path);
                 case ResourceType.Audio:
-                    return new AudioResource(key, alias, path);
+                    (resource = resourceGO.AddComponent<AudioResource>()).create(key, alias, path); break;
+                //return new AudioResource(key, alias, path);
                 case ResourceType.CSharpScript:
-                    return new CSharpScriptResource(key, alias, path);
+                    (resource = resourceGO.AddComponent<CSharpScriptResource>()).create(key, alias, path); break;
+                //return new CSharpScriptResource(key, alias, path);
                 case ResourceType.Cloud:
-                    return new CloudResource(key, alias, path);
+                    (resource = resourceGO.AddComponent<CloudResource>()).create(key, alias, path); break;
+                //return new CloudResource(key, alias, path);
                 case ResourceType.ScanerVideo:
-                    return new ScanerVideoResource(key, alias, path);
+                    (resource = resourceGO.AddComponent<ScanerVideoResource>()).create(key, alias, path); break;
+                //return new ScanerVideoResource(key, alias, path);
                 case ResourceType.Plot:
-                    return new PlotResource(key, alias, path);
+                    (resource = resourceGO.AddComponent<PlotResource>()).create(key, alias, path); break;
+                //return new PlotResource(key, alias, path);
                 case ResourceType.Directory:
-                    return new DirectoryResource(key, alias, path);
+                    (resource = resourceGO.AddComponent<DirectoryResource>()).create(key, alias, path); break;
+                //return new DirectoryResource(key, alias, path);
                 case ResourceType.VolumetricVideo:
-                    return new VolumetricVideoResource(key, alias, path);
+                    (resource = resourceGO.AddComponent<VolumetricVideoResource>()).create(key, alias, path); break;
+
+                    //return new VolumetricVideoResource(key, alias, path);
             }
-            return null;
+            //return null;
+            return resource;
         }
 
         private bool add_resource_from_xml(XML.Resource resource, ResourceType type) {
 
             bool exists = (type == ResourceType.Directory) ? Directory.Exists(resource.Path) : File.Exists(resource.Path);
             if (!exists) {
-                log_error(String.Format("Cannot load resource file of type [{0}] with path: {1}", resource.Type, resource.Path));
+                log_error(string.Format("Cannot load resource file of type [{0}] with path: {1}", resource.Type, resource.Path));
                 return false;
             }
 
             // load resource if not mapped
-            if (!m_pathMappingResources[type].ContainsKey(resource.Path)) {                
+            if (!m_pathMappingResources[type].ContainsKey(resource.Path)) {
 
                 ExResource resourceData = generate_resource(type, resource.Key, resource.Alias, resource.Path);
+
                 if (resourceData != null) {
                     m_pathMappingResources[type][resource.Path] = resourceData;
                     m_aliasMappingResources[type][resource.Alias] = resourceData;
                     if (!resourceData.read_data()) {
-                        log_error(String.Format("Cannot read data from resource file of type [{0}] with path: {1}.", resource.Type, resource.Path));
+                        log_error(string.Format("Cannot read data from resource file of type [{0}] with path: {1}.", resource.Type, resource.Path));                        
                         resourceData.clean();
+                        Destroy(resourceData.gameObject);
                         return false;
                     }
                     if (!resourceData.initialize()) {
-                        log_error(String.Format("Cannot initialize resource file of type [{0}] with path: {1}.", resource.Type, resource.Path));
+                        log_error(string.Format("Cannot initialize resource file of type [{0}] with path: {1}.", resource.Type, resource.Path));
                         resourceData.clean();
+                        Destroy(resourceData.gameObject);
                         return false;
                     }
+                    resourceData.transform.SetParent(transform);
                 }
             } else {
-                log_error(String.Format("Resource file of type [{0}] with path: {1} already added.", resource.Type, resource.Path));
+                log_error(string.Format("Resource file of type [{0}] with path: {1} already added.", resource.Type, resource.Path));
             }
 
             return true;
@@ -240,6 +266,7 @@ namespace Ex {
                     m_aliasMappingResources[resource.Item1].Remove(resource.Item3.alias);
                     m_pathMappingResources[resource.Item1].Remove(resource.Item2);
                     resource.Item3.clean();
+                    Destroy(resource.Item3.gameObject);
                 }
             }
 
@@ -256,6 +283,7 @@ namespace Ex {
                 foreach (var resourcesPerType in m_aliasMappingResources[type]) {
                     if (!resourcesPerType.Value.doNotRemove) {
                         resourcesPerType.Value.clean();
+                        Destroy(resourcesPerType.Value.gameObject);
                     } else {
                         resourcesToKeep.Add(resourcesPerType.Value);
                     }

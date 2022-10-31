@@ -29,7 +29,9 @@ namespace Ex{
 
         public DLLK2VolumetricVideoResource dllScanerVideoResource = null;
 
-        public ScanerVideoResource(int key, string alias, string path) : base(key, alias, path) {}
+        public override void create(int key, string alias, string path) {
+            base.create(key, alias, path);
+        }
 
         public override bool read_data() {
             dllScanerVideoResource = new DLLK2VolumetricVideoResource();

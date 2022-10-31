@@ -32,7 +32,9 @@ namespace Ex{
 
         public string content;
 
-        public TextResource(int key, string alias, string path) : base(key, alias, path) {
+        public override void create(int key, string alias, string path){
+
+            base.create(key, alias, path);
 
             try {
                 content = File.ReadAllText(path);

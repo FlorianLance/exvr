@@ -25,7 +25,11 @@
 namespace Ex {
 
     public class DirectoryResource : ExResource{
-        public DirectoryResource(int key, string alias, string path) : base(key, alias, path) {
+        //public DirectoryResource(int key, string alias, string path) : base(key, alias, path) {
+        //}
+
+        public override void create(int key, string alias, string path){
+            base.create(key, alias, path);
         }
     }
 }

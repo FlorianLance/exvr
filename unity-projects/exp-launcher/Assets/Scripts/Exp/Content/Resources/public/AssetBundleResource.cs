@@ -30,8 +30,9 @@ namespace Ex{
 
         public AssetBundle bundle = null;
 
-        public AssetBundleResource(int key, string alias, string path) : base(key, alias, path) {
+        public override void create(int key, string alias, string path) {
 
+            base.create(key, alias, path);
             bundle = AssetBundle.LoadFromFile(path);
             if (bundle == null) {
                 log_error("Failed to load AssetBundle with path: " + path);

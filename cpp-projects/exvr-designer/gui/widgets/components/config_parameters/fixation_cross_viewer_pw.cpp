@@ -61,10 +61,11 @@ void FixationCrossViewerConfigParametersW::insert_widgets(){
     layout()->setContentsMargins(0,0,0,0);
     add_sub_part_widget(m_p->eye);
 
-    auto followCameraF  = ui::F::gen(ui::L::HB(), {m_p->followEyeCamera()}, LStretch{true}, LMargins{}, QFrame::NoFrame);
     auto colorsF  = ui::F::gen(ui::L::HB(), {ui::W::txt("Background color:"), m_p->backgroundColor(), ui::W::txt("Cross color:"), m_p->crossColor()}, LStretch{true}, LMargins{false}, QFrame::NoFrame);
     auto crossF  = ui::F::gen(ui::L::HB(), {ui::W::txt("Cross size factor"), m_p->crossSizeFactor()}, LStretch{true}, LMargins{false}, QFrame::NoFrame);
-    add_widget(ui::F::gen(ui::L::VB(), {followCameraF, colorsF, crossF}, LStretch{false}, LMargins{true}, QFrame::Box));
+    add_widget(ui::F::gen(ui::L::VB(), {colorsF, crossF}, LStretch{false}, LMargins{true}, QFrame::Box));
+
+    add_widget(ui::F::gen(ui::L::HB(), {m_p->followEyeCamera()}, LStretch{true}, LMargins{}, QFrame::NoFrame));
     add_sub_part_widget(m_p->cameraSettings);
     add_widget(ui::F::gen(ui::L::HB(), {m_p->pivot(), ui::W::txt("Distance"),  m_p->distance()}, LStretch{true}, LMargins{true}, QFrame::Box));
 }

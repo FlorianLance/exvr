@@ -78,15 +78,19 @@ namespace Ex{
         public byte[] bytes = null;
         public Texture2D texture = null;
 
-        public ImageResource(int key, string alias, string path) : base(key, alias, path) {
+        public override void create(int key, string alias, string path){
+
+            base.create(key, alias, path);
+
             texture = new Texture2D(2, 2);//, TextureFormat.RGB24, false);
 
             // set textures parameters
             //texture.filterMode = FilterMode.Trilinear;
-            texture.wrapMode    = TextureWrapMode.Clamp;
-            texture.filterMode  = FilterMode.Point;
+            texture.wrapMode = TextureWrapMode.Clamp;
+            texture.filterMode = FilterMode.Point;
 
         }
+
         public override bool read_data() {
 
             if (path.Length == 0) {

@@ -26,9 +26,9 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Ex{
+namespace Ex {
 
-    public class ImageViewerComponent : CanvasWorldSpaceComponent{
+    public class VideoViewerComponent : CanvasWorldSpaceComponent {
 
         private GameObject m_imageGO = null;
         private RectTransform m_rectTr = null;
@@ -51,9 +51,6 @@ namespace Ex{
             m_imageGO.name = "ImageRect";
             m_rectTr = m_imageGO.GetComponent<RectTransform>();
 
-            m_imageGO.GetComponent<UnityEngine.UI.Image>().material = ExVR.GlobalResources().instantiate_unlit_transparent_color_mat();
-
-
             // init default 
             set_image(ExVR.Resources().get_image_file_data("default_texture").texture);
 
@@ -61,56 +58,28 @@ namespace Ex{
         }
 
         protected override void clean() {
-            if(m_generatedInputImage != null) {
+            if (m_generatedInputImage != null) {
                 Destroy(m_generatedInputImage);
                 m_generatedInputImage = null;
             }
         }
 
         protected override void start_routine() {
-
-
-            if (currentC.get<bool>("use_resource")) {
+            if (!currentC.get<bool>("do_not_load")) {
                 load_image_from_resource(currentC.get_resource_alias("image"));
-            } else if (currentC.get<bool>("use_component")) {
-                var irc = currentC.get_component<ImageResourceComponent>("resource_component");
-                if(irc != null) {
-                    var ir = irc.currentResourceImage;
-                    if(ir != null) {
-                        load_image_from_resource(ir);
-                    }
-                }                                
-            } 
+            }
+            resize_image();
         }
 
         protected override void set_visibility(bool visibility) {
             m_imageGO.SetActive(visibility);
         }
 
-
-        public override void update_from_current_config() {
-            // container
-            resize_image();
-            // background
-            m_imageGO.GetComponent<UnityEngine.UI.Image>().material.SetColor("_Color", currentC.get_color("background_color"));
-        }
-
-
         protected override void update_parameter_from_gui(string updatedArgName) {
-
-            if(updatedArgName == "image") {
+            if (updatedArgName == "image") {
                 load_image_from_resource(currentC.get_resource_alias(updatedArgName));
-            }else if(updatedArgName == "resource_component") {
-                var irc = initC.get_component<ImageResourceComponent>("resource_component");
-                if (irc != null) {
-                    var ir = irc.currentResourceImage;
-                    if (ir != null) {
-                        load_image_from_resource(ir);
-                    }
-                }
             }
-
-            update_from_current_config();
+            resize_image();
         }
 
         protected override void post_update() {
@@ -147,7 +116,7 @@ namespace Ex{
 
             } else {
                 m_rectTr.localPosition = currentC.get_vector3("position");
-                m_rectTr.localEulerAngles = currentC.get_vector3("rotation");                
+                m_rectTr.localEulerAngles = currentC.get_vector3("rotation");
             }
 
             m_rectTr.sizeDelta = ((currentC.get<bool>("use_original_size")) ?
@@ -168,10 +137,6 @@ namespace Ex{
             }
         }
 
-        public void load_image_from_resource(ImageResource imageResource) {
-            set_image(imageResource.texture);
-        }
-
         public void load_image_from_container(ImageContainer imageContainer) {
             if (imageContainer.texture != null) {
                 set_image(imageContainer.texture);
@@ -185,14 +150,14 @@ namespace Ex{
 
             m_currentImage = texture;
 
-            m_currentImageWidth     = m_currentImage.width;
-            m_currentImageHeight    = m_currentImage.height;
+            m_currentImageWidth = m_currentImage.width;
+            m_currentImageHeight = m_currentImage.height;
             m_imageGO.GetComponent<UnityEngine.UI.Image>().sprite = Sprite.Create(
-                m_currentImage, 
-                new Rect(0.0f, 0.0f, m_currentImageWidth, m_currentImageHeight), 
-                new Vector2(0f, 0f), 
-                100.0f, 
-                0, 
+                m_currentImage,
+                new Rect(0.0f, 0.0f, m_currentImageWidth, m_currentImageHeight),
+                new Vector2(0f, 0f),
+                100.0f,
+                0,
                 SpriteMeshType.FullRect
             );
         }

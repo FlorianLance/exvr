@@ -514,6 +514,7 @@ std::unique_ptr<Component> XmlIoManager::read_component(){
         // for converting legacy
         unityNameStr = unityNameStr.remove("Component"); // for old style
         unityNameStr = unityNameStr.remove("MP36");
+        unityNameStr = unityNameStr.replace("VideoFile", "VideoResource");
         unityNameStr = unityNameStr.replace("EyeCamera", "Camera");
         unityNameStr = unityNameStr.replace("SpatializedAudio", "AudioSource");
         unityNameStr = unityNameStr.replace("TextCamera", "TextViewer");
@@ -632,7 +633,7 @@ void XmlIoManager::write_component(const Component *component) {
     w->writeStartElement(QSL("Component"));
     w->writeAttribute(QSL("key"),               QString::number(component->key()));
     w->writeAttribute(QSL("name"),              component->name());
-    w->writeAttribute(QSL("category"),          from_view(Component::to_string(component->category)));
+    w->writeAttribute(QSL("category"),          from_view(Component::get_unity_name(component->category)));
     w->writeAttribute(QSL("type"),              from_view(Component::get_unity_name(component->type)));
     w->writeAttribute(QSL("global"),            Component::is_global(component->type) ? QSL("1") : QSL("0"));
     w->writeAttribute(QSL("always_updating"),   Component::is_alsways_updating(component->type) ? QSL("1") : QSL("0"));

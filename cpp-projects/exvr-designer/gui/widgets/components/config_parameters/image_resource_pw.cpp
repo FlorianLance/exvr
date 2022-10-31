@@ -41,12 +41,12 @@ ImageResourceInitConfigParametersW::ImageResourceInitConfigParametersW() :  Conf
 }
 
 void ImageResourceInitConfigParametersW::insert_widgets(){
-    add_widget(ui::F::gen(ui::L::VB(), {m_p->imagesList()}, LStretch{false}, LMargins{true}, QFrame::Box));
+    add_widget(ui::F::gen(ui::L::VB(), {ui::W::txt("<b>List of images to use:</b>"), m_p->imagesList()}, LStretch{false}, LMargins{true}, QFrame::Box));
     no_end_stretch();
 }
 
 void ImageResourceInitConfigParametersW::init_and_register_widgets(){
-    add_input_ui(m_p->imagesList.init_widget(Resource::Type::Image, "Images:"));
+    add_input_ui(m_p->imagesList.init_widget(Resource::Type::Image, "Resources:"));
 }
 
 void ImageResourceInitConfigParametersW::create_connections(){

@@ -25,52 +25,37 @@
 #pragma once
 
 // local
-#include "gui/ex_widgets/ex_resource_w.hpp"
 #include "config_pw.hpp"
 
 namespace tool::ex {
 
 
-class VideoFileInitConfigParametersW : public ConfigParametersW{
+class VideoResourceInitConfigParametersW : public ConfigParametersW{
 
 public :
 
-    ExResourceW m_video{"video"};
+    VideoResourceInitConfigParametersW();
 
-    void insert_widgets() override{
-        add_widget(ui::F::gen(ui::L::HB(), {m_video()}, LStretch{false}, LMargins{true}, QFrame::Box));
-    }
+    void insert_widgets() override{}
+    void init_and_register_widgets() override{}
 
-    void init_and_register_widgets() override{        
-        add_input_ui(m_video.init_widget(Resource::Type::Video, "Video resource: "));
-    }
-    void create_connections() override{
-
-
-    }
-    void late_update_ui() override{}
+private:
+    struct Impl;
+    std::unique_ptr<Impl> m_p = nullptr;
 };
 
 
-class VideoFileConfigParametersW : public ConfigParametersW{
+class VideoResourceConfigParametersW : public ConfigParametersW{
 
 public :
 
+    VideoResourceConfigParametersW();
 
+    void insert_widgets();
+    void init_and_register_widgets();
 
-    void insert_widgets() override{
-
-    }
-
-    void init_and_register_widgets() override{
-
-    }
-
-    void create_connections() override{
-    }
-
-    void late_update_ui() override{
-    }
+private:
+    struct Impl;
+    std::unique_ptr<Impl> m_p = nullptr;
 };
-
 }

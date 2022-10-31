@@ -48,7 +48,11 @@ namespace Ex {
         public List<VolumetricVideoCameraDataInfo> cameraDataInfo = null;
 
 
-        public VolumetricVideoResource(int key, string alias, string path) : base(key, alias, path) {
+        //public VolumetricVideoResource(int key, string alias, string path) : base(key, alias, path) {
+        //}
+
+        public override void create(int key, string alias, string path){
+            base.create(key, alias, path);
         }
 
         public override bool initialize() {
@@ -62,7 +66,6 @@ namespace Ex {
 
             if (!cppDll.initialize()) {
                 log_error(string.Format("Cannot initialize volumetric video resource dll from path {0}.", path));
-                clean();
                 return false;
             }
 

@@ -36,7 +36,9 @@ namespace Ex{
 
         public List<AnimationCurve> curves = null;
 
-        public PlotResource(int key, string alias, string path) : base(key, alias, path) {
+        public override void create(int key, string alias, string path){
+
+            base.create(key, alias, path);
 
             var ext = Path.GetExtension(path);
             if (ext == ".csv") {
@@ -47,14 +49,14 @@ namespace Ex{
                         var line = reader.ReadLine();
                         var values = line.Split(',');
 
-                        if(values.Length < 2) {
+                        if (values.Length < 2) {
                             // error
                             return;
                         }
 
-                        if(curves == null) {
-                            curves = new List<AnimationCurve>(values.Length-1);
-                            for(int ii = 0; ii < values.Length - 1; ++ii) {
+                        if (curves == null) {
+                            curves = new List<AnimationCurve>(values.Length - 1);
+                            for (int ii = 0; ii < values.Length - 1; ++ii) {
                                 curves.Add(new AnimationCurve());
                             }
                         }
@@ -63,7 +65,7 @@ namespace Ex{
                         for (int ii = 0; ii < values.Length - 1; ++ii) {
                             curves[ii].AddKey(time, Converter.to_float(values[ii + 1]));
                         }
-                    }                    
+                    }
                 }
             }
 
