@@ -69,7 +69,7 @@ namespace Ex{
             );
 
             // color
-            m_backgroundMat.color = currentC.get_color("background-color");
+            m_backgroundMat.color = currentC.get_color("background_color");
             m_crossMat.color = currentC.get_color("cross-color");
 
             update_position();
