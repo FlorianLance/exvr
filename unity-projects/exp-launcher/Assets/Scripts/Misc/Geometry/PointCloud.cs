@@ -98,7 +98,8 @@ namespace Ex{
         public void Awake() {
 
             Mesh mesh = new Mesh();
-            mesh.triangles = new int[0];
+            mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+            mesh.triangles   = new int[0];
             GetComponent<MeshFilter>().mesh = mesh;
 
             var renderer                  = GetComponent<MeshRenderer>();
@@ -143,11 +144,9 @@ namespace Ex{
                 return false;
             }
 
-            ExVR.Log().message("-> " + vertices.Count + " " + colors.Count + " " + count);
-
             var mesh = GetComponent<MeshFilter>().mesh;
             mesh.Clear();
-            mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+            //mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
             mesh.SetVertices(vertices);
             mesh.SetColors(colors);
             mesh.triangles = new int[0];

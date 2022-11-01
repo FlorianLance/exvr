@@ -30,7 +30,7 @@ using UnityEngine;
 
 namespace Ex {
 
-
+    [System.Serializable]
     public class VolumetricVideoCameraDataInfo {
         
         public int maxNbVertices = 0;
@@ -38,18 +38,15 @@ namespace Ex {
         public int nbFrames = 0;
         public Matrix4x4 model = Matrix4x4.identity;
         public float duration = 0f;
+        public int audioTotalSize = 0;
     }
 
     public class VolumetricVideoResource : CppExResourceFile {
 
         public int nbCameras = 0;
         public float duration = 0f;
-        public int maxNbVerticesAllCameras = 0;
+        public int maxNbVerticesAllCameras = 0;        
         public List<VolumetricVideoCameraDataInfo> cameraDataInfo = null;
-
-
-        //public VolumetricVideoResource(int key, string alias, string path) : base(key, alias, path) {
-        //}
 
         public override void create(int key, string alias, string path){
             base.create(key, alias, path);
@@ -120,6 +117,7 @@ namespace Ex {
                 data.model           = modelPerCamera[ii];
                 data.nbFrames        = nbFramesPerCamera[ii];
                 data.duration        = durationPerCamera[ii];
+                data.audioTotalSize  = vvrdll.audio_data_total_size(ii);
                 cameraDataInfo.Add(data);
             }
 

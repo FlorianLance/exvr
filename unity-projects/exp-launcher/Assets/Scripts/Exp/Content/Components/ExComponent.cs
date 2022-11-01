@@ -190,7 +190,11 @@ namespace Ex {
             log_error(string.Format("[ERROR-EXCEPTION] "), true, false);
             log_error(string.Format("[MESSAGE] {0}", e.Message), false, false);
             log_warning(string.Format("\t[SOURCE] {0}", e.Source), false, false);
-            log_warning(string.Format("\t[TARGET] {0}", e.TargetSite.ToString()), false, false);
+            if (e.TargetSite != null) {
+                log_warning(string.Format("\t[TARGET] {0}", e.TargetSite.ToString()), false, false);
+            } else {
+                log_warning("\t[TARGET] None");
+            }
             log_warning(string.Format("\t[STACK]: {0}", e.StackTrace), false, false);
         }
 
@@ -477,15 +481,18 @@ namespace Ex {
 
             if (!m_initialized) {
                 log_error("Initialization failed.");
+                base_clean(true);
             }
 
             return m_initialized;
         }
 
-        public void base_clean() {
+        public void base_clean(bool forceClean = false) {
 
-            if (!m_initialized) {
-                return;
+            if (!forceClean) {
+                if (!m_initialized) {
+                    return;
+                }
             }
 
             currentFunction = Function.clean;

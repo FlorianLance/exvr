@@ -63,6 +63,11 @@ namespace Ex {
             return get_valid_vertices_count_k4_volumetric_video_ex_resource(_handle, idCamera, idFrame);
         }
 
+        public int audio_data_total_size(int idCamera) {
+            return get_audio_data_total_size_k4_volumetric_video_ex_resource(_handle, idCamera);
+        }
+
+
         #region memory_management
 
         public DLLK4VolumetricVideoResource() : base() {
@@ -95,6 +100,9 @@ namespace Ex {
 
         [DllImport("lnco-exvr-export", EntryPoint = "get_valid_vertices_count_k4_volumetric_video_ex_resource", CallingConvention = CallingConvention.Cdecl)]
         static private extern int get_valid_vertices_count_k4_volumetric_video_ex_resource(HandleRef volumetricVideoResource, int idCamera, int idFrame);
+
+        [DllImport("lnco-exvr-export", EntryPoint = "get_audio_data_total_size_k4_volumetric_video_ex_resource", CallingConvention = CallingConvention.Cdecl)]
+        static private extern int get_audio_data_total_size_k4_volumetric_video_ex_resource(HandleRef volumetricVideoResource, int idCamera);
 
         #endregion DllImport  
     }
