@@ -137,6 +137,12 @@ namespace Ex {
         protected bool m_triggerLogging = false;
         private int m_layoutEventsNbCallsForCurrentFrame = 0;
 
+        // compatibility
+        [System.Obsolete("Use ExVR.Components().get_from_name instead.")]
+        public static ExComponent get(string componentName) {            
+            return ExVR.Components().get_from_name(componentName);
+        }
+
         // access        
         public Components components() { return ExVR.Components(); }
         public Log log() { return ExVR.Log(); }
@@ -144,7 +150,6 @@ namespace Ex {
         public EventsManager events() { return ExVR.Events(); }
         public Events.Connections connections() { return m_connections; }
         public Events.Command command() { return events().command; }
-
         public bool is_function_defined(Function function) {return functionsDefined[function];}
 
         // connections
@@ -199,8 +204,6 @@ namespace Ex {
         }
 
         protected void send_infos_to_gui_init_config(string id, string infos) {
-            Debug.Log("----> " + id + " " + infos);
-
             ExVR.Network().gui_ipc().send_component_infos_to_GUI(keyStr, initC.keyStr, id, infos);
         }
         protected void send_infos_to_gui_current_config(string id, string infos) {

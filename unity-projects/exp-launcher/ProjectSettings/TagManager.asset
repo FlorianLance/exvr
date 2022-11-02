@@ -15,7 +15,6 @@ TagManager:
   - ModelComponent
   - InteractionComponent
   - AvatarComponent
-  - TrackingComponent
   - CameraComponent
   - SettingsComponent
   - ResourceComponent
@@ -23,6 +22,7 @@ TagManager:
   - EnvironmentComponent
   - InputDeviceComponent
   - UserInterfaceComponent
+  - TrackingDeviceComponent
   layers:
   - Default
   - TransparentFX

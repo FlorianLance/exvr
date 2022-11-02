@@ -233,6 +233,7 @@ namespace Ex {
                 }
             }     
         }
+
         public void set_flag_image(Texture2D texture) {
             smr.material.SetTexture("_MainTex", texture);
         }
@@ -272,6 +273,24 @@ namespace Ex {
 
         public SphereCollider flag_cloth_collider() {
             return flagGO.GetComponent<SphereCollider>();
+        }
+
+        // compatibility
+        [System.Obsolete("Use set_flag_image instead.", false)]
+        public void load_image_from_resource(string imageAlias) {
+            set_flag_image(imageAlias);
+        }
+        [System.Obsolete("Use current_flag_image instead.", false)]
+        public Texture2D current_image() {
+            return (Texture2D)smr.material.mainTexture;
+        }
+        [System.Obsolete("Use set_flag_height instead.", false)]
+        public void update_flag_height(float factor) {
+            set_flag_height(factor);
+        }
+        [System.Obsolete("Use set_flag_cloth_max_distance instead.", false)]
+        public void udpate_flag_cloth_max_distance(float maxDistance) {
+            set_flag_cloth_max_distance(maxDistance);
         }
 
         #endregion

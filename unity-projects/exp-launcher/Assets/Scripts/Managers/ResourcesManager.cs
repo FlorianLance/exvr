@@ -344,11 +344,13 @@ namespace Ex {
                 // retrieve resources scripts
                 foreach (var csharpData in m_pathMappingResources[ResourceType.CSharpScript]) {
                     scriptsFiles.Add(csharpData.Value.path);
+                    //log_message("-> " + csharpData.Value.path);
                 }
 
                 // retrieve ui functions scripts                
                 foreach (var tempFile in CSharpFunctionComponent.generate_files_from_scripts_functions(xmlExperiment.Components)) {
                     scriptsFiles.Add(tempFile);
+                    //log_message("-> " + tempFile);
                 }
 
                 // compile assembly from scripts
