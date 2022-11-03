@@ -253,6 +253,10 @@ void WordSpaceCanvasSubPart::set_position_enable_state(bool x, bool y, bool z){
     m_p->position.set_enable_state({x,y,z});
 }
 
+void WordSpaceCanvasSubPart::set_background_color(QColor bgCol){
+    m_p->backgroundColor.set_color(bgCol);
+}
+
 void WordSpaceCanvasSubPart::create_connections() {
 
     connect(m_p->useOriginalSize(), &QCheckBox::toggled, this, [&](bool checked){

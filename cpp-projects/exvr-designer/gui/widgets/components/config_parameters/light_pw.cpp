@@ -63,7 +63,7 @@ struct LightConfigParametersW::Impl{
     ExFloatSpinBoxW range{"range"};
 
     ExFloatSpinBoxW spotAngle{"spot_angle"};
-    ExFloatSpinBoxW innerSpotAngle{"inner_spot_angle"};
+//    ExFloatSpinBoxW innerSpotAngle{"inner_spot_angle"};
 
     ExFloatSpinBoxW cookieSize{"cookie_size"};
     ExFloatSpinBoxW bounceIntensity{"bounce_intensity"};
@@ -90,7 +90,7 @@ void LightConfigParametersW::insert_widgets(){
     auto m4 = F::gen(L::HB(), {m_p->displaySource()}, LStretch{true}, LMargins{true});
     add_widget(F::gen(L::VB(), {W::txt("<b>Common light settings</b>"), m1, m2, m3, m4}, LStretch{false}, LMargins{true}, QFrame::Box));
 
-    auto m5 = F::gen(L::HB(), {W::txt("Angle: "),m_p->spotAngle(), W::txt("Inner angle: "),m_p->innerSpotAngle()}, LStretch{true}, LMargins{true});
+    auto m5 = F::gen(L::HB(), {W::txt("Angle: "),m_p->spotAngle()}, LStretch{true}, LMargins{true}); // , W::txt("Inner angle: "),m_p->innerSpotAngle()
     add_widget(F::gen(L::VB(), {W::txt("<b>Spot light settings</b>"), m5}, LStretch{false}, LMargins{true}, QFrame::Box));
 
     auto m6 = F::gen(L::HB(), {W::txt("Cookie size: "),m_p->cookieSize(), W::txt("Bounce intensity: "),m_p->bounceIntensity()}, LStretch{true}, LMargins{true});
@@ -114,7 +114,7 @@ void LightConfigParametersW::init_and_register_widgets(){
     add_input_ui(m_p->cookieT.init_widget(Resource::Type::Image, "Cookie: "));
     add_input_ui(m_p->range.init_widget(MinV<qreal>{0.0}, V<qreal>{10.0}, MaxV<qreal>{100000.}, StepV<qreal>{0.1},1));
     add_input_ui(m_p->spotAngle.init_widget(MinV<qreal>{1.0}, V<qreal>{30.0}, MaxV<qreal>{179.}, StepV<qreal>{0.1},2));
-    add_input_ui(m_p->innerSpotAngle.init_widget(MinV<qreal>{1.0}, V<qreal>{21.80}, MaxV<qreal>{179.}, StepV<qreal>{0.1},2));
+//    add_input_ui(m_p->innerSpotAngle.init_widget(MinV<qreal>{1.0}, V<qreal>{21.80}, MaxV<qreal>{179.}, StepV<qreal>{0.1},2));
     add_input_ui(m_p->cookieSize.init_widget(MinV<qreal>{0.0}, V<qreal>{10.0}, MaxV<qreal>{100000.}, StepV<qreal>{0.1},1));
     add_input_ui(m_p->bounceIntensity.init_widget(MinV<qreal>{0.0}, V<qreal>{1.0}, MaxV<qreal>{100000.}, StepV<qreal>{0.1},1));
 

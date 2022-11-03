@@ -63,6 +63,7 @@ void FixationCrossViewerConfigParametersW::init_and_register_widgets(){
     DsbSettings factorSettings= {MinV<qreal>{0}, V<qreal>{0.3}, MaxV<qreal>{1.}, StepV<qreal>{0.01}, 3};
     add_input_ui(m_p->crossSizeFactor.init_widget(factorSettings));
     map_sub_part(m_p->wscsp.init_widget());
+    m_p->wscsp.set_background_color(QColor(0,0,0,0));
 }
 
 void FixationCrossViewerConfigParametersW::create_connections(){

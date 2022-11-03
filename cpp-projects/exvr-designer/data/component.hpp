@@ -200,9 +200,9 @@ struct Component {
         {T::Camera_target,            C::Camera,      TO::U, CO::C, N, N, N, Y, N, N, P::L, R::OS, S::Sta, "Camera_target"sv, "Camera target"sv, "CameraTarget"sv, "Camera"sv},
         {T::Camera_trajectory,        C::Camera,      TO::B, CO::C, N, N, N, Y, N, N, P::L, R::OS, S::Leg, "Camera_trajectory"sv, "Camera trajectory"sv, "CameraTrajectory"sv, "Camera"sv},
         {T::Camera_trajectory_file,   C::Camera,      TO::B, CO::C, N, N, N, Y, N, N, P::L, R::OS, S::Leg, "Camera_trajectory_file"sv, "Camera trajectory file"sv, "CameraTrajectoryFile"sv, "Camera"sv},
-        {T::FPP_avatar_camera,        C::Camera,      TO::U, CO::B, N, N, N, Y, N, N, P::L, R::CS, S::Sta, "FPP_avatar_camera"sv, "First person perspective avatar camera"sv, "FPPAvatarCamera"sv, "Camera"sv},
-        {T::TPP_avatar_camera,        C::Camera,      TO::U, CO::B, N, N, N, Y, N, N, P::L, R::CS, S::Sta, "TPP_avatar_camera"sv, "Third persond perspective avatar camera"sv, "TPPAvatarCamera"sv, "Camera"sv},
-        {T::FPP_camera,               C::Camera,      TO::U, CO::B, N, N, N, Y, N, N, P::L, R::OS, S::Sta, "FPP_camera"sv, "First person perspective camera"sv, "FPPCamera"sv, "Camera"sv},        
+        {T::FPP_avatar_camera,        C::Camera,      TO::U, CO::B, N, N, N, Y, N, N, P::L, R::CS, S::Sta, "FPP_avatar_camera"sv, "First-person perspective avatar camera"sv, "FPPAvatarCamera"sv, "Camera"sv},
+        {T::TPP_avatar_camera,        C::Camera,      TO::U, CO::B, N, N, N, Y, N, N, P::L, R::CS, S::Sta, "TPP_avatar_camera"sv, "Third-person perspective avatar camera"sv, "TPPAvatarCamera"sv, "Camera"sv},
+        {T::FPP_camera,               C::Camera,      TO::U, CO::B, N, N, N, Y, N, N, P::L, R::OS, S::Sta, "FPP_camera"sv, "First-person perspective camera"sv, "FPPCamera"sv, "Camera"sv},
         // Environment
         {T::Light,                    C::Environment, TO::B, CO::B, N, N, N, Y, N, N, P::L, R::OS, S::Sta, "Light"sv, "Light"sv, "Light"sv, "Light"sv},
         {T::Post_process,             C::Environment, TO::N, CO::C, Y, N, N, Y, N, N, P::H, R::OS, S::Sta, "Post_porcess"sv, "Post process"sv, "PostProcess"sv, "Post_process"sv},
@@ -387,7 +387,7 @@ struct Component {
 
     using TComponentSlots = std::tuple<
         T,                             FunctionN,                      CNT,                    Doc>;
-    static constexpr TupleArray<120,TComponentSlots> componentsSlots = {{
+    static constexpr TupleArray<126,TComponentSlots> componentsSlots = {{
         TComponentSlots
         // Audio
         {T::AudioSource,               "play"sv,                       CNT::void_t,            "..."sv},
@@ -405,6 +405,13 @@ struct Component {
         {T::Camera_target,             "set factor"sv,                 CNT::float_t,           "..."sv},
         {T::Camera_target,             "set target offset pos"sv,      CNT::vector3_t,         "..."sv},
         {T::Camera_target,             "set target offset rot"sv,      CNT::vector3_t,         "..."sv},
+        // Environment
+        {T::Light,                     "visibility"sv,                 CNT::boolean_t,         "Set the visibility of the light"sv},
+        {T::Light,                     "position"sv,                   CNT::vector3_t,         "Set the position of the light"sv},
+        {T::Light,                     "rotation"sv,                   CNT::vector3_t,         "Set the rotation (euler angles) of the light"sv},
+        {T::Light,                     "transform"sv,                  CNT::transform_t,       "Set the transform of the light"sv},
+        {T::Light,                     "intensity"sv,                  CNT::float_t,           "Set the intensity of the light"sv},
+        {T::Light,                     "color"sv,                      CNT::color_t,           "Set the color of the light"sv},
         // Interaction
         {T::Mark_to_clean,             "erase"sv,                      CNT::gameobject_list_t, "Erase the parts of the mark close to the objects position."sv},
         {T::Mark_to_clean,             "set position"sv,               CNT::void_t,            "Reset the mark"sv},

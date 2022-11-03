@@ -81,6 +81,7 @@ public:
     WordSpaceCanvasSubPart *init_widget();
     void set_wh_enable_state(bool w, bool h);
     void set_position_enable_state(bool x, bool y, bool z);
+    void set_background_color(QColor bgCol);
     void create_connections() override;
     void late_update_ui() override;
 private:

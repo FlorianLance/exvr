@@ -137,12 +137,6 @@ namespace Ex {
         protected bool m_triggerLogging = false;
         private int m_layoutEventsNbCallsForCurrentFrame = 0;
 
-        // compatibility
-        [System.Obsolete("Use ExVR.Components().get_from_name instead.")]
-        public static ExComponent get(string componentName) {            
-            return ExVR.Components().get_from_name(componentName);
-        }
-
         // access        
         public Components components() { return ExVR.Components(); }
         public Log log() { return ExVR.Log(); }
@@ -1048,6 +1042,17 @@ namespace Ex {
             if (!currentC.get<bool>("transform_do_not_apply")) {
                 currentC.update_transform("transform", transform, true);
             }
+        }
+
+
+        // compatibility
+        [System.Obsolete("Use ExVR.Components().get_from_name instead.")]
+        public static ExComponent get(string componentName) {
+            return ExVR.Components().get_from_name(componentName);
+        }
+        [System.Obsolete("Do not use anymore.")]
+        public static void next_element_with_name(string componentname) {
+            ExVR.Events().command.next_element_with_name(componentname);
         }
     }
 

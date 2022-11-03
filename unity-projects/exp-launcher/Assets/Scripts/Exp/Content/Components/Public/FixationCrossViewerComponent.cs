@@ -37,10 +37,12 @@ namespace Ex{
 
         #region ex_functions
         protected override bool initialize() {            
-            m_backgroundGO = ExVR.GlobalResources().instantiate_prebab("Components/FixationCrossViewer", transform, "Fixation cross");
+            m_backgroundGO  = ExVR.GlobalResources().instantiate_prebab("Components/FixationCrossViewer", transform, "Fixation cross");
             m_crossGO       = m_backgroundGO.transform.Find("Cross").gameObject;
-            m_backgroundMat = m_backgroundGO.GetComponent<UnityEngine.UI.Image>().material;
-            m_crossMat      = m_crossGO.GetComponent<UnityEngine.UI.Image>().material;
+            m_backgroundMat = ExVR.GlobalResources().instantiate_unlit_transparent_color_mat();
+            m_backgroundGO.GetComponent<UnityEngine.UI.Image>().material = m_backgroundMat;
+            m_crossMat      = ExVR.GlobalResources().instantiate_unlit_transparent_color_mat();
+            m_crossGO.GetComponent<UnityEngine.UI.Image>().material = m_crossMat;
             return m_backgroundGO != null;
         }
 

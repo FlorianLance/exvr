@@ -34,7 +34,7 @@ using TMPro;
 
 namespace Ex {
 
-    public class ExpInfos : MonoBehaviour {
+    public class RuntimeExpInfos : MonoBehaviour {
 
         public TextMeshProUGUI m_cameraMode = null;
         public TextMeshProUGUI m_tRoutine = null;

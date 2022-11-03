@@ -36,6 +36,19 @@ namespace Ex {
         #region ex_functions
         protected override bool initialize() {
 
+            // add slots
+            add_slot("visibility", (visibility) => { set_visibility((bool)visibility); });
+            add_slot("position", (position) => { transform.localPosition = (Vector3)position; });
+            add_slot("rotation", (rotation) => { transform.localEulerAngles = (Vector3)rotation; });
+            add_slot("transform", (value) => {
+                var transformV = (TransformValue)value;
+                transform.localPosition = transformV.position;
+                transform.localRotation = transformV.rotation;
+                transform.localScale = transformV.scale;
+            });
+            add_slot("intensity", (intensity) => {set_intensity((float)intensity);});
+            add_slot("color", (color) => { set_color((Color)color); });
+
             // light
             m_light = gameObject.AddComponent<Light>();
             m_light.cullingMask = m_light.cullingMask & ~(1 << Layers.Debug);
@@ -84,11 +97,11 @@ namespace Ex {
                     m_light.type = LightType.Directional;
                     break;
             }
-            m_light.intensity       = currentC.get<float>("intensity");
-            m_light.color           = currentC.get_color("color");
+            set_intensity(currentC.get<float>("intensity"));
+            set_color(currentC.get_color("color"));
             m_light.range           = currentC.get<float>("range");
             m_light.spotAngle       = currentC.get<float>("spot_angle");
-            m_light.innerSpotAngle  = currentC.get<float>("inner_spot_angle");
+            //m_light.innerSpotAngle  = currentC.get<float>("inner_spot_angle");
             m_light.cookieSize      = currentC.get<float>("cookie_size");
             m_light.bounceIntensity = currentC.get<float>("bounce_intensity");
 
@@ -129,6 +142,14 @@ namespace Ex {
 
 
         #region public_functions
+
+        public void set_intensity(float intensity) {
+            m_light.intensity = intensity;
+        }
+
+        public void set_color(Color color) {
+            m_light.color = color;
+        }
 
         public void load_cookie_texture_from_resource(string textureAlias) {
 
