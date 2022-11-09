@@ -87,6 +87,14 @@ namespace Ex {
         public void close() { p.components().close(p); }
         public void stop() { p.command().force_stop_experiment(); }
 
+        public void force_component_current_config(ExComponent component, string configName) {
+            var config = component.get_config(configName);
+            if(config != null) {
+                component.currentC = config;
+                component.update_from_current_config();
+            }
+        }
+
         // times
         public long frame_id() { return p.time().frame_id(); }
         public double ellapsed_time_exp_ms() { return p.time().ellapsed_exp_ms();}
