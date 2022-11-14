@@ -30,10 +30,10 @@ using UnityEngine;
 
 namespace Ex{
 
-    public class CameraComponent : ExComponent{
+    public class CameraControllerComponent : ExComponent{
 
         private static readonly string eyeCamSignal = "eye cam";
-        private static readonly string neutralCamSignal = "neutral cam";
+        private static readonly string calibrationSignal = "calibration";
         private static readonly string camerasInfos = "cameras_info";
         private static readonly string infosFormat = "{0} {1} {2} {3}";
 
@@ -42,7 +42,7 @@ namespace Ex{
         private static readonly string mouseScrollWheel = "Mouse ScrollWheel";
 
         private static readonly string debugCameraP = "debug_camera";
-        private static readonly string useNeutralP = "use_neutral";
+        private static readonly string useCalibrationP = "use_neutral";
 
         private Vector3 initConfigPosition = Vector3.zero;
         private Vector3 initConfigRotation = Vector3.zero;
@@ -59,12 +59,12 @@ namespace Ex{
                 var eyeTr = (TransformValue)tr;
                 CameraUtility.set_eye_camera_transform(eyeTr.position, eyeTr.rotation);
             });
-            add_slot("set neutral cam", (tr) => {
+            add_slot("set calibration", (tr) => {
                 var startNeuralTr = (TransformValue)tr;
                 CameraUtility.set_calibration_transform(startNeuralTr.position, startNeuralTr.rotation);
             });
             add_signal(eyeCamSignal);
-            add_signal(neutralCamSignal);
+            add_signal(calibrationSignal);
            
             initConfigPosition = initC.get_vector3("position");
             initConfigRotation = initC.get_vector3("rotation");
@@ -79,6 +79,9 @@ namespace Ex{
         }
 
         public override void update_from_current_config() {
+            if (currentC == null) {
+                return;
+            }
             currentConfigPosition = currentC.get_vector3("position");
             currentConfigRotation = currentC.get_vector3("rotation");
         }
@@ -100,7 +103,7 @@ namespace Ex{
 
             // signals
             invoke_signal(eyeCamSignal,     Converter.to_transform_value(ExVR.Display().cameras().get_eye_camera_transform()));
-            invoke_signal(neutralCamSignal, Converter.to_transform_value(ExVR.Display().cameras().get_calibration_transform()));
+            invoke_signal(calibrationSignal, Converter.to_transform_value(ExVR.Display().cameras().get_calibration_transform()));
         }
 
         protected override void update_parameter_from_gui(string updatedArgName) {
@@ -125,7 +128,7 @@ namespace Ex{
 #region private_functions
 
         private void apply_init_config_camera() {
-            if (initC.get<bool>(useNeutralP)) {
+            if (initC.get<bool>(useCalibrationP)) {
                 CameraUtility.set_calibration_transform(initConfigPosition, initConfigRotation);
             } else {
                 CameraUtility.set_eye_camera_transform(initConfigPosition, initConfigRotation);
@@ -133,7 +136,7 @@ namespace Ex{
         }
 
         private void apply_current_config_camera() {
-            if (currentC.get<bool>(useNeutralP)) {
+            if (currentC.get<bool>(useCalibrationP)) {
                 CameraUtility.set_calibration_transform(currentConfigPosition, currentConfigRotation);
             } else {
                 CameraUtility.set_eye_camera_transform(currentConfigPosition, currentConfigRotation);
@@ -151,7 +154,7 @@ namespace Ex{
                 return;
             }
 
-            bool useNeutral = currentC.get<bool>(useNeutralP);
+            bool useCalibration = currentC.get<bool>(useCalibrationP);
 
             // retrieve inputs
             bool leftClick      = UnityEngine.Input.GetMouseButton(0);
@@ -169,13 +172,13 @@ namespace Ex{
 
             // mouse scrolling
             if (scroll > 0f) { // forward
-                if (useNeutral) {
+                if (useCalibration) {
                     CameraUtility.move_calibration_forward(mSpeed * 0.02f);
                 } else {
                     CameraUtility.move_eye_camera_forward(mSpeed * 0.02f);
                 }
             } else if (scroll < 0f) { // backward
-                if (useNeutral) {
+                if (useCalibration) {
                     CameraUtility.move_calibration_backward(mSpeed * 0.02f);
                 } else {
                     CameraUtility.move_eye_camera_backward(mSpeed * 0.02f);
@@ -187,7 +190,7 @@ namespace Ex{
 
                 // check horizontal right click mouse drag movement
                 if (nx != 0) {
-                    if (useNeutral) {
+                    if (useCalibration) {
                         CameraUtility.move_calibration_horizontally(rxSpeed * nx * 0.02f);
                     } else {
                         CameraUtility.move_eye_camera_horizontally(rxSpeed * nx * 0.02f);
@@ -195,7 +198,7 @@ namespace Ex{
                 }
                 // check vertical right click mouse drag movement
                 if (ny != 0) {
-                    if (useNeutral) {
+                    if (useCalibration) {
                         CameraUtility.move_calibration_vertically(rySpeed * ny * 0.02f);
                     } else {
                         CameraUtility.move_eye_camera_vertically(rySpeed * ny * 0.02f);
@@ -203,14 +206,14 @@ namespace Ex{
                 }
 
             } else if (leftClick && rightClick) { // both left click and right click
-                if (useNeutral) {
+                if (useCalibration) {
                     CameraUtility.rotate_calibration(Quaternion.Euler(0, 0, rzSpeed * nx));
                 } else {
                     CameraUtility.rotate_eye_camera(Quaternion.Euler(0, 0, rzSpeed * nx));
                 }
 
             } else if (rightClick) { // only right click
-                if (useNeutral) {
+                if (useCalibration) {
                     CameraUtility.rotate_calibration(Quaternion.Euler(-rxSpeed * ny, rySpeed * nx, 0));
                 } else {
                     CameraUtility.rotate_eye_camera(Quaternion.Euler(-rxSpeed * ny, rySpeed * nx, 0));

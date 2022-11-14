@@ -79,27 +79,33 @@ namespace Ex{
             }
         }
 
-        public Condition get_condition_from_id(int id) {
+        public Condition get_condition_from_id(int id, bool displayError = true) {
             if (id < conditions_count() && id >= 0) {
                 return m_conditions[id];
             }
-            ExVR.Log().error(string.Format("Condition with id [{0}] invalid.", Converter.to_string(id)));
+            if (displayError) {
+                ExVR.Log().error(string.Format("Condition with id [{0}] invalid.", Converter.to_string(id)));
+            }
             return null;
         }
 
-        public Condition get_condition_from_key(int conditionKey) {
+        public Condition get_condition_from_key(int conditionKey, bool displayError = true) {
             if (m_conditionsPerKey.ContainsKey(conditionKey)) {
                 return m_conditionsPerKey[conditionKey];
             }
-            ExVR.Log().error(string.Format("Condition with key [{0}] not found.", Converter.to_string(conditionKey)));
+            if (displayError) {
+                ExVR.Log().error(string.Format("Condition with key [{0}] not found.", Converter.to_string(conditionKey)));
+            }
             return null;
         }
 
-        public Condition get_condition_from_name(string conditionName) {
+        public Condition get_condition_from_name(string conditionName, bool displayError = true) {
             if (m_conditionsPerName.ContainsKey(conditionName)) {
                 return m_conditionsPerName[conditionName];
             }
-            ExVR.Log().error(string.Format("Condition with name [{0}] not found.", conditionName));
+            if (displayError) {
+                ExVR.Log().error(string.Format("Condition with name [{0}] not found.", conditionName));
+            }
             return null;
         }
 

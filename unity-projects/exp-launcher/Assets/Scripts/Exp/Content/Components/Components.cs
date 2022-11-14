@@ -217,13 +217,11 @@ namespace Ex{
 
             ExComponent component = get_from_key(componentKey);
             if(component == null) {
-                // ExVR.Log().error(string.Format("Invalid component for updating parameter [{0}] with value [{1}]", xmlArg.Name, xmlArg.Value));
                 return;
             }
 
-            var config = component.get_config(configKey);
+            var config = component.get_config(configKey, false);
             if(config == null) {
-                // ExVR.Log().error(string.Format("Invalid Config for updating parameter [{0}] with value [{1}]", xmlArg.Name, xmlArg.Value));
                 return;
             }
 
@@ -237,11 +235,12 @@ namespace Ex{
                 ));
                 return;
             }
-
-            // contiue only if updated parameter is from component current config
-            if (component.currentC == null) {
+            
+            if(component.currentC == null) {
                 return;
             }
+
+            // continue only if updated parameter is from component current config
             if (component.currentC.key != configKey) {
                 return;
             }
@@ -268,7 +267,6 @@ namespace Ex{
                 component.currentCondition  = null;
                 component.currentRoutine    = null;
                 component.currentTimeline   = null;
-                component.currentC          = null;
 
                 if (component.is_function_defined(Function.start_experiment)) {
                     ExVR.ExpLog().log_and_add_to_stacktrace(component, Function.start_experiment, true, true);
@@ -338,10 +336,9 @@ namespace Ex{
                 }
 
                 // reset states
-                component.currentCondition = null;
-                component.currentRoutine = null;
-                component.currentTimeline = null;
-                component.currentC = null;
+                component.currentCondition  = null;
+                component.currentRoutine    = null;
+                component.currentTimeline   = null;
             }
             ExVR.ExpLog().components(Function.stop_experiment, false);
         }

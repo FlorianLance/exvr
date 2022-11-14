@@ -516,6 +516,7 @@ std::unique_ptr<Component> XmlIoManager::read_component(){
         // for converting legacy
         unityNameStr = unityNameStr.remove("Component"); // for old style
         unityNameStr = unityNameStr.remove("MP36");
+        unityNameStr = unityNameStr.replace("Camera", "CameraController");
         unityNameStr = unityNameStr.replace("VideoFile", "VideoResource");
         unityNameStr = unityNameStr.replace("EyeCamera", "Camera");
         unityNameStr = unityNameStr.replace("SpatializedAudio", "AudioSource");
@@ -894,6 +895,12 @@ std::tuple<std::unique_ptr<Connection>, QString> XmlIoManager::read_connection(C
     if(connection->startType == Connection::Type::Component){
 
         if(auto component = condition->get_component_from_key(ComponentKey{connection->startKey}); component != nullptr){
+
+            // legacy
+            if(component->type == Component::Type::Camera_controller){
+                connection->slot.replace("set neutral cam", "set calibration");
+                connection->signal.replace("neutral cam", "calibration");
+            }
 
             if(!Component::has_signals(component->type)){ // no signals
                 return {nullptr, QSL("Invalid ") % connection->to_string() % QSL(" from ") % condition->to_string() + QSL(", component doesn't have any signal.")};

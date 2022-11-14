@@ -360,9 +360,6 @@ namespace Ex {
         #region public_functions
 
         //public void set_mode(int mode) {
-        //    if(currentC == null) {
-        //        return;
-        //    }
         //    load_all_textures(mode);
         //    update_from_current_config();
         //}

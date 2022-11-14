@@ -196,9 +196,6 @@ namespace Ex{
 
         protected override void set_update_state(bool doUpdate) {
 
-            if(currentC == null) {
-                return;
-            }
 
             if (doUpdate && currentC.get<bool>("send_new_update_block")) {
                 write();

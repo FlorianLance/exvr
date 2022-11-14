@@ -98,7 +98,7 @@ struct Component {
     enum class Type : int {
         /** A */ AudioListener, AudioSource, Attach_object_to_hand,
         /** B */ Biopac, Blend_fade_viewer, Buttons_ui,
-        /** C */ Camera, Camera_target, Camera_trajectory, Camera_trajectory_file, Cloud, Config, CSharp_function, CSharp_script, Cube, Cylinder,
+        /** C */ Camera_controller, Camera_target, Camera_trajectory, Camera_trajectory_file, Cloud, Config, CSharp_function, CSharp_script, Cube, Cylinder,
         /** F */ Falling_spheres, Fixation_cross_viewer, Flag_pole, Flashing_dot, Fop_robot, Fov_simulator_viewer, FPP_avatar_camera, FPP_camera,
         /** G */ Global_logger,
         /** H */ Humanoid_avatar, Humanoid_controller,
@@ -192,11 +192,8 @@ struct Component {
         {T::AudioListener,            C::Audio,       TO::U, CO::B, Y, N, N, Y, N, N, P::M, R::OS, S::Exp, "AudioListener"sv, "Audio listener"sv, "AudioListener"sv, "Sound"sv},
 /**DOC*/{T::AudioSource,              C::Audio,       TO::B, CO::B, N, N, N, Y, N, N, P::M, R::OS, S::Sta, "AudioSource"sv, "Audio source"sv, "AudioSource"sv, "Sound"sv},
         {T::Microphone,               C::Audio,       TO::B, CO::B, N, N, N, Y, N, N, P::M, R::OS, S::Exp, "Microphone"sv, "Microphone"sv, "Microphone"sv, "Micro"sv},
-        // Avatar
-        {T::Humanoid_avatar,          C::Avatar,      TO::B, CO::B, N, N, N, Y, N, N, P::M, R::CS, S::Sta, "Humanoid_avatar"sv, "Humanoid avatar"sv, "HumanoidAvatar"sv, "Avatar"sv},
-        {T::Humanoid_controller,      C::Avatar,      TO::B, CO::B, N, N, N, Y, N, N, P::L, R::CS, S::Leg, "Humanoid_controller"sv, "Humanoid controller"sv, "HumanoidController"sv, "Avatar"sv},
         // Camera
-        {T::Camera,                   C::Camera,      TO::U, CO::B, Y, N, N, Y, N, N, P::L, R::OS, S::Sta, "Camera"sv, "Camera"sv, "Camera"sv, "Camera"sv},
+        {T::Camera_controller,        C::Camera,      TO::U, CO::B, Y, N, N, Y, N, N, P::L, R::OS, S::Sta, "Camera_controller"sv, "Camera controller"sv, "CameraController"sv, "Camera"sv},
         {T::Camera_target,            C::Camera,      TO::U, CO::C, N, N, N, Y, N, N, P::L, R::OS, S::Sta, "Camera_target"sv, "Camera target"sv, "CameraTarget"sv, "Camera"sv},
         {T::Camera_trajectory,        C::Camera,      TO::B, CO::C, N, N, N, Y, N, N, P::L, R::OS, S::Leg, "Camera_trajectory"sv, "Camera trajectory"sv, "CameraTrajectory"sv, "Camera"sv},
         {T::Camera_trajectory_file,   C::Camera,      TO::B, CO::C, N, N, N, Y, N, N, P::L, R::OS, S::Leg, "Camera_trajectory_file"sv, "Camera trajectory file"sv, "CameraTrajectoryFile"sv, "Camera"sv},
@@ -221,6 +218,8 @@ struct Component {
         {T::Cloud,                    C::Model,       TO::V, CO::B, N, N, N, N, N, N, P::H, R::OS, S::Sta, "Cloud"sv, "Cloud"sv, "Cloud"sv, "Cloud"sv},
  /**OK*/{T::Cylinder,                 C::Model,       TO::V, CO::B, N, N, N, N, N, N, P::M, R::OS, S::Sta, "Cylinder"sv, "Cylinder"sv, "Cylinder"sv,"Cylinder"sv},
         {T::Flag_pole,                C::Model,       TO::B, CO::B, N, N, N, N, N, N, P::M, R::OS, S::Sta, "Flag_pole"sv, "Flag pole"sv, "FlagPole"sv, "Flag_pole"sv},
+        {T::Humanoid_avatar,          C::Model,       TO::B, CO::B, N, N, N, Y, N, N, P::M, R::CS, S::Sta, "Humanoid_avatar"sv, "Humanoid avatar"sv, "HumanoidAvatar"sv, "Avatar"sv},
+        {T::Humanoid_controller,      C::Model,       TO::B, CO::B, N, N, N, Y, N, N, P::L, R::CS, S::Leg, "Humanoid_controller"sv, "Humanoid controller"sv, "HumanoidController"sv, "Avatar"sv},
  /**OK*/{T::Landmark,                 C::Model,       TO::V, CO::B, N, N, N, N, N, N, P::M, R::OS, S::Sta, "Landmark"sv, "Landmark"sv, "Landmark"sv,"Landmark"sv},
         {T::Lines,                    C::Model,       TO::V, CO::C, N, N, N, N, N, N, P::M, R::OS, S::Exp, "Lines"sv, "Lines"sv, "Lines"sv,"Line"sv},
  /**OK*/{T::Plane,                    C::Model,       TO::V, CO::B, N, N, N, N, N, N, P::M, R::OS, S::Sta, "Plane"sv, "Plane"sv, "Plane"sv,"Plane"sv},
@@ -400,8 +399,8 @@ struct Component {
         {T::Humanoid_controller,       "init target"sv,                CNT::string_any_t,      "..."sv},
         {T::Humanoid_controller,       "update target"sv,              CNT::string_any_t,      "..."sv},
         // Camera
-        {T::Camera,                    "set eye cam"sv,                CNT::transform_t,       "Set the eye camera transform"sv},
-        {T::Camera,                    "set neutral cam"sv,            CNT::transform_t,       "Set the start neutral camera transform"sv},
+        {T::Camera_controller,         "set eye cam"sv,                CNT::transform_t,       "Set the eye camera transform"sv},
+        {T::Camera_controller,         "set calibration"sv,            CNT::transform_t,       "Set the calibration transform"sv},
         {T::Camera_target,             "set factor"sv,                 CNT::float_t,           "..."sv},
         {T::Camera_target,             "set target offset pos"sv,      CNT::vector3_t,         "..."sv},
         {T::Camera_target,             "set target offset rot"sv,      CNT::vector3_t,         "..."sv},
@@ -521,8 +520,8 @@ struct Component {
         {T::Slider_ui,                 "increase"sv,                   CNT::float_t,           "Increase the slider current value by input amount"sv},
         {T::Slider_ui,                 "decrease"sv,                   CNT::float_t,           "Decrease the slider current value by input amount"sv},
         // Video
-        {T::Video_resource,                "play"sv,                       CNT::void_t,            "..."sv},
-        {T::Video_resource,                "pause"sv,                      CNT::void_t,            "..."sv},
+        {T::Video_resource,            "play"sv,                       CNT::void_t,            "..."sv},
+        {T::Video_resource,            "pause"sv,                      CNT::void_t,            "..."sv},
         {T::Webcam,                    "play"sv,                       CNT::void_t,            "..."sv},
         {T::Webcam,                    "pause"sv,                      CNT::void_t,            "..."sv},
         {T::Video_saver,               "add frame"sv,                  CNT::image_t,           "..."sv},
@@ -542,8 +541,8 @@ struct Component {
         {T::Humanoid_avatar,           "target transform"sv,           CNT::string_any_t,              "..."sv},
         {T::Humanoid_controller,       "target transform"sv,           CNT::string_any_t,              "..."sv},
         // Camera
-        {T::Camera,                    "eye cam"sv,                    CNT::transform_t,               "Eye camera world transform"sv},
-        {T::Camera,                    "neutral cam"sv,                CNT::transform_t,               "Start neutral camera world transform"sv},
+        {T::Camera_controller,         "eye cam"sv,                    CNT::transform_t,               "Eye camera world transform"sv},
+        {T::Camera_controller,         "calibration"sv,                CNT::transform_t,               "Calibration transform"sv},
         // Flow
         {T::Config,                    "current config"sv,             CNT::string_t,                  "Current config of the component"sv},
         // Input

@@ -22,55 +22,52 @@
 ** SOFTWARE.                                                                      **
 ************************************************************************************/
 
-#include "blend_fade_viewer_pw.hpp"
+#include "camera_trajectory_file_pw.hpp"
+
 
 // qt-utility
-#include "gui/ex_widgets/ex_select_color_w.hpp"
+#include "gui/ex_widgets/ex_checkbox_w.hpp"
 #include "gui/ex_widgets/ex_float_spin_box_w.hpp"
-#include "gui/ex_widgets/ex_radio_button_w.hpp"
+#include "gui/ex_widgets/ex_select_color_w.hpp"
+#include "gui/ex_widgets/ex_curve_w.hpp"
+
+// local
+#include "gui/ex_widgets/ex_resource_w.hpp"
+
 
 using namespace tool::ex;
 
-struct BlendFadeViewerConfigParametersW::Impl{
-    QButtonGroup group1;
-    ExRadioButtonW onlyBlend{"only_blend"};
-    ExRadioButtonW blendAndFade{"blend_and_fade"};
+struct CameraTrajectoryFileConfigParametersW::Impl{
+    ExFloatSpinBoxW duration{"duration"};
+    ExCheckBoxW useSphericalInterpolation{"spherical_interpolation"};
+    ExCheckBoxW inverseOrder{"inverse"};
 
+    ExResourceW trajectoryFile{"trajectory_file"};
     ExSelectColorW startColor{"start_color"};
     ExSelectColorW endColor{"end_color"};
-
-    ExFloatSpinBoxW durationBlend{"duration_blend"};
-    ExFloatSpinBoxW durationFade{"duration_fade"};
+    ExCurveW speed{"speed"};
 };
 
-BlendFadeViewerConfigParametersW::BlendFadeViewerConfigParametersW():  ConfigParametersW(), m_p(std::make_unique<Impl>()){
+CameraTrajectoryFileConfigParametersW::CameraTrajectoryFileConfigParametersW():  ConfigParametersW(), m_p(std::make_unique<Impl>()){
 }
 
 
-void BlendFadeViewerConfigParametersW::insert_widgets(){
-    add_widget(ui::F::gen(ui::L::HB(), {m_p->blendAndFade(), m_p->onlyBlend()},  LStretch{true}, LMargins{true}, QFrame::NoFrame));
-    add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Start color"), m_p->startColor(), ui::W::txt("End color"), m_p->endColor()},  LStretch{true}, LMargins{true}, QFrame::NoFrame));
-    add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Duration blend"), m_p->durationBlend()},  LStretch{true}, LMargins{true}, QFrame::NoFrame));
-    add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Duration fade"), m_p->durationFade()},  LStretch{true}, LMargins{true}, QFrame::NoFrame));
+void tool::ex::CameraTrajectoryFileConfigParametersW::insert_widgets(){
+
+    add_widget(ui::F::gen(ui::L::HB(), {m_p->trajectoryFile()}, LStretch{false}, LMargins{false}, QFrame::NoFrame));
+    add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Trajectory duration: "), m_p->duration()}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
+    add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Start color: "), m_p->startColor(), ui::W::txt("End color: "), m_p->endColor()}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
+    add_widget(ui::F::gen(ui::L::HB(), {m_p->useSphericalInterpolation(), m_p->inverseOrder()}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
+    add_widget(m_p->speed());
 }
 
-void BlendFadeViewerConfigParametersW::init_and_register_widgets(){
+void tool::ex::CameraTrajectoryFileConfigParametersW::init_and_register_widgets(){
 
-    add_inputs_ui(
-        ExRadioButtonW::init_group_widgets(m_p->group1,
-            {&m_p->blendAndFade, &m_p->onlyBlend},
-            {
-                "Blend and fade",
-                "Only blend",
-            },
-            {true,false}
-        )
-    );
-
-    DsbSettings s = {MinV<qreal>{0.0}, V<qreal>{1.0}, MaxV<qreal>{1000.0}, StepV<qreal>{0.1}, 2};
-    add_input_ui(m_p->durationBlend.init_widget(s));
-    add_input_ui(m_p->durationFade.init_widget(s));
-    add_input_ui(m_p->startColor.init_widget("Select start color" , QColor(0,0,0,0)));
-    add_input_ui(m_p->endColor.init_widget("Select end color" , QColor(0,0,0,255)));
+    add_input_ui(m_p->trajectoryFile.init_widget(Resource::Type::Text, "Trajectory file"));
+    add_input_ui(m_p->duration.init_widget(MinV<qreal>{0.}, V<qreal>{3.},MaxV<qreal>{1000.}, StepV<qreal>{0.1}, 2));
+    add_input_ui(m_p->startColor.init_widget("Choose start color", Qt::red));
+    add_input_ui(m_p->endColor.init_widget("Choose end color", Qt::blue));
+    add_input_ui(m_p->useSphericalInterpolation.init_widget("Spherical interpolation", true));
+    add_input_ui(m_p->inverseOrder.init_widget("Inverse order", false));
+    add_input_ui(m_p->speed.init_widget("Trajectory speed"));
 }
-

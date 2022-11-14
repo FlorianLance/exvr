@@ -55,7 +55,7 @@
 #include "config_parameters/mirror_pw.hpp"
 #include "config_parameters/text_viewer_pw.hpp"
 #include "config_parameters/video_file_camera_pw.hpp"
-#include "config_parameters/camera_pw.hpp"
+#include "config_parameters/camera_controller_pw.hpp"
 #include "config_parameters/camera_trajectory_pw.hpp"
 #include "config_parameters/camera_trajectory_file_pw.hpp"
 #include "config_parameters/keyboard_pw.hpp"
@@ -161,8 +161,8 @@ ConfigParametersW *ConfigW::generate_parameters(Component::Type type, bool initC
     case CT::Microphone:
         return gen_params_w<MicrophoneInitConfigParametersW,MicrophoneConfigParametersW>(initConfig);
     // ############################# Camera
-    case CT::Camera:
-        return gen_params_w<CameraInitConfigParametersW,CameraConfigParametersW>(initConfig);
+    case CT::Camera_controller:
+        return gen_params_w<CameraControllerInitConfigParametersW,CameraControllerConfigParametersW>(initConfig);
     case CT::Camera_trajectory:
         return gen_params_w<CameraTrajectoryInitConfigParametersW,CameraTrajectoryConfigParametersW>(initConfig);
     case CT::Camera_trajectory_file:

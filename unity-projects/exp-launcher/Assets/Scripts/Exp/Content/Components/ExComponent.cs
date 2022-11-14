@@ -266,53 +266,47 @@ namespace Ex {
         }
 
         public ComponentConfig current_config() {
-            if (!has_current_config()) {
-                log_error("No current config set, check if component has been added to this condition.");
-            }
+            //if (!has_current_config()) {
+            //    log_error("No current config set, check if component has been added to this condition.");
+            //}
             return currentC;
         }
-        public ComponentConfig get_config(string configName) {
+        public ComponentConfig get_config(string configName, bool displayError = true) {
             if (configsPerName.ContainsKey(configName)) {
                 return configsPerName[configName];
             }
-            log_error(string.Format("No config with name [{0}] available for this component.", configName));
+            if (displayError) {
+                log_error(string.Format("No config with name [{0}] available for this component.", configName));
+            }
             return null;
         }
 
-        public ComponentConfig get_config(int configKey) {
+        public ComponentConfig get_config(int configKey, bool displayError = true) {
             if (configsPerKey.ContainsKey(configKey)) {
                 return configsPerKey[configKey];
             }
-            log_error(string.Format("No config with key [{0}] available for this component.", configKey));
+            if (displayError) {
+                log_error(string.Format("No config with key [{0}] available for this component.", configKey));
+            }
             return null;
         }
 
-
-        // ######### UNTESTED
-        public static void set_component_config<T>(string routineName, string conditionName, string componentName, string configToUse) where T : ExComponent {
-
-            // parse everything just in case there is routines/conditions/components/configs with the same names
-
-            var routine = ExVR.Routines().get(routineName);
-            if (routine == null) {
-                return;
+        public void update_current_config(string configName) {
+            var config = get_config(configName);
+            if(config != null) {
+                currentC = config;
             }
+        }
 
-            var condition = routine.get_condition_from_name(conditionName);
-            if (condition == null) {
-                return;
+        public void update_current_config(int configKey) {
+            var config = get_config(configKey);
+            if (config != null) {
+                currentC = config;
             }
+        }
 
-            var action = condition.get_action_from_component_name(componentName);
-            if(action == null) {
-                return;
-            }
-
-            var config = action.component().configsPerName[configToUse];
-            if(config != null){
-                // update config of the action
-                action.set_config(config);
-            }             
+        public void update_current_config(ComponentConfig config) {
+            currentC = config;
         }
 
         // routine
@@ -412,6 +406,14 @@ namespace Ex {
                 configsPerKey[componentConfig.key] = componentConfig;
                 configsPerName[componentConfig.name] = componentConfig;
             }
+
+            if(configs.Count == 0) {
+                log_error(string.Format("No config found from component with name {0} and type {1}.", name, typeStr));
+                return false;
+            }
+
+            // init current config with the first one
+            currentC = configs[0];
 
             // look for defined functions in child class
             Type derivedType = this.GetType();
@@ -538,6 +540,7 @@ namespace Ex {
 
         // This function is called only once at the end of an experiment 
         public void base_pre_stop_experiment() {
+
             currentFunction = Function.pre_stop_experiment;
             if (m_catchExceptions) {
                 try {
@@ -1053,6 +1056,34 @@ namespace Ex {
         [System.Obsolete("Do not use anymore.")]
         public static void next_element_with_name(string componentname) {
             ExVR.Events().command.next_element_with_name(componentname);
+        }
+
+
+        //  UNTESTED
+        public static void set_component_config<T>(string routineName, string conditionName, string componentName, string configToUse) where T : ExComponent {
+
+            // parse everything just in case there is routines/conditions/components/configs with the same names
+
+            var routine = ExVR.Routines().get(routineName);
+            if (routine == null) {
+                return;
+            }
+
+            var condition = routine.get_condition_from_name(conditionName);
+            if (condition == null) {
+                return;
+            }
+
+            var action = condition.get_action_from_component_name(componentName);
+            if (action == null) {
+                return;
+            }
+
+            var config = action.component().configsPerName[configToUse];
+            if (config != null) {
+                // update config of the action
+                action.set_config(config);
+            }
         }
     }
 

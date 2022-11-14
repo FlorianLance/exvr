@@ -68,8 +68,11 @@ namespace Ex {
         public Condition current_condition() { return p.currentCondition; }
 
         // configs
-        public ComponentConfig current_config() { return p.current_config(); }
         public ComponentInitConfig init_config() { return p.init_config(); }
+        public ComponentConfig current_config() { return p.current_config(); }        
+        public void update_current_config(int configKey) { p.update_current_config(configKey);}
+        public void update_current_config(string configName) { p.update_current_config(configName); }
+        public void update_current_config(ComponentConfig config) { p.update_current_config(config); }
 
         // connections
         public Events.Connections connections() {return p.connections();}       
@@ -84,16 +87,9 @@ namespace Ex {
         public void next_with_name(string componentName) { p.command().next_element_with_name(componentName); }
         public void schedule_next(int milliseconds) { p.command().schedule_next(milliseconds); }
         public void previous() { p.command().previous(); }
+        public void previous_with_name(string componentName) { p.command().previous_element_with_name(componentName); }
         public void close() { p.components().close(p); }
         public void stop() { p.command().force_stop_experiment(); }
-
-        public void force_component_current_config(ExComponent component, string configName) {
-            var config = component.get_config(configName);
-            if(config != null) {
-                component.currentC = config;
-                component.update_from_current_config();
-            }
-        }
 
         // times
         public long frame_id() { return p.time().frame_id(); }

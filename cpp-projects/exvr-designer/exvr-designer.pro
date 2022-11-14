@@ -103,6 +103,7 @@ HEADERS += \
     # utility
     gui/ex_widgets/ex_condition_w.hpp \
     gui/ex_widgets/ex_oob_filtering_w.hpp \
+    gui/widgets/components/config_parameters/camera_controller_pw.hpp \
     gui/widgets/components/config_parameters/k2_body_tracking_pw.hpp \
     gui/widgets/components/config_parameters/k2_manager_pw.hpp \
     gui/widgets/components/config_parameters/k4_direct_multi_clouds_pw.hpp \
@@ -212,7 +213,6 @@ HEADERS += \
     gui/widgets/components/config_parameters/camera_target_pw.hpp \
     gui/widgets/components/config_parameters/camera_trajectory_pw.hpp \
     gui/widgets/components/config_parameters/camera_trajectory_file_pw.hpp \
-    gui/widgets/components/config_parameters/camera_pw.hpp \
     gui/widgets/components/config_parameters/python_script_pw.hpp \
     gui/widgets/components/config_parameters/sonceboz_sg_pw.hpp \
     gui/widgets/components/config_parameters/duo_tracking_pw.hpp \
@@ -340,6 +340,8 @@ SOURCES += \
     # launcher   
     gui/ex_widgets/ex_condition_w.cpp \
     gui/ex_widgets/ex_oob_filtering_w.cpp \
+    gui/widgets/components/config_parameters/camera_controller_pw.cpp \
+    gui/widgets/components/config_parameters/camera_trajectory_file_pw.cpp \
     gui/widgets/components/config_parameters/cloud_pw.cpp \
     gui/widgets/components/config_parameters/flag_pole_pw.cpp \
     gui/widgets/components/config_parameters/k2_manager_pw.cpp \
@@ -426,7 +428,6 @@ SOURCES += \
     gui/widgets/components/config_parameters/audio_source_pw.cpp \
     gui/widgets/components/config_parameters/microphone_pw.cpp \
     gui/widgets/components/config_parameters/humanoid_controller_pw.cpp \
-    gui/widgets/components/config_parameters/camera_pw.cpp \
     gui/widgets/components/config_parameters/qualisys_tracking_pw.cpp \
     gui/widgets/components/config_parameters/scene_scaner_pw.cpp \
     gui/widgets/components/config_parameters/thera_trainer_platform_pw.cpp \
