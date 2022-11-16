@@ -100,11 +100,7 @@ https://visualstudio.microsoft.com/vs/community/).
 
 (TODO)
 
-## Captures
-
-(TODO)
-
 
 ## Authors
 
-(TODO)
+Florian Lance
