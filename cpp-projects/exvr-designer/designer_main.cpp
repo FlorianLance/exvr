@@ -74,7 +74,7 @@ int main(int argc, char *argv[]){
 
     // build parameters
     const QString numVersion = "1.0b";
-    bool lncoComponents = false;
+    bool lncoComponents = true;
 
     // compiler check
     std::cout << tool::fmt("Start ExVR-designer v{}\n", numVersion.toStdString()); // c++20 check
