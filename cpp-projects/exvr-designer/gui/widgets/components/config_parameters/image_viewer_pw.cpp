@@ -84,5 +84,4 @@ void ImageViewerConfigParametersW::create_connections(){
 
 void ImageViewerConfigParametersW::late_update_ui(){
     m_p->wscsp.late_update_ui();
-
 }

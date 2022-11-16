@@ -46,7 +46,7 @@ namespace Ex {
         private Dictionary<Category, CommonLoggingComponents> loggingPerCategory = new Dictionary<Category, CommonLoggingComponents>() {
             [Category.InputDevice]      = new CommonLoggingComponents(),
             [Category.Network]          = new CommonLoggingComponents(),
-            [Category.TrackingDevice]   = new CommonLoggingComponents(),
+            [Category.AcquisitionDevice]   = new CommonLoggingComponents(),
             [Category.UserInterface]    = new CommonLoggingComponents(),
         };
 
@@ -176,7 +176,7 @@ namespace Ex {
             loggingPerCategory[Category.InputDevice].components    = initC.get_components_list("inputs_components");
             loggingPerCategory[Category.Network].components  = initC.get_components_list("network_components");
             loggingPerCategory[Category.UserInterface].components       = initC.get_components_list("ui_components");
-            loggingPerCategory[Category.TrackingDevice].components = initC.get_components_list("tracking_components");
+            loggingPerCategory[Category.AcquisitionDevice].components = initC.get_components_list("tracking_components");
 
             foreach(var logging in loggingPerCategory) {
 

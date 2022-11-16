@@ -107,6 +107,7 @@ ConfigW::ConfigW(Config *config, Component *component, bool initConfig, std::map
 
     Bench::start("[ConfigW generate widget]"sv, false);
         p = generate_parameters(component->type, initConfig);
+        p->type = component->type;
         p->set_infos(componentKey, configKey, initConfig);
         p->insert_widgets();
         p->init_and_register_widgets();        

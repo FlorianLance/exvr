@@ -22,7 +22,7 @@ TagManager:
   - EnvironmentComponent
   - InputDeviceComponent
   - UserInterfaceComponent
-  - TrackingDeviceComponent
+  - AcquisitionDeviceComponent
   layers:
   - Default
   - TransparentFX

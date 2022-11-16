@@ -47,7 +47,7 @@ struct Component {
 
     enum class Category : int {
         Audio, Avatar, Camera, Environment, Flow,
-        Input, Interaction, Model, Network, Output, Resource, Scene, Script, Tracking, UI, Video, Viewer,
+        Input, Interaction, Model, Network, Output, Resource, Scene, Script, Acquisition, UI, Video, Viewer,
         SizeEnum};
     using C  = Category;
 
@@ -58,6 +58,7 @@ struct Component {
         Category,               Name,                   UnityStr>;
     static constexpr TupleArray<Category::SizeEnum,TCategory> categories ={{
         TCategory
+        {Category::Acquisition, "Acquisition device"sv, "AcquisitionDevice"sv},
         {Category::Audio,       "Audio"sv,              "Audio"sv},
         {Category::Avatar,      "Avatar"sv,             "Avatar"sv},
         {Category::Camera,      "Camera"sv,             "Camera"sv},
@@ -70,8 +71,7 @@ struct Component {
         {Category::Output,      "Output"sv,             "Output"sv},
         {Category::Resource,    "Resource"sv,           "Resource"sv},
         {Category::Scene,       "Scene"sv,              "Scene"sv},
-        {Category::Script,      "Script"sv,             "Script"sv},
-        {Category::Tracking,    "Tracking device"sv,    "TrackingDevice"sv},
+        {Category::Script,      "Script"sv,             "Script"sv},        
         {Category::UI,          "User interface"sv,     "UserInterface"sv},
         {Category::Video,       "Video"sv,              "Video"sv},
         {Category::Viewer,      "Viewer"sv,             "Viewer"sv},
@@ -188,6 +188,24 @@ struct Component {
     static constexpr TupleArray<T::SizeEnum, TComponent> components ={{
         TComponent
         // 0                          1               2      3      4  5  6  7  8  9  10    11     12      13 14 15 16
+        // Acquisition
+        {T::Attach_object_to_hand,    C::Acquisition, TO::B, CO::B, Y, N, N, Y, N, N, P::M, R::OS, S::Exp, "Attach_object_to_hand"sv, "Attach object to hand"sv, "AttachObjectToHand"sv, "Sponge"sv},
+        {T::Biopac,                   C::Acquisition, TO::U, CO::I, Y, N, N, Y, N, N, P::H, R::OS, S::Sta, "Biopac"sv, "Biopac device"sv, "Biopac"sv, "Physio"sv},
+        {T::Fop_robot,                C::Acquisition, TO::U, CO::B, Y, N, N, Y, N, N, P::H, R::LN, S::Sta, "Fop_robot"sv, "FOP robot"sv, "FOPRobot"sv,"Fop_robot"sv},
+        {T::K2_body_tracking,         C::Acquisition, TO::B, CO::B, Y, N, N, Y, N, N, P::H, R::LN, S::Exp, "K2_body_tracking"sv, "K2 body tracking"sv, "K2BodyTracking"sv,"Kinect"sv},
+        {T::K2_manager,               C::Acquisition, TO::U, CO::B, Y, N, N, Y, N, N, P::H, R::LN, S::Sta, "K2_manager"sv, "K2 manager"sv, "K2Manager"sv,"Kinect"sv},
+        {T::K4_manager,               C::Acquisition, TO::U, CO::B, Y, N, N, Y, N, N, P::H, R::LN, S::Sta, "K4_manager"sv, "K4 manager"sv, "K4Manager"sv,"Kinect"sv},
+        {T::K4_direct_multi_clouds,   C::Acquisition, TO::B, CO::B, N, N, N, Y, N, N, P::M, R::LN, S::Sta, "K4_direct_multi_clouds"sv, "K4 direct multi clouds"sv, "K4DirectMultiClouds"sv,"Kinect"sv},
+        {T::Leap_motion,              C::Acquisition, TO::U, CO::C, Y, Y, Y, Y, Y, N, P::H, R::OS, S::Exp, "Leap_motion"sv, "LeapMotion"sv, "LeapMotion"sv, "Hand"sv},
+        {T::Leap_motion_arms_display, C::Acquisition, TO::V, CO::B, Y, N, N, Y, N, N, P::M, R::CS, S::Leg, "Leap_motion_arms_display"sv, "LeapMotion realistic arms"sv, "LeapMotionArmsDisplay"sv, "Hand"sv},
+        {T::Leap_motion_tracking,     C::Acquisition, TO::V, CO::N, Y, N, N, Y, N, N, P::M, R::OS, S::Leg, "Leap_motion_tracking"sv, "LeapMotion tracking"sv, "LeapMotionTracking"sv, "Hand"sv},
+        {T::Qualisys,                 C::Acquisition, TO::B, CO::B, Y, Y, Y, Y, Y, N, P::M, R::OS, S::Sta, "Qualisys_tracking"sv, "Qualisys tracking"sv, "QualisysTracking"sv, "Qualisys"sv},
+        {T::Scene_scaner,             C::Acquisition, TO::B, CO::B, Y, N, N, Y, N, N, P::M, R::LN, S::Sta, "Scene_scaner"sv, "Scene scaner"sv, "SceneScaner"sv,"Body_scanner"sv},
+        {T::Sonceboz_SG,              C::Acquisition, TO::U, CO::B, Y, Y, Y, Y, Y, N, P::H, R::LN, S::Sta, "Sonceboz_SG"sv, "Sonceboz SG"sv, "SoncebozSG"sv,"Sonceboz"sv},
+        {T::Thera_trainer_tracking,   C::Acquisition, TO::U, CO::I, Y, N, N, Y, N, N, P::M, R::LN, S::Sta, "Thera_trainer_tracking"sv, "Thera trainer tracking"sv, "TheraTrainerTracking"sv, "Thera_trainer"sv},
+        {T::Thera_trainer_platform,   C::Acquisition, TO::B, CO::C, N, N, N, Y, N, N, P::M, R::LN, S::Sta, "Thera_trainer_platform"sv, "Thera trainer platform"sv, "TheraTrainerPlatform"sv, "Thera_trainer"sv},
+        {T::Vive_pro_eye_tracking,    C::Acquisition, TO::B, CO::C, N, N, N, Y, N, N, P::H, R::OS, S::Sta, "Vive_pro_eye_tracking"sv, "Vive pro eye tracking"sv, "ViveProEyeTracking"sv, "Thera_trainer"sv},
+        {T::Webcam,                   C::Acquisition, TO::U, CO::I, N, N, N, Y, N, N, P::M, R::OS, S::Sta, "Webcam"sv, "Webcam"sv, "Webcam"sv,"Webcam"sv},
         // Audio
         {T::AudioListener,            C::Audio,       TO::U, CO::B, Y, N, N, Y, N, N, P::M, R::OS, S::Exp, "AudioListener"sv, "Audio listener"sv, "AudioListener"sv, "Sound"sv},
 /**DOC*/{T::AudioSource,              C::Audio,       TO::B, CO::B, N, N, N, Y, N, N, P::M, R::OS, S::Sta, "AudioSource"sv, "Audio source"sv, "AudioSource"sv, "Sound"sv},
@@ -253,23 +271,6 @@ struct Component {
         {T::CSharp_function,          C::Script,      TO::N, CO::B, N, N, N, Y, N, N, P::L, R::OS, S::Sta, "CSharp_function"sv, "CSharp function"sv, "CSharpFunction"sv, "CSharp"sv},
         {T::CSharp_script,            C::Script,      TO::B, CO::B, N, N, N, Y, N, N, P::L, R::OS, S::Sta, "CSharp_script"sv, "CSharp script"sv, "CSharpScript"sv, "CSharp"sv},
         {T::Python_script,            C::Script,      TO::B, CO::B, N, N, N, Y, N, N, P::M, R::OS, S::Exp, "Python_script"sv, "Python script"sv, "PythonScript"sv, "Python_script"sv},
-        // Tracking
-        {T::Attach_object_to_hand,    C::Tracking,    TO::B, CO::B, Y, N, N, Y, N, N, P::M, R::OS, S::Exp, "Attach_object_to_hand"sv, "Attach object to hand"sv, "AttachObjectToHand"sv, "Sponge"sv},
-        {T::Biopac,                   C::Tracking,    TO::U, CO::I, Y, N, N, Y, N, N, P::H, R::OS, S::Sta, "Biopac"sv, "Biopac device"sv, "Biopac"sv, "Physio"sv},
-        {T::Fop_robot,                C::Tracking,    TO::U, CO::B, Y, N, N, Y, N, N, P::H, R::LN, S::Sta, "Fop_robot"sv, "FOP robot"sv, "FOPRobot"sv,"Fop_robot"sv},        
-        {T::K2_body_tracking,         C::Tracking,    TO::B, CO::B, Y, N, N, Y, N, N, P::H, R::LN, S::Exp, "K2_body_tracking"sv, "K2 body tracking"sv, "K2BodyTracking"sv,"Kinect"sv},
-        {T::K2_manager,               C::Tracking,    TO::U, CO::B, Y, N, N, Y, N, N, P::H, R::LN, S::Sta, "K2_manager"sv, "K2 manager"sv, "K2Manager"sv,"Kinect"sv},
-        {T::K4_manager,               C::Tracking,    TO::U, CO::B, Y, N, N, Y, N, N, P::H, R::LN, S::Sta, "K4_manager"sv, "K4 manager"sv, "K4Manager"sv,"Kinect"sv},
-        {T::K4_direct_multi_clouds,   C::Tracking,    TO::B, CO::B, N, N, N, Y, N, N, P::M, R::LN, S::Sta, "K4_direct_multi_clouds"sv, "K4 direct multi clouds"sv, "K4DirectMultiClouds"sv,"Kinect"sv},
-        {T::Leap_motion,              C::Tracking,    TO::U, CO::C, Y, Y, Y, Y, Y, N, P::H, R::OS, S::Sta, "Leap_motion"sv, "LeapMotion"sv, "LeapMotion"sv, "Hand"sv},
-        {T::Leap_motion_arms_display, C::Tracking,    TO::V, CO::B, Y, N, N, Y, N, N, P::M, R::CS, S::Leg, "Leap_motion_arms_display"sv, "LeapMotion realistic arms"sv, "LeapMotionArmsDisplay"sv, "Hand"sv},
-        {T::Leap_motion_tracking,     C::Tracking,    TO::V, CO::N, Y, N, N, Y, N, N, P::M, R::OS, S::Leg, "Leap_motion_tracking"sv, "LeapMotion tracking"sv, "LeapMotionTracking"sv, "Hand"sv},
-        {T::Qualisys,                 C::Tracking,    TO::B, CO::B, Y, Y, Y, Y, Y, N, P::M, R::OS, S::Sta, "Qualisys_tracking"sv, "Qualisys tracking"sv, "QualisysTracking"sv, "Qualisys"sv},
-        {T::Scene_scaner,             C::Tracking,    TO::B, CO::B, Y, N, N, Y, N, N, P::M, R::LN, S::Sta, "Scene_scaner"sv, "Scene scaner"sv, "SceneScaner"sv,"Body_scanner"sv},
-        {T::Sonceboz_SG,              C::Tracking,    TO::U, CO::B, Y, Y, Y, Y, Y, N, P::H, R::LN, S::Sta, "Sonceboz_SG"sv, "Sonceboz SG"sv, "SoncebozSG"sv,"Sonceboz"sv},
-        {T::Thera_trainer_tracking,   C::Tracking,    TO::U, CO::I, Y, N, N, Y, N, N, P::M, R::LN, S::Sta, "Thera_trainer_tracking"sv, "Thera trainer tracking"sv, "TheraTrainerTracking"sv, "Thera_trainer"sv},
-        {T::Thera_trainer_platform,   C::Tracking,    TO::B, CO::C, N, N, N, Y, N, N, P::M, R::LN, S::Sta, "Thera_trainer_platform"sv, "Thera trainer platform"sv, "TheraTrainerPlatform"sv, "Thera_trainer"sv},
-        {T::Vive_pro_eye_tracking,    C::Tracking,    TO::B, CO::C, N, N, N, Y, N, N, P::H, R::OS, S::Sta, "Vive_pro_eye_tracking"sv, "Vive pro eye tracking"sv, "ViveProEyeTracking"sv, "Thera_trainer"sv},
         // UI
         {T::Slider_ui,                C::UI,          TO::B, CO::B, N, N, N, Y, N, N, P::M, R::OS, S::Sta, "Slider_ui"sv, "Slider ui"sv, "SliderUI"sv, "Slider_overlay"sv},
         {T::Buttons_ui,               C::UI,          TO::B, CO::C, N, N, N, Y, N, N, P::M, R::OS, S::Sta, "Buttons_ui"sv, "Buttons ui"sv, "ButtonsUI"sv, "Buttons"sv},
@@ -277,7 +278,6 @@ struct Component {
         {T::Scaner_video,             C::Video,       TO::B, CO::B, N, N, N, Y, N, N, P::H, R::LN, S::Exp, "Scaner_video"sv, "Scaner video"sv, "ScanerVideo"sv, "Video_cloud"sv},
         {T::Video_file_camera_viewer, C::Video,       TO::B, CO::B, N, N, N, Y, N, N, P::M, R::OS, S::Exp, "Video_file_camera_viewer"sv, "Video file camera viewer"sv, "VideoFileCameraViewer"sv,"Video_file"sv},
         {T::Video_saver,              C::Video,       TO::B, CO::B, N, N, N, Y, N, N, P::M, R::OS, S::Exp, "Video_saver"sv, "Video saver"sv, "VideoSaver"sv,"Video_record"sv},
-        {T::Webcam,                   C::Video,       TO::U, CO::I, N, N, N, Y, N, N, P::M, R::OS, S::Sta, "Webcam"sv, "Webcam"sv, "Webcam"sv,"Webcam"sv},
         {T::Volumetric_video,         C::Video,       TO::B, CO::B, N, N, N, Y, N, N, P::H, R::LN, S::Exp, "Volumetric_video"sv,  "Volumetric video"sv, "VolumetricVideo"sv, "Video_cloud"sv},
         // Viewer
         {T::Blend_fade_viewer,        C::Viewer,      TO::B, CO::C, N, N, N, Y, N, N, P::H, R::OS, S::Sta, "Blend_fade_viewer"sv, "Blend fade viewer"sv, "BlendFadeViewer"sv, "Blend"sv},
@@ -386,18 +386,21 @@ struct Component {
 
     using TComponentSlots = std::tuple<
         T,                             FunctionN,                      CNT,                    Doc>;
-    static constexpr TupleArray<126,TComponentSlots> componentsSlots = {{
+    static constexpr TupleArray<126,TComponentSlots> componentsSlots = {{        
         TComponentSlots
+        // Acquisition
+        {T::Leap_motion_arms_display,  "trigger"sv,                    CNT::void_t,            "..."sv},
+        {T::Leap_motion_arms_display,  "update frame"sv,               CNT::lm_frame_t,        "..."sv},
+        {T::Leap_motion_tracking,      "update tracking"sv,            CNT::lm_hands_frame_t,  "..."sv},
+        {T::Thera_trainer_platform,    "update rotation"sv,            CNT::vector2_t,         "Set thera trainer platform current rotation angles"sv},
+        {T::Biopac,                    "inused"sv,                     CNT::void_t,            "TODO: Remove it"sv},
+        {T::Fop_robot,                 "set delay"sv,                  CNT::integer_t,         "..."sv},
+        {T::Fop_robot,                 "set force ratio"sv,            CNT::float_t,           "..."sv},
         // Audio
         {T::AudioSource,               "play"sv,                       CNT::void_t,            "..."sv},
         {T::AudioSource,               "pause"sv,                      CNT::void_t,            "..."sv},
         {T::AudioSource,               "set time"sv,                   CNT::float_t,           "..."sv},
         {T::AudioSource,               "set volume"sv,                 CNT::float_t,           "..."sv},
-        // Avatar
-        {T::Humanoid_avatar,           "init target"sv,                CNT::string_any_t,      "..."sv},
-        {T::Humanoid_avatar,           "update target"sv,              CNT::string_any_t,      "..."sv},
-        {T::Humanoid_controller,       "init target"sv,                CNT::string_any_t,      "..."sv},
-        {T::Humanoid_controller,       "update target"sv,              CNT::string_any_t,      "..."sv},
         // Camera
         {T::Camera_controller,         "set eye cam"sv,                CNT::transform_t,       "Set the eye camera transform"sv},
         {T::Camera_controller,         "set calibration"sv,            CNT::transform_t,       "Set the calibration transform"sv},
@@ -445,6 +448,10 @@ struct Component {
         {T::Flag_pole,                 "transform"sv,                  CNT::transform_t,       "Set the transform of the flag"sv},
         {T::Flag_pole,                 "flag texture"sv,               CNT::image_t,           "Set the RGBA texture of the flag"sv},
         {T::Flag_pole,                 "hoist"sv,                      CNT::float_t,           "Hoist the flag."sv},
+        {T::Humanoid_avatar,           "init target"sv,                CNT::string_any_t,      "..."sv},
+        {T::Humanoid_avatar,           "update target"sv,              CNT::string_any_t,      "..."sv},
+        {T::Humanoid_controller,       "init target"sv,                CNT::string_any_t,      "..."sv},
+        {T::Humanoid_controller,       "update target"sv,              CNT::string_any_t,      "..."sv},
         {T::Landmark,                  "visibility"sv,                 CNT::boolean_t,         "Set the visibility of the model"sv},
         {T::Landmark,                  "position"sv,                   CNT::vector3_t,         "Set the position of the model"sv},
         {T::Landmark,                  "rotation"sv,                   CNT::vector3_t,         "Set the rotation (euler angles) of the model"sv},
@@ -503,14 +510,6 @@ struct Component {
         {T::Python_script,             "slot2"sv,                      CNT::any_t,             "..."sv},
         {T::Python_script,             "slot3"sv,                      CNT::any_t,             "..."sv},
         {T::Python_script,             "slot4"sv,                      CNT::any_t,             "..."sv},
-        // Tracking
-        {T::Leap_motion_arms_display,  "trigger"sv,                    CNT::void_t,            "..."sv},
-        {T::Leap_motion_arms_display,  "update frame"sv,               CNT::lm_frame_t,        "..."sv},
-        {T::Leap_motion_tracking,      "update tracking"sv,            CNT::lm_hands_frame_t,  "..."sv},
-        {T::Thera_trainer_platform,    "update rotation"sv,            CNT::vector2_t,         "Set thera trainer platform current rotation angles"sv},
-        {T::Biopac,                    "inused"sv,                     CNT::void_t,            "TODO: Remove it"sv},
-        {T::Fop_robot,                 "set delay"sv,                  CNT::integer_t,         "..."sv},
-        {T::Fop_robot,                 "set force ratio"sv,            CNT::float_t,           "..."sv},
         // UI
         {T::Buttons_ui,                "set id"sv,                     CNT::integer_t,         "Set the current button with id"sv},
         {T::Buttons_ui,                "next id"sv,                    CNT::void_t,            "Select the new button"sv},
@@ -535,11 +534,30 @@ struct Component {
         CT,                             FunctionN,                     CNT,                            Doc>;
     static constexpr TupleArray<62, TComponentSignals> componentsSignals = {{
         TComponentSignals
+        // Acquisition
+        {T::K2_body_tracking,          "body"sv,                       CNT::kinect_body_t,             "..."sv},
+        {T::Leap_motion,               "new raw frame"sv,              CNT::lm_frame_t,                "..."sv},
+        {T::Leap_motion,               "new hands frame"sv,            CNT::lm_hands_frame_t,          "..."sv},
+        {T::Leap_motion_arms_display,  "current colliders"sv,          CNT::gameobject_list_t,         "Is triggered when trigger slot is called, will send the current enabled colliders"sv},
+        {T::Thera_trainer_tracking,    "new pos"sv,                    CNT::vector2_t,                 "..."sv},
+        {T::Thera_trainer_tracking,    "battery"sv,                    CNT::integer_t,                 "..."sv},
+        {T::Biopac,                    "channelX last value"sv,        CNT::id_any_t,                  "Send last data value corresponding to id channel"sv},
+        {T::Biopac,                    "channelX last range values"sv, CNT::id_any_t,                  "Send last range data value corresponding to id channel"sv},
+        {T::Biopac,                    "call duration API"sv,          CNT::real_t,                   "..."sv},
+        {T::Qualisys,                  "tracked object"sv,             CNT::string_any_t,              "..."sv},
+        {T::Fop_robot,                 "slave position"sv,             CNT::vector3_t,                 "..."sv},
+        {T::Fop_robot,                 "master position"sv,            CNT::vector3_t,                 "..."sv},
+        {T::Fop_robot,                 "slave touch"sv,                CNT::boolean_t,                 "..."sv},
+        {T::Fop_robot,                 "master touch"sv,               CNT::boolean_t,                 "..."sv},
+        {T::Fop_robot,                 "slave force"sv,                CNT::float_t,                   "..."sv},
+        {T::Fop_robot,                 "master force"sv,               CNT::float_t,                   "..."sv},
+        {T::Sonceboz_SG,               "feedback"sv,                   CNT::transform_t,               "..."sv},
+        {T::Vive_pro_eye_tracking,     "gaze direction"sv,             CNT::vector3_t,                 "..."sv},
+        {T::Vive_pro_eye_tracking,     "eye openess"sv,                CNT::id_any_t,                  "..."sv},
+        {T::Vive_pro_eye_tracking,     "pupil position"sv,             CNT::id_any_t,                  "..."sv},
+        {T::Vive_pro_eye_tracking,     "pupil diameter"sv,             CNT::id_any_t,                  "..."sv},
         // Audio
         {T::AudioSource,               "sample value channel"sv,       CNT::id_any_t,                  "..."sv},
-        // Avatar
-        {T::Humanoid_avatar,           "target transform"sv,           CNT::string_any_t,              "..."sv},
-        {T::Humanoid_controller,       "target transform"sv,           CNT::string_any_t,              "..."sv},
         // Camera
         {T::Camera_controller,         "eye cam"sv,                    CNT::transform_t,               "Eye camera world transform"sv},
         {T::Camera_controller,         "calibration"sv,                CNT::transform_t,               "Calibration transform"sv},
@@ -553,6 +571,8 @@ struct Component {
         {T::Joypad,                    "button"sv,                     CNT::joypad_button_event_t,     "Joypad button event"sv},
         {T::Joypad,                    "axis"sv,                       CNT::joypad_axis_event_t,       "Joypad axis event"sv},
         // Model
+        {T::Humanoid_avatar,           "target transform"sv,           CNT::string_any_t,              "..."sv},
+        {T::Humanoid_controller,       "target transform"sv,           CNT::string_any_t,              "..."sv},
         // Network
         {T::Parallel_port_writer,      "message sent"sv,               CNT::time_any_t,                "..."sv},
         {T::Serial_port_writer,        "message sent"sv,               CNT::time_any_t,                "..."sv},
@@ -580,28 +600,6 @@ struct Component {
         {T::Python_script,             "signal2"sv,                    CNT::any_t,                     "..."sv},
         {T::Python_script,             "signal3"sv,                    CNT::any_t,                     "..."sv},
         {T::Python_script,             "signal4"sv,                    CNT::any_t,                     "..."sv},
-        // Tracking
-        {T::K2_body_tracking,      "body"sv,                       CNT::kinect_body_t,             "..."sv},
-        {T::Leap_motion,               "new raw frame"sv,              CNT::lm_frame_t,                "..."sv},
-        {T::Leap_motion,               "new hands frame"sv,            CNT::lm_hands_frame_t,          "..."sv},
-        {T::Leap_motion_arms_display,  "current colliders"sv,          CNT::gameobject_list_t,         "Is triggered when trigger slot is called, will send the current enabled colliders"sv},
-        {T::Thera_trainer_tracking,    "new pos"sv,                    CNT::vector2_t,                 "..."sv},
-        {T::Thera_trainer_tracking,    "battery"sv,                    CNT::integer_t,                 "..."sv},
-        {T::Biopac,                    "channelX last value"sv,        CNT::id_any_t,                  "Send last data value corresponding to id channel"sv},
-        {T::Biopac,                    "channelX last range values"sv, CNT::id_any_t,                  "Send last range data value corresponding to id channel"sv},
-        {T::Biopac,                    "call duration API"sv,          CNT::real_t,                   "..."sv},
-        {T::Qualisys,                  "tracked object"sv,             CNT::string_any_t,              "..."sv},
-        {T::Fop_robot,                 "slave position"sv,             CNT::vector3_t,                 "..."sv},
-        {T::Fop_robot,                 "master position"sv,            CNT::vector3_t,                 "..."sv},
-        {T::Fop_robot,                 "slave touch"sv,                CNT::boolean_t,                 "..."sv},
-        {T::Fop_robot,                 "master touch"sv,               CNT::boolean_t,                 "..."sv},
-        {T::Fop_robot,                 "slave force"sv,                CNT::float_t,                   "..."sv},
-        {T::Fop_robot,                 "master force"sv,               CNT::float_t,                   "..."sv},
-        {T::Sonceboz_SG,               "feedback"sv,                   CNT::transform_t,               "..."sv},
-        {T::Vive_pro_eye_tracking,     "gaze direction"sv,             CNT::vector3_t,                 "..."sv},
-        {T::Vive_pro_eye_tracking,     "eye openess"sv,                CNT::id_any_t,                  "..."sv},
-        {T::Vive_pro_eye_tracking,     "pupil position"sv,             CNT::id_any_t,                  "..."sv},
-        {T::Vive_pro_eye_tracking,     "pupil diameter"sv,             CNT::id_any_t,                  "..."sv},
         // UI
         {T::Buttons_ui,                "validated id"sv,               CNT::integer_t,                 "Button with id has been validated"sv},
         {T::Buttons_ui,                "validated text"sv,             CNT::string_t,                  "Button with text has been validated"sv},

@@ -52,7 +52,8 @@ void TextViewerConfigParametersW::insert_widgets(){
 
 void TextViewerConfigParametersW::init_and_register_widgets(){    
     map_sub_part(m_p->wscsp.init_widget());
-    map_sub_part(m_p->tsp.init_widget());
+    m_p->wscsp.set_background_color(QColor(255,255,255,0));
+    map_sub_part(m_p->tsp.init_widget());    
 }
 
 void TextViewerConfigParametersW::create_connections(){

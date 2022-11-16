@@ -99,6 +99,10 @@ void ModelConfigParametersW::init_and_register_widgets(){
     add_input_ui(m_p->detectCollisions.init_widget("Detect collisions", false));
     add_input_ui(m_p->mass.init_widget(MinV<qreal>{0.0}, V<qreal>{1.0}, MaxV<qreal>{1000000000.}, StepV<qreal>{0.1},2));
     add_input_ui(m_p->drag.init_widget(MinV<qreal>{0.0}, V<qreal>{0.0}, MaxV<qreal>{1000000000.}, StepV<qreal>{0.1},2));
+
+    if(type == Component::Type::Plane){
+        m_p->transfo.set_rotation_values({90.0,0.0,0.0});
+    }
 }
 
 
@@ -147,9 +151,9 @@ void PlaneInitConfigParametersW::insert_widgets(){
 }
 
 void PlaneInitConfigParametersW::init_and_register_widgets(){
-    map_sub_part(m_p->transfo.init_widget(QSL("Init transform</b> (applied when experiment starts)<b>")));
-    add_input_ui(m_p->width.init_widget(MinV<qreal>{0.1}, V<qreal>{1.}, MaxV<qreal>{1000.}, StepV<qreal>{0.1},2));
-    add_input_ui(m_p->height.init_widget(MinV<qreal>{0.1}, V<qreal>{1.}, MaxV<qreal>{1000.}, StepV<qreal>{0.1},2));
+    map_sub_part(m_p->transfo.init_widget(QSL("Init transform</b> (applied when experiment starts)<b>")));    
+    add_input_ui(m_p->width.init_widget(MinV<qreal>{0.1}, V<qreal>{10.}, MaxV<qreal>{1000.}, StepV<qreal>{0.1},2));
+    add_input_ui(m_p->height.init_widget(MinV<qreal>{0.1}, V<qreal>{10.}, MaxV<qreal>{1000.}, StepV<qreal>{0.1},2));
     add_input_ui(m_p->transparent.init_widget("Is transparent?", false));
 }
 

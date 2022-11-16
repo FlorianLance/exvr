@@ -41,10 +41,10 @@ namespace Ex {
         #region ex_functions
         protected override bool initialize() {
 
-            // init slots
-            add_slot("set image", (imageContainer) => {
-                load_image_from_container((ImageContainer)imageContainer);
-            });
+            //// init slots
+            //add_slot("set image", (imageContainer) => {
+            //    load_image_from_container((ImageContainer)imageContainer);
+            //});
 
             // init gameObjects
             m_imageGO = ExVR.GlobalResources().instantiate_prebab("Common/Image", transform);

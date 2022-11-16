@@ -71,6 +71,7 @@ namespace Ex {
         }
 
         public enum Category {
+            AcquisitionDevice,
             Audio,
             Avatar,
             Camera,
@@ -86,8 +87,7 @@ namespace Ex {
             Scene,
             Settings,
             Text,
-            UserInterface,
-            TrackingDevice,
+            UserInterface,            
             Video,
             Viewer,
             Undefined

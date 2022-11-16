@@ -61,7 +61,7 @@ namespace Ex{
             [Category.Environment] = "[C:Environment]",
             [Category.UserInterface] = "[C:UserInterface]",
             [Category.Video] = "[C:Video]",
-            [Category.TrackingDevice] = "[C:TrackingDevice]",
+            [Category.AcquisitionDevice] = "[C:AcquisitionDevice]",
             [Category.Text] = "[C:Text]",
             [Category.Model] = "[C:Model]",
             [Category.Avatar] = "[C:Avatar]",
