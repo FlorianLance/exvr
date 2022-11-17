@@ -645,6 +645,7 @@ namespace Ex{
                     schedule_update_connector_parameter(ScheduledAction.Source.Gui, routineKey, conditionKey, connectorKey, arg);
                     return;
                 }case NetworkManager.Command.Quit: {
+                    schedule_stop_experiment(ScheduledAction.Source.Gui);
                     schedule_quit(ScheduledAction.Source.Gui);
                     return;
                 }case NetworkManager.Command.Action: {

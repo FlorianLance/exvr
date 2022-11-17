@@ -436,7 +436,8 @@ void ExpLauncher::close_program(){
                 m_expLauncherProcess->kill();
             }
             m_expLauncherProcess = nullptr;
-            emit GSignals::get()->exp_launcher_state_updated_signal(ExpLauncherState::Closing, {});
+            emit GSignals::get()->exp_state_updated_signal(ExpState::NotLoaded, QSL(""));
+            emit GSignals::get()->exp_launcher_state_updated_signal(ExpLauncherState::NotStarted, {});
         }
     }
     editor = false;

@@ -612,7 +612,7 @@ void DesignerWindow::create_actions(){
     m_showCSharpScriptDirectoryAct.setStatusTip(tr("Show C# scripts default directory"));
     m_showCSharpScriptDirectoryAct.setIcon(QIcon(":/icons/Open"));
     connect(&m_showCSharpScriptDirectoryAct, &QAction::triggered, this, [=]{
-       QDesktopServices::openUrl(QUrl(Paths::scriptsCSharpDir, QUrl::TolerantMode));
+        QDesktopServices::openUrl(QUrl::fromLocalFile(Paths::scriptsCSharpDir));
     });
 
     m_focusFlowAct.setText(tr("&Display only flow panel"));

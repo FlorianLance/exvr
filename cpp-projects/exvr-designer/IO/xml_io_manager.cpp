@@ -1867,27 +1867,27 @@ bool XmlIoManager::save_instance_to_temp(const Instance &instance){
 }
 
 void XmlIoManager::open_temp_experiment_file(){
-    QDesktopServices::openUrl(QUrl(Paths::tempExp, QUrl::TolerantMode));
+    QDesktopServices::openUrl(QUrl::fromLocalFile(Paths::tempExp));
 }
 
 void XmlIoManager::open_temp_instance_file(){
-    QDesktopServices::openUrl(QUrl(Paths::tempInstance, QUrl::TolerantMode));
+    QDesktopServices::openUrl(QUrl::fromLocalFile(Paths::tempInstance));
 }
 
 void XmlIoManager::open_experiment_directory(){
-    QDesktopServices::openUrl(QUrl(Paths::expDir, QUrl::TolerantMode));
+    QDesktopServices::openUrl(QUrl::fromLocalFile(Paths::expDir));
 }
 
 void XmlIoManager::open_current_exp_launcher_log_file(){
-    QDesktopServices::openUrl(QUrl(Paths::expLogFile, QUrl::TolerantMode));
+    QDesktopServices::openUrl(QUrl::fromLocalFile(Paths::expLogFile));
 }
 
 void XmlIoManager::open_current_designer_log_file(){
-    QDesktopServices::openUrl(QUrl(Paths::designerLogFile, QUrl::TolerantMode));
+    QDesktopServices::openUrl(QUrl::fromLocalFile(Paths::designerLogFile));
 }
 
 void XmlIoManager::open_log_directory(){
-    QDesktopServices::openUrl(QUrl(Paths::logsDir, QUrl::TolerantMode));
+    QDesktopServices::openUrl(QUrl::fromLocalFile(Paths::logsDir));
 }
 
 void XmlIoManager::export_experiment_to(){

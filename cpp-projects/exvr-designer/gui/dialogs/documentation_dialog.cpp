@@ -66,7 +66,7 @@ DocumentationDialog::DocumentationDialog(){
         }
     });
     connect(openPb, &QPushButton::clicked, this, [&]{
-        QDesktopServices::openUrl(QUrl(currentDocPath, QUrl::TolerantMode));
+        QDesktopServices::openUrl(QUrl::fromLocalFile(currentDocPath));
     });
     connect(reloadPb, &QPushButton::clicked, this, [&]{
 
