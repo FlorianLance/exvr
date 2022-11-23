@@ -321,6 +321,7 @@ public slots:
 
     // # debug
     void display_exp_infos();
+    void fix_colors();
 
 private :    
 

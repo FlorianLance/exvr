@@ -1064,6 +1064,7 @@ void ExVrController::generate_global_signals_connections(){
     // # ui
     connect(s, &GSignals::toggle_mode_signal,                         exp(), &EXP::toggle_design_mode);
     connect(s, &GSignals::toggle_follow_condition_mode_signal,        exp(), &EXP::toggle_follow_condition_mode);
+    connect(s, &GSignals::fix_colors_signal,                          exp(), &EXP::fix_colors);
     // # state
     connect(s, &GSignals::exp_state_updated_signal,                   exp(), &EXP::update_exp_state);
     connect(s, &GSignals::exp_launcher_state_updated_signal,          exp(), &EXP::update_exp_launcher_state);

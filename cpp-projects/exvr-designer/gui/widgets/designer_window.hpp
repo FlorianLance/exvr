@@ -267,6 +267,7 @@ private:
     // # debug
     QAction m_benchmarkAct;
     QAction m_crashAct;
+    QAction m_fixColors;
     QAction m_deleteUnusedComponentAct;
     QAction m_displayKeysAct;
     QAction m_fullLoadWith0DurationAct;

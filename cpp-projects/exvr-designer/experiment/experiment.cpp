@@ -1215,6 +1215,11 @@ void Experiment::display_exp_infos(){
     }
 }
 
+void Experiment::fix_colors(){
+    compM.fix_colors();
+    add_to_update_flag(UpdateComponents);
+}
+
 
 void Experiment::add_action(ElementKey routineKey, ConditionKey conditionKey, ComponentKey componentKey,
     std::optional<ConfigKey> configKey, bool fillUpdateTimeline, bool fillVisibilityTimeline){

@@ -329,6 +329,40 @@ bool ComponentsManager::is_name_used(const QString &name) const noexcept{
     return m_componentsPerName.contains(name);
 }
 
+void ComponentsManager::fix_colors(){
+    for(auto &component : components){
+        for(auto &arg : component->initConfig->args){
+            if(arg.second.associated_ui_type() == UiType::Color_pick){
+                qDebug() << "arg" << arg.first << arg.second.value();
+                auto split = arg.second.value().split(" ");
+                QStringList nV;
+                nV << split[1];
+                nV << split[2];
+                nV << split[3];
+                nV << split[0];
+                arg.second.set_value(nV.join(" "));
+                qDebug() << "->" << arg.first << arg.second.value();
+            }
+        }
+
+        for(auto &config : component->configs){
+            for(auto &arg : config->args){
+                if(arg.second.associated_ui_type() == UiType::Color_pick){
+                    qDebug() << "arg" << arg.first << arg.second.value();
+                    auto split = arg.second.value().split(" ");
+                    QStringList nV;
+                    nV << split[1];
+                    nV << split[2];
+                    nV << split[3];
+                    nV << split[0];
+                    arg.second.set_value(nV.join(" "));
+                    qDebug() << "->" << arg.first << arg.second.value();
+                }
+            }
+        }
+    }
+}
+
 void ComponentsManager::add_component_to_map(Component *component){
 
     auto category = Component::get_category(component->type);

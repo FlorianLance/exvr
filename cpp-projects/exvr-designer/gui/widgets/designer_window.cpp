@@ -522,6 +522,11 @@ void DesignerWindow::create_actions(){
         abort();
     });
 
+    m_fixColors.setText(tr("&Fix colors"));
+    m_fixColors.setStatusTip(tr("Fix colors"));
+    connect(&m_fixColors, &QAction::triggered, GSignals::get(), &GSignals::fix_colors_signal);
+
+
     m_fullLoadWith0DurationAct.setText(tr("&Load with 0.2 duration"));
     m_fullLoadWith0DurationAct.setStatusTip(tr("&Load full experiment with default instance (0.2s duration for each routine)"));
     connect(&m_fullLoadWith0DurationAct, &QAction::triggered, this, &DesignerWindow::load_full_exp_with_02duration_signal);
@@ -722,6 +727,8 @@ void DesignerWindow::create_menu(){
     menu->addSeparator();
     menu->addAction(&m_benchmarkAct);
     menu->addAction(&m_crashAct);
+    menu->addAction(&m_fixColors);
+
     menu->addAction(&m_deleteUnusedComponentAct);
     menu->addAction(&m_displayKeysAct);
     menu->addAction(&m_fullLoadWith0DurationAct);

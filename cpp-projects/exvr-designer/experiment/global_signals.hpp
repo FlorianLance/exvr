@@ -56,6 +56,7 @@ signals:
     void show_benchmark_dialog_signal();
     void toggle_mode_signal();
     void toggle_follow_condition_mode_signal();
+    void fix_colors_signal();
 
     // state
     void exp_launcher_state_updated_signal(tool::ex::ExpLauncherState state, QStringView infos);

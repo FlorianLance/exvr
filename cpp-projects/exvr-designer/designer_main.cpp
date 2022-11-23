@@ -73,7 +73,7 @@ int main(int argc, char *argv[]){
 //    }
 
     // build parameters
-    const QString numVersion = "1.0b";
+    const QString numVersion = "1.0b1";
     bool lncoComponents = true;
 
     // compiler check
