@@ -22,15 +22,33 @@
 ** SOFTWARE.                                                                      **
 ************************************************************************************/
 
-#pragma once
+#include "k2_manager_ex_component_export.hpp"
 
-// local
-#include "exvr/ex_resource.hpp"
-#include "utility/export.hpp"
+// base
+#include "geometry/point3.hpp"
+#include "geometry/point4.hpp"
 
-extern "C"{
-    DECL_EXPORT void delete_ex_resource(tool::ex::ExResource *r);
-    DECL_EXPORT int initialize_ex_resource(tool::ex::ExResource*r);
-    DECL_EXPORT void clean_ex_resource(tool::ex::ExResource*r);
+using namespace tool;
+using namespace tool::geo;
+using namespace tool::ex;
+using namespace tool::camera;
+
+K2ManagerExComponent *create_k2_manager_ex_component(){
+    return new K2ManagerExComponent();
 }
 
+int update_cloud_k2_manager_ex_component(K2ManagerExComponent *c, int idC, float *vertices, float *colors){
+    return static_cast<int>(c->update_cloud(static_cast<size_t>(idC), reinterpret_cast<Pt3f*>(vertices), reinterpret_cast<Pt4f*>(colors)));
+}
+
+void update_mesh_k2_manager_ex_component(K2ManagerExComponent *c, int idC, float *vertices, float *colors, int *idTris){
+    c->update_mesh(static_cast<size_t>(idC), reinterpret_cast<Pt3f*>(vertices), reinterpret_cast<Pt4f*>(colors), reinterpret_cast<Pt3<int>*>(idTris));
+}
+
+void update_bodies_k2_manager_ex_component(K2ManagerExComponent *c, int idC, int *bodiesInfo, int *jointsType, int *jointsState, float *jointsPosition, float *jointsRotation){
+    c->update_bodies(static_cast<size_t>(idC), bodiesInfo, jointsType, jointsState, reinterpret_cast<Pt3f*>(jointsPosition), reinterpret_cast<Pt3f*>(jointsRotation));
+}
+
+void ask_for_frame_k2_manager_ex_component(K2ManagerExComponent *c){
+    c->ask_for_frame();
+}

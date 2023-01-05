@@ -24,13 +24,19 @@
 
 #pragma once
 
-// local
-#include "exvr/ex_resource.hpp"
+// base
 #include "utility/export.hpp"
 
+// local
+#include "k2_manager_ex_component.hpp"
+
 extern "C"{
-    DECL_EXPORT void delete_ex_resource(tool::ex::ExResource *r);
-    DECL_EXPORT int initialize_ex_resource(tool::ex::ExResource*r);
-    DECL_EXPORT void clean_ex_resource(tool::ex::ExResource*r);
+    DECL_EXPORT tool::ex::K2ManagerExComponent* create_k2_manager_ex_component();
+    DECL_EXPORT int update_cloud_k2_manager_ex_component(tool::ex::K2ManagerExComponent *c, int idC, float *vertices, float *colors);
+    DECL_EXPORT void update_mesh_k2_manager_ex_component(tool::ex::K2ManagerExComponent *c, int idC, float *vertices, float *colors, int* idTris);
+    DECL_EXPORT void update_bodies_k2_manager_ex_component(tool::ex::K2ManagerExComponent *c,
+            int idC, int *bodiesInfo, int *jointsType, int *jointsState, float *jointsPosition, float *jointsRotation);
+    DECL_EXPORT void ask_for_frame_k2_manager_ex_component(tool::ex::K2ManagerExComponent *c);
 }
+
 

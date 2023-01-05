@@ -22,15 +22,21 @@
 ** SOFTWARE.                                                                      **
 ************************************************************************************/
 
-#pragma once
+#include "k4_manager_ex_component_export.hpp"
 
-// local
-#include "exvr/ex_resource.hpp"
-#include "utility/export.hpp"
+using namespace tool;
+using namespace tool::ex;
 
-extern "C"{
-    DECL_EXPORT void delete_ex_resource(tool::ex::ExResource *r);
-    DECL_EXPORT int initialize_ex_resource(tool::ex::ExResource*r);
-    DECL_EXPORT void clean_ex_resource(tool::ex::ExResource*r);
+K4ManagerExComponent *create_k4_manager_ex_component(){
+    return new K4ManagerExComponent();
 }
 
+void retrieve_cloud_frame_data_k4_manager_ex_component(
+    tool::ex::K4ManagerExComponent *c, int idCamera, int idCurrentFrame,
+    tool::camera::K4VertexMeshData *vertices, int *lastFrameState){
+
+    auto ret = c->get_cloud_frame_data(idCamera, idCurrentFrame, vertices);
+    lastFrameState[0] = std::get<0>(ret) ? 1 : 0;
+    lastFrameState[1] = static_cast<int>(std::get<1>(ret));
+    lastFrameState[2] = static_cast<int>(std::get<2>(ret));
+}

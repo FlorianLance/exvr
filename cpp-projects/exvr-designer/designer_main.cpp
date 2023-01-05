@@ -74,7 +74,6 @@ int main(int argc, char *argv[]){
 
     // build parameters
     const QString numVersion = "1.0b1";
-    bool lncoComponents = true;
 
     // compiler check
     std::cout << tool::fmt("Start ExVR-designer v{}\n", numVersion.toStdString()); // c++20 check
@@ -87,7 +86,7 @@ int main(int argc, char *argv[]){
     splash.show();
 
     tool::ex::Paths::initialize_paths(QApplication::applicationDirPath());
-    tool::ex::ExVrController controller(numVersion, lncoComponents);
+    tool::ex::ExVrController controller(numVersion);
     QCoreApplication::instance()->installEventFilter(&controller);
 
     QTimer::singleShot(1000, &splash, &QWidget::close);

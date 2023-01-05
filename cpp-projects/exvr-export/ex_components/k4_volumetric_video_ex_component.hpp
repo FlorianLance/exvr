@@ -24,13 +24,31 @@
 
 #pragma once
 
-// local
-#include "exvr/ex_resource.hpp"
+// base
+#include "exvr/ex_component.hpp"
 #include "utility/export.hpp"
+#include "camera/kinect4/k4_volumetric_cloud_video_manager.hpp"
 
-extern "C"{
-    DECL_EXPORT void delete_ex_resource(tool::ex::ExResource *r);
-    DECL_EXPORT int initialize_ex_resource(tool::ex::ExResource*r);
-    DECL_EXPORT void clean_ex_resource(tool::ex::ExResource*r);
+// local
+#include "ex_resources/k4_volumetric_video_ex_resource_export.hpp"
+
+namespace tool::ex {
+
+class K4VolumetricVideoExComponent : public ExComponent{
+public:
+    tool::camera::K4VolumetricCloudVideoManager manager;
+    tool::camera::K4VolumetricCloudVideoResource *resource = nullptr;
+
+    K4VolumetricVideoExComponent(tool::ex::K4VolumetricVideoExResource *resourceExport) : manager(&resourceExport->resource), resource(&resourceExport->resource){
+    }
+
+    bool initialize() override{
+        auto nbCams = resource->nb_cameras();
+        audioData.resize(nbCams);
+        return true;
+    }
+
+
+    std::vector<std::vector<float>> audioData;
+};
 }
-

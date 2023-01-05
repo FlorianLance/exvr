@@ -24,13 +24,81 @@
 
 #pragma once
 
-// local
-#include "exvr/ex_resource.hpp"
-#include "utility/export.hpp"
 
-extern "C"{
-    DECL_EXPORT void delete_ex_resource(tool::ex::ExResource *r);
-    DECL_EXPORT int initialize_ex_resource(tool::ex::ExResource*r);
-    DECL_EXPORT void clean_ex_resource(tool::ex::ExResource*r);
+// std
+#include <numeric>
+#include <chrono>
+#include <set>
+
+// turbo-jpeg
+#include <turbojpeg.h>
+
+// base
+#include "exvr/ex_resource.hpp"
+#include "geometry/matrix4.hpp"
+#include "data/integers_encoder.hpp"
+#include "camera/kinect2/k2_types.hpp"
+
+namespace tool::ex {
+
+struct CloudData{
+
+    std::uint32_t id;
+    std::int64_t timeStamp;
+    std_v1<std::uint32_t> depth;
+    std_v1<unsigned char> colors;
+    std_a1<tool::camera::K2BodyInfos,6> bodies;
+};
+
+struct CameraData{
+
+    tjhandle jpegDecompressor;
+    data::IntegersEncoder depthCompressor;
+
+    int currentCloudId = -1;
+
+    std_v1<unsigned char> bufferDecompressColor;
+    std_v1<std::uint16_t> decodedDepth;
+    std_v1<bool> validityDepth2Rgb;
+    std_v1<std::uint32_t> validIdPerPointMesh;
+    tool::camera::K2CloudDisplayData cloudData;
+    tool::camera::K2BodiesDisplayData bodiesData;
+
+    CameraData();
+};
+
+struct FrameData{
+    size_t idCloud = 0;
+    std::int64_t foundTimeMs = 0;
+    CloudData *closestCloud = nullptr;
+};
+
+struct K2VolumetricVideoExResource : public ExResource{
+
+    std_v1<std::unique_ptr<CameraData>> cameras;
+
+    std::chrono::nanoseconds duration;
+
+    size_t nbClouds  = 0;
+    size_t nbCameras = 0;
+
+    std::unordered_map<size_t, std_v1<float>> intrinsics;
+    std::unordered_map<size_t, std_v1<CloudData>> data;
+    std::unordered_map<size_t, geo::Mat4d> models;
+    std::unordered_map<size_t, std::set<int>> bodiesId;
+
+    K2VolumetricVideoExResource(){
+        // TODO...
+    }
+
+    FrameData get_data(size_t idCamera, int targetTimeMilliseconds);
+    bool load(const std::string &path);
+    void uncompress(size_t idCamera, CloudData *cloud);
+};
 }
+
+
+
+
+
 

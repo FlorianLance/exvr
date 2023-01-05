@@ -1,4 +1,5 @@
 
+
 /***********************************************************************************
 ** exvr-export                                                                    **
 ** MIT License                                                                    **
@@ -22,15 +23,43 @@
 ** SOFTWARE.                                                                      **
 ************************************************************************************/
 
-#pragma once
+#include "k4_volumetric_video_ex_resource_export.hpp"
 
-// local
-#include "exvr/ex_resource.hpp"
-#include "utility/export.hpp"
+using namespace tool::ex;
+using namespace tool::geo;
+using namespace tool::camera;
 
-extern "C"{
-    DECL_EXPORT void delete_ex_resource(tool::ex::ExResource *r);
-    DECL_EXPORT int initialize_ex_resource(tool::ex::ExResource*r);
-    DECL_EXPORT void clean_ex_resource(tool::ex::ExResource*r);
+K4VolumetricVideoExResource *create_k4_volumetric_video_ex_resource(){
+    return new K4VolumetricVideoExResource();
 }
 
+int get_cameras_nb_k4_volumetric_video_ex_resource(K4VolumetricVideoExResource *vvR){
+    return static_cast<int>(vvR->resource.nb_cameras());
+}
+
+int get_nb_frames_k4_volumetric_video_ex_resource(K4VolumetricVideoExResource *vvR, int idC){
+    return static_cast<int>(vvR->resource.nb_frames(idC));
+}
+
+float get_duration_ms_k4_volumetric_video_ex_resource(K4VolumetricVideoExResource *vvR, int idC){
+    auto start = vvR->resource.start_time(idC);
+    auto end   = vvR->resource.end_time(idC);
+    return (end-start)*0.000001f;
+}
+
+void get_camera_transform_k4_volumetric_video_ex_resource(K4VolumetricVideoExResource *vvR, int idC, float *model){
+    auto tr = vvR->resource.get_transform(idC).conv<float>();
+    std::copy(std::begin(tr.array), std::end(tr.array), model);
+}
+
+int get_id_frame_from_time_ms_k4_volumetric_video_ex_resource(K4VolumetricVideoExResource *vvR, int idC, float timeMs){
+    return static_cast<int>(vvR->resource.frame_id(idC, timeMs));
+}
+
+int get_valid_vertices_count_k4_volumetric_video_ex_resource(K4VolumetricVideoExResource *vvR, int idC, int idF){
+    return static_cast<int>(vvR->resource.valid_vertices_count(idF,idC));
+}
+
+int get_audio_data_total_size_k4_volumetric_video_ex_resource(tool::ex::K4VolumetricVideoExResource *vvR, int idC){
+    return static_cast<int>(vvR->resource.total_audio_frames_size(idC));
+}

@@ -54,7 +54,7 @@
 
 using namespace tool::ex;
 
-DesignerWindow::DesignerWindow(bool lncoComponents, QWidget *parent) : QMainWindow(parent){
+DesignerWindow::DesignerWindow(QWidget *parent) : QMainWindow(parent){
 
     // define designer ui
     m_ui.setupUi(this);        
@@ -86,7 +86,7 @@ DesignerWindow::DesignerWindow(bool lncoComponents, QWidget *parent) : QMainWind
 
     create_flow_diagram();
     create_logger();
-    create_components_manager(lncoComponents);    
+    create_components_manager();
     create_routines_manager();
     create_element_viewer();
     resizeDocks({m_dwLogs, m_dwComponents}, {3, 5}, Qt::Vertical);
@@ -922,9 +922,9 @@ void DesignerWindow::create_flow_diagram(){
     m_ui.hlFlows->insertWidget(0,m_flowDiagramW.get());
 }
 
-void DesignerWindow::create_components_manager(bool lncoComponents){
+void DesignerWindow::create_components_manager(){
 
-    m_componentsW = std::make_unique<ComponentsManagerW>(lncoComponents);
+    m_componentsW = std::make_unique<ComponentsManagerW>();
 
     m_dwComponents = new QDockWidget(this);
     m_dwComponents->setWindowTitle("Components");

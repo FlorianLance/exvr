@@ -37,8 +37,7 @@
 
 using namespace tool::ex;
 
-ComponentsManagerW::ComponentsManagerW(bool lncoComponents) :
-      m_lncoComponents(lncoComponents){
+ComponentsManagerW::ComponentsManagerW(){
 
     setAcceptDrops(true);
 
@@ -264,10 +263,6 @@ void ComponentsManagerW::initialize_menues(){
     umComps experimentalComponentsT;
     umComps legacyComponentsT;
     for(const auto &type : Component::all_components_types()){        
-
-        if(Component::get_restricted(type) == Component::Restricted::LNCO && !m_lncoComponents){
-            continue;
-        }
 
         const auto category = Component::get_category(type);
 

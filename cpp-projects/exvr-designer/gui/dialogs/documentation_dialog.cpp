@@ -582,9 +582,6 @@ void DocumentationDialog::update_current_category_components_list(){
             continue;
         }
 
-        if(!m_lncoComponents && Component::get_restricted(type) == Component::Restricted::LNCO){
-            continue;
-        }
         componentsFullStr <<  from_view(Component::get_full_name(type));
     }
     componentsSectionW->lwContent->addItems(componentsFullStr);

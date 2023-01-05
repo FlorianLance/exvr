@@ -25,12 +25,16 @@
 #pragma once
 
 // local
-#include "exvr/ex_resource.hpp"
-#include "utility/export.hpp"
+#include "k4_volumetric_video_ex_resource.hpp"
 
 extern "C"{
-    DECL_EXPORT void delete_ex_resource(tool::ex::ExResource *r);
-    DECL_EXPORT int initialize_ex_resource(tool::ex::ExResource*r);
-    DECL_EXPORT void clean_ex_resource(tool::ex::ExResource*r);
-}
 
+    DECL_EXPORT tool::ex::K4VolumetricVideoExResource *create_k4_volumetric_video_ex_resource();
+    DECL_EXPORT int get_cameras_nb_k4_volumetric_video_ex_resource(tool::ex::K4VolumetricVideoExResource *vvR);
+    DECL_EXPORT int get_nb_frames_k4_volumetric_video_ex_resource(tool::ex::K4VolumetricVideoExResource *vvR, int idC);
+    DECL_EXPORT float get_duration_ms_k4_volumetric_video_ex_resource(tool::ex::K4VolumetricVideoExResource *vvR, int idC);
+    DECL_EXPORT void get_camera_transform_k4_volumetric_video_ex_resource(tool::ex::K4VolumetricVideoExResource *vvR, int idC, float *model);
+    DECL_EXPORT int get_id_frame_from_time_ms_k4_volumetric_video_ex_resource(tool::ex::K4VolumetricVideoExResource *vvR, int idC, float timeMs);
+    DECL_EXPORT int get_valid_vertices_count_k4_volumetric_video_ex_resource(tool::ex::K4VolumetricVideoExResource *vvR, int idC, int idF);
+    DECL_EXPORT int get_audio_data_total_size_k4_volumetric_video_ex_resource(tool::ex::K4VolumetricVideoExResource *vvR, int idC);
+}

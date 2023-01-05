@@ -61,7 +61,7 @@ class ExVrController : public QObject{
 
 public :
 
-    ExVrController(const QString &nVersion, bool lncoComponents);
+    ExVrController(const QString &nVersion);
 
     inline Experiment *exp(){return ExperimentManager::get()->current();}
     inline DesignerWindow *ui(){return m_designerWindow.get();}

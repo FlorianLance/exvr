@@ -29,8 +29,10 @@ PROJECT_NAME = all-exvr
 
 TEMPLATE = subdirs
 
-SUBDIRS = base opengl-utility 3d-engine qt-utility nodes tool-test demos \
-          exvr-designer exvr-components exvr-export exvr-test\
+SUBDIRS = \
+    base opengl-utility 3d-engine qt-utility nodes tool-test demos \
+    k4-scaner-grabber k4-scaner-manager scaner-component scaner-grabber guardian scaner-manager  \
+    exvr-designer exvr-export exvr-test \
 
 # where to find the sub projects
 ## toolbox
@@ -41,9 +43,14 @@ qt-utility.subdir               = toolbox/cpp-projects/qt-utility
 nodes.subdir                    = toolbox/cpp-projects/nodes
 tool-test.subdir                = toolbox/cpp-projects/tool-test
 demos.subdir                    = toolbox/cpp-projects/demos
+scaner-component.subdir         = toolbox/cpp-projects/scaner-component
+scaner-grabber.subdir           = toolbox/cpp-projects/scaner-grabber
+guardian.subdir                 = toolbox/cpp-projects/guardian
+scaner-manager.subdir           = toolbox/cpp-projects/scaner-manager
+k4-scaner-grabber.subdir        = toolbox/cpp-projects/k4-scaner-grabber
+k4-scaner-manager.subdir        = toolbox/cpp-projects/k4-scaner-manager
 ## exvr
 exvr-designer.subdir            = cpp-projects/exvr-designer
-exvr-components.subdir          = cpp-projects/exvr-components
 exvr-export.subdir              = cpp-projects/exvr-export
 exvr-test.subdir                = cpp-projects/exvr-test
 
@@ -55,8 +62,13 @@ qt-utility.depends              = opengl-utility
 nodes.depends                   = base
 tool-test.depends               = opengl-utility
 demos.depends                   = 3d-engine
+scaner-component.depends        = base
+scaner-grabber.depends          = qt-utility
+guardian.depends                = qt-utility
+scaner-manager.depends          = qt-utility
+k4-scaner-grabber.depends       = 3d-engine
+k4-scaner-manager.depends       = 3d-engine
 ## exvr
 exvr-designer.depends           = qt-utility nodes
-exvr-components                 = qt-utility
-exvr-export.depends             = exvr-components
+exvr-export.depends             = base
 exvr-test.depends               = exvr-designer

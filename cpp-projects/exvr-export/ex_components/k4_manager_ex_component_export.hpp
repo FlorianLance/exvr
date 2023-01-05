@@ -24,13 +24,24 @@
 
 #pragma once
 
-// local
-#include "exvr/ex_resource.hpp"
+// base
 #include "utility/export.hpp"
+#include "camera/kinect4/k4_types.hpp"
+
+// local
+#include "k4_manager_ex_component.hpp"
 
 extern "C"{
-    DECL_EXPORT void delete_ex_resource(tool::ex::ExResource *r);
-    DECL_EXPORT int initialize_ex_resource(tool::ex::ExResource*r);
-    DECL_EXPORT void clean_ex_resource(tool::ex::ExResource*r);
+
+    DECL_EXPORT tool::ex::K4ManagerExComponent* create_k4_manager_ex_component();    
+
+    DECL_EXPORT void retrieve_cloud_frame_data_k4_manager_ex_component(
+        tool::ex::K4ManagerExComponent *c,
+        int idCamera,
+        int idCurrentFrame,
+        tool::camera::K4VertexMeshData *vertices,
+        int *lastFrameState
+    );
 }
+
 

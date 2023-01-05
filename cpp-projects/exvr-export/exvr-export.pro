@@ -65,8 +65,8 @@ CONFIG -= qt
 INCLUDEPATH += \
     # base
     $$BASE_INCLUDES \
-    # exvr-components
-    $$EXVR_COMPONENTS_INCLUDES \
+    # scaner-component
+    $$SCANER_COMPONENT_INCLUDES \
     # local
     ex_components\
     utility\
@@ -74,11 +74,27 @@ INCLUDEPATH += \
     $$OPENCV_INCLUDES \
     # boost
     $$BOOST_INCLUDES \
+    # kinect2
+    $$KINECT2_INCLUDES \
     # signals
     $$SIGNALS_INCLUDES \
     # sigslot
     $$SIGSLOT_INCLUDES \
-    # PYTHON
+    # turbojpg
+    $$TURBOJPG_INCLUDES \
+    # fastfor
+    $$FASTPFOR_INCLUDES \
+    # GSL
+    $$GSL_INCLUDES \
+    # open3D
+    $$OPEN3D_INCLUDES \
+    # eigen
+    $$EIGEN_INCLUDES\
+    # kinect4
+    $$KINECT4_INCLUDES\
+    # turbopfor
+    $$TURBOPFOR_INCLUDES \
+    # python
     $$PYTHON_INCLUDES \
 
 ######################################## LIBRAIRIES
@@ -87,20 +103,28 @@ INCLUDEPATH += \
 LIBS +=  \
     # base
     $$BASE_LIB \
-    # exvr-components
-    $$EXVR_COMPONENTS_LIB \
+    # scaner-component
+    $$SCANER_COMPONENT_LIB\
     # opencv
     $$OPENCV_LIBS \
     # windows
     $$WINDOWS_LIBS \
-    # python
-    $$PYTHON_LIBS \
     # boost
     $$BOOST_LIBS \
     # turbojpg
-    $$TURBOJPG_LIBS \
+    $$TURBOJPG_LIBS\
     # fastfor
-    $$FASTPFOR_LIBS \
+    $$FASTPFOR_LIBS\
+    # eigen
+    $$EIGEN_LIBS\
+    # open3D
+    $$OPEN3D_LIBS \
+    # kinect4
+    $$KINECT4_LIBS \
+    # turbopfor
+    $$TURBOPFOR_LIBS \
+    # python
+    $$PYTHON_LIBS \
 
 ######################################## PROJECT FILES
 
@@ -108,6 +132,12 @@ HEADERS += \
     # ex_components
     ex_components/ex_component_export.hpp \
     # ex_resources
+    ex_components/k2_manager_ex_component.hpp \
+    ex_components/k2_manager_ex_component_export.hpp \
+    ex_components/k4_manager_ex_component.hpp \
+    ex_components/k4_manager_ex_component_export.hpp \
+    ex_components/k4_volumetric_video_ex_component.hpp \
+    ex_components/k4_volumetric_video_ex_component_export.hpp \
     ex_components/python_script_ex_component.hpp \
     ex_components/python_script_ex_component_export.hpp \
     ex_components/video_saver_ex_component.hpp \
@@ -115,11 +145,20 @@ HEADERS += \
     ex_element_export.hpp \
     ex_experiment_export.hpp \
     ex_resources/ex_resource_export.hpp \
+    ex_resources/k2_volumetric_video_ex_resource.hpp \
+    ex_resources/k2_volumetric_video_ex_resource_export.hpp \
+    ex_resources/k4_volumetric_video_ex_resource.hpp \
+    ex_resources/k4_volumetric_video_ex_resource_export.hpp
 
 SOURCES += \
     # ex_components
     ex_components/ex_component_export.cpp \
     # ex_resources
+    ex_components/k2_manager_ex_component.cpp \
+    ex_components/k2_manager_ex_component_export.cpp \
+    ex_components/k4_manager_ex_component.cpp \
+    ex_components/k4_manager_ex_component_export.cpp \
+    ex_components/k4_volumetric_video_ex_component_export.cpp \
     ex_components/python_script_ex_component.cpp \
     ex_components/python_script_ex_component_export.cpp \
     ex_components/video_saver_ex_component.cpp \
@@ -128,6 +167,9 @@ SOURCES += \
     ex_experiment_export.cpp \
     ex_resources/ex_resource_export.cpp \
     # main    
+    ex_resources/k2_volumetric_video_ex_resource.cpp \
+    ex_resources/k2_volumetric_video_ex_resource_export.cpp \
+    ex_resources/k4_volumetric_video_ex_resource_export.cpp \
     main.cpp \
 
 

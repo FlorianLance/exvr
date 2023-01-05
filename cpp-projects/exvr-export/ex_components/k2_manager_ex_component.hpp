@@ -1,4 +1,3 @@
-
 /***********************************************************************************
 ** exvr-export                                                                    **
 ** MIT License                                                                    **
@@ -24,13 +23,50 @@
 
 #pragma once
 
-// local
-#include "exvr/ex_resource.hpp"
-#include "utility/export.hpp"
+// std
+#include <any>
+#include <map>
 
-extern "C"{
-    DECL_EXPORT void delete_ex_resource(tool::ex::ExResource *r);
-    DECL_EXPORT int initialize_ex_resource(tool::ex::ExResource*r);
-    DECL_EXPORT void clean_ex_resource(tool::ex::ExResource*r);
+// base
+#include "geometry/matrix4.hpp"
+#include "exvr/ex_component.hpp"
+#include "grabber_controller.hpp"
+
+namespace tool::ex {
+
+
+class K2ManagerExComponent : public ExComponent{
+
+public:
+
+    ~K2ManagerExComponent() override;
+
+    bool initialize() override;
+    void clean() override;
+    void start_experiment() override;
+
+    size_t update_cloud(size_t idCamera, geo::Pt3f *points, geo::Pt4f *colors);
+    void update_mesh(size_t idCamera, geo::Pt3f *points, geo::Pt4f *colors, geo::Pt3<std::int32_t> *idTris);
+    void update_bodies(size_t idCamera, int *bodiesInfo, int *jointsType, int *jointsState, geo::Pt3f *jointsPosition, geo::Pt3f *jointsRotation);
+
+    void ask_for_frame();
+
+    std_v1<tool::scan::GrabberControllerUP> grabbers;
+    std::unordered_map<size_t, camera::K2CloudDisplayData*> grabbersCloudData;
+    std::unordered_map<size_t, camera::K2MeshDisplayData*> grabbersMeshData;
+    std::unordered_map<size_t, camera::K2BodiesDisplayData*> grabbersBodiesData;
+    tool::network::UdpReaderManagerUP udpManager = nullptr;
+
+    std::unordered_map<std::uint64_t, int> bodiesId;
+    std_v1<camera::K2GrabberTargetInfo> networkInfos;
+    std_v1<geo::Mat4d> calibrationsM;
+
+    bool cleaned = false;
+    bool debugBypass = false;
+
+    std::chrono::nanoseconds startExperimentTime;
+    std::chrono::nanoseconds lastFrameGetTime;
+
+    std::optional<camera::K2Settings> grabbersSettings;
+};
 }
-

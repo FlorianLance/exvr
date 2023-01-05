@@ -24,13 +24,19 @@
 
 #pragma once
 
-// local
+// base
 #include "exvr/ex_resource.hpp"
 #include "utility/export.hpp"
+#include "camera/kinect4/k4_volumetric_cloud_video_resource.hpp"
 
-extern "C"{
-    DECL_EXPORT void delete_ex_resource(tool::ex::ExResource *r);
-    DECL_EXPORT int initialize_ex_resource(tool::ex::ExResource*r);
-    DECL_EXPORT void clean_ex_resource(tool::ex::ExResource*r);
+namespace tool::ex {
+
+class K4VolumetricVideoExResource : public ExResource{
+public:
+    tool::camera::K4VolumetricCloudVideoResource resource;
+
+    bool initialize() override{
+        return resource.load_from_file(get<std::string>(ParametersContainer::Dynamic, "path_file"));
+    }
+};
 }
-

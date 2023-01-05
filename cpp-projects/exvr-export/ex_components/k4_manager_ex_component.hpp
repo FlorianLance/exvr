@@ -1,4 +1,3 @@
-
 /***********************************************************************************
 ** exvr-export                                                                    **
 ** MIT License                                                                    **
@@ -24,13 +23,41 @@
 
 #pragma once
 
-// local
-#include "exvr/ex_resource.hpp"
-#include "utility/export.hpp"
+// std
+#include <any>
+#include <map>
 
-extern "C"{
-    DECL_EXPORT void delete_ex_resource(tool::ex::ExResource *r);
-    DECL_EXPORT int initialize_ex_resource(tool::ex::ExResource*r);
-    DECL_EXPORT void clean_ex_resource(tool::ex::ExResource*r);
+// base
+#include "exvr/ex_component.hpp"
+#include "camera/kinect4/k4_types.hpp"
+
+namespace tool::ex {
+
+class K4ManagerExComponent : public ExComponent{
+
+public:
+
+    K4ManagerExComponent();
+
+    bool initialize() override;
+    void clean() override;
+    void start_experiment() override;
+    void stop_experiment() override;
+    void update() override;
+
+    void read_messages();           
+    void connect_grabbers();
+    void disconnect_grabbers();
+    void quit_grabbers();
+
+    std::tuple<bool, size_t, size_t> get_cloud_frame_data(size_t idCamera, size_t currentFrameId, camera::K4VertexMeshData *vertices);
+
+    bool debugBypass = false;
+
+    std::chrono::nanoseconds startExperimentTime;
+
+private:
+    struct Impl;
+    std::unique_ptr<Impl> i = nullptr;
+};
 }
-
