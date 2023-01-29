@@ -408,12 +408,12 @@ std::tuple<std::optional<Arg>, QString> XmlIoManager::read_argument(){
     }
 
     QString separator;
-    QVector<int> sizes;
+    std::vector<int> sizes;
     if(dim.value() > 0){
         assign_attribute(separator, {QSL("sep"), QSL("separator")}, true);
         if(auto sizesStr = read_attribute<QString>(QSL("sizes"), true); sizesStr.has_value()){
             for(const auto &sizeStr : sizesStr.value().split(' ')){
-                sizes << sizeStr.toInt();
+                sizes.push_back(sizeStr.toInt());
             }
         }
     }

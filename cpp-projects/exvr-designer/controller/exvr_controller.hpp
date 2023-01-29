@@ -27,7 +27,7 @@
 
 // Qt
 #include <QObject>
-#include <QDesktopWidget>
+//#include <QDesktopWidget>
 #include <QMetaEnum>
 
 // qt-utility

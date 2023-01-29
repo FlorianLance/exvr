@@ -26,7 +26,6 @@
 
 // Qt
 #include <QMainWindow>
-#include <QDesktopWidget>
 #include <QDockWidget>
 
 // local

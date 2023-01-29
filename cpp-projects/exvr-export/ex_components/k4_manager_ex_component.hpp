@@ -58,6 +58,6 @@ public:
 
 private:
     struct Impl;
-    std::unique_ptr<Impl> i = nullptr;
+    std::unique_ptr<Impl> i;
 };
 }

@@ -35,7 +35,7 @@
 #include <QMessageBox>
 #include <QInputDialog>
 #include <QTableWidget>
-#include <QRegExpValidator>
+//#include <QRegExpValidator>
 
 using namespace tool::ex;
 
