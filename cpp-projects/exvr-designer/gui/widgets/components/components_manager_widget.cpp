@@ -177,8 +177,8 @@ void ComponentsManagerW::update_from_components_manager(ComponentsManager *compM
     Bench::start("[CM: Move components]"sv, false);
 
     // reorder
-    for(int ii = 0; ii < to_signed(compM->count()); ++ii){
-        for(int jj = 0; jj < to_signed(m_componentsListW.count()); ++jj){
+    for(int ii = 0; ii < to_int(compM->count()); ++ii){
+        for(int jj = 0; jj < to_int(m_componentsListW.count()); ++jj){
             if(qobject_cast<ComponentW*>(m_componentsListW.widget_at(jj))->key.v == compM->get_component(RowId{ii})->key()){
                 if(ii != jj){
                     m_componentsListW.move_from_to(jj,ii);
@@ -566,7 +566,7 @@ void ComponentsManagerW::dropEvent(QDropEvent *event){
             }
 
             dropPositionOnComponent = true;
-            bool belowId = dropComponentPosition < to_signed(ii);
+            bool belowId = dropComponentPosition < to_int(ii);
             if(cursorLocalPos.y() < c->rect().center().y()){
                 if(belowId){                    
                     emit GSignals::get()->update_component_position_signal(dropComponentKey, RowId{ii-1});

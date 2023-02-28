@@ -24,6 +24,9 @@
 
 #pragma once
 
+// base
+#include "utility/map.hpp"
+
 // local
 #include "component.hpp"
 #include "states.hpp"
@@ -41,7 +44,7 @@ struct Connection{
     Connection(const Connection &) = delete;
     Connection& operator=(const Connection&) = delete;
 
-    static std::unique_ptr<Connection> copy_with_new_element_id(const Connection &connectionToCopy, std::unordered_map<int,int> keysMapping){
+    static std::unique_ptr<Connection> copy_with_new_element_id(const Connection &connectionToCopy, umap<int,int> keysMapping){
 
         std::unique_ptr<Connection> connection = std::make_unique<Connection>(ConnectionKey{-1});
 

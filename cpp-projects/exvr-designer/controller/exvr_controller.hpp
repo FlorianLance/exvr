@@ -27,8 +27,10 @@
 
 // Qt
 #include <QObject>
-//#include <QDesktopWidget>
 #include <QMetaEnum>
+
+// base
+#include <utility/map.hpp>
 
 // qt-utility
 #include "qt_logger.hpp"
@@ -170,8 +172,7 @@ private :
     CopyToConditionDialog m_copyToCondD;
     SettingsDialog m_settingsD;
 
-    std::unordered_map<QEvent::Type, std::unordered_map<QString, int>> countEvents;
-
+    umap<QEvent::Type, umap<QString, int>> countEvents;
 
     // experiment launcher
     std::unique_ptr<ExpLauncher> m_expLauncher = nullptr;

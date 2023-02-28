@@ -360,12 +360,12 @@ void ExVrController::show_got_to_specific_instance_element_dialog(){
         ++totalRows;
     }
 
-    twInstanceElements->setRowCount(to_signed(totalRows));
+    twInstanceElements->setRowCount(to_int(totalRows));
     twInstanceElements->setColumnCount(4);
     twInstanceElements->setSelectionBehavior(QAbstractItemView::SelectRows);
 
     int orderId = 0;
-    std::unordered_map<int,std::unordered_map<QString, int>> countIterations;
+    umap<int, umap<QString,int>> countIterations;
 
     twInstanceElements->setHorizontalHeaderLabels({"Element type", "Element name", "Condition/interval", "Condition iteration"});
     for(const auto &element : m_currentInstance->flow){
@@ -531,10 +531,10 @@ void ExVrController::show_component_informations_dialog(ComponentKey componentKe
 
     if(const auto component = exp()->get_component(componentKey); component != nullptr){
 
-        std_v1<std::tuple<Routine*,std_v1<std::tuple<Condition*, Action*>>>> containingComponent;
-        std_v1<std::tuple<Routine*,std_v1<Condition*>>> notContainingComponent;
-        std::unordered_map<int, Config*> usedConfigs;
-        std::unordered_map<int, Config*> notUsedConfigs;
+        std::vector<std::tuple<Routine*,std::vector<std::tuple<Condition*, Action*>>>> containingComponent;
+        std::vector<std::tuple<Routine*,std::vector<Condition*>>> notContainingComponent;
+        umap<int, Config*> usedConfigs;
+        umap<int, Config*> notUsedConfigs;
 
         auto routines = exp()->get_elements_from_type<Routine>();
         for(const auto &routine : routines){

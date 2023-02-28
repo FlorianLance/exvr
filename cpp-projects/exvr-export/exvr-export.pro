@@ -76,10 +76,6 @@ INCLUDEPATH += \
     $$BOOST_INCLUDES \
     # kinect2
     $$KINECT2_INCLUDES \
-    # signals
-    $$SIGNALS_INCLUDES \
-    # sigslot
-    $$SIGSLOT_INCLUDES \
     # turbojpg
     $$TURBOJPG_INCLUDES \
     # fastfor

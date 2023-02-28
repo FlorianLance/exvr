@@ -47,7 +47,7 @@ CopyToConditionDialog::CopyToConditionDialog(){
                 auto cb = qobject_cast<QCheckBox*>(w);
                 if(cb->isChecked()){
                     conditionsToBeEcrased.emplace_back(std::make_pair(
-                        ElementKey{routine->key()}, ConditionKey{routine->conditions[to_unsigned(ii)]->key()}));
+                        ElementKey{routine->key()}, ConditionKey{routine->conditions[to_size_t(ii)]->key()}));
                 }
             }
         }
@@ -59,7 +59,7 @@ CopyToConditionDialog::CopyToConditionDialog(){
 
     connect(ui.pbCheckAllConds, &QPushButton::clicked, this, [&](){
 
-        auto id = to_unsigned(ui.twRoutines->currentIndex());
+        auto id = to_size_t(ui.twRoutines->currentIndex());
         auto lw = conditionsPerRoutines[id-1].second.get();
         for(int ii = 0; ii < lw->count(); ++ii){
             auto w = lw->widget_at(ii)->layout()->itemAt(0)->widget();
@@ -73,7 +73,7 @@ CopyToConditionDialog::CopyToConditionDialog(){
 
     connect(ui.pbUncheckAllConds, &QPushButton::clicked, this, [&](){
 
-        auto id = to_unsigned(ui.twRoutines->currentIndex());
+        auto id = to_size_t(ui.twRoutines->currentIndex());
         auto lw = conditionsPerRoutines[id-1].second.get();
         for(int ii = 0; ii < lw->count(); ++ii){
 

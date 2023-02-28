@@ -405,10 +405,10 @@ void ConnectorNodeDataModel::update_with_info(QStringView id, QStringView value)
 
 
 std::shared_ptr<QtNodes::NodeData> ConnectorNodeDataModel::outData(QtNodes::PortIndex index){
-    return outputData[to_unsigned(index)];
+    return outputData[to_size_t(index)];
 }
 
 void ConnectorNodeDataModel::setInData(std::shared_ptr<QtNodes::NodeData> nodeData, QtNodes::PortIndex index){
-    inputData[to_unsigned(index)] = nodeData;
+    inputData[to_size_t(index)] = nodeData;
     compute();
 }

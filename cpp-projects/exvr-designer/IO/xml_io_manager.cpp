@@ -37,6 +37,7 @@
 #include "utility/math.hpp"
 
 // local
+#include "utility/path_utility.hpp"
 #include "data/flow_elements/node_flow.hpp"
 
 
@@ -906,7 +907,7 @@ std::tuple<std::unique_ptr<Connection>, QString> XmlIoManager::read_connection(C
                 return {nullptr, QSL("Invalid ") % connection->to_string() % QSL(" from ") % condition->to_string() + QSL(", component doesn't have any signal.")};
             }else{
 
-                if(to_unsigned(connection->startIndex) >= Component::signals_count(component->type)){
+                if(to_size_t(connection->startIndex) >= Component::signals_count(component->type)){
                     return {nullptr, QSL("Invalid ") % connection->to_string() % QSL(" from ") % condition->to_string() % QSL(", id signal is bigger than number of signals available.")};
                 }
             }
@@ -918,7 +919,7 @@ std::tuple<std::unique_ptr<Connection>, QString> XmlIoManager::read_connection(C
         if(auto connector = condition->get_connector_from_key(ConnectorKey{connection->startKey})){
 
             const auto io = Connector::get_io(connector->type);
-            if(to_unsigned(connection->startIndex) >= io.outNb){
+            if(to_size_t(connection->startIndex) >= io.outNb){
                 return {nullptr, QSL("Invalid ") % connection->to_string() % QSL(" from ") % condition->to_string() % QSL(", id signal is bigger than number of signals available.")};
             }
 
@@ -935,7 +936,7 @@ std::tuple<std::unique_ptr<Connection>, QString> XmlIoManager::read_connection(C
             if(!Component::has_slots(component->type)){ // no signals
                 return {nullptr, QSL("Invalid ") % connection->to_string() % QSL(" from ") % condition->to_string() % QSL(", component not found in condition.")};
             }else{
-                if(to_unsigned(connection->endIndex) >= Component::slots_count(component->type)){
+                if(to_size_t(connection->endIndex) >= Component::slots_count(component->type)){
                     return {nullptr, QSL("Invalid ") % connection->to_string() % QSL(" from ") % condition->to_string() % QSL(", id slot is bigger than number of slots available.")};
                 }
             }
@@ -948,7 +949,7 @@ std::tuple<std::unique_ptr<Connection>, QString> XmlIoManager::read_connection(C
         if(auto connector = condition->get_connector_from_key(ConnectorKey{connection->endKey})){
 
             const auto io = Connector::get_io(connector->type);
-            if(to_unsigned(connection->endIndex) >= io.inNb){
+            if(to_size_t(connection->endIndex) >= io.inNb){
                 return {nullptr, QSL("Invalid ") % connection->to_string() % QSL(" from ") % condition->to_string() % QSL(", id slot is bigger than number of slots available.")};
             }
 

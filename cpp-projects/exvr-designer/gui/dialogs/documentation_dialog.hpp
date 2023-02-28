@@ -24,6 +24,8 @@
 
 #pragma once
 
+// base
+#include "utility/map.hpp"
 
 // Qt
 #include <QDialog>
@@ -194,8 +196,8 @@ private:
     QHBoxLayout *mainLayout = nullptr;
     SectionW *documentationsCategoriesW = nullptr;
     // sub categories
-    std::unordered_map<DocSection, QWidget*> sectionsWidgets;
-    std::unordered_map<DocSection, QString> sectionsDocContent;
+    umap<DocSection, QWidget*> sectionsWidgets;
+    umap<DocSection, QString> sectionsDocContent;
 
     // buttons
     QPushButton *genPb = nullptr;
