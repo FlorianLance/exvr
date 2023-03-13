@@ -543,8 +543,8 @@ void ExVrController::show_component_informations_dialog(ComponentKey componentKe
                 continue;
             }
 
-            std_v1<std::tuple<Condition*, Action*>> conditionsContainingComponent;
-            std_v1<Condition*> conditionsNotContainingComponent;
+            std::vector<std::tuple<Condition*, Action*>> conditionsContainingComponent;
+            std::vector<Condition*> conditionsNotContainingComponent;
             for(const auto& condition : routine->conditions){
                 if(auto action = condition->get_action_from_component_key(componentKey, false); action != nullptr){
                     conditionsContainingComponent.emplace_back(std::make_tuple(condition.get(), action));

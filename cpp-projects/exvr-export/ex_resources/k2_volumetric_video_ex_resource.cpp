@@ -116,7 +116,7 @@ bool K2VolumetricVideoExResource::load(const std::string &path){
         models[ii] = model;
 
         // read camera intrinsics
-        intrinsics[ii] = std_v1<float>(4);
+        intrinsics[ii] = std::vector<float>(4);
         // focalLengthX
         // focalLengthY
         // principalPointX

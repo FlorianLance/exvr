@@ -51,15 +51,15 @@ public:
 
     void ask_for_frame();
 
-    std_v1<tool::scan::GrabberControllerUP> grabbers;
+    std::vector<tool::scan::GrabberControllerUP> grabbers;
     std::unordered_map<size_t, camera::K2CloudDisplayData*> grabbersCloudData;
     std::unordered_map<size_t, camera::K2MeshDisplayData*> grabbersMeshData;
     std::unordered_map<size_t, camera::K2BodiesDisplayData*> grabbersBodiesData;
     tool::network::UdpReaderManagerUP udpManager = nullptr;
 
     std::unordered_map<std::uint64_t, int> bodiesId;
-    std_v1<camera::K2GrabberTargetInfo> networkInfos;
-    std_v1<geo::Mat4d> calibrationsM;
+    std::vector<camera::K2GrabberTargetInfo> networkInfos;
+    std::vector<geo::Mat4d> calibrationsM;
 
     bool cleaned = false;
     bool debugBypass = false;

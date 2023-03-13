@@ -59,16 +59,16 @@ ConnectionsW::ConnectionsW(ElementKey routineKey, ConditionKey conditionKey) : m
 
     // # view
     connect(m_view, &ExFlowView::mouse_pressed_event_signal, this, [&](){
-        std_v1<ComponentKey> componentsKey;
-        std_v1<ConnectorKey> connectorsKey;
-        std_v1<ConnectionKey> connectionsKey;
+        std::vector<ComponentKey> componentsKey;
+        std::vector<ConnectorKey> connectorsKey;
+        std::vector<ConnectionKey> connectionsKey;
         get_current_selection(componentsKey, connectorsKey, connectionsKey);
         emit GSignals::get()->select_nodes_and_connections_signal(routine_key(), condition_key(), std::move(connectorsKey), std::move(componentsKey),  std::move(connectionsKey), false);
     });
     connect(m_view, &ExFlowView::mouse_release_event_signal, this, [&](){
-        std_v1<ComponentKey> componentsKey;
-        std_v1<ConnectorKey> connectorsKey;
-        std_v1<ConnectionKey> connectionsKey;
+        std::vector<ComponentKey> componentsKey;
+        std::vector<ConnectorKey> connectorsKey;
+        std::vector<ConnectionKey> connectionsKey;
         get_current_selection(componentsKey, connectorsKey, connectionsKey);
         emit GSignals::get()->select_nodes_and_connections_signal(routine_key(), condition_key(), std::move(connectorsKey), std::move(componentsKey),  std::move(connectionsKey), false);
     });
@@ -78,9 +78,9 @@ ConnectionsW::ConnectionsW(ElementKey routineKey, ConditionKey conditionKey) : m
         m_mousePosition      = pos;
         m_viewMappedPosition = mappedPos;
 
-        std_v1<ComponentKey> componentsKey;
-        std_v1<ConnectorKey> connectorsKey;
-        std_v1<ConnectionKey> connectionsKey;
+        std::vector<ComponentKey> componentsKey;
+        std::vector<ConnectorKey> connectorsKey;
+        std::vector<ConnectionKey> connectionsKey;
         get_current_selection(componentsKey, connectorsKey, connectionsKey);
 
         m_contextMenu.exec(pos, nodeModelUnderMouse, connectionUnderMouse, componentsKey, connectorsKey, connectionsKey);
@@ -160,7 +160,7 @@ void ConnectionsW::close_all_connectors_windows(){
     }
 }
 
-void ConnectionsW::get_current_selection(std_v1<ComponentKey> &componentsKey, std_v1<ConnectorKey> &connectorsKey, std_v1<ConnectionKey> &connectionsKey){
+void ConnectionsW::get_current_selection(std::vector<ComponentKey> &componentsKey, std::vector<ConnectorKey> &connectorsKey, std::vector<ConnectionKey> &connectionsKey){
 
     componentsKey.clear();
     connectorsKey.clear();
@@ -205,9 +205,9 @@ void ConnectionsW::get_current_selection(std_v1<ComponentKey> &componentsKey, st
 
 void ConnectionsW::delete_selection(){
 
-    std_v1<ComponentKey> componentsKey;
-    std_v1<ConnectorKey> connectorsKey;
-    std_v1<ConnectionKey> connectionsKey;
+    std::vector<ComponentKey> componentsKey;
+    std::vector<ConnectorKey> connectorsKey;
+    std::vector<ConnectionKey> connectionsKey;
     get_current_selection(componentsKey, connectorsKey, connectionsKey);
 
     if(componentsKey.size() > 0 || connectorsKey.size() > 0 || connectionsKey.size() > 0){
@@ -264,9 +264,9 @@ void ConnectionsW::add_connection(Connection *connection){
     m_connections[connectionW->id()] = std::make_pair(connectionW.get(), ConnectionKey{connection->key()});
 }
 
-void ConnectionsW::add_nodes_and_connections_to_scene(std_v1<Action *> componentsNodesToAdd, std_v1<Connector *> connectorsNodesToAdd, std_v1<Connection *>){
+void ConnectionsW::add_nodes_and_connections_to_scene(std::vector<Action *> componentsNodesToAdd, std::vector<Connector *> connectorsNodesToAdd, std::vector<Connection *>){
 
-    std_v1<std::tuple<bool, std::unique_ptr<NodeDataModel>,QPointF>> nodesDataModelType;
+    std::vector<std::tuple<bool, std::unique_ptr<NodeDataModel>,QPointF>> nodesDataModelType;
 
     // generate components data model
     for(auto componentNodesToAdd: componentsNodesToAdd){
@@ -522,9 +522,9 @@ void ConnectionsW::reset(){
 
 void ConnectionsW::add_new_elements_from_condition(Condition *condition){
 
-    std_v1<Action*> commonentsNodesToAdd;
-    std_v1<Connector*> connectorsToAdd;
-    std_v1<Connection*> connectionsToAdd;
+    std::vector<Action*> commonentsNodesToAdd;
+    std::vector<Connector*> connectorsToAdd;
+    std::vector<Connection*> connectionsToAdd;
 
     // components nodes
     for(auto &action : condition->actions_with_nodes()){
@@ -622,7 +622,7 @@ void ConnectionsW::remove_elements_from_condition(Condition *condition){
 
     // connections
     // # find connections to be removed
-    std_v1<QUuid> qidToRemove;
+    std::vector<QUuid> qidToRemove;
     for(const auto& p : m_connections){
 
         bool found = false;
@@ -654,7 +654,7 @@ void ConnectionsW::remove_elements_from_condition(Condition *condition){
 
     // components nodes
     // # find nodes to be removed
-    std_v1<int> toRemove;
+    std::vector<int> toRemove;
     for(const auto& p : m_componentsNodes){
 
         bool found = false;
@@ -807,9 +807,9 @@ void ConnectionsContextMenu::exec(
     QPoint pos,
     BaseNodeDataModel *nodeModelUnderMouse,
     QtNodes::Connection *connectionUnderMouse,
-    const std_v1<ComponentKey> &componentsKey,
-    const std_v1<ConnectorKey> &connectorsKey,
-    const std_v1<ConnectionKey> &connectionsKey){
+    const std::vector<ComponentKey> &componentsKey,
+    const std::vector<ConnectorKey> &connectorsKey,
+    const std::vector<ConnectionKey> &connectionsKey){
 
     const bool selectionEmpty = componentsKey.size() == 0 && connectorsKey.size() == 0 && connectionsKey.size() == 0;
     const bool noOnlyConnectionsSelected = componentsKey.size() > 0 || connectorsKey.size() > 0;

@@ -44,7 +44,7 @@ protected:
     virtual void create_connections(){}
     virtual void late_update_ui(){}
 public:
-    std_v1<std::pair<QStringView, ExBaseW*>> inputUiElements;
+    std::vector<std::pair<QStringView, ExBaseW*>> inputUiElements;
     QFrame *frame = nullptr;
 };
 

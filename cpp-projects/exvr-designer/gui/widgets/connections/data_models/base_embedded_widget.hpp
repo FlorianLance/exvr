@@ -92,7 +92,7 @@ public:
 
 signals:
 
-    void update_internal_data_signal(std_v1<size_t> indexes, std_v1<std::shared_ptr<NodeData>> nodes);
+    void update_internal_data_signal(std::vector<size_t> indexes, std::vector<std::shared_ptr<NodeData>> nodes);
     void compute_data_signal();
     void ask_node_to_update();
 
@@ -104,7 +104,7 @@ protected:
     QPushButton m_helpButton;
 
     std::optional<QString> m_dialogTitle;
-    std_v1<std::tuple<QString, QWidget*, bool>> m_dialogWidgetsRows;
+    std::vector<std::tuple<QString, QWidget*, bool>> m_dialogWidgetsRows;
     std::unique_ptr<NodeDataDisplayDialog> m_dataDisplayD = nullptr;
 
 

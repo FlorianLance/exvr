@@ -121,7 +121,7 @@ bool K2ManagerExComponent::initialize(){
 
     // transmit calibration matrices
     for(size_t ii = 0; ii < calibrationsM.size(); ++ii){
-        std_v1<float> m(16, 0.f);
+        std::vector<float> m(16, 0.f);
         for(size_t jj = 0; jj < 16; ++jj){
             m[jj] = static_cast<float>(calibrationsM[ii].array[jj]);
         }

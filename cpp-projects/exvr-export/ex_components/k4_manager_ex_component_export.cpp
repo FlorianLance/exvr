@@ -40,3 +40,6 @@ void retrieve_cloud_frame_data_k4_manager_ex_component(
     lastFrameState[1] = static_cast<int>(std::get<1>(ret));
     lastFrameState[2] = static_cast<int>(std::get<2>(ret));
 }
+
+
+// store frame

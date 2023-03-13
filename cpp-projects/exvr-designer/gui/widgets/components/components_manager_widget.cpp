@@ -258,7 +258,7 @@ void ComponentsManagerW::initialize_menues(){
     }
 
     // fill types categories mapping
-    using umComps = std::unordered_map<Component::Category, std_v1<Component::Type>>;
+    using umComps = std::unordered_map<Component::Category, std::vector<Component::Type>>;
     umComps stableComponentsT;
     umComps experimentalComponentsT;
     umComps legacyComponentsT;

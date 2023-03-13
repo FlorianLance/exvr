@@ -171,7 +171,7 @@ void ExResourcesListW::update_from_resources(){
     if(auto resources = ExperimentManager::get()->current()->resM.get_resources(m_resourceType.value()); resources.size() > 0){
 
         // remove resources keys not existing anymore
-        std_v1<int> elemsToRemove;
+        std::vector<int> elemsToRemove;
         for(size_t ii = 0; ii < m_resourcesKeys.size(); ++ii){
 
             bool found = false;

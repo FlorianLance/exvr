@@ -45,9 +45,9 @@ struct CloudData{
 
     std::uint32_t id;
     std::int64_t timeStamp;
-    std_v1<std::uint32_t> depth;
-    std_v1<unsigned char> colors;
-    std_a1<tool::camera::K2BodyInfos,6> bodies;
+    std::vector<std::uint32_t> depth;
+    std::vector<unsigned char> colors;
+    std::array<tool::camera::K2BodyInfos,6> bodies;
 };
 
 struct CameraData{
@@ -57,10 +57,10 @@ struct CameraData{
 
     int currentCloudId = -1;
 
-    std_v1<unsigned char> bufferDecompressColor;
-    std_v1<std::uint16_t> decodedDepth;
-    std_v1<bool> validityDepth2Rgb;
-    std_v1<std::uint32_t> validIdPerPointMesh;
+    std::vector<unsigned char> bufferDecompressColor;
+    std::vector<std::uint16_t> decodedDepth;
+    std::vector<bool> validityDepth2Rgb;
+    std::vector<std::uint32_t> validIdPerPointMesh;
     tool::camera::K2CloudDisplayData cloudData;
     tool::camera::K2BodiesDisplayData bodiesData;
 
@@ -75,15 +75,15 @@ struct FrameData{
 
 struct K2VolumetricVideoExResource : public ExResource{
 
-    std_v1<std::unique_ptr<CameraData>> cameras;
+    std::vector<std::unique_ptr<CameraData>> cameras;
 
     std::chrono::nanoseconds duration;
 
     size_t nbClouds  = 0;
     size_t nbCameras = 0;
 
-    std::unordered_map<size_t, std_v1<float>> intrinsics;
-    std::unordered_map<size_t, std_v1<CloudData>> data;
+    std::unordered_map<size_t, std::vector<float>> intrinsics;
+    std::unordered_map<size_t, std::vector<CloudData>> data;
     std::unordered_map<size_t, geo::Mat4d> models;
     std::unordered_map<size_t, std::set<int>> bodiesId;
 

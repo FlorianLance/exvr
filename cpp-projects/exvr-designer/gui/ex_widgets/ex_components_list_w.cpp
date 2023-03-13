@@ -193,7 +193,7 @@ void ExComponentsListW::update_from_components(){
 
 
     // remove component keys not existing anymore
-    std_v1<int> elemsToRemove;
+    std::vector<int> elemsToRemove;
     for(size_t ii = 0; ii < m_componentsKeys.size(); ++ii){
 
         bool found = false;

@@ -500,7 +500,7 @@ void Condition::move_action_down(ActionKey actionKey){
 }
 
 
-std_v1<Action *> Condition::actions_with_nodes() const{
+std::vector<Action *> Condition::actions_with_nodes() const{
 
     auto count = std::count_if(
                 actions.begin(),
@@ -508,7 +508,7 @@ std_v1<Action *> Condition::actions_with_nodes() const{
         return action->nodeUsed;
     });
 
-    std_v1<Action*> actionsWithNodes;
+    std::vector<Action*> actionsWithNodes;
     actionsWithNodes.reserve(static_cast<size_t>(count));
     for(const auto &action : actions){
         if(action->nodeUsed){

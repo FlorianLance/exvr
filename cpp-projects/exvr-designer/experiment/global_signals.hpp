@@ -188,9 +188,9 @@ signals:
     void unselect_nodes_and_connections_signal(tool::ex::ElementKey routineKey,tool::ex::ConditionKey conditionKey, bool doUpdate);
     void delete_selected_nodes_signal(tool::ex::ElementKey routineKey,tool::ex::ConditionKey conditionKey);
     void delete_nodes_and_connections_signal(tool::ex::ElementKey routineKey, tool::ex::ConditionKey conditionKey,
-        std_v1<tool::ex::ConnectorKey> connectorsKey, std_v1<tool::ex::ComponentKey> componentsKey, std_v1<tool::ex::ConnectionKey> connectionsKey, bool doUpdate);
+        std::vector<tool::ex::ConnectorKey> connectorsKey, std::vector<tool::ex::ComponentKey> componentsKey, std::vector<tool::ex::ConnectionKey> connectionsKey, bool doUpdate);
     void select_nodes_and_connections_signal(tool::ex::ElementKey routineKey, tool::ex::ConditionKey conditionKey,
-        std_v1<tool::ex::ConnectorKey> connectorsKey, std_v1<tool::ex::ComponentKey> componentsKey, std_v1<tool::ex::ConnectionKey> connectionsKey, bool doUpdate);
+        std::vector<tool::ex::ConnectorKey> connectorsKey, std::vector<tool::ex::ComponentKey> componentsKey, std::vector<tool::ex::ConnectionKey> connectionsKey, bool doUpdate);
 
     // resource
     void copy_resource_signal(tool::ex::Resource *resource);

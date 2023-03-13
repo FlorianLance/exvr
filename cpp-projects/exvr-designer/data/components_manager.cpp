@@ -93,7 +93,7 @@ void ComponentsManager::duplicate_component(ComponentKey componentKey){
             add_component_to_map(component.get());
 
             components.insert(
-                components.begin() + static_cast<std_v1<std::unique_ptr<Component>>::difference_type>(compoInfo.first + 1),
+                components.begin() + static_cast<std::vector<std::unique_ptr<Component>>::difference_type>(compoInfo.first + 1),
                 std::move(component)
             );                        
         }

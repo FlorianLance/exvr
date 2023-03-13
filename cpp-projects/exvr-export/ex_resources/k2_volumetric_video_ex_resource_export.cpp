@@ -185,7 +185,7 @@ void body_joints_positions_k2_volumetric_video_ex_resource(K2VolumetricVideoExRe
         if(bodyData.id == static_cast<size_t>(idBody)){
             for(size_t ii = 0; ii < bodyData.joints.size(); ++ii){
                 const auto type = static_cast<K2BodyJointType>(ii);
-                std::copy(std::begin(bodyData.joints[type].pos.v),  std::end(bodyData.joints[type].pos.v), positions + ii*3);
+                std::copy(std::begin(bodyData.joints[type].pos.array),  std::end(bodyData.joints[type].pos.array), positions + ii*3);
             }
             return;
         }

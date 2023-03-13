@@ -201,19 +201,19 @@ struct Connector{
 
     struct IO{
         unsigned int inNb;
-        std_a1<ConnectionNode::Type,maxInputConnection> inTypes;
+        std::array<ConnectionNode::Type,maxInputConnection> inTypes;
         unsigned int outNb;
-        std_a1<ConnectionNode::Type,maxOutputConnection> outTypes;
+        std::array<ConnectionNode::Type,maxOutputConnection> outTypes;
     };
 
     struct IO2{
 
-        constexpr IO2(std_a1<ConnectionNode::Type,maxInputConnection> in, std_a1<ConnectionNode::Type,maxOutputConnection> out):
+        constexpr IO2(std::array<ConnectionNode::Type,maxInputConnection> in, std::array<ConnectionNode::Type,maxOutputConnection> out):
               inTypes(in), outTypes(out),inNb(in.size()),outNb(out.size()){
         }
 
-        std_a1<ConnectionNode::Type,maxInputConnection> inTypes;
-        std_a1<ConnectionNode::Type,maxOutputConnection> outTypes;
+        std::array<ConnectionNode::Type,maxInputConnection> inTypes;
+        std::array<ConnectionNode::Type,maxOutputConnection> outTypes;
         size_t inNb;
         size_t outNb;
     };
@@ -222,8 +222,8 @@ struct Connector{
 
     struct Style{
         bool captionVisibility;
-        std_a1<bool, maxInputConnection> inPortsVisibility;
-        std_a1<bool, maxOutputConnection> outPortsVisibility;
+        std::array<bool, maxInputConnection> inPortsVisibility;
+        std::array<bool, maxOutputConnection> outPortsVisibility;
     };
 
     enum class Interactivity{

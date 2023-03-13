@@ -43,7 +43,7 @@ struct AudioSourceInitConfigParametersW::Impl{
     ExCheckBoxW generateNewSound = {"generate_new_sound"};
     ExComboBoxIndexW newSoundChannels = {"new_sound_channel"};
     ExTextEditW infoText;
-    std_v1<std::unique_ptr<ExLineEditW>> channelsToCopy;
+    std::vector<std::unique_ptr<ExLineEditW>> channelsToCopy;
 };
 
 AudioSourceInitConfigParametersW::AudioSourceInitConfigParametersW() :  ConfigParametersW(), m_p(std::make_unique<Impl>()){
@@ -63,7 +63,7 @@ void AudioSourceInitConfigParametersW::insert_widgets(){
     m_p->infoText.w->setMinimumHeight(100);
 
     // new sound
-    std_v1<QWidget*> channelsW;
+    std::vector<QWidget*> channelsW;
     for(size_t ii = 0; ii < 8; ++ii){
         auto layout = ui::L::HB();
         layout->addWidget(ui::W::txt("Copy channel " + QString::number(ii+1) + " to channel: "));

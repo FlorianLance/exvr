@@ -99,8 +99,8 @@ void RoutineTabW::update_from_routine(GUI *gui, Routine *routine){
     Bench::start("RoutineTabW update_from_routine 1"sv, display);
 
     // find conditions to remove
-    std_v1<size_t> idCondsToRemove;
-    std_v1<bool> conditionsMask(routine->conditions.size(), true);
+    std::vector<size_t> idCondsToRemove;
+    std::vector<bool> conditionsMask(routine->conditions.size(), true);
     for(int ii = count()-1; ii >= 0; --ii){
 
         auto currentTabConditionKey = qobject_cast<ConditionW*>(widget(ii))->condition_key();

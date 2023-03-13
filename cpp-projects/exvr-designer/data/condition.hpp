@@ -66,7 +66,7 @@ struct Condition  {
     Action *get_action_from_key(ActionKey actionKey, bool displayError = true) const;
     Action *get_action_from_component_key(ComponentKey componentKey, bool displayError = true) const;
     Action *get_action_from_id(RowId  idTab, bool displayError = true) const;
-    std_v1<Action*> actions_with_nodes() const;
+    std::vector<Action*> actions_with_nodes() const;
     void move_action_up(ActionKey actionKey);
     void move_action_down(ActionKey actionKey);
     void remove_action(ActionKey actionKey);
@@ -108,14 +108,14 @@ struct Condition  {
 
     bool selected = false;
 
-    std_v1<std::unique_ptr<Connection>> connections;
-    std_v1<std::unique_ptr<Connector>> connectors;
-    std_v1<std::unique_ptr<Action>> actions;
+    std::vector<std::unique_ptr<Connection>> connections;
+    std::vector<std::unique_ptr<Connector>> connectors;
+    std::vector<std::unique_ptr<Action>> actions;
 
     // copy
     static inline bool currentNodesCopySet = false;
-    static inline std_v1<std::unique_ptr<Connector>> connectorsToCopy = {};
-    static inline std_v1<std::unique_ptr<Connection>> connectionsToCopy = {};
+    static inline std::vector<std::unique_ptr<Connector>> connectorsToCopy = {};
+    static inline std::vector<std::unique_ptr<Connection>> connectionsToCopy = {};
 
 private:
 

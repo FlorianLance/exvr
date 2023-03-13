@@ -47,7 +47,7 @@ using namespace tool::ex;
 //    return nullptr;
 //}
 
-std_v1<Resource *> ResourcesManager::get_resources(Resource::Type type) const{
+std::vector<Resource *> ResourcesManager::get_resources(Resource::Type type) const{
 
     if(m_resourcesPerType.count(type) == 0){
         return {};
