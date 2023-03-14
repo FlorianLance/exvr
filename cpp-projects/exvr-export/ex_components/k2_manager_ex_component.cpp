@@ -115,7 +115,7 @@ bool K2ManagerExComponent::initialize(){
 
         calibrationsM.resize(networkInfos.size());
         for(auto &m : calibrationsM){
-            m = geo::Mat4d(true);
+            m = geo::Mat4d::identity();
         }
     }
 
