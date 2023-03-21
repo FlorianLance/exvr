@@ -27,9 +27,6 @@
 // Qt
 #include <QStringList>
 
-// base
-#include "utility/vector.hpp"
-
 // qt-utility
 #include "qt_str.hpp"
 #include "data/id_key.hpp"
@@ -386,16 +383,17 @@ struct Component {
 
     using TComponentSlots = std::tuple<
         T,                             FunctionN,                      CNT,                    Doc>;
-    static constexpr TupleArray<126,TComponentSlots> componentsSlots = {{        
+    static constexpr TupleArray<127,TComponentSlots> componentsSlots = {{
         TComponentSlots
         // Acquisition
+        {T::Biopac,                    "inused"sv,                     CNT::void_t,            "TODO: Remove it"sv},
+        {T::Fop_robot,                 "set delay"sv,                  CNT::integer_t,         "..."sv},
+        {T::Fop_robot,                 "set force ratio"sv,            CNT::float_t,           "..."sv},
+        {T::K4_manager,                "set delay (ms)"sv,             CNT::integer_t,         "Delay to be applied on grabbers"sv},
         {T::Leap_motion_arms_display,  "trigger"sv,                    CNT::void_t,            "..."sv},
         {T::Leap_motion_arms_display,  "update frame"sv,               CNT::lm_frame_t,        "..."sv},
         {T::Leap_motion_tracking,      "update tracking"sv,            CNT::lm_hands_frame_t,  "..."sv},
         {T::Thera_trainer_platform,    "update rotation"sv,            CNT::vector2_t,         "Set thera trainer platform current rotation angles"sv},
-        {T::Biopac,                    "inused"sv,                     CNT::void_t,            "TODO: Remove it"sv},
-        {T::Fop_robot,                 "set delay"sv,                  CNT::integer_t,         "..."sv},
-        {T::Fop_robot,                 "set force ratio"sv,            CNT::float_t,           "..."sv},
         // Audio
         {T::AudioSource,               "play"sv,                       CNT::void_t,            "..."sv},
         {T::AudioSource,               "pause"sv,                      CNT::void_t,            "..."sv},

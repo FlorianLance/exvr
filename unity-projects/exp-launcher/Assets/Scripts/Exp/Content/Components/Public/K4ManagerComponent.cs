@@ -14,6 +14,7 @@ using UnityEngine;
 using UnityEngine.Profiling;
 using Unity.Collections;
 using UnityEngine.Rendering;
+using JetBrains.Annotations;
 
 namespace Ex {
 
@@ -55,7 +56,11 @@ namespace Ex {
                 log_warning("Debug bypass enabled, no cloud will be generated.");
             }
 
-            log_message("device_init_file -> " + initC.get<bool>("device_init_file"));
+            add_slot("set delay (ms)", (value) => {
+                int delay = Mathf.Clamp((int)value, 0, 5000);
+                cppDll.set(Parameters.Container.Dynamic, "delay", delay);
+                cppDll.update_from_current_config();
+            });
 
             var networkFile = ExVR.Resources().get_text_file_data(initC.get_resource_alias("network_settings"), false);
             if(networkFile == null) {
@@ -205,6 +210,15 @@ namespace Ex {
             cppDll.clean();
         }
 
+        protected override void update_parameter_from_gui(string updatedArgName) {
+            update_from_current_config();
+        }
+
+        public override void update_from_current_config() {
+            cppDll.set(Parameters.Container.Dynamic, "delay", currentC.get<int>("delay"));
+            cppDll.update_from_current_config();
+        }
+
         protected override void update() {
 
 
@@ -270,6 +284,7 @@ namespace Ex {
         #endregion
 
         #region public_functions
+
 
         public int connections_nb() {
             return m_nbConnections;

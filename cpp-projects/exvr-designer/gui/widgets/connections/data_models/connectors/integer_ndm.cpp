@@ -22,11 +22,7 @@
 ** SOFTWARE.                                                                      **
 ************************************************************************************/
 
-
 #include "integer_ndm.hpp"
-
-// qt-utility
-#include "qt_logger.hpp"
 
 using namespace tool::ex;
 
@@ -78,7 +74,7 @@ void IntegerNodeDataModel::compute(){
     // propagate
     int value = data1->value();
     propagate_data(
-        str::Convertor::to_str(value),
+        str::Convertor::to_str(value,5),
         {
             std::make_shared<IntData>(std::move(value))
         } );

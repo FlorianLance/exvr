@@ -60,7 +60,7 @@ struct Connector{
         {C::Legacy,    "Legacy"sv      },
     }};
 
-    static auto get_name(C c) {
+    static auto get_name(C c) -> Name{
         return categories.at<0,1>(c);
     }
 
@@ -72,7 +72,7 @@ struct Connector{
         return categories.tuple_column<1>();
     }
 
-    static auto get_category_from_name(Name n) {
+    static auto get_category_from_name(Name n) -> std::optional<Category> {
         return categories.optional_at<1,0>(n);
     }
 
@@ -360,7 +360,7 @@ struct Connector{
         {T::Start_routine,          C::Flow,      H, {0,{},                        5,{t_str, t_str, t_int, t_int, t_real}}, {v,{},   {v,v,v,v,v}}, LO, FO, 0, PT},
         {T::Stop_routine,           C::Flow,      H, {0,{},                        2,{t_str, t_str}},         {v,{},        {v,v}},   LO, FO, 0, PT},
         {T::Pre_update_routine,     C::Flow,      H, {0,{},                        1,{t_real}},                {v,{},        {v}},     LO, FO, 0, PT},
-        {T::Update_routine,         C::Flow,      H, {0,{},                        1,{t_real}},                {v,{},        {v}},     LO, FO, 0, PT},
+        {T::Update_routine,         C::Flow,      H, {0,{},                        2,{t_real,t_real}},         {v,{},        {v,v}},    LO, FO, 0, PT},
         {T::Post_update_routine,    C::Flow,      H, {0,{},                        1,{t_real}},                {v,{},        {v}},     LO, FO, 0, PT},
         {T::Routine_condition,      C::Flow,      H, {1,{t_int},                   1,{t_str}},                 {v,{v},        {v}},    IN, FO, 1, PT},
         // # Resource

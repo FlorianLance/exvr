@@ -52,8 +52,6 @@ struct GrabberSettings{
     camera::K4DeviceSettings device = camera::K4DeviceSettings::default_init_for_manager();
     camera::K4ColorSettings color;
     camera::K4Model model;
-
-
 };
 
 struct K4ManagerExComponent::Impl{
@@ -119,7 +117,7 @@ struct K4ManagerExComponent::Impl{
 K4ManagerExComponent::K4ManagerExComponent() :  i(std::make_unique<Impl>()){
 }
 
-bool K4ManagerExComponent::initialize(){
+auto K4ManagerExComponent::initialize() -> bool{
 
     Logger::set_logger_ptr(logger = exp->logger.get());
     log_message(std::format("Initialize K4ManagerExComponent with key {}.\n", key()));
@@ -168,7 +166,7 @@ bool K4ManagerExComponent::initialize(){
     set<int>(ParametersContainer::Dynamic, "nb_connections", static_cast<int>(nbConnections));
 
     // read others settings files
-    std::vector<files::BinarySettings*> devicesS,colorS,filtersS;
+    std::vector<files::BinaryFileSettings*> devicesS,colorS,filtersS;
     std::vector<files::TextSettings*> modelsS;
     size_t idG = 0;
     for(auto &grabberS : i->grabbersS){
@@ -182,7 +180,7 @@ bool K4ManagerExComponent::initialize(){
     // # device
     if(get<int>(ParametersContainer::InitConfig, "device_init_file") == 1){
         if(std::filesystem::exists(deviceSettingsPath)){
-            if(!files::BinarySettings::init_from_file(devicesS, deviceSettingsPath)){
+            if(!files::BinaryFileSettings::init_from_file(devicesS, deviceSettingsPath)){
                 Logger::error(std::format("Error while reading device settings file with path [{}].\n", deviceSettingsPath));
                 return false;
             }
@@ -197,7 +195,7 @@ bool K4ManagerExComponent::initialize(){
     // # filters
     if(get<int>(ParametersContainer::InitConfig, "filters_init_file") == 1){
         if(std::filesystem::exists(filtersSettingsPath)){
-            if(!files::BinarySettings::init_from_file(filtersS, filtersSettingsPath)){
+            if(!files::BinaryFileSettings::init_from_file(filtersS, filtersSettingsPath)){
                 Logger::error(std::format("Error while reading filters file with path [{}].\n", filtersSettingsPath));
                 return false;
             }
@@ -211,7 +209,7 @@ bool K4ManagerExComponent::initialize(){
     // # color
     if(get<int>(ParametersContainer::InitConfig, "color_init_file") == 1){
         if(std::filesystem::exists(colorSettingsPath)){
-            if(!files::BinarySettings::init_from_file(colorS, colorSettingsPath)){
+            if(!files::BinaryFileSettings::init_from_file(colorS, colorSettingsPath)){
                 Logger::error(std::format("Error while reading color settings file with path [{}].\n", colorSettingsPath));
                 return false;
             }
@@ -261,7 +259,7 @@ bool K4ManagerExComponent::initialize(){
     return true;
 }
 
-void K4ManagerExComponent::clean(){
+auto K4ManagerExComponent::clean() -> void{
 
     if(debugBypass){
         return;
@@ -269,7 +267,7 @@ void K4ManagerExComponent::clean(){
     i->clean();
 }
 
-void K4ManagerExComponent::start_experiment(){
+auto K4ManagerExComponent::start_experiment() -> void{
 
     if(debugBypass){
         return;
@@ -287,7 +285,7 @@ void K4ManagerExComponent::start_experiment(){
 }
 
 
-void K4ManagerExComponent::stop_experiment(){
+auto K4ManagerExComponent::stop_experiment() -> void{
 
     if(debugBypass){
         return;
@@ -297,7 +295,17 @@ void K4ManagerExComponent::stop_experiment(){
     i->delete_connections();
 }
 
-void K4ManagerExComponent::update(){
+auto K4ManagerExComponent::update_from_current_config() -> void{
+
+
+    K4Delay delay;
+    delay.delayMs = get<int>(ParametersContainer::Dynamic, "delay");
+    for(size_t ii = 0; ii < i->grabbersS.size(); ++ii){
+        i->network.send_delay(ii, delay);
+    }
+}
+
+auto K4ManagerExComponent::update() -> void{
 
     if(debugBypass){
         return;
@@ -309,7 +317,7 @@ void K4ManagerExComponent::update(){
 
 }
 
-void K4ManagerExComponent::read_messages(){
+auto K4ManagerExComponent::read_messages() -> void{
 
     if(i->readMessagesM.try_lock()){
 
@@ -348,7 +356,7 @@ void K4ManagerExComponent::read_messages(){
     i->messagesR.clear();
 }
 
-std::tuple<bool, size_t, size_t> K4ManagerExComponent::get_cloud_frame_data(size_t idCamera, size_t currentFrameId, camera::K4VertexMeshData *vertices){
+auto K4ManagerExComponent::get_cloud_frame_data(size_t idCamera, size_t currentFrameId, camera::K4VertexMeshData *vertices) -> std::tuple<bool, size_t, size_t>{
 
     if(auto frame = i->serverData.get_cloud_frame(idCamera); frame != nullptr){
 

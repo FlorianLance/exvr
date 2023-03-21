@@ -39,18 +39,19 @@ public:
 
     K4ManagerExComponent();
 
-    bool initialize() override;
-    void clean() override;
-    void start_experiment() override;
-    void stop_experiment() override;
-    void update() override;
+    auto initialize() -> bool override;
+    auto clean() -> void override;
+    auto start_experiment() -> void override;
+    auto stop_experiment() -> void override;
+    auto update_from_current_config() -> void override;
+    auto update() -> void override;
 
-    void read_messages();           
-    void connect_grabbers();
-    void disconnect_grabbers();
-    void quit_grabbers();
+    auto read_messages() -> void;
+    auto connect_grabbers() -> void;
+    auto disconnect_grabbers() -> void;
+    auto quit_grabbers() -> void;
 
-    std::tuple<bool, size_t, size_t> get_cloud_frame_data(size_t idCamera, size_t currentFrameId, camera::K4VertexMeshData *vertices);
+    auto get_cloud_frame_data(size_t idCamera, size_t currentFrameId, camera::K4VertexMeshData *vertices) -> std::tuple<bool, size_t, size_t>;
 
     bool debugBypass = false;
 
