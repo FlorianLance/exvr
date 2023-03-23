@@ -82,27 +82,27 @@ namespace Ex {
         #region DllImport
 
         //memory management
-        [DllImport("lnco-exvr-export", EntryPoint = "create_k4_volumetric_video_ex_component", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("exvr-export", EntryPoint = "create_k4_volumetric_video_ex_component", CallingConvention = CallingConvention.Cdecl)]
         static private extern IntPtr create_k4_volumetric_video_ex_component(HandleRef volumetricVideoComponent);
 
 
-        [DllImport("lnco-exvr-export", EntryPoint = "uncompress_frame_c4f_k4_volumetric_video_ex_component", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("exvr-export", EntryPoint = "uncompress_frame_c4f_k4_volumetric_video_ex_component", CallingConvention = CallingConvention.Cdecl)]
         static unsafe private extern int uncompress_frame_c4f_k4_volumetric_video_ex_component(
             HandleRef vvc, int idCamera, int idFrame, void* vertices, void* colors);
 
-        [DllImport("lnco-exvr-export", EntryPoint = "uncompress_frame_c3i_k4_volumetric_video_ex_component", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("exvr-export", EntryPoint = "uncompress_frame_c3i_k4_volumetric_video_ex_component", CallingConvention = CallingConvention.Cdecl)]
         static unsafe private extern int uncompress_frame_c3i_k4_volumetric_video_ex_component(
             HandleRef vvc, int idCamera, int idFrame, void* vertices, void* colors);
 
-        [DllImport("lnco-exvr-export", EntryPoint = "uncompress_frame_vmd_k4_volumetric_video_ex_component", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("-exvr-export", EntryPoint = "uncompress_frame_vmd_k4_volumetric_video_ex_component", CallingConvention = CallingConvention.Cdecl)]
         static unsafe private extern int uncompress_frame_vmd_k4_volumetric_video_ex_component(
             HandleRef vvc, int idCamera, int idFrame, void* vertices);
 
-        [DllImport("lnco-exvr-export", EntryPoint = "process_audio_k4_volumetric_video_ex_component", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("exvr-export", EntryPoint = "process_audio_k4_volumetric_video_ex_component", CallingConvention = CallingConvention.Cdecl)]
         static private extern int process_audio_k4_volumetric_video_ex_component(
             HandleRef vvc, int idCamera);
 
-        [DllImport("lnco-exvr-export", EntryPoint = "copy_audio_samples_k4_volumetric_video_ex_component", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("exvr-export", EntryPoint = "copy_audio_samples_k4_volumetric_video_ex_component", CallingConvention = CallingConvention.Cdecl)]
         static unsafe private extern void copy_audio_samples_k4_volumetric_video_ex_component(
             HandleRef vvc, int idCamera, float* audioSamples);
 

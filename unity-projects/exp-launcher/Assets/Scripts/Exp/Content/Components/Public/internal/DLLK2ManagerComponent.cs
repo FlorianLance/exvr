@@ -40,19 +40,19 @@ namespace Ex {
         #region DllImport
 
         // memory management
-        [DllImport("lnco-exvr-export", EntryPoint = "create_k2_manager_ex_component", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("exvr-export", EntryPoint = "create_k2_manager_ex_component", CallingConvention = CallingConvention.Cdecl)]
         static private extern IntPtr create_k2_manager_ex_component();
 
-        [DllImport("lnco-exvr-export", EntryPoint = "update_cloud_k2_manager_ex_component", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("exvr-export", EntryPoint = "update_cloud_k2_manager_ex_component", CallingConvention = CallingConvention.Cdecl)]
         static private extern int update_cloud_k2_manager_ex_component(HandleRef kinectManagerComponent, int idC, IntPtr vertices, IntPtr colors);
 
-        [DllImport("lnco-exvr-export", EntryPoint = "update_mesh_k2_manager_ex_component", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("exvr-export", EntryPoint = "update_mesh_k2_manager_ex_component", CallingConvention = CallingConvention.Cdecl)]
         static private extern void update_mesh_k2_manager_ex_component(HandleRef kinectManagerComponent, int idC, IntPtr vertices, IntPtr colors, IntPtr idTris);
 
-        [DllImport("lnco-exvr-export", EntryPoint = "update_bodies_k2_manager_ex_component", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("exvr-export", EntryPoint = "update_bodies_k2_manager_ex_component", CallingConvention = CallingConvention.Cdecl)]
         static private extern void update_bodies_k2_manager_ex_component(HandleRef kinectManagerComponent, int idC, IntPtr bodiesInfo, IntPtr jointsType, IntPtr jointsState, IntPtr jointsPosition, IntPtr jointsRotation);
 
-        [DllImport("lnco-exvr-export", EntryPoint = "ask_for_frame_k2_manager_ex_component", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("exvr-export", EntryPoint = "ask_for_frame_k2_manager_ex_component", CallingConvention = CallingConvention.Cdecl)]
         static private extern void ask_for_frame_k2_manager_ex_component(HandleRef kinectManagerComponent);
 
 

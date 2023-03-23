@@ -89,12 +89,12 @@ namespace Ex {
             if (processDone) {
                 return;
             }
-
+           
             Parallel.For(0, framesToProcess.Count, ii => {
 
                 var dtp = framesToProcess[ii];
                 Profiler.BeginSample("[ExVR][ProcessVolumetricVideoComponent] uncompress_frame");
-                if(!dtp.cppDll.uncompress_frame(
+                if (!dtp.cppDll.uncompress_frame(
                     dtp.cameraId,
                     dtp.frameId,
                     ref dtp.data.vertices.native
