@@ -119,6 +119,7 @@ namespace Ex {
 
         public List<Tuple<double, double, string>> read_all_messages() {
 
+            Profiler.BeginSample("[ExVR][UdpReceiver][read_all_messages]");
             List<Tuple<double, double, string>> messages = null;
             Tuple<double, double, string> message;
             int size = m_messages.Count;
@@ -128,6 +129,7 @@ namespace Ex {
                 }
                 messages.Add(message);
             }
+            Profiler.EndSample();
             return messages;
         }
 

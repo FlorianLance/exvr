@@ -5,12 +5,47 @@
 ********************************************************************************/
 
 // system
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 // unity
 using UnityEngine;
 
+
 namespace Ex{
+
+
+    public class SoncebozSGProfile {
+        public string[] values = null;
+
+        public string tZero() { return values[0]; }
+        public string tAcc0() { return values[1]; }
+        public string tAcc1() { return values[2]; }
+        public string tAcc() { return values[3]; }
+        public string tDec() { return values[4]; }
+        public string tDec0() { return values[5]; }
+        public string tDec1() { return values[6]; }
+        public string tEnd() { return values[7]; }
+        public string sAcc0() { return values[8]; }
+        public string sAcc1() { return values[9]; }
+        public string sAcc() { return values[10]; }
+        public string sDec() { return values[11]; }
+        public string sDec0() { return values[12]; }
+        public string sDec1() { return values[13]; }
+        public string sEnd() { return values[14]; }
+        public string vAcc0() { return values[15]; }
+        public string vAcc1() { return values[16]; }
+        public string vAcc() { return values[17]; }
+        public string vDec() { return values[18]; }
+        public string vDec0() { return values[19]; }
+        public string vDec1() { return values[20]; }
+        public string vEnd() { return values[21]; }
+        public string vMax() { return values[22]; }
+        public string vInit() { return values[23]; }
+        public string accMax() { return values[24]; }
+        public string decMax() { return values[25]; }
+    }
 
     public class SoncebozSGComponent : ExComponent{
 
@@ -18,8 +53,12 @@ namespace Ex{
         private UdpCommunication m_udp = null;
         private bool m_movementStarted = false;
 
+        int nbFeedbacksReceived = 0;
         public TransformValue lastFeedback = new TransformValue();
-        public List<TransformValue> lastFeedbacks = new List<TransformValue>();
+
+        public SoncebozSGProfile lastProfile = new SoncebozSGProfile();
+        public List<SoncebozSGProfile> lastProfiles = new List<SoncebozSGProfile>();
+        private List<Tuple<double, double, string>> triggerEvents = null;
 
         #region ex_functions
 
@@ -35,6 +74,8 @@ namespace Ex{
             );
 
             add_signal(m_feedbackS);
+            add_signal("tEnd");
+            add_signal("tAcc");
             log_message(string.Format("Sonceboz communication initialized: {0}",(m_udp.receiver_initialized() && m_udp.sender_initialized())));
 
             return m_udp.receiver_initialized() && m_udp.sender_initialized();
@@ -48,12 +89,9 @@ namespace Ex{
             m_udp.set_reading_mode(false);
         }
 
-        //protected override void set_update_state(bool doUpdate) {
-        //    m_udp.set_reading_mode(doUpdate);
-        //}
 
         protected override void start_routine() {
-            m_movementStarted = false;         
+            m_movementStarted = false;      
         }
 
         protected override void pre_update() {
@@ -63,63 +101,54 @@ namespace Ex{
             }
 
             // process messages
-            UnityEngine.Profiling.Profiler.BeginSample("[ExVR][SoncebozSGComponent] READ MESSAGES");
-            var messages = m_udp.read_all_messages();
-            UnityEngine.Profiling.Profiler.EndSample();
-
-            UnityEngine.Profiling.Profiler.BeginSample("[ExVR][SoncebozSGComponent] PROCESS MESSAGES");
-            if (messages != null) {
-            
-                List<string[]> feedbacks = new List<string[]>();
-                List<string[]> profiles = new List<string[]>();
-
-                lastFeedbacks = new List<TransformValue>();
-
-                foreach (var message in messages) {
-
-                    var content = message.Item3;
-                    var split = content.Split('%');
-                    if (split.Length < 3) {
-                        continue;
-                    }
-
-                    string command = split[0];
-                    if (command.Length == 0) {
-                        continue;
-                    }
-
-                    string id = split[1];
-                    var values = split[2].Split(' ');
-
-                    if (command[0] == 'F') {
-                        if (id[0] == '0') {
-                            feedbacks.Add(values);
-                            //read_feedback(values);
-                        }
-                    } else if (command[0] == 'P') {
-                        if (id[0] == '0') {
-                            profiles.Add(values);
-                            //read_profile(values);
-                        }
-                    }
-                }
-
-                if(feedbacks.Count > 0) {
-                    read_feedback(feedbacks[feedbacks.Count-1]);                    
-                }
-                if (profiles.Count > 0) {
-                    read_profile(profiles[profiles.Count - 1]);
-                }
-                
+            var messages = m_udp.read_all_messages();            
+            if (messages == null) {
+                return;
             }
-            UnityEngine.Profiling.Profiler.EndSample();
 
-            UnityEngine.Profiling.Profiler.BeginSample("[ExVR][SoncebozSGComponent] SIGNALS");
-            // send last feedback values
-            if (is_updating()) {
-                invoke_signal(m_feedbackS, lastFeedback);
+            // process messages
+            var feedbacks = new List<Tuple<Tuple<double, double, string>, string[]>>();
+            var profiles  = new List<Tuple<Tuple<double, double, string>, string[]>>();            
+            foreach (var message in messages) {
+
+                var content = message.Item3;
+                var split = content.Split('%');
+                if (split.Length < 3) {
+                    continue;
+                }
+
+                string command = split[0];
+                if (command.Length == 0) {
+                    continue;
+                }
+
+                string id = split[1];                    
+                if (command[0] == 'F') {
+                    if (id[0] == '0') {
+                        feedbacks.Add(new Tuple<Tuple<double, double, string>, string[]>(message, split[2].Split(' ')));
+                    }
+                } else if (command[0] == 'P') {
+                    if (id[0] == '0') {
+                        profiles.Add(new Tuple<Tuple<double, double, string>, string[]>(message, split[2].Replace(" ", "").Split(';')));
+                    }
+                }
             }
-            UnityEngine.Profiling.Profiler.EndSample();
+
+            if (feedbacks.Count > 0) { 
+                if (process_feedbacks(feedbacks)) {
+                    if (is_updating()) {
+                        invoke_signal(m_feedbackS, lastFeedback);
+                    }
+                }                
+            }
+            if(profiles.Count > 0) {
+                if (process_profiles(profiles)) {
+                    if (is_updating()) {                        
+                        invoke_signal("tEnd", Converter.to_float(lastProfile.tEnd()));
+                        invoke_signal("tAcc", Converter.to_float(lastProfile.tAcc()));
+                    }
+                }
+            }
         }
 
         protected override void clean() {
@@ -133,10 +162,17 @@ namespace Ex{
             }
 
             return string.Format("{0} {1} {1}",
-                Converter.to_int(lastFeedbacks.Count),
+                Converter.to_int(nbFeedbacksReceived),
                 Converter.to_string(lastFeedback.position, Converter.g7, " "),
                 Converter.to_string(lastFeedback.rotation.eulerAngles, Converter.g7, " "));
         }
+
+        public override List<Tuple<double, double, string>> format_trigger_data_for_global_logger() {
+            var tEvents = triggerEvents;
+            triggerEvents = null;
+            return tEvents;
+        }
+
 
         #endregion
 
@@ -165,11 +201,14 @@ namespace Ex{
             }
         }
 
-        private void read_feedback(string[] values) {
+        private bool process_feedbacks(List<Tuple<Tuple<double, double, string>, string[]>> messages) {
 
             // F%0%1.58784 -9.02029 49.223 1.61245 2.41867 0
+            var lastFeedbackMessage = messages[messages.Count - 1];
+
+            var values = lastFeedbackMessage.Item2;
             if (values.Length < 6) {
-                return;
+                return false;
             }
 
             lastFeedback.position =
@@ -183,128 +222,39 @@ namespace Ex{
                     Converter.to_float(values[4]),
                     Converter.to_float(values[5])
             ));
-            lastFeedbacks.Add(new TransformValue(lastFeedback.position, lastFeedback.rotation, Vector3.one));
-            //log_message("add feedback " + Converter.to_string(lastFeedback.position));
+            nbFeedbacksReceived = messages.Count;
+            return true;
         }
 
-        private void read_profile(string[] values) {
+        private bool process_profiles(List<Tuple<Tuple<double, double, string>, string[]>> messages) {
 
             // P%0%
             // 0; 1.5; 1.50241; 3.00241; 3.00241; 4.50241; 4.50483;
             // 6.00483; 34.5; 34.6668; 207.5; 207.5; 380.333; 380.5; 415; 69;
-            // 69.2221; 138.222; 138.222; 69.2221; 69; 0; 138.222; 0; 92; 92
+            // 69.2221; 138.222; 138.222; 69.2221; 69; 0; 138.222; 0; 92; 92            
+            string[] lastMessage = null;
+            foreach(var message in messages) {
 
-            //log_message("Received: " + split[2]);
-            //var values = split[2].Split(' ');
-            //if (values.Length > 25) {
-            //    var tZero = values[0];
-            //    var tEnd = values[7];
-            //    log_message("Duration: " + tZero + " " + tEnd);
-            //    //    trajectoriesValues[0] = values[0]; /** tZero */
-            //    //    trajectoriesValues[1] = values[1]; /** tAcc0 */
-            //    //    trajectoriesValues[2] = values[2]; /** tAcc1 */
-            //    //    trajectoriesValues[3] = values[3]; /** tAcc  */
-            //    //    trajectoriesValues[4] = values[4]; /** tDec  */
-            //    //    trajectoriesValues[5] = values[5]; /** tDec0 */
-            //    //    trajectoriesValues[6] = values[6]; /** tDec1 */
-            //    //    trajectoriesValues[7] = values[7]; /** tEnd  */
-            //    //    trajectoriesValues[8] = values[8]; /** sAcc0 */
-            //    //    trajectoriesValues[9] = values[9]; /** sAcc1 */
-            //    //    trajectoriesValues[10] = values[10];/** sAcc  */
-            //    //    trajectoriesValues[11] = values[11];/** sDec  */
-            //    //    trajectoriesValues[12] = values[12];/** sDec0 */
-            //    //    trajectoriesValues[13] = values[13];/** sDec1 */
-            //    //    trajectoriesValues[14] = values[14];/** sEnd  */
-            //    //    trajectoriesValues[15] = values[15];/** vAcc0 */
-            //    //    trajectoriesValues[16] = values[16];/** vAcc1 */
-            //    //    trajectoriesValues[17] = values[17];/** vAcc  */
-            //    //    trajectoriesValues[18] = values[18];/** vDec  */
-            //    //    trajectoriesValues[19] = values[19];/** vDec0 */
-            //    //    trajectoriesValues[20] = values[20];/** vDec1 */
-            //    //    trajectoriesValues[21] = values[21];/** vEnd  */
-            //    //    trajectoriesValues[22] = values[22];/** vMax  */
-            //    //    trajectoriesValues[23] = values[23];/** vInit */
-            //    //    trajectoriesValues[24] = values[24];/** accMax*/
-            //    //    trajectoriesValues[25] = values[25];/** decMax*/
-            //}
+                if (message.Item2.Length <= 25) {
+                    continue;
+                }
+
+                if (triggerEvents == null) {
+                    triggerEvents = new List<Tuple<double, double, string>>();
+                }
+                triggerEvents.Add(new Tuple<double, double, string>(message.Item1.Item1, message.Item1.Item2, Text.join_with_space(message.Item2)));
+                lastMessage = message.Item2;
+            }
+
+            if(lastMessage != null) {
+                lastProfile = new SoncebozSGProfile();
+                lastProfile.values = lastMessage;
+                return true;
+            }
+
+            return false;
         }
 
         #endregion
     }
 }
-
-//public class SoncebozCommand{
-//    public double time = 0.0;
-//    public Vector3 position = Vector3.zero;
-//    public Vector3 rotation = Vector3.zero;
-//}
-
-//public Vector3 currentPosition = Vector3.zero;
-//public Vector3 currentRotation = Vector3.zero;
-
-//int count = 0;
-
-//SoncebozCommand lastCommandSent = null;
-//private List<SoncebozCommand> commandsToSend = new List<SoncebozCommand>();
-
-//    string.Format("M01 {0} {1} {2} {3} {4} {5}",
-//            commandToSend.position.x, commandToSend.position.y, commandToSend.position.z,
-//            commandToSend.rotation.x, commandToSend.rotation.y, commandToSend.rotation.z
-//        )
-//    );
-
-
-//return;
-
-//public void move_linear_offset(Vector3 position, Vector3 rotation) {
-
-//var cmd = new SoncebozCommand();
-//cmd.position = position;
-//cmd.rotation = rotation;
-//cmd.time = ellapsed_time_routine_ms();
-//commandsToSend.Add(cmd);
-
-//m_udp.send_message(
-//string.Format("M01 {0} {1} {2} {3} {4} {5}",
-//        translateOffset.x,  translateOffset.y,  translateOffset.z,
-//        rotateOffset.x,     rotateOffset.y,     rotateOffset.z
-//    )
-//);
-//}
-
-//SoncebozCommand commandToSend = null;
-
-//if (commandsToSend.Count > 0) {
-//    commandToSend = commandsToSend[commandsToSend.Count - 1];
-//} else {
-//    return;
-//}
-
-//if (lastCommandSent != null) {
-
-//    if(commandToSend.time - lastCommandSent.time < 30) {
-//        log_message("CANCEL1");
-//        return;
-//    }
-
-//    if(((commandToSend.position - lastCommandSent.position).magnitude == 0) &&
-//       ((commandToSend.rotation - lastCommandSent.rotation).magnitude == 0)) {
-//        log_message("CANCEL2");
-//        return;
-//    }
-//}
-
-//commandsToSend.Clear();
-
-//if (commandToSend != null) {
-//    lastCommandSent = commandToSend;
-//    log_message("commandToSend: " + commandToSend.position + " " + commandToSend.rotation + " " + commandToSend.time + " -> " + count);
-//    m_udp.send_message(
-
-//    ++count;
-//}
-
-
-
-
-// send

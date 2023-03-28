@@ -94,7 +94,7 @@ namespace Ex {
         static unsafe private extern int uncompress_frame_c3i_k4_volumetric_video_ex_component(
             HandleRef vvc, int idCamera, int idFrame, void* vertices, void* colors);
 
-        [DllImport("-exvr-export", EntryPoint = "uncompress_frame_vmd_k4_volumetric_video_ex_component", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("exvr-export", EntryPoint = "uncompress_frame_vmd_k4_volumetric_video_ex_component", CallingConvention = CallingConvention.Cdecl)]
         static unsafe private extern int uncompress_frame_vmd_k4_volumetric_video_ex_component(
             HandleRef vvc, int idCamera, int idFrame, void* vertices);
 

@@ -198,7 +198,7 @@ struct Component {
         {T::Leap_motion_tracking,     C::Acquisition, TO::V, CO::N, Y, N, N, Y, N, N, P::M, R::OS, S::Leg, "Leap_motion_tracking"sv, "LeapMotion tracking"sv, "LeapMotionTracking"sv, "Hand"sv},
         {T::Qualisys,                 C::Acquisition, TO::B, CO::B, Y, Y, Y, Y, Y, N, P::M, R::OS, S::Sta, "Qualisys_tracking"sv, "Qualisys tracking"sv, "QualisysTracking"sv, "Qualisys"sv},
         {T::Scene_scaner,             C::Acquisition, TO::B, CO::B, Y, N, N, Y, N, N, P::M, R::OS, S::Sta, "Scene_scaner"sv, "Scene scaner"sv, "SceneScaner"sv,"Body_scanner"sv},
-        {T::Sonceboz_SG,              C::Acquisition, TO::U, CO::B, Y, Y, Y, Y, Y, N, P::H, R::OS, S::Sta, "Sonceboz_SG"sv, "Sonceboz SG"sv, "SoncebozSG"sv,"Sonceboz"sv},
+        {T::Sonceboz_SG,              C::Acquisition, TO::U, CO::B, Y, Y, Y, Y, Y, Y, P::H, R::OS, S::Sta, "Sonceboz_SG"sv, "Sonceboz SG"sv, "SoncebozSG"sv,"Sonceboz"sv},
         {T::Thera_trainer_tracking,   C::Acquisition, TO::U, CO::I, Y, N, N, Y, N, N, P::M, R::OS, S::Sta, "Thera_trainer_tracking"sv, "Thera trainer tracking"sv, "TheraTrainerTracking"sv, "Thera_trainer"sv},
         {T::Thera_trainer_platform,   C::Acquisition, TO::B, CO::C, N, N, N, Y, N, N, P::M, R::OS, S::Sta, "Thera_trainer_platform"sv, "Thera trainer platform"sv, "TheraTrainerPlatform"sv, "Thera_trainer"sv},
         {T::Vive_pro_eye_tracking,    C::Acquisition, TO::B, CO::C, N, N, N, Y, N, N, P::H, R::OS, S::Sta, "Vive_pro_eye_tracking"sv, "Vive pro eye tracking"sv, "ViveProEyeTracking"sv, "Thera_trainer"sv},
@@ -530,7 +530,7 @@ struct Component {
 
     using TComponentSignals = std::tuple<
         CT,                             FunctionN,                     CNT,                            Doc>;
-    static constexpr TupleArray<62, TComponentSignals> componentsSignals = {{
+    static constexpr TupleArray<64, TComponentSignals> componentsSignals = {{
         TComponentSignals
         // Acquisition
         {T::K2_body_tracking,          "body"sv,                       CNT::kinect_body_t,             "..."sv},
@@ -550,6 +550,8 @@ struct Component {
         {T::Fop_robot,                 "slave force"sv,                CNT::float_t,                   "..."sv},
         {T::Fop_robot,                 "master force"sv,               CNT::float_t,                   "..."sv},
         {T::Sonceboz_SG,               "feedback"sv,                   CNT::transform_t,               "..."sv},
+        {T::Sonceboz_SG,               "tEnd"sv,                       CNT::float_t,                   "..."sv},
+        {T::Sonceboz_SG,               "tAcc"sv,                       CNT::float_t,                   "..."sv},
         {T::Vive_pro_eye_tracking,     "gaze direction"sv,             CNT::vector3_t,                 "..."sv},
         {T::Vive_pro_eye_tracking,     "eye openess"sv,                CNT::id_any_t,                  "..."sv},
         {T::Vive_pro_eye_tracking,     "pupil position"sv,             CNT::id_any_t,                  "..."sv},

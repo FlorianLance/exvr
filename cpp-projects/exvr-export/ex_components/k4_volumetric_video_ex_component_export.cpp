@@ -28,8 +28,6 @@ using namespace tool::ex;
 using namespace tool::geo;
 using namespace tool::camera;
 
-// base
-#include "utility/logger.hpp"
 
 using namespace tool;
 
