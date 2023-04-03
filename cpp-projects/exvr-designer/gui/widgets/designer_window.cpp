@@ -126,6 +126,7 @@ void DesignerWindow::set_window_settings(){
     resize(sizeWindow);
 }
 
+
 void DesignerWindow::close_program(){
 
     blockSignals(true);

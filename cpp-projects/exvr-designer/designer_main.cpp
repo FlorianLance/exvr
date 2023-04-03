@@ -73,7 +73,7 @@ int main(int argc, char *argv[]){
 //    }
 
     // build parameters
-    const QString numVersion = "1.0b1";
+    const QString numVersion = "1.0b2";
 
     // compiler check
     std::cout << tool::fmt("Start ExVR-designer v{}\n", numVersion.toStdString()); // c++20 check

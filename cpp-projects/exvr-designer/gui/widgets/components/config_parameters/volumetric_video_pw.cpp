@@ -141,7 +141,7 @@ void VolumetricVideoConfigParametersW::init_and_register_widgets(){
     add_input_ui(m_p->volume.init_widget(MinV<qreal>{0}, V<qreal>{1.f}, MaxV<qreal>{1.f}, StepV<qreal>{0.01}, 2));
     add_input_ui(m_p->audioCameraId.init_widget(MinV<int>{0}, V<int>{0}, MaxV<int>{100}, StepV<int>{1}));
     // rendering
-    add_input_ui(m_p->sizePoints.init_widget(MinV<qreal>{0.0001}, V<qreal>{0.0025}, MaxV<qreal>{0.05}, StepV<qreal>{0.0001},4));
+    add_input_ui(m_p->sizePoints.init_widget(MinV<qreal>{0.0001}, V<qreal>{0.0032}, MaxV<qreal>{0.05}, StepV<qreal>{0.0001},4));
     add_input_ui(m_p->rendering.init_widget({"Quad", "ParabloidFrag", "ParabloidGeo"}, 2));
     add_input_ui(m_p->parabloidGeoDetails.init_widget({"None", "Low", "Middle", "Hight"}, 3));
     add_input_ui(m_p->tint.init_widget("Points tint", QColor(255,255,255,0)));

@@ -108,7 +108,7 @@ namespace Ex{
 
             // process messages
             var feedbacks = new List<Tuple<Tuple<double, double, string>, string[]>>();
-            var profiles  = new List<Tuple<Tuple<double, double, string>, string[]>>();            
+            var profiles  = new List<Tuple<Tuple<double, double, string>, string[]>>();
             foreach (var message in messages) {
 
                 var content = message.Item3;
@@ -150,6 +150,7 @@ namespace Ex{
                 }
             }
         }
+
 
         protected override void clean() {
             m_udp.clean();

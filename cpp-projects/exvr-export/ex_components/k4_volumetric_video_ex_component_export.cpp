@@ -36,24 +36,29 @@ K4VolumetricVideoExComponent *create_k4_volumetric_video_ex_component(K4Volumetr
 }
 
 int uncompress_frame_c4f_k4_volumetric_video_ex_component(K4VolumetricVideoExComponent *vvC, int idC, int idFrame, tool::geo::Pt3f *vertices, tool::geo::Pt4f *colors){
-    K4CompressedCloudFrame *cframe = vvC->resource->get_cloud_frame(idFrame, idC);
-    return vvC->manager.cfu.uncompress(cframe, vertices, colors) ? 1 : 0;
+    if(auto frame = vvC->resource->get_compressed_cloud_frame(idFrame, idC)){
+        return vvC->resource->uncompressor()->uncompress(frame.get(),  vertices, colors) ? 1 : 0;
+    }
+    return 0;
 }
 
 int uncompress_frame_c3i_k4_volumetric_video_ex_component(K4VolumetricVideoExComponent *vvC, int idC, int idFrame, tool::geo::Pt3f *vertices, tool::geo::Pt4<uint8_t> *colors){
-    K4CompressedCloudFrame *cframe = vvC->resource->get_cloud_frame(idFrame, idC);
-    return vvC->manager.cfu.uncompress(cframe, vertices, colors) ? 1 : 0;
+    if(auto frame = vvC->resource->get_compressed_cloud_frame(idFrame, idC)){
+        return vvC->resource->uncompressor()->uncompress(frame.get(),  vertices, colors) ? 1 : 0;
+    }
+    return 0;
 }
 
 int uncompress_frame_vmd_k4_volumetric_video_ex_component(K4VolumetricVideoExComponent *vvC, int idC, int idFrame, tool::camera::K4VertexMeshData *vertices){
-    K4CompressedCloudFrame *cframe = vvC->resource->get_cloud_frame(idFrame, idC);
-    return vvC->manager.cfu.uncompress(cframe, vertices) ? 1 : 0;
+    if(auto frame = vvC->resource->get_compressed_cloud_frame(idFrame, idC)){
+        return vvC->resource->uncompressor()->uncompress(frame.get(),  vertices) ? 1 : 0;
+    }
+    return 0;
 }
 
 int process_audio_k4_volumetric_video_ex_component(K4VolumetricVideoExComponent *vvC, int idCamera){
-
     if(idCamera < vvC->audioData.size()){
-        vvC->manager.audio_samples_all_channels(idCamera, vvC->audioData[idCamera]);
+        vvC->resource->get_audio_samples_all_channels(idCamera, vvC->audioData[idCamera]);
         return static_cast<int>(vvC->audioData[idCamera].size());
     }
     return -1;

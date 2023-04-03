@@ -24,6 +24,9 @@
 
 #pragma once
 
+// base
+#include "utility/export.hpp"
+
 // local
 #include "k4_volumetric_video_ex_component.hpp"
 

@@ -34,32 +34,32 @@ K4VolumetricVideoExResource *create_k4_volumetric_video_ex_resource(){
 }
 
 int get_cameras_nb_k4_volumetric_video_ex_resource(K4VolumetricVideoExResource *vvR){
-    return static_cast<int>(vvR->resource.nb_cameras());
+    return static_cast<int>(vvR->video.nb_cameras());
 }
 
 int get_nb_frames_k4_volumetric_video_ex_resource(K4VolumetricVideoExResource *vvR, int idC){
-    return static_cast<int>(vvR->resource.nb_frames(idC));
+    return static_cast<int>(vvR->video.nb_frames(idC));
 }
 
 float get_duration_ms_k4_volumetric_video_ex_resource(K4VolumetricVideoExResource *vvR, int idC){
-    auto start = vvR->resource.start_time(idC);
-    auto end   = vvR->resource.end_time(idC);
+    auto start = vvR->video.start_time(idC);
+    auto end   = vvR->video.end_time(idC);
     return (end-start)*0.000001f;
 }
 
 void get_camera_transform_k4_volumetric_video_ex_resource(K4VolumetricVideoExResource *vvR, int idC, float *model){
-    auto tr = vvR->resource.get_transform(idC).conv<float>();
+    auto tr = vvR->video.get_transform(idC).conv<float>();
     std::copy(std::begin(tr.array), std::end(tr.array), model);
 }
 
 int get_id_frame_from_time_ms_k4_volumetric_video_ex_resource(K4VolumetricVideoExResource *vvR, int idC, float timeMs){
-    return static_cast<int>(vvR->resource.frame_id(idC, timeMs));
+    return static_cast<int>(vvR->video.frame_id(idC, timeMs));
 }
 
 int get_valid_vertices_count_k4_volumetric_video_ex_resource(K4VolumetricVideoExResource *vvR, int idC, int idF){
-    return static_cast<int>(vvR->resource.valid_vertices_count(idF,idC));
+    return static_cast<int>(vvR->video.valid_vertices_count(idC,idF));
 }
 
 int get_audio_data_total_size_k4_volumetric_video_ex_resource(tool::ex::K4VolumetricVideoExResource *vvR, int idC){
-    return static_cast<int>(vvR->resource.total_audio_frames_size(idC));
+    return static_cast<int>(vvR->video.total_audio_frames_size(idC));
 }

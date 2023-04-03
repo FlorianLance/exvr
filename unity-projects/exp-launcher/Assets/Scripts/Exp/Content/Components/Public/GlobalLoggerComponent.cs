@@ -364,9 +364,9 @@ namespace Ex {
                         // sort by exp time
                         allTriggersLines.Sort(delegate (Tuple<double, double, string> t1, Tuple<double, double, string> t2) {
                             if (t1.Item1 < t2.Item1) {
-                                return 1;
-                            } else if (t1.Item1 > t2.Item1) {
                                 return -1;
+                            } else if (t1.Item1 > t2.Item1) {
+                                return 1;
                             }
                             return 0;
                         });

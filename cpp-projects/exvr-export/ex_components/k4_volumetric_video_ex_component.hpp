@@ -26,20 +26,18 @@
 
 // base
 #include "exvr/ex_component.hpp"
-#include "utility/export.hpp"
-#include "camera/kinect4/k4_volumetric_cloud_video_manager.hpp"
+#include "camera/kinect4/k4_volumetric_cloud_video.hpp"
 
 // local
-#include "ex_resources/k4_volumetric_video_ex_resource_export.hpp"
+#include "ex_resources/k4_volumetric_video_ex_resource.hpp"
 
 namespace tool::ex {
 
 class K4VolumetricVideoExComponent : public ExComponent{
 public:
-    tool::camera::K4VolumetricCloudVideoManager manager;
-    tool::camera::K4VolumetricCloudVideoResource *resource = nullptr;
+    tool::camera::K4VolumetricCloudVideo *resource = nullptr;
 
-    K4VolumetricVideoExComponent(tool::ex::K4VolumetricVideoExResource *resourceExport) : manager(&resourceExport->resource), resource(&resourceExport->resource){
+    K4VolumetricVideoExComponent(tool::ex::K4VolumetricVideoExResource *resourceExport) : resource(&resourceExport->video){
     }
 
     bool initialize() override{
@@ -47,7 +45,6 @@ public:
         audioData.resize(nbCams);
         return true;
     }
-
 
     std::vector<std::vector<float>> audioData;
 };
