@@ -174,7 +174,7 @@ namespace Ex {
             }
 
             int id = m_counter++;
-            Thread.CurrentThread.Name = string.Concat("UdpReceiver ", id);
+            Thread.CurrentThread.Name = string.Concat("receiver ", id);
             Profiler.BeginThreadProfiling("UdpReceiver", Thread.CurrentThread.Name);
 
             byte[] endByte = Encoding.ASCII.GetBytes(new char[] { '\0' });

@@ -33,13 +33,11 @@ namespace Ex {
 
         protected override bool initialize() {
 
-            m_OBBsGO = new List<GameObject>(10);
-            m_OBBsInfo = new List<OBBFInfo>(10);
-            for (int ii = 0; ii < 10; ++ii) {
-                var obbGO = GO.generate_cube("filtering obb", transform, 1f, null, -1, ExVR.GlobalResources().instantiate_default_transparent_mat());
-                obbGO.SetActive(false);
-                m_OBBsGO.Add(obbGO);
-                m_OBBsInfo.Add(new OBBFInfo());
+            // get kinect manager
+            m_kinectM = initC.get_component<K4ManagerComponent>("k4_manager");
+            if (m_kinectM == null) {
+                log_error("No kinect manager component set. Scene will not be displayed.");
+                return true;
             }
 
             // init parents GO
@@ -52,11 +50,14 @@ namespace Ex {
             m_cloudsCalibTrGO = new List<GameObject>();
             m_cloudUpdated = new List<bool>();
 
-            // get kinect manager
-            m_kinectM = initC.get_component<K4ManagerComponent>("k4_manager");
-            if (m_kinectM == null) {
-                log_error("No kinect manager component set. Scene will not be displayed.");
-                return true;
+            // obb
+            m_OBBsGO = new List<GameObject>(10);
+            m_OBBsInfo = new List<OBBFInfo>(10);
+            for (int ii = 0; ii < 10; ++ii) {
+                var obbGO = GO.generate_cube("filtering obb", transform, 1f, null, -1, ExVR.GlobalResources().instantiate_default_transparent_mat());
+                obbGO.SetActive(false);
+                m_OBBsGO.Add(obbGO);
+                m_OBBsInfo.Add(new OBBFInfo());
             }
 
             // add clouds                        
@@ -89,21 +90,21 @@ namespace Ex {
             return true;
         }
 
-        protected override void set_visibility(bool visibility) {
-
-            m_parentCloudsGO.SetActive(visibility && currentC.get<bool>("display_clouds"));
-
-            for (int ii = 0; ii < m_OBBsGO.Count; ++ii) {
-                m_OBBsGO[ii].SetActive(visibility && currentC.get<bool>("display_filtering_obb") && m_OBBsInfo[ii].display);
-            }
-        }
-
         protected override void start_experiment() {
 
             foreach (var go in m_cloudsCustomTrGO) {
                 go.transform.localPosition  = Vector3.zero;
                 go.transform.localRotation  = Quaternion.identity;
                 go.transform.localScale     = Vector3.one;
+            }
+        }
+
+        protected override void set_visibility(bool visibility) {
+
+            m_parentCloudsGO.SetActive(visibility && currentC.get<bool>("display_clouds"));
+
+            for (int ii = 0; ii < m_OBBsGO.Count; ++ii) {
+                m_OBBsGO[ii].SetActive(visibility && currentC.get<bool>("display_filtering_obb") && m_OBBsInfo[ii].display);
             }
         }
 
@@ -115,6 +116,7 @@ namespace Ex {
                 }
             }
 
+            // obb
             var list = currentC.get_list<string>("filtering_obb_tab");
             for (int ii = 0; ii < m_OBBsGO.Count; ++ii) {
                 if (ii < list.Count) {
@@ -139,7 +141,7 @@ namespace Ex {
             }
 
 
-            // apply size points
+            // point cloud shading
             float sizePoints = currentC.get<float>("size_points");
             bool removeOutside = currentC.get<bool>("filter_points_outside_obb");
             bool cones = currentC.get<bool>("cones");
@@ -153,12 +155,12 @@ namespace Ex {
                 var cloud = m_cloudsCalibTrGO[ii];
                 var pc = cloud.GetComponent<PointCloud>();
                 pc.set_pt_size(sizePoints);
-                pc.set_rendering(rendering);
-                pc.set_obb_filtering_state(removeOutside);
+                pc.set_rendering(rendering);                
                 pc.set_circles_state(circles);
                 pc.set_paraboloid_frag_cones_state(cones);
                 pc.set_paraboloid_geo_details(details);
                 pc.set_tint(tintColor);
+                pc.set_obb_filtering_state(removeOutside);
                 pc.set_filtering_obb_infos(m_OBBsInfo);
             }
       

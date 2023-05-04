@@ -37,6 +37,17 @@
 
 namespace tool::ex {
 
+
+struct NodesClipBoard{
+    static inline bool enabled = false;
+    static inline ElementKey fromRoutine;
+    static inline ConditionKey fromCondition;
+    static inline std::vector<ComponentKey> components = {};
+    static inline std::vector<ConnectorKey> connectors = {};
+    static inline std::vector<ConnectionKey> connections = {};
+};
+
+
 struct Condition  {
 
     Condition() = delete;
@@ -74,6 +85,7 @@ struct Condition  {
 
     inline QString to_string() const{return QSL("Condition(")  % name % QSL("|") % QString::number(key()) % QSL(")");}
 
+    auto paste_clipboard() -> void;
     // connections
     Connection *get_connection_from_key(ConnectionKey connectionKey, bool displayError = true) const;
     Connection *get_connection_from_id(RowId  idTab, bool displayError = true) const;
@@ -84,6 +96,7 @@ struct Condition  {
     Connector *get_connector_from_id(RowId  idTab, bool displayError = true) const;
     void move_connector(ConnectorKey connectorKey, QPointF pos);
     void duplicate_connector(ConnectorKey connectorKey);
+    auto duplicate_connector(QPointF position, Connector *connector) -> void;
     void remove_connector(ConnectorKey connectorKey);
     void modify_connector(ConnectorKey connectorKey, QString name, Arg arg);
 
@@ -111,11 +124,6 @@ struct Condition  {
     std::vector<std::unique_ptr<Connection>> connections;
     std::vector<std::unique_ptr<Connector>> connectors;
     std::vector<std::unique_ptr<Action>> actions;
-
-    // copy
-    static inline bool currentNodesCopySet = false;
-    static inline std::vector<std::unique_ptr<Connector>> connectorsToCopy = {};
-    static inline std::vector<std::unique_ptr<Connection>> connectionsToCopy = {};
 
 private:
 

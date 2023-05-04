@@ -32,11 +32,7 @@
 #include <QFontMetrics>
 #include <QPlainTextEdit>
 
-// base
-#include "utility/benchmark.hpp"
-
 // qt-utility
-#include "qt_str.hpp"
 #include "data/argument.hpp"
 #include "gui/ex_widgets/ex_label_w.hpp"
 
@@ -44,6 +40,7 @@
 #include "gui/widgets/connections/data_models/data/nodes_data.hpp"
 
 namespace tool::ex{
+
 
 class NodeDataDisplayDialog : public QDialog {
 
@@ -55,11 +52,15 @@ public:
 
     void add_row_in_dialog(QString name, QWidget *w, bool horizontalLayout);
     bool node_settings_execute(QPoint pos);
+    bool node_settings_execute(QPoint pos, QWidget *cw);
 
     QVBoxLayout *layout = nullptr;
 
+    constexpr auto is_popup() const noexcept {return m_popup;}
+
 private:
     bool m_popup = true;
+    std::unique_ptr<QMenu> m_popupMenu = nullptr;
 };
 
 
@@ -96,6 +97,9 @@ signals:
     void compute_data_signal();
     void ask_node_to_update();
 
+    auto popup_opened_signal()  -> void;
+    auto popup_closed_signal() -> void;
+
 protected:
 
 //    QPlainTextEdit m_valueText;
@@ -110,6 +114,7 @@ protected:
 
     static const QString buttonStyle1;
     static const QString buttonStyle2;
+
 };
 
 template <typename W>

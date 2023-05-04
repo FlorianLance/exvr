@@ -48,10 +48,12 @@ equals(EXVR_EXPORT_TARGET, "dll"){
     TEMPLATE = lib
     CONFIG += dll
     CONFIG -= console
+    message(dll);
 }
 equals(EXVR_EXPORT_TARGET, "app"){
     TEMPLATE = app
     CONFIG += console
+    message(app);
 }
 
 ####################################### BUILD FILES
@@ -166,6 +168,6 @@ SOURCES += \
     ex_resources/k2_volumetric_video_ex_resource.cpp \
     ex_resources/k2_volumetric_video_ex_resource_export.cpp \
     ex_resources/k4_volumetric_video_ex_resource_export.cpp \
-    main.cpp \
+    export_main.cpp
 
 

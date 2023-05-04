@@ -753,14 +753,14 @@ void DesignerWindow::create_toolbar(){
     tb->setAllowedAreas(Qt::ToolBarArea::TopToolBarArea);
     tb->setContextMenuPolicy(Qt::PreventContextMenu);
 
-        m_newFileButton.setDefaultAction(&m_newExperimentAct);
-        tb->addWidget(&m_newFileButton);
+    m_newFileButton.setDefaultAction(&m_newExperimentAct);
+    tb->addWidget(&m_newFileButton);
 
-        m_saveAsButton.setDefaultAction(&m_saveAsExperimentAct);
-        tb->addWidget(&m_saveAsButton);
+    m_saveAsButton.setDefaultAction(&m_saveAsExperimentAct);
+    tb->addWidget(&m_saveAsButton);
 
-        m_openButton.setDefaultAction(&m_loadExperimentAct);
-        tb->addWidget(&m_openButton);
+    m_openButton.setDefaultAction(&m_loadExperimentAct);
+    tb->addWidget(&m_openButton);
 
     tb->addSeparator();
 

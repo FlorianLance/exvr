@@ -1111,6 +1111,15 @@ void Experiment::delete_selected_nodes(ElementKey routineKey, ConditionKey condi
     }
 }
 
+auto Experiment::duplicate_selected_nodes(ElementKey routineKey, ConditionKey conditionKey) -> void{
+
+    if(auto condition = get_condition(routineKey,conditionKey); condition != nullptr){
+
+//        routine->duplicate_connector_node(conditionKey, connectorKey);
+//        add_to_update_flag(UpdateRoutines);
+    }
+}
+
 void Experiment::create_component_node(ElementKey routineKey, ConditionKey conditionKey, ComponentKey componentKey, QPointF pos){
 
     if(auto condition = get_condition(routineKey, conditionKey); condition != nullptr){
@@ -1206,6 +1215,25 @@ void Experiment::select_nodes_and_connections(ElementKey routineKey, ConditionKe
             add_to_update_flag(UpdateRoutines);
         }
     }
+}
+
+auto Experiment::paste_nodes_clip_board(QPointF mousePosition, ElementKey routineKey, ConditionKey conditionKey) -> void{
+
+    if(!NodesClipBoard::enabled){
+        return;
+    }
+    if(auto condition = get_condition(routineKey,conditionKey); condition != nullptr){
+        if(auto fromCondition = get_condition(NodesClipBoard::fromRoutine,NodesClipBoard::fromCondition); fromCondition != nullptr){
+            for(const auto &connector : NodesClipBoard::connectors){
+                condition->duplicate_connector(mousePosition, fromCondition->get_connector_from_key(connector));
+            }
+        }
+    }
+    NodesClipBoard::components.clear();
+    NodesClipBoard::connectors.clear();
+    NodesClipBoard::connections.clear();
+    NodesClipBoard::enabled = false;
+    add_to_update_flag(UpdateRoutines);
 }
 
 void Experiment::display_exp_infos(){

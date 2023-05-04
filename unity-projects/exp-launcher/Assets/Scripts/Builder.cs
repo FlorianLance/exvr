@@ -219,7 +219,7 @@ namespace Ex {
 
             ExVR.ExpLog().builder("Clean network communication");
             networkManager.clean();
-            ExVR.ExpLog().write();
+            ExVR.ExpLog().clean();
         }
     }
 }

@@ -119,7 +119,7 @@ public slots:
 
 signals:
 
-    void connector_modified_signal(ConnectorKey key, QString name, tool::ex::Arg arg);
+    void connector_modified_signal(tool::ex::ConnectorKey key, QString name, tool::ex::Arg arg);
 
 protected:
 

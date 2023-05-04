@@ -22,27 +22,82 @@
 ** SOFTWARE.                                                                      **
 ************************************************************************************/
 
+
+// std
 #include <iostream>
+#include <memory>
+//#include <thread>
+//#include <chrono>
+//#include <iostream>
+//#include <vector>
+//#include <map>
+//#include <any>
 
-//#include "body_capture_export.hpp"
 
-#include <thread>
-#include <chrono>
+#include "k4_manager_ex_component.hpp"
+#include "k4_manager_ex_component_export.hpp"
 
-#include <iostream>
-#include <vector>
-#include <map>
-#include <any>
-
-//#include "socket_communication_export.hpp"
-
-//#include "scaner_video_file_export.hpp"
+using namespace tool;
+using namespace tool::ex;
+using namespace tool::camera;
 
 int main(int argc, char *argv[]){
 
+    std::vector<K4VertexMeshData> meshData;
+    meshData.resize(600000);
+
+    tool::ex::ExExperiment exp;
+    exp.generate_logger("","");
+
+    auto manager = create_k4_manager_ex_component();
+    manager->set_exp(&exp);
+    manager->set(ParametersContainer::InitConfig, "debug_bypass", 0);
+
+    std::string pathN = "D:/DEV/EPFL/lnco-exvr/exvr/toolbox/cpp-projects/_build/bin/k4-scaner-manager/config/network/network_FLORIAN-PC.config";
+    manager->set(ParametersContainer::Dynamic, "path_network_settings_file", pathN);
+
+    Logger::message("initialize\n");
+    auto res = manager->initialize();
+    Logger::message(std::format("initialize ret {}\n", res));
+    manager->start_experiment();
+
+    manager->start_routine();
+
+    size_t currentFrameId = 0;
 
 
-//    auto scaner = create_scaner_video_file();
+
+    auto nbCameras = manager->get<int>(ParametersContainer::Dynamic, "nb_connections");
+    std::vector<int> framesId;
+    framesId.resize(nbCameras);
+    std::fill(framesId.begin(), framesId.end(), 0);
+
+    for(int ii = 0; ii < 100; ++ii){
+
+        manager->pre_update();
+        manager->update();
+        manager->post_update();
+
+        auto nb = manager->get<int>(ParametersContainer::Dynamic, "nb_frames_received");
+        Logger::message(std::format("update [{}]\n", nb));
+
+        for(size_t jj = 0; jj < nbCameras; ++jj){
+
+            auto ret = manager->get_cloud_frame_data(jj,framesId[jj], meshData.data());
+            if(std::get<0>(ret)){
+                framesId[jj] = std::get<1>(ret);
+                Logger::message(std::format("re c[{}] [{}][{}][{}]\n", jj, std::get<0>(ret),std::get<1>(ret),std::get<2>(ret)));
+            }
+        }
+        std::this_thread::sleep_for (std::chrono::milliseconds(10));
+    }
+
+    manager->stop_routine();
+    manager->stop_experiment();
+    manager->clean();
+    delete manager;
+
+    //    auto scaner = create_scaner_video_file();
 
 //    auto loaded = load_scaner_video_file(scaner, "G:/vid1.kvid");
 //    if(!loaded){

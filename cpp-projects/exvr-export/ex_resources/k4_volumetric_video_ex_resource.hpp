@@ -26,13 +26,13 @@
 
 // base
 #include "exvr/ex_resource.hpp"
-#include "camera/kinect4/k4_volumetric_cloud_video.hpp"
+#include "camera/kinect4/k4_volumetric_video.hpp"
 
 namespace tool::ex {
 
 class K4VolumetricVideoExResource : public ExResource{
 public:
-    tool::camera::K4VolumetricCloudVideo video;
+    tool::camera::K4VolumetricVideo video;
 
     bool initialize() override{
         return video.load_from_file(get<std::string>(ParametersContainer::Dynamic, "path_file"));

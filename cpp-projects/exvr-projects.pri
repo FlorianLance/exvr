@@ -29,8 +29,8 @@ include(../toolbox/cpp-projects/tb-projects.pri)
 
 # dll
 ## exvr-export
-#EXVR_EXPORT_TARGET       = "app" # debug
-EXVR_EXPORT_TARGET       = "dll"
+EXVR_EXPORT_TARGET       = "app" # debug
+#EXVR_EXPORT_TARGET       = "dll"
 
 # app
 ## exvr-designer

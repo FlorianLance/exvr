@@ -30,7 +30,7 @@
 #include <QMetaEnum>
 
 // base
-#include <utility/map.hpp>
+#include <utility/unordered_map.hpp>
 
 // qt-utility
 #include "qt_logger.hpp"

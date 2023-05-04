@@ -311,11 +311,13 @@ public slots:
     void set_connector_input_connection_validity(tex::ElementKey routineKey, tex::ConditionKey conditionKey, tex::ConnectorKey connectorKey, bool state);
     // ### connections / connectors / components
     void delete_selected_nodes(tex::ElementKey routineKey, tex::ConditionKey conditionKey);
+    auto duplicate_selected_nodes(tex::ElementKey routineKey, tex::ConditionKey conditionKey) -> void;
     void unselect_nodes_and_connections(tex::ElementKey routineKey, tex::ConditionKey conditionKey, bool doUpdate);
     void delete_nodes_and_connections(tex::ElementKey routineKey, tex::ConditionKey conditionKey,
         std::vector<ConnectorKey> connectorsKey, std::vector<ComponentKey> componentsKey, std::vector<ConnectionKey> connectionsKey, bool doUpdate);
     void select_nodes_and_connections(tex::ElementKey routineKey, tex::ConditionKey conditionKey,
         std::vector<ConnectorKey> connectorsKey, std::vector<ComponentKey> componentsKey, std::vector<ConnectionKey> connectionsKey, bool doUpdate);
+    auto paste_nodes_clip_board(QPointF mousePosition, tex::ElementKey routineKey, tex::ConditionKey conditionKey) ->void;
 
     // # debug
     void display_exp_infos();

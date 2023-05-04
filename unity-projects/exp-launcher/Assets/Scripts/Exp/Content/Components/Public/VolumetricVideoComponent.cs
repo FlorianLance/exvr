@@ -132,6 +132,9 @@ namespace Ex {
         public AudioSource audioSource = null;
         public List<PointCloud> clouds = null;
 
+        private List<GameObject> m_OBBsGO = null;
+        private List<OBBFInfo> m_OBBsInfo = null;
+
         #region ex_functions
         protected override bool initialize() {
 
@@ -145,6 +148,16 @@ namespace Ex {
             cppDll = new DLLK4VolumetricVideoComponent(volumetricVideo.get_dll_handle());
             cppDll.parent = this;
             cppDll.initialize();
+
+            // obb
+            m_OBBsGO = new List<GameObject>(10);
+            m_OBBsInfo = new List<OBBFInfo>(10);
+            for (int ii = 0; ii < 10; ++ii) {
+                var obbGO = GO.generate_cube("filtering obb", transform, 1f, null, -1, ExVR.GlobalResources().instantiate_default_transparent_mat());
+                obbGO.SetActive(false);
+                m_OBBsGO.Add(obbGO);
+                m_OBBsInfo.Add(new OBBFInfo());
+            }
 
             // audio
             audioSource = gameObject.AddComponent<AudioSource>();
@@ -222,38 +235,6 @@ namespace Ex {
             reset_init_transform();
         }
 
-        protected override void update_parameter_from_gui(string updatedArgName) {
-            update_from_current_config();
-        }
-
-        public override void update_from_current_config() {
-
-            reset_config_transform();
-
-            audioSource.loop    = currentC.get<bool>("loop");
-            audioSource.enabled = currentC.get<bool>("enable_audio");
-            audioSource.volume  = currentC.get<float>("volume");
-            // offset time?
-
-            float sizePoints    = currentC.get<float>("size_points");
-            bool cones          = currentC.get<bool>("cones");
-            bool circles        = currentC.get<bool>("circles");
-            Color tintColor     = currentC.get_color("tint");
-            var details         = (PointCloud.ParabloidGeoDetails)currentC.get<int>("details");
-            var rendering       = (PointCloud.RenderingType)currentC.get<int>("rendering");
-
-            for (int ii = 0; ii < volumetricVideo.nbCameras; ++ii) {
-                var pc = clouds[ii];
-                pc.set_pt_size(sizePoints);
-                pc.set_rendering(rendering);
-                pc.set_obb_filtering_state(false);
-                pc.set_circles_state(circles);
-                pc.set_paraboloid_frag_cones_state(cones);
-                pc.set_paraboloid_geo_details(details);
-                pc.set_tint(tintColor);
-            }
-        }
-
         protected override void start_routine() {
 
             if (currentC.get<int>("audio_id") < dataPerCamera.Count) {
@@ -268,9 +249,78 @@ namespace Ex {
         }
 
         protected override void set_visibility(bool visibility) {
-            foreach(var cloudGO in clouds) {
-                cloudGO.gameObject.SetActive(visibility);
+
+            foreach (var cloudGO in clouds) {
+                cloudGO.gameObject.SetActive(visibility && currentC.get<bool>("display_clouds"));
             }
+
+            for (int ii = 0; ii < m_OBBsGO.Count; ++ii) {
+                m_OBBsGO[ii].SetActive(visibility && currentC.get<bool>("display_filtering_obb") && m_OBBsInfo[ii].display);
+            }
+        }
+
+        public override void update_from_current_config() {
+
+            if (!currentC.get<bool>("global_transform_do_not_apply")) {
+                currentC.update_transform("global_transform", transform, true);
+            }
+
+            // obb
+            var list = currentC.get_list<string>("filtering_obb_tab");
+            for (int ii = 0; ii < m_OBBsGO.Count; ++ii) {
+                if (ii < list.Count) {
+                    var args = Ex.Text.split(list[ii], "[#OBBFW#]");
+                    if (args.Length == 4) {
+                        m_OBBsInfo[ii].enabled = Converter.to<bool>(args[0]);
+                        m_OBBsInfo[ii].display = Converter.to<bool>(args[1]);
+                        m_OBBsInfo[ii].color = Converter.to<Color>(args[2]);
+                        m_OBBsInfo[ii].transform = Converter.to_transform_value(args[3]);
+                    } else {
+                        log_error("Invalid filtering obb arg.");
+                    }
+                } else {
+                    m_OBBsInfo[ii].enabled = false;
+                    m_OBBsInfo[ii].display = false;
+                    m_OBBsInfo[ii].transform = new TransformValue();
+                    m_OBBsInfo[ii].color = new Color(1, 0, 0, 0.2f);
+                }
+
+                Apply.to_transform(m_OBBsInfo[ii].transform, m_OBBsGO[ii].transform, false);
+                m_OBBsGO[ii].GetComponent<MeshRenderer>().material.SetColor("_Color", m_OBBsInfo[ii].color);
+            }
+
+            // audio
+            audioSource.loop    = currentC.get<bool>("loop");
+            audioSource.enabled = currentC.get<bool>("enable_audio");
+            audioSource.volume  = currentC.get<float>("volume");
+            // offset time?
+
+            // point cloud shading
+            float sizePoints    = currentC.get<float>("size_points");
+            bool removeOutside = currentC.get<bool>("filter_points_outside_obb");
+            bool cones          = currentC.get<bool>("cones");
+            bool circles        = currentC.get<bool>("circles");
+            Color tintColor     = currentC.get_color("tint");
+            var details         = (PointCloud.ParabloidGeoDetails)currentC.get<int>("details");
+            var rendering       = (PointCloud.RenderingType)currentC.get<int>("rendering");
+
+            for (int ii = 0; ii < volumetricVideo.nbCameras; ++ii) {
+                var pc = clouds[ii];
+                pc.set_pt_size(sizePoints);
+                pc.set_rendering(rendering);                
+                pc.set_circles_state(circles);
+                pc.set_paraboloid_frag_cones_state(cones);
+                pc.set_paraboloid_geo_details(details);
+                pc.set_tint(tintColor);
+                pc.set_obb_filtering_state(removeOutside);
+                pc.set_filtering_obb_infos(m_OBBsInfo);
+            }
+
+            set_visibility(is_visible());
+        }
+
+        protected override void update_parameter_from_gui(string updatedArgName) {
+            update_from_current_config();
         }
 
         protected override void pre_update() {

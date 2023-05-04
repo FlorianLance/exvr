@@ -24,6 +24,8 @@
 
 #include "exvr_controller.hpp"
 
+#include "utility/benchmark.hpp"
+
 // qt-utility
 #include "qt_str.hpp"
 #include "gui/widgets/list_widget.hpp"
@@ -88,8 +90,8 @@ ExVrController::ExVrController(const QString &nVersion){
 
     Bench::disable_display();
 
-    QtLogger::message("[CONTROLLER] Generate signals");
-    GSignals::init();
+//    QtLogger::message("[CONTROLLER] Generate signals");
+//    GSignals::get();
 
     QtLogger::message("[CONTROLLER] Initialize experiment");
     ExperimentManager::init();
@@ -1195,9 +1197,11 @@ void ExVrController::generate_global_signals_connections(){
     connect(s, &GSignals::component_node_moved_signal,                exp(), &EXP::move_component_node);
     connect(s, &GSignals::delete_nodes_and_connections_signal,        exp(), &EXP::delete_nodes_and_connections);
     connect(s, &GSignals::delete_selected_nodes_signal,               exp(), &EXP::delete_selected_nodes);
+    connect(s, &GSignals::duplicate_selected_nodes_signal,            exp(), &EXP::duplicate_selected_nodes);
     connect(s, &GSignals::delete_connections_signal,                  exp(), &EXP::delete_connections);
     connect(s, &GSignals::unselect_nodes_and_connections_signal,      exp(), &EXP::unselect_nodes_and_connections);
     connect(s, &GSignals::select_nodes_and_connections_signal,        exp(), &EXP::select_nodes_and_connections);
+    connect(s, &GSignals::paste_nodes_clip_board_signal,              exp(), &EXP::paste_nodes_clip_board);
 
     // -> exp launcher
     connect(s, &GSignals::connector_node_modified_signal, [&](ElementKey routineKey, ConditionKey conditionKey, ConnectorKey connectorKey, QString name, Arg arg){

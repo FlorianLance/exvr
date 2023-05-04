@@ -34,6 +34,7 @@
 #include "network/kinect4/k4_server_network_settings.hpp"
 // # camera
 #include "camera/kinect4/k4_server_data.hpp"
+#include "camera/kinect4/k4_model.hpp"
 
 using namespace std::chrono;
 
@@ -75,18 +76,16 @@ struct K4ManagerExComponent::Impl{
             readMessagesM.unlock();
         });
 
-        K4ServerConnection::compressed_cloud_frame_signal.connect([&](size_t idCamera, std::shared_ptr<camera::K4CompressedCloudFrame> cloudFrame){
+        K4ServerConnection::compressed_frame_signal.connect([&](size_t idCamera, std::shared_ptr<camera::K4CompressedFrame> cloudFrame){
             framesReceived++;
-            serverData.new_compressed_cloud_frame(idCamera, cloudFrame);
+            serverData.new_compressed_frame(idCamera, cloudFrame);
         });
-
-        K4ServerConnection::compressed_full_frame_signal.connect(&K4ServerData::new_compressed_full_frame, &serverData);
+//        K4ServerConnection::compressed_frame_signal.connect(&K4ServerData::new_compressed_frame, &serverData);
     }
 
     auto delete_connections(){
         K4ServerConnection::feedback_signal.disconnect_all();
-        K4ServerConnection::compressed_cloud_frame_signal.disconnect_all();
-        K4ServerConnection::compressed_full_frame_signal.disconnect(&K4ServerData::new_compressed_full_frame, &serverData);
+        K4ServerConnection::compressed_frame_signal.disconnect_all();
     }
 
     auto connect_grabbers() -> void {
@@ -120,6 +119,7 @@ K4ManagerExComponent::K4ManagerExComponent() :  i(std::make_unique<Impl>()){
 auto K4ManagerExComponent::initialize() -> bool{
 
     Logger::set_logger_ptr(logger = exp->logger.get());
+
     log_message(std::format("Initialize K4ManagerExComponent with key {}.\n", key()));
 
     debugBypass = get<int>(ParametersContainer::InitConfig, "debug_bypass") == 1;
@@ -165,6 +165,7 @@ auto K4ManagerExComponent::initialize() -> bool{
     i->grabbersS.resize(nbConnections);
     set<int>(ParametersContainer::Dynamic, "nb_connections", static_cast<int>(nbConnections));
 
+
     // read others settings files
     std::vector<files::BinaryFileSettings*> devicesS,colorS,filtersS;
     std::vector<files::TextSettings*> modelsS;
@@ -190,7 +191,6 @@ auto K4ManagerExComponent::initialize() -> bool{
             log_warning("No device settings file defined.\n");
         }
     }
-
 
     // # filters
     if(get<int>(ParametersContainer::InitConfig, "filters_init_file") == 1){
@@ -220,7 +220,6 @@ auto K4ManagerExComponent::initialize() -> bool{
         }
     }
 
-
     // # model
     if(std::filesystem::exists(modelSettingsPath)){
         if(!files::TextSettings::init_from_file(modelsS, modelSettingsPath)){
@@ -233,6 +232,7 @@ auto K4ManagerExComponent::initialize() -> bool{
         log_warning("No models file defined.\n");
     }
 
+
     // transmit calibration matrices
     for(size_t ii = 0; ii < i->grabbersS.size(); ++ii){
         std::vector<float> m(16, 0.f);
@@ -242,7 +242,6 @@ auto K4ManagerExComponent::initialize() -> bool{
         std::string name = "tr_" + std::to_string(ii);
         set_array(ParametersContainer::Dynamic, name, m);
     }
-
 
     if(debugBypass){
         return true;
@@ -358,13 +357,13 @@ auto K4ManagerExComponent::read_messages() -> void{
 
 auto K4ManagerExComponent::get_cloud_frame_data(size_t idCamera, size_t currentFrameId, camera::K4VertexMeshData *vertices) -> std::tuple<bool, size_t, size_t>{
 
-    if(auto frame = i->serverData.get_cloud_frame(idCamera); frame != nullptr){
+    if(auto frame = i->serverData.get_frame(idCamera); frame != nullptr){
 
         if(currentFrameId == frame->idCapture){
-            return {false, frame->idCapture, frame->cloud.validVerticesCount};
+            return {false, frame->idCapture, frame->cloud.size()};
         }
 
-        for(size_t ii = 0; ii < frame->cloud.validVerticesCount; ++ii){
+        for(size_t ii = 0; ii < frame->cloud.size(); ++ii){
             vertices[ii].pos = frame->cloud.vertices[ii];
             vertices[ii].col = geo::Pt4<std::uint8_t>{
                 static_cast<std::uint8_t>(frame->cloud.colors[ii].x()*255.f),
@@ -373,7 +372,7 @@ auto K4ManagerExComponent::get_cloud_frame_data(size_t idCamera, size_t currentF
                 255
             };
         }
-        return {true, frame->idCapture, frame->cloud.validVerticesCount};
+        return {true, frame->idCapture, frame->cloud.size()};
     }
     return {false, 0, 0};
 }

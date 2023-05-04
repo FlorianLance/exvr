@@ -26,7 +26,7 @@
 #include "condition.hpp"
 
 // base
-#include "utility/map.hpp"
+#include "utility/unordered_map.hpp"
 
 // qt-utility
 #include "qt_logger.hpp"
@@ -341,8 +341,14 @@ void Condition::duplicate_connector(ConnectorKey connectorKey){
     if(auto connector = get_connector_from_key(connectorKey); connector != nullptr){
         auto duplicatedConnector = Connector::copy_with_new_element_id(*connector);
         duplicatedConnector->pos += QPointF(50,50);
-        connectors.emplace_back(std::move(duplicatedConnector));
+        connectors.push_back(std::move(duplicatedConnector));
     }
+}
+
+auto Condition::duplicate_connector(QPointF position, Connector *connector) -> void{
+    auto duplicatedConnector = Connector::copy_with_new_element_id(*connector);
+    duplicatedConnector->pos += position;
+    connectors.push_back(std::move(duplicatedConnector));
 }
 
 void Condition::modify_connector(ConnectorKey connectorKey, QString name, Arg arg){
@@ -413,6 +419,15 @@ void Condition::remove_all_actions(){
         break;
     }
     actions.clear();
+}
+
+auto Condition::paste_clipboard() -> void{
+//    struct NodesClipBoard{
+//        static inline bool enabled = false;
+//        static inline std::vector<ComponentKey> components = {};
+//        static inline std::vector<ConnectorKey> connectors = {};
+//        static inline std::vector<ConnectionKey> connections = {};
+//    };
 }
 
 void Condition::remove_connection(ConnectionKey connectionKey){

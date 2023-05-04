@@ -26,7 +26,7 @@
 
 // base
 #include "exvr/ex_component.hpp"
-#include "camera/kinect4/k4_volumetric_cloud_video.hpp"
+#include "camera/kinect4/k4_volumetric_video.hpp"
 
 // local
 #include "ex_resources/k4_volumetric_video_ex_resource.hpp"
@@ -35,7 +35,7 @@ namespace tool::ex {
 
 class K4VolumetricVideoExComponent : public ExComponent{
 public:
-    tool::camera::K4VolumetricCloudVideo *resource = nullptr;
+    tool::camera::K4VolumetricVideo *resource = nullptr;
 
     K4VolumetricVideoExComponent(tool::ex::K4VolumetricVideoExResource *resourceExport) : resource(&resourceExport->video){
     }
