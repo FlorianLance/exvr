@@ -43,7 +43,6 @@ using namespace tool::ex;
 using namespace tool::camera;
 using namespace tool::geo;
 using namespace tool::network;
-using namespace tool::graphics;
 
 
 struct GrabberSettings{
@@ -295,7 +294,6 @@ auto K4ManagerExComponent::stop_experiment() -> void{
 }
 
 auto K4ManagerExComponent::update_from_current_config() -> void{
-
 
     K4Delay delay;
     delay.delayMs = get<int>(ParametersContainer::Dynamic, "delay");

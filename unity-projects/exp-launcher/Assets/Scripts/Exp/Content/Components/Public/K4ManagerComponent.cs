@@ -45,7 +45,6 @@ namespace Ex {
         private bool m_modelFileLoaded          = false;
         private List<K4GrabberData> m_grabbersData = null;
         private NativeIndices indices = null;
-
         public HashSet<int> idToUse = null;
 
         #region ex_functions
