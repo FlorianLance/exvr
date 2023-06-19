@@ -81,6 +81,7 @@ namespace Ex {
         public static void add_frame(
             DLLK4VolumetricVideoComponent cppDll, VolumetricVideoCameraData data, 
             int cameraId, int frameId, int nbValidVertices, PointCloud pc, NativeIndices commonIndices) {
+
             framesToProcess.Add(new VolumetricVideoFrameInfos(cppDll, data, cameraId, frameId, nbValidVertices, pc, commonIndices));
         }
 
@@ -89,22 +90,25 @@ namespace Ex {
             if (processDone) {
                 return;
             }
-           
-            Parallel.For(0, framesToProcess.Count, ii => {
 
-                var dtp = framesToProcess[ii];
-                Profiler.BeginSample("[ExVR][ProcessVolumetricVideoComponent] uncompress_frame");
-                if (!dtp.cppDll.uncompress_frame(
-                    dtp.cameraId,
-                    dtp.frameId,
-                    ref dtp.data.vertices.native
-                )) {
-                    Debug.LogError("uncompress error");
-                    return;
-                }
-                Profiler.EndSample();
-                dtp.data.lastFrameId = dtp.frameId;
-            });
+
+            //for (int ii = 0; ii < framesToProcess.Count; ++ii) {
+                Parallel.For(0, framesToProcess.Count, ii => {
+
+                    var dtp = framesToProcess[ii];
+                    Profiler.BeginSample("[ExVR][ProcessVolumetricVideoComponent] uncompress_frame");
+                    if (!dtp.cppDll.uncompress_frame(
+                        dtp.cameraId,
+                        dtp.frameId,
+                        ref dtp.data.vertices.native
+                    )) {
+                        Debug.LogError("uncompress error");
+                        return;
+                    }
+                    Profiler.EndSample();
+                    dtp.data.lastFrameId = dtp.frameId;
+                });
+        //}
 
             var layout = new[]{
                 new VertexAttributeDescriptor(VertexAttribute.Position, VertexAttributeFormat.Float32, 3),
@@ -331,24 +335,24 @@ namespace Ex {
 
             var videoD = volumetricVideo.duration;
             float start = currentC.get<float>("start_time") * 1000f;
-            float end = currentC.get<float>("end_time")*1000f;
-            if(start > end) {
+            float end = currentC.get<float>("end_time") * 1000f;
+            if (start > end) {
                 start = end;
             }
             if (start > videoD) {
                 start = videoD;
             }
-            if(end > videoD) {
+            if (end > videoD) {
                 end = videoD;
             }
 
-            var duration = end - start;            
+            var duration = end - start;
             var currTime = time().ellapsed_element_ms() + start;
             if (currTime > duration) {
                 if (!currentC.get<bool>("loop")) {
                     return;
                 }
-                float percentage = (float)(currTime-start) / duration;
+                float percentage = (float)(currTime - start) / duration;
                 currTime = start + (percentage - System.Math.Truncate(percentage)) * duration;
             }
 
@@ -393,13 +397,13 @@ namespace Ex {
             var vvcDll = (DLLK4VolumetricVideoComponent)cppDll;
             var data = dataPerCamera[cameraId];
 
-            int currentFrameId = volumetricVideo.id_frame_from_time(cameraId, timeMs);
+            int currentFrameId  = volumetricVideo.id_frame_from_time(cameraId, timeMs);
             int nbValidVertices = volumetricVideo.nb_valid_vertices(cameraId, currentFrameId);
             if (currentFrameId != data.lastFrameId) {
 
                 ProcessVolumetricVideoComponent.add_frame(
-                    vvcDll, 
-                    dataPerCamera[cameraId], 
+                    vvcDll,
+                    data, 
                     cameraId, currentFrameId, nbValidVertices,
                     clouds[cameraId],
                     indices

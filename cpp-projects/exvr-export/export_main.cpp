@@ -41,7 +41,9 @@ using namespace tool;
 using namespace tool::ex;
 using namespace tool::camera;
 
-int main(int argc, char *argv[]){
+
+
+auto test_k4_manager() -> void{
 
     std::vector<K4VertexMeshData> meshData;
     meshData.resize(600000);
@@ -60,13 +62,9 @@ int main(int argc, char *argv[]){
     auto res = manager->initialize();
     Logger::message(std::format("initialize ret {}\n", res));
     manager->start_experiment();
-
     manager->start_routine();
 
     size_t currentFrameId = 0;
-
-
-
     auto nbCameras = manager->get<int>(ParametersContainer::Dynamic, "nb_connections");
     std::vector<int> framesId;
     framesId.resize(nbCameras);
@@ -96,6 +94,86 @@ int main(int argc, char *argv[]){
     manager->stop_experiment();
     manager->clean();
     delete manager;
+}
+
+#include "ex_resources/k4_volumetric_video_ex_resource_export.hpp"
+#include "ex_components/k4_volumetric_video_ex_component_export.hpp"
+
+auto test_k4_video()  -> void{
+
+    auto videoResource = create_k4_volumetric_video_ex_resource();
+
+    Logger::no_file_init();
+    Logger::get()->message_signal.connect([&](std::string message){
+        std::cout << message;
+    });
+    Logger::get()->error_signal.connect([&](std::string error){
+        std::cerr << error;
+    });
+    Logger::message("initialize\n");
+
+
+    std::string path = "D:/DATA/Kinect videos/adriel.kvid";
+    std::cout << "init video from path " << path << "\n";
+    videoResource->set(ParametersContainer::Dynamic, "path_file", path);
+    if(!videoResource->initialize()){
+        std::cerr << "Cannot initialize video from path: " << path << "\n";
+        return;
+    }
+
+
+
+
+    int nbCameras = get_cameras_nb_k4_volumetric_video_ex_resource(videoResource);
+    std::cout << "nb cameras: " << nbCameras << "\n";
+    for(int ii = 0; ii < nbCameras; ++ii){
+
+        std::cout << "model: " << videoResource->video.get_camera_data(ii)->transform << "\n";
+
+        std::cout << "cam " << ii << " nb frames " << get_nb_frames_k4_volumetric_video_ex_resource(videoResource, ii) << "\n";
+        std::cout << "duration: " << get_duration_ms_k4_volumetric_video_ex_resource(videoResource,ii) << "\n";
+    }
+
+    return;
+    auto videoComponent = create_k4_volumetric_video_ex_component(videoResource);
+
+
+    std::vector<tool::camera::K4VertexMeshData> data;
+
+    for(int idC = 0; idC < nbCameras; ++idC){
+        for(int idF = 0; idF < get_nb_frames_k4_volumetric_video_ex_resource(videoResource, idC); ++idF){
+
+            auto cData = videoResource->video.get_camera_data(idC);
+            auto &d = std::get<1>(cData->frames[idF]);
+            //            std::cout <<
+            //                " idc " << d->idCapture << " vvc " << d->validVerticesCount << " " <<
+            //                " eco " << d->encodedColorData.size() <<
+            //                " ede " << d->encodedDepthData.size() <<
+            //                " ein " << d->encodedInfraData.size() <<
+            //                " pco " << d->encodedProcessedColorData.size() <<
+            //                " ecl " << d->encodedCloudData.size() <<
+            //                " imu " << d->imuSample.has_value() <<
+            //                " aud " << d->audioFrames.size() <<
+            //                " cal " << d->calibration.has_value() << "\n";
+
+
+                        data.resize(d->validVerticesCount);;
+            std::cout << "uncompress " << idC << " " << idF << " ";
+            int success = uncompress_frame_vmd_k4_volumetric_video_ex_component(videoComponent, idC, idF, data.data());
+            std::cout << "-> " << success << "\n";
+        }
+    }
+
+
+    delete videoResource;
+    delete videoComponent;
+}
+
+
+int main(int argc, char *argv[]){
+
+    test_k4_video();
+
 
     //    auto scaner = create_scaner_video_file();
 

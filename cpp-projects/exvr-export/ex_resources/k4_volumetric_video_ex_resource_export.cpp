@@ -42,7 +42,7 @@ int get_nb_frames_k4_volumetric_video_ex_resource(K4VolumetricVideoExResource *v
 }
 
 float get_duration_ms_k4_volumetric_video_ex_resource(K4VolumetricVideoExResource *vvR, int idC){
-    return static_cast<float>(vvR->video.get_camera_data(idC)->last_frame_tims_ms());
+    return static_cast<float>(vvR->video.get_camera_data(idC)->last_frame_time_ms());
 }
 
 void get_camera_transform_k4_volumetric_video_ex_resource(K4VolumetricVideoExResource *vvR, int idC, float *model){

@@ -115,6 +115,10 @@ struct K4ManagerExComponent::Impl{
 K4ManagerExComponent::K4ManagerExComponent() :  i(std::make_unique<Impl>()){
 }
 
+K4ManagerExComponent::~K4ManagerExComponent(){
+
+}
+
 auto K4ManagerExComponent::initialize() -> bool{
 
     Logger::set_logger_ptr(logger = exp->logger.get());

@@ -38,6 +38,7 @@ class K4ManagerExComponent : public ExComponent{
 public:
 
     K4ManagerExComponent();
+    ~K4ManagerExComponent() override;
 
     auto initialize() -> bool override;
     auto clean() -> void override;
@@ -47,10 +48,6 @@ public:
     auto update() -> void override;
 
     auto read_messages() -> void;
-//    auto connect_grabbers() -> void;
-//    auto disconnect_grabbers() -> void;
-//    auto quit_grabbers() -> void;
-
     auto get_cloud_frame_data(size_t idCamera, size_t currentFrameId, camera::K4VertexMeshData *vertices) -> std::tuple<bool, size_t, size_t>;
 
     bool debugBypass = false;

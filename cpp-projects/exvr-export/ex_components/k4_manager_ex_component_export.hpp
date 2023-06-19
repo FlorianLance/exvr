@@ -33,7 +33,7 @@
 
 extern "C"{
 
-    DECL_EXPORT tool::ex::K4ManagerExComponent* create_k4_manager_ex_component();    
+    DECL_EXPORT tool::ex::K4ManagerExComponent* create_k4_manager_ex_component();
 
     DECL_EXPORT void retrieve_cloud_frame_data_k4_manager_ex_component(
         tool::ex::K4ManagerExComponent *c,

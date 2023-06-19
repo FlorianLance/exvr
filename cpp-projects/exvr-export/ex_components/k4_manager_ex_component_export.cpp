@@ -27,7 +27,7 @@
 using namespace tool;
 using namespace tool::ex;
 
-K4ManagerExComponent *create_k4_manager_ex_component(){
+K4ManagerExComponent* create_k4_manager_ex_component(){
     return new K4ManagerExComponent();
 }
 

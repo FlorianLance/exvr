@@ -275,7 +275,7 @@ struct Component {
         {T::Scaner_video,             C::Video,       TO::B, CO::B, N, N, N, Y, N, N, P::H, R::OS, S::Exp, "Scaner_video"sv, "Scaner video"sv, "ScanerVideo"sv, "Video_cloud"sv},
         {T::Video_file_camera_viewer, C::Video,       TO::B, CO::B, N, N, N, Y, N, N, P::M, R::OS, S::Exp, "Video_file_camera_viewer"sv, "Video file camera viewer"sv, "VideoFileCameraViewer"sv,"Video_file"sv},
         {T::Video_saver,              C::Video,       TO::B, CO::B, N, N, N, Y, N, N, P::M, R::OS, S::Exp, "Video_saver"sv, "Video saver"sv, "VideoSaver"sv,"Video_record"sv},
-        {T::Volumetric_video,         C::Video,       TO::B, CO::B, N, N, N, Y, N, N, P::H, R::OS, S::Exp, "Volumetric_video"sv,  "Volumetric video"sv, "VolumetricVideo"sv, "Video_cloud"sv},
+        {T::Volumetric_video,         C::Video,       TO::B, CO::B, N, N, N, Y, N, N, P::H, R::OS, S::Sta, "Volumetric_video"sv,  "Volumetric video"sv, "VolumetricVideo"sv, "Video_cloud"sv},
         // Viewer
         {T::Blend_fade_viewer,        C::Viewer,      TO::B, CO::C, N, N, N, Y, N, N, P::H, R::OS, S::Sta, "Blend_fade_viewer"sv, "Blend fade viewer"sv, "BlendFadeViewer"sv, "Blend"sv},
         {T::Fixation_cross_viewer,    C::Viewer,      TO::B, CO::C, N, N, N, Y, N, N, P::L, R::OS, S::Sta, "Fixation_cross_viewer"sv, "Fixation cross viewer"sv, "FixationCrossViewer"sv, "Fixation_cross"sv},
