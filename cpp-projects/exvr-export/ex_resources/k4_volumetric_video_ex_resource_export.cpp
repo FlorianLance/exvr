@@ -38,11 +38,11 @@ int get_cameras_nb_k4_volumetric_video_ex_resource(K4VolumetricVideoExResource *
 }
 
 int get_nb_frames_k4_volumetric_video_ex_resource(K4VolumetricVideoExResource *vvR, int idC){
-    return static_cast<int>(vvR->video.get_camera_data(idC)->nb_frames());
+    return static_cast<int>(vvR->video.nb_frames(idC));
 }
 
 float get_duration_ms_k4_volumetric_video_ex_resource(K4VolumetricVideoExResource *vvR, int idC){
-    return static_cast<float>(vvR->video.get_camera_data(idC)->last_frame_time_ms());
+    return static_cast<float>(vvR->video.duration_ms());
 }
 
 void get_camera_transform_k4_volumetric_video_ex_resource(K4VolumetricVideoExResource *vvR, int idC, float *model){
@@ -51,7 +51,10 @@ void get_camera_transform_k4_volumetric_video_ex_resource(K4VolumetricVideoExRes
 }
 
 int get_id_frame_from_time_ms_k4_volumetric_video_ex_resource(K4VolumetricVideoExResource *vvR, int idC, float timeMs){
-    return static_cast<int>(vvR->video.get_camera_data(idC)->closest_frame_id_from_time(timeMs));
+    if(auto idF = vvR->video.closest_frame_id_from_time(idC, timeMs); idF.has_value()){
+        return static_cast<int>(idF.value());
+    }
+    return -1;
 }
 
 int get_valid_vertices_count_k4_volumetric_video_ex_resource(K4VolumetricVideoExResource *vvR, int idC, int idF){

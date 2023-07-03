@@ -35,7 +35,9 @@ namespace tool::ex {
 
 class K4VolumetricVideoExComponent : public ExComponent{
 public:
+
     tool::camera::K4VolumetricVideo *resource = nullptr;
+    std::vector<std::unique_ptr<tool::camera::K4FrameUncompressor>> uncompressors; // dedicated uncompressors for enabling multithreads when using the same video resource
 
     K4VolumetricVideoExComponent(tool::ex::K4VolumetricVideoExResource *resourceExport) : resource(&resourceExport->video){
     }
@@ -43,6 +45,11 @@ public:
     bool initialize() override{
         auto nbCams = resource->nb_cameras();
         audioData.resize(nbCams);
+        uncompressors.resize(nbCams);
+        for(auto &uncompressor : uncompressors){
+            uncompressor = std::make_unique<tool::camera::K4FrameUncompressor>();
+        }
+
         return true;
     }
 

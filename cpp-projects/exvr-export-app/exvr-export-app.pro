@@ -37,16 +37,16 @@ include(../exvr-thirdparty.pri)
 
 ####################################### TARGET
 equals(CFG, "debug"){
-    TARGET = exvr-exportd
+    TARGET = exvr-exportd-app
 }
 equals(CFG, "release"){
-    TARGET = exvr-export
+    TARGET = exvr-export-app
 }
 
 ####################################### TEMPLATE
-TEMPLATE = lib
-CONFIG += dll
-CONFIG -= console
+TEMPLATE = app
+CONFIG += console
+
 
 ####################################### BUILD FILES
 OBJECTS_DIR = $$EXVR_EXPORT_OBJ
@@ -59,8 +59,13 @@ CONFIG -= qt
 INCLUDEPATH += \
     # base
     $$BASE_INCLUDES \
+    # exvr-export
+    $$EXVR_EXPORT_INCLUDES \
     # scaner-component
     $$SCANER_COMPONENT_INCLUDES \
+    # local
+    ex_components\
+    utility\
     # opencv
     $$OPENCV_INCLUDES \
     # boost
@@ -84,14 +89,20 @@ INCLUDEPATH += \
     # python
     $$PYTHON_INCLUDES \
 
-######################################## LIBRAIRIES
 
+######################################## LIBRAIRIES
 
 LIBS +=  \
     # base
     $$BASE_LIB \
     # scaner-component
     $$SCANER_COMPONENT_LIB\
+    # exvr-export
+    $$EXVR_EXPORT_OBJ"\py*.obj"\
+    $$EXVR_EXPORT_OBJ"\vi*.obj"\
+    $$EXVR_EXPORT_OBJ"\ex_*.obj"\
+    $$EXVR_EXPORT_OBJ"\k2_*.obj"\
+    $$EXVR_EXPORT_OBJ"\k4_*.obj"\
     # opencv
     $$OPENCV_LIBS \
     # windows
@@ -116,45 +127,7 @@ LIBS +=  \
 ######################################## PROJECT FILES
 
 HEADERS += \
-    # ex_components
-    ex_components/ex_component_export.hpp \
-    # ex_resources
-    ex_components/k2_manager_ex_component.hpp \
-    ex_components/k2_manager_ex_component_export.hpp \
-    ex_components/k4_manager_ex_component.hpp \
-    ex_components/k4_manager_ex_component_export.hpp \
-    ex_components/k4_volumetric_video_ex_component.hpp \
-    ex_components/k4_volumetric_video_ex_component_export.hpp \
-    ex_components/python_script_ex_component.hpp \
-    ex_components/python_script_ex_component_export.hpp \
-    ex_components/video_saver_ex_component.hpp \
-    ex_components/video_saver_ex_component_export.hpp \
-    ex_element_export.hpp \
-    ex_experiment_export.hpp \
-    ex_resources/ex_resource_export.hpp \
-    ex_resources/k2_volumetric_video_ex_resource.hpp \
-    ex_resources/k2_volumetric_video_ex_resource_export.hpp \
-    ex_resources/k4_volumetric_video_ex_resource.hpp \
-    ex_resources/k4_volumetric_video_ex_resource_export.hpp
 
 SOURCES += \
-    # ex_components
-    ex_components/ex_component_export.cpp \
-    # ex_resources
-    ex_components/k2_manager_ex_component.cpp \
-    ex_components/k2_manager_ex_component_export.cpp \
-    ex_components/k4_manager_ex_component.cpp \
-    ex_components/k4_manager_ex_component_export.cpp \
-    ex_components/k4_volumetric_video_ex_component_export.cpp \
-    ex_components/python_script_ex_component.cpp \
-    ex_components/python_script_ex_component_export.cpp \
-    ex_components/video_saver_ex_component.cpp \
-    ex_components/video_saver_ex_component_export.cpp \
-    ex_element_export.cpp \
-    ex_experiment_export.cpp \
-    ex_resources/ex_resource_export.cpp \
-    # main    
-    ex_resources/k2_volumetric_video_ex_resource.cpp \
-    ex_resources/k2_volumetric_video_ex_resource_export.cpp \
-    ex_resources/k4_volumetric_video_ex_resource_export.cpp \
+    exvr_export_main.cpp
 

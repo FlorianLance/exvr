@@ -81,7 +81,6 @@ namespace Ex {
         public static void add_frame(
             DLLK4VolumetricVideoComponent cppDll, VolumetricVideoCameraData data, 
             int cameraId, int frameId, int nbValidVertices, PointCloud pc, NativeIndices commonIndices) {
-
             framesToProcess.Add(new VolumetricVideoFrameInfos(cppDll, data, cameraId, frameId, nbValidVertices, pc, commonIndices));
         }
 
@@ -90,7 +89,6 @@ namespace Ex {
             if (processDone) {
                 return;
             }
-
 
             //for (int ii = 0; ii < framesToProcess.Count; ++ii) {
                 Parallel.For(0, framesToProcess.Count, ii => {
@@ -108,9 +106,9 @@ namespace Ex {
                     Profiler.EndSample();
                     dtp.data.lastFrameId = dtp.frameId;
                 });
-        //}
+            //}
 
-            var layout = new[]{
+        var layout = new[]{
                 new VertexAttributeDescriptor(VertexAttribute.Position, VertexAttributeFormat.Float32, 3),
                 new VertexAttributeDescriptor(VertexAttribute.Color, VertexAttributeFormat.UNorm8, 4)
             };
@@ -151,7 +149,7 @@ namespace Ex {
             // init DLL
             cppDll = new DLLK4VolumetricVideoComponent(volumetricVideo.get_dll_handle());
             cppDll.parent = this;
-            cppDll.initialize();
+            cppDll.initialize();            
 
             // obb
             m_OBBsGO = new List<GameObject>(10);
