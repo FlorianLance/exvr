@@ -141,71 +141,7 @@ namespace SA {
             set_parameter_array_double_ex_element(_handle, (int)pc, name, value.ToArray(), length);
         }
 
-        //public void set(ParametersSA.Container pc, Argument arg) {
 
-        //    if (arg.xml.UiGeneratorType == "Resource") {
-        //        return;
-        //    }
-
-        //    var tCode = Type.GetTypeCode(arg.type);
-        //    if (arg.xml.Dim == 0) {
-
-        //        switch (tCode) {
-        //            case TypeCode.Boolean:
-        //                set(pc, arg.xml.Name, (bool)arg.value);
-        //                return;
-        //            case TypeCode.Int16:
-        //                set(pc, arg.xml.Name, (short)arg.value);
-        //                return;
-        //            case TypeCode.Int32:
-        //                set(pc, arg.xml.Name, (int)arg.value);
-        //                return;
-        //            case TypeCode.Int64:
-        //                set(pc, arg.xml.Name, (long)arg.value);
-        //                return;
-        //            case TypeCode.Single:
-        //                set(pc, arg.xml.Name, (float)arg.value);
-        //                return;
-        //            case TypeCode.Double:
-        //                set(pc, arg.xml.Name, (double)arg.value);
-        //                return;
-        //            case TypeCode.String:
-        //                set(pc, arg.xml.Name, (string)arg.value);
-        //                return;
-        //            default:
-        //                ExVR.Log().warning(string.Format("Type [{0}] not managed for arg [{1}] of dim 0.", tCode.ToString(), arg.xml.Name));
-        //                return;
-        //        }
-
-        //    } else if (arg.xml.Dim == 1) {
-        //        string[] sizes = arg.xml.Sizes.Split(' ');
-        //        int length = Converter.to_int(sizes[0]);
-
-        //        switch (tCode) {
-        //            case TypeCode.Int32:
-        //                set_array(pc, arg.xml.Name, Converter.to_int_list(arg.value), length);
-        //                return;
-        //            case TypeCode.Single:
-
-        //                set_array(pc, arg.xml.Name, Converter.to_float_list(arg.value), length);
-        //                return;
-        //            case TypeCode.Double:
-        //                set_array(pc, arg.xml.Name, Converter.to_double_list(arg.value), length);
-        //                return;
-
-        //            default:
-        //                ExVR.Log().warning(string.Format("Type [{0}] not managed for arg [{1}] of dim 1.", tCode.ToString(), arg.xml.Name));
-        //                return;
-        //        }
-        //    } else if (arg.xml.Dim == 2) {
-        //        string[] sizes = arg.xml.Sizes.Split(' ');
-        //        int rows = Converter.to_int(sizes[0]);
-        //        int cols = Converter.to_int(sizes[1]);
-
-        //        ExVR.Log().warning("Dimension 2 not managed.");
-        //        //set_array(exComponent, container, xmlArg.Name, value, tCode, rows, cols);
-        //    }
-        //}
 
         [DllImport("exvr-export", EntryPoint = "set_exp_ex_element", CallingConvention = CallingConvention.Cdecl)]
         static public extern void set_exp_ex_element(HandleRef exElement, HandleRef exExperiment);

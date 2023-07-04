@@ -85,7 +85,7 @@ namespace SA {
         public NativeIndicesSA m_indices = null;
 
         public DLLK4ManagerComponentSA m_managerDll = null;
-        public DLLExperimentSA m_expDll = null;
+        
 
         #endregion
 
@@ -94,7 +94,9 @@ namespace SA {
         private void Awake() {
 
             // init experiment DLL
-            m_expDll = new DLLExperimentSA();
+            if(DLLExperimentSA.global == null) {
+                DLLExperimentSA.global = new DLLExperimentSA();
+            }
 
             // init manager DLL
             try {
@@ -136,7 +138,7 @@ namespace SA {
                 Debug.LogError("No models file path set.");
             }
 
-            m_managerDll.expDll = m_expDll;
+            m_managerDll.expDll = DLLExperimentSA.global;
             bool success = m_managerDll.initialize();
             if (!success) {
                 Debug.LogError("Cannot initialize k4 manager dll.");

@@ -38,6 +38,8 @@ namespace SA {
 
     public class DLLExperimentSA : DLLCppImportSA {
 
+        static public DLLExperimentSA global = null;
+
         private static readonly string bracesStr = "{0}{1}";
         private static readonly string signalStr = "signal";
 
