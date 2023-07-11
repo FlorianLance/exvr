@@ -95,7 +95,7 @@ namespace Ex {
             foreach (var go in m_cloudsCustomTrGO) {
                 go.transform.localPosition  = Vector3.zero;
                 go.transform.localRotation  = Quaternion.identity;
-                go.transform.localScale     = Vector3.one;
+                go.transform.localScale = new Vector3(1, -1, 1);
             }
         }
 
@@ -196,11 +196,15 @@ namespace Ex {
             if (!global) {
                 m_cloudsCustomTrGO[id].transform.localPosition = tv.position;
                 m_cloudsCustomTrGO[id].transform.localRotation = tv.rotation;
-                m_cloudsCustomTrGO[id].transform.localScale = tv.scale;
+                var ls = tv.scale;
+                ls.y *= -1f;
+                m_cloudsCustomTrGO[id].transform.localScale = ls;
             } else {
                 m_cloudsCustomTrGO[id].transform.position = tv.position;
                 m_cloudsCustomTrGO[id].transform.rotation = tv.rotation;
-                m_cloudsCustomTrGO[id].transform.localScale = tv.scale;
+                var ls = tv.scale;
+                ls.y *= -1f;
+                m_cloudsCustomTrGO[id].transform.localScale = ls;
             }
         }
 

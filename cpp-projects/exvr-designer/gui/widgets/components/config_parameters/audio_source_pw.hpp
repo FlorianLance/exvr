@@ -35,11 +35,11 @@ public :
 
     AudioSourceInitConfigParametersW();
 
-    void insert_widgets() override;
-    void init_and_register_widgets() override;
-    void create_connections() override;
-    void late_update_ui() override;
-    void update_with_info(QStringView id, QStringView value) override;
+    auto insert_widgets() -> void override;
+    auto init_and_register_widgets() -> void override;
+    auto create_connections() -> void override;
+    auto late_update_ui() -> void override;
+    auto update_with_info(QStringView id, QStringView value) -> void override;
 
 private:
     struct Impl;
@@ -52,10 +52,10 @@ public :
 
     AudioSourceConfigParametersW();
 
-    void insert_widgets() override;
-    void init_and_register_widgets() override;
-    void create_connections() override;
-    void late_update_ui() override;
+    auto insert_widgets() -> void override;
+    auto init_and_register_widgets() -> void override;
+    auto create_connections() -> void override;
+    auto late_update_ui() -> void override;
 
 private:
     struct Impl;

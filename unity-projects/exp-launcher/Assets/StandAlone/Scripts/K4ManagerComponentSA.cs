@@ -27,6 +27,7 @@
 
 
 // system
+using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
@@ -35,7 +36,13 @@ using System.Threading.Tasks;
 using UnityEngine;
 
 namespace SA {
-   
+
+    public static class Text {
+        public static string[] split(string text, string sep, bool removeEmptyLines = true) {
+            return text.Split(new string[] { sep }, removeEmptyLines ? StringSplitOptions.RemoveEmptyEntries : StringSplitOptions.None);
+        }
+    }
+
     public class K4GrabberDataSA {
 
         public int id = 0;
@@ -185,7 +192,7 @@ namespace SA {
             }
 
             idToUse = new HashSet<int>();
-            foreach (var idStr in Ex.Text.split(camerasToUse, ";", removeEmptyLines: true)) {
+            foreach (var idStr in Text.split(camerasToUse, ";", removeEmptyLines: true)) {
 
                 int id = System.Convert.ToInt32(idStr);
                 if (idToUse.Contains(id)) {

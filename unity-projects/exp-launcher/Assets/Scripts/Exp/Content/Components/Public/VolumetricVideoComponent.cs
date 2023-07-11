@@ -108,7 +108,7 @@ namespace Ex {
                 });
             //}
 
-        var layout = new[]{
+            var layout = new[]{
                 new VertexAttributeDescriptor(VertexAttribute.Position, VertexAttributeFormat.Float32, 3),
                 new VertexAttributeDescriptor(VertexAttribute.Color, VertexAttributeFormat.UNorm8, 4)
             };
@@ -117,6 +117,7 @@ namespace Ex {
                 var ftp = framesToProcess[ii];
                 if (ftp.nbVertices >= 0) {
                     ftp.pc.set_points(ftp.data.vertices, ftp.commonIndices, ftp.nbVertices);
+                    Debug.Log("ii " + ii + " " + ftp.nbVertices);
                 }
             }
 

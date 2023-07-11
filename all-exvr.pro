@@ -29,19 +29,34 @@ PROJECT_NAME = all-exvr
 
 TEMPLATE = subdirs
 
-SUBDIRS = \
-    base opengl-utility 3d-engine qt-utility nodes tool-test demos \
-    k4-scaner-grabber k4-scaner-manager scaner-component scaner-grabber guardian scaner-manager  \
-    exvr-designer exvr-export exvr-test \
+SUBDIRS =\
+    base base-app base-test \
+    opengl-utility opengl-utility-app \
+    3d-engine \
+    qt-utility qt-utility-app \
+    nodes demos \
+    scaner-component scaner-grabber guardian scaner-manager k4-scaner-grabber k4-scaner-manager \
+    exvr-export exvr-export-app \
+    exvr-designer \
+    exvr-test \
 
 # where to find the sub projects
 ## toolbox
+### base
 base.subdir                     = toolbox/cpp-projects/base
+base-app.subdir                 = toolbox/cpp-projects/base-app
+base-test.subdir                = toolbox/cpp-projects/base-test
+### opengl-utility
 opengl-utility.subdir           = toolbox/cpp-projects/opengl-utility
+opengl-utility-app.subdir       = toolbox/cpp-projects/opengl-utility-app
+### 3d-engine
 3d-engine.subdir                = toolbox/cpp-projects/3d-engine
+### qt-utility
 qt-utility.subdir               = toolbox/cpp-projects/qt-utility
+qt-utility-app.subdir           = toolbox/cpp-projects/qt-utility-app
+### nodes
 nodes.subdir                    = toolbox/cpp-projects/nodes
-tool-test.subdir                = toolbox/cpp-projects/tool-test
+### demos
 demos.subdir                    = toolbox/cpp-projects/demos
 scaner-component.subdir         = toolbox/cpp-projects/scaner-component
 scaner-grabber.subdir           = toolbox/cpp-projects/scaner-grabber
@@ -50,17 +65,28 @@ scaner-manager.subdir           = toolbox/cpp-projects/scaner-manager
 k4-scaner-grabber.subdir        = toolbox/cpp-projects/k4-scaner-grabber
 k4-scaner-manager.subdir        = toolbox/cpp-projects/k4-scaner-manager
 ## exvr
-exvr-designer.subdir            = cpp-projects/exvr-designer
+### exvr-export
 exvr-export.subdir              = cpp-projects/exvr-export
+exvr-export-app.subdir          = cpp-projects/exvr-export-app
+### exvr-designer
+exvr-designer.subdir            = cpp-projects/exvr-designer
 exvr-test.subdir                = cpp-projects/exvr-test
 
 # dependencies
 ## toolbox
+### base
+base-app.depends                = base
+base-test.depends               = base
+### opengl-utility
 opengl-utility.depends          = base
+opengl-utility-app.depends      = opengl-utility
+### 3d-engine
 3d-engine.depends               = opengl-utility
+### qt-utility
 qt-utility.depends              = opengl-utility
+qt-utility-app.depends          = opengl-utility
+### nodes
 nodes.depends                   = base
-tool-test.depends               = opengl-utility
 demos.depends                   = 3d-engine
 scaner-component.depends        = base
 scaner-grabber.depends          = qt-utility
@@ -69,6 +95,9 @@ scaner-manager.depends          = qt-utility
 k4-scaner-grabber.depends       = 3d-engine
 k4-scaner-manager.depends       = 3d-engine
 ## exvr
-exvr-designer.depends           = qt-utility nodes
+### exvr-export
 exvr-export.depends             = base
+exvr-export-app.depends         = exvr-export
+### exvr-designer
+exvr-designer.depends           = qt-utility nodes
 exvr-test.depends               = exvr-designer
