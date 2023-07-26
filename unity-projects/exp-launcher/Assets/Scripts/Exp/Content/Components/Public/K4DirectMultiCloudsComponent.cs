@@ -24,6 +24,7 @@ namespace Ex {
         private List<GameObject> m_cloudsConfigTrGO = null; // # config transfrom
         private List<GameObject> m_cloudsCalibTrGO = null;  // ## calibration transform
 
+        private GameObject m_OBBsParent   = null;
         private List<GameObject> m_OBBsGO = null;
         private List<OBBFInfo> m_OBBsInfo = null;
 
@@ -41,8 +42,8 @@ namespace Ex {
             }
 
             // init parents GO
-            m_parentCloudsGO = GO.generate_empty_scene_object("grabbers_cloud", transform, true);
-            GO.init_local_scaling(m_parentCloudsGO, new Vector3(1, 1, 1));
+            m_parentCloudsGO = GO.generate_empty_scene_object("clouds", transform, true);
+            GO.init_local_scaling(m_parentCloudsGO, new Vector3(-1, 1, 1)); // invert y scale 
 
             //// # clouds
             m_cloudsCustomTrGO = new List<GameObject>();
@@ -51,10 +52,15 @@ namespace Ex {
             m_cloudUpdated = new List<bool>();
 
             // obb
-            m_OBBsGO = new List<GameObject>(10);
-            m_OBBsInfo = new List<OBBFInfo>(10);
+            m_OBBsGO     = new List<GameObject>(10);
+            m_OBBsInfo   = new List<OBBFInfo>(10);
+            m_OBBsParent = GO.generate_empty_scene_object("OBBs", m_parentCloudsGO.transform, true);
+            m_OBBsParent.transform.localPosition = Vector3.zero;
+            m_OBBsParent.transform.localEulerAngles = Vector3.zero;
+            m_OBBsParent.transform.localScale = Vector3.one;
+
             for (int ii = 0; ii < 10; ++ii) {
-                var obbGO = GO.generate_cube("filtering obb", transform, 1f, null, -1, ExVR.GlobalResources().instantiate_default_transparent_mat());
+                var obbGO = GO.generate_cube("filtering obb", m_OBBsParent.transform, 1f, null, -1, ExVR.GlobalResources().instantiate_default_transparent_mat());
                 obbGO.SetActive(false);
                 m_OBBsGO.Add(obbGO);
                 m_OBBsInfo.Add(new OBBFInfo());
@@ -95,7 +101,7 @@ namespace Ex {
             foreach (var go in m_cloudsCustomTrGO) {
                 go.transform.localPosition  = Vector3.zero;
                 go.transform.localRotation  = Quaternion.identity;
-                go.transform.localScale = new Vector3(1, -1, 1);
+                go.transform.localScale = new Vector3(1, 1, 1);
             }
         }
 
@@ -114,6 +120,7 @@ namespace Ex {
                 foreach (var go in m_cloudsConfigTrGO) {
                     currentC.update_transform("global_transform", go.transform, true);
                 }
+                currentC.update_transform("global_transform", m_OBBsParent.transform, true);                
             }
 
             // obb
@@ -136,7 +143,7 @@ namespace Ex {
                     m_OBBsInfo[ii].color = new Color(1, 0, 0, 0.2f);
                 }
 
-                Apply.to_transform(m_OBBsInfo[ii].transform, m_OBBsGO[ii].transform, false);
+                Apply.to_transform(m_OBBsInfo[ii].transform, m_OBBsGO[ii].transform, true);
                 m_OBBsGO[ii].GetComponent<MeshRenderer>().material.SetColor("_Color", m_OBBsInfo[ii].color);
             }
 
@@ -196,15 +203,11 @@ namespace Ex {
             if (!global) {
                 m_cloudsCustomTrGO[id].transform.localPosition = tv.position;
                 m_cloudsCustomTrGO[id].transform.localRotation = tv.rotation;
-                var ls = tv.scale;
-                ls.y *= -1f;
-                m_cloudsCustomTrGO[id].transform.localScale = ls;
+                m_cloudsCustomTrGO[id].transform.localScale = tv.scale;
             } else {
                 m_cloudsCustomTrGO[id].transform.position = tv.position;
                 m_cloudsCustomTrGO[id].transform.rotation = tv.rotation;
-                var ls = tv.scale;
-                ls.y *= -1f;
-                m_cloudsCustomTrGO[id].transform.localScale = ls;
+                m_cloudsCustomTrGO[id].transform.localScale = tv.scale;
             }
         }
 

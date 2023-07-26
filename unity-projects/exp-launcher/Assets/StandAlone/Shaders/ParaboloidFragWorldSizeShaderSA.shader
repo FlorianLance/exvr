@@ -114,8 +114,7 @@ Shader "Custom/Cloud/ParaboloidFragWorldSizeShaderSA"
 				VertexMiddle o;
 				if (_OBBFiltering == 1) {
 					o.position = float4(v.position.xyz, valid_vertex(mul(unity_ObjectToWorld, v.position)).w);
-				}
-				else {
+				}else {
 					o.position = float4(v.position.xyz, 1);
 				}
 

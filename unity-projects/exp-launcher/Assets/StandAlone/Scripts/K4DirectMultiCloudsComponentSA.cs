@@ -28,6 +28,7 @@
 *************************************************************************************/
 
 // system
+using Ex;
 using System.Collections.Generic;
 
 // unity
@@ -167,6 +168,7 @@ namespace SA {
         public List<GameObject> m_cloudsCustomTrGO = null; // custom transform
         public List<GameObject> m_cloudsConfigTrGO = null; // # config transfrom
         public List<GameObject> m_cloudsCalibTrGO = null;  // ## calibration transform
+        public GameObject m_OBBsParent = null;
         public List<GameObject> m_OBBsGO = null;        
         public List<bool> m_cloudUpdated = null;
 
@@ -181,7 +183,7 @@ namespace SA {
 
             // init parents GO
             m_parentCloudsGO = GOSA.generate_empty_scene_object("grabbers_cloud", transform, true);
-            GOSA.init_local_scaling(m_parentCloudsGO, new Vector3(1, 1, 1));
+            GOSA.init_local_scaling(m_parentCloudsGO, new Vector3(-1, 1, 1)); // invert x scale 
 
             //// # clouds
             m_cloudsCustomTrGO = new List<GameObject>();
@@ -192,9 +194,13 @@ namespace SA {
             // obb
             m_OBBsGO = new List<GameObject>(10);
             m_OBBsInfo = new List<OBBFInfoSA>(10);
+            m_OBBsParent = GO.generate_empty_scene_object("OBBs", m_parentCloudsGO.transform, true);
+            m_OBBsParent.transform.localPosition    = Vector3.zero;
+            m_OBBsParent.transform.localEulerAngles = Vector3.zero;
+            m_OBBsParent.transform.localScale       = Vector3.one;
 
             for (int ii = 0; ii < 10; ++ii) {
-                var obbGO = GOSA.generate_cube(Instantiate(m_oobbMaterial), "filtering obb", transform, 1f, null, -1);
+                var obbGO = GOSA.generate_cube(Instantiate(m_oobbMaterial), "filtering obb", m_OBBsParent.transform, 1f, null, -1);
                 obbGO.SetActive(false);
                 m_OBBsGO.Add(obbGO);
                 m_OBBsInfo.Add(new OBBFInfoSA());

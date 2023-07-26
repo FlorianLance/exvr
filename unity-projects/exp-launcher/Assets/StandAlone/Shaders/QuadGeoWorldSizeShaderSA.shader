@@ -68,7 +68,7 @@ Shader "Custom/Cloud/QuadGeoWorldSizeShaderSA"
 
 					if (_ObbsSize[idOBB].w == 1.f) {
 
-						float3 dir = p.xyz - _ObbsPos[idOBB];
+						float3 dir = p.xyz - _ObbsPos[idOBB].xyz;
 						bool inside = true;
 
 						for (int idV = 0; idV < 3; ++idV) {

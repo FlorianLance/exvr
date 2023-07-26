@@ -30,6 +30,7 @@
 #include <execution>
 
 // base
+#include "utility/time.hpp"
 // # network
 #include "network/kinect4/k4_server_network.hpp"
 #include "network/kinect4/k4_server_network_settings.hpp"
@@ -285,7 +286,7 @@ auto K4ManagerExComponent::start_experiment() -> void{
     i->connect_grabbers();
 
 
-    startExperimentTime = nanoseconds(high_resolution_clock::now().time_since_epoch());
+    startExperimentTime =  Time::nanoseconds_since_epoch();
 
 }
 
