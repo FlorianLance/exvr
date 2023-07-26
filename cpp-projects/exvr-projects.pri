@@ -24,8 +24,8 @@
 # **                                                                            **
 # ********************************************************************************/
 
-TOOLBOX_REPOSITORY_DIR = $$EXVR_REPOSITORY_DIR"/toolbox"
-include(../toolbox/cpp-projects/tb-projects.pri)
+TOOLSET_REPOSITORY_DIR = $$EXVR_REPOSITORY_DIR"/toolset"
+include(../toolset/cpp-projects/ts-projects.pri)
 
 # projects list
 EXVR_CPP_PROJECTS +=\

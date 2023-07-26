@@ -41,29 +41,29 @@ SUBDIRS =\
     exvr-test \
 
 # where to find the sub projects
-## toolbox
+## toolset
 ### base
-base.subdir                     = toolbox/cpp-projects/base
-base-app.subdir                 = toolbox/cpp-projects/base-app
-base-test.subdir                = toolbox/cpp-projects/base-test
+base.subdir                     = toolset/cpp-projects/base
+base-app.subdir                 = toolset/cpp-projects/base-app
+base-test.subdir                = toolset/cpp-projects/base-test
 ### opengl-utility
-opengl-utility.subdir           = toolbox/cpp-projects/opengl-utility
-opengl-utility-app.subdir       = toolbox/cpp-projects/opengl-utility-app
+opengl-utility.subdir           = toolset/cpp-projects/opengl-utility
+opengl-utility-app.subdir       = toolset/cpp-projects/opengl-utility-app
 ### 3d-engine
-3d-engine.subdir                = toolbox/cpp-projects/3d-engine
+3d-engine.subdir                = toolset/cpp-projects/3d-engine
 ### qt-utility
-qt-utility.subdir               = toolbox/cpp-projects/qt-utility
-qt-utility-app.subdir           = toolbox/cpp-projects/qt-utility-app
+qt-utility.subdir               = toolset/cpp-projects/qt-utility
+qt-utility-app.subdir           = toolset/cpp-projects/qt-utility-app
 ### nodes
-nodes.subdir                    = toolbox/cpp-projects/nodes
+nodes.subdir                    = toolset/cpp-projects/nodes
 ### demos
-demos.subdir                    = toolbox/cpp-projects/demos
-scaner-component.subdir         = toolbox/cpp-projects/scaner-component
-scaner-grabber.subdir           = toolbox/cpp-projects/scaner-grabber
-guardian.subdir                 = toolbox/cpp-projects/guardian
-scaner-manager.subdir           = toolbox/cpp-projects/scaner-manager
-k4-scaner-grabber.subdir        = toolbox/cpp-projects/k4-scaner-grabber
-k4-scaner-manager.subdir        = toolbox/cpp-projects/k4-scaner-manager
+demos.subdir                    = toolset/cpp-projects/demos
+scaner-component.subdir         = toolset/cpp-projects/scaner-component
+scaner-grabber.subdir           = toolset/cpp-projects/scaner-grabber
+guardian.subdir                 = toolset/cpp-projects/guardian
+scaner-manager.subdir           = toolset/cpp-projects/scaner-manager
+k4-scaner-grabber.subdir        = toolset/cpp-projects/k4-scaner-grabber
+k4-scaner-manager.subdir        = toolset/cpp-projects/k4-scaner-manager
 ## exvr
 ### exvr-export
 exvr-export.subdir              = cpp-projects/exvr-export
@@ -73,7 +73,7 @@ exvr-designer.subdir            = cpp-projects/exvr-designer
 exvr-test.subdir                = cpp-projects/exvr-test
 
 # dependencies
-## toolbox
+## toolset
 ### base
 base-app.depends                = base
 base-test.depends               = base
