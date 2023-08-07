@@ -35,7 +35,8 @@ SUBDIRS =\
     3d-engine \
     qt-utility qt-utility-app \
     nodes demos \
-    scaner-component scaner-grabber guardian scaner-manager k4-scaner-grabber k4-scaner-manager \
+    scaner-component scaner-grabber guardian scaner-manager \
+    k4-scaner-grabber k4-scaner-manager k4-monitoring \
     exvr-export exvr-export-app \
     exvr-designer \
     exvr-test \
@@ -64,6 +65,7 @@ guardian.subdir                 = toolset/cpp-projects/guardian
 scaner-manager.subdir           = toolset/cpp-projects/scaner-manager
 k4-scaner-grabber.subdir        = toolset/cpp-projects/k4-scaner-grabber
 k4-scaner-manager.subdir        = toolset/cpp-projects/k4-scaner-manager
+k4-monitoring.subdir            = toolset/cpp-projects/k4-monitoring
 ## exvr
 ### exvr-export
 exvr-export.subdir              = cpp-projects/exvr-export
@@ -87,13 +89,14 @@ qt-utility.depends              = opengl-utility
 qt-utility-app.depends          = opengl-utility
 ### nodes
 nodes.depends                   = base
-demos.depends                   = 3d-engine
 scaner-component.depends        = base
+demos.depends                   = 3d-engine
+k4-scaner-grabber.depends       = 3d-engine
+k4-scaner-manager.depends       = 3d-engine
 scaner-grabber.depends          = qt-utility
 guardian.depends                = qt-utility
 scaner-manager.depends          = qt-utility
-k4-scaner-grabber.depends       = 3d-engine
-k4-scaner-manager.depends       = 3d-engine
+k4-monitoring.depends           = qt-utility
 ## exvr
 ### exvr-export
 exvr-export.depends             = base
