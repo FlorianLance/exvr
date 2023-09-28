@@ -95,7 +95,7 @@ https://visualstudio.microsoft.com/vs/community/).
 ## Examples
 
 * [Details](cpp-projects/_build/bin/exvr-designer/data/experiments/examples/doc_examples.md)
-* [Directory](cpp-projects/_build/bin/exvr-designer/data/experiments/examples)
+* [Experiment files directory](cpp-projects/_build/bin/exvr-designer/data/experiments/examples)
 
 ## Documentation
 
