@@ -63,9 +63,9 @@ scaner-component.subdir         = toolset/cpp-projects/scaner-component
 scaner-grabber.subdir           = toolset/cpp-projects/scaner-grabber
 guardian.subdir                 = toolset/cpp-projects/guardian
 scaner-manager.subdir           = toolset/cpp-projects/scaner-manager
+k4-monitoring.subdir            = toolset/cpp-projects/k4-monitoring
 k4-scaner-grabber.subdir        = toolset/cpp-projects/k4-scaner-grabber
 k4-scaner-manager.subdir        = toolset/cpp-projects/k4-scaner-manager
-k4-monitoring.subdir            = toolset/cpp-projects/k4-monitoring
 ## exvr
 ### exvr-export
 exvr-export.subdir              = cpp-projects/exvr-export
@@ -86,7 +86,7 @@ opengl-utility-app.depends      = opengl-utility
 3d-engine.depends               = opengl-utility
 ### qt-utility
 qt-utility.depends              = opengl-utility
-qt-utility-app.depends          = opengl-utility
+qt-utility-app.depends          = qt-utility
 ### nodes
 nodes.depends                   = base
 scaner-component.depends        = base

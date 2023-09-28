@@ -215,7 +215,7 @@ GameObject:
   - component: {fileID: 1107133799}
   - component: {fileID: 1107133800}
   m_Layer: 0
-  m_Name: K4DirectMultiClouds
+  m_Name: K4VolumetricVideo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -233,7 +233,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2138969536}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1107133800
 MonoBehaviour:
@@ -244,13 +244,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1107133798}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c6d84946e5f0ada46a19cb626cb48d85, type: 3}
+  m_Script: {fileID: 11500000, guid: b05f1aa2cd3e4724d99a5e043896a93b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_kinectM: {fileID: 2076751962}
-  m_oobbMaterial: {fileID: 2100000, guid: b336b5f5815fa4c4a8752613707fef0a, type: 2}
-  m_pointCloudMaterial: {fileID: 2100000, guid: b4d21b46fa2056542b19a37aa1b43eca,
-    type: 2}
+  videoFilePath: D:/margaux_test.kvid
+  doVideoLoop: 1
+  startTime: 0
+  endTime: 10
+  audioIdChannel: 0
   displayClouds: 1
   sizePoints: 0.003
   removeOutside: 0
@@ -259,14 +260,16 @@ MonoBehaviour:
   tintColor: {r: 1, g: 1, b: 1, a: 0}
   details: 3
   rendering: 2
+  m_oobbMaterial: {fileID: 2100000, guid: b336b5f5815fa4c4a8752613707fef0a, type: 2}
+  m_pointCloudMaterial: {fileID: 2100000, guid: b4d21b46fa2056542b19a37aa1b43eca,
+    type: 2}
   displayFilteringObb: 0
   m_OBBsInfo: []
   m_parentCloudsGO: {fileID: 0}
-  m_cloudsCustomTrGO: []
-  m_cloudsConfigTrGO: []
-  m_cloudsCalibTrGO: []
   m_OBBsGO: []
-  m_cloudUpdated: 
+  audioSource: {fileID: 0}
+  clouds: []
+  m_OBBsParent: {fileID: 0}
 --- !u!1 &1303330479
 GameObject:
   m_ObjectHideFlags: 0
@@ -359,63 +362,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
---- !u!1 &2076751960
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2076751961}
-  - component: {fileID: 2076751962}
-  m_Layer: 0
-  m_Name: K4Manager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2076751961
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2076751960}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 2138969536}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2076751962
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2076751960}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 686f7f33977c25f43b8c29c4820210db, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  camerasToUse: 0;1;2;3
-  networkFilePath: D:/DEV/EPFL/lnco-exvr/exvr/toolbox/cpp-projects/_build/bin/k4-scaner-manager/config/network/network_FLORIAN-PC.config
-  deviceFilePath: 
-  filtersFilePath: 
-  colorsFilePath: 
-  modelsFilePath: D:/DEV/EPFL/lnco-exvr/exvr/toolbox/cpp-projects/_build/bin/k4-scaner-manager/config/calibration/model_FLORIAN-PC_all.config
-  delayMs: 0
-  m_initialized: 0
-  m_nbConnections: 0
-  m_networkFileLoaded: 0
-  m_deviceConfigFileLoaded: 0
-  m_filtersFileLoaded: 0
-  m_colorFileLoaded: 0
-  m_modelFileLoaded: 0
 --- !u!1 &2138969535
 GameObject:
   m_ObjectHideFlags: 0
@@ -443,7 +389,6 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 2076751961}
   - {fileID: 1107133799}
   m_Father: {fileID: 0}
   m_RootOrder: 2
