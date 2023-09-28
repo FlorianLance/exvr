@@ -8,7 +8,8 @@
 * [How to install](#how-to-install)
 * [How to compile from code](#how-to-compile-from-code)
 * [Documentation](#documentation)
-* [Tutorials](#tutorials)
+* [Examples](#examples)
+* [Videos](#videos)
 * [Authors](#authors)
 
 ## Description
@@ -98,7 +99,7 @@ https://visualstudio.microsoft.com/vs/community/).
 
 ## Documentation
 
-* [ExVR Doc](cpp-projects/_build/bin/exvr-designer/data/documentation/doc_general.md)
+* [Index](cpp-projects/_build/bin/exvr-designer/data/documentation/doc_general.md)
 
 ## Videos
 
