@@ -28,7 +28,6 @@
 *************************************************************************************/
 
 // system
-using Ex;
 using System.Collections.Generic;
 
 // unity
@@ -194,7 +193,7 @@ namespace SA {
             // obb
             m_OBBsGO = new List<GameObject>(10);
             m_OBBsInfo = new List<OBBFInfoSA>(10);
-            m_OBBsParent = GO.generate_empty_scene_object("OBBs", m_parentCloudsGO.transform, true);
+            m_OBBsParent = GOSA.generate_empty_scene_object("OBBs", m_parentCloudsGO.transform, true);
             m_OBBsParent.transform.localPosition    = Vector3.zero;
             m_OBBsParent.transform.localEulerAngles = Vector3.zero;
             m_OBBsParent.transform.localScale       = Vector3.one;

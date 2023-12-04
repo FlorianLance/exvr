@@ -31,9 +31,11 @@ using UnityEngine;
 using Unity.Collections;
 using UnityEngine.Profiling;
 using UnityEngine.Rendering;
-using Ex;
+
 using System.Threading;
 using System.Diagnostics;
+using static System.Net.WebRequestMethods;
+using Valve.Newtonsoft.Json.Serialization;
 
 namespace SA {
 
@@ -93,19 +95,30 @@ namespace SA {
                 return;
             }
 
+            if (framesToProcess.Count > 0) {
+                UnityEngine.Debug.LogError("framesToProcess.Count " + framesToProcess.Count);
+                {
+                    foreach (var dtp in framesToProcess) {
+                        //UnityEngine.Debug.LogError("-> " + dtp.cameraId + " " + dtp.frameId);
+                    }
+                }
+            }
+
             Parallel.For(0, framesToProcess.Count, ii => {
 
                 var dtp = framesToProcess[ii];
                 Profiler.BeginSample("[ExVR][ProcessVolumetricVideoComponent] uncompress_frame");
-                if (!dtp.cppDll.uncompress_frame(
+                int ret = dtp.cppDll.uncompress_frame(
                     dtp.cameraId,
                     dtp.frameId,
                     ref dtp.data.vertices.native
-                )) {
-                    UnityEngine.Debug.LogError("uncompress error");
-                    return;
-                }
+                );
                 Profiler.EndSample();
+                if (ret != 1) { 
+                    UnityEngine.Debug.LogError("uncompress error [" + ret + "] " + ii + " " + dtp.cameraId + " " + dtp.frameId);
+                    return;
+                }   
+                //UnityEngine.Debug.LogError("success " + ii + " " + dtp.cameraId + " " + dtp.frameId);
                 dtp.data.lastFrameId = dtp.frameId;
             });
 
@@ -220,7 +233,7 @@ namespace SA {
             // obb
             m_OBBsGO = new List<GameObject>(10);
             m_OBBsInfo = new List<OBBFInfoSA>(10);
-            m_OBBsParent = GO.generate_empty_scene_object("OBBs", m_parentCloudsGO.transform, true);
+            m_OBBsParent = GOSA.generate_empty_scene_object("OBBs", m_parentCloudsGO.transform, true);
             m_OBBsParent.transform.localPosition = Vector3.zero;
             m_OBBsParent.transform.localEulerAngles = Vector3.zero;
             m_OBBsParent.transform.localScale = Vector3.one;
@@ -252,7 +265,7 @@ namespace SA {
 
             for (int ii = 0; ii < volumetricVideo.nbCameras; ++ii) {
 
-                GameObject cloudGO = GO.generate_empty_scene_object("camera_" + ii, m_parentCloudsGO.transform, true);
+                GameObject cloudGO = GOSA.generate_empty_scene_object("camera_" + ii, m_parentCloudsGO.transform, true);
                 //GO.init_local_scaling(cloudGO, new Vector3(0.1f, 0.1f, 0.1f));
 
                 // set point cloud
@@ -283,7 +296,7 @@ namespace SA {
 
             // apply calibration matrices
             for (int ii = 0; ii < volumetricVideo.nbCameras; ++ii) {
-                clouds[ii].transform.localRotation = volumetricVideo.cameraDataInfo[ii].model.GetRotation();
+                clouds[ii].transform.localRotation = volumetricVideo.cameraDataInfo[ii].model.rotation;
                 clouds[ii].transform.localPosition = volumetricVideo.cameraDataInfo[ii].model.GetPosition();
             }
 

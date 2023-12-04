@@ -39,14 +39,14 @@ namespace SA {
             }
         }
 
-        public bool uncompress_frame(int idCamera, int idFrame, ref Unity.Collections.NativeArray<DLLVertexSA> vertices) {
+        public int uncompress_frame(int idCamera, int idFrame, ref Unity.Collections.NativeArray<DLLVertexSA> vertices) {
             unsafe {
                 return uncompress_frame_vmd_k4_volumetric_video_ex_component(
                     _handle,
                     idCamera,
                     idFrame,
                     Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafePtr(vertices)
-                ) == 1;
+                ) ;
             }
         }
 

@@ -33,7 +33,7 @@ K4ManagerExComponent* create_k4_manager_ex_component(){
 
 void retrieve_cloud_frame_data_k4_manager_ex_component(
     tool::ex::K4ManagerExComponent *c, int idCamera, int idCurrentFrame,
-    tool::camera::K4VertexMeshData *vertices, int *lastFrameState){
+    tool::camera::DCVertexMeshData *vertices, int *lastFrameState){
 
     auto ret = c->get_cloud_frame_data(idCamera, idCurrentFrame, vertices);
     lastFrameState[0] = std::get<0>(ret) ? 1 : 0;

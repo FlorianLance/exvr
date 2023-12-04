@@ -39,7 +39,7 @@ extern "C"{
         tool::ex::K4ManagerExComponent *c,
         int idCamera,
         int idCurrentFrame,
-        tool::camera::K4VertexMeshData *vertices,
+        tool::camera::DCVertexMeshData *vertices,
         int *lastFrameState
     );
 }

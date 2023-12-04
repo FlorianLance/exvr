@@ -168,8 +168,7 @@ void ExVrController::close_exvr(){
     // wait for communication to stop
     QCoreApplication::processEvents( QEventLoop::AllEvents, 500);
 
-    // threads
-    QtLogger::message("[CONTROLLER] Stop threads");
+    // threads QtLogger::message("[CONTROLLER] Stop threads");
     m_expLauncherT.quit();
     if(!m_expLauncherT.wait(1000)){
         m_expLauncherT.terminate();
@@ -987,7 +986,7 @@ void ExVrController::show_about_dialog(){
     about.setupUi(modalDialog.get());
     about.textEdit->setTextInteractionFlags(Qt::TextBrowserInteraction);
     connect(about.pbClose, &QPushButton::clicked, modalDialog.get(), &QDialog::close);
-    connect(modalDialog.get(), &QDialog::finished, [&](int){
+    connect(modalDialog.get(), &QDialog::finished, this, [&](int){
         modalDialog = nullptr;
     });
     modalDialog->show();

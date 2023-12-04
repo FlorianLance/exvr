@@ -45,7 +45,7 @@ using namespace tool::camera;
 
 auto test_k4_manager() -> void{
 
-    std::vector<K4VertexMeshData> meshData;
+    std::vector<DCVertexMeshData> meshData;
     meshData.resize(600000);
 
     tool::ex::ExExperiment exp;
@@ -64,7 +64,7 @@ auto test_k4_manager() -> void{
     manager->start_experiment();
     manager->start_routine();
 
-    size_t currentFrameId = 0;
+//    size_t currentFrameId = 0;
     auto nbCameras = manager->get<int>(ParametersContainer::Dynamic, "nb_connections");
     std::vector<int> framesId;
     framesId.resize(nbCameras);
@@ -83,7 +83,7 @@ auto test_k4_manager() -> void{
 
             auto ret = manager->get_cloud_frame_data(jj,framesId[jj], meshData.data());
             if(std::get<0>(ret)){
-                framesId[jj] = std::get<1>(ret);
+                framesId[jj] = static_cast<int>(std::get<1>(ret));
                 Logger::message(std::format("re c[{}] [{}][{}][{}]\n", jj, std::get<0>(ret),std::get<1>(ret),std::get<2>(ret)));
             }
         }
@@ -138,7 +138,7 @@ auto test_k4_video()  -> void{
     auto videoComponent = create_k4_volumetric_video_ex_component(videoResource);
 
 
-    std::vector<tool::camera::K4VertexMeshData> data;
+    std::vector<tool::camera::DCVertexMeshData> data;
 
     for(int idC = 0; idC < nbCameras; ++idC){
         for(int idF = 0; idF < get_nb_frames_k4_volumetric_video_ex_resource(videoResource, idC); ++idF){
@@ -170,7 +170,7 @@ auto test_k4_video()  -> void{
 }
 
 
-int main(int argc, char *argv[]){
+int main(int, char *[]){
 
     test_k4_video();
 

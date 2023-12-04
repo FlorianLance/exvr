@@ -247,7 +247,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b05f1aa2cd3e4724d99a5e043896a93b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  videoFilePath: D:/margaux_test.kvid
+  videoFilePath: D:/fix_elena3_intro2.kvid
   doVideoLoop: 1
   startTime: 0
   endTime: 10

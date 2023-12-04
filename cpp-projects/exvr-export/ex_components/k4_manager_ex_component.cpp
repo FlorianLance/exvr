@@ -35,8 +35,8 @@
 #include "network/kinect4/k4_server_network.hpp"
 #include "network/kinect4/k4_server_network_settings.hpp"
 // # camera
-#include "camera/kinect4/k4_server_data.hpp"
-#include "camera/kinect4/k4_model.hpp"
+#include "camera/dc_server_data.hpp"
+#include "camera/dc_model.hpp"
 
 using namespace std::chrono;
 
@@ -50,16 +50,16 @@ using namespace tool::network;
 struct GrabberSettings{
     bool connected = false;
     size_t id = 0;
-    camera::K4Filters filters;
-    camera::K4DeviceSettings device = camera::K4DeviceSettings::default_init_for_manager();
-    camera::K4ColorSettings color;
-    camera::K4Model model;
+    camera::DCFilters filters;
+    camera::DCDeviceSettings device = camera::DCDeviceSettings::default_init_for_manager(DCType::Kinect4);
+    camera::DCColorSettings color;
+    camera::DCModel model;
 };
 
 struct K4ManagerExComponent::Impl{
 
     K4ServerNetwork network;
-    K4ServerData serverData;
+    DCServerData serverData;
     K4ServerNetworkSettings networkSettings;
     std::vector<GrabberSettings> grabbersS;
 
@@ -303,7 +303,7 @@ auto K4ManagerExComponent::stop_experiment() -> void{
 
 auto K4ManagerExComponent::update_from_current_config() -> void{
 
-    K4Delay delay;
+    DCDelaySettings delay;
     delay.delayMs = get<int>(ParametersContainer::Dynamic, "delay");
     for(size_t ii = 0; ii < i->grabbersS.size(); ++ii){
         i->network.send_delay(ii, delay);
@@ -361,7 +361,7 @@ auto K4ManagerExComponent::read_messages() -> void{
     i->messagesR.clear();
 }
 
-auto K4ManagerExComponent::get_cloud_frame_data(size_t idCamera, size_t currentFrameId, camera::K4VertexMeshData *vertices) -> std::tuple<bool, size_t, size_t>{
+auto K4ManagerExComponent::get_cloud_frame_data(size_t idCamera, size_t currentFrameId, camera::DCVertexMeshData *vertices) -> std::tuple<bool, size_t, size_t>{
 
     if(auto frame = i->serverData.get_frame(idCamera); frame != nullptr){
 

@@ -49,9 +49,9 @@ int uncompress_frame_c3i_k4_volumetric_video_ex_component(K4VolumetricVideoExCom
     return 0;
 }
 
-int uncompress_frame_vmd_k4_volumetric_video_ex_component(K4VolumetricVideoExComponent *vvC, int idC, int idFrame, tool::camera::K4VertexMeshData *vertices){
+int uncompress_frame_vmd_k4_volumetric_video_ex_component(K4VolumetricVideoExComponent *vvC, int idC, int idFrame, tool::camera::DCVertexMeshData *vertices){
     if(auto frame = vvC->resource->get_compressed_frame(idC, idFrame).lock()){
-        return vvC->uncompressors[idC]->uncompress(frame.get(), vertices) ? 1 : 0;
+        return vvC->uncompressors[idC]->uncompress(frame.get(), vertices);// ? 1 : 0;
     }
     return 0;
 }
