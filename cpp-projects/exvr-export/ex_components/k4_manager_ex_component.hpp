@@ -23,13 +23,9 @@
 
 #pragma once
 
-// std
-#include <any>
-#include <map>
-
 // base
 #include "exvr/ex_component.hpp"
-#include "camera/kinect4/k4_types.hpp"
+#include "camera/dc_types.hpp"
 
 namespace tool::ex {
 

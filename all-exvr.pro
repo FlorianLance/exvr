@@ -36,7 +36,7 @@ SUBDIRS =\
     qt-utility qt-utility-app \
     nodes demos \
     scaner-component scaner-grabber guardian scaner-manager \
-    k4-scaner-grabber k4-scaner-manager k4-monitoring \
+    dc-grabber dc-manager dc-monitoring \
     exvr-export exvr-export-app \
     exvr-designer \
     exvr-test \
@@ -61,11 +61,11 @@ nodes.subdir                    = toolset/cpp-projects/nodes
 demos.subdir                    = toolset/cpp-projects/demos
 scaner-component.subdir         = toolset/cpp-projects/scaner-component
 scaner-grabber.subdir           = toolset/cpp-projects/scaner-grabber
-guardian.subdir                 = toolset/cpp-projects/guardian
 scaner-manager.subdir           = toolset/cpp-projects/scaner-manager
-k4-monitoring.subdir            = toolset/cpp-projects/k4-monitoring
-k4-scaner-grabber.subdir        = toolset/cpp-projects/k4-scaner-grabber
-k4-scaner-manager.subdir        = toolset/cpp-projects/k4-scaner-manager
+guardian.subdir                 = toolset/cpp-projects/guardian
+dc-grabber.subdir               = toolset/cpp-projects/dc-grabber
+dc-manager.subdir               = toolset/cpp-projects/dc-manager
+dc-monitoring.subdir            = toolset/cpp-projects/dc-monitoring
 ## exvr
 ### exvr-export
 exvr-export.subdir              = cpp-projects/exvr-export
@@ -91,12 +91,12 @@ qt-utility-app.depends          = qt-utility
 nodes.depends                   = base
 scaner-component.depends        = base
 demos.depends                   = 3d-engine
-k4-scaner-grabber.depends       = 3d-engine
-k4-scaner-manager.depends       = 3d-engine
 scaner-grabber.depends          = qt-utility
 guardian.depends                = qt-utility
 scaner-manager.depends          = qt-utility
-k4-monitoring.depends           = qt-utility
+dc-grabber.depends              = 3d-engine
+dc-manager.depends              = 3d-engine
+dc-monitoring.depends           = qt-utility
 ## exvr
 ### exvr-export
 exvr-export.depends             = base

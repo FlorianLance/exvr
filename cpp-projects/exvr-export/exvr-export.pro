@@ -78,7 +78,7 @@ INCLUDEPATH += \
 PRE_TARGETDEPS += \
     # tool
     $$BASE_LIB_DEP \
-    $$SCANER_COMPONENT_DEP \
+    $$SCANER_COMPONENT_LIB_DEP \
 
 LIBS +=  \
     # tool

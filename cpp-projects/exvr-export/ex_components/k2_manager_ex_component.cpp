@@ -31,7 +31,7 @@
 #include "utility/format.hpp"
 #include "geometry/point4.hpp"
 #include "geometry/quaternion.hpp"
-#include "network/network_utility.hpp"
+#include "network/network_enums.hpp"
 #include "camera/kinect2/k2_config_files.hpp"
 
 using namespace std::chrono;

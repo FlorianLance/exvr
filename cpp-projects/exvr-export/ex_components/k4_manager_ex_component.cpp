@@ -27,16 +27,13 @@
 #include <chrono>
 #include <format>
 #include <filesystem>
-#include <execution>
 
 // base
 #include "utility/time.hpp"
-// # network
-#include "network/kinect4/k4_server_network.hpp"
-#include "network/kinect4/k4_server_network_settings.hpp"
-// # camera
+#include "camera/network/dc_server_network.hpp"
+#include "network/udp_server_network_settings.hpp"
 #include "camera/dc_server_data.hpp"
-#include "camera/dc_model.hpp"
+#include "camera/settings/dc_model_settings.hpp"
 
 using namespace std::chrono;
 
@@ -50,22 +47,22 @@ using namespace tool::network;
 struct GrabberSettings{
     bool connected = false;
     size_t id = 0;
-    camera::DCFilters filters;
+    camera::DCFiltersSettings filters;
     camera::DCDeviceSettings device = camera::DCDeviceSettings::default_init_for_manager(DCType::Kinect4);
     camera::DCColorSettings color;
-    camera::DCModel model;
+    camera::DCModelSettings model;
 };
 
 struct K4ManagerExComponent::Impl{
 
-    K4ServerNetwork network;
+    DCServerNetwork network;
     DCServerData serverData;
-    K4ServerNetworkSettings networkSettings;
+    UdpServerNetworkSettings networkSettings;
     std::vector<GrabberSettings> grabbersS;
 
     std::mutex readMessagesM;
-    std::deque<std::pair<size_t, network::K4Feedback>> messages;
-    std::vector<std::pair<size_t, network::K4Feedback>> messagesR;
+    std::deque<std::pair<size_t, network::Feedback>> messages;
+    std::vector<std::pair<size_t, network::Feedback>> messagesR;
 
     std::atomic_int framesReceived = 0;
 
@@ -73,21 +70,21 @@ struct K4ManagerExComponent::Impl{
 
     auto set_connections() -> void{
 
-        K4ServerConnection::feedback_signal.connect([&](size_t id, K4Feedback feedback){
+        DCServerConnection::feedback_signal.connect([&](size_t id, Feedback feedback){
             readMessagesM.lock();
             messages.emplace_back(id, feedback);
             readMessagesM.unlock();
         });
 
-        K4ServerConnection::compressed_frame_signal.connect([&](size_t idCamera, std::shared_ptr<camera::K4CompressedFrame> cloudFrame){
+        DCServerConnection::compressed_frame_signal.connect([&](size_t idCamera, std::shared_ptr<camera::DCCompressedFrame> cloudFrame){
             framesReceived++;
             serverData.new_compressed_frame(idCamera, cloudFrame);
         });
     }
 
     auto delete_connections(){
-        K4ServerConnection::feedback_signal.disconnect_all();
-        K4ServerConnection::compressed_frame_signal.disconnect_all();
+        DCServerConnection::feedback_signal.disconnect_all();
+        DCServerConnection::compressed_frame_signal.disconnect_all();
     }
 
     auto connect_grabbers() -> void {
@@ -98,13 +95,13 @@ struct K4ManagerExComponent::Impl{
 
     auto disconnect_grabbers() -> void {
         for(const auto &grabberS : grabbersS){
-            network.send_command(grabberS.id, K4Command::Disconnect);
+            network.send_command(grabberS.id, Command::Disconnect);
         }
     }
 
     auto quit_grabbers() -> void {
         for(const auto &grabberS : grabbersS){
-            network.send_command(grabberS.id, K4Command::Quit);
+            network.send_command(grabberS.id, Command::Quit);
         }
     }
 

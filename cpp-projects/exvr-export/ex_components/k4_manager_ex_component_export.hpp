@@ -26,7 +26,6 @@
 
 // base
 #include "utility/export.hpp"
-#include "camera/kinect4/k4_types.hpp"
 
 // local
 #include "k4_manager_ex_component.hpp"
