@@ -25,7 +25,7 @@
 #include "joypad_pw.hpp"
 
 // base
-#include "input/joypad.hpp"
+#include "io/joypad.hpp"
 
 // qt-utility
 #include "gui/ex_widgets/ex_list_labels_w.hpp"
@@ -39,13 +39,13 @@ struct JoypadInitConfigParametersW::Impl{
 
     ExListLabelsW devicesLL;
 
-    std::map<input::Joypad::Axis, std::unique_ptr<ExLineEditW>> axesP1;
-    std::map<input::Joypad::Axis, std::unique_ptr<ExLineEditW>> axesP2;
-    std::map<input::Joypad::Axis, std::unique_ptr<ExDoubleSpinBoxW>> deadAxesP1;
-    std::map<input::Joypad::Axis, std::unique_ptr<ExDoubleSpinBoxW>> deadAxesP2;
+    std::map<io::Joypad::Axis, std::unique_ptr<ExLineEditW>> axesP1;
+    std::map<io::Joypad::Axis, std::unique_ptr<ExLineEditW>> axesP2;
+    std::map<io::Joypad::Axis, std::unique_ptr<ExDoubleSpinBoxW>> deadAxesP1;
+    std::map<io::Joypad::Axis, std::unique_ptr<ExDoubleSpinBoxW>> deadAxesP2;
 
-    std::map<input::Joypad::Button, std::unique_ptr<ExColorFrameW>> buttonsP1;
-    std::map<input::Joypad::Button, std::unique_ptr<ExColorFrameW>> buttonsP2;
+    std::map<io::Joypad::Button, std::unique_ptr<ExColorFrameW>> buttonsP1;
+    std::map<io::Joypad::Button, std::unique_ptr<ExColorFrameW>> buttonsP2;
 
     std::vector<QString> axisNames;
     std::vector<ExLineEditW*> axes1Le;
@@ -60,8 +60,8 @@ struct JoypadInitConfigParametersW::Impl{
 
 JoypadInitConfigParametersW::JoypadInitConfigParametersW() : ConfigParametersW(), m_p(std::make_unique<Impl>()){
 
-    const auto axes1 = input::Joypad::axes_from_player(1);
-    const auto axes2 = input::Joypad::axes_from_player(2);
+    const auto axes1 = io::Joypad::axes_from_player(1);
+    const auto axes2 = io::Joypad::axes_from_player(2);
     const DsbSettings deadS = {
         MinV<qreal>{-0.},
         V<qreal>{0.10},
@@ -73,42 +73,42 @@ JoypadInitConfigParametersW::JoypadInitConfigParametersW() : ConfigParametersW()
 
         auto le1 = std::make_unique<ExLineEditW>();
         m_p->axes1Le.emplace_back(le1.get());
-        le1->init_widget(QSL("0"), false)->init_tooltip(QSL("Joypad axis code: <b>") %  QString::number(input::Joypad::get_code(axes1[ii])) % QSL("</b>"));
+        le1->init_widget(QSL("0"), false)->init_tooltip(QSL("Joypad axis code: <b>") %  QString::number(io::Joypad::get_code(axes1[ii])) % QSL("</b>"));
         m_p->axesP1[axes1[ii]] = std::move(le1);
 
-        auto de1 = std::make_unique<ExDoubleSpinBoxW>(QSL("dead_zone_") % QString::number(input::Joypad::get_code(axes1[ii])));
+        auto de1 = std::make_unique<ExDoubleSpinBoxW>(QSL("dead_zone_") % QString::number(io::Joypad::get_code(axes1[ii])));
         m_p->axes1Dead.emplace_back(de1.get());
         de1->init_widget(deadS);
         m_p->deadAxesP1[axes1[ii]] = std::move(de1);
 
         auto le2 = std::make_unique<ExLineEditW>();
         m_p->axes2Le.emplace_back(le2.get());
-        le2->init_widget(QSL("0"), false)->init_tooltip(QSL("Joypad axis code: <b>") %  QString::number(input::Joypad::get_code(axes2[ii])) % QSL("</b>"));
+        le2->init_widget(QSL("0"), false)->init_tooltip(QSL("Joypad axis code: <b>") %  QString::number(io::Joypad::get_code(axes2[ii])) % QSL("</b>"));
         m_p->axesP2[axes2[ii]] = std::move(le2);
 
-        auto de2 = std::make_unique<ExDoubleSpinBoxW>(QSL("dead_zone_") % QString::number(input::Joypad::get_code(axes2[ii])));
+        auto de2 = std::make_unique<ExDoubleSpinBoxW>(QSL("dead_zone_") % QString::number(io::Joypad::get_code(axes2[ii])));
         m_p->axes2Dead.emplace_back(de2.get());
         de2->init_widget(deadS);
         m_p->deadAxesP2[axes2[ii]] = std::move(de2);
 
-        m_p->axisNames.emplace_back(from_view(input::Joypad::get_name(axes1[ii])).split("_")[0]);
+        m_p->axisNames.emplace_back(from_view(io::Joypad::get_name(axes1[ii])).split("_")[0]);
     }
 
-    const auto buttons1 = input::Joypad::buttons_from_player(1);
-    const auto buttons2 = input::Joypad::buttons_from_player(2);
+    const auto buttons1 = io::Joypad::buttons_from_player(1);
+    const auto buttons2 = io::Joypad::buttons_from_player(2);
     for(size_t ii = 0; ii < buttons1.size(); ++ii){
 
         auto cf1 = std::make_unique<ExColorFrameW>();
         m_p->buttons1Cf.emplace_back(cf1.get());
-        cf1->init_widget(false, false)->init_tooltip(QSL("Joypad button code: <b>") %  QString::number(input::Joypad::get_code(buttons1[ii])) % QSL("</b>"));
+        cf1->init_widget(false, false)->init_tooltip(QSL("Joypad button code: <b>") %  QString::number(io::Joypad::get_code(buttons1[ii])) % QSL("</b>"));
         m_p->buttonsP1[buttons1[ii]] = std::move(cf1);
 
         auto cf2 = std::make_unique<ExColorFrameW>();
         m_p->buttons2Cf.emplace_back(cf2.get());
-        cf2->init_widget(false, false)->init_tooltip(QSL("Joypad button code: <b>") %  QString::number(input::Joypad::get_code(buttons2[ii])) % QSL("</b>"));
+        cf2->init_widget(false, false)->init_tooltip(QSL("Joypad button code: <b>") %  QString::number(io::Joypad::get_code(buttons2[ii])) % QSL("</b>"));
         m_p->buttonsP2[buttons2[ii]] = std::move(cf2);
 
-        m_p->buttonsNames.emplace_back(from_view(input::Joypad::get_name(buttons1[ii])).split("_")[0]);
+        m_p->buttonsNames.emplace_back(from_view(io::Joypad::get_name(buttons1[ii])).split("_")[0]);
     }
 }
 
@@ -180,11 +180,11 @@ void JoypadInitConfigParametersW::update_with_info(QStringView id, QStringView v
             }
 
             const auto subSplit   = split.split(',');
-            auto axis             = input::Joypad::get_axis(subSplit[0].toInt());
+            auto axis             = io::Joypad::get_axis(subSplit[0].toInt());
             const auto value      = subSplit[1].toString();
 
             if(axis.has_value()){
-                if(input::Joypad::get_player(axis.value()) == 1){
+                if(io::Joypad::get_player(axis.value()) == 1){
                     m_p->axesP1[axis.value()]->w->setText(value);
                 }else{
                     m_p->axesP2[axis.value()]->w->setText(value);
@@ -209,10 +209,10 @@ void JoypadInitConfigParametersW::update_with_info(QStringView id, QStringView v
             }
 
             const auto subSplit   = split.split(',');
-            auto button           = input::Joypad::get_button(subSplit[0].toInt());
+            auto button           = io::Joypad::get_button(subSplit[0].toInt());
             if(button.has_value()){
                 const auto state      = subSplit[1].toString() == "1";
-                if(input::Joypad::get_player(button.value()) == 1){
+                if(io::Joypad::get_player(button.value()) == 1){
                     m_p->buttonsP1[button.value()]->update(state);
                 }else{
                     m_p->buttonsP2[button.value()]->update(state);

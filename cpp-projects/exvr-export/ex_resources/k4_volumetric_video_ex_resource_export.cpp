@@ -27,7 +27,7 @@
 
 using namespace tool::ex;
 using namespace tool::geo;
-using namespace tool::camera;
+using namespace tool::cam;
 
 K4VolumetricVideoExResource *create_k4_volumetric_video_ex_resource(){
     return new K4VolumetricVideoExResource();
@@ -58,7 +58,7 @@ int get_id_frame_from_time_ms_k4_volumetric_video_ex_resource(K4VolumetricVideoE
 }
 
 int get_valid_vertices_count_k4_volumetric_video_ex_resource(K4VolumetricVideoExResource *vvR, int idC, int idF){
-    return static_cast<int>(vvR->video.get_camera_data(idC)->valid_vertices_count(idF));
+    return static_cast<int>(vvR->video.get_compressed_frames_ptr(idC)->valid_vertices_count(idF));
 }
 
 int get_audio_data_total_size_k4_volumetric_video_ex_resource(tool::ex::K4VolumetricVideoExResource *vvR, int idC){

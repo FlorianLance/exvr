@@ -27,84 +27,27 @@
 ####################################### repo
 EXVR_REPOSITORY_DIR      = $$PWD"/../.."
 
-####################################### PRI
-# defines compiling options
-include(../exvr-settings.pri)
-# defines projects paths and variables
-include(../exvr-projects.pri)
-# defines thirdparty includes and libs
-include(../exvr-thirdparty.pri)
-
-####################################### TARGET
-equals(CFG, "debug"){
-    TARGET = exvr-exportd
-}
-equals(CFG, "release"){
-    TARGET = exvr-export
-}
-
-####################################### TEMPLATE
+####################################### TARGET/TEMPMATE/CONFIG
+TARGET = exvr-export
 TEMPLATE = lib
 CONFIG += dll
 CONFIG -= console
-
-####################################### BUILD FILES
-OBJECTS_DIR = $$EXVR_EXPORT_OBJ
-DESTDIR     = $$EXVR_EXPORT_DEST
-
-####################################### CONFIG
 CONFIG -= qt
 
-######################################## INCLUDES
-INCLUDEPATH += \
-    # tool
-    $$BASE_INCLUDES \
-    $$SCANER_COMPONENT_INCLUDES \
-    # thirdparty
-    $$OPENCV_INCLUDES \
-    $$BOOST_INCLUDES \
-    $$KINECT2_INCLUDES \
-    $$TURBOJPG_INCLUDES \
-    $$FASTPFOR_INCLUDES \
-    $$GSL_INCLUDES \
-    $$OPEN3D_INCLUDES \
-    $$EIGEN_INCLUDES\
-    $$KINECT4_INCLUDES\
-    $$TURBOPFOR_INCLUDES \
-    $$PYTHON_INCLUDES \
-
-######################################## LIBRAIRIES
-
-PRE_TARGETDEPS += \
-    # tool
-    $$BASE_LIB_DEP \
-    $$SCANER_COMPONENT_LIB_DEP \
-
-LIBS +=  \
-    # tool
-    $$BASE_LIB \
-    $$SCANER_COMPONENT_LIB\
-    # thirpdarty
-    $$OPENCV_LIBS \
-    $$WINDOWS_LIBS \
-    $$BOOST_LIBS \
-    $$TURBOJPG_LIBS\
-    $$FASTPFOR_LIBS\
-    $$EIGEN_LIBS\
-    $$OPEN3D_LIBS \
-    $$KINECT4_LIBS \
-    $$TURBOPFOR_LIBS \
-    $$PYTHON_LIBS \
+####################################### PRI
+include(../exvr-settings.pri)
+include(../exvr-projects.pri)
+include(../exvr-thirdparty.pri)
+include(../exvr-dependencies.pri)
 
 ######################################## PROJECT FILES
-
 HEADERS += \
     # ex_components
+    ex_components/dc_manager_ex_component.hpp \
     ex_components/ex_component_export.hpp \
     # ex_resources
     ex_components/k2_manager_ex_component.hpp \
     ex_components/k2_manager_ex_component_export.hpp \
-    ex_components/k4_manager_ex_component.hpp \
     ex_components/k4_manager_ex_component_export.hpp \
     ex_components/k4_volumetric_video_ex_component.hpp \
     ex_components/k4_volumetric_video_ex_component_export.hpp \
@@ -122,11 +65,11 @@ HEADERS += \
 
 SOURCES += \
     # ex_components
+    ex_components/dc_manager_ex_component.cpp \
     ex_components/ex_component_export.cpp \
     # ex_resources
     ex_components/k2_manager_ex_component.cpp \
     ex_components/k2_manager_ex_component_export.cpp \
-    ex_components/k4_manager_ex_component.cpp \
     ex_components/k4_manager_ex_component_export.cpp \
     ex_components/k4_volumetric_video_ex_component_export.cpp \
     ex_components/python_script_ex_component.cpp \

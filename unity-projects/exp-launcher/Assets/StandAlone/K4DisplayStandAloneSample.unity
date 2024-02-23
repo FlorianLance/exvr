@@ -403,12 +403,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 686f7f33977c25f43b8c29c4820210db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  camerasToUse: 0;1;2;3
-  networkFilePath: D:/DEV/EPFL/lnco-exvr/exvr/toolset/cpp-projects/_build/bin/k4-scaner-manager/config/network/network_FLORIAN-PC.config
+  camerasToUse: 0;1;2
+  networkFilePath: D:/DEV/EPFL/lnco-exvr/exvr/toolset/cpp-projects/_build/bin/dc-manager/config/network/network_FLORIAN-PC.config
   deviceFilePath: 
   filtersFilePath: 
   colorsFilePath: 
-  modelsFilePath: D:/DEV/EPFL/lnco-exvr/exvr/toolset/cpp-projects/_build/bin/k4-scaner-manager/config/calibration/model_FLORIAN-PC_all.config
+  modelsFilePath: 
   delayMs: 0
   m_initialized: 0
   m_nbConnections: 0

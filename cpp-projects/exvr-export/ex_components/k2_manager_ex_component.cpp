@@ -32,14 +32,14 @@
 #include "geometry/point4.hpp"
 #include "geometry/quaternion.hpp"
 #include "network/network_enums.hpp"
-#include "camera/kinect2/k2_config_files.hpp"
+#include "depth-camera/impl/k2_config_files.hpp"
 
 using namespace std::chrono;
 using namespace tool;
 using namespace tool::ex;
-using namespace tool::camera;
+using namespace tool::cam;
 using namespace tool::geo;
-using namespace tool::network;
+using namespace tool::net;
 
 //std::uint64_t jointPosX : 32, jointPosY : 32;
 //std::uint64_t jointPosZ : 32, jointQuaX : 32;
@@ -146,7 +146,7 @@ bool K2ManagerExComponent::initialize(){
 
     // init udp manager
     auto localInterfaces = Interface::list_local_interfaces(Protocol::ipv4);
-    udpManager = std::make_unique<UdpReaderManager>(localInterfaces);
+    udpManager = std::make_unique<K2UdpReaderManager>(localInterfaces);
     udpManager->message_signal.connect([&](std::string message){
         log_message(message);
     });
@@ -160,7 +160,7 @@ bool K2ManagerExComponent::initialize(){
         log_message(std::format("Init grabber: {} {}", std::to_string(ii), networkInfos[ii].name));
 
         // init grabber
-        auto grabber = std::make_unique<scan::GrabberController>(udpManager.get(), &localInterfaces, ii, networkInfos[ii]);
+        auto grabber = std::make_unique<scan::K2GrabberController>(udpManager.get(), &localInterfaces, ii, networkInfos[ii]);
 
         // set connections
         grabber->stack_trace_message_signal.connect([&](std::string trace){
@@ -180,17 +180,17 @@ bool K2ManagerExComponent::initialize(){
             set<int>(ParametersContainer::Dynamic, std::format("id_time_{}", id), static_cast<int>(getMsTime));
         });
 
-        grabber->update_cloud_data_signal.connect([&](size_t id, camera::K2CloudDisplayData *cloudData){
+        grabber->update_cloud_data_signal.connect([&](size_t id, cam::K2CloudDisplayData *cloudData){
             if(!grabbersCloudData.count(id)){
                 grabbersCloudData[id] = cloudData;
             }
         });
-        grabber->update_mesh_data_signal.connect([&](size_t id, camera::K2MeshDisplayData *meshData){
+        grabber->update_mesh_data_signal.connect([&](size_t id, cam::K2MeshDisplayData *meshData){
             if(!grabbersMeshData.count(id)){
                 grabbersMeshData[id] = meshData;
             }
         });
-        grabber->update_bodies_data_signal.connect([&](size_t id, camera::K2BodiesDisplayData *bodiesData){
+        grabber->update_bodies_data_signal.connect([&](size_t id, cam::K2BodiesDisplayData *bodiesData){
             if(!grabbersBodiesData.count(id)){
                 grabbersBodiesData[id] = bodiesData;
             }
@@ -215,9 +215,9 @@ bool K2ManagerExComponent::initialize(){
 
         log_message(std::format("Open grabber camera: {}", grabber->idC));
         if(mode == 0){
-            grabber->open_camera_mode(camera::K2FrameRequest::compressed_color_cloud);
+            grabber->open_camera_mode(cam::K2FrameRequest::compressed_color_cloud);
         }else{
-            grabber->open_camera_mode(camera::K2FrameRequest::compressed_color_mesh);
+            grabber->open_camera_mode(cam::K2FrameRequest::compressed_color_mesh);
         }
 
         if(grabbersSettings.has_value()){
@@ -351,15 +351,15 @@ void K2ManagerExComponent::update_bodies(size_t idCamera, int *bodiesInfo, int *
 
     if(grabbersBodiesData.count(idCamera) == 0 || debugBypass){ // not data for this camera
 
-        for(size_t ii = 0; ii < camera::k2_bodies_count; ++ii){
+        for(size_t ii = 0; ii < cam::k2_bodies_count; ++ii){
 
             bodiesInfo[ii*3+0] = -1;
             bodiesInfo[ii*3+1] = -1;
             bodiesInfo[ii*3+2] = 0;
             bodiesInfo[ii*3+3] = 0;
 
-            for(size_t jj = 0; jj < camera::k2_body_joints_count; ++jj){
-                jointsState[ii] = static_cast<int>(camera::K2TrackingStateT::not_tracked);
+            for(size_t jj = 0; jj < cam::k2_body_joints_count; ++jj){
+                jointsState[ii] = static_cast<int>(cam::K2TrackingStateT::not_tracked);
                 jointsPosition[ii] = {0.f,0.f,0.f};
                 jointsRotation[ii] = {0.f,0.f,0.f};
             }
@@ -377,7 +377,7 @@ void K2ManagerExComponent::update_bodies(size_t idCamera, int *bodiesInfo, int *
             jointsType[idJoint] = static_cast<int>(joint.first);
             jointsState[idJoint] = static_cast<int>(joint.second.state);
 
-            if((joint.second.state != camera::K2TrackingStateT::not_tracked) && body.tracked){
+            if((joint.second.state != cam::K2TrackingStateT::not_tracked) && body.tracked){
 
                 jointsPosition[idJoint] = joint.second.pos;
 

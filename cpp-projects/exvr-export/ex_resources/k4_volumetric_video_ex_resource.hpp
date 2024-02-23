@@ -26,13 +26,13 @@
 
 // base
 #include "exvr/ex_resource.hpp"
-#include "camera/dc_volumetric_video.hpp"
+#include "depth-camera/dc_video.hpp"
 
 namespace tool::ex {
 
 class K4VolumetricVideoExResource : public ExResource{
 public:
-    tool::camera::DCVolumetricVideo video;
+    tool::cam::DCVideo video;
 
     bool initialize() override{
         return video.load_from_file(get<std::string>(ParametersContainer::Dynamic, "path_file"));

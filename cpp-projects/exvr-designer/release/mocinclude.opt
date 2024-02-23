@@ -1,0 +1,42 @@
+-IC:/Qt/6.5.0/msvc2019_64/mkspecs/win32-msvc
+-ID:/DEV/EPFL/lnco-exvr/exvr/cpp-projects/exvr-designer
+-ID:/DEV/EPFL/lnco-exvr/exvr/toolset/cpp-projects/_thirdparty/SFML/include
+-ID:/DEV/EPFL/lnco-exvr/exvr/toolset/cpp-projects/_thirdparty/qwt-6.2.0/src
+-ID:/DEV/EPFL/lnco-exvr/exvr/toolset/cpp-projects/_thirdparty/glew-2.1.0/include
+-ID:/DEV/EPFL/lnco-exvr/exvr/toolset/cpp-projects/_thirdparty/glfw-3.3.2/include
+-ID:/DEV/EPFL/lnco-exvr/exvr/toolset/cpp-projects/_thirdparty/glm/include
+-ID:/DEV/EPFL/lnco-exvr/exvr/toolset/cpp-projects/_thirdparty/boost_1_68_0
+-ID:/DEV/EPFL/lnco-exvr/exvr/toolset/cpp-projects/_thirdparty/eigen-3.4-rc1
+-ID:/DEV/EPFL/lnco-exvr/exvr/toolset/cpp-projects/_thirdparty/assimp/include
+-ID:/DEV/EPFL/lnco-exvr/exvr/toolset/cpp-projects/_thirdparty/Open3D-0.13/src
+-ID:/DEV/EPFL/lnco-exvr/exvr/toolset/cpp-projects/_thirdparty/Open3D-0.13/3rdparty/fmt/include
+-ID:/DEV/EPFL/lnco-exvr/exvr/toolset/cpp-projects/_thirdparty/Open3D-0.13/3rdparty/jsoncpp/include
+-ID:/DEV/EPFL/lnco-exvr/exvr/toolset/cpp-projects/_thirdparty/Open3D-0.13/3rdparty/rply/include
+-ID:/DEV/EPFL/lnco-exvr/exvr/toolset/cpp-projects/_thirdparty/opencv/include
+-ID:/DEV/EPFL/lnco-exvr/exvr/toolset/cpp-projects/_thirdparty/libjpeg-turbo-2.0.3
+-ID:/DEV/EPFL/lnco-exvr/exvr/toolset/cpp-projects/_thirdparty/FastPFor
+-ID:/DEV/EPFL/lnco-exvr/exvr/toolset/cpp-projects/_thirdparty/TurboPFor-Integer-Compression/include
+-ID:/DEV/EPFL/lnco-exvr/exvr/toolset/cpp-projects/_thirdparty/libsoundio/includes
+-ID:/DEV/EPFL/lnco-exvr/exvr/toolset/cpp-projects/_thirdparty/libusb/includes
+-ID:/DEV/EPFL/lnco-exvr/exvr/toolset/cpp-projects/_thirdparty/kinect2/inc
+-ID:/DEV/EPFL/lnco-exvr/exvr/toolset/cpp-projects/_thirdparty/kinect4/include
+-ID:/DEV/EPFL/lnco-exvr/exvr/toolset/cpp-projects/_thirdparty/orbbec/include
+-ID:/DEV/EPFL/lnco-exvr/exvr/toolset/cpp-projects/base
+-ID:/DEV/EPFL/lnco-exvr/exvr/toolset/cpp-projects/opengl-utility
+-ID:/DEV/EPFL/lnco-exvr/exvr/toolset/cpp-projects/_build/temp/moc/release/qt-utility
+-ID:/DEV/EPFL/lnco-exvr/exvr/toolset/cpp-projects/qt-utility
+-ID:/DEV/EPFL/lnco-exvr/exvr/toolset/cpp-projects/nodes
+-IC:/Qt/6.5.0/msvc2019_64/include
+-IC:/Qt/6.5.0/msvc2019_64/include/QtWidgets
+-IC:/Qt/6.5.0/msvc2019_64/include/QtOpenGL
+-IC:/Qt/6.5.0/msvc2019_64/include/QtGui
+-IC:/Qt/6.5.0/msvc2019_64/include/QtNetwork
+-IC:/Qt/6.5.0/msvc2019_64/include/QtConcurrent
+-IC:/Qt/6.5.0/msvc2019_64/include/QtCore
+-IC:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30037\ATLMFC\include
+-IC:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30037\include
+-IC:\Program Files (x86)\Windows Kits\10\include\10.0.19041.0\ucrt
+-IC:\Program Files (x86)\Windows Kits\10\include\10.0.19041.0\shared
+-IC:\Program Files (x86)\Windows Kits\10\include\10.0.19041.0\um
+-IC:\Program Files (x86)\Windows Kits\10\include\10.0.19041.0\winrt
+-IC:\Program Files (x86)\Windows Kits\10\include\10.0.19041.0\cppwinrt

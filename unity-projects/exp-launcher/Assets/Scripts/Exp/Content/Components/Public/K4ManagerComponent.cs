@@ -103,6 +103,8 @@ namespace Ex {
                 return false;
             }
 
+            log_message("SUCCES");
+            
             m_nbConnections             = cppDll.get<int>(Parameters.Container.Dynamic, "nb_connections");
             m_networkFileLoaded         = cppDll.get<int>(Parameters.Container.Dynamic, "network_settings_file_loaded") == 1;
             m_deviceConfigFileLoaded    = cppDll.get<int>(Parameters.Container.Dynamic, "device_settings_file_loaded") == 1;
@@ -124,8 +126,10 @@ namespace Ex {
                 return false;
             }
 
-            log_message("device loaded-> " + cppDll.get<int>(Parameters.Container.InitConfig, "device_init_file"));
-            log_message("device loaded-> " + cppDll.get<int>(Parameters.Container.Dynamic, "device_settings_file_loaded"));
+            //Debug.Log("m_nbConnections " + m_nbConnections);
+            //Debug.Log("m_networkFileLoaded " + m_networkFileLoaded);
+            //log_message("device loaded-> " + cppDll.get<int>(Parameters.Container.InitConfig, "device_init_file"));
+            //log_message("device loaded-> " + cppDll.get<int>(Parameters.Container.Dynamic, "device_settings_file_loaded"));
 
 
             // generate indices
@@ -184,7 +188,6 @@ namespace Ex {
                 cppDll.set(Parameters.Container.Dynamic, "grabber_connected_" + ii, 0);
                 send_infos_to_gui_init_config(string.Format("grabber_infos_{0}_{1}", ii, m_grabbersData.Count), "0");
             }
-
             cppDll.start_experiment();
         }
 
@@ -228,9 +231,13 @@ namespace Ex {
             Profiler.BeginSample("[ExVR][K4ManagerComponent] DLL update");
 
             cppDll.update();
+            int nbf = cppDll.get<int>(Parameters.Container.Dynamic, "nb_frames_received");
+            Debug.Log("UDPATE " + nbf);
+            
 
             for (int ii = 0; ii < m_grabbersData.Count; ++ii) {
                 bool connected = cppDll.get<int>(Parameters.Container.Dynamic, "grabber_connected_" + ii) == 1;
+                Debug.Log("connected " + ii + " " + connected);
                 if (connected != m_grabbersData[ii].connected) {
                     m_grabbersData[ii].connected = connected;
                     send_infos_to_gui_init_config(string.Format("grabber_infos_{0}_{1}", ii, m_grabbersData.Count), connected ? "1" : "0");
@@ -246,9 +253,12 @@ namespace Ex {
                 if (!idToUse.Contains(ii)) {
                     return;
                 }
-
+                
                 var gData = m_grabbersData[ii];
+                
                 k4_dll().retrieve_cloud_frame_data(gData.id, gData.currentFrameId, gData.vertices, gData.lastFrameStateH.AddrOfPinnedObject());
+
+                Debug.Log("retrieve_cloud_frame_data -> " + gData.id + " " + gData.lastFrameState[0]);
 
                 if (gData.lastFrameState[0] == 1) {
                     gData.update            = true;
@@ -264,6 +274,7 @@ namespace Ex {
             for (int ii = 0; ii < m_grabbersData.Count; ++ii) {
                 var gData = m_grabbersData[ii];
                 if (gData.update) {
+                    //Debug.Log("-> " + ii + " " + gData.nbVertices + " " + gData.currentFrameId);
                     send_infos_to_gui_current_config(
                         string.Format("frame_infos_{0}_{1}", ii, m_grabbersData.Count),
                         string.Format("Size: {0} Frame id: {1}", gData.nbVertices, gData.currentFrameId)

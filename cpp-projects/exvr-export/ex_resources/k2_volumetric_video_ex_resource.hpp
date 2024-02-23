@@ -36,8 +36,8 @@
 // base
 #include "exvr/ex_resource.hpp"
 #include "geometry/matrix4.hpp"
-#include "data/integers_encoder.hpp"
-#include "camera/kinect2/k2_types.hpp"
+#include "data/fastpfor_encoding.hpp"
+#include "depth-camera/impl/k2_types.hpp"
 
 namespace tool::ex {
 
@@ -47,13 +47,13 @@ struct CloudData{
     std::int64_t timeStamp;
     std::vector<std::uint32_t> depth;
     std::vector<unsigned char> colors;
-    std::array<tool::camera::K2BodyInfos,6> bodies;
+    std::array<tool::cam::K2BodyInfos,6> bodies;
 };
 
 struct CameraData{
 
     tjhandle jpegDecompressor;
-    data::IntegersEncoder depthCompressor;
+    data::FastPForEncoder depthCompressor;
 
     int currentCloudId = -1;
 
@@ -61,8 +61,8 @@ struct CameraData{
     std::vector<std::uint16_t> decodedDepth;
     std::vector<bool> validityDepth2Rgb;
     std::vector<std::uint32_t> validIdPerPointMesh;
-    tool::camera::K2CloudDisplayData cloudData;
-    tool::camera::K2BodiesDisplayData bodiesData;
+    tool::cam::K2CloudDisplayData cloudData;
+    tool::cam::K2BodiesDisplayData bodiesData;
 
     CameraData();
 };

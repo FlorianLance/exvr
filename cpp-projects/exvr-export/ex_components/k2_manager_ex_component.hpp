@@ -23,14 +23,11 @@
 
 #pragma once
 
-// std
-#include <any>
-#include <map>
 
 // base
 #include "geometry/matrix4.hpp"
 #include "exvr/ex_component.hpp"
-#include "grabber_controller.hpp"
+#include "k2_grabber_controller.hpp"
 
 namespace tool::ex {
 
@@ -51,14 +48,14 @@ public:
 
     void ask_for_frame();
 
-    std::vector<tool::scan::GrabberControllerUP> grabbers;
-    std::unordered_map<size_t, camera::K2CloudDisplayData*> grabbersCloudData;
-    std::unordered_map<size_t, camera::K2MeshDisplayData*> grabbersMeshData;
-    std::unordered_map<size_t, camera::K2BodiesDisplayData*> grabbersBodiesData;
-    tool::network::UdpReaderManagerUP udpManager = nullptr;
+    std::vector<std::unique_ptr<tool::scan::K2GrabberController>> grabbers;
+    std::unordered_map<size_t, cam::K2CloudDisplayData*> grabbersCloudData;
+    std::unordered_map<size_t, cam::K2MeshDisplayData*> grabbersMeshData;
+    std::unordered_map<size_t, cam::K2BodiesDisplayData*> grabbersBodiesData;
+    std::unique_ptr<tool::net::K2UdpReaderManager> udpManager = nullptr;
 
     std::unordered_map<std::uint64_t, int> bodiesId;
-    std::vector<camera::K2GrabberTargetInfo> networkInfos;
+    std::vector<cam::K2GrabberTargetInfo> networkInfos;
     std::vector<geo::Mat4d> calibrationsM;
 
     bool cleaned = false;
@@ -67,6 +64,6 @@ public:
     std::chrono::nanoseconds startExperimentTime;
     std::chrono::nanoseconds lastFrameGetTime;
 
-    std::optional<camera::K2Settings> grabbersSettings;
+    std::optional<cam::K2Settings> grabbersSettings;
 };
 }

@@ -26,7 +26,7 @@
 
 // base
 #include "exvr/ex_component.hpp"
-#include "camera/dc_volumetric_video.hpp"
+#include "depth-camera/dc_video.hpp"
 
 // local
 #include "ex_resources/k4_volumetric_video_ex_resource.hpp"
@@ -35,9 +35,9 @@ namespace tool::ex {
 
 class K4VolumetricVideoExComponent : public ExComponent{
 public:
-
-    tool::camera::DCVolumetricVideo *resource = nullptr;
-    std::vector<std::unique_ptr<tool::camera::DCFrameUncompressor>> uncompressors; // dedicated uncompressors for enabling multithreads when using the same video resource
+    
+    tool::cam::DCVideo *resource = nullptr;
+    std::vector<std::unique_ptr<tool::cam::DCFrameUncompressor>> uncompressors; // dedicated uncompressors for enabling multithreads when using the same video resource
 
     K4VolumetricVideoExComponent(tool::ex::K4VolumetricVideoExResource *resourceExport) : resource(&resourceExport->video){
     }
@@ -47,7 +47,7 @@ public:
         audioData.resize(nbCams);
         uncompressors.resize(nbCams);
         for(auto &uncompressor : uncompressors){
-            uncompressor = std::make_unique<tool::camera::DCFrameUncompressor>();
+            uncompressor = std::make_unique<tool::cam::DCFrameUncompressor>();
         }
 
         return true;

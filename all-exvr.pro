@@ -30,7 +30,7 @@ PROJECT_NAME = all-exvr
 TEMPLATE = subdirs
 
 SUBDIRS =\
-    base base-app base-test \
+    base base-app base-test base-export base-export-app\
     opengl-utility opengl-utility-app \
     3d-engine \
     qt-utility qt-utility-app \
@@ -47,6 +47,8 @@ SUBDIRS =\
 base.subdir                     = toolset/cpp-projects/base
 base-app.subdir                 = toolset/cpp-projects/base-app
 base-test.subdir                = toolset/cpp-projects/base-test
+base-export.subdir              = toolset/cpp-projects/base-export
+base-export-app.subdir          = toolset/cpp-projects/base-export-app
 ### opengl-utility
 opengl-utility.subdir           = toolset/cpp-projects/opengl-utility
 opengl-utility-app.subdir       = toolset/cpp-projects/opengl-utility-app
@@ -79,6 +81,8 @@ exvr-test.subdir                = cpp-projects/exvr-test
 ### base
 base-app.depends                = base
 base-test.depends               = base
+base-export.depends             = base
+base-export-app.depends         = base-export
 ### opengl-utility
 opengl-utility.depends          = base
 opengl-utility-app.depends      = opengl-utility
@@ -99,7 +103,7 @@ dc-manager.depends              = 3d-engine
 dc-monitoring.depends           = qt-utility
 ## exvr
 ### exvr-export
-exvr-export.depends             = base
+exvr-export.depends             = scaner-component
 exvr-export-app.depends         = exvr-export
 ### exvr-designer
 exvr-designer.depends           = qt-utility nodes

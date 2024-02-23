@@ -25,7 +25,7 @@
 #include "keyboard_pw.hpp"
 
 // base
-#include "input/keyboard.hpp"
+#include "io/keyboard.hpp"
 
 // qt-utility
 #include "gui/ex_widgets/ex_line_edit_w.hpp"
@@ -51,7 +51,7 @@ KeyboardInitConfigParametersW::KeyboardInitConfigParametersW() :  ConfigParamete
 void KeyboardInitConfigParametersW::insert_widgets(){
 
     QStringList keysList;
-    for(const auto &buttonName : input::Keyboard::buttons.tuple_column<1>()){
+    for(const auto &buttonName : io::Keyboard::buttons.tuple_column<1>()){
         keysList << from_view(buttonName);
     }
     m_p->keys.w->addItems(keysList);
@@ -81,7 +81,7 @@ void KeyboardInitConfigParametersW::init_and_register_widgets(){
 
 void KeyboardInitConfigParametersW::create_connections(){
     connect(m_p->keys.w.get(), QOverload<int>::of(&QComboBox::currentIndexChanged), this, [&]{
-        auto button = input::Keyboard::get_button(m_p->keys.w->currentText().toStdString());
+        auto button = io::Keyboard::get_button(m_p->keys.w->currentText().toStdString());
         if(button.has_value()){
             m_p->value.w->setValue(static_cast<int>(button.value()));
         }
@@ -100,7 +100,7 @@ void KeyboardInitConfigParametersW::update_with_info(QStringView id, QStringView
         QString keys;
         for(const auto &split : value.split(' ')){
             if(split.length() > 0){
-                auto buttonName = input::Keyboard::get_name(split.toInt());
+                auto buttonName = io::Keyboard::get_name(split.toInt());
                 if(buttonName.has_value()){
                     keys += from_view(buttonName.value()) % QSL(" ");
                 }

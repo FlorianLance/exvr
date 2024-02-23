@@ -25,7 +25,7 @@
 #include "mouse_pw.hpp"
 
 // base
-#include "input/mouse.hpp"
+#include "io/mouse.hpp"
 
 using namespace tool::ex;
 
@@ -44,7 +44,7 @@ MouseInitConfigParametersW::MouseInitConfigParametersW() :  ConfigParametersW(),
 void MouseInitConfigParametersW::insert_widgets(){
 
     QStringList keysList;
-    for(const auto &buttonName : input::Mouse::buttons.tuple_column<1>()){
+    for(const auto &buttonName : io::Mouse::buttons.tuple_column<1>()){
         keysList << from_view(buttonName);
     }
     m_p->keys.addItems(keysList);
@@ -70,7 +70,7 @@ void MouseInitConfigParametersW::init_and_register_widgets(){
 
 void MouseInitConfigParametersW::create_connections(){
     connect(&m_p->keys, QOverload<int>::of(&QComboBox::currentIndexChanged), this, [&]{
-        auto button = input::Mouse::get_button(m_p->keys.currentText().toStdString());
+        auto button = io::Mouse::get_button(m_p->keys.currentText().toStdString());
         if(button.has_value()){
             m_p->value.setValue(static_cast<int>(button.value()));
         }
@@ -87,7 +87,7 @@ void MouseInitConfigParametersW::update_with_info(QStringView id, QStringView va
     if(id == QSL("buttons_state_info")){
         QString keys;
         for(const auto &split : value.split(',')){
-            auto buttonName = input::Mouse::get_name(split.toInt());
+            auto buttonName = io::Mouse::get_name(split.toInt());
             if(buttonName.has_value()){
                 keys += from_view(buttonName.value()) % QSL(" ");
             }

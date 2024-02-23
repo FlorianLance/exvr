@@ -38,8 +38,8 @@ using QtNodes::NodeData;
 using QtNodes::NodeDataType;
 
 // base
-#include "input/keyboard.hpp"
-#include "input/joypad.hpp"
+#include "io/keyboard.hpp"
+#include "io/joypad.hpp"
 #include "utility/math.hpp"
 #include "utility/vector.hpp"
 #include "geometry/point2.hpp"
@@ -138,33 +138,33 @@ struct TimeAny{
 };
 
 struct KeyboardButtonState{
-    input::Keyboard::Button code;
+    io::Keyboard::Button code;
     bool pressed;
     bool firstFrameDown;
     bool firstFrameUp;
 };
 
 struct MouseButtonState{
-    input::Mouse::Button code;
+    io::Mouse::Button code;
     bool pressed;
     bool firstFrameDown;
     bool firstFrameUp;
 };
 
 struct MouseAxisState{
-    input::Mouse::Axis code;
+    io::Mouse::Axis code;
     float value;
 };
 
 struct JoypadButtonState{
-    input::Joypad::Button code;
+    io::Joypad::Button code;
     bool pressed;
     bool firstFrameDown;
     bool firstFrameUp;
 };
 
 struct JoypadAxisState{
-    input::Joypad::Axis code;
+    io::Joypad::Axis code;
     float value;
 };
 

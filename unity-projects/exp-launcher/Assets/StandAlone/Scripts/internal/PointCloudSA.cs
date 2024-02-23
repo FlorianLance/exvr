@@ -160,7 +160,7 @@ namespace SA {
             };
 
             var mesh = GetComponent<MeshFilter>().mesh;
-            mesh.Clear();
+            //mesh.Clear();
 
             MeshUpdateFlags flags =
               MeshUpdateFlags.DontValidateIndices

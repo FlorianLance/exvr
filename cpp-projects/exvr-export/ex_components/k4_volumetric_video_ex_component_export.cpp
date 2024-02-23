@@ -26,7 +26,7 @@
 
 using namespace tool::ex;
 using namespace tool::geo;
-using namespace tool::camera;
+using namespace tool::cam;
 
 
 using namespace tool;
@@ -37,21 +37,21 @@ K4VolumetricVideoExComponent *create_k4_volumetric_video_ex_component(K4Volumetr
 
 int uncompress_frame_c4f_k4_volumetric_video_ex_component(K4VolumetricVideoExComponent *vvC, int idC, int idFrame, tool::geo::Pt3f *vertices, tool::geo::Pt4f *colors){
     if(auto frame = vvC->resource->get_compressed_frame(idC, idFrame).lock()){
-        return vvC->uncompressors[idC]->uncompress(frame.get(),  vertices, colors) ? 1 : 0;
+        // return vvC->uncompressors[idC]->uncompress(frame.get(),  vertices, colors) ? 1 : 0;
     }
     return 0;
 }
 
 int uncompress_frame_c3i_k4_volumetric_video_ex_component(K4VolumetricVideoExComponent *vvC, int idC, int idFrame, tool::geo::Pt3f *vertices, tool::geo::Pt4<uint8_t> *colors){
     if(auto frame = vvC->resource->get_compressed_frame(idC, idFrame).lock()){
-        return vvC->uncompressors[idC]->uncompress(frame.get(),  vertices, colors) ? 1 : 0;
+        // return vvC->uncompressors[idC]->uncompress(frame.get(),  vertices, colors) ? 1 : 0;
     }
     return 0;
 }
 
-int uncompress_frame_vmd_k4_volumetric_video_ex_component(K4VolumetricVideoExComponent *vvC, int idC, int idFrame, tool::camera::DCVertexMeshData *vertices){
+int uncompress_frame_vmd_k4_volumetric_video_ex_component(K4VolumetricVideoExComponent *vvC, int idC, int idFrame, tool::cam::DCVertexMeshData *vertices){
     if(auto frame = vvC->resource->get_compressed_frame(idC, idFrame).lock()){
-        return vvC->uncompressors[idC]->uncompress(frame.get(), vertices);// ? 1 : 0;
+        // return vvC->uncompressors[idC]->uncompress(frame.get(), vertices);// ? 1 : 0;
     }
     return 0;
 }

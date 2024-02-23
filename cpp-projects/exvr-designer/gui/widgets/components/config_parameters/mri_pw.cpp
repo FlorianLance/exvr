@@ -50,7 +50,7 @@ void MriInitConfigParametersW::insert_widgets(){
 void MriInitConfigParametersW::init_and_register_widgets(){
 
     QStringList items;
-    for(const auto &keyName : input::Keyboard::buttons.tuple_column<1>()){
+    for(const auto &keyName : io::Keyboard::buttons.tuple_column<1>()){
         items << from_view(keyName);
     }
 

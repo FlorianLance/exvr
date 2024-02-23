@@ -28,10 +28,11 @@ TOOLSET_REPOSITORY_DIR = $$EXVR_REPOSITORY_DIR"/toolset"
 include(../toolset/cpp-projects/ts-projects.pri)
 
 # projects list
-EXVR_CPP_PROJECTS +=\
-    EXVR_EXPORT:exvr-export:exvr-exportd \
-    EXVR_DESIGNER:exvr-designer:exvr-designerd \
-    EXVR_TEST:exvr-test:exvr-testd \
+EXVR_CPP_PROJECTS +=\    
+    exvr-designer \
+    exvr-test \
+    exvr-export \
+    exvr-export-app \
 
 # sub dir
 EXVR_CPP_PROJECTS_DIR       = $$EXVR_REPOSITORY_DIR"/cpp-projects"
@@ -39,8 +40,28 @@ EXVR_CPP_THIRDPARTY_DIR     = $$EXVR_CPP_PROJECTS_DIR"/_thirdparty"
 EXVR_CPP_RESOURCES_DIR      = $$EXVR_CPP_PROJECTS_DIR"/_resources"
 
 # generate projects variables
-for(project_dir, EXVR_CPP_PROJECTS):{
-    generate_variables($$EXVR_CPP_PROJECTS_DIR, $$section(project_dir, :, 0, 0), $$section(project_dir, :, 1, 1), $$section(project_dir, :, 2, 2))
+for(project, EXVR_CPP_PROJECTS):{
+
+    generate_variables($$EXVR_CPP_PROJECTS_DIR, $$project)
+
+    ##  build files
+    TLOW = $$lower($$TARGET)
+    equals(TLOW, $$project){
+
+        UPT = $$upper($$project)
+        UPT = $$replace(UPT, "-", "_")
+
+        OBJECTS_DIR = $$eval($$UPT"_OBJ")
+        DESTDIR     = $$eval($$UPT"_DEST")
+        RCC_DIR     = $$eval($$UPT"_RCC")
+        UI_DIR      = $$eval($$UPT"_UI")
+        MOC_DIR     = $$eval($$UPT"_MOC")
+        message("OBJ: "$$OBJECTS_DIR)
+        message("DEST:"$$DESTDIR)
+        message("RCC: "$$RCC_DIR)
+        message("UI:  "$$UI_DIR)
+        message("MOC: "$$MOC_DIR)
+    }
 }
 
 

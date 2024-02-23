@@ -96,6 +96,7 @@
 #include "config_parameters/buttons_ui_pw.hpp"
 #include "config_parameters/k4_manager_pw.hpp"
 #include "config_parameters/k4_direct_multi_clouds_pw.hpp"
+#include "config_parameters/dc_network_direct_player_pw.hpp"
 #include "config_parameters/light_pw.hpp"
 
 using namespace tool::ex;
@@ -151,6 +152,37 @@ ConfigParametersW *ConfigW::generate_parameters(Component::Type type, bool initC
     using CC = Component::Category;
 
     switch (type) {
+    // ############################# Acquisition
+    case CT::Attach_object_to_hand:
+        return gen_params_w<AttachObjectToHandInitConfigParametersW,AttachObjectToHandConfigParametersW>(initConfig);
+    case CT::Biopac:
+        return gen_params_w<BiopacInitConfigParametersW,BiopacConfigParametersW>(initConfig);
+    case CT::DC_network_direct_player:
+        return gen_params_w<DCNetworkDirectPlayerInitConfigParametersW,DCNetworkDirectPlayerConfigParametersW>(initConfig);
+    case CT::Qualisys:
+        return gen_params_w<QualisysTrackingInitConfigParametersW,QualisysTrackingConfigParametersW>(initConfig);
+    case CT::Fop_robot:
+        return gen_params_w<FopRobotInitConfigParametersW,FopRobotConfigParametersW>(initConfig);
+    case CT::K2_manager:
+        return gen_params_w<K2ManagerInitConfigParametersW,K2ManagerConfigParametersW>(initConfig);
+    case CT::K2_body_tracking:
+        return gen_params_w<K2BodyTrackingInitConfigParametersW,K2BodyTrackingConfigParametersW>(initConfig);
+    case CT::K4_manager:
+        return gen_params_w<K4ManagerInitConfigParametersW,K4ManagerConfigParametersW>(initConfig);
+    case CT::K4_direct_multi_clouds:
+        return gen_params_w<K4DirectMultiCloudsInitConfigParametersW,K4DirectMultiCloudsConfigParametersW>(initConfig);
+    case CT::Leap_motion:
+        return gen_params_w<LeapMotionInitConfigParametersW,LeapMotionConfigParametersW>(initConfig);
+    case CT::Leap_motion_arms_display:
+        return gen_params_w<LeapMotionArmsDisplayInitConfigParametersW,LeapMotionArmsDisplayConfigParametersW>(initConfig);
+    case CT::Scene_scaner:
+        return gen_params_w<SceneScanerInitConfigParametersW,SceneScanerConfigParametersW>(initConfig);
+    case CT::Sonceboz_SG:
+        return gen_params_w<SoncebozSgInitConfigParametersW,SoncebozSgConfigParametersW>(initConfig);
+    case CT::Thera_trainer_tracking:
+        return gen_params_w<TheraTrainerTrackingInitConfigParametersW,TheraTrainerTrackingConfigParametersW>(initConfig);
+    case CT::Thera_trainer_platform:
+        return gen_params_w<TheraTrainerPlatformInitConfigParametersW,TheraTrainerPlatformConfigParametersW>(initConfig);
     // ############################# Avatar
     case CT::Humanoid_avatar:
         return gen_params_w<HumanoidAvatarInitConfigParametersW,HumanoidAvatarConfigParametersW>(initConfig);
@@ -273,35 +305,6 @@ ConfigParametersW *ConfigW::generate_parameters(Component::Type type, bool initC
         return gen_params_w<CSharpScriptInitConfigParametersW,CSharpScriptConfigParametersW>(initConfig);
     case CT::Python_script:
         return gen_params_w<PythonScriptInitConfigParametersW,PythonScriptConfigParametersW>(initConfig);
-    // ############################# Tracking
-    case CT::Attach_object_to_hand:
-        return gen_params_w<AttachObjectToHandInitConfigParametersW,AttachObjectToHandConfigParametersW>(initConfig);
-    case CT::Biopac:
-        return gen_params_w<BiopacInitConfigParametersW,BiopacConfigParametersW>(initConfig);
-    case CT::Fop_robot:
-        return gen_params_w<FopRobotInitConfigParametersW,FopRobotConfigParametersW>(initConfig);
-    case CT::Qualisys:
-        return gen_params_w<QualisysTrackingInitConfigParametersW,QualisysTrackingConfigParametersW>(initConfig);
-    case CT::K2_manager:
-        return gen_params_w<K2ManagerInitConfigParametersW,K2ManagerConfigParametersW>(initConfig);
-    case CT::K2_body_tracking:
-        return gen_params_w<K2BodyTrackingInitConfigParametersW,K2BodyTrackingConfigParametersW>(initConfig);
-    case CT::K4_manager:
-        return gen_params_w<K4ManagerInitConfigParametersW,K4ManagerConfigParametersW>(initConfig);
-    case CT::K4_direct_multi_clouds:
-        return gen_params_w<K4DirectMultiCloudsInitConfigParametersW,K4DirectMultiCloudsConfigParametersW>(initConfig);
-    case CT::Leap_motion:
-        return gen_params_w<LeapMotionInitConfigParametersW,LeapMotionConfigParametersW>(initConfig);
-    case CT::Leap_motion_arms_display:
-        return gen_params_w<LeapMotionArmsDisplayInitConfigParametersW,LeapMotionArmsDisplayConfigParametersW>(initConfig);
-    case CT::Scene_scaner:
-        return gen_params_w<SceneScanerInitConfigParametersW,SceneScanerConfigParametersW>(initConfig);
-    case CT::Sonceboz_SG:
-        return gen_params_w<SoncebozSgInitConfigParametersW,SoncebozSgConfigParametersW>(initConfig);
-    case CT::Thera_trainer_tracking:
-        return gen_params_w<TheraTrainerTrackingInitConfigParametersW,TheraTrainerTrackingConfigParametersW>(initConfig);
-    case CT::Thera_trainer_platform:
-        return gen_params_w<TheraTrainerPlatformInitConfigParametersW,TheraTrainerPlatformConfigParametersW>(initConfig);
     // ############################# UI
     case CT::Buttons_ui:
         return gen_params_w<ButtonsUiInitConfigParametersW,ButtonsUiConfigParametersW>(initConfig);

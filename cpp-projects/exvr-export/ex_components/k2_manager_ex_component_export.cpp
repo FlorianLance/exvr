@@ -31,7 +31,7 @@
 using namespace tool;
 using namespace tool::geo;
 using namespace tool::ex;
-using namespace tool::camera;
+using namespace tool::cam;
 
 K2ManagerExComponent *create_k2_manager_ex_component(){
     return new K2ManagerExComponent();

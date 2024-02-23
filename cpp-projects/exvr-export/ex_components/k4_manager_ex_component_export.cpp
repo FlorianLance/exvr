@@ -27,13 +27,13 @@
 using namespace tool;
 using namespace tool::ex;
 
-K4ManagerExComponent* create_k4_manager_ex_component(){
-    return new K4ManagerExComponent();
+DCManagerExComponent* create_k4_manager_ex_component(){
+    return new DCManagerExComponent();
 }
 
 void retrieve_cloud_frame_data_k4_manager_ex_component(
-    tool::ex::K4ManagerExComponent *c, int idCamera, int idCurrentFrame,
-    tool::camera::DCVertexMeshData *vertices, int *lastFrameState){
+    tool::ex::DCManagerExComponent *c, int idCamera, int idCurrentFrame,
+    tool::cam::DCVertexMeshData *vertices, int *lastFrameState){
 
     auto ret = c->get_cloud_frame_data(idCamera, idCurrentFrame, vertices);
     lastFrameState[0] = std::get<0>(ret) ? 1 : 0;

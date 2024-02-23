@@ -38,7 +38,7 @@
 using namespace tool;
 using namespace tool::ex;
 using namespace tool::geo;
-using namespace tool::camera;
+using namespace tool::cam;
 
 
 CameraData::CameraData(){
@@ -169,7 +169,7 @@ bool K2VolumetricVideoExResource::load(const std::string &path){
             read(inConfigFile, &lean);
             read(inConfigFile, &nbJoints);
 
-            camera::K2BodyInfos &body = cloudData.bodies[jj];
+            cam::K2BodyInfos &body = cloudData.bodies[jj];
             body.id             = id;
             body.engaged        = static_cast<K2Detection>(engaged);
             body.tracked        = tracked;
@@ -183,8 +183,8 @@ bool K2VolumetricVideoExResource::load(const std::string &path){
 
             // read joints
             for(size_t kk = 0; kk < nbJoints; ++kk){
-                camera::K2BodyJoint joint;
-                auto jointT = read<camera::K2BodyJointType>(inConfigFile);
+                cam::K2BodyJoint joint;
+                auto jointT = read<cam::K2BodyJointType>(inConfigFile);
                 read(inConfigFile, &joint.pos);
                 read(inConfigFile, &joint.rotQuaternion);
                 read(inConfigFile, &joint.state);
@@ -260,11 +260,11 @@ void K2VolumetricVideoExResource::uncompress(size_t idCamera, CloudData *cloud){
     const auto sizeDepthCoded   = cloud->depth.size();
     const auto sizeColorJpeg    = cloud->colors.size();
 
-    // uncompress depths
-    c->depthCompressor.decode(
-        reinterpret_cast<std::uint32_t*>(cloud->depth.data()), sizeDepthCoded,
-        reinterpret_cast<std::uint32_t*>(c->decodedDepth.data()), k2_depth_count/2
-        );
+    // // uncompress depths
+    // c->depthCompressor.decode(
+    //     reinterpret_cast<std::uint32_t*>(cloud->depth.data()), sizeDepthCoded,
+    //     reinterpret_cast<std::uint32_t*>(c->decodedDepth.data()), k2_depth_count/2
+    //     );
 
     // uncompress colors
     tjDecompress2(

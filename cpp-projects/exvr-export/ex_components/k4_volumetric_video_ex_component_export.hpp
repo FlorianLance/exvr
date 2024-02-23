@@ -48,7 +48,7 @@ extern "C"{
     DECL_EXPORT int uncompress_frame_vmd_k4_volumetric_video_ex_component(
         tool::ex::K4VolumetricVideoExComponent *vvC,
         int idC, int idFrame,
-        tool::camera::DCVertexMeshData *vertices);
+        tool::cam::DCVertexMeshData *vertices);
 
     DECL_EXPORT int process_audio_k4_volumetric_video_ex_component(
         tool::ex::K4VolumetricVideoExComponent *vvC, int idCamera);

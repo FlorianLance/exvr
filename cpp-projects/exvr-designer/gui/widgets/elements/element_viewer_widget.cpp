@@ -176,13 +176,13 @@ void ElementViewerW::init_routine_ui(){
             emit GSignals::get()->update_element_name_signal(m_currentElementId, routineName);
         }
     });
-    connect(lw, &QListWidget::itemSelectionChanged, this, [=]{
+    connect(lw, &QListWidget::itemSelectionChanged, this, [&,lw]{
         emit GSignals::get()->select_routine_condition_signal(m_currentElementId, RowId{lw->currentRow()});
     });
-    connect(ui->pbUp, &QPushButton::clicked, this, [=]{
+    connect(ui->pbUp, &QPushButton::clicked, this, [&,lw]{
         emit GSignals::get()->move_routine_condition_up_signal(m_currentElementId, RowId{lw->currentRow()});
     });
-    connect(ui->pbDown, &QPushButton::clicked, this, [=]{
+    connect(ui->pbDown, &QPushButton::clicked, this, [&,lw]{
         emit GSignals::get()->move_routine_condition_down_signal(m_currentElementId, RowId{lw->currentRow()});
     });
 
@@ -262,7 +262,7 @@ void ElementViewerW::init_loop_ui(){
     });
 
     // style
-    connect(ui->cbLoopStyle,QOverload<int>::of( &QComboBox::currentIndexChanged),[=](int index){
+    connect(ui->cbLoopStyle,QOverload<int>::of( &QComboBox::currentIndexChanged),[&](int index){
         emit GSignals::get()->modify_loop_type_signal(m_currentElementId, static_cast<Loop::Mode>(index));
     });
 
@@ -271,14 +271,14 @@ void ElementViewerW::init_loop_ui(){
         ui->pbAdd->setEnabled(ui->teAdd->toPlainText().size() > 0);
     });
 
-    connect(ui->pbAdd, &QPushButton::clicked, this, [=]{
+    connect(ui->pbAdd, &QPushButton::clicked, this, [&]{
         QString txt = ui->teAdd->toPlainText().replace(' ', '_').replace('-', '_');
         ui->teAdd->blockSignals(true);
         ui->teAdd->setText(txt);
         ui->teAdd->blockSignals(false);
         emit GSignals::get()->add_loop_sets_signal(m_currentElementId, txt, RowId{ui->sbRowId->value()});
     });
-    connect(ui->pbInitFromFile, &QPushButton::clicked, this, [=]{
+    connect(ui->pbInitFromFile, &QPushButton::clicked, this, [&]{
         QString filePath = QFileDialog::getOpenFileName(nullptr, "Sets file to load",QCoreApplication::applicationDirPath() + "/data", "sets (*.txt)", nullptr);
         if(filePath.size() == 0){
             return;
@@ -287,7 +287,7 @@ void ElementViewerW::init_loop_ui(){
     });
 
     auto teI = ui->teInformations;
-    connect(teI, &QTextEdit::textChanged, this, [=]{
+    connect(teI, &QTextEdit::textChanged, this, [&, teI]{
         emit GSignals::get()->update_element_informations_signal(m_currentElementId, teI->toPlainText());
     });
 
@@ -359,8 +359,7 @@ void ElementViewerW::update_no_selection_ui(){
     lImage.fill(Qt::darkBlue);
     QPixmap lIcon = QPixmap::fromImage(lImage);
 
-
-    size_t row = 0;
+    int row = 0;
     for(const auto &element : exp->elements){
 
         using enum FlowElement::Type;

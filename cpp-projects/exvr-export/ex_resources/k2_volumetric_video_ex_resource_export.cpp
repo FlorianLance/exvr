@@ -32,7 +32,7 @@
 using namespace tool;
 using namespace tool::ex;
 using namespace tool::geo;
-using namespace tool::camera;
+using namespace tool::cam;
 
 K2VolumetricVideoExResource *create_k2_volumetric_video_ex_resource(){
     return new K2VolumetricVideoExResource();

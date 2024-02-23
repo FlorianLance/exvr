@@ -26,75 +26,25 @@
 ####################################### repo
 EXVR_REPOSITORY_DIR      = $$PWD"/../.."
 
-####################################### PRI
-# defines compiling options
-include(../exvr-settings.pri)
-# defines projects paths and variables
-include(../exvr-projects.pri)
-# defines thirdparty includes and libs
-include(../exvr-thirdparty.pri)
-
-####################################### TARGET
-equals(CFG, "debug"){
-    TARGET = ExVR-designerd
-}
-equals(CFG, "release"){
-    TARGET = ExVR-designer
-}
-
-####################################### TEMPLATE
+####################################### TARGET/TEMPMATE/CONFIG
+TARGET = ExVR-designer
 TEMPLATE = app
 CONFIG += precompile_header
 CONFIG -= console
-# console
-DEFINES += QT_MESSAGELOGCONTEXT
-PRECOMPILED_HEADER = stable.h
-
-####################################### BUILD FILES
-OBJECTS_DIR = $$EXVR_DESIGNER_OBJ
-MOC_DIR     = $$EXVR_DESIGNER_MOC
-RCC_DIR     = $$EXVR_DESIGNER_RCC
-UI_DIR      = $$EXVR_DESIGNER_UI
-DESTDIR     = $$EXVR_DESIGNER_DEST
-PRECOMPILED_DIR = $$EXVR_DESIGNER_OBJ
-
-####################################### CONFIG
 QT  += core gui network concurrent widgets opengl
+DEFINES += QT_MESSAGELOGCONTEXT
 
-####################################### INCLUDES
+####################################### PRI
+include(../exvr-settings.pri)
+include(../exvr-projects.pri)
+include(../exvr-thirdparty.pri)
+include(../exvr-dependencies.pri)
 
-# Use Precompiled headers (PCH)
+####################################### PRECOMPILED
 PRECOMPILED_HEADER  = stable.h
-
-INCLUDEPATH += \
-    # tool
-    $$BASE_INCLUDES \
-    $$QT_UTILITY_INCLUDES \
-    # local
-    $$EXVR_DESIGNER_MOC \
-    # third-party
-    $$QWT_INCLUDES \
-    $$NODES_INCLUDES \
-    $$MAGIC_ENUM_INCLUDES\
-
-####################################### LIBRAIRIES
-
-PRE_TARGETDEPS += \
-    # tool
-    $$BASE_LIB_DEP \
-    $$QT_UTILITY_LIB_DEP \
-
-LIBS +=  \
-    # tool
-    $$BASE_LIB \
-    $$QT_UTILITY_LIB \
-    # third-party
-    $$QWT_LIBS \
-    $$NODES_LIB \
+PRECOMPILED_DIR     = $$EXVR_DESIGNER_OBJ
 
 ####################################### PROJECT FILES
-
-
 HEADERS += \
     # controller
     controller/exvr_controller.hpp \
@@ -102,6 +52,7 @@ HEADERS += \
     gui/ex_widgets/ex_condition_w.hpp \
     gui/ex_widgets/ex_oob_filtering_w.hpp \
     gui/widgets/components/config_parameters/camera_controller_pw.hpp \
+    gui/widgets/components/config_parameters/dc_network_direct_player_pw.hpp \
     gui/widgets/components/config_parameters/k2_body_tracking_pw.hpp \
     gui/widgets/components/config_parameters/k2_manager_pw.hpp \
     gui/widgets/components/config_parameters/k4_direct_multi_clouds_pw.hpp \
@@ -341,6 +292,7 @@ SOURCES += \
     gui/widgets/components/config_parameters/camera_controller_pw.cpp \
     gui/widgets/components/config_parameters/camera_trajectory_file_pw.cpp \
     gui/widgets/components/config_parameters/cloud_pw.cpp \
+    gui/widgets/components/config_parameters/dc_network_direct_player_pw.cpp \
     gui/widgets/components/config_parameters/flag_pole_pw.cpp \
     gui/widgets/components/config_parameters/k2_manager_pw.cpp \
     gui/widgets/components/config_parameters/k4_direct_multi_clouds_pw.cpp \
