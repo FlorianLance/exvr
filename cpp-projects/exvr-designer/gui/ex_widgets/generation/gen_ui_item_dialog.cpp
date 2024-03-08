@@ -42,16 +42,16 @@ GenUIItemDialog::GenUIItemDialog(QString title){
 
     setWindowTitle(title);
     m_layout = new QVBoxLayout(this);
-    m_layout->addWidget(ui::F::gen(ui::L::HB(), {ui::W::txt("Name parameter"), m_leName = new QLineEdit()}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
-    m_layout->addWidget(ui::F::gen(ui::L::HB(), {m_laValid = ui::W::txt("")}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
+    m_layout->addWidget(ui::F::old_gen(ui::L::HB(), {ui::W::txt("Name parameter"), m_leName = new QLineEdit()}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
+    m_layout->addWidget(ui::F::old_gen(ui::L::HB(), {m_laValid = ui::W::txt("")}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
 }
 
 GenUIItemDialog::GenUIItemDialog(UiType type) : m_type(type){
 
     setWindowTitle(QSL("Add ") % from_view(get_name(m_type)));
     m_layout = new QVBoxLayout(this);
-    m_layout->addWidget(ui::F::gen(ui::L::HB(), {ui::W::txt("Name parameter"), m_leName = new QLineEdit()}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
-    m_layout->addWidget(ui::F::gen(ui::L::HB(), {m_laValid = ui::W::txt("")}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
+    m_layout->addWidget(ui::F::old_gen(ui::L::HB(), {ui::W::txt("Name parameter"), m_leName = new QLineEdit()}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
+    m_layout->addWidget(ui::F::old_gen(ui::L::HB(), {m_laValid = ui::W::txt("")}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
 }
 
 bool GenUIItemDialog::show_dialog(QStringList othersParameters){
@@ -112,11 +112,11 @@ bool GenUIItemDialog::show_dialog(QStringList othersParameters){
 }
 
 void GenUIItemDialog::add_row(QString name, QWidget *w){
-    m_layout->addWidget(ui::F::gen(ui::L::HB(), {ui::W::txt(name),w}, LStretch{true}, LMargins{true}, QFrame::Box));
+    m_layout->addWidget(ui::F::old_gen(ui::L::HB(), {ui::W::txt(name),w}, LStretch{true}, LMargins{true}, QFrame::Box));
 }
 
 void GenUIItemDialog::add_gen_widget(BaseGenW *w){
-    m_layout->addWidget(ui::F::gen(ui::L::HB(), {m_genW = w}, LStretch{true}, LMargins{true}, QFrame::Box));
+    m_layout->addWidget(ui::F::old_gen(ui::L::HB(), {m_genW = w}, LStretch{true}, LMargins{true}, QFrame::Box));
 }
 
 Arg GenUIItemDialog::generate_arg(int order) const{
@@ -137,11 +137,11 @@ GenSpinboxW::GenSpinboxW(QString text){
 
     auto l = new QVBoxLayout();
     l->setContentsMargins(0,0,0,0);
-    l->addWidget(ui::F::gen(ui::L::HB(), {ui::W::txt(text)}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
-    l->addWidget(ui::F::gen(ui::L::HB(), {ui::W::txt("Min"),    &min}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
-    l->addWidget(ui::F::gen(ui::L::HB(), {ui::W::txt("Value"),  &value}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
-    l->addWidget(ui::F::gen(ui::L::HB(), {ui::W::txt("Max"),    &max}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
-    l->addWidget(ui::F::gen(ui::L::HB(), {ui::W::txt("Step"),   &step}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
+    l->addWidget(ui::F::old_gen(ui::L::HB(), {ui::W::txt(text)}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
+    l->addWidget(ui::F::old_gen(ui::L::HB(), {ui::W::txt("Min"),    &min}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
+    l->addWidget(ui::F::old_gen(ui::L::HB(), {ui::W::txt("Value"),  &value}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
+    l->addWidget(ui::F::old_gen(ui::L::HB(), {ui::W::txt("Max"),    &max}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
+    l->addWidget(ui::F::old_gen(ui::L::HB(), {ui::W::txt("Step"),   &step}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
     l->addStretch();
     setLayout(l);
 
@@ -199,12 +199,12 @@ SpinboxFloatGenW::SpinboxFloatGenW(){
 
     auto l = new QVBoxLayout();
     l->setContentsMargins(0,0,0,0);
-    l->addWidget(ui::F::gen(ui::L::HB(), {ui::W::txt("Float spin box options")}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
-    l->addWidget(ui::F::gen(ui::L::HB(), {ui::W::txt("Min"),    &min}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
-    l->addWidget(ui::F::gen(ui::L::HB(), {ui::W::txt("Value"),  &value}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
-    l->addWidget(ui::F::gen(ui::L::HB(), {ui::W::txt("Max"),    &max}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
-    l->addWidget(ui::F::gen(ui::L::HB(), {ui::W::txt("Step"),   &step}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
-    l->addWidget(ui::F::gen(ui::L::HB(), {ui::W::txt("Nb decimals"),   &decimals}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
+    l->addWidget(ui::F::old_gen(ui::L::HB(), {ui::W::txt("Float spin box options")}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
+    l->addWidget(ui::F::old_gen(ui::L::HB(), {ui::W::txt("Min"),    &min}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
+    l->addWidget(ui::F::old_gen(ui::L::HB(), {ui::W::txt("Value"),  &value}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
+    l->addWidget(ui::F::old_gen(ui::L::HB(), {ui::W::txt("Max"),    &max}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
+    l->addWidget(ui::F::old_gen(ui::L::HB(), {ui::W::txt("Step"),   &step}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
+    l->addWidget(ui::F::old_gen(ui::L::HB(), {ui::W::txt("Nb decimals"),   &decimals}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
     l->addStretch();
     setLayout(l);
 
@@ -271,12 +271,12 @@ SpinboxDoubleGenW::SpinboxDoubleGenW(QString text){
 
     auto l = new QVBoxLayout();
     l->setContentsMargins(0,0,0,0);
-    l->addWidget(ui::F::gen(ui::L::HB(), {ui::W::txt(text)}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
-    l->addWidget(ui::F::gen(ui::L::HB(), {ui::W::txt("Min"),    &min}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
-    l->addWidget(ui::F::gen(ui::L::HB(), {ui::W::txt("Value"),  &value}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
-    l->addWidget(ui::F::gen(ui::L::HB(), {ui::W::txt("Max"),    &max}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
-    l->addWidget(ui::F::gen(ui::L::HB(), {ui::W::txt("Step"),   &step}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
-    l->addWidget(ui::F::gen(ui::L::HB(), {ui::W::txt("Nb decimals"),   &decimals}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
+    l->addWidget(ui::F::old_gen(ui::L::HB(), {ui::W::txt(text)}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
+    l->addWidget(ui::F::old_gen(ui::L::HB(), {ui::W::txt("Min"),    &min}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
+    l->addWidget(ui::F::old_gen(ui::L::HB(), {ui::W::txt("Value"),  &value}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
+    l->addWidget(ui::F::old_gen(ui::L::HB(), {ui::W::txt("Max"),    &max}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
+    l->addWidget(ui::F::old_gen(ui::L::HB(), {ui::W::txt("Step"),   &step}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
+    l->addWidget(ui::F::old_gen(ui::L::HB(), {ui::W::txt("Nb decimals"),   &decimals}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
     l->addStretch();
     setLayout(l);
 
@@ -343,10 +343,10 @@ Vector2dGenW::Vector2dGenW(){
 
     auto l = ui::L::VB();
     l->setContentsMargins(0,0,0,0);
-    l->addWidget(ui::F::gen_frame(ui::L::HB(), {ui::W::txt("Vector 2D options")}, LStretchD{10, {}}));
-    l->addWidget(ui::F::gen_frame(ui::L::HB(), {ui::W::txt("Min"), &min, ui::W::txt("Max"), &max}, LStretchD{10, {1,3,1,3}}));
-    l->addWidget(ui::F::gen_frame(ui::L::HB(), {ui::W::txt("X"), &valueX, ui::W::txt("Y"), &valueY}, LStretchD{10, {1,3,1,3}}));
-    l->addWidget(ui::F::gen_frame(ui::L::HB(), {ui::W::txt("Step"), &step, ui::W::txt("Nb decimals"), &decimals}, LStretchD{10, {1,3,1,2}}));
+    l->addWidget(ui::F::old_gen_frame(ui::L::HB(), {ui::W::txt("Vector 2D options")}, LStretchD{10, {}}));
+    l->addWidget(ui::F::old_gen_frame(ui::L::HB(), {ui::W::txt("Min"), &min, ui::W::txt("Max"), &max}, LStretchD{10, {1,3,1,3}}));
+    l->addWidget(ui::F::old_gen_frame(ui::L::HB(), {ui::W::txt("X"), &valueX, ui::W::txt("Y"), &valueY}, LStretchD{10, {1,3,1,3}}));
+    l->addWidget(ui::F::old_gen_frame(ui::L::HB(), {ui::W::txt("Step"), &step, ui::W::txt("Nb decimals"), &decimals}, LStretchD{10, {1,3,1,2}}));
     l->addStretch();
     setLayout(l);
 
@@ -433,12 +433,12 @@ Vector3dGenW::Vector3dGenW(){
 
     auto l = ui::L::VB();
     l->setContentsMargins(0,0,0,0);
-    l->addWidget(ui::F::gen(ui::L::HB(), {ui::W::txt("Vector 3D options")}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
-    l->addWidget(ui::F::gen(ui::L::HB(), {ui::W::txt("Min"), &min,ui::W::txt("Max"), &max}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
-    l->addWidget(ui::F::gen(ui::L::HB(), {ui::W::txt("X"), &valueX}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
-    l->addWidget(ui::F::gen(ui::L::HB(), {ui::W::txt("Y"), &valueY}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
-    l->addWidget(ui::F::gen(ui::L::HB(), {ui::W::txt("Z"), &valueZ}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
-    l->addWidget(ui::F::gen(ui::L::HB(), {ui::W::txt("Step"), &step, ui::W::txt("Nb decimals"), &decimals}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
+    l->addWidget(ui::F::old_gen(ui::L::HB(), {ui::W::txt("Vector 3D options")}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
+    l->addWidget(ui::F::old_gen(ui::L::HB(), {ui::W::txt("Min"), &min,ui::W::txt("Max"), &max}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
+    l->addWidget(ui::F::old_gen(ui::L::HB(), {ui::W::txt("X"), &valueX}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
+    l->addWidget(ui::F::old_gen(ui::L::HB(), {ui::W::txt("Y"), &valueY}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
+    l->addWidget(ui::F::old_gen(ui::L::HB(), {ui::W::txt("Z"), &valueZ}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
+    l->addWidget(ui::F::old_gen(ui::L::HB(), {ui::W::txt("Step"), &step, ui::W::txt("Nb decimals"), &decimals}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
     l->addStretch();
     setLayout(l);
 
@@ -740,8 +740,8 @@ ResourceGenW::ResourceGenW(){
 
     auto l = ui::L::VB();
     l->setContentsMargins(0,0,0,0);
-    l->addWidget(ui::F::gen(ui::L::HB(), {ui::W::txt("Resources options")}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
-    l->addWidget(ui::F::gen(ui::L::HB(), {ui::W::txt("Type"), &resourcesTypes}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
+    l->addWidget(ui::F::old_gen(ui::L::HB(), {ui::W::txt("Resources options")}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
+    l->addWidget(ui::F::old_gen(ui::L::HB(), {ui::W::txt("Type"), &resourcesTypes}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
     l->addStretch();
     setLayout(l);
 
@@ -764,8 +764,8 @@ ComponentGenW::ComponentGenW(){
 
     auto l = ui::L::VB();
     l->setContentsMargins(0,0,0,0);
-    l->addWidget(ui::F::gen(ui::L::HB(), {ui::W::txt("Components options")}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
-    l->addWidget(ui::F::gen(ui::L::HB(), {ui::W::txt("Type"), &componentsTypes}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
+    l->addWidget(ui::F::old_gen(ui::L::HB(), {ui::W::txt("Components options")}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
+    l->addWidget(ui::F::old_gen(ui::L::HB(), {ui::W::txt("Type"), &componentsTypes}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
     l->addStretch();
     setLayout(l);
 
@@ -788,7 +788,7 @@ void ComponentGenW::update_arg(Arg &arg) const{
 TextGenW::TextGenW(QString text){
     auto l = new QVBoxLayout();
     l->setContentsMargins(0,0,0,0);
-    l->addWidget(ui::F::gen(ui::L::HB(), {ui::W::txt(text), &textEdit}, LStretch{false}, LMargins{false}, QFrame::NoFrame));
+    l->addWidget(ui::F::old_gen(ui::L::HB(), {ui::W::txt(text), &textEdit}, LStretch{false}, LMargins{false}, QFrame::NoFrame));
     l->addStretch();
     setLayout(l);
 }
@@ -810,11 +810,11 @@ CurveGen::CurveGen(){
 
     auto l = new QVBoxLayout();
     l->setContentsMargins(0,0,0,0);
-    l->addWidget(ui::F::gen(ui::L::HB(), {ui::W::txt("Curve title"), &curveTitle}, LStretch{false}, LMargins{false}, QFrame::NoFrame));
-    l->addWidget(ui::F::gen(ui::L::HB(), {ui::W::txt("X axis title"), &xTitle}, LStretch{false}, LMargins{false}, QFrame::NoFrame));
-    l->addWidget(ui::F::gen(ui::L::HB(), {ui::W::txt("Y axis title"), &yTitle}, LStretch{false}, LMargins{false}, QFrame::NoFrame));
-    l->addWidget(ui::F::gen(ui::L::HB(), {ui::W::txt("X min/max values"), &minX, &maxX}, LStretch{false}, LMargins{false}, QFrame::NoFrame));
-    l->addWidget(ui::F::gen(ui::L::HB(), {ui::W::txt("Y min/max values"), &minY, &maxY}, LStretch{false}, LMargins{false}, QFrame::NoFrame));
+    l->addWidget(ui::F::old_gen(ui::L::HB(), {ui::W::txt("Curve title"), &curveTitle}, LStretch{false}, LMargins{false}, QFrame::NoFrame));
+    l->addWidget(ui::F::old_gen(ui::L::HB(), {ui::W::txt("X axis title"), &xTitle}, LStretch{false}, LMargins{false}, QFrame::NoFrame));
+    l->addWidget(ui::F::old_gen(ui::L::HB(), {ui::W::txt("Y axis title"), &yTitle}, LStretch{false}, LMargins{false}, QFrame::NoFrame));
+    l->addWidget(ui::F::old_gen(ui::L::HB(), {ui::W::txt("X min/max values"), &minX, &maxX}, LStretch{false}, LMargins{false}, QFrame::NoFrame));
+    l->addWidget(ui::F::old_gen(ui::L::HB(), {ui::W::txt("Y min/max values"), &minY, &maxY}, LStretch{false}, LMargins{false}, QFrame::NoFrame));
     l->addStretch();
     setLayout(l);
 
@@ -861,7 +861,7 @@ ComboTextGen::ComboTextGen(QString text){
     auto l = new QVBoxLayout();
     leText.setText(text);
     l->setContentsMargins(0,0,0,0);
-    l->addWidget(ui::F::gen(ui::L::HB(), {ui::W::txt("Enter items (using \"|\" as separator)):"), &leText}, LStretch{false}, LMargins{false}, QFrame::NoFrame));
+    l->addWidget(ui::F::old_gen(ui::L::HB(), {ui::W::txt("Enter items (using \"|\" as separator)):"), &leText}, LStretch{false}, LMargins{false}, QFrame::NoFrame));
     l->addStretch();
     setLayout(l);
 

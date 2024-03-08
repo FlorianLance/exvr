@@ -47,7 +47,7 @@ public:
 
     void insert_widgets() override{
         add_sub_part_widget(tr);
-        add_widget(ui::F::gen(ui::L::HB(),{useTransformAsOrigin()}, LStretch{false}, LMargins{true}));
+        add_widget(ui::F::old_gen(ui::L::HB(),{useTransformAsOrigin()}, LStretch{false}, LMargins{true}));
     }
 
     void init_and_register_widgets() override{
@@ -65,8 +65,8 @@ public :
     ExCheckBoxW m_cbTrackFingers{"track_fingers"};
 
     void insert_widgets() override{
-        add_widget(ui::F::gen(ui::L::HB(),{new QLabel("Model: "), m_cbtModel()}, LStretch{false}, LMargins{true}));
-        add_widget(ui::F::gen(ui::L::HB(),{m_cbTrackFingers()}, LStretch{false}, LMargins{true}));
+        add_widget(ui::F::old_gen(ui::L::HB(),{new QLabel("Model: "), m_cbtModel()}, LStretch{false}, LMargins{true}));
+        add_widget(ui::F::old_gen(ui::L::HB(),{m_cbTrackFingers()}, LStretch{false}, LMargins{true}));
     }
 
     void init_and_register_widgets() override{
@@ -94,10 +94,10 @@ public :
 
     void insert_widgets() override{
 
-        add_sub_part_widget(m_tr);        
-        QFrame *frame2 = ui::F::gen(ui::L::HB(),{new QLabel("Part to display: "), m_cbtPartToDisplay()}, LStretch{false}, LMargins{true});
-        QFrame *frame3 = ui::F::gen(ui::L::HB(),{m_cbDisplayColliders()}, LStretch{false}, LMargins{true});
-        add_widget(ui::F::gen(ui::L::VB(),{frame2, frame3}, LStretch{false}, LMargins{false},QFrame::Box));
+        add_sub_part_widget(m_tr);
+        QFrame *frame2 = ui::F::old_gen(ui::L::HB(),{new QLabel("Part to display: "), m_cbtPartToDisplay()}, LStretch{false}, LMargins{true});
+        QFrame *frame3 = ui::F::old_gen(ui::L::HB(),{m_cbDisplayColliders()}, LStretch{false}, LMargins{true});
+        add_widget(ui::F::old_gen(ui::L::VB(),{frame2, frame3}, LStretch{false}, LMargins{false},QFrame::Box));
     }
 
     void init_and_register_widgets() override{

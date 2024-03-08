@@ -42,7 +42,7 @@ public :
     ExResourceW m_scanerVideo{"scaner_video"};
 
     void insert_widgets() override{
-        add_widget(ui::F::gen(ui::L::HB(), {m_scanerVideo()}, LStretch{false}, LMargins{true}, QFrame::Box));
+        add_widget(ui::F::old_gen(ui::L::HB(), {m_scanerVideo()}, LStretch{false}, LMargins{true}, QFrame::Box));
     }
 
     void init_and_register_widgets() override{
@@ -97,12 +97,12 @@ public :
 
     void insert_widgets() override{
         add_sub_part_widget(m_transfo);
-        add_widget(ui::F::gen(ui::L::HB(),{ui::W::txt("Size points: "),m_sizePoints()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
-        add_widget(ui::F::gen(ui::L::HB(),{ui::W::txt("Video ask frame rate: "), m_fps()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
-        add_widget(ui::F::gen(ui::L::HB(),{ui::W::txt("Max time difference (ms): "), m_maxDiffTimeMs()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
-        add_widget(ui::F::gen(ui::L::HB(),{m_loop()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
-        add_widget(ui::F::gen(ui::L::HB(),{m_displayClouds()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
-        add_widget(ui::F::gen(ui::L::HB(),{m_displayColliders()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
+        add_widget(ui::F::old_gen(ui::L::HB(),{ui::W::txt("Size points: "),m_sizePoints()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
+        add_widget(ui::F::old_gen(ui::L::HB(),{ui::W::txt("Video ask frame rate: "), m_fps()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
+        add_widget(ui::F::old_gen(ui::L::HB(),{ui::W::txt("Max time difference (ms): "), m_maxDiffTimeMs()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
+        add_widget(ui::F::old_gen(ui::L::HB(),{m_loop()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
+        add_widget(ui::F::old_gen(ui::L::HB(),{m_displayClouds()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
+        add_widget(ui::F::old_gen(ui::L::HB(),{m_displayColliders()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
     }
 
     void init_and_register_widgets() override{

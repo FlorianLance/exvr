@@ -44,9 +44,9 @@ public :
     ExFloatSpinBoxW m_dsbStartLineDistance{"start_distance"};
 
     void insert_widgets() override{
-        add_widget(ui::F::gen(ui::L::HB(),{ui::W::txt("Target component name: "),       m_leTargetComponentName(), ui::W::txt("(target must be before in condition order)")}, LStretch{true}, LMargins{false},QFrame::NoFrame));
-        add_widget(ui::F::gen(ui::L::HB(),{ui::W::txt("Max reachable distance (m): "),  m_dsbMaxReachableDistance()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
-        add_widget(ui::F::gen(ui::L::HB(),{ui::W::txt("Start line distance (m): "),     m_dsbStartLineDistance()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
+        add_widget(ui::F::old_gen(ui::L::HB(),{ui::W::txt("Target component name: "),       m_leTargetComponentName(), ui::W::txt("(target must be before in condition order)")}, LStretch{true}, LMargins{false},QFrame::NoFrame));
+        add_widget(ui::F::old_gen(ui::L::HB(),{ui::W::txt("Max reachable distance (m): "),  m_dsbMaxReachableDistance()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
+        add_widget(ui::F::old_gen(ui::L::HB(),{ui::W::txt("Start line distance (m): "),     m_dsbStartLineDistance()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
     }
 
     void init_and_register_widgets() override{
@@ -80,13 +80,13 @@ public :
     void insert_widgets() override{
 
         // general
-        add_widget(ui::F::gen(ui::L::VB(),{new QLabel("<b>General</b>"), m_cbDebug(), m_cbDisplayStartLine()}, LStretch{true}, LMargins{true},QFrame::Box));
+        add_widget(ui::F::old_gen(ui::L::VB(),{new QLabel("<b>General</b>"), m_cbDebug(), m_cbDisplayStartLine()}, LStretch{true}, LMargins{true},QFrame::Box));
 
         // target
-        auto targetDistance = ui::F::gen(ui::L::HB(),{ui::W::txt("Distance (%): "),m_dsbDistancePercentageTarget()}, LStretch{false}, LMargins{false},QFrame::NoFrame);
-        auto targetAngle    = ui::F::gen(ui::L::HB(),{ui::W::txt("Angle (°): "),m_dsbAngleTarget()}, LStretch{false}, LMargins{false},QFrame::NoFrame);
-        auto targetHeight   = ui::F::gen(ui::L::HB(),{ui::W::txt("Height (m): "),m_dsbHeightTarget()}, LStretch{false}, LMargins{false},QFrame::NoFrame);
-        add_widget(ui::F::gen(ui::L::VB(),{new QLabel("<b>Target: </b>"), targetDistance, targetAngle, targetHeight}, LStretch{true}, LMargins{true},QFrame::Box));
+        auto targetDistance = ui::F::old_gen(ui::L::HB(),{ui::W::txt("Distance (%): "),m_dsbDistancePercentageTarget()}, LStretch{false}, LMargins{false},QFrame::NoFrame);
+        auto targetAngle    = ui::F::old_gen(ui::L::HB(),{ui::W::txt("Angle (°): "),m_dsbAngleTarget()}, LStretch{false}, LMargins{false},QFrame::NoFrame);
+            auto targetHeight   = ui::F::old_gen(ui::L::HB(),{ui::W::txt("Height (m): "),m_dsbHeightTarget()}, LStretch{false}, LMargins{false},QFrame::NoFrame);
+        add_widget(ui::F::old_gen(ui::L::VB(),{new QLabel("<b>Target: </b>"), targetDistance, targetAngle, targetHeight}, LStretch{true}, LMargins{true},QFrame::Box));
         add_sub_part_widget(m_trWorkingZone);
     }
 

@@ -25,23 +25,38 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
+using System.Threading;
+using System.Diagnostics;
 
 // unity
 using UnityEngine;
 using UnityEngine.Profiling;
-using System.Threading.Tasks;
-using System.Diagnostics;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace Ex {
 
+    [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+    public delegate void NewFeedbackCB(int idC, int messageType, int feedbackType);
+
     public class DLLDCNetworkDirectPlayer : DLLCppImport {
+
+        public void init_callbacks(NewFeedbackCB newFeedbackCB) {
+            init_callbacks__dc_network_direct_player(_handle, newFeedbackCB);
+        }
 
         public bool initialize(string networkSettingsFilePath) {
             return initialize__dc_network_direct_player(_handle, networkSettingsFilePath) == 1;
         }
 
-        public void update() {
-            update__dc_network_direct_player(_handle);
+        public int read_network_data(int idD) {
+            return read_network_data__dc_network_direct_player(_handle, idD);
+        }
+
+        public bool uncompress_frame(int idD) {
+            return uncompress_frame__dc_network_direct_player(_handle, idD) == 1;
         }
 
         // actions
@@ -51,14 +66,6 @@ namespace Ex {
 
         public void disconnect_from_devices() {
             disconnect_from_devices__dc_network_direct_player(_handle);
-        }
-
-        public void start_reading() {
-            start_reading__dc_network_direct_player(_handle);
-        }
-
-        public void stop_reading() {
-            stop_reading__dc_network_direct_player(_handle);
         }
 
         // states
@@ -125,21 +132,23 @@ namespace Ex {
         [DllImport("base-export", EntryPoint = "delete__dc_network_direct_player", CallingConvention = CallingConvention.Cdecl)]
         static private extern void delete__dc_network_direct_player(HandleRef dcNetworkDirectPlayer);
 
+        [DllImport("base-export", EntryPoint = "init_callbacks__dc_network_direct_player", CallingConvention = CallingConvention.Cdecl)]
+        static private extern void init_callbacks__dc_network_direct_player(HandleRef dcNetworkDirectPlayer, [MarshalAs(UnmanagedType.FunctionPtr)] NewFeedbackCB newFeedbackCB);
+
         [DllImport("base-export", EntryPoint = "initialize__dc_network_direct_player", CallingConvention = CallingConvention.Cdecl)]
         static private extern int initialize__dc_network_direct_player(HandleRef dcNetworkDirectPlayer, string networkSettingsFilePath);
 
-        [DllImport("base-export", EntryPoint = "update__dc_network_direct_player", CallingConvention = CallingConvention.Cdecl)]
-        static private extern void update__dc_network_direct_player(HandleRef dcNetworkDirectPlayer);
+        [DllImport("base-export", EntryPoint = "read_network_data__dc_network_direct_player", CallingConvention = CallingConvention.Cdecl)]
+        static private extern int read_network_data__dc_network_direct_player(HandleRef dcNetworkDirectPlayer, int idD);
+
+        [DllImport("base-export", EntryPoint = "uncompress_frame__dc_network_direct_player", CallingConvention = CallingConvention.Cdecl)]
+        static private extern int uncompress_frame__dc_network_direct_player(HandleRef dcNetworkDirectPlayer, int idD);
 
         // actions
         [DllImport("base-export", EntryPoint = "connect_to_devices__dc_network_direct_player", CallingConvention = CallingConvention.Cdecl)]
         static private extern void connect_to_devices__dc_network_direct_player(HandleRef dcNetworkDirectPlayer);
         [DllImport("base-export", EntryPoint = "disconnect_from_devices__dc_network_direct_player", CallingConvention = CallingConvention.Cdecl)]
         static private extern void disconnect_from_devices__dc_network_direct_player(HandleRef dcNetworkDirectPlayer);
-        [DllImport("base-export", EntryPoint = "start_reading__dc_network_direct_player", CallingConvention = CallingConvention.Cdecl)]
-        static private extern void start_reading__dc_network_direct_player(HandleRef dcNetworkDirectPlayer);
-        [DllImport("base-export", EntryPoint = "stop_reading__dc_network_direct_player", CallingConvention = CallingConvention.Cdecl)]
-        static private extern void stop_reading__dc_network_direct_player(HandleRef dcNetworkDirectPlayer);
 
         // states
         [DllImport("base-export", EntryPoint = "devices_nb__dc_network_direct_player", CallingConvention = CallingConvention.Cdecl)]
@@ -170,58 +179,188 @@ namespace Ex {
         #endregion
     }
 
+#if UNITY_EDITOR
 
+    [CustomEditor(typeof(DCNetworkDirectPlayer))]
+    public class DCNetworkDirectPlayerEditor : Editor {
+
+        private DCNetworkDirectPlayer dcNetworkDIrectPlayer { get { return target as DCNetworkDirectPlayer; } }
+
+        public override bool RequiresConstantRepaint() {
+            return true;
+        }
+
+        public override void OnInspectorGUI() {
+
+            base.OnInspectorGUI();
+
+            var dcNDP = dcNetworkDIrectPlayer;
+            var origFontStyle = EditorStyles.label.fontStyle;
+
+            EditorGUILayout.Separator();
+
+            EditorStyles.label.fontStyle = FontStyle.Bold;
+            EditorGUILayout.LabelField("#### ACTIONS ####");
+            EditorStyles.label.fontStyle = origFontStyle;
+
+            EditorGUI.BeginDisabledGroup(!Application.isPlaying);
+
+            EditorGUILayout.BeginHorizontal();
+            if (GUILayout.Button("Connect all")) {
+                dcNDP.connect_to_devices();
+            }
+            if (GUILayout.Button("Disconnect all")) {
+                dcNDP.disconnect_from_devices();
+            }
+            EditorGUILayout.EndHorizontal();
+
+            if (GUILayout.Button("Update device settings file")) {
+                dcNDP.update_device_settings();
+            }
+            if (GUILayout.Button("Update filters settings file")) {
+                dcNDP.update_filters_settings();
+            }
+            if (GUILayout.Button("Update color settings file")) {
+                dcNDP.update_color_settings();
+            }
+            if (GUILayout.Button("Update model settings file")) {
+                dcNDP.update_model_settings();
+            }
+
+            EditorGUI.EndDisabledGroup();
+        }
+    }
+#endif
+
+    public class ReadNetworkDataJob : ThreadedJob {
+
+        public DLLDCNetworkDirectPlayer dllPlayer = null;
+        public int idD = 0;
+        public volatile bool doLoop = false;
+
+        public void start_reading() {
+            doLoop = true;
+            start();
+        }
+
+        public void stop_reading() {
+            doLoop = false;
+            stop();
+        }
+
+        protected override void thread_function() {
+
+            int totalPackedRead = 0;
+            Thread.CurrentThread.Name = string.Concat("ReadNetworkData ", idD);
+            Profiler.BeginThreadProfiling("ReadNetworkData", Thread.CurrentThread.Name);
+            while (doLoop) {
+                Profiler.BeginSample("[DCNetworkDirectPlayer::read_network_data]");
+                int nbPackedRead = dllPlayer.read_network_data(idD);
+                Profiler.EndSample();
+                totalPackedRead += nbPackedRead;
+            }
+            Profiler.EndThreadProfiling();
+        }
+    }
+
+
+    [Serializable]
     public class DeviceSettings {
         public bool display = true;
         public bool update = true;
         public Color tint = new Color(1f, 1f, 1f, 1f);
+        public float pointSize = 0.005f;
+        // states
+        public bool connected = false;
+        public int currentSize = 0;
+        public int currentId = 0;
+        public int cloudUpdated = 0;
+        public int averageCloudUpdatedPerSecond = 0;
+        public Stopwatch sw = new Stopwatch();
     }
 
     public class DCNetworkDirectPlayer : MonoBehaviour {
 
-        public int currentNbOfDevices = 4;
-        public const int maximumNbOfDevices = 24;
-        public List<DeviceSettings> devicesSettings = new List<DeviceSettings>(maximumNbOfDevices);
+        [Header("#### INIT SETTINGS ####")]
+        public bool initAtAwake = false;
+        public bool loadDeviceSettingsAtAwake = false;
+        public bool loadModelSettingsAwake = false;
+        public bool loadFiltersSettingsAwake = false;
+        public bool loadColorSettingsAtAwake = false;
+        public bool connectAtStart = false;
+        public bool readAtStart = false;
 
+        [Header("#### SETTINGS FILES PATHS ####")]
         public string networkSettingsFilePath = "";
         public string deviceSettingsFilePath = "";
         public string colorSettingsFilePath = "";
         public string filtersSettingsFilePath = "";
         public string modelSettingsFilePath = "";
 
-        public List<int> currentCamerasFrameId = new List<int>();
-        public Material coloredCloudMaterial = null;
-        public List<GameObject> coloredClouds = new List<GameObject>();
+        [Header("#### CLOUDS SETTINGS #### ")]
+        public Material cloudMaterial = null;
+        public const int maximumNbOfDevices = 24;
+        public const int maximumNbOfOBB = 4;
+        public List<DeviceSettings> devicesSettings = new List<DeviceSettings>(maximumNbOfDevices);
 
-        private DLLDCNetworkDirectPlayer m_dllPlayer = null;
-        private NativeIndices indices = null;
-        private List<NativeDLLVertices> cloudsVertices = new List<NativeDLLVertices>();
-        private List<int> idCameras = new List<int>();
-        private List<int> nbVerticesToCopy = new List<int>();
+        // data
         private bool m_initialized = false;
         private bool m_isReading = false;
+        private List<int> m_idCameras = new List<int>();
+        private List<int> m_nbVerticesToCopy = new List<int>();
+        private List<GameObject> m_coloredClouds = new List<GameObject>();
+        private DLLDCNetworkDirectPlayer m_dllPlayer = null;
+
+        // jobs
+        private List<ReadNetworkDataJob> m_readNetworkDataJobs = new List<ReadNetworkDataJob>();
+
+        // native
+        private NativeIndices m_indices = null;
+        private List<NativeDLLVertices> m_cloudsVertices = new List<NativeDLLVertices>();
+
+        // callbacks
+        private static NewFeedbackCB newFeedbackCB = null;
+
 
         #region public_functions
 
         public bool initialize() {
 
-            if (m_initialized = m_dllPlayer.initialize(networkSettingsFilePath)) {
-                int nbDevices           = devices_nb();
-                coloredClouds           = new List<GameObject>(nbDevices);
-                currentCamerasFrameId   = new List<int>(nbDevices);
-                idCameras               = new List<int>(nbDevices);
-                nbVerticesToCopy        = new List<int>(nbDevices);
+            if (m_dllPlayer != null) {
+                clean();
+            }
 
-                if (cloudsVertices.Count != nbDevices) {
-                    foreach (var cloudVertices in cloudsVertices) {
+            // init dll
+            m_dllPlayer = new DLLDCNetworkDirectPlayer();
+            m_dllPlayer.init_callbacks(newFeedbackCB);
+
+            // send network config to dll    
+            if (m_initialized = m_dllPlayer.initialize(networkSettingsFilePath)) {
+
+                int nbDevices = devices_nb();
+
+                // reset native vertices if necessary
+                if (m_cloudsVertices.Count != nbDevices) {
+
+                    foreach (var cloudVertices in m_cloudsVertices) {
                         cloudVertices.clean();
                     }
-                    cloudsVertices = new List<NativeDLLVertices>(nbDevices);
+
+                    m_cloudsVertices = new List<NativeDLLVertices>(nbDevices);
+                    for (int idC = 0; idC < nbDevices; ++idC) {
+                        m_cloudsVertices.Add(new NativeDLLVertices(400000));
+                    }
                 }
 
+                create_jobs(nbDevices);
+
+                // init gameobjects / infos
+                m_coloredClouds = new List<GameObject>(nbDevices);
+                m_idCameras = new List<int>(nbDevices);
+                m_nbVerticesToCopy = new List<int>(nbDevices);
                 for (int idC = 0; idC < nbDevices; ++idC) {
-                    idCameras.Add(idC);
-                    nbVerticesToCopy.Add(0);
+                    m_idCameras.Add(idC);
+                    m_nbVerticesToCopy.Add(0);
                     var coloredCloudGO = new GameObject();
                     coloredCloudGO.transform.SetParent(transform);
                     coloredCloudGO.name = "Colored cloud " + idC;
@@ -229,50 +368,95 @@ namespace Ex {
                     coloredCloudGO.transform.localRotation = Quaternion.identity;
                     coloredCloudGO.transform.localScale = Vector3.one;
                     coloredCloudGO.AddComponent<PointCloud>().set_as_dynamic();
-
-                    coloredClouds.Add(coloredCloudGO);
-                    cloudsVertices.Add(new NativeDLLVertices(400000));
-                    currentCamerasFrameId.Add(-1);
+                    m_coloredClouds.Add(coloredCloudGO);
                 }
             }
             return m_initialized;
         }
 
-        public void connect_to_devices() {
-            if (!m_initialized) {
-                return;
+        private void create_jobs(int nbDevices) {
+
+            // read network data
+            m_readNetworkDataJobs = new List<ReadNetworkDataJob>();
+            for (int idC = 0; idC < nbDevices; ++idC) {
+                var rndJob = new ReadNetworkDataJob();
+                rndJob.dllPlayer = m_dllPlayer;
+                rndJob.idD = idC;
+                m_readNetworkDataJobs.Add(rndJob);
             }
-            m_dllPlayer.connect_to_devices(); 
+
+        }
+
+        public void clean() {
+
+            if (m_dllPlayer != null) {
+
+                // stop reading
+                if (m_isReading) {
+                    stop_reading();
+                }
+
+                // clean jobs
+                m_readNetworkDataJobs = null;
+
+                // disconnect devices
+                disconnect_from_devices();
+
+                // clean DLL
+                m_dllPlayer.Dispose();
+                m_dllPlayer = null;
+            }
+        }
+
+        public void connect_to_devices() {
+            if (m_dllPlayer != null) {
+                m_dllPlayer.connect_to_devices();
+            }
         }
         public void disconnect_from_devices() {
-            if (!m_initialized) {
-                return;
+            if (m_dllPlayer != null) {
+                m_dllPlayer.disconnect_from_devices();
             }
-            m_dllPlayer.disconnect_from_devices();
-            UnityEngine.Debug.Log("-> disconnect");
         }
 
         public void start_reading() {
-            if (!m_initialized) {
-                return;
+
+            if (m_dllPlayer != null) {
+
+                foreach (var deviceS in devicesSettings) {
+                    deviceS.cloudUpdated = 0;
+                    deviceS.averageCloudUpdatedPerSecond = 0;
+                    deviceS.sw.Start();
+                }
+
+                foreach (var rndJob in m_readNetworkDataJobs) {
+                    rndJob.start_reading();
+                }
+
+                m_isReading = true;
             }
-            m_dllPlayer.start_reading();
-            m_isReading = true;
         }
 
         public void stop_reading() {
-            if (!m_initialized) {
-                return;
+
+            if (m_dllPlayer != null) {
+                m_isReading = false;
+                foreach (var rndJob in m_readNetworkDataJobs) {
+                    rndJob.stop_reading();
+                }
+
+                foreach (var deviceS in devicesSettings) {
+                    deviceS.sw.Stop();
+                }
             }
-            m_isReading = false;
-            m_dllPlayer.stop_reading();
         }
 
         public int devices_nb() {
-            if (!m_initialized) {
-                return 0;
+
+            if (m_dllPlayer != null) {
+                return m_dllPlayer.devices_nb();
             }
-            return m_dllPlayer.devices_nb(); 
+            return 0;
         }
 
         public int connected_devices_nb() {
@@ -285,129 +469,280 @@ namespace Ex {
             return countConnected;
         }
         public bool is_device_connected(int idD) {
-            if (!m_initialized) {
-                return false;
+            if (m_dllPlayer != null) {
+                return m_dllPlayer.is_device_connected(idD);
             }
-            return m_dllPlayer.is_device_connected(idD); 
+            return false;
         }
         public int current_frame_id(int idD) {
-            if (!m_initialized) {
-                return 0;
+            if (m_dllPlayer != null) {
+                return m_dllPlayer.current_frame_id(idD);
             }
-            return m_dllPlayer.current_frame_id(idD); 
+            return 0;
         }
         public int current_frame_cloud_size(int idD) {
-            if (!m_initialized) {
-                return 0;
+            if (m_dllPlayer != null) {
+                return m_dllPlayer.current_frame_cloud_size(idD);
             }
-            return m_dllPlayer.current_frame_cloud_size(idD); 
+            return 0;
         }
 
         public bool update_device_settings(string deviceSettingsFilePath = "") {
 
-            if (!m_initialized) {
-                return false;
+            if (deviceSettingsFilePath.Length > 0) {
+                this.deviceSettingsFilePath = deviceSettingsFilePath.Replace('\\', '/');
             }
 
-            if (deviceSettingsFilePath.Length > 0) {
-                this.deviceSettingsFilePath = deviceSettingsFilePath;
+            if (m_dllPlayer != null) {
+                return m_dllPlayer.update_device_settings(this.deviceSettingsFilePath);
             }
-            return m_dllPlayer.update_device_settings(this.deviceSettingsFilePath);
+            return false;
         }
         public bool update_color_settings(string colorSettingsFilePath = "") {
 
-            if (!m_initialized) {
-                return false;
+            if (colorSettingsFilePath.Length > 0) {
+                this.colorSettingsFilePath = colorSettingsFilePath.Replace('\\', '/');
             }
 
-            if (colorSettingsFilePath.Length > 0) {
-                this.colorSettingsFilePath = colorSettingsFilePath;
+            if (m_dllPlayer != null) {
+                return m_dllPlayer.update_color_settings(this.colorSettingsFilePath);
             }
-            return m_dllPlayer.update_color_settings(this.colorSettingsFilePath);
+            return false;
         }
         public bool update_filters_settings(string filtersSettingsFilePath = "") {
 
-            if (!m_initialized) {
-                return false;
+            if (filtersSettingsFilePath.Length > 0) {
+                this.filtersSettingsFilePath = filtersSettingsFilePath.Replace('\\', '/');
             }
 
-            if (filtersSettingsFilePath.Length > 0) {
-                this.filtersSettingsFilePath = filtersSettingsFilePath;
+            if (m_dllPlayer != null) {
+                return m_dllPlayer.update_filters_settings(this.filtersSettingsFilePath);
             }
-            return m_dllPlayer.update_filters_settings(this.filtersSettingsFilePath);
+            return false;
         }
         public bool update_model_settings(string modelSettingsFilePath = "") {
 
-            if (!m_initialized) {
-                return false;
+            if (modelSettingsFilePath.Length > 0) {
+                this.modelSettingsFilePath = modelSettingsFilePath.Replace('\\', '/');
             }
 
-            if (modelSettingsFilePath.Length > 0) {
-                this.modelSettingsFilePath = modelSettingsFilePath;
+            if (m_dllPlayer != null) {
+                return m_dllPlayer.update_model_settings(this.modelSettingsFilePath);
             }
-            return m_dllPlayer.update_model_settings(this.modelSettingsFilePath);
+            return false;
         }
 
         public void update() {
 
-            if (!m_isReading) {
+            if (!m_isReading || (m_dllPlayer == null)) {
                 return;
             }
 
-            // store current frames id before updating
-            for (int idC = 0; idC < m_dllPlayer.devices_nb(); idC++) {
-                currentCamerasFrameId[idC] = m_dllPlayer.current_frame_id(idC);
-            }
-
-            Profiler.BeginSample("[DCNetworkDirectPlayer::update] Player update");
-            m_dllPlayer.update();
-            Profiler.EndSample();
-
             Profiler.BeginSample("[DCNetworkDirectPlayer::update] copy_camera_cloud");
-            Parallel.ForEach(idCameras, idC => {
+            Parallel.ForEach(m_idCameras, idC => {
+                if (m_dllPlayer.uncompress_frame(idC)) {
 
-                if (currentCamerasFrameId[idC] != m_dllPlayer.current_frame_id(idC)) {
-                    m_dllPlayer.copy_current_frame_vertices(idC, cloudsVertices[idC], m_dllPlayer.current_frame_cloud_size(idC), true);
+                    devicesSettings[idC].currentSize = m_dllPlayer.current_frame_cloud_size(idC);
+                    devicesSettings[idC].currentId = m_dllPlayer.current_frame_id(idC);
+
+                    m_dllPlayer.copy_current_frame_vertices(
+                        idC,
+                        m_cloudsVertices[idC],
+                        devicesSettings[idC].currentSize,
+                        true
+                    );
                 }
             });
             Profiler.EndSample();
 
-
             Profiler.BeginSample("[DCNetworkDirectPlayer::update] set_points");
             for (int idC = 0; idC < m_dllPlayer.devices_nb(); idC++) {
-                var pc = coloredClouds[idC].GetComponent<PointCloud>();
-                pc.set_tint(devicesSettings[idC].tint);
-                coloredClouds[idC].SetActive(devicesSettings[idC].display);
+                if (devicesSettings[idC].update) {
 
-                //if (currentCamerasFrameId[idC] != m_dllPlayer.current_frame_id(idC)) {
-                    if (devicesSettings[idC].update) {
-                        pc.set_points(cloudsVertices[idC], indices, m_dllPlayer.current_frame_cloud_size(idC));
-                    }
-                //}
+                    var pc = m_coloredClouds[idC].GetComponent<PointCloud>();
+                    pc.set_tint(devicesSettings[idC].tint);
+                    pc.set_pt_size(devicesSettings[idC].pointSize);
+                    pc.set_points(
+                        m_cloudsVertices[idC],
+                        m_indices,
+                        devicesSettings[idC].currentSize
+                    );
+
+                    devicesSettings[idC].cloudUpdated++;
+                    var timeS = devicesSettings[idC].sw.ElapsedMilliseconds / 1000f;
+                    devicesSettings[idC].averageCloudUpdatedPerSecond = (int)(devicesSettings[idC].cloudUpdated / timeS);
+                }
+
+                m_coloredClouds[idC].GetComponent<MeshRenderer>().enabled = devicesSettings[idC].display;
             }
             Profiler.EndSample();
+        }
+
+        public void set_tint(int idC, Color color) {
+            if (idC < m_coloredClouds.Count) {
+                var pc = m_coloredClouds[idC].GetComponent<PointCloud>();
+                pc.set_tint(devicesSettings[idC].tint = color);
+            }
+        }
+        public void set_cloud_display_state(int idC, bool state) {
+            if (idC < m_coloredClouds.Count) {
+                m_coloredClouds[idC].GetComponent<MeshRenderer>().enabled = (devicesSettings[idC].display = state);
+            }
+        }
+        public void set_cloud_update_state(int idC, bool state) {
+            if (idC < m_coloredClouds.Count) {
+                devicesSettings[idC].update = state;
+            }
+        }
+
+        #endregion
+
+        #region private_functions
+
+        private void new_feedback(int idC, int messageType, int feedbackType) {
+
+
+            string messageTypeStr;
+            switch (messageType) {
+                case 0:
+                    messageTypeStr = "init_network_infos";
+                    break;
+                case 1:
+                    messageTypeStr = "update_device_settings";
+                    break;
+                case 2:
+                    messageTypeStr = "update_color_settings";
+                    break;
+                case 3:
+                    messageTypeStr = "update_filters";
+                    break;
+                case 4:
+                    messageTypeStr = "compressed_frame_data";
+                    break;
+                case 5:
+                    messageTypeStr = "command";
+                    break;
+                case 6:
+                    messageTypeStr = "feedback";
+                    break;
+                case 7:
+                    messageTypeStr = "delay";
+                    break;
+                case 8:
+                    messageTypeStr = "synchro";
+                    break;
+                case 9:
+                    messageTypeStr = "ping";
+                    break;
+                default:
+                    messageTypeStr = "invalid";
+                    break;
+            }
+
+            string feedbackTypeStr;
+            switch (feedbackType) {
+                case 0:
+                    feedbackTypeStr = "message_received";
+                    break;
+                case 1:
+                    feedbackTypeStr = "timeout";
+                    break;
+                case 2:
+                    feedbackTypeStr = "disconnect";
+                    break;
+                case 3:
+                    feedbackTypeStr = "quit";
+                    break;
+                case 4:
+                    feedbackTypeStr = "shutdown";
+                    break;
+                case 5:
+                    feedbackTypeStr = "restart";
+                    break;
+                default:
+                    feedbackTypeStr = "invalid";
+                    break;
+            }
+
+            if (messageType == 0 && feedbackType == 0) {
+                devicesSettings[idC].connected = true;
+            }
+
+            if (messageType == 6 && feedbackType == 2) {
+                devicesSettings[idC].connected = false;
+            }
+
+            UnityEngine.Debug.Log(string.Format("Receive message of type [{0}] from device [{1}] with feeback [{2}] from Thread [{3}]", messageTypeStr, idC, feedbackTypeStr, Thread.CurrentThread.Name));
         }
 
         #endregion
 
         private void Awake() {
-            m_dllPlayer = new DLLDCNetworkDirectPlayer();
-            indices = new NativeIndices(400000);
 
-            for (int ii = 0; ii < maximumNbOfDevices;  ++ii) {
+            // init callbacks
+            newFeedbackCB = (int idC, int messageType, int feedbackType) => {
+                new_feedback(idC, messageType, feedbackType);
+            };
+
+            //if (cloudMaterial != null) {
+            //    PointCloud.pointCloudMat = cloudMaterial;
+            //}
+
+            // init natives indices
+            m_indices = new NativeIndices(400000);
+
+            for (int ii = 0; ii < maximumNbOfDevices; ++ii) {
                 devicesSettings.Add(new DeviceSettings());
+            }
+
+            if (initAtAwake) {
+                initialize();
+
+                if (loadDeviceSettingsAtAwake) {
+                    update_device_settings();
+                }
+                if (loadModelSettingsAwake) {
+                    update_model_settings();
+                }
+                if (loadFiltersSettingsAwake) {
+                    update_filters_settings();
+                }
+                if (loadColorSettingsAtAwake) {
+                    update_color_settings();
+                }
+            }
+        }
+
+
+        private void Start() {
+            if (connectAtStart) {
+                connect_to_devices();
+            }
+
+            if (readAtStart) {
+                start_reading();
             }
         }
 
         private void OnDestroy() {
 
-            stop_reading();
-            disconnect_from_devices();
+            clean();
 
-            indices.clean();
-            foreach (var cloudVertices in cloudsVertices) {
-                cloudVertices.clean();                    
+            // clean natives indices
+            if (m_indices != null) {
+                m_indices.clean();
             }
+
+            // clean native vertices
+            if (m_cloudsVertices != null) {
+                foreach (var cloudVertices in m_cloudsVertices) {
+                    cloudVertices.clean();
+                }
+            }
+        }
+
+        private void Update() {
+            update();
         }
     }
 }

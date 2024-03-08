@@ -98,43 +98,43 @@ void PostProcessConfigParametersW::insert_widgets(){
     m_p->effectsTab->addTab(m_p->cgW = new QWidget(), "Color grading");
     auto cgL = ui::L::VB();
     m_p->cgW->setLayout(cgL);
-    cgL->addWidget(ui::F::gen_frame(ui::L::HB(), {{m_p->cgEnable(),10}} , 0, LMarginsD{0,0,0,0,2}));
-    cgL->addWidget(ui::F::gen_frame(ui::L::HB(), {{ui::W::txt("White balance"),1}} , 0, LMarginsD{0,0,0,0,2}));
-    cgL->addWidget(ui::F::gen_frame(ui::L::HB(), {{m_p->cgWbTemperatureEnable(),1}, {m_p->cgWbTemperature(),30}} , 0, LMarginsD{0,0,0,0,2}));
-    cgL->addWidget(ui::F::gen_frame(ui::L::HB(), {{m_p->cgWbTintEnable(),1}, {m_p->cgWbTint(),30}} , 0, LMarginsD{0,0,0,0,2}));
-    cgL->addWidget(ui::F::gen_frame(ui::L::HB(), {{ui::W::txt("Tone"),1}} , 0, LMarginsD{0,0,0,0,2}));
-    cgL->addWidget(ui::F::gen_frame(ui::L::HB(), {{m_p->cgTonePostExposureEnable(),1}, {m_p->cgTonePostExposure(),30}} , 0, LMarginsD{0,0,0,0,2}));
-    cgL->addWidget(ui::F::gen_frame(ui::L::HB(), {{m_p->cgToneColorFilterEnable(),1}, {m_p->cgToneColorFilter(),30}} , 0, LMarginsD{0,0,0,0,2}));
-    cgL->addWidget(ui::F::gen_frame(ui::L::HB(), {{m_p->cgToneHueShiftEnable(),1}, {m_p->cgToneHueShift(),30}} , 0, LMarginsD{0,0,0,0,2}));
-    cgL->addWidget(ui::F::gen_frame(ui::L::HB(), {{m_p->cgToneSaturationEnable(),1}, {m_p->cgToneSaturation(),30}} , 0, LMarginsD{0,0,0,0,2}));
+    cgL->addWidget(ui::F::old_gen_frame(ui::L::HB(), {{m_p->cgEnable(),10}} , 0, LMarginsD{0,0,0,0,2}));
+    cgL->addWidget(ui::F::old_gen_frame(ui::L::HB(), {{ui::W::txt("White balance"),1}} , 0, LMarginsD{0,0,0,0,2}));
+    cgL->addWidget(ui::F::old_gen_frame(ui::L::HB(), {{m_p->cgWbTemperatureEnable(),1}, {m_p->cgWbTemperature(),30}} , 0, LMarginsD{0,0,0,0,2}));
+    cgL->addWidget(ui::F::old_gen_frame(ui::L::HB(), {{m_p->cgWbTintEnable(),1}, {m_p->cgWbTint(),30}} , 0, LMarginsD{0,0,0,0,2}));
+    cgL->addWidget(ui::F::old_gen_frame(ui::L::HB(), {{ui::W::txt("Tone"),1}} , 0, LMarginsD{0,0,0,0,2}));
+    cgL->addWidget(ui::F::old_gen_frame(ui::L::HB(), {{m_p->cgTonePostExposureEnable(),1}, {m_p->cgTonePostExposure(),30}} , 0, LMarginsD{0,0,0,0,2}));
+    cgL->addWidget(ui::F::old_gen_frame(ui::L::HB(), {{m_p->cgToneColorFilterEnable(),1}, {m_p->cgToneColorFilter(),30}} , 0, LMarginsD{0,0,0,0,2}));
+    cgL->addWidget(ui::F::old_gen_frame(ui::L::HB(), {{m_p->cgToneHueShiftEnable(),1}, {m_p->cgToneHueShift(),30}} , 0, LMarginsD{0,0,0,0,2}));
+    cgL->addWidget(ui::F::old_gen_frame(ui::L::HB(), {{m_p->cgToneSaturationEnable(),1}, {m_p->cgToneSaturation(),30}} , 0, LMarginsD{0,0,0,0,2}));
     cgL->addStretch();
 
     m_p->effectsTab->addTab(m_p->vW = new QWidget(), "Vignette");
     auto vL = ui::L::VB();
     m_p->vW->setLayout(vL);
-    vL->addWidget(ui::F::gen_frame(ui::L::HB(), {{m_p->vEnable(),10}} , 0, LMarginsD{0,0,0,0,2}));
-    vL->addWidget(ui::F::gen_frame(ui::L::HB(), {{m_p->vColorEnable(),1}, {m_p->vColor(),30}} , 0, LMarginsD{0,0,0,0,2}));
-    vL->addWidget(ui::F::gen_frame(ui::L::HB(), {{m_p->vCenterEnable(),1}, {m_p->vCenter(),30}} , 0, LMarginsD{0,0,0,0,2}));
-    vL->addWidget(ui::F::gen_frame(ui::L::HB(), {{m_p->vIntensityEnable(),1}, {m_p->vIntensity(),30}} , 0, LMarginsD{0,0,0,0,2}));
-    vL->addWidget(ui::F::gen_frame(ui::L::HB(), {{m_p->vSmoothnessEnable(),1}, {m_p->vSmoothness(),30}} , 0, LMarginsD{0,0,0,0,2}));
-    vL->addWidget(ui::F::gen_frame(ui::L::HB(), {{m_p->vRoundnessEnable(),1}, {m_p->vRoundness(),30}} , 0, LMarginsD{0,0,0,0,2}));
-    vL->addWidget(ui::F::gen_frame(ui::L::HB(), {{m_p->vRoundedEnable(),1}, {m_p->vRounded(),30}} , 0, LMarginsD{0,0,0,0,2}));
+    vL->addWidget(ui::F::old_gen_frame(ui::L::HB(), {{m_p->vEnable(),10}} , 0, LMarginsD{0,0,0,0,2}));
+    vL->addWidget(ui::F::old_gen_frame(ui::L::HB(), {{m_p->vColorEnable(),1}, {m_p->vColor(),30}} , 0, LMarginsD{0,0,0,0,2}));
+    vL->addWidget(ui::F::old_gen_frame(ui::L::HB(), {{m_p->vCenterEnable(),1}, {m_p->vCenter(),30}} , 0, LMarginsD{0,0,0,0,2}));
+    vL->addWidget(ui::F::old_gen_frame(ui::L::HB(), {{m_p->vIntensityEnable(),1}, {m_p->vIntensity(),30}} , 0, LMarginsD{0,0,0,0,2}));
+    vL->addWidget(ui::F::old_gen_frame(ui::L::HB(), {{m_p->vSmoothnessEnable(),1}, {m_p->vSmoothness(),30}} , 0, LMarginsD{0,0,0,0,2}));
+    vL->addWidget(ui::F::old_gen_frame(ui::L::HB(), {{m_p->vRoundnessEnable(),1}, {m_p->vRoundness(),30}} , 0, LMarginsD{0,0,0,0,2}));
+    vL->addWidget(ui::F::old_gen_frame(ui::L::HB(), {{m_p->vRoundedEnable(),1}, {m_p->vRounded(),30}} , 0, LMarginsD{0,0,0,0,2}));
     vL->addStretch();
 
     m_p->effectsTab->addTab(m_p->aoW = new QWidget(), "Ambient Occlusion");
     auto aoL = ui::L::VB();
     m_p->aoW->setLayout(aoL);
-    aoL->addWidget(ui::F::gen_frame(ui::L::HB(), {{m_p->aoEnable(),10}} , 0, LMarginsD{0,0,0,0,2}));
-    aoL->addWidget(ui::F::gen_frame(ui::L::HB(), {{m_p->aoIntensityEnable(),1}, {m_p->aoIntensity(),30}} , 0, LMarginsD{0,0,0,0,2}));
-    aoL->addWidget(ui::F::gen_frame(ui::L::HB(), {{m_p->aoThicknessEnable(),1}, {m_p->aoThickness(),30}} , 0, LMarginsD{0,0,0,0,2}));
-    aoL->addWidget(ui::F::gen_frame(ui::L::HB(), {{m_p->aoColorEnable(),1}, {m_p->aoColor(),30}} , 0, LMarginsD{0,0,0,0,2}));
+    aoL->addWidget(ui::F::old_gen_frame(ui::L::HB(), {{m_p->aoEnable(),10}} , 0, LMarginsD{0,0,0,0,2}));
+    aoL->addWidget(ui::F::old_gen_frame(ui::L::HB(), {{m_p->aoIntensityEnable(),1}, {m_p->aoIntensity(),30}} , 0, LMarginsD{0,0,0,0,2}));
+    aoL->addWidget(ui::F::old_gen_frame(ui::L::HB(), {{m_p->aoThicknessEnable(),1}, {m_p->aoThickness(),30}} , 0, LMarginsD{0,0,0,0,2}));
+    aoL->addWidget(ui::F::old_gen_frame(ui::L::HB(), {{m_p->aoColorEnable(),1}, {m_p->aoColor(),30}} , 0, LMarginsD{0,0,0,0,2}));
     aoL->addStretch();
     no_end_stretch();
 
     m_p->effectsTab->addTab(m_p->blW = new QWidget(), "Bloom");
     auto blL = ui::L::VB();
     m_p->blW->setLayout(blL);
-    blL->addWidget(ui::F::gen_frame(ui::L::HB(), {{m_p->blEnable(),10}} , 0, LMarginsD{0,0,0,0,2}));
+    blL->addWidget(ui::F::old_gen_frame(ui::L::HB(), {{m_p->blEnable(),10}} , 0, LMarginsD{0,0,0,0,2}));
 //    blL->addWidget(ui::F::gen_frame(ui::L::HB(), {{m_p->aoIntensityEnable(),1}, {m_p->aoIntensity(),30}} , 0, LMarginsD{0,0,0,0,2}));
 //    blL->addWidget(ui::F::gen_frame(ui::L::HB(), {{m_p->aoThicknessEnable(),1}, {m_p->aoThickness(),30}} , 0, LMarginsD{0,0,0,0,2}));
 //    blL->addWidget(ui::F::gen_frame(ui::L::HB(), {{m_p->aoColorEnable(),1}, {m_p->aoColor(),30}} , 0, LMarginsD{0,0,0,0,2}));
@@ -280,15 +280,15 @@ void SkyConfigParametersW::insert_widgets(){
     sunLightL->setSpacing(4);
     (m_p->sunLightW = new QWidget())->setLayout(sunLightL);
     {
-        sunLightL->addWidget(ui::F::gen_frame(ui::L::HB(), {{m_p->sunRotation(),10}} , 0, LMarginsD{0,0,0,0,2}));
-        sunLightL->addWidget(ui::F::gen_frame(ui::L::HB(), {{ui::W::txt(QSL("Intensity:")),1},{m_p->sunIntensity(),10}} , 0, LMarginsD{0,0,0,0,2}));
-        sunLightL->addWidget(ui::F::gen_frame(ui::L::HB(), {{ui::W::txt(QSL("Bound intensity:")),1},{m_p->sunBounceIntensity(),10}} , 0, LMarginsD{0,0,0,0,2}));
-        sunLightL->addWidget(ui::F::gen_frame(ui::L::HB(), {{ui::W::txt(QSL("Color:")),1},{m_p->sunColor(),10}} , 0, LMarginsD{0,0,0,0,2}));
-        sunLightL->addWidget(ui::F::gen_frame(ui::L::HB(), {{ui::W::txt(QSL("Shadow mode:")),1},{m_p->sunShadowMode(),10}} , 0, LMarginsD{0,0,0,0,2}));
-        sunLightL->addWidget(ui::F::gen_frame(ui::L::HB(), {{ui::W::txt(QSL("Shadow strength:")),1},{m_p->sunShadowStrength(),10}} , 0, LMarginsD{0,0,0,0,2}));
-        sunLightL->addWidget(ui::F::gen_frame(ui::L::HB(), {{ui::W::txt(QSL("Shadow bias:")),1},{m_p->sunShadowBias(),10}} , 0, LMarginsD{0,0,0,0,2}));
-        sunLightL->addWidget(ui::F::gen_frame(ui::L::HB(), {{ui::W::txt(QSL("Shadow normal bias:")),1},{m_p->sunShadowNormalBias(),10}} , 0, LMarginsD{0,0,0,0,2}));
-        sunLightL->addWidget(ui::F::gen_frame(ui::L::HB(), {{ui::W::txt(QSL("Shadow near plane:")),1},{m_p->sunShadowNearPlane(),10}} , 0, LMarginsD{0,0,0,0,2}));
+        sunLightL->addWidget(ui::F::old_gen_frame(ui::L::HB(), {{m_p->sunRotation(),10}} , 0, LMarginsD{0,0,0,0,2}));
+        sunLightL->addWidget(ui::F::old_gen_frame(ui::L::HB(), {{ui::W::txt(QSL("Intensity:")),1},{m_p->sunIntensity(),10}} , 0, LMarginsD{0,0,0,0,2}));
+        sunLightL->addWidget(ui::F::old_gen_frame(ui::L::HB(), {{ui::W::txt(QSL("Bound intensity:")),1},{m_p->sunBounceIntensity(),10}} , 0, LMarginsD{0,0,0,0,2}));
+        sunLightL->addWidget(ui::F::old_gen_frame(ui::L::HB(), {{ui::W::txt(QSL("Color:")),1},{m_p->sunColor(),10}} , 0, LMarginsD{0,0,0,0,2}));
+        sunLightL->addWidget(ui::F::old_gen_frame(ui::L::HB(), {{ui::W::txt(QSL("Shadow mode:")),1},{m_p->sunShadowMode(),10}} , 0, LMarginsD{0,0,0,0,2}));
+        sunLightL->addWidget(ui::F::old_gen_frame(ui::L::HB(), {{ui::W::txt(QSL("Shadow strength:")),1},{m_p->sunShadowStrength(),10}} , 0, LMarginsD{0,0,0,0,2}));
+        sunLightL->addWidget(ui::F::old_gen_frame(ui::L::HB(), {{ui::W::txt(QSL("Shadow bias:")),1},{m_p->sunShadowBias(),10}} , 0, LMarginsD{0,0,0,0,2}));
+        sunLightL->addWidget(ui::F::old_gen_frame(ui::L::HB(), {{ui::W::txt(QSL("Shadow normal bias:")),1},{m_p->sunShadowNormalBias(),10}} , 0, LMarginsD{0,0,0,0,2}));
+        sunLightL->addWidget(ui::F::old_gen_frame(ui::L::HB(), {{ui::W::txt(QSL("Shadow near plane:")),1},{m_p->sunShadowNearPlane(),10}} , 0, LMarginsD{0,0,0,0,2}));
         sunLightL->addStretch();
     }
 
@@ -298,10 +298,10 @@ void SkyConfigParametersW::insert_widgets(){
     ambientLightL->setSpacing(4);
     (m_p->ambientLightW = new QWidget())->setLayout(ambientLightL);
     {
-        ambientLightL->addWidget(ui::F::gen_frame(ui::L::HB(), {{ui::W::txt(QSL("Mode:")),1},{m_p->ambientMode(),10}} , 0, LMarginsD{0,0,0,0,2}));
-        ambientLightL->addWidget(ui::F::gen_frame(ui::L::HB(), {{ui::W::txt(QSL("Skybox intensity:")),1},{m_p->ambientIntensity(),10}} , 0, LMarginsD{0,0,0,0,2}));
-        ambientLightL->addWidget(ui::F::gen_frame(ui::L::HB(), {{ui::W::txt(QSL("Flat color:")),1},{m_p->ambientFlatColor(),10}} , 0, LMarginsD{0,0,0,0,2}));
-        ambientLightL->addWidget(ui::F::gen_frame(ui::L::HB(), {{ui::W::txt(QSL("Gradient colors:")),1},
+        ambientLightL->addWidget(ui::F::old_gen_frame(ui::L::HB(), {{ui::W::txt(QSL("Mode:")),1},{m_p->ambientMode(),10}} , 0, LMarginsD{0,0,0,0,2}));
+        ambientLightL->addWidget(ui::F::old_gen_frame(ui::L::HB(), {{ui::W::txt(QSL("Skybox intensity:")),1},{m_p->ambientIntensity(),10}} , 0, LMarginsD{0,0,0,0,2}));
+        ambientLightL->addWidget(ui::F::old_gen_frame(ui::L::HB(), {{ui::W::txt(QSL("Flat color:")),1},{m_p->ambientFlatColor(),10}} , 0, LMarginsD{0,0,0,0,2}));
+        ambientLightL->addWidget(ui::F::old_gen_frame(ui::L::HB(), {{ui::W::txt(QSL("Gradient colors:")),1},
             {m_p->ambientGradientGroundColor(),10},{m_p->ambientGradientEquatorColor(),10},{m_p->ambientGradientSkyColor(),10}} , 0, LMarginsD{0,0,0,0,2}));
         ambientLightL->addStretch();
     }
@@ -312,29 +312,29 @@ void SkyConfigParametersW::insert_widgets(){
     skyboxL->setSpacing(2);
     (m_p->skyboxW = new QWidget())->setLayout(skyboxL);
     {
-        skyboxL->addWidget(ui::F::gen(ui::L::HB(), {ui::W::txt(QSL("Background mode: ")), m_p->mode()},  LStretch{false}, LMargins{true}, QFrame::NoFrame));
+        skyboxL->addWidget(ui::F::old_gen(ui::L::HB(), {ui::W::txt(QSL("Background mode: ")), m_p->mode()},  LStretch{false}, LMargins{true}, QFrame::NoFrame));
         skyboxL->addWidget(m_p->skyboxTab = new QTabWidget());
 
         auto t1 = new QWidget();
         auto l1 = ui::L::VB();
         t1->setLayout(l1);
         m_p->skyboxTab->addTab(t1, QSL("Color"));
-        l1->addWidget(ui::F::gen(ui::L::HB(), {ui::W::txt(QSL("Background color: ")), m_p->backgroundColor()},  LStretch{false}, LMargins{true}, QFrame::NoFrame));
+        l1->addWidget(ui::F::old_gen(ui::L::HB(), {ui::W::txt(QSL("Background color: ")), m_p->backgroundColor()},  LStretch{false}, LMargins{true}, QFrame::NoFrame));
         l1->addStretch();
 
         auto t2 = new QWidget();
         auto l2 = ui::L::VB();
         t2->setLayout(l2);
         m_p->skyboxTab->addTab(t2, QSL("6 sided"));
-        l2->addWidget(ui::F::gen_frame(ui::L::HB(), {{m_p->zPlus(),10},  {m_p->zPlusInvert(),1}} , 0, LMarginsD{0,0,0,0,2}));
-        l2->addWidget(ui::F::gen_frame(ui::L::HB(), {{m_p->zMinus(),10}, {m_p->zMinusInvert(),1}}, 0, LMarginsD{0,0,0,0,2}));
-        l2->addWidget(ui::F::gen_frame(ui::L::HB(), {{m_p->xPlus(),10},  {m_p->xPlusInvert(),1}} , 0, LMarginsD{0,0,0,0,2}));
-        l2->addWidget(ui::F::gen_frame(ui::L::HB(), {{m_p->xMinus(),10}, {m_p->xMinusInvert(),1}}, 0, LMarginsD{0,0,0,0,2}));
-        l2->addWidget(ui::F::gen_frame(ui::L::HB(), {{m_p->yPlus(),10},  {m_p->yPlusInvert(),1}} , 0, LMarginsD{0,0,0,0,2}));
-        l2->addWidget(ui::F::gen_frame(ui::L::HB(), {{m_p->yMinus(),10}, {m_p->yMinusInvert(),1}}, 0, LMarginsD{0,0,0,0,2}));
-        l2->addWidget(ui::F::gen_frame(ui::L::HB(), {{ui::W::txt(QSL("Tint:")),1},     {m_p->sixSidedTintColor(), 4}}, 0, LMarginsD{0,0,0,0,2}));
-        l2->addWidget(ui::F::gen_frame(ui::L::HB(), {{ui::W::txt(QSL("Exposure:")),1}, {m_p->sixSidedExposure(),  4}}, 0, LMarginsD{0,0,0,0,2}));
-        l2->addWidget(ui::F::gen_frame(ui::L::HB(), {{ui::W::txt(QSL("Rotation:")),1}, {m_p->sixSidedRotation(),  4}}, 0, LMarginsD{0,0,0,0,2}));
+        l2->addWidget(ui::F::old_gen_frame(ui::L::HB(), {{m_p->zPlus(),10},  {m_p->zPlusInvert(),1}} , 0, LMarginsD{0,0,0,0,2}));
+        l2->addWidget(ui::F::old_gen_frame(ui::L::HB(), {{m_p->zMinus(),10}, {m_p->zMinusInvert(),1}}, 0, LMarginsD{0,0,0,0,2}));
+        l2->addWidget(ui::F::old_gen_frame(ui::L::HB(), {{m_p->xPlus(),10},  {m_p->xPlusInvert(),1}} , 0, LMarginsD{0,0,0,0,2}));
+        l2->addWidget(ui::F::old_gen_frame(ui::L::HB(), {{m_p->xMinus(),10}, {m_p->xMinusInvert(),1}}, 0, LMarginsD{0,0,0,0,2}));
+        l2->addWidget(ui::F::old_gen_frame(ui::L::HB(), {{m_p->yPlus(),10},  {m_p->yPlusInvert(),1}} , 0, LMarginsD{0,0,0,0,2}));
+        l2->addWidget(ui::F::old_gen_frame(ui::L::HB(), {{m_p->yMinus(),10}, {m_p->yMinusInvert(),1}}, 0, LMarginsD{0,0,0,0,2}));
+        l2->addWidget(ui::F::old_gen_frame(ui::L::HB(), {{ui::W::txt(QSL("Tint:")),1},     {m_p->sixSidedTintColor(), 4}}, 0, LMarginsD{0,0,0,0,2}));
+        l2->addWidget(ui::F::old_gen_frame(ui::L::HB(), {{ui::W::txt(QSL("Exposure:")),1}, {m_p->sixSidedExposure(),  4}}, 0, LMarginsD{0,0,0,0,2}));
+        l2->addWidget(ui::F::old_gen_frame(ui::L::HB(), {{ui::W::txt(QSL("Rotation:")),1}, {m_p->sixSidedRotation(),  4}}, 0, LMarginsD{0,0,0,0,2}));
         l2->setContentsMargins(4,2,4,2);
         l2->setSpacing(2);
         l2->addStretch();
@@ -343,10 +343,10 @@ void SkyConfigParametersW::insert_widgets(){
         auto l3 = ui::L::VB();
         t3->setLayout(l3);
         m_p->skyboxTab->addTab(t3, QSL("Cubemap"));
-        l3->addWidget(ui::F::gen_frame(ui::L::HB(), {{m_p->cubemap(),10},  {m_p->cubeMapInvert(),1}} , 0, LMarginsD{0,0,0,0,2}));
-        l3->addWidget(ui::F::gen_frame(ui::L::HB(), {{ui::W::txt(QSL("Tint:")),1},       {m_p->cubeMapTintColor(), 4}}, 0, LMarginsD{0,0,0,0,2}));
-        l3->addWidget(ui::F::gen_frame(ui::L::HB(), {{ui::W::txt(QSL("Exposure:")),1},   {m_p->cubeMapExposure(), 4}},  0, LMarginsD{0,0,0,0,2}));
-        l3->addWidget(ui::F::gen_frame(ui::L::HB(), {{ui::W::txt(QSL("Rotation:")),1},   {m_p->cubeMapRotation(), 4}},  0, LMarginsD{0,0,0,0,2}));
+        l3->addWidget(ui::F::old_gen_frame(ui::L::HB(), {{m_p->cubemap(),10},  {m_p->cubeMapInvert(),1}} , 0, LMarginsD{0,0,0,0,2}));
+        l3->addWidget(ui::F::old_gen_frame(ui::L::HB(), {{ui::W::txt(QSL("Tint:")),1},       {m_p->cubeMapTintColor(), 4}}, 0, LMarginsD{0,0,0,0,2}));
+        l3->addWidget(ui::F::old_gen_frame(ui::L::HB(), {{ui::W::txt(QSL("Exposure:")),1},   {m_p->cubeMapExposure(), 4}},  0, LMarginsD{0,0,0,0,2}));
+        l3->addWidget(ui::F::old_gen_frame(ui::L::HB(), {{ui::W::txt(QSL("Rotation:")),1},   {m_p->cubeMapRotation(), 4}},  0, LMarginsD{0,0,0,0,2}));
         l3->setContentsMargins(4,2,4,2);
         l3->setSpacing(2);
         l3->addStretch();
@@ -355,14 +355,14 @@ void SkyConfigParametersW::insert_widgets(){
         auto l4 = ui::L::VB();
         t4->setLayout(l4);
         m_p->skyboxTab->addTab(t4, QSL("Panoramic"));
-        l4->addWidget(ui::F::gen_frame(ui::L::HB(), {{m_p->panoramic(),10}, {m_p->panoramicInvert(),1}}, 0, LMarginsD{0,0,0,0,2}));
-        l4->addWidget(ui::F::gen_frame(ui::L::HB(), {{ui::W::txt(QSL("Tint:")),1},           {m_p->panoramicTintColor(), 4}},   0, LMarginsD{0,0,0,0,2}));
-        l4->addWidget(ui::F::gen_frame(ui::L::HB(), {{ui::W::txt(QSL("Exposure:")),1},       {m_p->panoramicExposure(), 4}},    0, LMarginsD{0,0,0,0,2}));
-        l4->addWidget(ui::F::gen_frame(ui::L::HB(), {{ui::W::txt(QSL("Rotation:")),1},       {m_p->panoramicRotation(), 4}},    0, LMarginsD{0,0,0,0,2}));
-        l4->addWidget(ui::F::gen_frame(ui::L::HB(), {{ui::W::txt(QSL("Mapping:")),1},        {m_p->panoramicMapping(), 4}},     0, LMarginsD{0,0,0,0,2}));
-        l4->addWidget(ui::F::gen_frame(ui::L::HB(), {{m_p->panoramicMirrorBack(),1}},                                      0, LMarginsD{0,0,0,0,2}));
-        l4->addWidget(ui::F::gen_frame(ui::L::HB(), {{ui::W::txt(QSL("Type:")),1},           {m_p->panoramicType(), 4}},        0, LMarginsD{0,0,0,0,2}));
-        l4->addWidget(ui::F::gen_frame(ui::L::HB(), {{ui::W::txt(QSL("Layout:")),1},         {m_p->panoramicLayout(), 4}},      0, LMarginsD{0,0,0,0,2}));
+        l4->addWidget(ui::F::old_gen_frame(ui::L::HB(), {{m_p->panoramic(),10}, {m_p->panoramicInvert(),1}}, 0, LMarginsD{0,0,0,0,2}));
+        l4->addWidget(ui::F::old_gen_frame(ui::L::HB(), {{ui::W::txt(QSL("Tint:")),1},           {m_p->panoramicTintColor(), 4}},   0, LMarginsD{0,0,0,0,2}));
+        l4->addWidget(ui::F::old_gen_frame(ui::L::HB(), {{ui::W::txt(QSL("Exposure:")),1},       {m_p->panoramicExposure(), 4}},    0, LMarginsD{0,0,0,0,2}));
+        l4->addWidget(ui::F::old_gen_frame(ui::L::HB(), {{ui::W::txt(QSL("Rotation:")),1},       {m_p->panoramicRotation(), 4}},    0, LMarginsD{0,0,0,0,2}));
+        l4->addWidget(ui::F::old_gen_frame(ui::L::HB(), {{ui::W::txt(QSL("Mapping:")),1},        {m_p->panoramicMapping(), 4}},     0, LMarginsD{0,0,0,0,2}));
+        l4->addWidget(ui::F::old_gen_frame(ui::L::HB(), {{m_p->panoramicMirrorBack(),1}},                                      0, LMarginsD{0,0,0,0,2}));
+        l4->addWidget(ui::F::old_gen_frame(ui::L::HB(), {{ui::W::txt(QSL("Type:")),1},           {m_p->panoramicType(), 4}},        0, LMarginsD{0,0,0,0,2}));
+        l4->addWidget(ui::F::old_gen_frame(ui::L::HB(), {{ui::W::txt(QSL("Layout:")),1},         {m_p->panoramicLayout(), 4}},      0, LMarginsD{0,0,0,0,2}));
         l4->setContentsMargins(4,2,4,2);
         l4->setSpacing(2);
         l4->addStretch();
@@ -371,13 +371,13 @@ void SkyConfigParametersW::insert_widgets(){
         auto l5 = ui::L::VB();
         t5->setLayout(l5);
         m_p->skyboxTab->addTab(t5, QSL("Procedural"));
-        l5->addWidget(ui::F::gen_frame(ui::L::HB(), {{ui::W::txt(QSL("Sun:")),1},                    {m_p->proceduralSun(), 4}},                0, LMarginsD{0,0,0,0,2}));
-        l5->addWidget(ui::F::gen_frame(ui::L::HB(), {{ui::W::txt(QSL("Sun size:")),1},               {m_p->proceduralSunSize(), 4}},            0, LMarginsD{0,0,0,0,2}));
-        l5->addWidget(ui::F::gen_frame(ui::L::HB(), {{ui::W::txt(QSL("Sun convergence:")),1},        {m_p->proceduralConvergence(), 4}},        0, LMarginsD{0,0,0,0,2}));
-        l5->addWidget(ui::F::gen_frame(ui::L::HB(), {{ui::W::txt(QSL("Atmosphere thickness:")),1},   {m_p->proceduralAtmoshpereThickness(), 4}},0, LMarginsD{0,0,0,0,2}));
-        l5->addWidget(ui::F::gen_frame(ui::L::HB(), {{ui::W::txt(QSL("Sky tint:")),1},               {m_p->proceduralSkyTint(), 4}},            0, LMarginsD{0,0,0,0,2}));
-        l5->addWidget(ui::F::gen_frame(ui::L::HB(), {{ui::W::txt(QSL("Ground color:")),1},           {m_p->proceduralGroundColor(), 4}},        0, LMarginsD{0,0,0,0,2}));
-        l5->addWidget(ui::F::gen_frame(ui::L::HB(), {{ui::W::txt(QSL("Exposure:")),1},               {m_p->proceduralExposure(), 4}},           0, LMarginsD{0,0,0,0,2}));
+        l5->addWidget(ui::F::old_gen_frame(ui::L::HB(), {{ui::W::txt(QSL("Sun:")),1},                    {m_p->proceduralSun(), 4}},                0, LMarginsD{0,0,0,0,2}));
+        l5->addWidget(ui::F::old_gen_frame(ui::L::HB(), {{ui::W::txt(QSL("Sun size:")),1},               {m_p->proceduralSunSize(), 4}},            0, LMarginsD{0,0,0,0,2}));
+        l5->addWidget(ui::F::old_gen_frame(ui::L::HB(), {{ui::W::txt(QSL("Sun convergence:")),1},        {m_p->proceduralConvergence(), 4}},        0, LMarginsD{0,0,0,0,2}));
+        l5->addWidget(ui::F::old_gen_frame(ui::L::HB(), {{ui::W::txt(QSL("Atmosphere thickness:")),1},   {m_p->proceduralAtmoshpereThickness(), 4}},0, LMarginsD{0,0,0,0,2}));
+        l5->addWidget(ui::F::old_gen_frame(ui::L::HB(), {{ui::W::txt(QSL("Sky tint:")),1},               {m_p->proceduralSkyTint(), 4}},            0, LMarginsD{0,0,0,0,2}));
+        l5->addWidget(ui::F::old_gen_frame(ui::L::HB(), {{ui::W::txt(QSL("Ground color:")),1},           {m_p->proceduralGroundColor(), 4}},        0, LMarginsD{0,0,0,0,2}));
+        l5->addWidget(ui::F::old_gen_frame(ui::L::HB(), {{ui::W::txt(QSL("Exposure:")),1},               {m_p->proceduralExposure(), 4}},           0, LMarginsD{0,0,0,0,2}));
         l5->setContentsMargins(4,2,4,2);
         l5->setSpacing(2);
         l5->addStretch();

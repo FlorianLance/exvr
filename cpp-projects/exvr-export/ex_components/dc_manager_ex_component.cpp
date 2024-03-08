@@ -255,7 +255,7 @@ auto DCManagerExComponent::initialize() -> bool{
     log_message(std::format("serverNetwork init [{}] [{}]\n", i->networkSettings.clientsInfo.size(), i->networkSettings.clientsInfo.front().local));
     i->serverNetwork.initialize(i->networkSettings.clientsInfo);
     log_message(std::format("serverData init [{}]\n", i->serverNetwork.devices_nb()));
-    i->serverData.initialize(i->serverNetwork.devices_nb());
+    i->serverData.initialize(i->serverNetwork.devices_nb(), true);
 
     return true;
 }

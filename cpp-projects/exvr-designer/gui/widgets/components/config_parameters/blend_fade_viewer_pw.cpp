@@ -48,10 +48,10 @@ BlendFadeViewerConfigParametersW::BlendFadeViewerConfigParametersW():  ConfigPar
 
 
 void BlendFadeViewerConfigParametersW::insert_widgets(){
-    add_widget(ui::F::gen(ui::L::HB(), {m_p->blendAndFade(), m_p->onlyBlend()},  LStretch{true}, LMargins{true}, QFrame::NoFrame));
-    add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Start color"), m_p->startColor(), ui::W::txt("End color"), m_p->endColor()},  LStretch{true}, LMargins{true}, QFrame::NoFrame));
-    add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Duration blend"), m_p->durationBlend()},  LStretch{true}, LMargins{true}, QFrame::NoFrame));
-    add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Duration fade"), m_p->durationFade()},  LStretch{true}, LMargins{true}, QFrame::NoFrame));
+    add_widget(ui::F::old_gen(ui::L::HB(), {m_p->blendAndFade(), m_p->onlyBlend()},  LStretch{true}, LMargins{true}, QFrame::NoFrame));
+    add_widget(ui::F::old_gen(ui::L::HB(), {ui::W::txt("Start color"), m_p->startColor(), ui::W::txt("End color"), m_p->endColor()},  LStretch{true}, LMargins{true}, QFrame::NoFrame));
+    add_widget(ui::F::old_gen(ui::L::HB(), {ui::W::txt("Duration blend"), m_p->durationBlend()},  LStretch{true}, LMargins{true}, QFrame::NoFrame));
+    add_widget(ui::F::old_gen(ui::L::HB(), {ui::W::txt("Duration fade"), m_p->durationFade()},  LStretch{true}, LMargins{true}, QFrame::NoFrame));
 }
 
 void BlendFadeViewerConfigParametersW::init_and_register_widgets(){

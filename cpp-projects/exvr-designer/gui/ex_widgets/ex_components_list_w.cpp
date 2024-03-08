@@ -35,7 +35,7 @@ ExComponentsListW::ExComponentsListW(QString name) : ExItemW<QFrame>(UiType::Com
     w->setFrameShadow(QFrame::Raised);
     w->setFrameShape(QFrame::Shape::NoFrame);
 
-    auto f1 = ui::F::gen_frame(ui::L::HB(), {
+    auto f1 = ui::F::old_gen_frame(ui::L::HB(), {
         {m_icon     = new QPushButton(),1},
         {m_title    = new QLabel(), 1},
         {m_componentNames = new QComboBox(), 50},

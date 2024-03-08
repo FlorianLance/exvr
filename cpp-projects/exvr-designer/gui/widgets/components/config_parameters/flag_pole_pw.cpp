@@ -41,12 +41,12 @@ FlagPoleInitConfigParametersW::FlagPoleInitConfigParametersW():  ConfigParameter
 
 void FlagPoleInitConfigParametersW::insert_widgets(){
     add_sub_part_widget(m_p->transfo);
-    auto w1 = F::gen(L::HB(), {W::txt("Pole height: "), m_p->poleHeight()}, LStretch{true}, LMargins{true});
-    auto w2 = F::gen(L::HB(), {W::txt("Flag width: "), m_p->flagWidth()}, LStretch{true}, LMargins{true});
-    auto w3 = F::gen(L::HB(), {W::txt("Flag height: "), m_p->flagHeight()}, LStretch{true}, LMargins{true});
-    auto w4 = F::gen(L::HB(), {W::txt("Flag horizontal vertices number: "), m_p->flagNbVerticesH()}, LStretch{true}, LMargins{true});
-    auto w5 = F::gen(L::HB(), {W::txt("Flag vertical vertices number: "), m_p->flagNbVerticesV()}, LStretch{true}, LMargins{true});
-    add_widget(F::gen(L::VB(), {W::txt("<b>Procedural generation:</b>"), w1,w2,w3,w4,w5},  LStretch{false}, LMargins{true}, QFrame::Box));
+    auto w1 = F::old_gen(L::HB(), {W::txt("Pole height: "), m_p->poleHeight()}, LStretch{true}, LMargins{true});
+    auto w2 = F::old_gen(L::HB(), {W::txt("Flag width: "), m_p->flagWidth()}, LStretch{true}, LMargins{true});
+    auto w3 = F::old_gen(L::HB(), {W::txt("Flag height: "), m_p->flagHeight()}, LStretch{true}, LMargins{true});
+    auto w4 = F::old_gen(L::HB(), {W::txt("Flag horizontal vertices number: "), m_p->flagNbVerticesH()}, LStretch{true}, LMargins{true});
+    auto w5 = F::old_gen(L::HB(), {W::txt("Flag vertical vertices number: "), m_p->flagNbVerticesV()}, LStretch{true}, LMargins{true});
+    add_widget(F::old_gen(L::VB(), {W::txt("<b>Procedural generation:</b>"), w1,w2,w3,w4,w5},  LStretch{false}, LMargins{true}, QFrame::Box));
 }
 
 void FlagPoleInitConfigParametersW::init_and_register_widgets(){
@@ -70,10 +70,10 @@ FlagPoleConfigParametersW::FlagPoleConfigParametersW():  ConfigParametersW(), m_
 
 void FlagPoleConfigParametersW::insert_widgets(){
     add_sub_part_widget(m_p->transfo);
-    auto w1 = F::gen(L::HB(), {m_p->currentTexture()}, LStretch{false}, LMargins{true});
-    auto w2 = F::gen(L::HB(), {W::txt("Flag position: "), m_p->currentHeight()}, LStretch{true}, LMargins{true});
-    auto w3 = F::gen(L::HB(), {W::txt("Cloth max dist: "), m_p->currentClothMaxDistance()}, LStretch{true}, LMargins{true});
-    add_widget(F::gen(L::VB(), {W::txt("<b>Flag settings:</b>"), w1,w2,w3},  LStretch{false}, LMargins{true}, QFrame::Box));
+    auto w1 = F::old_gen(L::HB(), {m_p->currentTexture()}, LStretch{false}, LMargins{true});
+    auto w2 = F::old_gen(L::HB(), {W::txt("Flag position: "), m_p->currentHeight()}, LStretch{true}, LMargins{true});
+    auto w3 = F::old_gen(L::HB(), {W::txt("Cloth max dist: "), m_p->currentClothMaxDistance()}, LStretch{true}, LMargins{true});
+    add_widget(F::old_gen(L::VB(), {W::txt("<b>Flag settings:</b>"), w1,w2,w3},  LStretch{false}, LMargins{true}, QFrame::Box));
 }
 
 void FlagPoleConfigParametersW::init_and_register_widgets(){

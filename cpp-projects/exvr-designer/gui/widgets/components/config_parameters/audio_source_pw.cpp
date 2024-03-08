@@ -53,14 +53,14 @@ AudioSourceInitConfigParametersW::AudioSourceInitConfigParametersW() :  ConfigPa
 auto AudioSourceInitConfigParametersW::insert_widgets() -> void {
 
     // top
-    add_widget(ui::F::gen(ui::L::VB(), {m_p->sound(), m_p->assetBundle()}, LStretch{false}, LMargins{true}, QFrame::Box));
+    add_widget(ui::F::old_gen(ui::L::VB(), {m_p->sound(), m_p->assetBundle()}, LStretch{false}, LMargins{true}, QFrame::Box));
 
     for(int ii = 0; ii < 8; ++ ii){
         m_p->channelsToCopy.emplace_back(std::make_unique<ExLineEditW>("channel_" + QString::number(ii) + "_copy_destination"));
     }
 
     // infos
-    add_widget(ui::F::gen(ui::L::VB(), {ui::W::txt("Input file infos"), m_p->infoText()}, LStretch{true}, LMargins{true}, QFrame::Box));
+    add_widget(ui::F::old_gen(ui::L::VB(), {ui::W::txt("Input file infos"), m_p->infoText()}, LStretch{true}, LMargins{true}, QFrame::Box));
     m_p->infoText.w->setMinimumHeight(100);
 
     // new sound
@@ -75,9 +75,9 @@ auto AudioSourceInitConfigParametersW::insert_widgets() -> void {
         w->setLayout(layout);
         channelsW.emplace_back(w);
     }
-
-    auto outputChannelsNb = ui::F::gen(ui::L::HB(),{ui::W::txt("Number channels:"), m_p->newSoundChannels()}, LStretch{true}, LMargins{false});
-    add_widget(ui::F::gen(ui::L::VB(), {
+    
+    auto outputChannelsNb = ui::F::old_gen(ui::L::HB(),{ui::W::txt("Number channels:"), m_p->newSoundChannels()}, LStretch{true}, LMargins{false});
+    add_widget(ui::F::old_gen(ui::L::VB(), {
         m_p->generateNewSound(), outputChannelsNb,
         channelsW[0],channelsW[1],channelsW[2],channelsW[3],
         channelsW[4],channelsW[5],channelsW[6],channelsW[7]},
@@ -161,11 +161,11 @@ auto AudioSourceConfigParametersW::insert_widgets() -> void {
     m_p = std::make_unique<Impl>();
 
     add_sub_part_widget(m_p->transfo);
-    add_widget(ui::F::gen(ui::L::VB(), {
+    add_widget(ui::F::old_gen(ui::L::VB(), {
         ui::W::txt("What to do when update block starts:"),
-        ui::F::gen(ui::L::HB(),{m_p->playNewBlock(),m_p->pauseNewBlock(), m_p->stopNewBlock(),m_p->nothingNewBlock()}, LStretch{true}, LMargins{true}),
+                                            ui::F::old_gen(ui::L::HB(),{m_p->playNewBlock(),m_p->pauseNewBlock(), m_p->stopNewBlock(),m_p->nothingNewBlock()}, LStretch{true}, LMargins{true}),
         ui::W::txt("What to do when update block ends:"),
-        ui::F::gen(ui::L::HB(),{m_p->playEndBlock(),m_p->pauseEndBlock(),m_p->stopEndBlock(),m_p->nothingEndBlock()}, LStretch{true}, LMargins{true})
+                                            ui::F::old_gen(ui::L::HB(),{m_p->playEndBlock(),m_p->pauseEndBlock(),m_p->stopEndBlock(),m_p->nothingEndBlock()}, LStretch{true}, LMargins{true})
         }, LStretch{false}, LMargins{true}, QFrame::Box)
     );
 
@@ -176,7 +176,7 @@ auto AudioSourceConfigParametersW::insert_widgets() -> void {
 
         gl->addWidget(ui::W::txt("<b>Global</b>"), rowId,   0, 2, 1);
         rowId+=2;
-        gl->addWidget(ui::F::gen(ui::L::HB(), {m_p->doMute(), m_p->doLoop()}, LStretch{true}, LMargins{false}, QFrame::NoFrame),rowId++, 0, 1, 6);
+        gl->addWidget(ui::F::old_gen(ui::L::HB(), {m_p->doMute(), m_p->doLoop()}, LStretch{true}, LMargins{false}, QFrame::NoFrame),rowId++, 0, 1, 6);
 
         gl->addWidget(ui::W::txt("Start time"),  rowId,   0, 1, 1);
         gl->addWidget(m_p->startTime(),          rowId++, 1, 1, 4);
@@ -207,7 +207,7 @@ auto AudioSourceConfigParametersW::insert_widgets() -> void {
 
         gl->addWidget(ui::W::txt("<b>3D sound</b>"), rowId,   0, 2, 1);
         rowId+=2;
-        gl->addWidget(ui::F::gen(ui::L::HB(), {m_p->isSpatialized(), m_p->displaySoundOrigin()}, LStretch{true}, LMargins{false}, QFrame::NoFrame),rowId++, 0, 1, 6);
+        gl->addWidget(ui::F::old_gen(ui::L::HB(), {m_p->isSpatialized(), m_p->displaySoundOrigin()}, LStretch{true}, LMargins{false}, QFrame::NoFrame),rowId++, 0, 1, 6);
 
         gl->addWidget(m_p->spatialBlend.title,    rowId, 0, 1, 1);
         gl->addWidget(m_p->spatialBlend.minMax,   rowId, 1, 1, 1);
@@ -247,7 +247,7 @@ auto AudioSourceConfigParametersW::insert_widgets() -> void {
         gl->addWidget(m_p->maxDistance.less,     rowId, 4, 1, 1);
         gl->addWidget(m_p->maxDistance.more,     rowId++, 5, 1, 1);
 
-        add_widget(ui::F::gen_frame(gl, {}, 0, LMarginsD{4,2,4,2,2}, QFrame::Shape::Box));
+        add_widget(ui::F::old_gen_frame(gl, {}, 0, LMarginsD{4,2,4,2,2}, QFrame::Shape::Box));
     }
 }
 

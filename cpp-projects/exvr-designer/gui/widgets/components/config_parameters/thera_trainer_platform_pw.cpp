@@ -29,15 +29,15 @@ using namespace tool::ex;
 
 void TheraTrainerPlatformConfigParametersW::insert_widgets() {
     add_sub_part_widget(m_transfo);
-    add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Pelvis height (m): "), m_height()}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
-    add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Offsets: ")}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
-    add_widget(ui::F::gen(ui::L::HB(), {m_displayGrips()}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
-    add_widget(ui::F::gen(ui::L::HB(), {m_offsetPelvisHandGripTr()}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
-    add_widget(ui::F::gen(ui::L::HB(), {m_offsetPelvisHandGripRot()}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
-    add_widget(ui::F::gen(ui::L::HB(), {m_offsetRightHandGripTr()}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
-    add_widget(ui::F::gen(ui::L::HB(), {m_offsetRightHandGripRot()}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
-    add_widget(ui::F::gen(ui::L::HB(), {m_offsetLeftHandGripTr()}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
-    add_widget(ui::F::gen(ui::L::HB(), {m_offsetLeftHandGripRot()}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
+    add_widget(ui::F::old_gen(ui::L::HB(), {ui::W::txt("Pelvis height (m): "), m_height()}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
+    add_widget(ui::F::old_gen(ui::L::HB(), {ui::W::txt("Offsets: ")}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
+    add_widget(ui::F::old_gen(ui::L::HB(), {m_displayGrips()}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
+    add_widget(ui::F::old_gen(ui::L::HB(), {m_offsetPelvisHandGripTr()}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
+    add_widget(ui::F::old_gen(ui::L::HB(), {m_offsetPelvisHandGripRot()}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
+    add_widget(ui::F::old_gen(ui::L::HB(), {m_offsetRightHandGripTr()}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
+    add_widget(ui::F::old_gen(ui::L::HB(), {m_offsetRightHandGripRot()}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
+    add_widget(ui::F::old_gen(ui::L::HB(), {m_offsetLeftHandGripTr()}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
+    add_widget(ui::F::old_gen(ui::L::HB(), {m_offsetLeftHandGripRot()}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
 }
 
 void TheraTrainerPlatformConfigParametersW::init_and_register_widgets(){

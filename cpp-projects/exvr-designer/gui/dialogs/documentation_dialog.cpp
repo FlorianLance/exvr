@@ -95,9 +95,9 @@ DocumentationDialog::DocumentationDialog(){
             }
         }
     });
-
-    auto buttons = ui::F::gen(ui::L::HB(),{genPb, openPb, reloadPb}, LStretch{true},LMargins{false});
-    mainLayout->addWidget(ui::F::gen(ui::L::VB(),{buttons, documentationsCategoriesW = new SectionW(QSL("<b>Sections:</b>"))}, LStretch{false}, LMargins{true}));
+    
+    auto buttons = ui::F::old_gen(ui::L::HB(),{genPb, openPb, reloadPb}, LStretch{true},LMargins{false});
+    mainLayout->addWidget(ui::F::old_gen(ui::L::VB(),{buttons, documentationsCategoriesW = new SectionW(QSL("<b>Sections:</b>"))}, LStretch{false}, LMargins{true}));
 
     QStringList items;
     // by id order

@@ -415,7 +415,7 @@ void ExVrController::show_got_to_specific_instance_element_dialog(){
 
     auto pbGoTo  = new QPushButton("Go to");
     auto pbClose = new QPushButton("Close");
-    m_goToD->layout()->addWidget(ui::F::gen(ui::L::HB(), {pbGoTo, pbClose}, LStretch{true}, LMargins{true}, QFrame::NoFrame));
+    m_goToD->layout()->addWidget(ui::F::old_gen(ui::L::HB(), {pbGoTo, pbClose}, LStretch{true}, LMargins{true}, QFrame::NoFrame));
 
     connect(pbGoTo,   &QPushButton::clicked, this, [=]{
         QtLogger::message(QSL("[CONTROLLER] Got to element ") % QString::number(twInstanceElements->currentRow()));
@@ -842,7 +842,7 @@ void ExVrController::show_modify_action_detailed_dialog(ComponentKey componentKe
     auto rbAllRoutineConditions  = new QRadioButton("... all conditions of selected routine");
     auto rbAllRoutinesConditions = new QRadioButton("... all conditions of every routine");
     rbCurrentCondition->setChecked(true);
-    modalDialog->layout()->addWidget(ui::F::gen(ui::L::VB(),
+    modalDialog->layout()->addWidget(ui::F::old_gen(ui::L::VB(),
         {ui::W::txt("Modify from ..."), rbCurrentCondition, rbAllRoutineConditions, rbAllRoutinesConditions}, LStretch{false}, LMargins{true}, QFrame::NoFrame));
 
     auto component = exp()->get_component(componentKey);
@@ -851,12 +851,12 @@ void ExVrController::show_modify_action_detailed_dialog(ComponentKey componentKe
     cbConfigs->addItems(component->get_configs_name());
 
     auto cbChangeConfig = new QCheckBox("Modify config");
-    modalDialog->layout()->addWidget(ui::F::gen(ui::L::HB(),
+    modalDialog->layout()->addWidget(ui::F::old_gen(ui::L::HB(),
         {cbChangeConfig}, LStretch{true}, LMargins{true}, QFrame::NoFrame));
-    modalDialog->layout()->addWidget(ui::F::gen(ui::L::HB(),
+    modalDialog->layout()->addWidget(ui::F::old_gen(ui::L::HB(),
         {ui::W::txt("Select config to apply:"), cbConfigs}, LStretch{true}, LMargins{true}, QFrame::NoFrame));
-
-    modalDialog->layout()->addWidget(ui::W::horizontal_line());
+    
+    modalDialog->layout()->addWidget(ui::F::h_line());
 
     QRadioButton *rbFillU = nullptr;
     QRadioButton *rbEmptyU = nullptr;
@@ -868,28 +868,28 @@ void ExVrController::show_modify_action_detailed_dialog(ComponentKey componentKe
 
     auto to = Component::get_timeline_opt(component->type);
     if (to == Component::TimelineO::Both || to == Component::TimelineO::Update){
-        modalDialog->layout()->addWidget(ui::F::gen(ui::L::HB(),
+        modalDialog->layout()->addWidget(ui::F::old_gen(ui::L::HB(),
             {cbChangeUpdateTimeline = new QCheckBox("Modify update timeline")}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
-
-        modalDialog->layout()->addWidget(ui::F::gen(ui::L::HB(),
+        
+        modalDialog->layout()->addWidget(ui::F::old_gen(ui::L::HB(),
             {rbFillU = new QRadioButton("Fill"), rbEmptyU = new QRadioButton("Empty")}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
         rbFillU->setChecked(true);
     }
     if (to == Component::TimelineO::Both || to == Component::TimelineO::Visibility){
-
-        modalDialog->layout()->addWidget(ui::F::gen(ui::L::HB(),
+        
+        modalDialog->layout()->addWidget(ui::F::old_gen(ui::L::HB(),
             {cbChangeVisibilityTimeline = new QCheckBox("Modify visibility timeline")}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
-
-        modalDialog->layout()->addWidget(ui::F::gen(ui::L::HB(),
+        
+        modalDialog->layout()->addWidget(ui::F::old_gen(ui::L::HB(),
             {rbFillV = new QRadioButton("Fill"), rbEmptyV = new QRadioButton("Empty")}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
         rbFillV->setChecked(true);
     }
-
-    modalDialog->layout()->addWidget(ui::W::horizontal_line());
+    
+    modalDialog->layout()->addWidget(ui::F::h_line());
 
     auto pbOk  = new QPushButton("Ok");
     auto pbCancel = new QPushButton("Cancel");
-    modalDialog->layout()->addWidget(ui::F::gen(ui::L::HB(), {pbOk, pbCancel}, LStretch{true}, LMargins{true}, QFrame::NoFrame));
+    modalDialog->layout()->addWidget(ui::F::old_gen(ui::L::HB(), {pbOk, pbCancel}, LStretch{true}, LMargins{true}, QFrame::NoFrame));
     ui::L::stretch(modalDialog->layout());
 
     connect(pbOk,   &QPushButton::clicked, this, [=]{
@@ -958,9 +958,9 @@ void ExVrController::show_play_with_delay_dialog(){
 
     auto pbPlay = new QPushButton("Play");
     auto pbCancel = new QPushButton("Cancel");
-
-    modalDialog->layout()->addWidget(ui::F::gen(ui::L::HB(), {ui::W::txt("Delay (s):"), sbDelay}, LStretch{true}, LMargins{true}, QFrame::NoFrame));
-    modalDialog->layout()->addWidget(ui::F::gen(ui::L::HB(), {pbPlay, pbCancel}, LStretch{true}, LMargins{true}, QFrame::NoFrame));
+    
+    modalDialog->layout()->addWidget(ui::F::old_gen(ui::L::HB(), {ui::W::txt("Delay (s):"), sbDelay}, LStretch{true}, LMargins{true}, QFrame::NoFrame));
+    modalDialog->layout()->addWidget(ui::F::old_gen(ui::L::HB(), {pbPlay, pbCancel}, LStretch{true}, LMargins{true}, QFrame::NoFrame));
     ui::L::stretch(modalDialog->layout());
 
     connect(pbPlay,   &QPushButton::clicked, modalDialog.get(), &QDialog::accept);

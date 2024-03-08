@@ -46,8 +46,8 @@ void MicrophoneInitConfigParametersW::insert_widgets(){
     //        QFrame *frame1 = ui::F::gen(ui::L::HB(), {ui::W::txt("Audio file path:"), &m_pbSetPathAudioFile}, LStretch{true}, LMargins{true});
     //        QFrame *frame2 = ui::F::gen(ui::L::HB(),{&m_lePathAudioFile.w }, LStretch{false}, LMargins{true});
     //        add_widget(ui::F::gen(ui::L::VB(),{frame1, frame2}, LStretch{true}, LMargins{false},QFrame::Box));
-
-    add_widget(ui::F::gen(ui::L::VB(), {ui::W::txt("<b>Recording devices detected:</b>"),m_p->devices()}, LStretch{true}, LMargins{true}, QFrame::Box));
+    
+    add_widget(ui::F::old_gen(ui::L::VB(), {ui::W::txt("<b>Recording devices detected:</b>"),m_p->devices()}, LStretch{true}, LMargins{true}, QFrame::Box));
 }
 
 void MicrophoneInitConfigParametersW::init_and_register_widgets(){

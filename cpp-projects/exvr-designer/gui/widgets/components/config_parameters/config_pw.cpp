@@ -74,19 +74,19 @@ void ConfigParametersW::add_widget(QWidget *w){
 }
 
 void ConfigParametersW::add_horizontal_widgets(std::vector<QWidget *> widgets, LMargins margins, QFrame::Shape shape, QFrame::Shadow shadow){
-    add_widget(ui::F::gen(ui::L::HB(),widgets, LStretch{false}, margins, shape, shadow));
+    add_widget(ui::F::old_gen(ui::L::HB(),widgets, LStretch{false}, margins, shape, shadow));
 }
 
 void ConfigParametersW::add_stretched_horizontal_widgets(std::vector<QWidget*> widgets, LMargins margins, QFrame::Shape shape, QFrame::Shadow shadow){
-    add_widget(ui::F::gen(ui::L::HB(),widgets, LStretch{true}, margins, shape, shadow));
+    add_widget(ui::F::old_gen(ui::L::HB(),widgets, LStretch{true}, margins, shape, shadow));
 }
 
 void ConfigParametersW::add_vertical_widgets(std::vector<QWidget *> widgets, LMargins margins, QFrame::Shape shape, QFrame::Shadow shadow){
-    add_widget(ui::F::gen(ui::L::VB(),widgets, LStretch{false}, margins, shape, shadow));
+    add_widget(ui::F::old_gen(ui::L::VB(),widgets, LStretch{false}, margins, shape, shadow));
 }
 
 void ConfigParametersW::add_stretched_vertical_widgets(std::vector<QWidget *> widgets, LMargins margins, QFrame::Shape shape, QFrame::Shadow shadow){
-    add_widget(ui::F::gen(ui::L::VB(),widgets, LStretch{true}, margins, shape, shadow));
+    add_widget(ui::F::old_gen(ui::L::VB(),widgets, LStretch{true}, margins, shape, shadow));
 }
 
 void ConfigParametersW::add_sub_part_widget(ConfigParametersSubPart &subPart){

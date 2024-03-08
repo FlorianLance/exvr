@@ -44,7 +44,7 @@ void tool::ex::FPPCameraInitConfigParametersW::insert_widgets(){
     add_sub_part_widget(m_p->transfo);
 
     add_widget(
-        ui::F::gen(ui::L::VB(), {
+        ui::F::old_gen(ui::L::VB(), {
             ui::W::txt("<b>Apply to:</b>"),
             m_p->useNeutral(),
             m_p->useEye()
@@ -90,7 +90,7 @@ void FPPCameraConfigParametersW::insert_widgets(){
     add_sub_part_widget(m_p->transfo);
 
     add_widget(
-        ui::F::gen(ui::L::VB(), {
+        ui::F::old_gen(ui::L::VB(), {
             ui::W::txt("<b>Apply to:</b>"),
             m_p->useNeutral(),
             m_p->useEye()
@@ -99,7 +99,7 @@ void FPPCameraConfigParametersW::insert_widgets(){
     );
 
     add_widget(
-        ui::F::gen(ui::L::VB(), {
+        ui::F::old_gen(ui::L::VB(), {
             ui::W::txt("<b>Current start neutral camera</b>"),
             m_p->currentNeutralPosition(),
             m_p->currentNeutralRotation()
@@ -108,7 +108,7 @@ void FPPCameraConfigParametersW::insert_widgets(){
     );
 
     add_widget(
-        ui::F::gen(ui::L::VB(), {
+        ui::F::old_gen(ui::L::VB(), {
             ui::W::txt("<b>Current eye camera</b>"),
             m_p->currentEyePosition(),
             m_p->currentEyeRotation()

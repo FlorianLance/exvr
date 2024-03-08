@@ -53,8 +53,8 @@ FixationCrossViewerConfigParametersW::FixationCrossViewerConfigParametersW() :  
 void FixationCrossViewerConfigParametersW::insert_widgets(){
 
     layout()->setContentsMargins(0,0,0,0);
-    auto crossF  = ui::F::gen(ui::L::HB(), {ui::W::txt("Color:"), m_p->crossColor(), ui::W::txt("Size factor"), m_p->crossSizeFactor()}, LStretch{true}, LMargins{false}, QFrame::NoFrame);
-    add_widget(ui::F::gen(ui::L::VB(), {ui::W::txt("<b>Fixation cross settings</b>"), crossF}, LStretch{false}, LMargins{true}, QFrame::Box));
+    auto crossF  = ui::F::old_gen(ui::L::HB(), {ui::W::txt("Color:"), m_p->crossColor(), ui::W::txt("Size factor"), m_p->crossSizeFactor()}, LStretch{true}, LMargins{false}, QFrame::NoFrame);
+    add_widget(ui::F::old_gen(ui::L::VB(), {ui::W::txt("<b>Fixation cross settings</b>"), crossF}, LStretch{false}, LMargins{true}, QFrame::Box));
     add_sub_part_widget(m_p->wscsp);
 }
 

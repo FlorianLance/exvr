@@ -49,28 +49,28 @@ AddComponentToConditionsDialog::AddComponentToConditionsDialog(ComponentKey comp
     condSelUi.wTop->setLayout(topL);
     topL->setContentsMargins(2,2,2,2);
     topL->addWidget(laApplyTo = new QLabel(QSL("Component <b>") % component->name() % QSL("</b> of type <b>[") % from_view(Component::get_type_name(component->type)) % QSL("]</b>:")));
-
-    topL->addWidget(ui::W::horizontal_line());
+    
+    topL->addWidget(ui::F::h_line());
 
     cbConfigs = new QComboBox();
     cbConfigs->addItems(configsName);
-    topL->addWidget(ui::F::gen(ui::L::HB(),
+    topL->addWidget(ui::F::old_gen(ui::L::HB(),
         {ui::W::txt("Parameters to apply: ")}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
-    topL->addWidget(ui::F::gen(ui::L::HB(),
+    topL->addWidget(ui::F::old_gen(ui::L::HB(),
         {ui::W::txt("Config:"), cbConfigs, ui::W::txt(" Timelines:"), cbFillU = new QCheckBox("update"), cbFillV = new QCheckBox("visibility")}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
     auto to = Component::get_timeline_opt(component->type);
     cbFillU->setEnabled(to == Component::TimelineO::Both || to == Component::TimelineO::Update);
     cbFillU->setChecked(cbFillU->isEnabled());
     cbFillV->setEnabled(to == Component::TimelineO::Both || to == Component::TimelineO::Visibility);
     cbFillV->setChecked(cbFillV->isEnabled());
-
-    topL->addWidget(ui::W::horizontal_line());
+    
+    topL->addWidget(ui::F::h_line());
 
     // init bottom
     auto botL = new QVBoxLayout();
     condSelUi.wBot->setLayout(botL);
     botL->setContentsMargins(2,2,2,2);
-    botL->addWidget(ui::W::horizontal_line());
+    botL->addWidget(ui::F::h_line());
     botL->addWidget(laApplyTo = new QLabel());
 
     // update middle
@@ -109,8 +109,8 @@ AddComponentToConditionsDialog::AddComponentToConditionsDialog(ComponentKey comp
 
             QStringView actionStr = condition->actions.size()    > 1 ? QSL("actions") : QSL("action");
             QStringView nodeStr   = condition->connectors.size() > 1 ? QSL("nodes")   : QSL("node");
-
-            lwConditions->add_widget(ui::F::gen(ui::L::HB(), {
+            
+            lwConditions->add_widget(ui::F::old_gen(ui::L::HB(), {
                 condSelectionCb, ui::W::txt("Config:", Qt::AlignRight), configSelectionCb, ui::W::txt("Fill timelines:"), fillUpdateSelectionCb, fillVisibilitySelectionCb, ui::W::txt(QSL("(") % QString::number(condition->actions.size()) % QSL(" ") % actionStr % QSL(" ") %
                 QString::number(condition->connectors.size()) % QSL(" ") % nodeStr % QSL(")"))},LStretch{false}, LMargins{false}, QFrame::NoFrame));
 

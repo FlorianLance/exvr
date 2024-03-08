@@ -49,7 +49,7 @@ public :
 
     void insert_widgets() override{
         layout()->setContentsMargins(0,0,0,0);
-        add_widget(ui::F::gen(ui::L::HB(), {m_text()}, LStretch{false}, LMargins{true}, QFrame::Box));
+        add_widget(ui::F::old_gen(ui::L::HB(), {m_text()}, LStretch{false}, LMargins{true}, QFrame::Box));
     }
 
     void init_and_register_widgets() override{

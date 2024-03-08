@@ -21,14 +21,6 @@
 ** SOFTWARE.                                                                      **
 ************************************************************************************/
 
-// system
-
-
-// unity
-
-
-using Valve.VR.InteractionSystem;
-
 namespace Ex {
 
     public class DCNetworkDirectPlayerComponent : ExComponent {
@@ -56,19 +48,31 @@ namespace Ex {
             }
 
             if (deviceFile != null) {
-                m_player.update_device_settings(deviceFile.path);
+                log_message("LOAD DEVICE: " + deviceFile.path);
+                if (!m_player.update_device_settings(deviceFile.path)) {
+                    log_error("Failed to load device settings");
+                }
             }
             if (filtersFile != null) {
-                m_player.update_filters_settings(filtersFile.path);
+                log_message("LOAD FILTERS: " + filtersFile.path);
+                if (!m_player.update_filters_settings(filtersFile.path)) {
+                    log_error("Failed to load filters settings");
+                }
             }
             if (colorFile != null) {
-                m_player.update_color_settings(colorFile.path);
+                log_message("LOAD COLOR: " + colorFile.path);
+                if (!m_player.update_color_settings(colorFile.path)) {
+                    log_error("Failed to load color settings");
+                }
             }
             if (modelsFile != null) {
-                m_player.update_model_settings(modelsFile.path);
+                log_message("LOAD MODEL: " + modelsFile.path);
+                if (!m_player.update_model_settings(modelsFile.path)) {
+                    log_error("Failed to load model settings");
+                }
             }
 
-            m_player.connect_to_devices();            
+            m_player.connect_to_devices();
 
             return true;
         }
@@ -82,7 +86,7 @@ namespace Ex {
         }
 
         protected override void clean() {
-            m_player.disconnect_from_devices();
+            m_player.clean();
         }
 
         protected override void update_parameter_from_gui(string updatedArgName) {
@@ -108,6 +112,18 @@ namespace Ex {
             //    }
             //}
 
+        }
+
+
+        protected override void set_update_state(bool doUpdate) {
+            for (int idC = 0; idC < m_player.connected_devices_nb(); ++idC) {
+                m_player.set_cloud_update_state(idC, doUpdate);
+            }
+        }
+        protected override void set_visibility(bool visible) {
+            for(int idC = 0; idC < m_player.connected_devices_nb(); ++idC) {
+                m_player.set_cloud_display_state(idC, visible);
+            }            
         }
 
         #endregion

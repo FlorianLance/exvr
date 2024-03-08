@@ -47,8 +47,8 @@ CSharpFunctionInitConfigParametersW::CSharpFunctionInitConfigParametersW() :  Co
 }
 
 void CSharpFunctionInitConfigParametersW::insert_widgets(){
-
-    add_widget(ui::F::gen(ui::L::VB(),
+    
+    add_widget(ui::F::old_gen(ui::L::VB(),
         {ui::W::txt("Define extra content accesible for each function of each config\n (ex: variables, enum, struct/class, functions...)"), m_p->extraContent()},
         LStretch{false},LMargins{true}, QFrame::NoFrame)
     );
@@ -78,8 +78,8 @@ void CSharpFunctionConfigParametersW::insert_widgets(){
 
     m_p->tab = new QTabWidget();
     add_widget(m_p->tab);
-
-    auto functionF = ui::F::gen(ui::L::VB(), {ui::W::txt("Define the content of the function below:"), m_p->startFunction(), m_p->contentFunction(), m_p->endFunction()},
+    
+    auto functionF = ui::F::old_gen(ui::L::VB(), {ui::W::txt("Define the content of the function below:"), m_p->startFunction(), m_p->contentFunction(), m_p->endFunction()},
         LStretch{false},LMargins{true}, QFrame::NoFrame);
 
     auto functionL = dynamic_cast<QVBoxLayout*>(functionF->layout());
@@ -88,8 +88,8 @@ void CSharpFunctionConfigParametersW::insert_widgets(){
     functionL->setStretch(2,50);
     functionL->setStretch(3,5);
     m_p->tab->addTab(functionF, "Function");
-
-    auto extraF = ui::F::gen(ui::L::VB(), {ui::W::txt("Define extra content accesible in the function for this config \n (ex: variables, enum, struct/class, functions...)"), m_p->extraContent()},
+    
+    auto extraF = ui::F::old_gen(ui::L::VB(), {ui::W::txt("Define extra content accesible in the function for this config \n (ex: variables, enum, struct/class, functions...)"), m_p->extraContent()},
         LStretch{false},LMargins{true}, QFrame::NoFrame);
     auto extraL = dynamic_cast<QVBoxLayout*>(extraF->layout());
     extraL->setStretch(0,1);
@@ -150,12 +150,12 @@ CSharpScriptInitConfigParametersW::CSharpScriptInitConfigParametersW():  ConfigP
 void CSharpScriptInitConfigParametersW::insert_widgets(){
 
     auto l1 = ui::L::HB();
-    m_layout->addWidget(ui::F::gen(l1, {ui::W::txt("Component class to load:"),m_p->className()},  LStretch{true},LMargins{true}, QFrame::Box));
+    m_layout->addWidget(ui::F::old_gen(l1, {ui::W::txt("Component class to load:"),m_p->className()},  LStretch{true},LMargins{true}, QFrame::Box));
     l1->setStretch(0,1);
     l1->setStretch(1,10);
     l1->setStretch(2,1);
-
-    m_layout->addWidget(ui::F::gen(ui::L::HB(), {m_p->generator()},  LStretch{false},LMargins{false}, QFrame::Box));
+    
+    m_layout->addWidget(ui::F::old_gen(ui::L::HB(), {m_p->generator()},  LStretch{false},LMargins{false}, QFrame::Box));
     m_layout->setStretch(0,1);
     m_layout->setStretch(1,50);
 }
@@ -175,7 +175,7 @@ CSharpScriptConfigParametersW::CSharpScriptConfigParametersW():  ConfigParameter
 }
 
 void CSharpScriptConfigParametersW::insert_widgets(){
-    m_layout->addWidget(ui::F::gen(ui::L::HB(), {m_p->generator()},  LStretch{false},LMargins{false}, QFrame::Box));
+    m_layout->addWidget(ui::F::old_gen(ui::L::HB(), {m_p->generator()},  LStretch{false},LMargins{false}, QFrame::Box));
     no_end_stretch();
 }
 

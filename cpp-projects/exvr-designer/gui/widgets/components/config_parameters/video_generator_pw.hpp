@@ -45,9 +45,9 @@ public :
     ExSpinBoxW m_sbHeight{"height"};
 
     void insert_widgets() override{
-        add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Path video to save: "),m_lePath(), &m_pbSetPath}, LStretch{false}, LMargins{true}, QFrame::Box));
-        add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("FPS: "), m_sbFPS()}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
-        add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Width: "), m_sbWidth(), ui::W::txt("Height: "), m_sbHeight()}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
+        add_widget(ui::F::old_gen(ui::L::HB(), {ui::W::txt("Path video to save: "),m_lePath(), &m_pbSetPath}, LStretch{false}, LMargins{true}, QFrame::Box));
+        add_widget(ui::F::old_gen(ui::L::HB(), {ui::W::txt("FPS: "), m_sbFPS()}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
+        add_widget(ui::F::old_gen(ui::L::HB(), {ui::W::txt("Width: "), m_sbWidth(), ui::W::txt("Height: "), m_sbHeight()}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
 
     }
     void init_and_register_widgets() override{

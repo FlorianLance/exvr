@@ -56,7 +56,7 @@ public :
 
     void insert_widgets() override{
         add_widget(cbAddCameraPosition());
-        add_widget(ui::F::gen(ui::L::HB(), {cbComputeTimesWithDistances(), ui::W::txt("Global time: "), dsbGlobalTime(),}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
+        add_widget(ui::F::old_gen(ui::L::HB(), {cbComputeTimesWithDistances(), ui::W::txt("Global time: "), dsbGlobalTime(),}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
 
         add_widget(cameraTrajectory());
         qobject_cast<QVBoxLayout*>(layout())->setStretchFactor(cameraTrajectory(), 10);

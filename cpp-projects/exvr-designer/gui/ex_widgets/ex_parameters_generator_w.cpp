@@ -76,9 +76,9 @@ ExParametersGeneratorWidgetW::ExParametersGeneratorWidgetW(QString name) : ExIte
     auto l = new QVBoxLayout();
     l->setContentsMargins(5,5,5,5);
     w->setLayout(l);
-    w->layout()->addWidget(ui::F::gen(ui::L::HB(),{
+    w->layout()->addWidget(ui::F::old_gen(ui::L::HB(),{
         ui::W::txt("Parameter to add "),&m_cbTypeParam}, LStretch{true}, LMargins{false}));
-    w->layout()->addWidget(ui::F::gen(ui::L::HB(),{
+    w->layout()->addWidget(ui::F::old_gen(ui::L::HB(),{
         &m_pbAddParam, &m_pbMoveUp, &m_pbMoveDown, &m_pbRemoveParam}, LStretch{true}, LMargins{false}));
     w->layout()->addWidget(&m_lwParameters);
 
@@ -291,7 +291,7 @@ void ExParametersGeneratorWidgetW::add_ui_element_from_dialog(UiType uiType, int
 
     // generate widget line
     auto fl =  ui::L::HB();
-    auto f  = ui::F::gen(fl,{ui::W::txt(QSL("<b>") % exW->itemName % QSL("</b>")), wElem}, LStretch{false}, LMargins{true});
+    auto f  = ui::F::old_gen(fl,{ui::W::txt(QSL("<b>") % exW->itemName % QSL("</b>")), wElem}, LStretch{false}, LMargins{true});
     fl->setStretch(0, 1);
     fl->setStretch(1, 30);
 
@@ -344,7 +344,7 @@ void ExParametersGeneratorWidgetW::add_ui_element_from_arg(Arg arg){
 
     // generate widget line
     auto fl =  ui::L::HB();
-    auto f  = ui::F::gen(fl,{ui::W::txt(QSL("<b>") % exW->itemName % QSL("</b>")), wElem}, LStretch{false}, LMargins{true});
+    auto f  = ui::F::old_gen(fl,{ui::W::txt(QSL("<b>") % exW->itemName % QSL("</b>")), wElem}, LStretch{false}, LMargins{true});
     fl->setStretch(0, 1);
     fl->setStretch(1, 30);
 

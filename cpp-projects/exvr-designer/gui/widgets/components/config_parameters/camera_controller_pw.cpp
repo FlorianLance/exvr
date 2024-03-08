@@ -50,14 +50,14 @@ void CameraControllerInitConfigParametersW::insert_widgets(){
     add_widget(ui::W::txt("<b>Initialization camera</b>"));
 
     add_widget(
-        ui::F::gen(ui::L::VB(), {
+        ui::F::old_gen(ui::L::VB(), {
             ui::W::txt("<b>Apply to:</b>"),
             m_p->useNeutral(),
             m_p->useEye(),
-            ui::W::horizontal_line(),
+                                 ui::F::h_line(),
             ui::W::txt("<b>Apply when:</b>"),
             m_p->cbStartExperiment(),
-            ui::W::horizontal_line(),
+                                 ui::F::h_line(),
             ui::W::txt("<b>Values:</b>"),
             m_p->position(),
             m_p->rotation()
@@ -125,41 +125,41 @@ void CameraControllerConfigParametersW::insert_widgets(){
 
 
     add_widget(
-        ui::F::gen(ui::L::VB(), {
+        ui::F::old_gen(ui::L::VB(), {
             ui::W::txt("<b>Apply to:</b>"),
             m_p->useNeutral(),
             m_p->useEye(),
-            ui::W::horizontal_line(),
+                                 ui::F::h_line(),
             ui::W::txt("<b>Apply when:</b>"),
             m_p->cbStartRoutine(),
             m_p->cbUpdateOn(),
             ui::W::txt("<b>Values:</b>"),
             m_p->position(),
             m_p->rotation(),
-            ui::W::horizontal_line(),
+                                 ui::F::h_line(),
             m_p->enableDebugMouseCameraMovements(),
             ui::W::txt("<b>Debug speed:</b>"),
-            ui::F::gen(ui::L::HB(), {ui::W::txt("M"),m_p->mSpeed(),ui::W::txt("RX"),m_p->rxSpeed(),ui::W::txt("RY"),m_p->rySpeed(),ui::W::txt("RZ"), m_p->rzSpeed()}, LStretch{true}, LMargins{false}, QFrame::NoFrame)
+                                     ui::F::old_gen(ui::L::HB(), {ui::W::txt("M"),m_p->mSpeed(),ui::W::txt("RX"),m_p->rxSpeed(),ui::W::txt("RY"),m_p->rySpeed(),ui::W::txt("RZ"), m_p->rzSpeed()}, LStretch{true}, LMargins{false}, QFrame::NoFrame)
         },
         LStretch{false}, LMargins{true}, QFrame::Box)
     );
 
     add_widget(
-        ui::F::gen(ui::L::VB(), {
+        ui::F::old_gen(ui::L::VB(), {
             ui::W::txt("<b>Current calibration</b>"),
             m_p->currentNeutralPosition(),
             m_p->currentNeutralRotation(),
-            ui::F::gen(ui::L::HB(), {m_p->copyNeutralToCurrentConfig = new QPushButton("Copy to values")}, LStretch{true}, LMargins{false}, QFrame::NoFrame)
+                                     ui::F::old_gen(ui::L::HB(), {m_p->copyNeutralToCurrentConfig = new QPushButton("Copy to values")}, LStretch{true}, LMargins{false}, QFrame::NoFrame)
         },
         LStretch{false}, LMargins{true}, QFrame::Box)
     );
 
     add_widget(
-        ui::F::gen(ui::L::VB(), {
+        ui::F::old_gen(ui::L::VB(), {
             ui::W::txt("<b>Current eye camera</b>"),
             m_p->currentEyePosition(),
             m_p->currentEyeRotation(),
-            ui::F::gen(ui::L::HB(), {m_p->copyEyeToCurrentConfig = new QPushButton("Copy to values")}, LStretch{true}, LMargins{false}, QFrame::NoFrame)
+                                     ui::F::old_gen(ui::L::HB(), {m_p->copyEyeToCurrentConfig = new QPushButton("Copy to values")}, LStretch{true}, LMargins{false}, QFrame::NoFrame)
         },
         LStretch{false}, LMargins{true}, QFrame::Box)
     );

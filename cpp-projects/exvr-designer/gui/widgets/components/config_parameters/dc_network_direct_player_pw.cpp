@@ -62,14 +62,14 @@ DCNetworkDirectPlayerInitConfigParametersW::DCNetworkDirectPlayerInitConfigParam
 }
 
 auto DCNetworkDirectPlayerInitConfigParametersW::insert_widgets() -> void{
-
-    add_widget(ui::F::gen(ui::L::VB(),
+    
+    add_widget(ui::F::old_gen(ui::L::VB(),
         {m_p->networkS(), m_p->deviceS(), m_p->colorS(),m_p->filtersS(),m_p->modelsS()}, LStretch{false}, LMargins{true}, QFrame::Box)
     );
-
-    add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Grabbers id to use (ex:\"0;1;2\"):"), m_p->devicesToUse()}, LStretch{false}, LMargins{true}, QFrame::NoFrame));
+    
+    add_widget(ui::F::old_gen(ui::L::HB(), {ui::W::txt("Grabbers id to use (ex:\"0;1;2\"):"), m_p->devicesToUse()}, LStretch{false}, LMargins{true}, QFrame::NoFrame));
     add_widget(m_p->debugBypassDevice());
-    add_widget(ui::F::gen(ui::L::VB(), {ui::W::txt("Infos:"), m_p->infos()}, LStretch{false}, LMargins{true}, QFrame::Box));
+    add_widget(ui::F::old_gen(ui::L::VB(), {ui::W::txt("Infos:"), m_p->infos()}, LStretch{false}, LMargins{true}, QFrame::Box));
 }
 
 auto DCNetworkDirectPlayerInitConfigParametersW::init_and_register_widgets() -> void{
@@ -129,8 +129,8 @@ DCNetworkDirectPlayerConfigParametersW::DCNetworkDirectPlayerConfigParametersW()
 }
 
 auto DCNetworkDirectPlayerConfigParametersW::insert_widgets() -> void {
-    add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Delay (ms):"), m_p->delay()}, LStretch{false}, LMargins{true}, QFrame::NoFrame));
-    add_widget(ui::F::gen(ui::L::VB(), {ui::W::txt("Infos:"), m_p->infos()}, LStretch{false}, LMargins{true}, QFrame::Box));
+    add_widget(ui::F::old_gen(ui::L::HB(), {ui::W::txt("Delay (ms):"), m_p->delay()}, LStretch{false}, LMargins{true}, QFrame::NoFrame));
+    add_widget(ui::F::old_gen(ui::L::VB(), {ui::W::txt("Infos:"), m_p->infos()}, LStretch{false}, LMargins{true}, QFrame::Box));
 }
 
 auto DCNetworkDirectPlayerConfigParametersW::init_and_register_widgets() -> void {

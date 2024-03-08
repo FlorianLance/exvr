@@ -54,8 +54,8 @@ public :
 
     void insert_widgets() override{
         add_sub_part_widget(m_transfo);
-        add_widget(ui::F::gen(ui::L::HB(), {m_on()}, LStretch{false}, LMargins{true}, QFrame::NoFrame));
-        add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("<b>Colors:</b> "), ui::W::txt("ON"), m_onColor(), ui::W::txt("OFF"), m_offColor()}, LStretch{true}, LMargins{true}, QFrame::NoFrame));
+        add_widget(ui::F::old_gen(ui::L::HB(), {m_on()}, LStretch{false}, LMargins{true}, QFrame::NoFrame));
+        add_widget(ui::F::old_gen(ui::L::HB(), {ui::W::txt("<b>Colors:</b> "), ui::W::txt("ON"), m_onColor(), ui::W::txt("OFF"), m_offColor()}, LStretch{true}, LMargins{true}, QFrame::NoFrame));
     }
 
     void init_and_register_widgets() override{

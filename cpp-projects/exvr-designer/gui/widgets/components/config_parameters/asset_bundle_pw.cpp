@@ -49,7 +49,7 @@ AssetBundleInitConfigParametersW::AssetBundleInitConfigParametersW():  ConfigPar
 void AssetBundleInitConfigParametersW::insert_widgets(){
 
     add_sub_part_widget(m_p->transfo);
-    add_widget(ui::F::gen(ui::L::VB(),{
+    add_widget(ui::F::old_gen(ui::L::VB(),{
         ui::W::txt(QSL("<b>Asset bundle</b>")),
         m_p->assetBundle(),
         ui::W::txt(QSL("Sub object to load in bundle (if empty, first object of the hierarchy will be load): ")),

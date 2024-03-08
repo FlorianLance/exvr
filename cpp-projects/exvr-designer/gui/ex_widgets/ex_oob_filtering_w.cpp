@@ -34,7 +34,7 @@ tool::ex::OBBFilteringW::OBBFilteringW(QString name): ExItemW<QFrame>(UiType::Cu
 
     auto layout = new QVBoxLayout();
     w->setLayout(layout);
-    layout->addWidget(ui::F::gen(ui::L::HB(),{displayObb(), enableObb(), obbColor()}, LStretch{false}, LMargins{false}, QFrame::NoFrame));
+    layout->addWidget(ui::F::old_gen(ui::L::HB(),{displayObb(), enableObb(), obbColor()}, LStretch{false}, LMargins{false}, QFrame::NoFrame));
     layout->addWidget(obbTr());
 
     connect(&displayObb, &ExBaseW::ui_change_signal, this, &ExBaseW::ui_change_signal);

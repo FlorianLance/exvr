@@ -53,9 +53,9 @@ ImageViewerConfigParametersW::ImageViewerConfigParametersW():  ConfigParametersW
 
 void ImageViewerConfigParametersW::insert_widgets(){
     layout()->setContentsMargins(0,0,0,0);
-
-    auto rbs = ui::F::gen(ui::L::HB(), {m_p->useResource(), m_p->useComponent(), m_p->useNothing()}, LStretch{true}, LMargins{false}, QFrame::NoFrame);
-    add_widget(ui::F::gen(ui::L::VB(), {ui::W::txt("<b>Image settings</b>"), rbs, m_p->image(), m_p->component()}, LStretch{false}, LMargins{true}, QFrame::Box));
+    
+    auto rbs = ui::F::old_gen(ui::L::HB(), {m_p->useResource(), m_p->useComponent(), m_p->useNothing()}, LStretch{true}, LMargins{false}, QFrame::NoFrame);
+    add_widget(ui::F::old_gen(ui::L::VB(), {ui::W::txt("<b>Image settings</b>"), rbs, m_p->image(), m_p->component()}, LStretch{false}, LMargins{true}, QFrame::Box));
     add_sub_part_widget(m_p->wscsp);
 }
 

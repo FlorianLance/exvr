@@ -53,11 +53,11 @@ CameraTrajectoryFileConfigParametersW::CameraTrajectoryFileConfigParametersW(): 
 
 
 void tool::ex::CameraTrajectoryFileConfigParametersW::insert_widgets(){
-
-    add_widget(ui::F::gen(ui::L::HB(), {m_p->trajectoryFile()}, LStretch{false}, LMargins{false}, QFrame::NoFrame));
-    add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Trajectory duration: "), m_p->duration()}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
-    add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Start color: "), m_p->startColor(), ui::W::txt("End color: "), m_p->endColor()}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
-    add_widget(ui::F::gen(ui::L::HB(), {m_p->useSphericalInterpolation(), m_p->inverseOrder()}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
+    
+    add_widget(ui::F::old_gen(ui::L::HB(), {m_p->trajectoryFile()}, LStretch{false}, LMargins{false}, QFrame::NoFrame));
+    add_widget(ui::F::old_gen(ui::L::HB(), {ui::W::txt("Trajectory duration: "), m_p->duration()}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
+    add_widget(ui::F::old_gen(ui::L::HB(), {ui::W::txt("Start color: "), m_p->startColor(), ui::W::txt("End color: "), m_p->endColor()}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
+    add_widget(ui::F::old_gen(ui::L::HB(), {m_p->useSphericalInterpolation(), m_p->inverseOrder()}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
     add_widget(m_p->speed());
 }
 

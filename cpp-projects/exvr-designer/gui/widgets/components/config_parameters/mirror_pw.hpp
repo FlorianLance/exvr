@@ -53,7 +53,7 @@ public :
 
     void insert_widgets() override{
         add_sub_part_widget(m_transform);
-        add_widget(ui::F::gen(ui::L::HB(), {m_showFrame()}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
+        add_widget(ui::F::old_gen(ui::L::HB(), {m_showFrame()}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
     }
 
     void init_and_register_widgets() override{

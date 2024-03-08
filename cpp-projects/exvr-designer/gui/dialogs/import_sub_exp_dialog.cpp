@@ -109,7 +109,7 @@ ImportSubExpDialog::ImportSubExpDialog(QString path){
 
             for(const auto &config : p.second->configs){
                 auto configCb = new QCheckBox(config->name);
-                lwCategory->add_widget(ui::F::gen(ui::L::HB(),{ui::W::txt("\t"), configCb}, LStretch{true}, LMargins{false},QFrame::NoFrame));
+                lwCategory->add_widget(ui::F::old_gen(ui::L::HB(),{ui::W::txt("\t"), configCb}, LStretch{true}, LMargins{false},QFrame::NoFrame));
                 validatedConfigs[p.second->c_key()][ConfigKey{config->key()}] = configCb;
             }
         });
@@ -117,7 +117,7 @@ ImportSubExpDialog::ImportSubExpDialog(QString path){
 
     auto pbValidate = new QPushButton("Import selection");
     auto pbCancel   = new QPushButton("Cancel");
-    layout()->addWidget(ui::F::gen(ui::L::HB(),{pbValidate, pbCancel}, LStretch{true}, LMargins{false},QFrame::NoFrame));
+    layout()->addWidget(ui::F::old_gen(ui::L::HB(),{pbValidate, pbCancel}, LStretch{true}, LMargins{false},QFrame::NoFrame));
 
 
     // settings dialog

@@ -162,9 +162,9 @@ void CopyToConditionDialog::update_from_data(ElementKey currentRoutineKey, Condi
 
             QStringView actionStr = condition->actions.size()    > 1 ? QSL("actions") : QSL("action");
             QStringView nodeStr   = condition->connectors.size() > 1 ? QSL("nodes")   : QSL("node");
-
-
-            lwConditions->add_widget(ui::F::gen(ui::L::HB(), {
+            
+            
+            lwConditions->add_widget(ui::F::old_gen(ui::L::HB(), {
                 condSelectionCb, ui::W::txt(QSL("(") % QString::number(condition->actions.size()) % QSL(" ") % actionStr % QSL(" ") %
                 QString::number(condition->connectors.size()) % QSL(" ") % nodeStr % QSL(")"))},LStretch{false}, LMargins{false}, QFrame::NoFrame));
 

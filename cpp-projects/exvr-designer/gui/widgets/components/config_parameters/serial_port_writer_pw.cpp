@@ -43,8 +43,8 @@ SerialPortWriterInitParameterW::SerialPortWriterInitParameterW() :  ConfigParame
 }
 
 void SerialPortWriterInitParameterW::insert_widgets(){
-    add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Writing port:"), m_p->leWritingPort()}, LStretch{true}, LMargins{false}));
-    add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Baud rate:"), m_p->sbBaudRate()}, LStretch{true}, LMargins{false}));
+    add_widget(ui::F::old_gen(ui::L::HB(), {ui::W::txt("Writing port:"), m_p->leWritingPort()}, LStretch{true}, LMargins{false}));
+    add_widget(ui::F::old_gen(ui::L::HB(), {ui::W::txt("Baud rate:"), m_p->sbBaudRate()}, LStretch{true}, LMargins{false}));
 }
 
 void SerialPortWriterInitParameterW::init_and_register_widgets(){
@@ -76,18 +76,18 @@ SerialPortWriterConfigParametersW::SerialPortWriterConfigParametersW() :  Config
 }
 
 void SerialPortWriterConfigParametersW::insert_widgets(){
-
-    add_widget(ui::F::gen(ui::L::VB(), {
+    
+    add_widget(ui::F::old_gen(ui::L::VB(), {
         ui::W::txt("Send message:"),
         m_p->cbSendWhendRoutineStarts(),
         m_p->cbSendWhenNewTimelineBlock(),
         m_p->cbSendWhenEndTimelineBlock(),
         m_p->cbSendEveryFrame()}, LStretch{true}, LMargins{false} )
     );
-    add_widget(ui::F::gen(ui::L::HB(),{ui::W::txt("Pulse time:"), m_p->pulseTime()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
-    add_widget(ui::W::horizontal_line());
-    add_widget(ui::F::gen(ui::L::VB(), {m_p->rbBitsMessage(), m_p->rbIntMessage(), m_p->rbStringMessage(), m_p->rbBitsPulseMessage(), m_p->rbIntPulseMessage()}, LStretch{true}, LMargins{false}));
-    add_widget(ui::F::gen(ui::L::VB(), {ui::W::txt("Message to sent:"),  m_p->teMessage()}, LStretch{false}, LMargins{false}));
+    add_widget(ui::F::old_gen(ui::L::HB(),{ui::W::txt("Pulse time:"), m_p->pulseTime()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
+    add_widget(ui::F::h_line());
+    add_widget(ui::F::old_gen(ui::L::VB(), {m_p->rbBitsMessage(), m_p->rbIntMessage(), m_p->rbStringMessage(), m_p->rbBitsPulseMessage(), m_p->rbIntPulseMessage()}, LStretch{true}, LMargins{false}));
+    add_widget(ui::F::old_gen(ui::L::VB(), {ui::W::txt("Message to sent:"),  m_p->teMessage()}, LStretch{false}, LMargins{false}));
 
     set_stretch(0,1);
     set_stretch(1,1);

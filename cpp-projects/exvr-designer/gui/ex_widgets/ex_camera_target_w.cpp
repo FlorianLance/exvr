@@ -34,12 +34,12 @@ ExCameraTargetW::ExCameraTargetW(QString name) : ExItemW<QFrame>(UiType::Custom,
 
     auto layout = new QVBoxLayout();
     w->setLayout(layout);
-
-    layout->addWidget(ui::F::gen(ui::L::HB(),{ui::W::txt("Time for reaching target: "), time()}, LStretch{false}, LMargins{false}, QFrame::NoFrame));
-    layout->addWidget(ui::F::gen(ui::L::HB(),{displayCamera.w.get(), sphericInterpolation()}, LStretch{false}, LMargins{false}, QFrame::NoFrame));
+    
+    layout->addWidget(ui::F::old_gen(ui::L::HB(),{ui::W::txt("Time for reaching target: "), time()}, LStretch{false}, LMargins{false}, QFrame::NoFrame));
+    layout->addWidget(ui::F::old_gen(ui::L::HB(),{displayCamera.w.get(), sphericInterpolation()}, LStretch{false}, LMargins{false}, QFrame::NoFrame));
     layout->addWidget(translation());
     layout->addWidget(rotation());
-    layout->addWidget(ui::F::gen(ui::L::HB(),{ui::W::txt("Camera color: "), color()}, LStretch{false}, LMargins{false}, QFrame::NoFrame));
+    layout->addWidget(ui::F::old_gen(ui::L::HB(),{ui::W::txt("Camera color: "), color()}, LStretch{false}, LMargins{false}, QFrame::NoFrame));
     layout->addWidget(speed());
 
     connect(&time,          &ExBaseW::ui_change_signal,     this, &ExBaseW::ui_change_signal);

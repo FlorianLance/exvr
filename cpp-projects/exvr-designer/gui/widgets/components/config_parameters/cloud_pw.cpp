@@ -47,7 +47,7 @@ CloudInitConfigParametersW::CloudInitConfigParametersW():  ConfigParametersW(), 
 
 void CloudInitConfigParametersW::insert_widgets(){
     add_sub_part_widget(m_p->transfo);
-    add_widget(ui::F::gen(ui::L::HB(), {m_p->cloud()}, LStretch{false}, LMargins{true}, QFrame::Box));
+    add_widget(ui::F::old_gen(ui::L::HB(), {m_p->cloud()}, LStretch{false}, LMargins{true}, QFrame::Box));
 }
 
 void CloudInitConfigParametersW::init_and_register_widgets(){
@@ -83,17 +83,17 @@ void CloudConfigParametersW::insert_widgets(){
 
     add_widget(m_p->tw = new QTabWidget());
     m_p->tw->addTab(
-        F::gen(L::VB(),{
-            F::gen(L::HB(),{W::txt("Size points: "),m_p->sizePoints()}, LStretch{true}, LMargins{false},QFrame::NoFrame),
-            F::gen(L::HB(),{W::txt("Rendering: "), m_p->rendering()}, LStretch{true}, LMargins{false},QFrame::NoFrame),
-            F::gen(L::HB(),{W::txt("Points color tint: "), m_p->tint()}, LStretch{true}, LMargins{false},QFrame::NoFrame),
+        F::old_gen(L::VB(),{
+                             F::old_gen(L::HB(),{W::txt("Size points: "),m_p->sizePoints()}, LStretch{true}, LMargins{false},QFrame::NoFrame),
+                             F::old_gen(L::HB(),{W::txt("Rendering: "), m_p->rendering()}, LStretch{true}, LMargins{false},QFrame::NoFrame),
+                             F::old_gen(L::HB(),{W::txt("Points color tint: "), m_p->tint()}, LStretch{true}, LMargins{false},QFrame::NoFrame),
             m_p->renderCircles(), m_p->parabloidFragCones(),
-            F::gen(L::HB(),{W::txt("Parbloid geo details: "), m_p->parabloidGeoDetails()}, LStretch{true}, LMargins{false},QFrame::NoFrame
+                             F::old_gen(L::HB(),{W::txt("Parbloid geo details: "), m_p->parabloidGeoDetails()}, LStretch{true}, LMargins{false},QFrame::NoFrame
         )}, LStretch{true}, LMargins{true}, QFrame::NoFrame), "Rendering"
     );
     m_p->tw->addTab(
-    F::gen(L::VB(),{
-            F::gen(L::HB(), {m_p->filterPointsOutsideOBB(), m_p->displayFilteringOBB()}, LStretch{true}, LMargins{false},QFrame::NoFrame),
+        F::old_gen(L::VB(),{
+                             F::old_gen(L::HB(), {m_p->filterPointsOutsideOBB(), m_p->displayFilteringOBB()}, LStretch{true}, LMargins{false},QFrame::NoFrame),
             m_p->filteringObbTab()
         },LStretch{false}, LMargins{true},QFrame::NoFrame), "Filtering oriented bounding box"
     );

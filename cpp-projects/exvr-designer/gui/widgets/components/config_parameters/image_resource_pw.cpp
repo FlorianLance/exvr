@@ -41,7 +41,7 @@ ImageResourceInitConfigParametersW::ImageResourceInitConfigParametersW() :  Conf
 }
 
 void ImageResourceInitConfigParametersW::insert_widgets(){
-    add_widget(ui::F::gen(ui::L::VB(), {ui::W::txt("<b>List of images to use:</b>"), m_p->imagesList()}, LStretch{false}, LMargins{true}, QFrame::Box));
+    add_widget(ui::F::old_gen(ui::L::VB(), {ui::W::txt("<b>List of images to use:</b>"), m_p->imagesList()}, LStretch{false}, LMargins{true}, QFrame::Box));
     no_end_stretch();
 }
 
@@ -72,11 +72,11 @@ ImageResourceConfigParametersW::ImageResourceConfigParametersW() :  ConfigParame
 }
 
 void ImageResourceConfigParametersW::insert_widgets(){
-    layout()->setContentsMargins(0,0,0,0);    
-    add_widget(ui::F::gen(ui::L::VB(), {ui::W::txt("Send current image when:"), m_p->startExp(),m_p->startRoutine(),m_p->stopRoutine()}, LStretch{false}, LMargins{true}, QFrame::NoFrame));
-    add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Using:"), m_p->sendAlias(),m_p->sendId()}, LStretch{true}, LMargins{true}, QFrame::NoFrame));
-    add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("From init config images resources list:")}, LStretch{true}, LMargins{true}, QFrame::NoFrame));
-    add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Id"), m_p->id(), ui::W::txt("Alias"), m_p->alias()}, LStretch{false}, LMargins{true}, QFrame::NoFrame));
+    layout()->setContentsMargins(0,0,0,0);
+    add_widget(ui::F::old_gen(ui::L::VB(), {ui::W::txt("Send current image when:"), m_p->startExp(),m_p->startRoutine(),m_p->stopRoutine()}, LStretch{false}, LMargins{true}, QFrame::NoFrame));
+    add_widget(ui::F::old_gen(ui::L::HB(), {ui::W::txt("Using:"), m_p->sendAlias(),m_p->sendId()}, LStretch{true}, LMargins{true}, QFrame::NoFrame));
+    add_widget(ui::F::old_gen(ui::L::HB(), {ui::W::txt("From init config images resources list:")}, LStretch{true}, LMargins{true}, QFrame::NoFrame));
+    add_widget(ui::F::old_gen(ui::L::HB(), {ui::W::txt("Id"), m_p->id(), ui::W::txt("Alias"), m_p->alias()}, LStretch{false}, LMargins{true}, QFrame::NoFrame));
 }
 
 void ImageResourceConfigParametersW::init_and_register_widgets(){

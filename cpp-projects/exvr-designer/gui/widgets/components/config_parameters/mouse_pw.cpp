@@ -48,14 +48,14 @@ void MouseInitConfigParametersW::insert_widgets(){
         keysList << from_view(buttonName);
     }
     m_p->keys.addItems(keysList);
-
-    auto l1 = ui::F::gen(ui::L::HB(), {ui::W::txt("Mouse buttons")}, LStretch{true}, LMargins{true}, QFrame::NoFrame);
-    auto l2 = ui::F::gen(ui::L::HB(), {ui::W::txt("Name:"), &m_p->keys}, LStretch{true}, LMargins{true}, QFrame::NoFrame);
-    auto l3 = ui::F::gen(ui::L::HB(), {ui::W::txt("C# key code:"), &m_p->code}, LStretch{true}, LMargins{true}, QFrame::NoFrame);
-    auto l4 = ui::F::gen(ui::L::HB(), {ui::W::txt("Value:"), &m_p->value}, LStretch{true}, LMargins{true}, QFrame::NoFrame);
-    auto l5 = ui::F::gen(ui::L::VB(), {ui::W::txt("Last buttons pressed:"), &m_p->lastKeys}, LStretch{true}, LMargins{true}, QFrame::NoFrame);
-    auto l6 = ui::F::gen(ui::L::VB(), {ui::W::txt("Mouse position:"), &m_p->mousePos}, LStretch{true}, LMargins{true}, QFrame::NoFrame);
-    add_widget(ui::F::gen(ui::L::VB(), {l1,l2,l3,l4,l5, l6}, LStretch{true}, LMargins{false}, QFrame::Box));
+    
+    auto l1 = ui::F::old_gen(ui::L::HB(), {ui::W::txt("Mouse buttons")}, LStretch{true}, LMargins{true}, QFrame::NoFrame);
+    auto l2 = ui::F::old_gen(ui::L::HB(), {ui::W::txt("Name:"), &m_p->keys}, LStretch{true}, LMargins{true}, QFrame::NoFrame);
+    auto l3 = ui::F::old_gen(ui::L::HB(), {ui::W::txt("C# key code:"), &m_p->code}, LStretch{true}, LMargins{true}, QFrame::NoFrame);
+    auto l4 = ui::F::old_gen(ui::L::HB(), {ui::W::txt("Value:"), &m_p->value}, LStretch{true}, LMargins{true}, QFrame::NoFrame);
+    auto l5 = ui::F::old_gen(ui::L::VB(), {ui::W::txt("Last buttons pressed:"), &m_p->lastKeys}, LStretch{true}, LMargins{true}, QFrame::NoFrame);
+    auto l6 = ui::F::old_gen(ui::L::VB(), {ui::W::txt("Mouse position:"), &m_p->mousePos}, LStretch{true}, LMargins{true}, QFrame::NoFrame);
+    add_widget(ui::F::old_gen(ui::L::VB(), {l1,l2,l3,l4,l5, l6}, LStretch{true}, LMargins{false}, QFrame::Box));
     ui::L::stretch(layout());
 
 }

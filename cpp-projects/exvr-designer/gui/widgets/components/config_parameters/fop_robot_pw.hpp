@@ -46,10 +46,10 @@ public :
     ExLineEditW m_writingAddress{"write_address"};
 
     void insert_widgets() override{
-        add_widget(ui::F::gen(ui::L::HB(),{ui::W::txt("Reading address:"), m_readingAddress()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
-        add_widget(ui::F::gen(ui::L::HB(),{ui::W::txt("Reading port:"),    m_readingPort()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
-        add_widget(ui::F::gen(ui::L::HB(),{ui::W::txt("Writing address:"), m_writingAddress()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
-        add_widget(ui::F::gen(ui::L::HB(),{ui::W::txt("Writing port:"),    m_writingPort()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
+        add_widget(ui::F::old_gen(ui::L::HB(),{ui::W::txt("Reading address:"), m_readingAddress()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
+        add_widget(ui::F::old_gen(ui::L::HB(),{ui::W::txt("Reading port:"),    m_readingPort()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
+        add_widget(ui::F::old_gen(ui::L::HB(),{ui::W::txt("Writing address:"), m_writingAddress()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
+        add_widget(ui::F::old_gen(ui::L::HB(),{ui::W::txt("Writing port:"),    m_writingPort()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
     }
 
     void init_and_register_widgets() override{
@@ -80,8 +80,8 @@ public :
     ExFloatSpinBoxW m_forceRatio{"force_ratio"};
 
     void insert_widgets() override{
-
-        add_widget(ui::F::gen(ui::L::VB(),{
+        
+        add_widget(ui::F::old_gen(ui::L::VB(),{
                 ui::W::txt("Action to do:"),
                 m_delayControl(),
                 m_forceControl(),
@@ -90,9 +90,9 @@ public :
                 m_none()
             }, LStretch{true}, LMargins{false},QFrame::NoFrame)
         );
-
-        add_widget(ui::F::gen(ui::L::HB(),{ui::W::txt("Delay:"),       m_delay()},        LStretch{true}, LMargins{false},QFrame::NoFrame));
-        add_widget(ui::F::gen(ui::L::HB(),{ui::W::txt("Force ratio:"), m_forceRatio()},   LStretch{true}, LMargins{false},QFrame::NoFrame));
+        
+        add_widget(ui::F::old_gen(ui::L::HB(),{ui::W::txt("Delay:"),       m_delay()},        LStretch{true}, LMargins{false},QFrame::NoFrame));
+        add_widget(ui::F::old_gen(ui::L::HB(),{ui::W::txt("Force ratio:"), m_forceRatio()},   LStretch{true}, LMargins{false},QFrame::NoFrame));
     }
 
     void init_and_register_widgets() override{

@@ -43,7 +43,7 @@ public :
     ExSpinBoxW m_sbNbSpheres{"max_number_spheres"};
 
     void insert_widgets() override{
-        add_widget(ui::F::gen(ui::L::HB(),{ui::W::txt("Max nb spheres :"), m_sbNbSpheres()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
+        add_widget(ui::F::old_gen(ui::L::HB(),{ui::W::txt("Max nb spheres :"), m_sbNbSpheres()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
     }
     void init_and_register_widgets() override{        
         add_input_ui(m_sbNbSpheres.init_widget(MinV<int>{0}, V<int>{15}, MaxV<int>{1000}, StepV<int>{1}));
@@ -76,18 +76,18 @@ public :
 
 
     void insert_widgets() override{
-        add_widget(ui::F::gen(ui::L::HB(),{m_v3dPos()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
-        add_widget(ui::F::gen(ui::L::HB(),{ui::W::txt("Inner circle ray: "), m_dsbInnerCircle(),
+        add_widget(ui::F::old_gen(ui::L::HB(),{m_v3dPos()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
+        add_widget(ui::F::old_gen(ui::L::HB(),{ui::W::txt("Inner circle ray: "), m_dsbInnerCircle(),
                                                  ui::W::txt("Extern circle ray: "), m_dsbExternCircle()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
-
-        add_widget(ui::F::gen(ui::L::HB(),{ui::W::txt("Sizes spheres :"), m_dsbSizeSpheres()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
-        add_widget(ui::F::gen(ui::L::HB(),{ui::W::txt("Duration time (ms) :"), m_sbDurationTime()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
-        add_widget(ui::F::gen(ui::L::HB(),{ui::W::txt("Spawn interval time (ms) :"), m_sbSpawnTime()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
-
-        add_widget(ui::F::gen(ui::L::HB(),{m_cbCollisionsEnabled(), ui::W::txt("Gravity extra force :"),
+        
+        add_widget(ui::F::old_gen(ui::L::HB(),{ui::W::txt("Sizes spheres :"), m_dsbSizeSpheres()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
+        add_widget(ui::F::old_gen(ui::L::HB(),{ui::W::txt("Duration time (ms) :"), m_sbDurationTime()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
+        add_widget(ui::F::old_gen(ui::L::HB(),{ui::W::txt("Spawn interval time (ms) :"), m_sbSpawnTime()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
+        
+        add_widget(ui::F::old_gen(ui::L::HB(),{m_cbCollisionsEnabled(), ui::W::txt("Gravity extra force :"),
                                                  m_dsbGravityExtraForce()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
-
-        add_widget(ui::F::gen(ui::L::HB(),{m_cbDisplaySpawner()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
+        
+        add_widget(ui::F::old_gen(ui::L::HB(),{m_cbDisplaySpawner()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
     }
 
     void init_and_register_widgets() override{

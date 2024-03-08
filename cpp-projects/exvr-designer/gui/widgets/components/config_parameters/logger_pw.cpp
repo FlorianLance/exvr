@@ -62,22 +62,22 @@ LoggerInitConfigParametersW::LoggerInitConfigParametersW() :  ConfigParametersW(
 }
 
 void LoggerInitConfigParametersW::insert_widgets(){
-
-    add_widget(F::gen(L::VB(),{m_p->resource()}, LStretch{false}));
-    add_widget(F::gen(L::VB(),
+    
+    add_widget(F::old_gen(L::VB(),{m_p->resource()}, LStretch{false}));
+    add_widget(F::old_gen(L::VB(),
         {m_p->dontWriteIfFileExists(), m_p->insertNewRoutineInfo(), m_p->replaceIfFileExists(), m_p->addToEndIfFileExists()},
         LStretch{false}, LMargins{true}, QFrame::Box)
     );
-
-    auto l1 = F::gen(L::HB(), {W::txt("Logging file name:"), m_p->baseFileName()}, LStretch{false}, LMargins{false});
-    auto l2 = F::gen(L::HB(), {m_p->addCurrentInstanceToFileName()}, LStretch{true}, LMargins{false});
-    auto l3 = F::gen(L::HB(), {m_p->addDateToFileName()}, LStretch{true}, LMargins{false});
-    auto l4 = F::gen(L::HB(), {W::txt("Date format:"),    m_p->dateTimeFormat()},  LStretch{true}, LMargins{false});
-    auto l5 = F::gen(L::HB(), {W::txt("File extension:"), m_p->fileExtension()}, LStretch{true}, LMargins{false});
-    auto l6 = F::gen(L::HB(), {m_p->addHeaderLine()}, LStretch{true}, LMargins{false});
-    auto l7 = F::gen(L::HB(), {W::txt("Header line:"), m_p->headerLine()}, LStretch{false}, LMargins{false});
-
-    add_widget(F::gen(L::VB(),
+    
+    auto l1 = F::old_gen(L::HB(), {W::txt("Logging file name:"), m_p->baseFileName()}, LStretch{false}, LMargins{false});
+    auto l2 = F::old_gen(L::HB(), {m_p->addCurrentInstanceToFileName()}, LStretch{true}, LMargins{false});
+    auto l3 = F::old_gen(L::HB(), {m_p->addDateToFileName()}, LStretch{true}, LMargins{false});
+    auto l4 = F::old_gen(L::HB(), {W::txt("Date format:"),    m_p->dateTimeFormat()},  LStretch{true}, LMargins{false});
+    auto l5 = F::old_gen(L::HB(), {W::txt("File extension:"), m_p->fileExtension()}, LStretch{true}, LMargins{false});
+    auto l6 = F::old_gen(L::HB(), {m_p->addHeaderLine()}, LStretch{true}, LMargins{false});
+    auto l7 = F::old_gen(L::HB(), {W::txt("Header line:"), m_p->headerLine()}, LStretch{false}, LMargins{false});
+    
+    add_widget(F::old_gen(L::VB(),
         {l1,l2,l3,l4,l5,l6,l7},
         LStretch{false}, LMargins{true}, QFrame::Box)
     );
@@ -152,23 +152,23 @@ LoggerColumnsInitConfigParametersW::LoggerColumnsInitConfigParametersW():  Confi
 }
 
 void LoggerColumnsInitConfigParametersW::insert_widgets(){
-
-    add_widget(F::gen(L::VB(),{m_p->resource()}, LStretch{false}));
-    add_widget(F::gen(L::VB(),
+    
+    add_widget(F::old_gen(L::VB(),{m_p->resource()}, LStretch{false}));
+    add_widget(F::old_gen(L::VB(),
         {m_p->dontWriteIfFileExists(), m_p->replaceIfFileExists(), m_p->addToEndIfFileExists(), m_p->writeAtEnfOfEachFrame()},
         LStretch{false}, LMargins{true}, QFrame::Box)
     );
-
-    auto l1 = F::gen(L::HB(), {W::txt("Logging file name:"), m_p->baseFileName()}, LStretch{false}, LMargins{false});
-    auto l2 = F::gen(L::HB(), {m_p->addCurrentInstanceToFileName()}, LStretch{true}, LMargins{false});
-    auto l3 = F::gen(L::HB(), {m_p->addDateToFileName()}, LStretch{true}, LMargins{false});
-    auto l4 = F::gen(L::HB(), {W::txt("Date format:"),    m_p->dateTimeFormat()},  LStretch{true}, LMargins{false});
-    auto l5 = F::gen(L::HB(), {W::txt("File extension:"), m_p->fileExtension()}, LStretch{true}, LMargins{false});
-    auto l6 = F::gen(L::HB(), {W::txt("Columns separator:"), m_p->separator()}, LStretch{false}, LMargins{false});
-    auto l7 = F::gen(L::HB(), {m_p->addHeaderLine()}, LStretch{true}, LMargins{false});
-    auto l8 = F::gen(L::HB(), {W::txt("Header line:"), m_p->headerLine()}, LStretch{false}, LMargins{false});
-
-    add_widget(F::gen(L::VB(),
+    
+    auto l1 = F::old_gen(L::HB(), {W::txt("Logging file name:"), m_p->baseFileName()}, LStretch{false}, LMargins{false});
+    auto l2 = F::old_gen(L::HB(), {m_p->addCurrentInstanceToFileName()}, LStretch{true}, LMargins{false});
+    auto l3 = F::old_gen(L::HB(), {m_p->addDateToFileName()}, LStretch{true}, LMargins{false});
+    auto l4 = F::old_gen(L::HB(), {W::txt("Date format:"),    m_p->dateTimeFormat()},  LStretch{true}, LMargins{false});
+    auto l5 = F::old_gen(L::HB(), {W::txt("File extension:"), m_p->fileExtension()}, LStretch{true}, LMargins{false});
+    auto l6 = F::old_gen(L::HB(), {W::txt("Columns separator:"), m_p->separator()}, LStretch{false}, LMargins{false});
+    auto l7 = F::old_gen(L::HB(), {m_p->addHeaderLine()}, LStretch{true}, LMargins{false});
+    auto l8 = F::old_gen(L::HB(), {W::txt("Header line:"), m_p->headerLine()}, LStretch{false}, LMargins{false});
+    
+    add_widget(F::old_gen(L::VB(),
         {l1,l2,l3,l4,l5,l6,l7,l8},
         LStretch{false}, LMargins{true}, QFrame::Box)
     );
@@ -246,20 +246,20 @@ LoggerConditionInitConfigParametersW::LoggerConditionInitConfigParametersW():  C
 }
 
 void LoggerConditionInitConfigParametersW::insert_widgets(){
-
-    add_widget(F::gen(L::VB(),{m_p->resource()}, LStretch{false}));
-    add_widget(F::gen(L::VB(),
+    
+    add_widget(F::old_gen(L::VB(),{m_p->resource()}, LStretch{false}));
+    add_widget(F::old_gen(L::VB(),
         {m_p->dontWriteIfFileExists(), m_p->replaceIfFileExists(), m_p->addToEndIfFileExists()},
         LStretch{false}, LMargins{true}, QFrame::Box)
     );
-
-    auto l1 = F::gen(L::HB(), {W::txt("Logging file base name:"), m_p->baseFileName()}, LStretch{false}, LMargins{false});
-    auto l2 = F::gen(L::VB(), {m_p->addRoutineName(), m_p->addConditionName(), m_p->addBoth(), m_p->addCurrentInstanceToFileName()}, LStretch{false}, LMargins{false});
-    auto l3 = F::gen(L::HB(), {W::txt("File extension:"), m_p->fileExtension()}, LStretch{true}, LMargins{false});
-    auto l4 = F::gen(L::HB(), {m_p->addHeaderLine()}, LStretch{true}, LMargins{false});
-    auto l5 = F::gen(L::HB(), {W::txt("Header line:"), m_p->headerLine()}, LStretch{false}, LMargins{false});
-
-    add_widget(F::gen(L::VB(),
+    
+    auto l1 = F::old_gen(L::HB(), {W::txt("Logging file base name:"), m_p->baseFileName()}, LStretch{false}, LMargins{false});
+    auto l2 = F::old_gen(L::VB(), {m_p->addRoutineName(), m_p->addConditionName(), m_p->addBoth(), m_p->addCurrentInstanceToFileName()}, LStretch{false}, LMargins{false});
+    auto l3 = F::old_gen(L::HB(), {W::txt("File extension:"), m_p->fileExtension()}, LStretch{true}, LMargins{false});
+    auto l4 = F::old_gen(L::HB(), {m_p->addHeaderLine()}, LStretch{true}, LMargins{false});
+    auto l5 = F::old_gen(L::HB(), {W::txt("Header line:"), m_p->headerLine()}, LStretch{false}, LMargins{false});
+    
+    add_widget(F::old_gen(L::VB(),
         {l1,l2,l3,l4,l5},
         LStretch{false}, LMargins{true}, QFrame::Box)
     );
@@ -349,33 +349,33 @@ LoggerExperimentInitConfigParametersW::LoggerExperimentInitConfigParametersW() :
 }
 
 void LoggerExperimentInitConfigParametersW::insert_widgets(){
-
-    add_widget(F::gen(L::VB(),{m_p->resource()}, LStretch{false}));
-    add_widget(F::gen(L::VB(),
+    
+    add_widget(F::old_gen(L::VB(),{m_p->resource()}, LStretch{false}));
+    add_widget(F::old_gen(L::VB(),
         {m_p->dontWriteIfFileExists(), m_p->replaceIfFileExists(), m_p->addToEndIfFileExists()},
         LStretch{false}, LMargins{true}, QFrame::Box)
     );
-
-    add_widget(F::gen(L::VB(),
+    
+    add_widget(F::old_gen(L::VB(),
     {
-        F::gen(L::HB(), {W::txt("Logging file name:"), m_p->baseFileName()}, LStretch{false}, LMargins{false}),
-        F::gen(L::HB(), {m_p->addCurrentInstanceToFileName()}, LStretch{true}, LMargins{false}),
-        F::gen(L::HB(), {m_p->addDateToFileName()}, LStretch{true}, LMargins{false}),
-        F::gen(L::HB(), {W::txt("Date format:"),    m_p->dateTimeFormat()},  LStretch{true}, LMargins{false}),
-        F::gen(L::HB(), {W::txt("File extension:"), m_p->fileExtension()}, LStretch{true}, LMargins{false}),
-        F::gen(L::HB(), {m_p->addHeaderLine()}, LStretch{true}, LMargins{false})},
+                           F::old_gen(L::HB(), {W::txt("Logging file name:"), m_p->baseFileName()}, LStretch{false}, LMargins{false}),
+                           F::old_gen(L::HB(), {m_p->addCurrentInstanceToFileName()}, LStretch{true}, LMargins{false}),
+                           F::old_gen(L::HB(), {m_p->addDateToFileName()}, LStretch{true}, LMargins{false}),
+                           F::old_gen(L::HB(), {W::txt("Date format:"),    m_p->dateTimeFormat()},  LStretch{true}, LMargins{false}),
+                           F::old_gen(L::HB(), {W::txt("File extension:"), m_p->fileExtension()}, LStretch{true}, LMargins{false}),
+                           F::old_gen(L::HB(), {m_p->addHeaderLine()}, LStretch{true}, LMargins{false})},
         LStretch{false}, LMargins{true}, QFrame::Box)
     );
-
-    add_widget(F::gen(L::VB(),
+    
+    add_widget(F::old_gen(L::VB(),
     {
-        F::gen(L::HB(), {W::txt("Columns separator:"), m_p->separator()}, LStretch{false}, LMargins{false}),
-        F::gen(L::HB(), {m_p->eachFrame()}, LStretch{true}, LMargins{false}),
-        F::gen(L::HB(), {W::txt("Add columns:")}, LStretch{true}, LMargins{false}),
-        F::gen(L::HB(), {m_p->addTimeExp(), m_p->addTimeRoutine()}, LStretch{true}, LMargins{false}),
-        F::gen(L::HB(), {m_p->addRoutine(), m_p->addRoutineIter()}, LStretch{true}, LMargins{false}),
-        F::gen(L::HB(), {m_p->addCondition(), m_p->addConditionIter()}, LStretch{true}, LMargins{false}),
-        F::gen(L::HB(), {m_p->addFrameId()}, LStretch{true}, LMargins{false}),
+                              F::old_gen(L::HB(), {W::txt("Columns separator:"), m_p->separator()}, LStretch{false}, LMargins{false}),
+                              F::old_gen(L::HB(), {m_p->eachFrame()}, LStretch{true}, LMargins{false}),
+                              F::old_gen(L::HB(), {W::txt("Add columns:")}, LStretch{true}, LMargins{false}),
+                              F::old_gen(L::HB(), {m_p->addTimeExp(), m_p->addTimeRoutine()}, LStretch{true}, LMargins{false}),
+                              F::old_gen(L::HB(), {m_p->addRoutine(), m_p->addRoutineIter()}, LStretch{true}, LMargins{false}),
+                              F::old_gen(L::HB(), {m_p->addCondition(), m_p->addConditionIter()}, LStretch{true}, LMargins{false}),
+                              F::old_gen(L::HB(), {m_p->addFrameId()}, LStretch{true}, LMargins{false}),
         },LStretch{false}, LMargins{true}, QFrame::Box)
     );
 }
@@ -482,15 +482,15 @@ GlobalLoggerInitConfigParametersW::GlobalLoggerInitConfigParametersW() :  Config
 }
 
 void GlobalLoggerInitConfigParametersW::insert_widgets(){
-
-    add_widget(F::gen(L::VB(),{m_p->resource()}, LStretch{false}));
-
-    auto l1 = F::gen(L::HB(), {W::txt("Global logging directory name:"), m_p->baseSubDirectoryName()}, LStretch{false}, LMargins{false});
-    auto l2 = F::gen(L::HB(), {m_p->addCurrentInstanceToSubDirectoryName()}, LStretch{true}, LMargins{false});
-    auto l3 = F::gen(L::HB(), {m_p->addDateToSubDirectoryName()}, LStretch{true}, LMargins{false});
-    auto l4 = F::gen(L::HB(), {W::txt("Date format:"),    m_p->dateTimeFormat()},  LStretch{true}, LMargins{false});
-    auto l5 = F::gen(L::HB(), {W::txt("File extension:"), m_p->fileExtension()}, LStretch{true}, LMargins{false});
-    add_widget(F::gen(L::VB(),
+    
+    add_widget(F::old_gen(L::VB(),{m_p->resource()}, LStretch{false}));
+    
+    auto l1 = F::old_gen(L::HB(), {W::txt("Global logging directory name:"), m_p->baseSubDirectoryName()}, LStretch{false}, LMargins{false});
+    auto l2 = F::old_gen(L::HB(), {m_p->addCurrentInstanceToSubDirectoryName()}, LStretch{true}, LMargins{false});
+    auto l3 = F::old_gen(L::HB(), {m_p->addDateToSubDirectoryName()}, LStretch{true}, LMargins{false});
+    auto l4 = F::old_gen(L::HB(), {W::txt("Date format:"),    m_p->dateTimeFormat()},  LStretch{true}, LMargins{false});
+    auto l5 = F::old_gen(L::HB(), {W::txt("File extension:"), m_p->fileExtension()}, LStretch{true}, LMargins{false});
+    add_widget(F::old_gen(L::VB(),
         {l1,l2,l3,l4,l5},
         LStretch{false}, LMargins{true}, QFrame::Box)
     );
@@ -504,34 +504,34 @@ void GlobalLoggerInitConfigParametersW::insert_widgets(){
 
     auto l = ui::L::VB();
     m_p->mainW->setLayout(l);
-    l->addWidget(F::gen(L::VB(),{ui::W::txt("<b>Data to log</b>")}, LStretch{false}));
-    l->addWidget(F::gen(L::VB(),{ui::W::txt("Experience:"), F::gen(L::VB(),{m_p->expEllapsedExpTime(), m_p->expFrameId(), m_p->expStartFrameTime()},
+    l->addWidget(F::old_gen(L::VB(),{ui::W::txt("<b>Data to log</b>")}, LStretch{false}));
+    l->addWidget(F::old_gen(L::VB(),{ui::W::txt("Experience:"), F::old_gen(L::VB(),{m_p->expEllapsedExpTime(), m_p->expFrameId(), m_p->expStartFrameTime()},
             LStretch{false})}, LStretch{false}, LMargins{false}));
-    l->addWidget(F::gen(L::VB(),{ui::W::txt("Routine:"), F::gen(L::VB(),{m_p->expEllapsedElementTime(), m_p->expElementOrder(),
+    l->addWidget(F::old_gen(L::VB(),{ui::W::txt("Routine:"), F::old_gen(L::VB(),{m_p->expEllapsedElementTime(), m_p->expElementOrder(),
             m_p->expRoutineName(), m_p->expElementIteration()},LStretch{false})}, LStretch{false}, LMargins{false}));
-    l->addWidget(F::gen(L::VB(),{ui::W::txt("Condition:"),F::gen(L::VB(),{m_p->expConditionName(), m_p->expConditionNbCalls(),
+    l->addWidget(F::old_gen(L::VB(),{ui::W::txt("Condition:"),F::old_gen(L::VB(),{m_p->expConditionName(), m_p->expConditionNbCalls(),
             m_p->expActionsCount(), m_p->expConnectorsCount(), m_p->expConnectionsCount(), m_p->expConditionDuration()},LStretch{false})}, LStretch{false}, LMargins{false}));
-    l->addWidget(F::gen(L::VB(),{ui::W::txt("Cameras (position,rotation):"), F::gen(L::VB(),{m_p->expEyesCamera(), m_p->expCalibration(), m_p->expCameraRig()},LStretch{false})}, LStretch{false}, LMargins{false}));
-    l->addWidget(F::gen(L::VB(),{ui::W::txt("Misc:"), F::gen(L::VB(),{m_p->expFramerate()},LStretch{false})}, LStretch{false}, LMargins{false}));
+    l->addWidget(F::old_gen(L::VB(),{ui::W::txt("Cameras (position,rotation):"), F::old_gen(L::VB(),{m_p->expEyesCamera(), m_p->expCalibration(), m_p->expCameraRig()},LStretch{false})}, LStretch{false}, LMargins{false}));
+    l->addWidget(F::old_gen(L::VB(),{ui::W::txt("Misc:"), F::old_gen(L::VB(),{m_p->expFramerate()},LStretch{false})}, LStretch{false}, LMargins{false}));
     l->addStretch(0);
 
     l = ui::L::VB();
     m_p->inputW->setLayout(l);
-    l->addWidget(F::gen(L::VB(),{m_p->inputsComponents()}, LStretch{false}));
+    l->addWidget(F::old_gen(L::VB(),{m_p->inputsComponents()}, LStretch{false}));
 
     l = ui::L::VB();
     m_p->networkW->setLayout(l);
-    l->addWidget(F::gen(L::VB(),{m_p->networkComponents()}, LStretch{false}));
+    l->addWidget(F::old_gen(L::VB(),{m_p->networkComponents()}, LStretch{false}));
 
     l = ui::L::VB();
     m_p->uiW->setLayout(l);
-    l->addWidget(F::gen(L::VB(),{m_p->uiComponents()}, LStretch{false}));
+    l->addWidget(F::old_gen(L::VB(),{m_p->uiComponents()}, LStretch{false}));
 
     l = ui::L::VB();
     m_p->trackingW->setLayout(l);
-    l->addWidget(F::gen(L::VB(),{m_p->trackingComponents()}, LStretch{false}));
-
-    add_widget(F::gen(L::VB(),{tw}, LStretch{false}, LMargins{false}));
+    l->addWidget(F::old_gen(L::VB(),{m_p->trackingComponents()}, LStretch{false}));
+    
+    add_widget(F::old_gen(L::VB(),{tw}, LStretch{false}, LMargins{false}));
 
     no_end_stretch();
 }

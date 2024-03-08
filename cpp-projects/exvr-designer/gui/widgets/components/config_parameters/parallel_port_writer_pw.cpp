@@ -47,7 +47,7 @@ ParallelPortWriterInitConfigParametersW::ParallelPortWriterInitConfigParametersW
 }
 
 void ParallelPortWriterInitConfigParametersW::insert_widgets(){
-    add_widget(ui::F::gen(ui::L::VB(),{m_p->int16Mode()}, LStretch{false}, LMargins{true},QFrame::NoFrame));
+    add_widget(ui::F::old_gen(ui::L::VB(),{m_p->int16Mode()}, LStretch{false}, LMargins{true},QFrame::NoFrame));
 }
 
 void ParallelPortWriterInitConfigParametersW::init_and_register_widgets(){
@@ -58,8 +58,8 @@ ParallelPortWriterConfigParametersW::ParallelPortWriterConfigParametersW():  Con
 }
 
 void ParallelPortWriterConfigParametersW::insert_widgets(){
-    add_widget(ui::F::gen(ui::L::HB(),{ui::W::txt("Port (hex): "), m_p->port()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
-    add_widget(ui::F::gen(ui::L::HB(),{ui::W::txt("Pulse time: "), m_p->pulseTime()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
+    add_widget(ui::F::old_gen(ui::L::HB(),{ui::W::txt("Port (hex): "), m_p->port()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
+    add_widget(ui::F::old_gen(ui::L::HB(),{ui::W::txt("Pulse time: "), m_p->pulseTime()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
 }
 
 void ParallelPortWriterConfigParametersW::init_and_register_widgets(){

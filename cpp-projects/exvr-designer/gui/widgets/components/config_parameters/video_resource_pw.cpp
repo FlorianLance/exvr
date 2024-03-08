@@ -51,7 +51,7 @@ VideoResourceConfigParametersW::VideoResourceConfigParametersW():  ConfigParamet
 }
 
 void VideoResourceConfigParametersW::insert_widgets(){
-    add_widget(ui::F::gen(ui::L::VB(), {m_p->video(), m_p->playNewRoutine(), m_p->playAudio(), m_p->playImages()}, LStretch{false}, LMargins{true}, QFrame::Box));
+    add_widget(ui::F::old_gen(ui::L::VB(), {m_p->video(), m_p->playNewRoutine(), m_p->playAudio(), m_p->playImages()}, LStretch{false}, LMargins{true}, QFrame::Box));
 }
 
 void VideoResourceConfigParametersW::init_and_register_widgets(){

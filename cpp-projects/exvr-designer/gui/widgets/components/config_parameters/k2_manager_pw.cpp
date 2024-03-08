@@ -50,11 +50,11 @@ K2ManagerInitConfigParametersW::K2ManagerInitConfigParametersW():  ConfigParamet
 }
 
 void K2ManagerInitConfigParametersW::insert_widgets(){
-    add_widget(ui::F::gen(ui::L::VB(), {m_p->config(), ui::W::txt("Optional:"),m_p->calib(),m_p->camera()}, LStretch{false}, LMargins{true}, QFrame::Box));
-    add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Cameras mode:"), m_p->mode()}, LStretch{false}, LMargins{true}, QFrame::NoFrame));
-    add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Grabbers id to use (ex:\"0;1;2\"):"), m_p->camarasToUse()}, LStretch{false}, LMargins{true}, QFrame::NoFrame));
+    add_widget(ui::F::old_gen(ui::L::VB(), {m_p->config(), ui::W::txt("Optional:"),m_p->calib(),m_p->camera()}, LStretch{false}, LMargins{true}, QFrame::Box));
+    add_widget(ui::F::old_gen(ui::L::HB(), {ui::W::txt("Cameras mode:"), m_p->mode()}, LStretch{false}, LMargins{true}, QFrame::NoFrame));
+    add_widget(ui::F::old_gen(ui::L::HB(), {ui::W::txt("Grabbers id to use (ex:\"0;1;2\"):"), m_p->camarasToUse()}, LStretch{false}, LMargins{true}, QFrame::NoFrame));
     add_widget(m_p->debugBypassDevice());
-    add_widget(ui::F::gen(ui::L::VB(), {ui::W::txt("Infos:"), m_p->infos()}, LStretch{false}, LMargins{true}, QFrame::Box));
+    add_widget(ui::F::old_gen(ui::L::VB(), {ui::W::txt("Infos:"), m_p->infos()}, LStretch{false}, LMargins{true}, QFrame::Box));
 }
 
 void K2ManagerInitConfigParametersW::init_and_register_widgets(){
@@ -94,9 +94,9 @@ K2ManagerConfigParametersW::K2ManagerConfigParametersW():  ConfigParametersW(), 
 }
 
 void K2ManagerConfigParametersW::insert_widgets(){
-    add_widget(ui::F::gen(ui::L::HB(),{m_p->updateFromCameras(), ui::W::txt("Camera ask frame rate: "), m_p->fps()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
-    add_widget(ui::F::gen(ui::L::HB(),{ui::W::txt("Max diff time(ms): "), m_p->maxDiffTime()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
-    add_widget(ui::F::gen(ui::L::VB(), {ui::W::txt("Infos:"), m_p->infos()}, LStretch{false}, LMargins{true}, QFrame::Box));
+    add_widget(ui::F::old_gen(ui::L::HB(),{m_p->updateFromCameras(), ui::W::txt("Camera ask frame rate: "), m_p->fps()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
+    add_widget(ui::F::old_gen(ui::L::HB(),{ui::W::txt("Max diff time(ms): "), m_p->maxDiffTime()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
+    add_widget(ui::F::old_gen(ui::L::VB(), {ui::W::txt("Infos:"), m_p->infos()}, LStretch{false}, LMargins{true}, QFrame::Box));
 }
 
 void K2ManagerConfigParametersW::init_and_register_widgets(){

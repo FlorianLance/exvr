@@ -62,7 +62,7 @@ ComponentsManagerW::ComponentsManagerW(){
 
     auto cTxt = ui::W::txt(QSL("Categories to display: "));
     cTxt->setStyleSheet("color:#c0c0c0; font: 12px;");
-    w1->layout()->addWidget(ui::F::gen_frame( ui::L::HB(), {cTxt, &m_cbComponentsToDisplay}, s));
+    w1->layout()->addWidget(ui::F::old_gen_frame( ui::L::HB(), {cTxt, &m_cbComponentsToDisplay}, s));
 
     auto rcTxt = ui::W::txt(tr(" ↓ Right click below ↓ "));
     rcTxt->setStyleSheet("color:#c0c0c0; font: 12px");

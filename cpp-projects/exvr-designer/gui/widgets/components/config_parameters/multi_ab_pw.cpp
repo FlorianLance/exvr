@@ -36,7 +36,7 @@ MultiABInitConfigParametersW::MultiABInitConfigParametersW():  ConfigParametersW
 
 void MultiABInitConfigParametersW::insert_widgets(){
     add_sub_part_widget(m_p->transfo);
-    add_widget(ui::F::gen(ui::L::VB(),{
+    add_widget(ui::F::old_gen(ui::L::VB(),{
         ui::W::txt(QSL("<b>Asset bundle</b>")),
         m_p->abList()}, LStretch{false}, LMargins{true}, QFrame::Box
     ));
@@ -58,7 +58,7 @@ MultiABConfigParametersW::MultiABConfigParametersW():  ConfigParametersW(), m_p(
 
 void MultiABConfigParametersW::insert_widgets(){
     add_sub_part_widget(m_p->transfo);
-    add_widget(ui::F::gen(ui::L::VB(),{
+    add_widget(ui::F::old_gen(ui::L::VB(),{
         ui::W::txt(QSL("<b>Asset bundle</b>")),
         m_p->currentAB()}, LStretch{false}, LMargins{true}, QFrame::Box
     ));

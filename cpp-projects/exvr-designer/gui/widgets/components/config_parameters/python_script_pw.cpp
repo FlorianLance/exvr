@@ -60,12 +60,12 @@ void PythonScriptInitConfigParametersW::insert_widgets(){
 
 
     auto l1 = ui::L::HB();
-    m_layout->addWidget(ui::F::gen(l1, {ui::W::txt("Component class to load:"),m_p->className()},  LStretch{true},LMargins{true}, QFrame::Box));
+    m_layout->addWidget(ui::F::old_gen(l1, {ui::W::txt("Component class to load:"),m_p->className()},  LStretch{true},LMargins{true}, QFrame::Box));
     l1->setStretch(0,1);
     l1->setStretch(1,10);
     l1->setStretch(2,1);
-
-    m_layout->addWidget(ui::F::gen(ui::L::HB(), {m_p->generator()},  LStretch{false},LMargins{false}, QFrame::Box));
+    
+    m_layout->addWidget(ui::F::old_gen(ui::L::HB(), {m_p->generator()},  LStretch{false},LMargins{false}, QFrame::Box));
     m_layout->setStretch(0,1);
     m_layout->setStretch(1,50);
 
@@ -140,7 +140,7 @@ PythonScriptConfigParametersW::PythonScriptConfigParametersW() :  ConfigParamete
 }
 
 void PythonScriptConfigParametersW::insert_widgets(){
-    add_widget(ui::F::gen(ui::L::HB(), {m_p->pGenerator()},  LStretch{false},LMargins{false}, QFrame::Box));
+    add_widget(ui::F::old_gen(ui::L::HB(), {m_p->pGenerator()},  LStretch{false},LMargins{false}, QFrame::Box));
     no_end_stretch();
 }
 

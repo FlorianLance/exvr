@@ -32,6 +32,7 @@
 
 // qt-utility
 #include "qt_ui.hpp"
+#include "qt_str.hpp"
 
 using namespace tool;
 using namespace tool::ex;
@@ -55,7 +56,7 @@ BenchmarkDialog::BenchmarkDialog(){
     auto unit = new QComboBox();
     auto minT = new QDoubleSpinBox();
     pbClear = new QPushButton("Clear");
-    layout()->addWidget(ui::F::gen(ui::L::HB(), {cbSort, ui::W::txt("Unit:"), unit, ui::W::txt("Min T:"), minT, pbClear}, LStretch{true}, LMargins{true}, QFrame::NoFrame));
+    layout()->addWidget(ui::F::old_gen(ui::L::HB(), {cbSort, ui::W::txt("Unit:"), unit, ui::W::txt("Min T:"), minT, pbClear}, LStretch{true}, LMargins{true}, QFrame::NoFrame));
     layout()->addWidget(view);
 
     connect(pbClear, &QPushButton::clicked, this, [=]{

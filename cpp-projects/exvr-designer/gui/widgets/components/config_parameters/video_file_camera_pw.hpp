@@ -43,7 +43,7 @@ public :
 
     void insert_widgets() override{
         add_sub_part_widget(m_eye);
-        add_widget(ui::F::gen(ui::L::HB(), {m_video()}, LStretch{false}, LMargins{true}, QFrame::Box));
+        add_widget(ui::F::old_gen(ui::L::HB(), {m_video()}, LStretch{false}, LMargins{true}, QFrame::Box));
     }
 
     void init_and_register_widgets() override{
@@ -66,7 +66,7 @@ public :
     void insert_widgets() override{
         layout()->setContentsMargins(0,0,0,0);
         add_sub_part_widget(m_cameraSettings);
-        add_widget(ui::F::gen(ui::L::HB(), {m_cbUseVideoSize()}, LStretch{true}, LMargins{true}, QFrame::Box));
+        add_widget(ui::F::old_gen(ui::L::HB(), {m_cbUseVideoSize()}, LStretch{true}, LMargins{true}, QFrame::Box));
     }
 
     void init_and_register_widgets() override{

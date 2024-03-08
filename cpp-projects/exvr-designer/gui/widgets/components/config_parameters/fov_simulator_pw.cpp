@@ -29,11 +29,11 @@ using namespace tool::ex;
 
 
 void FovSimulatorInitConfigParametersW::insert_widgets(){
-
-    auto distanceF  = ui::F::gen(ui::L::HB(), {ui::W::txt("Distance"),distance()}, LStretch{true}, LMargins{true}, QFrame::NoFrame);
-    auto horiFovF   = ui::F::gen(ui::L::HB(), {ui::W::txt("Horizontal FOV(°)"), horizontalFov()}, LStretch{true}, LMargins{true}, QFrame::NoFrame);
-    auto vertiFovF  = ui::F::gen(ui::L::HB(), {ui::W::txt("Vertical FOV(°)"), verticalFov()}, LStretch{true}, LMargins{true}, QFrame::NoFrame);
-    add_widget(ui::F::gen(ui::L::VB(), {distanceF, horiFovF, vertiFovF}, LStretch{false}, LMargins{true}, QFrame::Box));
+    
+    auto distanceF  = ui::F::old_gen(ui::L::HB(), {ui::W::txt("Distance"),distance()}, LStretch{true}, LMargins{true}, QFrame::NoFrame);
+    auto horiFovF   = ui::F::old_gen(ui::L::HB(), {ui::W::txt("Horizontal FOV(°)"), horizontalFov()}, LStretch{true}, LMargins{true}, QFrame::NoFrame);
+        auto vertiFovF  = ui::F::old_gen(ui::L::HB(), {ui::W::txt("Vertical FOV(°)"), verticalFov()}, LStretch{true}, LMargins{true}, QFrame::NoFrame);
+        add_widget(ui::F::old_gen(ui::L::VB(), {distanceF, horiFovF, vertiFovF}, LStretch{false}, LMargins{true}, QFrame::Box));
 }
 
 void FovSimulatorInitConfigParametersW::init_and_register_widgets(){
@@ -49,8 +49,8 @@ void FovSimulatorInitConfigParametersW::init_and_register_widgets(){
 
 
 void FovSimulatorConfigParametersW::insert_widgets(){
-    auto colorF     = ui::F::gen(ui::L::HB(), {ui::W::txt("Screen color"), color()}, LStretch{true}, LMargins{true}, QFrame::NoFrame);
-    add_widget(ui::F::gen(ui::L::VB(), {colorF}, LStretch{false}, LMargins{true}, QFrame::Box));
+    auto colorF     = ui::F::old_gen(ui::L::HB(), {ui::W::txt("Screen color"), color()}, LStretch{true}, LMargins{true}, QFrame::NoFrame);
+    add_widget(ui::F::old_gen(ui::L::VB(), {colorF}, LStretch{false}, LMargins{true}, QFrame::Box));
 }
 
 void FovSimulatorConfigParametersW::init_and_register_widgets(){

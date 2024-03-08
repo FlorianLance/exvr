@@ -42,7 +42,7 @@ SliderUiInitConfigParametersW::SliderUiInitConfigParametersW() :  ConfigParamete
 }
 
 void SliderUiInitConfigParametersW::insert_widgets(){
-    add_widget(ui::F::gen(ui::L::HB(), {m_p->horizontalSlider()}));
+    add_widget(ui::F::old_gen(ui::L::HB(), {m_p->horizontalSlider()}));
 }
 
 void SliderUiInitConfigParametersW::init_and_register_widgets(){
@@ -130,25 +130,25 @@ void SliderUiConfigParametersW::insert_widgets(){
     m_p->tw1->addTab(containerW, "Container");
     containerL->addWidget(m_p->wscsp.frame);
     containerL->addStretch();
-
-    QFrame *minMaxVal = ui::F::gen(ui::L::HB(), {
+    
+    QFrame *minMaxVal = ui::F::old_gen(ui::L::HB(), {
             ui::W::txt("Min "),     m_p->minValue(),
             ui::W::txt("Value"),    m_p->initialValue(),
             ui::W::txt("Max"),      m_p->maxValue(),
             ui::W::txt("Step"),     m_p->stepValue()
         },LStretch{true}, LMargins{false}
     );
-    QFrame *handleCol     = ui::F::gen(ui::L::VB(), {ui::W::txt("Handle"),     m_p->colHandle()});
-    QFrame *fillAreaCol   = ui::F::gen(ui::L::VB(), {ui::W::txt("Fill area"),  m_p->colFillArea()});
-    QFrame *restAreaCol   = ui::F::gen(ui::L::VB(), {ui::W::txt("Rest area"),  m_p->colRestArea()});
-    QFrame *colors        = ui::F::gen(ui::L::HB(), {handleCol, fillAreaCol, restAreaCol}, LStretch{true}, LMargins{false});
-
-    auto v1 = ui::F::gen(ui::L::VB(), {ui::W::txt("<b>Values</b>"), m_p->wholeValue(), minMaxVal}, LStretch{true}, LMargins{false});
-    auto v2 = ui::F::gen(ui::L::VB(), {ui::W::txt("<b>Init slider with:</b>"), m_p->normalStart(),m_p->onceStart(),m_p->randomStart(),m_p->onceRandomStart()}, LStretch{true}, LMargins{false});
-    auto st = ui::F::gen(ui::L::HB(), {m_p->sliderText1(), m_p->sliderText2()}, LStretch{true}, LMargins{false});
-    auto v3 = ui::F::gen(ui::L::VB(), {ui::W::txt("<b>Display</b>"), m_p->displayMinMax(), m_p->displayMinMaxValue(), m_p->displaySliderTextes(), st, m_p->displayNothing(), m_p->displaySteps()}, LStretch{true}, LMargins{false});
-    auto v4 = ui::F::gen(ui::L::VB(), {ui::W::txt("<b>Colors</b>"), colors}, LStretch{true}, LMargins{false});
-    auto sliderTab = ui::F::gen(ui::L::VB(), {v1,v2,v3,v4}, LStretch{true}, LMargins{true});
+    QFrame *handleCol     = ui::F::old_gen(ui::L::VB(), {ui::W::txt("Handle"),     m_p->colHandle()});
+    QFrame *fillAreaCol   = ui::F::old_gen(ui::L::VB(), {ui::W::txt("Fill area"),  m_p->colFillArea()});
+    QFrame *restAreaCol   = ui::F::old_gen(ui::L::VB(), {ui::W::txt("Rest area"),  m_p->colRestArea()});
+    QFrame *colors        = ui::F::old_gen(ui::L::HB(), {handleCol, fillAreaCol, restAreaCol}, LStretch{true}, LMargins{false});
+    
+    auto v1 = ui::F::old_gen(ui::L::VB(), {ui::W::txt("<b>Values</b>"), m_p->wholeValue(), minMaxVal}, LStretch{true}, LMargins{false});
+    auto v2 = ui::F::old_gen(ui::L::VB(), {ui::W::txt("<b>Init slider with:</b>"), m_p->normalStart(),m_p->onceStart(),m_p->randomStart(),m_p->onceRandomStart()}, LStretch{true}, LMargins{false});
+    auto st = ui::F::old_gen(ui::L::HB(), {m_p->sliderText1(), m_p->sliderText2()}, LStretch{true}, LMargins{false});
+    auto v3 = ui::F::old_gen(ui::L::VB(), {ui::W::txt("<b>Display</b>"), m_p->displayMinMax(), m_p->displayMinMaxValue(), m_p->displaySliderTextes(), st, m_p->displayNothing(), m_p->displaySteps()}, LStretch{true}, LMargins{false});
+    auto v4 = ui::F::old_gen(ui::L::VB(), {ui::W::txt("<b>Colors</b>"), colors}, LStretch{true}, LMargins{false});
+    auto sliderTab = ui::F::old_gen(ui::L::VB(), {v1,v2,v3,v4}, LStretch{true}, LMargins{true});
     sliderTab->layout()->setSpacing(10);
 
     m_p->tw1->addTab(sliderTab, "Slider");
@@ -156,9 +156,9 @@ void SliderUiConfigParametersW::insert_widgets(){
 
     m_p->tw2->addTab(m_p->text1.frame, "Description 1");
     m_p->tw2->addTab(m_p->text2.frame, "Description 2");
-    m_p->tw2->addTab(ui::F::gen(ui::L::VB(), {m_p->minTxt.frame}, LStretch{true}, LMargins{false}), "Min");
-    m_p->tw2->addTab(ui::F::gen(ui::L::VB(), {m_p->maxTxt.frame}, LStretch{true}, LMargins{false}), "Max");
-    m_p->tw2->addTab(ui::F::gen(ui::L::VB(), {m_p->valueTxt.frame}, LStretch{true}, LMargins{false}), "Current value");
+    m_p->tw2->addTab(ui::F::old_gen(ui::L::VB(), {m_p->minTxt.frame}, LStretch{true}, LMargins{false}), "Min");
+    m_p->tw2->addTab(ui::F::old_gen(ui::L::VB(), {m_p->maxTxt.frame}, LStretch{true}, LMargins{false}), "Max");
+    m_p->tw2->addTab(ui::F::old_gen(ui::L::VB(), {m_p->valueTxt.frame}, LStretch{true}, LMargins{false}), "Current value");
 }
 
 void SliderUiConfigParametersW::init_and_register_widgets(){

@@ -63,7 +63,7 @@ struct TransformSubPart::Impl{
 };
 
 TransformSubPart::TransformSubPart(QString name) : m_p(std::make_unique<Impl>(name)){
-    frame = ui::F::gen(ui::L::VB(),{m_p->tr()}, LStretch{false},LMargins{false});
+    frame = ui::F::old_gen(ui::L::VB(),{m_p->tr()}, LStretch{false},LMargins{false});
     m_p->tr.w->layout()->addWidget(m_p->doNotApply());
 }
 
@@ -117,13 +117,13 @@ struct WordSpaceCameraCanvasSubPart::Impl{
 };
 
 WordSpaceCameraCanvasSubPart::WordSpaceCameraCanvasSubPart() : m_p(std::make_unique<Impl>()){
-
-    auto f0 = ui::F::gen(ui::L::HB(),{ui::W::txt("Distance: "),m_p->distance()}, LStretch{true},LMargins{false});
-    auto f1 = ui::F::gen(ui::L::HB(),{ui::W::txt("Scale factor: "), m_p->scaleFactor(),
+    
+    auto f0 = ui::F::old_gen(ui::L::HB(),{ui::W::txt("Distance: "),m_p->distance()}, LStretch{true},LMargins{false});
+    auto f1 = ui::F::old_gen(ui::L::HB(),{ui::W::txt("Scale factor: "), m_p->scaleFactor(),
                                       ui::W::txt("Width: "),m_p->width(), ui::W::txt("Heght: "),m_p->height()}, LStretch{true},LMargins{false});
-    auto f2 = ui::F::gen(ui::L::HB(),{ui::W::txt("Pivots x: "),m_p->pivotX(), ui::W::txt("y: "),m_p->pivotY()}, LStretch{true},LMargins{false});
-    auto f3 = ui::F::gen(ui::L::HB(),{m_p->rotation()}, LStretch{true},LMargins{false});
-    frame   = ui::F::gen(ui::L::VB(),{f0,f1,f2,f3}, LStretch{false},LMargins{true},QFrame::Shape::Box);
+    auto f2 = ui::F::old_gen(ui::L::HB(),{ui::W::txt("Pivots x: "),m_p->pivotX(), ui::W::txt("y: "),m_p->pivotY()}, LStretch{true},LMargins{false});
+    auto f3 = ui::F::old_gen(ui::L::HB(),{m_p->rotation()}, LStretch{true},LMargins{false});
+    frame   = ui::F::old_gen(ui::L::VB(),{f0,f1,f2,f3}, LStretch{false},LMargins{true},QFrame::Shape::Box);
 }
 
 WordSpaceCameraCanvasSubPart::~WordSpaceCameraCanvasSubPart(){  }
@@ -173,7 +173,7 @@ WordSpaceCanvasSubPart::WordSpaceCanvasSubPart() : m_p(std::make_unique<Impl>())
     l->addWidget(ui::W::txt("<b>Viewer settings</b>"),  idC++, 0, 1, 7);
     l->addWidget(m_p->followEyeCamera(),        ++idC, 0, 1, 7);
     l->addWidget(m_p->useOriginalSize(),        ++idC, 0, 1, 7);
-    l->addWidget(ui::W::horizontal_line(),      ++idC, 0, 1, 7);
+    l->addWidget(ui::F::h_line(),      ++idC, 0, 1, 7);
     l->addWidget(ui::W::txt("[Size]"),            ++idC, 0, 1, 1);
     l->addWidget(ui::W::txt("scale factor: "),  idC,   1, 1, 1);
     l->addWidget(m_p->scaleFactor(),            idC,   2, 1, 1);
@@ -205,17 +205,17 @@ WordSpaceCanvasSubPart::WordSpaceCanvasSubPart() : m_p(std::make_unique<Impl>())
     l->addWidget(m_p->rotation.y(),             idC,   4, 1, 1);
     l->addWidget(m_p->rotation.zText,           idC,   5, 1, 1);
     l->addWidget(m_p->rotation.z(),             idC,   6, 1, 1);
-
-    l->addWidget(ui::W::horizontal_line(),      ++idC, 0, 1, 7);
-
-    auto bgc = ui::F::gen(ui::L::HB(), {ui::W::txt("Background color"),  m_p->backgroundColor()}, LStretch{true}, LMargins{false}, QFrame::NoFrame);
+    
+    l->addWidget(ui::F::h_line(),      ++idC, 0, 1, 7);
+    
+    auto bgc = ui::F::old_gen(ui::L::HB(), {ui::W::txt("Background color"),  m_p->backgroundColor()}, LStretch{true}, LMargins{false}, QFrame::NoFrame);
     l->addWidget(bgc,                           ++idC, 0, 1, 7);
-
-    l->addWidget(ui::W::horizontal_line(),      ++idC, 0, 1, 7);
+    
+    l->addWidget(ui::F::h_line(),      ++idC, 0, 1, 7);
     l->addWidget(ui::W::txt("Eyes to render:"),  ++idC, 0, 1, 3);
     l->addWidget(m_p->eye(),                    idC  , 3, 1, 4);
 
-    frame = ui::F::gen_frame(l, {}, 0, LMarginsD{6,4,6,4,4}, QFrame::Shape::Box);
+    frame = ui::F::old_gen_frame(l, {}, 0, LMarginsD{6,4,6,4,4}, QFrame::Shape::Box);
 }
 
 WordSpaceCanvasSubPart::~WordSpaceCanvasSubPart(){}
@@ -285,13 +285,13 @@ struct EyeRendererSubPart::Impl{
 };
 
 EyeRendererSubPart::EyeRendererSubPart(): m_p(std::make_unique<Impl>()){
-    frame = ui::F::gen(ui::L::HB(),{&m_p->t,m_p->eye()}, LStretch{false},LMargins{true});
+    frame = ui::F::old_gen(ui::L::HB(),{&m_p->t,m_p->eye()}, LStretch{false},LMargins{true});
 }
 
 EyeRendererSubPart::~EyeRendererSubPart(){}
 
 EyeRendererSubPart *EyeRendererSubPart::init_widget(){
-    ui::W::init_label(&m_p->t, "Eyes to render: ", true);
+    ui::W::init(&m_p->t, "Eyes to render: ", true);
     add_input_ui(m_p->eye.init_widget({"Both eyes", "Left eye", "Right eye"}, Index{0}, true));
     return this;
 }
@@ -404,33 +404,33 @@ TextSubPart::TextSubPart(QString name, bool removeInputText) : m_p(std::make_uni
         l->addWidget(m_p->text(),                ++idC, 0, 5, 6);
 
         idC += 4;
-        auto rt = ui::F::gen(ui::L::HB(), {m_p->richtext(), m_p->wrapping()}, LStretch{true}, LMargins{false}, QFrame::NoFrame);
+        auto rt = ui::F::old_gen(ui::L::HB(), {m_p->richtext(), m_p->wrapping()}, LStretch{true}, LMargins{false}, QFrame::NoFrame);
         l->addWidget(rt,                         ++idC, 1, 1, 6);
-        l->addWidget(ui::W::horizontal_line(),   ++idC, 0, 1, 7);
+        l->addWidget(ui::F::h_line(),   ++idC, 0, 1, 7);
     }
-
-    auto fontSize = ui::F::gen(ui::L::HB(), {ui::W::txt("[Sizes]"), ui::W::txt("font"), m_p->fontSize(), m_p->automaticFontSize(), ui::W::txt("outline"), m_p->outlineWidth()}, LStretch{true}, LMargins{false}, QFrame::NoFrame);
+    
+    auto fontSize = ui::F::old_gen(ui::L::HB(), {ui::W::txt("[Sizes]"), ui::W::txt("font"), m_p->fontSize(), m_p->automaticFontSize(), ui::W::txt("outline"), m_p->outlineWidth()}, LStretch{true}, LMargins{false}, QFrame::NoFrame);
     l->addWidget(fontSize,                  ++idC, 0, 1, 7);
-    l->addWidget(ui::W::horizontal_line(),  ++idC, 0, 1, 7);
-
-    auto alignment = ui::F::gen(ui::L::HB(), {ui::W::txt("[Alignment]"), m_p->alignment()}, LStretch{true}, LMargins{false}, QFrame::NoFrame);
+    l->addWidget(ui::F::h_line(),  ++idC, 0, 1, 7);
+    
+    auto alignment = ui::F::old_gen(ui::L::HB(), {ui::W::txt("[Alignment]"), m_p->alignment()}, LStretch{true}, LMargins{false}, QFrame::NoFrame);
     l->addWidget(alignment,                  ++idC, 0, 1, 7);
-    l->addWidget(ui::W::horizontal_line(),  ++idC, 0, 1, 7);
+    l->addWidget(ui::F::h_line(),  ++idC, 0, 1, 7);
 
     l->addWidget(ui::W::txt("[Style]"),   ++idC, 0, 1, 1);
-    auto style = ui::F::gen(ui::L::HB(), {m_p->none(), m_p->lowerCase(), m_p->upperCase(), m_p->italic(), m_p->bold(), m_p->highlight(), m_p->underline()}, LStretch{true}, LMargins{false}, QFrame::NoFrame);
+    auto style = ui::F::old_gen(ui::L::HB(), {m_p->none(), m_p->lowerCase(), m_p->upperCase(), m_p->italic(), m_p->bold(), m_p->highlight(), m_p->underline()}, LStretch{true}, LMargins{false}, QFrame::NoFrame);
     l->addWidget(style,                  idC,   1, 1, 6);
-    l->addWidget(ui::W::horizontal_line(),  ++idC, 0, 1, 7);
+    l->addWidget(ui::F::h_line(),  ++idC, 0, 1, 7);
 
     l->addWidget(ui::W::txt("[Spacing]"), ++idC, 0, 1, 1);
-    auto spacing = ui::F::gen(ui::L::HB(), {ui::W::txt("par:"),m_p->paragraphSpacing(),ui::W::txt("line:"), m_p->lineSpacing(), ui::W::txt("word:"),m_p->wordSpacing(),ui::W::txt("char:"), m_p->characterSpacing()}, LStretch{true}, LMargins{false}, QFrame::NoFrame);
+    auto spacing = ui::F::old_gen(ui::L::HB(), {ui::W::txt("par:"),m_p->paragraphSpacing(),ui::W::txt("line:"), m_p->lineSpacing(), ui::W::txt("word:"),m_p->wordSpacing(),ui::W::txt("char:"), m_p->characterSpacing()}, LStretch{true}, LMargins{false}, QFrame::NoFrame);
     l->addWidget(spacing,                  idC, 1, 1, 6);
 
     l->addWidget(ui::W::txt("[Colors]"), ++idC, 0, 1, 1);
-    auto colors = ui::F::gen(ui::L::HB(), {ui::W::txt("Text"),ui::W::txt("Face"),m_p->faceColor(), ui::W::txt("Outline"), m_p->outlineColor()}, LStretch{true}, LMargins{false}, QFrame::NoFrame);
+    auto colors = ui::F::old_gen(ui::L::HB(), {ui::W::txt("Text"),ui::W::txt("Face"),m_p->faceColor(), ui::W::txt("Outline"), m_p->outlineColor()}, LStretch{true}, LMargins{false}, QFrame::NoFrame);
     l->addWidget(colors,                  idC, 1, 1, 6);
 
-    frame = ui::F::gen_frame(l, {}, 0, LMarginsD{6,4,6,4,4}, QFrame::Shape::Box);
+    frame = ui::F::old_gen_frame(l, {}, 0, LMarginsD{6,4,6,4,4}, QFrame::Shape::Box);
 }
 
 TextSubPart::~TextSubPart(){}

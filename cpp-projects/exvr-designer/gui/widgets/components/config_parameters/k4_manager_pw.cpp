@@ -77,18 +77,18 @@ K4ManagerInitConfigParametersW::K4ManagerInitConfigParametersW():  ConfigParamet
 }
 
 void K4ManagerInitConfigParametersW::insert_widgets(){
-
-    auto initDevice = ui::F::gen(ui::L::HB(), {ui::W::txt("Init device settings with:"), m_p->deviceFile(),m_p->deviceDefault(),m_p->deviceNothing()}, LStretch{true}, LMargins{false}, QFrame::NoFrame);
-    auto initColor = ui::F::gen(ui::L::HB(), {ui::W::txt("Init color settings with:"), m_p->colorFile(),m_p->colorDefault(),m_p->colorNothing()}, LStretch{true}, LMargins{false}, QFrame::NoFrame);
-    auto initFilters = ui::F::gen(ui::L::HB(), {ui::W::txt("Init filters settings with:"), m_p->filtersFile(),m_p->filtersDefault(),m_p->filtersNothing()}, LStretch{true}, LMargins{false}, QFrame::NoFrame);
-
-    add_widget(ui::F::gen(ui::L::VB(),
+    
+    auto initDevice = ui::F::old_gen(ui::L::HB(), {ui::W::txt("Init device settings with:"), m_p->deviceFile(),m_p->deviceDefault(),m_p->deviceNothing()}, LStretch{true}, LMargins{false}, QFrame::NoFrame);
+    auto initColor = ui::F::old_gen(ui::L::HB(), {ui::W::txt("Init color settings with:"), m_p->colorFile(),m_p->colorDefault(),m_p->colorNothing()}, LStretch{true}, LMargins{false}, QFrame::NoFrame);
+    auto initFilters = ui::F::old_gen(ui::L::HB(), {ui::W::txt("Init filters settings with:"), m_p->filtersFile(),m_p->filtersDefault(),m_p->filtersNothing()}, LStretch{true}, LMargins{false}, QFrame::NoFrame);
+    
+    add_widget(ui::F::old_gen(ui::L::VB(),
         {m_p->networkS(), initDevice,initFilters, initColor,m_p->deviceS(), m_p->colorS(),m_p->filters(),m_p->models()}, LStretch{false}, LMargins{true}, QFrame::Box)
     );
-
-    add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Grabbers id to use (ex:\"0;1;2\"):"), m_p->camarasToUse()}, LStretch{false}, LMargins{true}, QFrame::NoFrame));
+    
+    add_widget(ui::F::old_gen(ui::L::HB(), {ui::W::txt("Grabbers id to use (ex:\"0;1;2\"):"), m_p->camarasToUse()}, LStretch{false}, LMargins{true}, QFrame::NoFrame));
     add_widget(m_p->debugBypassDevice());
-    add_widget(ui::F::gen(ui::L::VB(), {ui::W::txt("Infos:"), m_p->infos()}, LStretch{false}, LMargins{true}, QFrame::Box));
+    add_widget(ui::F::old_gen(ui::L::VB(), {ui::W::txt("Infos:"), m_p->infos()}, LStretch{false}, LMargins{true}, QFrame::Box));
 }
 
 void K4ManagerInitConfigParametersW::init_and_register_widgets(){
@@ -155,8 +155,8 @@ K4ManagerConfigParametersW::K4ManagerConfigParametersW():  ConfigParametersW(), 
 }
 
 void K4ManagerConfigParametersW::insert_widgets(){
-    add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Delay (ms):"), m_p->delay()}, LStretch{false}, LMargins{true}, QFrame::NoFrame));
-    add_widget(ui::F::gen(ui::L::VB(), {ui::W::txt("Infos:"), m_p->infos()}, LStretch{false}, LMargins{true}, QFrame::Box));
+    add_widget(ui::F::old_gen(ui::L::HB(), {ui::W::txt("Delay (ms):"), m_p->delay()}, LStretch{false}, LMargins{true}, QFrame::NoFrame));
+    add_widget(ui::F::old_gen(ui::L::VB(), {ui::W::txt("Infos:"), m_p->infos()}, LStretch{false}, LMargins{true}, QFrame::Box));
 }
 
 void K4ManagerConfigParametersW::init_and_register_widgets(){

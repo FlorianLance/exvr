@@ -115,9 +115,9 @@ JoypadInitConfigParametersW::JoypadInitConfigParametersW() : ConfigParametersW()
 void JoypadInitConfigParametersW::insert_widgets(){
 
     // insert ui elements
-    add_widget(ui::F::gen(ui::L::VB(), {ui::W::txt("<b>Controllers detected:</b>"),m_p->devicesLL()}, LStretch{false}, LMargins{true}, QFrame::Box));
-
-    QFrame *allAxis = ui::F::gen(ui::L::G(), {}, LStretch{true}, LMargins{true}, QFrame::Box);
+    add_widget(ui::F::old_gen(ui::L::VB(), {ui::W::txt("<b>Controllers detected:</b>"),m_p->devicesLL()}, LStretch{false}, LMargins{true}, QFrame::Box));
+    
+    QFrame *allAxis = ui::F::old_gen(ui::L::G(), {}, LStretch{true}, LMargins{true}, QFrame::Box);
     QGridLayout *gl = dynamic_cast<QGridLayout*>(allAxis->layout());
     gl->addWidget(ui::W::txt("<b>Axis</b>"),           0, 0, 1, 1);
     gl->addWidget(ui::W::txt("<b>Value J1</b>"),       0, 1, 1, 1);
@@ -132,9 +132,9 @@ void JoypadInitConfigParametersW::insert_widgets(){
         gl->addWidget(m_p->axes2Le[ii]->w.get(),         to_int(ii + 1), 3, 1, 1);
         gl->addWidget(m_p->axes2Dead[ii]->w.get(),       to_int(ii + 1), 4, 1, 1);
     }
-
-
-    QFrame *allButtons = ui::F::gen(ui::L::G(), {}, LStretch{true}, LMargins{true}, QFrame::Box);
+    
+    
+    QFrame *allButtons = ui::F::old_gen(ui::L::G(), {}, LStretch{true}, LMargins{true}, QFrame::Box);
     gl = dynamic_cast<QGridLayout*>(allButtons->layout());
     gl->addWidget(ui::W::txt("<b>Buttons</b>"), 0, 0, 1, 1);
     gl->addWidget(ui::W::txt("<b>J1</b>"),      0, 1, 1, 1);
@@ -145,8 +145,8 @@ void JoypadInitConfigParametersW::insert_widgets(){
         gl->addWidget(m_p->buttons1Cf[ii]->w.get(),      to_int(ii + 1), 1, 1, 1);
         gl->addWidget(m_p->buttons2Cf[ii]->w.get(),      to_int(ii + 1), 2, 1, 1);
     }
-
-    add_widget(ui::F::gen(ui::L::HB(), {allAxis,allButtons}, LStretch{false}, LMargins{false}, QFrame::NoFrame));
+    
+    add_widget(ui::F::old_gen(ui::L::HB(), {allAxis,allButtons}, LStretch{false}, LMargins{false}, QFrame::NoFrame));
     no_end_stretch();
 }
 

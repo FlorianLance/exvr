@@ -85,16 +85,16 @@ struct BiopacInitConfigParametersW::Impl{
 BiopacInitConfigParametersW::BiopacInitConfigParametersW():  ConfigParametersW(), m_p(std::make_unique<Impl>()){}
 
 void BiopacInitConfigParametersW::insert_widgets(){
-
-    add_widget(ui::F::gen(ui::L::HB(),{ui::W::txt("Device:"), m_p->device(), ui::W::txt("Connection:"),m_p->connection(), ui::W::txt("Serial MP150:"), m_p->serialNumber()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
-    add_widget(ui::F::gen(ui::L::HB(),{ui::W::txt("Sampling rate (Hz):"), m_p->samplingRate(), ui::W::txt("Nb samples per call per channel:"), m_p->samplesPerCall()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
-    add_widget(ui::F::gen(ui::L::HB(),{ui::W::txt("Read digital mode:"), m_p->readIoMode(),
+    
+    add_widget(ui::F::old_gen(ui::L::HB(),{ui::W::txt("Device:"), m_p->device(), ui::W::txt("Connection:"),m_p->connection(), ui::W::txt("Serial MP150:"), m_p->serialNumber()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
+    add_widget(ui::F::old_gen(ui::L::HB(),{ui::W::txt("Sampling rate (Hz):"), m_p->samplingRate(), ui::W::txt("Nb samples per call per channel:"), m_p->samplesPerCall()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
+    add_widget(ui::F::old_gen(ui::L::HB(),{ui::W::txt("Read digital mode:"), m_p->readIoMode(),
 //                                        ui::W::txt("Buffer capacity (seconds):"), m_p->maxNbSecondsToSave()
     }, LStretch{true}, LMargins{false},QFrame::NoFrame));
 //    add_widget(ui::F::gen(ui::L::HB(),{ui::W::txt("Write when reach number of lines (x1000): "), m_p->writeEveryNbLines()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
-    add_widget(ui::F::gen(ui::L::HB(),{m_p->logger()}, LStretch{false}, LMargins{false},QFrame::NoFrame));
-    add_widget(ui::F::gen(ui::L::HB(),{m_p->presetFile()}, LStretch{false}, LMargins{false},QFrame::NoFrame));
-    add_widget(ui::F::gen(ui::L::HB(),{m_p->info = new QLabel("...")}, LStretch{true}, LMargins{false},QFrame::NoFrame));
+    add_widget(ui::F::old_gen(ui::L::HB(),{m_p->logger()}, LStretch{false}, LMargins{false},QFrame::NoFrame));
+    add_widget(ui::F::old_gen(ui::L::HB(),{m_p->presetFile()}, LStretch{false}, LMargins{false},QFrame::NoFrame));
+    add_widget(ui::F::old_gen(ui::L::HB(),{m_p->info = new QLabel("...")}, LStretch{true}, LMargins{false},QFrame::NoFrame));
 
     QScrollArea *area = new QScrollArea();
     area->setWidgetResizable(true);
@@ -105,8 +105,8 @@ void BiopacInitConfigParametersW::insert_widgets(){
     area->setWidget(w);
     add_widget(area);
     for(size_t ii = 0; ii < 16; ++ii){
-
-        auto pw = ui::F::gen(ui::L::HB(),{
+        
+        auto pw = ui::F::old_gen(ui::L::HB(),{
              m_p->channels[ii](),
              ui::W::txt("Name:") ,m_p->channelsName[ii](),
              ui::W::txt("Preset uid: "), m_p->channelsPresetUid[ii]()
@@ -115,8 +115,8 @@ void BiopacInitConfigParametersW::insert_widgets(){
         scrollL->addWidget(pw);
         m_p->channelsParentWidgets.emplace_back(pw);
     }
-
-    add_widget(ui::F::gen(ui::L::VB(),{m_p->debugBypassDevice(), m_p->debugLog()}, LStretch{false}, LMargins{true},QFrame::Box));
+    
+    add_widget(ui::F::old_gen(ui::L::VB(),{m_p->debugBypassDevice(), m_p->debugLog()}, LStretch{false}, LMargins{true},QFrame::Box));
 }
 
 void BiopacInitConfigParametersW::init_and_register_widgets(){

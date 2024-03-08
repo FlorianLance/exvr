@@ -85,26 +85,26 @@ CameraTargetConfigParametersW::CameraTargetConfigParametersW() :  ConfigParamete
 void CameraTargetConfigParametersW::insert_widgets(){
 
     add_widget(ui::W::txt("<b>Action</b>"));
-    add_widget(ui::F::gen(ui::L::HB(), {m_p->moveToTarget(), m_p->moveBack(), m_p->doNothing()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
-    add_widget(ui::F::gen(ui::L::HB(), {m_p->teleport(), m_p->doNotSaveTraj()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
+    add_widget(ui::F::old_gen(ui::L::HB(), {m_p->moveToTarget(), m_p->moveBack(), m_p->doNothing()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
+    add_widget(ui::F::old_gen(ui::L::HB(), {m_p->teleport(), m_p->doNotSaveTraj()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
 
     add_widget(ui::W::txt("<b>Camera</b>"));
-    add_widget(ui::F::gen(ui::L::HB(), {m_p->useNeutralCamera(), m_p->useEyeCamera()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
-    add_widget(ui::F::gen(ui::L::HB(), {m_p->pitch(), m_p->yaw(), m_p->roll()},LStretch{true}, LMargins{false},QFrame::NoFrame));
-    add_widget(ui::F::gen(ui::L::HB(), {m_p->initSourceOnce(), m_p->updateSourceEachFrame()}, LStretch{true}, LMargins{false}));
+    add_widget(ui::F::old_gen(ui::L::HB(), {m_p->useNeutralCamera(), m_p->useEyeCamera()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
+    add_widget(ui::F::old_gen(ui::L::HB(), {m_p->pitch(), m_p->yaw(), m_p->roll()},LStretch{true}, LMargins{false},QFrame::NoFrame));
+    add_widget(ui::F::old_gen(ui::L::HB(), {m_p->initSourceOnce(), m_p->updateSourceEachFrame()}, LStretch{true}, LMargins{false}));
 
     add_widget(ui::W::txt("<b>Progress</b>"));
-    add_widget(ui::F::gen(ui::L::HB(), {m_p->usingTime(), ui::W::txt("Movement duration: "), m_p->duration()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
-    add_widget(ui::F::gen(ui::L::HB(), {m_p->usingFactor(),
+    add_widget(ui::F::old_gen(ui::L::HB(), {m_p->usingTime(), ui::W::txt("Movement duration: "), m_p->duration()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
+    add_widget(ui::F::old_gen(ui::L::HB(), {m_p->usingFactor(),
             ui::W::txt("add: "), m_p->factorOffset(), ui::W::txt("multiply by: "), m_p->factorFactor()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
 
     add_widget(ui::W::txt("<b>Interpolation</b>"));
-    add_widget(ui::F::gen(ui::L::HB(), {m_p->sphericalInterpolation()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
+    add_widget(ui::F::old_gen(ui::L::HB(), {m_p->sphericalInterpolation()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
 
     add_widget(ui::W::txt("<b>Target</b>"));
-    add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Name of the component position to match: "), m_p->componentName()}, LStretch{false}, LMargins{false}));
-    add_widget(ui::F::gen(ui::L::VB(), {ui::W::txt("If name empty, use position and rotation below:"), m_p->targetPos(), m_p->targetRot()}, LStretch{false}, LMargins{false}));
-    add_widget(ui::F::gen(ui::L::HB(), {m_p->absolute(), m_p->relatetiveToEye()}, LStretch{true}, LMargins{false}));
+    add_widget(ui::F::old_gen(ui::L::HB(), {ui::W::txt("Name of the component position to match: "), m_p->componentName()}, LStretch{false}, LMargins{false}));
+    add_widget(ui::F::old_gen(ui::L::VB(), {ui::W::txt("If name empty, use position and rotation below:"), m_p->targetPos(), m_p->targetRot()}, LStretch{false}, LMargins{false}));
+    add_widget(ui::F::old_gen(ui::L::HB(), {m_p->absolute(), m_p->relatetiveToEye()}, LStretch{true}, LMargins{false}));
     add_widget(&m_p->curves);
 
     m_p->curves.addTab(m_p->speedCurve(), "Factor curve");

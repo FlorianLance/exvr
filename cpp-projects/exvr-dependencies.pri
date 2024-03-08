@@ -76,11 +76,11 @@ EXVR_DESIGNER_PRE_TARGETDEPS =\
     $$NODES_LIB_FILE\
 
 ########################################################### EXVR-TEST
-EXVR_TEST_APP_DEP_INCLUDEPATH =\
+EXVR_TEST_DEP_INCLUDEPATH =\
     $$EXVR_DESIGNER_DEP_INCLUDEPATH\
     $$EXVR_DESIGNER_INCLUDES\
 
-EXVR_TEST_APP_DEP_LIBS =\
+EXVR_TEST_DEP_LIBS =\
     $$EXVR_DESIGNER_DEP_LIBS\
     $$EXVR_DESIGNER_OBJ"/ExVR-designer_pch.obj" \
     $$EXVR_DESIGNER_OBJ"/xml_io_manager.obj" \
@@ -100,7 +100,7 @@ EXVR_TEST_APP_DEP_LIBS =\
     $$EXVR_DESIGNER_OBJ"/connector.obj" \
     $$EXVR_DESIGNER_OBJ"/path_utility.obj" \
 
-EXVR_TEST_APP_PRE_TARGETDEPS =\
+EXVR_TEST_PRE_TARGETDEPS =\
     $$EXVR_DESIGNER_PRE_TARGETDEPS\
 
 # generate projects variables

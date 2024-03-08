@@ -41,8 +41,8 @@ public :
     ExLineEditW m_leReadingIpAdress{"reading_address"};
 
     void insert_widgets() override{
-        add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Reading port:"), m_sbReadingPort()}, LStretch{true}, LMargins{false}));
-        add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Reading IP adress (or hostname):"), m_leReadingIpAdress()}, LStretch{true}, LMargins{false}));
+        add_widget(ui::F::old_gen(ui::L::HB(), {ui::W::txt("Reading port:"), m_sbReadingPort()}, LStretch{true}, LMargins{false}));
+        add_widget(ui::F::old_gen(ui::L::HB(), {ui::W::txt("Reading IP adress (or hostname):"), m_leReadingIpAdress()}, LStretch{true}, LMargins{false}));
     }
 
     void init_and_register_widgets() override{        

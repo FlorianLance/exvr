@@ -82,24 +82,24 @@ LightConfigParametersW::LightConfigParametersW():  ConfigParametersW(), m_p(std:
 void LightConfigParametersW::insert_widgets(){
 
     add_sub_part_widget(m_p->transfo);
-
-    add_widget(F::gen(L::HB(), {W::txt("<b>Type:</b>"),m_p->type()}, LStretch{true}, LMargins{true}));
-    auto m1 = F::gen(L::HB(), {W::txt("Intensity: "),m_p->intensity(), W::txt("Range (Point and Spot): "),m_p->range()}, LStretch{true}, LMargins{true});
-    auto m2 = F::gen(L::HB(), {W::txt("Color: "),m_p->color()}, LStretch{true}, LMargins{true});
-    auto m3 = F::gen(L::HB(), {W::txt("Cookie: "),m_p->cookieT()}, LStretch{false}, LMargins{true});
-    auto m4 = F::gen(L::HB(), {m_p->displaySource()}, LStretch{true}, LMargins{true});
-    add_widget(F::gen(L::VB(), {W::txt("<b>Common light settings</b>"), m1, m2, m3, m4}, LStretch{false}, LMargins{true}, QFrame::Box));
-
-    auto m5 = F::gen(L::HB(), {W::txt("Angle: "),m_p->spotAngle()}, LStretch{true}, LMargins{true}); // , W::txt("Inner angle: "),m_p->innerSpotAngle()
-    add_widget(F::gen(L::VB(), {W::txt("<b>Spot light settings</b>"), m5}, LStretch{false}, LMargins{true}, QFrame::Box));
-
-    auto m6 = F::gen(L::HB(), {W::txt("Cookie size: "),m_p->cookieSize(), W::txt("Bounce intensity: "),m_p->bounceIntensity()}, LStretch{true}, LMargins{true});
-    add_widget(F::gen(L::VB(), {W::txt("<b>Directional light settings</b>"), m6}, LStretch{false}, LMargins{true}, QFrame::Box));
-
-    auto m7 = F::gen(L::HB(), {W::txt("Mode: "),m_p->shadows(), W::txt("Strength: "),m_p->shadowStrength()}, LStretch{true}, LMargins{true});
-    auto m8 = F::gen(L::HB(), {W::txt("Bias: "),m_p->shadowBias(), W::txt("Normal bias: "),m_p->shadowNormalBias()}, LStretch{true}, LMargins{true});
-    auto m9 = F::gen(L::HB(), {W::txt("Near plane: "),m_p->shadowNearPlane()}, LStretch{true}, LMargins{true});
-    add_widget(F::gen(L::VB(), {W::txt("<b>Shadows settings</b>"), m7, m8, m9}, LStretch{false}, LMargins{true}, QFrame::Box));
+    
+    add_widget(F::old_gen(L::HB(), {W::txt("<b>Type:</b>"),m_p->type()}, LStretch{true}, LMargins{true}));
+    auto m1 = F::old_gen(L::HB(), {W::txt("Intensity: "),m_p->intensity(), W::txt("Range (Point and Spot): "),m_p->range()}, LStretch{true}, LMargins{true});
+    auto m2 = F::old_gen(L::HB(), {W::txt("Color: "),m_p->color()}, LStretch{true}, LMargins{true});
+    auto m3 = F::old_gen(L::HB(), {W::txt("Cookie: "),m_p->cookieT()}, LStretch{false}, LMargins{true});
+    auto m4 = F::old_gen(L::HB(), {m_p->displaySource()}, LStretch{true}, LMargins{true});
+    add_widget(F::old_gen(L::VB(), {W::txt("<b>Common light settings</b>"), m1, m2, m3, m4}, LStretch{false}, LMargins{true}, QFrame::Box));
+    
+    auto m5 = F::old_gen(L::HB(), {W::txt("Angle: "),m_p->spotAngle()}, LStretch{true}, LMargins{true}); // , W::txt("Inner angle: "),m_p->innerSpotAngle()
+    add_widget(F::old_gen(L::VB(), {W::txt("<b>Spot light settings</b>"), m5}, LStretch{false}, LMargins{true}, QFrame::Box));
+    
+    auto m6 = F::old_gen(L::HB(), {W::txt("Cookie size: "),m_p->cookieSize(), W::txt("Bounce intensity: "),m_p->bounceIntensity()}, LStretch{true}, LMargins{true});
+    add_widget(F::old_gen(L::VB(), {W::txt("<b>Directional light settings</b>"), m6}, LStretch{false}, LMargins{true}, QFrame::Box));
+    
+    auto m7 = F::old_gen(L::HB(), {W::txt("Mode: "),m_p->shadows(), W::txt("Strength: "),m_p->shadowStrength()}, LStretch{true}, LMargins{true});
+    auto m8 = F::old_gen(L::HB(), {W::txt("Bias: "),m_p->shadowBias(), W::txt("Normal bias: "),m_p->shadowNormalBias()}, LStretch{true}, LMargins{true});
+    auto m9 = F::old_gen(L::HB(), {W::txt("Near plane: "),m_p->shadowNearPlane()}, LStretch{true}, LMargins{true});
+    add_widget(F::old_gen(L::VB(), {W::txt("<b>Shadows settings</b>"), m7, m8, m9}, LStretch{false}, LMargins{true}, QFrame::Box));
 }
 
 void LightConfigParametersW::init_and_register_widgets(){

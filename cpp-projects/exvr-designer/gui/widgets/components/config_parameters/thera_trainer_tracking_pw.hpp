@@ -41,8 +41,8 @@ public :
     ExLineEditW m_readingAddress{"read_address"};
 
     void insert_widgets() override{
-        add_widget(ui::F::gen(ui::L::HB(),{ui::W::txt("Reading address:"), m_readingAddress()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
-        add_widget(ui::F::gen(ui::L::HB(),{ui::W::txt("Reading port:"), m_readingPort()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
+        add_widget(ui::F::old_gen(ui::L::HB(),{ui::W::txt("Reading address:"), m_readingAddress()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
+        add_widget(ui::F::old_gen(ui::L::HB(),{ui::W::txt("Reading port:"), m_readingPort()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
     }
 
     void init_and_register_widgets() override{        

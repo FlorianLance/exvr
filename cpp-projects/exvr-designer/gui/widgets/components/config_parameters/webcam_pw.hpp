@@ -43,10 +43,10 @@ public :
 
 
     void insert_widgets() override{
-        add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Device id: "), m_sbDeviceId()}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
-        add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Requested FPS:"), m_sbFPS()}, LStretch{true}, LMargins{true}, QFrame::NoFrame));
-        add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Requested width:"), m_sbWidth()}, LStretch{true}, LMargins{true}, QFrame::NoFrame));
-        add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Requested height:"), m_sbHeight()}, LStretch{true}, LMargins{true}, QFrame::NoFrame));
+        add_widget(ui::F::old_gen(ui::L::HB(), {ui::W::txt("Device id: "), m_sbDeviceId()}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
+        add_widget(ui::F::old_gen(ui::L::HB(), {ui::W::txt("Requested FPS:"), m_sbFPS()}, LStretch{true}, LMargins{true}, QFrame::NoFrame));
+        add_widget(ui::F::old_gen(ui::L::HB(), {ui::W::txt("Requested width:"), m_sbWidth()}, LStretch{true}, LMargins{true}, QFrame::NoFrame));
+        add_widget(ui::F::old_gen(ui::L::HB(), {ui::W::txt("Requested height:"), m_sbHeight()}, LStretch{true}, LMargins{true}, QFrame::NoFrame));
     }
 
     void init_and_register_widgets() override{

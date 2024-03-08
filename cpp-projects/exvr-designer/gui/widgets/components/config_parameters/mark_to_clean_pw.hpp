@@ -43,10 +43,10 @@ public :
     ExFloatSpinBoxW m_dsbMaxReachableDistance{"max_distance_reachable"};
 
     void insert_widgets() override{
-
-        add_widget(ui::F::gen(ui::L::HB(),{new QLabel("Width collider resolution: "),m_sbWidthColliderResolution()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
-        add_widget(ui::F::gen(ui::L::HB(),{new QLabel("Height collider resolution: "),m_sbHeightColliderResolution()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
-        add_widget(ui::F::gen(ui::L::HB(),{ui::W::txt("Max reachable distance (m): "),m_dsbMaxReachableDistance()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
+        
+        add_widget(ui::F::old_gen(ui::L::HB(),{new QLabel("Width collider resolution: "),m_sbWidthColliderResolution()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
+        add_widget(ui::F::old_gen(ui::L::HB(),{new QLabel("Height collider resolution: "),m_sbHeightColliderResolution()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
+        add_widget(ui::F::old_gen(ui::L::HB(),{ui::W::txt("Max reachable distance (m): "),m_dsbMaxReachableDistance()}, LStretch{true}, LMargins{false},QFrame::NoFrame));
     }
 
     void init_and_register_widgets() override{
@@ -78,16 +78,16 @@ public :
     void insert_widgets() override{
 
         // general
-        add_widget(ui::F::gen(ui::L::VB(),{new QLabel("<b>General</b>"), m_cbDebug()}, LStretch{true}, LMargins{true},QFrame::Box));
+        add_widget(ui::F::old_gen(ui::L::VB(),{new QLabel("<b>General</b>"), m_cbDebug()}, LStretch{true}, LMargins{true},QFrame::Box));
 
         // working zone
         add_sub_part_widget(m_trWorkingZone);
 
         // mark
-        auto markDistance  = ui::F::gen(ui::L::HB(),   {ui::W::txt("Distance (%): "),        m_distancePercentageMark()}, LStretch{false}, LMargins{false},QFrame::NoFrame);
-        auto eraseDistance  = ui::F::gen(ui::L::HB(),  {ui::W::txt("Erase distance (m): "), m_distanceErase()}, LStretch{false}, LMargins{false},QFrame::NoFrame);
-        auto alphaDecrease = ui::F::gen(ui::L::HB(),   {ui::W::txt("Erase power: "),         m_alphaDecrease()}, LStretch{false}, LMargins{false},QFrame::NoFrame);
-        add_widget(ui::F::gen(ui::L::VB(),{new QLabel("<b>Mark</b>"), markDistance, eraseDistance, alphaDecrease}, LStretch{true}, LMargins{true},QFrame::Box));
+        auto markDistance  = ui::F::old_gen(ui::L::HB(),   {ui::W::txt("Distance (%): "),        m_distancePercentageMark()}, LStretch{false}, LMargins{false},QFrame::NoFrame);
+        auto eraseDistance  = ui::F::old_gen(ui::L::HB(),  {ui::W::txt("Erase distance (m): "), m_distanceErase()}, LStretch{false}, LMargins{false},QFrame::NoFrame);
+        auto alphaDecrease = ui::F::old_gen(ui::L::HB(),   {ui::W::txt("Erase power: "),         m_alphaDecrease()}, LStretch{false}, LMargins{false},QFrame::NoFrame);
+        add_widget(ui::F::old_gen(ui::L::VB(),{new QLabel("<b>Mark</b>"), markDistance, eraseDistance, alphaDecrease}, LStretch{true}, LMargins{true},QFrame::Box));
     }
 
     void init_and_register_widgets() override{

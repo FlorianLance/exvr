@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Collections;
 using UnityEngine.Rendering;
+using System;
 
 namespace Ex{
 
@@ -71,7 +72,7 @@ namespace Ex{
             native.Dispose();
         }
     }
-
+    [Serializable]
     public class OBBFInfo {
         public bool enabled = false;
         public bool display = false;
@@ -90,6 +91,15 @@ namespace Ex{
             None = 0, Low, Medium, Hight
         };
 
+        private VertexAttributeDescriptor[] layout = null;
+        private MeshUpdateFlags flags =
+           MeshUpdateFlags.DontValidateIndices
+         | MeshUpdateFlags.DontNotifyMeshUsers
+         | MeshUpdateFlags.DontResetBoneBounds;
+
+        private Mesh mesh = null;
+        private int nbVertices = 0;
+
         private Shader quadShader = null;
         private Shader paraboloidFrag = null;
         private Shader paraboloidGeoWorld = null;
@@ -97,7 +107,7 @@ namespace Ex{
 
         public void Awake() {
 
-            Mesh mesh = new Mesh();
+            mesh = new Mesh();
             mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
             mesh.triangles   = new int[0];
             GetComponent<MeshFilter>().mesh = mesh;
@@ -162,29 +172,35 @@ namespace Ex{
                 return false;
             }
 
-            var layout = new[]{
-                new VertexAttributeDescriptor(VertexAttribute.Position, VertexAttributeFormat.Float32, 3),
-                new VertexAttributeDescriptor(VertexAttribute.Color, VertexAttributeFormat.UNorm8, 4)
-            };
+            nbVertices = count;
 
-            var mesh = GetComponent<MeshFilter>().mesh;
-            mesh.Clear();
+            if (layout == null) {
+                layout = new[]{
+                    new VertexAttributeDescriptor(VertexAttribute.Position, VertexAttributeFormat.Float32, 3),
+                    new VertexAttributeDescriptor(VertexAttribute.Color, VertexAttributeFormat.UNorm8, 4)
+                };
+            }
 
-            MeshUpdateFlags flags =
-              MeshUpdateFlags.DontValidateIndices
-            | MeshUpdateFlags.DontNotifyMeshUsers
-            | MeshUpdateFlags.DontResetBoneBounds;
 
-            mesh.SetVertexBufferParams(count, layout);
-            mesh.SetVertexBufferData(vertices.native, 0, 0, count, 0, flags);
-            mesh.SetIndexBufferParams(count, IndexFormat.UInt32);
-            mesh.SetIndexBufferData(indices.native, 0, 0, count, flags);
-            mesh.SetSubMesh(0, new SubMeshDescriptor(0, count, MeshTopology.Points), flags);
+            //var mesh = GetComponent<MeshFilter>().mesh;
+            //mesh.Clear();
+
+            //MeshUpdateFlags flags =
+            //  MeshUpdateFlags.DontValidateIndices
+            //| MeshUpdateFlags.DontNotifyMeshUsers
+            //| MeshUpdateFlags.DontResetBoneBounds;
+
+            // DontRecalculateBounds
+
+            mesh.SetVertexBufferParams(nbVertices, layout);
+            mesh.SetVertexBufferData(vertices.native, 0, 0, nbVertices, 0, flags);
+            mesh.SetIndexBufferParams(nbVertices, IndexFormat.UInt32);
+            mesh.SetIndexBufferData(indices.native, 0, 0, nbVertices, flags);
+            mesh.SetSubMesh(0, new SubMeshDescriptor(0, nbVertices, MeshTopology.Points), flags);
             mesh.bounds = mesh.GetSubMesh(0).bounds;
 
             return true;
         }
-
 
         public void set_rendering(RenderingType rendering) {
 

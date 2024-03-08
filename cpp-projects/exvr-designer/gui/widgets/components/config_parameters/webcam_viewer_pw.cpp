@@ -38,9 +38,9 @@ WebcamViewerInitConfigParametersW::WebcamViewerInitConfigParametersW():  ConfigP
 }
 
 void WebcamViewerInitConfigParametersW::insert_widgets(){
-
-    add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Device id: "), m_p->deviceId()}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
-    add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Requested FPS: "), m_p->fps()}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
+    
+    add_widget(ui::F::old_gen(ui::L::HB(), {ui::W::txt("Device id: "), m_p->deviceId()}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
+    add_widget(ui::F::old_gen(ui::L::HB(), {ui::W::txt("Requested FPS: "), m_p->fps()}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
 }
 
 void WebcamViewerInitConfigParametersW::init_and_register_widgets(){

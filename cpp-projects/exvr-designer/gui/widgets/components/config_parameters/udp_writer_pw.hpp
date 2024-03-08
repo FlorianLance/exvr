@@ -41,8 +41,8 @@ public :
     ExLineEditW m_leWritingIpAdress{"writing_address"};
 
     void insert_widgets() override{
-        add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Writing port:"), m_sbWritingPort()}, LStretch{true}, LMargins{false}));
-        add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Writing IP adress (or hostname):"), m_leWritingIpAdress()}, LStretch{true}, LMargins{false}));
+        add_widget(ui::F::old_gen(ui::L::HB(), {ui::W::txt("Writing port:"), m_sbWritingPort()}, LStretch{true}, LMargins{false}));
+        add_widget(ui::F::old_gen(ui::L::HB(), {ui::W::txt("Writing IP adress (or hostname):"), m_leWritingIpAdress()}, LStretch{true}, LMargins{false}));
     }
 
     void init_and_register_widgets() override{        

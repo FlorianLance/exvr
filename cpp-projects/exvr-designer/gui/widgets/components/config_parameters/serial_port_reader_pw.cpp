@@ -43,7 +43,7 @@ SerialPortReaderInitParameterW::SerialPortReaderInitParameterW() :  ConfigParame
 }
 
 void SerialPortReaderInitParameterW::insert_widgets(){
-    add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Reader port:"), m_p->leReaderPort()}, LStretch{true}, LMargins{false}));
+    add_widget(ui::F::old_gen(ui::L::HB(), {ui::W::txt("Reader port:"), m_p->leReaderPort()}, LStretch{true}, LMargins{false}));
 }
 
 void SerialPortReaderInitParameterW::init_and_register_widgets(){
@@ -62,7 +62,7 @@ SerialPortReaderConfigParametersW::SerialPortReaderConfigParametersW() :  Config
 }
 
 void SerialPortReaderConfigParametersW::insert_widgets(){
-    add_widget(ui::F::gen(ui::L::VB(), {m_p->rbIntMessage(), m_p->rbStringMessage()}, LStretch{true}, LMargins{false}));
+    add_widget(ui::F::old_gen(ui::L::VB(), {m_p->rbIntMessage(), m_p->rbStringMessage()}, LStretch{true}, LMargins{false}));
 }
 
 

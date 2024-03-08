@@ -40,10 +40,10 @@ MriInitConfigParametersW::MriInitConfigParametersW() :  ConfigParametersW(), m_p
 
 
 void MriInitConfigParametersW::insert_widgets(){
-    add_widget(ui::F::gen(ui::L::VB(), {ui::W::txt("Avatar to use in the MRI:"), m_p->humanoidController()}, LStretch{false}, LMargins{false}, QFrame::NoFrame));
-    add_widget(ui::F::gen(ui::L::VB(), {ui::W::txt("Keyboard used for catching MRI triggers:"), m_p->keyboard()}, LStretch{false}, LMargins{false}, QFrame::NoFrame));
-    add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Trigger key:"), m_p->triggerKey()}, LStretch{false}, LMargins{false}, QFrame::NoFrame));
-    add_widget(ui::F::gen(ui::L::VB(), {ui::W::txt("Write trigger line to theses loggers:"),m_p->loggersList()}, LStretch{false}, LMargins{false}, QFrame::NoFrame));
+    add_widget(ui::F::old_gen(ui::L::VB(), {ui::W::txt("Avatar to use in the MRI:"), m_p->humanoidController()}, LStretch{false}, LMargins{false}, QFrame::NoFrame));
+    add_widget(ui::F::old_gen(ui::L::VB(), {ui::W::txt("Keyboard used for catching MRI triggers:"), m_p->keyboard()}, LStretch{false}, LMargins{false}, QFrame::NoFrame));
+    add_widget(ui::F::old_gen(ui::L::HB(), {ui::W::txt("Trigger key:"), m_p->triggerKey()}, LStretch{false}, LMargins{false}, QFrame::NoFrame));
+    add_widget(ui::F::old_gen(ui::L::VB(), {ui::W::txt("Write trigger line to theses loggers:"),m_p->loggersList()}, LStretch{false}, LMargins{false}, QFrame::NoFrame));
     no_end_stretch();
 }
 
@@ -102,18 +102,18 @@ MriConfigParametersW::MriConfigParametersW() :  ConfigParametersW(), m_p(std::ma
 void MriConfigParametersW::insert_widgets(){
 
     add_sub_part_widget(m_p->transform);
-    add_widget(ui::F::gen(ui::L::HB(), {m_p->goNextWhenTrigger()}, LStretch{false}, LMargins{false}, QFrame::NoFrame));
-    add_widget(ui::F::gen(ui::L::VB(), {ui::W::txt("Action:"), m_p->solve(), m_p->dissolve(), m_p->move_table_inside(), m_p->move_table_outside(), m_p->move_table_qualisys(), m_p->nothing()}, LStretch{false}, LMargins{true}, QFrame::NoFrame));
-    add_widget(ui::W::horizontal_line());
-    add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Duration:"), m_p->duration()}, LStretch{false}, LMargins{false}, QFrame::NoFrame));
-    add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Distance:"), m_p->distance()}, LStretch{false}, LMargins{false}, QFrame::NoFrame));
-    add_widget(ui::F::gen(ui::L::HB(), {ui::W::txt("Objects to be solved/dissolved:"), m_p->room(), m_p->magnet()}, LStretch{false}, LMargins{false}, QFrame::NoFrame));
-    add_widget(ui::W::horizontal_line());
-    add_widget(ui::F::gen(ui::L::HB(), {m_p->initQualisysPositions()}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
-    add_widget(ui::F::gen(ui::L::HB(), {m_p->enableQualisysArmsTracking()}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
-    add_widget(ui::W::horizontal_line());
-    add_widget(ui::F::gen(ui::L::HB(), {m_p->targetHeadTrOffset()}, LStretch{false}, LMargins{false}, QFrame::NoFrame));
-    add_widget(ui::F::gen(ui::L::HB(), {m_p->targetHeadRotOffset()}, LStretch{false}, LMargins{false}, QFrame::NoFrame));
+    add_widget(ui::F::old_gen(ui::L::HB(), {m_p->goNextWhenTrigger()}, LStretch{false}, LMargins{false}, QFrame::NoFrame));
+    add_widget(ui::F::old_gen(ui::L::VB(), {ui::W::txt("Action:"), m_p->solve(), m_p->dissolve(), m_p->move_table_inside(), m_p->move_table_outside(), m_p->move_table_qualisys(), m_p->nothing()}, LStretch{false}, LMargins{true}, QFrame::NoFrame));
+    add_widget(ui::F::h_line());
+    add_widget(ui::F::old_gen(ui::L::HB(), {ui::W::txt("Duration:"), m_p->duration()}, LStretch{false}, LMargins{false}, QFrame::NoFrame));
+    add_widget(ui::F::old_gen(ui::L::HB(), {ui::W::txt("Distance:"), m_p->distance()}, LStretch{false}, LMargins{false}, QFrame::NoFrame));
+    add_widget(ui::F::old_gen(ui::L::HB(), {ui::W::txt("Objects to be solved/dissolved:"), m_p->room(), m_p->magnet()}, LStretch{false}, LMargins{false}, QFrame::NoFrame));
+    add_widget(ui::F::h_line());
+    add_widget(ui::F::old_gen(ui::L::HB(), {m_p->initQualisysPositions()}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
+    add_widget(ui::F::old_gen(ui::L::HB(), {m_p->enableQualisysArmsTracking()}, LStretch{true}, LMargins{false}, QFrame::NoFrame));
+    add_widget(ui::F::h_line());
+    add_widget(ui::F::old_gen(ui::L::HB(), {m_p->targetHeadTrOffset()}, LStretch{false}, LMargins{false}, QFrame::NoFrame));
+    add_widget(ui::F::old_gen(ui::L::HB(), {m_p->targetHeadRotOffset()}, LStretch{false}, LMargins{false}, QFrame::NoFrame));
 }
 
 void MriConfigParametersW::init_and_register_widgets(){

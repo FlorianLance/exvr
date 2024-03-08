@@ -25,12 +25,12 @@
 #include "qualisys_tracking_pw.hpp"
 
 void tool::ex::QualisysTrackingInitConfigParametersW::insert_widgets(){
-
-    auto radioF = ui::F::gen(ui::L::VB(), {connectToFirstAvailable(), specifyServer()}, LStretch{false}, LMargins{true}, QFrame::NoFrame);
-    auto hostNameF = ui::F::gen(ui::L::HB(), {ui::W::txt("Host name:"), hostName()}, LStretch{true}, LMargins{true}, QFrame::NoFrame);
-    auto ipAdressF = ui::F::gen(ui::L::HB(), {ui::W::txt("Ip address:"), ipAdress()}, LStretch{true}, LMargins{true}, QFrame::NoFrame);
-    auto serverInfosF = ui::F::gen(ui::L::VB(), {ui::W::txt("<b>Server infos:</b>"), hostNameF, hostNameF, ipAdressF}, LStretch{false}, LMargins{true}, QFrame::NoFrame);
-    add_widget(ui::F::gen(ui::L::VB(), {radioF, serverInfosF}, LStretch{false}, LMargins{true}, QFrame::Box));
+    
+    auto radioF = ui::F::old_gen(ui::L::VB(), {connectToFirstAvailable(), specifyServer()}, LStretch{false}, LMargins{true}, QFrame::NoFrame);
+    auto hostNameF = ui::F::old_gen(ui::L::HB(), {ui::W::txt("Host name:"), hostName()}, LStretch{true}, LMargins{true}, QFrame::NoFrame);
+    auto ipAdressF = ui::F::old_gen(ui::L::HB(), {ui::W::txt("Ip address:"), ipAdress()}, LStretch{true}, LMargins{true}, QFrame::NoFrame);
+    auto serverInfosF = ui::F::old_gen(ui::L::VB(), {ui::W::txt("<b>Server infos:</b>"), hostNameF, hostNameF, ipAdressF}, LStretch{false}, LMargins{true}, QFrame::NoFrame);
+    add_widget(ui::F::old_gen(ui::L::VB(), {radioF, serverInfosF}, LStretch{false}, LMargins{true}, QFrame::Box));
 }
 
 void tool::ex::QualisysTrackingInitConfigParametersW::init_and_register_widgets(){
@@ -58,8 +58,8 @@ void tool::ex::QualisysTrackingInitConfigParametersW::late_update_ui(){}
 
 void tool::ex::QualisysTrackingConfigParametersW::insert_widgets(){
     add_sub_part_widget(transform);
-    auto objectsF = ui::F::gen(ui::L::VB(), {ui::W::txt("Objects names to track (one per line):"), objects()}, LStretch{false}, LMargins{true}, QFrame::NoFrame);
-    add_widget(ui::F::gen(ui::L::VB(), {objectsF}, LStretch{false}, LMargins{true}, QFrame::Box));
+    auto objectsF = ui::F::old_gen(ui::L::VB(), {ui::W::txt("Objects names to track (one per line):"), objects()}, LStretch{false}, LMargins{true}, QFrame::NoFrame);
+    add_widget(ui::F::old_gen(ui::L::VB(), {objectsF}, LStretch{false}, LMargins{true}, QFrame::Box));
 }
 
 void tool::ex::QualisysTrackingConfigParametersW::init_and_register_widgets(){

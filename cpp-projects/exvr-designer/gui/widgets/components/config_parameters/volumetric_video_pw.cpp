@@ -52,11 +52,11 @@ VolumetricVideoInitConfigParametersW::VolumetricVideoInitConfigParametersW() :  
 }
 
 void VolumetricVideoInitConfigParametersW::insert_widgets(){
-
-    add_widget(F::gen(L::VB(), {m_p->volumetricVideo()}, LStretch{false}, LMargins{true}, QFrame::NoFrame));
+    
+    add_widget(F::old_gen(L::VB(), {m_p->volumetricVideo()}, LStretch{false}, LMargins{true}, QFrame::NoFrame));
 
     // infos
-    add_widget(F::gen(L::VB(), {W::txt("Infos"), m_p->infoText()}, LStretch{true}, LMargins{true}, QFrame::Box));
+    add_widget(F::old_gen(L::VB(), {W::txt("Infos"), m_p->infoText()}, LStretch{true}, LMargins{true}, QFrame::Box));
     m_p->infoText.w->setMinimumHeight(100);
 
     add_sub_part_widget(m_p->transfo);
@@ -115,39 +115,39 @@ void VolumetricVideoConfigParametersW::insert_widgets(){
     add_sub_part_widget(m_p->tr);
     add_widget(m_p->tw = new QTabWidget());
     m_p->tw->addTab(
-        F::gen(L::VB(),{
+        F::old_gen(L::VB(),{
             m_p->loop(),
-            F::gen(L::HB(), {W::txt("Duration (s), from: "), m_p->startTime(),W::txt(" to: "), m_p->endTime()}, LStretch{true}, LMargins{false}, QFrame::NoFrame)
+                             F::old_gen(L::HB(), {W::txt("Duration (s), from: "), m_p->startTime(),W::txt(" to: "), m_p->endTime()}, LStretch{true}, LMargins{false}, QFrame::NoFrame)
         }, LStretch{true}, LMargins{true}, QFrame::NoFrame), "Video"
     );
 
     m_p->tw->addTab(
-        F::gen(L::VB(),{
+        F::old_gen(L::VB(),{
             m_p->enableAudio(),
-            F::gen(L::HB(), {m_p->enableAudio(), W::txt("Audio id: "), m_p->audioCameraId()}, LStretch{true}, LMargins{false}, QFrame::NoFrame),
-            F::gen(L::HB(), {W::txt("Volume: "), m_p->volume()}, LStretch{false}, LMargins{false}, QFrame::NoFrame)
+                             F::old_gen(L::HB(), {m_p->enableAudio(), W::txt("Audio id: "), m_p->audioCameraId()}, LStretch{true}, LMargins{false}, QFrame::NoFrame),
+                             F::old_gen(L::HB(), {W::txt("Volume: "), m_p->volume()}, LStretch{false}, LMargins{false}, QFrame::NoFrame)
         }, LStretch{true}, LMargins{true}, QFrame::NoFrame), "Audio"
     );
 
     m_p->tw->addTab(
-        F::gen(L::VB(),{
+        F::old_gen(L::VB(),{
             m_p->displayClouds()
         }, LStretch{true}, LMargins{true}, QFrame::NoFrame), "Display"
     );
 
     m_p->tw->addTab(
-        F::gen(L::VB(),{
-             F::gen(L::HB(),{W::txt("Size points: "),m_p->sizePoints()}, LStretch{true}, LMargins{false},QFrame::NoFrame),
-             F::gen(L::HB(),{W::txt("Rendering: "), m_p->rendering()}, LStretch{true}, LMargins{false},QFrame::NoFrame),
-             F::gen(L::HB(),{W::txt("Points color tint: "), m_p->tint()}, LStretch{true}, LMargins{false},QFrame::NoFrame),
+        F::old_gen(L::VB(),{
+                             F::old_gen(L::HB(),{W::txt("Size points: "),m_p->sizePoints()}, LStretch{true}, LMargins{false},QFrame::NoFrame),
+                             F::old_gen(L::HB(),{W::txt("Rendering: "), m_p->rendering()}, LStretch{true}, LMargins{false},QFrame::NoFrame),
+                             F::old_gen(L::HB(),{W::txt("Points color tint: "), m_p->tint()}, LStretch{true}, LMargins{false},QFrame::NoFrame),
              m_p->renderCircles(), m_p->parabloidFragCones(),
-             F::gen(L::HB(),{W::txt("Parbloid geo details: "), m_p->parabloidGeoDetails()}, LStretch{true}, LMargins{false},QFrame::NoFrame
+                             F::old_gen(L::HB(),{W::txt("Parbloid geo details: "), m_p->parabloidGeoDetails()}, LStretch{true}, LMargins{false},QFrame::NoFrame
         )}, LStretch{true}, LMargins{true}, QFrame::NoFrame), "Rendering"
     );
 
     m_p->tw->addTab(
-        F::gen(L::VB(),{
-            F::gen(L::HB(), {m_p->filterPointsOutsideOBB(), m_p->displayFilteringOBB()}, LStretch{true}, LMargins{false},QFrame::NoFrame),
+        F::old_gen(L::VB(),{
+                             F::old_gen(L::HB(), {m_p->filterPointsOutsideOBB(), m_p->displayFilteringOBB()}, LStretch{true}, LMargins{false},QFrame::NoFrame),
             m_p->filteringObbTab()
         },LStretch{false}, LMargins{true},QFrame::NoFrame), "Filtering oriented bounding box"
     );

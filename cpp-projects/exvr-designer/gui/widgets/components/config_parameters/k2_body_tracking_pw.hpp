@@ -38,8 +38,8 @@ public :
     ExComponentW m_kinectManager{"kinect_manager"};
 
     void insert_widgets() override{
-
-        add_widget(ui::F::gen(ui::L::HB(), {m_kinectManager()}, LStretch{false}, LMargins{true}, QFrame::Box));
+        
+        add_widget(ui::F::old_gen(ui::L::HB(), {m_kinectManager()}, LStretch{false}, LMargins{true}, QFrame::Box));
     }
 
     void init_and_register_widgets() override{
