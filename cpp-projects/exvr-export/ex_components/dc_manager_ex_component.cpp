@@ -171,8 +171,8 @@ auto DCManagerExComponent::initialize() -> bool{
 
 
     // read others settings io
-    std::vector<io::BinaryFileSettings*> devicesS,colorS,filtersS;
-    std::vector<io::TextSettings*> modelsS;
+    std::vector<io::BaseSettings*> devicesS,colorS,filtersS;
+    std::vector<io::BaseSettings*> modelsS;
     size_t idG = 0;
     for(auto &grabberS : i->grabbersS){
         devicesS.push_back(&grabberS.device);
@@ -185,7 +185,7 @@ auto DCManagerExComponent::initialize() -> bool{
     // # device
     if(get<int>(ParametersContainer::InitConfig, "device_init_file") == 1){
         if(std::filesystem::exists(deviceSettingsPath)){
-            if(!io::BinaryFileSettings::init_from_file(devicesS, deviceSettingsPath)){
+            if(!io::BaseSettings::load_multi_from_file(devicesS, deviceSettingsPath)){
                 Logger::error(std::format("Error while reading device settings file with path [{}].\n", deviceSettingsPath));
                 return false;
             }
@@ -199,7 +199,7 @@ auto DCManagerExComponent::initialize() -> bool{
     // # filters
     if(get<int>(ParametersContainer::InitConfig, "filters_init_file") == 1){
         if(std::filesystem::exists(filtersSettingsPath)){
-            if(!io::BinaryFileSettings::init_from_file(filtersS, filtersSettingsPath)){
+            if(!io::BaseSettings::load_multi_from_file(filtersS, filtersSettingsPath)){
                 Logger::error(std::format("Error while reading filters file with path [{}].\n", filtersSettingsPath));
                 return false;
             }
@@ -213,7 +213,7 @@ auto DCManagerExComponent::initialize() -> bool{
     // # color
     if(get<int>(ParametersContainer::InitConfig, "color_init_file") == 1){
         if(std::filesystem::exists(colorSettingsPath)){
-            if(!io::BinaryFileSettings::init_from_file(colorS, colorSettingsPath)){
+            if(!io::BaseSettings::load_multi_from_file(colorS, colorSettingsPath)){
                 Logger::error(std::format("Error while reading color settings file with path [{}].\n", colorSettingsPath));
                 return false;
             }
@@ -226,7 +226,7 @@ auto DCManagerExComponent::initialize() -> bool{
 
     // # model
     if(std::filesystem::exists(modelSettingsPath)){
-        if(!io::TextSettings::init_from_file(modelsS, modelSettingsPath)){
+        if(!io::BaseSettings::load_multi_from_file(modelsS, modelSettingsPath)){
             Logger::error(std::format("Error while reading models file with path [{}].\n", modelSettingsPath));
             return false;
         }

@@ -24,8 +24,10 @@
 # **                                                                            **
 # ********************************************************************************/
 
-TOOLSET_REPOSITORY_DIR = $$EXVR_REPOSITORY_DIR"/toolset"
-include(../toolset/cpp-projects/ts-projects.pri)
+# TOOLSET_REPOSITORY_DIR = $$EXVR_REPOSITORY_DIR"/toolset"
+TOOLSET_REPOSITORY_DIR = "D:/DEV/Perso/toolset"
+# include(../toolset/cpp-projects/ts-projects.pri)
+include($$TOOLSET_REPOSITORY_DIR"/cpp-projects/ts-projects.pri")
 
 # projects list
 EXVR_CPP_PROJECTS +=\    

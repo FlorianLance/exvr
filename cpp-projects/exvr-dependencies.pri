@@ -24,7 +24,8 @@
 # **                                                                            **
 # ********************************************************************************/
 
-include(../toolset/cpp-projects/ts-dependencies.pri)
+# include(../toolset/cpp-projects/ts-dependencies.pri)
+include($$TOOLSET_REPOSITORY_DIR"/cpp-projects/ts-dependencies.pri")
 
 ########################################################### EXVR-EXPORT
 EXVR_EXPORT_DEP_INCLUDEPATH =\

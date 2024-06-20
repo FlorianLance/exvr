@@ -24,7 +24,8 @@
 # **                                                                            **
 # ********************************************************************************/
 
-include(../toolset/cpp-projects/ts-thirdparty.pri)
+# include(../toolset/cpp-projects/ts-thirdparty.pri)
+include($$TOOLSET_REPOSITORY_DIR"/cpp-projects/ts-thirdparty.pri")
 
 ########################################################### DIRECTORIES
 ############################# third-party headers only libraries

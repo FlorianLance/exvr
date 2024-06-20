@@ -229,11 +229,17 @@ namespace Ex{
                         }
 
                     } else {
+                        ExVR.Log().message("CONVERT " + parameter.name + " " + parameter.strValue + " " + parameter.type);
+
                         object value = SceneConverter.deserialize(parameter, CSharpScriptResource.get_compiled_assembly());
                         if (value != null) {
-                            varField.SetValue(generatedComponent, value);
+                            try {
+                                varField.SetValue(generatedComponent, value);
+                            } catch(System.ArgumentException ex) {
+                                ExVR.Log().error("Exception: " + ex.Message + " " + value.ToString());
+                            }                            
                         } else {
-                            ExVR.Log().error("CANNOT SET");
+                            ExVR.Log().error("VALUE NULL CANNOT SET");
                         }
                     }
                 }

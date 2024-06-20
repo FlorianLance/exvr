@@ -31,6 +31,7 @@ cpp-projects/_build/temp
 ### projects specific
 cpp-projects/_build/bin/exvr-components
 cpp-projects/_build/bin/exvr-export
+cpp-projects/_build/bin/exvr-export-app
 cpp-projects/_build/bin/exvr-test
 cpp-projects/_build/bin/exvr-designer/*.exe
 cpp-projects/_build/bin/exvr-designer/*.dll
