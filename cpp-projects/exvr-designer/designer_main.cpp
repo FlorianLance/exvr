@@ -22,9 +22,6 @@
 ** SOFTWARE.                                                                      **
 ************************************************************************************/
 
-// std
-#include <ranges>
-
 // Qt
 #include <QApplication>
 #include <QSplashScreen>
@@ -35,7 +32,10 @@
 // local
 #include "controller/exvr_controller.hpp"
 
+
+using namespace tool;
 using namespace tool::ex;
+using namespace Qt::Literals::StringLiterals;
 
 auto generate_doc_in_console() -> void{
 
@@ -86,6 +86,16 @@ auto main(int argc, char *argv[]) -> int{
     QPixmap pixmap(":/splash/ex_vr_splash");
     QSplashScreen splash(pixmap, Qt::WindowStaysOnTopHint);
     splash.show();
+
+    // init logging system
+    auto logger = BaseLogger::generate_logger_instance<QtLoggerM>();
+    logger->init(u"%1/logs"_s.arg(QApplication::applicationDirPath()), u"designer_log.html"_s, true);
+    logger->set_type_color(QtLoggerM::MessageType::normal,  QColor(189,189,189));
+    logger->set_type_color(QtLoggerM::MessageType::warning, QColor(243, 158, 3));
+    logger->set_type_color(QtLoggerM::MessageType::error,   QColor(244,4,4));
+    logger->set_type_color(QtLoggerM::MessageType::unknow,  Qt::white);
+    logger->set_html_file_background_color(u"black"_s);
+
 
     tool::ex::Paths::initialize_paths(QApplication::applicationDirPath());
     tool::ex::ExVrController controller(numVersion);

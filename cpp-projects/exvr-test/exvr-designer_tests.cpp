@@ -134,13 +134,13 @@ TEST_CASE("Experiments loading"){
     tool::ex::XmlIoManager xmlIoM(&exp);
 
     for(const auto &path : failureExp){
-        QtLogger::message(QSL("Load exp from path: ") % path);
+        QtLog::message(QSL("Load exp from path: ") % path);
         REQUIRE(!xmlIoM.load_experiment_file(path));
         exp.clean_experiment();
     }
 
     for(const auto &path : successExp){
-        QtLogger::message(QSL("Load exp from path: ") % path);
+        QtLog::message(QSL("Load exp from path: ") % path);
         REQUIRE(xmlIoM.load_experiment_file(path));
         exp.clean_experiment();
     }

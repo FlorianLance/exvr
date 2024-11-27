@@ -46,7 +46,7 @@ using namespace tool::ex;
 
 bool XmlIoManager::save_experiment_file(QString expFilePath){
 
-    QtLogger::message(QSL("[XML] Save experiment to file: ") % expFilePath);
+    QtLog::message(QSL("[XML] Save experiment to file: ") % expFilePath);
     QFile expFile(expFilePath);
     if ( !expFile.open(QIODevice::WriteOnly) ){
         return false;
@@ -64,25 +64,25 @@ bool XmlIoManager::save_experiment_file(QString expFilePath){
 
 bool XmlIoManager::load_experiment_file(QString expFilePath){
 
-    QtLogger::message(QSL("[XML] Load experiment from file: ") % expFilePath);
+    QtLog::message(QSL("[XML] Load experiment from file: ") % expFilePath);
     BenchGuard b("[XML::load_experiment_file");
 
     // set current file to load
     expFileToLoad = expFilePath;
 
     if(expFileToLoad.length() == 0){
-        QtLogger::error(QSL("[XML] Can't load experiment file, empty path. "));
+        QtLog::error(QSL("[XML] Can't load experiment file, empty path. "));
         return false;
     }
 
     if(!QFileInfo(expFileToLoad).exists()){
-        QtLogger::error(QSL("[XML] Can't load experiment file, file doesn't exists at path: ") % expFileToLoad);
+        QtLog::error(QSL("[XML] Can't load experiment file, file doesn't exists at path: ") % expFileToLoad);
         return false;
     }
 
     QFile file(expFileToLoad);
     if(!file.open(QFile::ReadOnly | QFile::Text)){
-        QtLogger::error(QSL("[XML] Can't open experiment file with path: ") % expFileToLoad);
+        QtLog::error(QSL("[XML] Can't open experiment file with path: ") % expFileToLoad);
         return false;
     }
 
@@ -92,18 +92,18 @@ bool XmlIoManager::load_experiment_file(QString expFilePath){
     bool expValid = false;
     while(!r->atEnd()){
         if(check_start_node(QSL("Experiment"))){
-            QtLogger::status(QSL("Read XML experiment file: ") % expFilePath, 2000);
-            QtLogger::message(QSL("[XML] Read XML experiment file: ") % expFilePath);
+            // QtLog::status(QSL("Read XML experiment file: ") % expFilePath, 2000);
+            QtLog::message(QSL("[XML] Read XML experiment file: ") % expFilePath);
             expValid = read_exp();
-            QtLogger::status(QSL("XML experiment file loaded."), 2000);
-            QtLogger::message(QSL("[XML] XML experiment file loaded."));
+            // QtLog::status(QSL("XML experiment file loaded."), 2000);
+            QtLog::message(QSL("[XML] XML experiment file loaded."));
         }
         r->readNext();
     }
 
     // check nodes validity
     if(!expValid){
-        QtLogger::error(QSL("[XML] Cannot read experiment xml. "));
+        QtLog::error(QSL("[XML] Cannot read experiment xml. "));
         return false;
     }
 
@@ -127,8 +127,8 @@ bool XmlIoManager::load_experiment_file(QString expFilePath){
     m_experiment->check_integrity();
 
 
-    QtLogger::status(QSL("Loading done."), 2000);
-    QtLogger::message(QSL("[XML] Loading done."));
+    // QtLog::status(QSL("Loading done."), 2000);
+    QtLog::message(QSL("[XML] Loading done."));
 
     return true;
 }
@@ -148,17 +148,17 @@ bool XmlIoManager::read_exp(){
 //    if(split.size() == 2){
 //        const auto major = split[0].toInt();
 //        if(m_experiment->states.majorNumVersion > major){
-//            QtLogger::error(QSL("[XML] Incompatible version of experiment file: software is ") %
+//            QtLog::error(QSL("[XML] Incompatible version of experiment file: software is ") %
 //                    QString::number(m_experiment->states.majorNumVersion) % QSL(" and file is ") % m_experiment->states.loadedExpDesignerVersion);
 //            return false;
 //        }
 //    }else{
-//        QtLogger::error(QSL("[XML] Invalid version number."));
+//        QtLog::error(QSL("[XML] Invalid version number."));
 //        return false;
 //    }
 
     if(auto designerUsed = read_attribute<QString>(QSL("designer-used"), false); designerUsed.has_value()){
-        QtLogger::message(QSL("[XML] Experiment previously saved by designer: ") % designerUsed.value() %
+        QtLog::message(QSL("[XML] Experiment previously saved by designer: ") % designerUsed.value() %
                           QSL(" with version: ") % m_experiment->states.loadedExpDesignerVersion);
     }
 
@@ -167,12 +167,12 @@ bool XmlIoManager::read_exp(){
     bool currentNodeValid   = false;
     while(!r->atEnd()){       
         if(check_start_node(QSL("Settings"))){
-            QtLogger::message(QSL("[XML] Read settings..."));
+            QtLog::message(QSL("[XML] Read settings..."));
             if(!read_settings()){
                 break;
             }
         }else if(check_start_node(QSL("Resources"))){
-            QtLogger::message(QSL("[XML] Read resources..."));
+            QtLog::message(QSL("[XML] Read resources..."));
             if(auto reloadCode = read_attribute<int>(QSL("reload"), true); reloadCode.has_value()){
                 m_experiment->resM.set_reload_code(reloadCode.value());
             }            
@@ -180,17 +180,17 @@ bool XmlIoManager::read_exp(){
                 break;
             }
         }else if(check_start_node(QSL("Components"))){
-            QtLogger::message(QSL("[XML] Read components..."));
+            QtLog::message(QSL("[XML] Read components..."));
             if(!read_components()){
                 break;
             }
         }else if(check_start_node(QSL("FlowElements"))){
-            QtLogger::message(QSL("[XML] Read flow elements..."));
+            QtLog::message(QSL("[XML] Read flow elements..."));
             if(!read_flow_elements()){
                 break;
             }
         }else if(check_start_node(QSL("FlowSequence"))){
-            QtLogger::message(QSL("[XML] Read flow sequence..."));
+            QtLog::message(QSL("[XML] Read flow sequence..."));
             if(!read_flow_sequence()){
                 break;
             }
@@ -209,7 +209,7 @@ std::unique_ptr<FlowElement> XmlIoManager::read_element(){
     const auto id = read_attribute<int>(QSL("key"), true);
     const auto &typeStr = read_attribute<QString>(QSL("type"), true);
     if(!id.has_value() || !typeStr.has_value()){
-        QtLogger::error(QSL("[XML] Invalid element at line: ") % QString::number(r->lineNumber()));
+        QtLog::error(QSL("[XML] Invalid element at line: ") % QString::number(r->lineNumber()));
         return nullptr;
     }
     const FlowElement::Type type = FlowElement::get_type(typeStr.value().toStdString());
@@ -263,7 +263,7 @@ std::unique_ptr<FlowElement> XmlIoManager::read_element(){
     default: break;}
     }
 
-    QtLogger::error(QSL("[XML] Cannot find flow sequence element at line: ") % QString::number(r->lineNumber()) % QSL(" with id ") % QString::number(id.value()));
+    QtLog::error(QSL("[XML] Cannot find flow sequence element at line: ") % QString::number(r->lineNumber()) % QSL(" with id ") % QString::number(id.value()));
 
     return nullptr;
 }
@@ -278,7 +278,7 @@ void XmlIoManager::check_read_elements(){
 
     size_t countAfter = readXmlRoutines.size();
     if(countBefore > countAfter){
-        QtLogger::warning(
+        QtLog::warning(
             QSL("Remove ") % QString::number(countBefore - countAfter) % QSL(" duplicated routines.")
         );
     }
@@ -436,7 +436,7 @@ std::unique_ptr<Config> XmlIoManager::read_config(){
     const auto key      = read_attribute<int>(QSL("key"), true);
     const auto name     = read_attribute<QString>(QSL("name"), true);
     if(!key.has_value() || !name.has_value() ){
-        QtLogger::error(QSL("[XML] Invalid config at line: ") % QString::number(r->lineNumber()));
+        QtLog::error(QSL("[XML] Invalid config at line: ") % QString::number(r->lineNumber()));
         return nullptr;
     }
 
@@ -449,7 +449,7 @@ std::unique_ptr<Config> XmlIoManager::read_config(){
             if(auto arg = read_argument(); std::get<0>(arg).has_value()){
                 config->add_arg(std::move(std::get<0>(arg).value()));
             }else{
-                QtLogger::error(QSL("[XML] -> from config ") % name.value() % QSL(": ") % std::get<1>(arg));
+                QtLog::error(QSL("[XML] -> from config ") % name.value() % QSL(": ") % std::get<1>(arg));
             }
             r->readNext();
         }
@@ -494,7 +494,7 @@ std::vector<std::unique_ptr<Config>> XmlIoManager::read_configs(){
 
         r->readNext();
     }
-    QtLogger::error(QSL("[XML] Invalid xml configs list, no end bracket."));    
+    QtLog::error(QSL("[XML] Invalid xml configs list, no end bracket."));    
     return {};
 }
 
@@ -505,7 +505,7 @@ std::unique_ptr<Component> XmlIoManager::read_component(){
     auto unityName  = read_attribute<QString>(QSL("type"), true);
 
     if(!key.has_value() || !name.has_value() || !unityName.has_value()){
-        QtLogger::error(QSL("[XML] Invalid component at line: ") % QString::number(r->lineNumber()));
+        QtLog::error(QSL("[XML] Invalid component at line: ") % QString::number(r->lineNumber()));
         return nullptr;
     }
 
@@ -530,7 +530,7 @@ std::unique_ptr<Component> XmlIoManager::read_component(){
         // try again with modifications
         type = Component::get_type_from_unity_name(unityNameStr.toStdString());
         if(!type.has_value()){
-            QtLogger::error(QSL("[XML] Invalid component type at line: ") % QString::number(r->lineNumber()) % QSL(" with name ") % name.value());
+            QtLog::error(QSL("[XML] Invalid component type at line: ") % QString::number(r->lineNumber()) % QSL(" with name ") % name.value());
             return nullptr;
         }
     }
@@ -563,7 +563,7 @@ std::unique_ptr<Component> XmlIoManager::read_component(){
         r->readNext();
     }
 
-    QtLogger::error(invalid_bracket_error_message(key.value(), IdKey::Type::Component));
+    QtLog::error(invalid_bracket_error_message(key.value(), IdKey::Type::Component));
 
     return nullptr;
 }
@@ -576,13 +576,13 @@ std::unique_ptr<Resource> XmlIoManager::read_resource(){
     const auto path     = read_attribute<QString>(QSL("path"), true);
 
     if(!key.has_value() || !typeStr.has_value() || !alias.has_value()  || !path.has_value()){
-        QtLogger::error(QSL("[XML] Invalid resource at line: ") % QString::number(r->lineNumber()));
+        QtLog::error(QSL("[XML] Invalid resource at line: ") % QString::number(r->lineNumber()));
         return nullptr;
     }
 
     const auto type = Resource::get_type(typeStr.value().toStdString());
     if(!type.has_value()){
-        QtLogger::error(QSL("[XML] Invalid resource type at line: ") % QString::number(r->lineNumber()));
+        QtLog::error(QSL("[XML] Invalid resource type at line: ") % QString::number(r->lineNumber()));
         return nullptr;
     }
 
@@ -617,13 +617,13 @@ std::unique_ptr<Resource> XmlIoManager::read_resource(){
                 }
             }
 
-            QtLogger::error(QSL("[XML] Cannot create resource path from ") % path.value());
+            QtLog::error(QSL("[XML] Cannot create resource path from ") % path.value());
             // doesn't exist, keep loaded path
             resource->path  = path.value();
         }
         return  resource;
     }else if(fileInfo.isAbsolute()){
-        QtLogger::error(QSL("[XML] Cannot find resource file from absolute path: ") % path.value());
+        QtLog::error(QSL("[XML] Cannot find resource file from absolute path: ") % path.value());
     }
 
     // doesn't exist, keep loaded path
@@ -668,7 +668,7 @@ std::optional<Interval> XmlIoManager::read_interval(){
     const auto start = read_attribute<double>(QSL("t1"), true);
     const auto end   = read_attribute<double>(QSL("t2"), true);
     if(!start.has_value() || !end.has_value()){
-        QtLogger::error(QSL("[XML] Invalid interval at line: ") % QString::number(r->lineNumber()));
+        QtLog::error(QSL("[XML] Invalid interval at line: ") % QString::number(r->lineNumber()));
         return {};
     }
     return Interval{SecondsTS{start.value()}, SecondsTS{end.value()}};
@@ -704,7 +704,7 @@ std::unique_ptr<Timeline> XmlIoManager::read_timeline(){
     const auto typeStr = read_attribute<QString>(QSL("type"), true);
 
     if(!typeStr.has_value()){
-        QtLogger::error(QSL("[XML] Invalid timeline at line: ") % QString::number(r->lineNumber()));
+        QtLog::error(QSL("[XML] Invalid timeline at line: ") % QString::number(r->lineNumber()));
         return nullptr;
     }
 
@@ -752,7 +752,7 @@ void XmlIoManager::write_connection(const Condition *condition, const Connection
             startName = startComponent->name();
             startType = QSL("Component");
         }else{
-            QtLogger::error(QSL("[XML] Invalid start component: ") % connection->to_string() % QSL(" from ") % condition->to_string());
+            QtLog::error(QSL("[XML] Invalid start component: ") % connection->to_string() % QSL(" from ") % condition->to_string());
             return;
         }
     }else{
@@ -760,7 +760,7 @@ void XmlIoManager::write_connection(const Condition *condition, const Connection
             startName = startConnector->name;
             startType = QSL("Connector");
         }else{
-            QtLogger::error(QSL("[XML] Invalid start connector: ") % connection->to_string() % QSL(" from ") % condition->to_string());
+            QtLog::error(QSL("[XML] Invalid start connector: ") % connection->to_string() % QSL(" from ") % condition->to_string());
             return;
         }
     }
@@ -770,7 +770,7 @@ void XmlIoManager::write_connection(const Condition *condition, const Connection
             endName = endComponent->name();
             endType = QSL("Component");
         }else{
-            QtLogger::error(QSL("[XML] Invalid end component: ") % connection->to_string() % QSL(" from ") % condition->to_string());
+            QtLog::error(QSL("[XML] Invalid end component: ") % connection->to_string() % QSL(" from ") % condition->to_string());
             return;
         }
     }else{
@@ -778,7 +778,7 @@ void XmlIoManager::write_connection(const Condition *condition, const Connection
             endName = endConnector->name;
             endType = QSL("Connector");
         }else{
-            QtLogger::error(QSL("[XML] Invalid end connector: ") % connection->to_string() % QSL(" from ") % condition->to_string());
+            QtLog::error(QSL("[XML] Invalid end connector: ") % connection->to_string() % QSL(" from ") % condition->to_string());
             return;
         }
     }
@@ -1078,7 +1078,7 @@ void XmlIoManager::write_condition(const Condition *condition){
         if(connection->endType == Connection::Type::Connector){
             if(auto inConnector = condition->get_connector_from_key(ConnectorKey{connection->endKey}); inConnector != nullptr){
                 if(!inConnector->inputValidity){
-                    QtLogger::error(QSL("[XML] ") % connection->to_string() % QSL(" not valid with ") % inConnector->to_string());
+                    QtLog::error(QSL("[XML] ") % connection->to_string() % QSL(" not valid with ") % inConnector->to_string());
                     continue;
                 }
             }
@@ -1103,7 +1103,7 @@ std::unique_ptr<Condition> XmlIoManager::read_condition(Routine *routine){
        !duration.has_value()    ||
        !uiScale.has_value()     ||
        !uiSize.has_value()){
-        QtLogger::error(QSL("[XML] -> from routine ") % routine->name() % QSL(": invalid condition at line: ") % QString::number(r->lineNumber()));
+        QtLog::error(QSL("[XML] -> from routine ") % routine->name() % QSL(": invalid condition at line: ") % QString::number(r->lineNumber()));
         return {};
     }
 
@@ -1124,7 +1124,7 @@ std::unique_ptr<Condition> XmlIoManager::read_condition(Routine *routine){
             if(auto action = read_action(); std::get<0>(action) != nullptr){
                 condition->actions.emplace_back(std::move(std::get<0>(action)));
             }else{
-                QtLogger::error(QSL("[XML] -> from routine ") % routine->name() % QSL(", from condition ") % name.value() % QSL(": ") % std::get<1>(action));
+                QtLog::error(QSL("[XML] -> from routine ") % routine->name() % QSL(", from condition ") % name.value() % QSL(": ") % std::get<1>(action));
             }
 
         }else if(check_start_node(QSL("Connector"))){
@@ -1132,7 +1132,7 @@ std::unique_ptr<Condition> XmlIoManager::read_condition(Routine *routine){
             if(auto connector = read_connector(); std::get<0>(connector) != nullptr){
                 condition->connectors.emplace_back(std::move(std::get<0>(connector)));
             }else{
-                QtLogger::error(QSL("[XML] -> from routine ") % routine->name() % QSL(", from condition ") % name.value() % QSL(": ") % std::get<1>(connector));
+                QtLog::error(QSL("[XML] -> from routine ") % routine->name() % QSL(", from condition ") % name.value() % QSL(": ") % std::get<1>(connector));
             }
 
         }else if(check_start_node(QSL("Connection"))){
@@ -1140,7 +1140,7 @@ std::unique_ptr<Condition> XmlIoManager::read_condition(Routine *routine){
             if(auto connection = read_connection(condition.get()); std::get<0>(connection) != nullptr){
                 condition->connections.emplace_back(std::move(std::get<0>(connection)));
             }else{
-                QtLogger::error(QSL("[XML] -> from routine ") % routine->name() % QSL(", from condition ") % name.value() % QSL(": ") % std::get<1>(connection));
+                QtLog::error(QSL("[XML] -> from routine ") % routine->name() % QSL(", from condition ") % name.value() % QSL(": ") % std::get<1>(connection));
             }
 
         }else if(check_end_node(QSL("Condition"))){
@@ -1191,7 +1191,7 @@ std::tuple<std::unique_ptr<LoopNode>, std::unique_ptr<Loop>, std::unique_ptr<Loo
     if(!key.has_value()         ||
        !type.has_value()        ||
        !name.has_value()){
-        QtLogger::error(QSL("[XML] Invalid Loop at line: ") + QString::number(r->lineNumber()));
+        QtLog::error(QSL("[XML] Invalid Loop at line: ") + QString::number(r->lineNumber()));
         return std::make_tuple(nullptr,nullptr,nullptr);
     }
 
@@ -1203,7 +1203,7 @@ std::tuple<std::unique_ptr<LoopNode>, std::unique_ptr<Loop>, std::unique_ptr<Loo
     if(auto mode = Loop::get_mode(type.value().toStdString()); mode.has_value()){
         loop->mode = mode.value();
     }else{
-        QtLogger::error(QSL("[XML] Invalid Loop type at line: ") + QString::number(r->lineNumber()));
+        QtLog::error(QSL("[XML] Invalid Loop type at line: ") + QString::number(r->lineNumber()));
         return std::make_tuple(nullptr,nullptr,nullptr);
     }
 
@@ -1259,7 +1259,7 @@ std::unique_ptr<Set> XmlIoManager::read_set(){
     if(!key.has_value()     ||
        !name.has_value()    ||
        !occu.has_value()){
-        QtLogger::error(QSL("[XML] Invalid set at line: ") + QString::number(r->lineNumber()));
+        QtLog::error(QSL("[XML] Invalid set at line: ") + QString::number(r->lineNumber()));
         return nullptr;
     }
 
@@ -1410,7 +1410,7 @@ bool XmlIoManager::save_instance_file(const Instance &instance, QString instance
 
     QFile instanceFile(instanceFilePath);
     if ( !instanceFile.open(QIODevice::WriteOnly) ){
-        QtLogger::error(QSL("[XML] Cannot write instance file, invalid path ") + instanceFilePath);
+        QtLog::error(QSL("[XML] Cannot write instance file, invalid path ") + instanceFilePath);
         return false;
     }
 
@@ -1452,7 +1452,7 @@ std::unique_ptr<Instance> XmlIoManager::load_instance_file(QString instanceFileP
 
     QFile file(instanceFilePath);
     if(!file.open(QFile::ReadOnly | QFile::Text)){
-        QtLogger::error(QSL("[XML] Cannot read instance file ")  % instanceFilePath % QSL("."));
+        QtLog::error(QSL("[XML] Cannot read instance file ")  % instanceFilePath % QSL("."));
         return nullptr;
     }    
 
@@ -1481,7 +1481,7 @@ std::unique_ptr<Instance> XmlIoManager::load_instance_file(QString instanceFileP
                        !name.has_value() ||
                        !type.has_value() ||
                        !cond.has_value() ){
-                        QtLogger::error(QSL("[XML] Invalid instance element at line: ") % QString::number(r->lineNumber()));
+                        QtLog::error(QSL("[XML] Invalid instance element at line: ") % QString::number(r->lineNumber()));
                         return nullptr;
                     }
 
@@ -1489,7 +1489,7 @@ std::unique_ptr<Instance> XmlIoManager::load_instance_file(QString instanceFileP
 
                         auto routine = m_experiment->get_routine(ElementKey{key.value()});
                         if(!routine){
-                            QtLogger::error(QSL("[XML] Invalid routine at line: ") % QString::number(r->lineNumber()));
+                            QtLog::error(QSL("[XML] Invalid routine at line: ") % QString::number(r->lineNumber()));
                             return nullptr;
                         }
 
@@ -1502,7 +1502,7 @@ std::unique_ptr<Instance> XmlIoManager::load_instance_file(QString instanceFileP
                         }
 
                         if(!condFound){
-                            QtLogger::error(QSL("[XML] Condition ") % cond.value() % QSL(" not found in routine ") % routine->name());
+                            QtLog::error(QSL("[XML] Condition ") % cond.value() % QSL(" not found in routine ") % routine->name());
                             return nullptr;
                         }
 
@@ -1516,7 +1516,7 @@ std::unique_ptr<Instance> XmlIoManager::load_instance_file(QString instanceFileP
 
                         auto isi = m_experiment->get_isi(ElementKey{key.value()});
                         if(!isi){
-                            QtLogger::error(QSL("[XML] Invalid ISI at line: ") % QString::number(r->lineNumber()));
+                            QtLog::error(QSL("[XML] Invalid ISI at line: ") % QString::number(r->lineNumber()));
                             return nullptr;
                         }
 
@@ -1529,7 +1529,7 @@ std::unique_ptr<Instance> XmlIoManager::load_instance_file(QString instanceFileP
                         }
 
                         if(!condFound){
-                            QtLogger::error(QSL("[XML] Interval ") % cond.value() % QSL(" not found in isi ") % isi->name());
+                            QtLog::error(QSL("[XML] Interval ") % cond.value() % QSL(" not found in isi ") % isi->name());
                             return nullptr;
                         }
 
@@ -1557,7 +1557,7 @@ std::unique_ptr<Routine> XmlIoManager::read_routine(){
     const auto name     = read_attribute<QString>(QSL("name"), true);
 
     if(!key.has_value() || !name.has_value() ){
-        QtLogger::error(QSL("[XML] Invalid routine at line: ") % QString::number(r->lineNumber()));
+        QtLog::error(QSL("[XML] Invalid routine at line: ") % QString::number(r->lineNumber()));
         return nullptr;
     }
 
@@ -1585,14 +1585,14 @@ std::unique_ptr<Routine> XmlIoManager::read_routine(){
     }
 
 
-    QtLogger::error(QSL("[XML] ") % invalid_bracket_error_message(key.value(), IdKey::Type::FlowElement));
+    QtLog::error(QSL("[XML] ") % invalid_bracket_error_message(key.value(), IdKey::Type::FlowElement));
 
     return nullptr;
 }
 
 bool XmlIoManager::read_settings(){
 
-    QtLogger::status(QSL("Read settings."), 2000);
+    // QtLog::status(QSL("Read settings."), 2000);
 
     auto settings = m_experiment->settings();
     while(!r->atEnd()){
@@ -1635,7 +1635,7 @@ bool XmlIoManager::read_settings(){
 
 bool XmlIoManager::read_components(){
 
-    QtLogger::status("Read components.", 2000);
+    // QtLog::status("Read components.", 2000);
     BenchGuard bench("[XML::read_components]");
     r->readNext();
 
@@ -1653,7 +1653,7 @@ bool XmlIoManager::read_components(){
         r->readNext();
     }
 
-    QtLogger::error(QSL("[XML] Invalid xml Components, no end bracket. "));
+    QtLog::error(QSL("[XML] Invalid xml Components, no end bracket. "));
 
     return false;
 }
@@ -1675,7 +1675,7 @@ IsiUP XmlIoManager::read_isi(){
     const auto key      = read_attribute<int>(QSL("key"), true);
     const auto name     = read_attribute<QString>(QSL("name"), true);
     if(!key.has_value() || !name.has_value() ){
-        QtLogger::error(QSL("[XML] Invalid Isi at line: ") + QString::number(r->lineNumber()));
+        QtLog::error(QSL("[XML] Invalid Isi at line: ") + QString::number(r->lineNumber()));
         return nullptr;
     }
 
@@ -1714,7 +1714,7 @@ bool XmlIoManager::read_ISIs(){
         r->readNext();
     }
 
-    QtLogger::error(QSL("[XML] Invalid xml ISIs, no end bracket. "));
+    QtLog::error(QSL("[XML] Invalid xml ISIs, no end bracket. "));
 
     return false;
 }
@@ -1737,7 +1737,7 @@ bool XmlIoManager::read_loops(){
         }
         r->readNext();
     }
-    QtLogger::error(QSL("[XML] Invalid xml Loops, no end bracket. "));
+    QtLog::error(QSL("[XML] Invalid xml Loops, no end bracket. "));
 
     return false;
 }
@@ -1761,14 +1761,14 @@ bool XmlIoManager::read_routines(){
         r->readNext();
     }
 
-    QtLogger::error(QSL("[XML] Invalid xml Routines, no end bracket. "));
+    QtLog::error(QSL("[XML] Invalid xml Routines, no end bracket. "));
 
     return false;
 }
 
 bool XmlIoManager::read_resources(){
 
-    QtLogger::status("Read resources.", 2000);
+    // QtLog::status("Read resources.", 2000);
     BenchGuard bench("[XML::read_resources]");
 
     r->readNext();
@@ -1784,14 +1784,14 @@ bool XmlIoManager::read_resources(){
         r->readNext();
     }
 
-    QtLogger::error(QSL("[XML] Invalid xml resources, no end bracket. "));
+    QtLog::error(QSL("[XML] Invalid xml resources, no end bracket. "));
     return false;
 }
 
 
 bool XmlIoManager::read_flow_elements(){
 
-    QtLogger::status("Read flow elements.", 2000);
+    // QtLog::status("Read flow elements.", 2000);
     BenchGuard bench("[XML::read_flow_elements]");
 
     r->readNext();
@@ -1816,7 +1816,7 @@ bool XmlIoManager::read_flow_elements(){
         r->readNext();
     }
 
-    QtLogger::error(QSL("[XML] Invalid xml FlowElements, no end bracket. "));
+    QtLog::error(QSL("[XML] Invalid xml FlowElements, no end bracket. "));
     return false;
 }
 
@@ -1824,7 +1824,7 @@ bool XmlIoManager::read_flow_elements(){
 
 bool XmlIoManager::read_flow_sequence(){
 
-    QtLogger::status("Read flow sequence.", 2000);
+    // QtLog::status("Read flow sequence.", 2000);
     BenchGuard bench("[XML::read_flow_sequence]");
 
     r->readNext();
@@ -1842,7 +1842,7 @@ bool XmlIoManager::read_flow_sequence(){
         r->readNext();
     }
 
-    QtLogger::error(QSL("[XML] Invalid xml FlowSequence, no end bracket. "));
+    QtLog::error(QSL("[XML] Invalid xml FlowSequence, no end bracket. "));
     return false;
 }
 
@@ -1850,7 +1850,7 @@ bool XmlIoManager::read_flow_sequence(){
 bool XmlIoManager::save_experiment(){
 
     if(m_experiment->states.currentExpfilePath.size() == 0){
-        QtLogger::error(QSL("[XML] No current experiment file defined, use \"Save as\" instead. "));
+        QtLog::error(QSL("[XML] No current experiment file defined, use \"Save as\" instead. "));
         return false;
     }
 
@@ -1858,12 +1858,12 @@ bool XmlIoManager::save_experiment(){
 }
 
 bool XmlIoManager::save_experiment_to_temp(){
-    QtLogger::message(QSL("[XML] Save experiment to temp location: ") % Paths::tempExp);
+    QtLog::message(QSL("[XML] Save experiment to temp location: ") % Paths::tempExp);
     return save_experiment_file(Paths::tempExp);
 }
 
 bool XmlIoManager::save_instance_to_temp(const Instance &instance){
-    QtLogger::message(QSL("[XML] Save instance to temp location: ") % Paths::tempInstance);
+    QtLog::message(QSL("[XML] Save instance to temp location: ") % Paths::tempInstance);
     return save_instance_file(instance, Paths::tempInstance);
 }
 
@@ -1903,7 +1903,7 @@ void XmlIoManager::export_experiment_to(){
 
     QString path = QFileDialog::getExistingDirectory(nullptr, "Export directory", parentDirPath);
     if(path.length() > 0){
-        QtLogger::message(QSL("[XML] Export experiment to directory: ") % path);
+        QtLog::message(QSL("[XML] Export experiment to directory: ") % path);
         QString expFilePath =  path % QSL("/") % m_experiment->states.currentName % QSL(".xml");
         auto resM = &m_experiment->resM;
         resM->exportMode = true;
@@ -1925,7 +1925,7 @@ bool XmlIoManager::save_experiment_as(){
 
     QString path = QFileDialog::getSaveFileName(nullptr, "Experiment file", parentDirPath, "XML (*.xml)");
     if(path.length() > 0){
-        QtLogger::message(QSL("[XML] Save experiment as: ") % path);
+        QtLog::message(QSL("[XML] Save experiment as: ") % path);
         m_experiment->states.currentExpfilePath = path;
         m_experiment->states.currentName = m_experiment->states.currentExpfilePath.split('/').last().split('.').first();
         save_experiment();

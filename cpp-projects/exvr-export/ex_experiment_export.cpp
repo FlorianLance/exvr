@@ -87,20 +87,20 @@ void test_call_backs_ex_experiment(tool::ex::ExExperiment *e){
     (*e->logMessageCBP)("test_message_callback_1");
     (*e->logWarningCBP)("test_warning_callback_1");
     (*e->logErrorCBP)("test_error_callback_1");
-    tool::Logger::get()->message("test_message_callback_2");
-    tool::Logger::get()->warning("test_warning_callback_2");
-    tool::Logger::get()->error("test_error_callback_2");
-    tool::Logger::message("test_message_callback_3");
-    tool::Logger::warning("test_warning_callback_3");
-    tool::Logger::error("test_error_callback_3");
+    tool::Log::get()->message("test_message_callback_2");
+    tool::Log::get()->warning("test_warning_callback_2");
+    tool::Log::get()->error("test_error_callback_2");
+    tool::Log::message("test_message_callback_3");
+    tool::Log::warning("test_warning_callback_3");
+    tool::Log::error("test_error_callback_3");
 }
 
-void test_log_ex_experiment(tool::Logger *logger){
+void test_log_ex_experiment(tool::ExLoggerM *logger){
     logger->message("test_log_message1");
     logger->warning("test_log_warning1");
     logger->error("test_log_error1");
 }
 
-tool::Logger *get_logger_ptr_ex_experiment(tool::ex::ExExperiment *e){
-    return e->logger.get();
+tool::ExLoggerM *get_logger_ptr_ex_experiment(tool::ex::ExExperiment *e){
+    return tool::ExLoggerM::get_instance();
 }

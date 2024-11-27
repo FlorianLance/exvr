@@ -63,7 +63,7 @@ auto Experiment::get_element_position(FlowElement *element) const -> RowId{
         return RowId{static_cast<int>(std::distance(elements.begin(), elementFound))};
     }
 
-    QtLogger::error(QSL("[EXP] Element with key ") % QString::number(element->key()) % QSL(" not found."));
+    QtLog::error(QSL("[EXP] Element with key ") % QString::number(element->key()) % QSL(" not found."));
     return RowId{-1};
 }
 
@@ -92,7 +92,7 @@ auto Experiment::get_element(ElementKey elementKey, bool showError) const -> Flo
         return elementFound->get();
     }
     if(showError){
-        QtLogger::error(QSL("[EXP] Element with key ") % QString::number(elementKey.v) % QSL(" not found."));
+        QtLog::error(QSL("[EXP] Element with key ") % QString::number(elementKey.v) % QSL(" not found."));
     }
     return nullptr;
 }
@@ -163,7 +163,7 @@ auto Experiment::get_condition(ConditionKey conditionKey) const -> Condition *{
             return condFound->get();
         }
     }
-    QtLogger::error(QSL("[EXP] Condition with key ") % QString::number(conditionKey.v) % QSL(" not found."));
+    QtLog::error(QSL("[EXP] Condition with key ") % QString::number(conditionKey.v) % QSL(" not found."));
     return nullptr;
 }
 
@@ -174,7 +174,7 @@ auto Experiment::get_condition(ConditionKey conditionKey) const -> Condition *{
 
 
 void Experiment::update_randomization_seed(unsigned int seed){
-    QtLogger::message(QSL("[EXP] Set randomizer with seed ") % QString::number(seed));
+    QtLog::message(QSL("[EXP] Set randomizer with seed ") % QString::number(seed));
     states.randomizationSeed = seed;
     randomizer = Randomizer(states.randomizationSeed);
 }
@@ -200,7 +200,7 @@ void Experiment::select_element_id(RowId elementId, bool updateSignal){
     if(elementId.v < static_cast<int>(elements.size())){
         select_element_from_ptr(elements[elementId.v].get(), updateSignal);
     }else{
-        QtLogger::error(QSL("Cannot select element with id [") % QString::number(elementId.v) % QSL("], it doesn't exist."));
+        QtLog::error(QSL("Cannot select element with id [") % QString::number(elementId.v) % QSL("], it doesn't exist."));
     }
 }
 
@@ -213,7 +213,7 @@ void Experiment::select_element(ElementKey elementKey, bool updateSignal){
     if(auto elem = get_element(elementKey); elem != nullptr){
         select_element_from_ptr(elem, updateSignal);
     }else{
-        QtLogger::error(QSL("Cannot select element with key [") % QString::number(elementKey.v) % QSL("], it doesn't exist."));
+        QtLog::error(QSL("Cannot select element with key [") % QString::number(elementKey.v) % QSL("], it doesn't exist."));
     }
 }
 
@@ -856,7 +856,7 @@ Isi *Experiment::get_isi(ElementKey isiKey) const{
         return dynamic_cast<Isi*>(elementFound->get());
     }
 
-    QtLogger::error(QSL("[EXP] Isi with key ") % QString::number(isiKey.v) % QSL(" not found."));
+    QtLog::error(QSL("[EXP] Isi with key ") % QString::number(isiKey.v) % QSL(" not found."));
     return nullptr;
 }
 
@@ -870,7 +870,7 @@ Loop *Experiment::get_loop(ElementKey loopKey) const{
         return loopFound->get();
     }
 
-    QtLogger::error(QSL("[EXP] Loop with key ") % QString::number(loopKey.v) % QSL(" not found."));
+    QtLog::error(QSL("[EXP] Loop with key ") % QString::number(loopKey.v) % QSL(" not found."));
     return nullptr;
 }
 
@@ -884,7 +884,7 @@ Action *Experiment::get_action(ElementKey routineKey, ConditionKey conditionKey,
 
 void Experiment::check_integrity(){
 
-    QtLogger::status(QSL("[EXP] Check experiment validity."), 2000);
+    // QtLog::status(QSL("[EXP] Check experiment validity."), 2000);
 
     // check validity
     // # components
@@ -892,14 +892,14 @@ void Experiment::check_integrity(){
     umap<int, Config*> checkConfigs;
     for(auto component : compM.get_components()){
         if(checkComponents.count(component->key()) != 0){
-            QtLogger::error(QSL("[EXP] ") % component->to_string() % QSL(" already exists."));
+            QtLog::error(QSL("[EXP] ") % component->to_string() % QSL(" already exists."));
         }else{
             checkComponents[component->key()] = component;
         }
 
 //        for(const auto &config : component->configs){
 //            if(checkConfigs.count(config->key()) != 0){
-//                QtLogger::error(QSL("[EXP] ") % config->to_string() % QSL(" already exists."));
+//                QtLog::error(QSL("[EXP] ") % config->to_string() % QSL(" already exists."));
 //            }else{
 //                checkConfigs[config->key()] = config.get();
 //            }
@@ -919,34 +919,34 @@ void Experiment::check_integrity(){
         if(elem->type() == FlowElement::Type::Routine){
 
             if(checkRoutines.count(elem->key()) != 0){
-                QtLogger::error(QSL("[EXP] ") % dynamic_cast<Routine*>(elem.get())->to_string() % QSL(" already exists."));
+                QtLog::error(QSL("[EXP] ") % dynamic_cast<Routine*>(elem.get())->to_string() % QSL(" already exists."));
             }else{
                 checkRoutines[elem->key()] = dynamic_cast<Routine*>(elem.get());
             }
 
             for(auto &cond : checkRoutines[elem->key()]->conditions){
                 if(checkConditions.count(cond->key()) != 0){
-                    QtLogger::error(QSL("[EXP] ") % cond->to_string() % QSL(" already exists."));
+                    QtLog::error(QSL("[EXP] ") % cond->to_string() % QSL(" already exists."));
                 }else{
                     checkConditions[cond->key()] = dynamic_cast<Condition*>(cond.get());
 
                     for(auto &action : cond->actions){
                         if(checkActions.count(action->key()) != 0){
-                            QtLogger::error(QSL("[EXP] ") % action->to_string() % QSL(" already exists."));
+                            QtLog::error(QSL("[EXP] ") % action->to_string() % QSL(" already exists."));
                         }else{
                             checkActions[action->key()] = dynamic_cast<Action*>(action.get());
                         }
                     }
                     for(auto &connector : cond->connectors){
                         if(checkConnectors.count(connector->key()) != 0){
-                            QtLogger::error(QSL("[EXP] ") % connector->to_string() % QSL(" already exists."));
+                            QtLog::error(QSL("[EXP] ") % connector->to_string() % QSL(" already exists."));
                         }else{
                             checkConnectors[connector->key()] = dynamic_cast<Connector*>(connector.get());
                         }
                     }
                     for(auto &connection : cond->connections){
                         if(checkConnection.count(connection->key()) != 0){
-                            QtLogger::error(QSL("[EXP] ") % connection->to_string() % QSL(" already exists."));
+                            QtLog::error(QSL("[EXP] ") % connection->to_string() % QSL(" already exists."));
                         }else{
                             checkConnection[connection->key()] = dynamic_cast<Connection*>(connection.get());
                         }
@@ -955,13 +955,13 @@ void Experiment::check_integrity(){
             }
         }else if(elem->type() == FlowElement::Type::Loop){
             if(checkLoops.count(elem->key()) != 0){
-                QtLogger::error(QSL("[EXP] ") % dynamic_cast<Loop*>(elem.get())->to_string() % QSL(" already exists."));
+                QtLog::error(QSL("[EXP] ") % dynamic_cast<Loop*>(elem.get())->to_string() % QSL(" already exists."));
             }else{
                 checkLoops[elem->key()] = dynamic_cast<Loop*>(elem.get());
             }
         }else if(elem->type() == FlowElement::Type::Isi){
             if(checkIsi.count(elem->key()) != 0){
-                QtLogger::error(QSL("[EXP] ") % dynamic_cast<Isi*>(elem.get())->to_string() % QSL(" already exists."));
+                QtLog::error(QSL("[EXP] ") % dynamic_cast<Isi*>(elem.get())->to_string() % QSL(" already exists."));
             }else{
                 checkIsi[elem->key()] = dynamic_cast<Isi*>(elem.get());
             }
@@ -1238,9 +1238,9 @@ auto Experiment::paste_nodes_clip_board(QPointF mousePosition, ElementKey routin
 
 void Experiment::display_exp_infos(){
 
-    QtLogger::message("### ELEMENTS ###");
+    QtLog::message(u"### ELEMENTS ###");
     for(const auto &element : elements){
-        QtLogger::message(QSL("->") % QString::number(element->key()) % QSL(" ") %element->name() %  QSL(" ") % from_view(FlowElement::get_type_name(element->type())));
+        QtLog::message(QSL("->") % QString::number(element->key()) % QSL(" ") %element->name() %  QSL(" ") % from_view(FlowElement::get_type_name(element->type())));
     }
 }
 
@@ -1255,7 +1255,7 @@ void Experiment::add_action(ElementKey routineKey, ConditionKey conditionKey, Co
 
     auto component = compM.get_component(componentKey);
     if(component == nullptr){
-        QtLogger::error(QSL("Cannot add action to condition with key [") % QString::number(conditionKey.v) % QSL("] from routine with key [")
+        QtLog::error(QSL("Cannot add action to condition with key [") % QString::number(conditionKey.v) % QSL("] from routine with key [")
             % QString::number(routineKey.v) % QSL("]"));
         return;
     }
@@ -1274,7 +1274,7 @@ void Experiment::add_action(ElementKey routineKey, ConditionKey conditionKey, Co
 
                 add_to_update_flag(UpdateRoutines);
             }else{
-                QtLogger::message(QSL("[EXP] Component already added to timeline."));
+                QtLog::message(QSL("[EXP] Component already added to timeline."));
             }
         }
     }
@@ -1287,7 +1287,7 @@ void Experiment::add_action_to_all_conditions(ElementKey routineKey, ComponentKe
 
     auto component = compM.get_component(componentKey);
     if(component == nullptr){
-        QtLogger::error(QSL("[Experiment::add_action_to_all_conditions] Cannot add action.)"));
+        QtLog::error(QSL("[Experiment::add_action_to_all_conditions] Cannot add action.)"));
         return;
     }
 
@@ -1315,7 +1315,7 @@ void Experiment::add_action_to_all_routines_conditions(ComponentKey componentKey
 
     auto component = compM.get_component(componentKey);
     if(component == nullptr){
-        QtLogger::error(QSL("[Experiment::add_action_to_all_routines_conditions] Cannot add action to all routines conditions.)"));
+        QtLog::error(QSL("[Experiment::add_action_to_all_routines_conditions] Cannot add action to all routines conditions.)"));
         return;
     }
 
@@ -1342,7 +1342,7 @@ void Experiment::insert_action_to(ComponentKey componentKey, std::vector<std::tu
 
     auto component = compM.get_component(componentKey);
     if(component == nullptr){
-        QtLogger::error(QSL("Cannot insert action.)"));
+        QtLog::error(QSL("Cannot insert action.)"));
         return;
     }
 
@@ -1372,7 +1372,7 @@ void Experiment::modify_action(ElementKey routineKey, ConditionKey conditionKey,
 
     auto component = compM.get_component(componentKey);
     if(component == nullptr){
-        QtLogger::error(QSL("Cannot modify action.)"));
+        QtLog::error(QSL("Cannot modify action.)"));
         return;
     }
 
@@ -1420,7 +1420,7 @@ void Experiment::modify_action_to_all_conditions(ElementKey routineKey, Componen
 
     auto component = compM.get_component(componentKey);
     if(component == nullptr){
-        QtLogger::error(QSL("Cannot modify action.)"));
+        QtLog::error(QSL("Cannot modify action.)"));
         return;
     }
 
@@ -1467,7 +1467,7 @@ void Experiment::modify_action_to_all_routines_conditions(ComponentKey component
 
     auto component = compM.get_component(componentKey);
     if(component == nullptr){
-        QtLogger::error(QSL("Cannot modify action.)"));
+        QtLog::error(QSL("Cannot modify action.)"));
         return;
     }
 
@@ -1637,7 +1637,7 @@ void Experiment::modify_loop_set_occurrencies_nb(ElementKey loopKey, int setOccu
         loop->modify_set_occurencies_nb(setOccuranciesNb, id);
         add_to_update_flag(UpdateSelection);
     }else{
-        QtLogger::error(QSL("[Experiment::modify_loop_set_occurrencies_nb] Cannot get loop from key [") % QString::number(loopKey.v) % QSL("]"));
+        QtLog::error(QSL("[Experiment::modify_loop_set_occurrencies_nb] Cannot get loop from key [") % QString::number(loopKey.v) % QSL("]"));
     }
 }
 
@@ -1717,7 +1717,7 @@ void Experiment::load_loop_sets_file(ElementKey loopKey, QString path){
             update_conditions();
             add_to_update_flag(UpdateRoutines | UpdateSelection | UpdateFlow);
         }else{
-            QtLogger::error(QSL("[EXP] Cannot load loops set file with path: ") % path);
+            QtLog::error(QSL("[EXP] Cannot load loops set file with path: ") % path);
         }
     }
 }
@@ -1833,7 +1833,7 @@ void Experiment::compute_loops_levels(){
         }
 
         if(elem->insideLoops.size() != elem->insideLoopsID.size()){
-            QtLogger::error(QSL("[EXP] Error during loop levels computing with element ") % elem->name());
+            QtLog::error(QSL("[EXP] Error during loop levels computing with element ") % elem->name());
         }
     }
 
@@ -1851,7 +1851,7 @@ void Experiment::compute_loops_levels(){
         }
 
         if(loop->insideLoops.size() != loop->insideLoopsID.size()){
-            QtLogger::error(QSL("[EXP] Error during loop levels computing with loop ") % loop->name());
+            QtLog::error(QSL("[EXP] Error during loop levels computing with loop ") % loop->name());
         }
     }
 }
@@ -1883,7 +1883,7 @@ void Experiment::update_conditions(){
                 // log deleted conditions
                 if(routine->conditions.size() > 1){
                     for(size_t ii = 1; ii < routine->conditions.size(); ++ii){
-                        QtLogger::message(
+                        QtLog::message(
                             QSL("[EXP](1) Condition ") % routine->conditions[ii]->name %
                             QSL(" from routine ") % routine->name() % QSL("(") %
                             QString::number(routine->key()) % QSL(") doesn't exist anymore and has been removed.")
@@ -1946,7 +1946,7 @@ void Experiment::update_conditions(){
                 }
 
                 if(!found){
-                    QtLogger::error(QSL("[EXP] Cannot retrieve set with key ") % key % QSL(" from any loop."));
+                    QtLog::error(QSL("[EXP] Cannot retrieve set with key ") % key % QSL(" from any loop."));
                 }
             }
             newConditionsKeys.push_back(std::move(conditionKeys));
@@ -1964,7 +1964,7 @@ void Experiment::update_conditions(){
 
             // log deleted conditions
             for(size_t ii = 1; ii < routine->conditions.size(); ++ii){
-                QtLogger::message(
+                QtLog::message(
                     QSL("[EXP](2) Condition ") % routine->conditions[ii]->name %
                     QSL(" from routine ") % routine->name() % QSL("(") %
                     QString::number(routine->key()) % QSL(") doesn't exist anymore and has been removed.")
@@ -2002,7 +2002,7 @@ void Experiment::update_conditions(){
         // log deleted conditions
         for(const auto &conditionToBeDeleted : routine->conditions){
 
-            QtLogger::message(QSL("[EXP](3) Condition ") % conditionToBeDeleted->name % QSL(" from routine ") % routine->name() % QSL("(") %
+            QtLog::message(QSL("[EXP](3) Condition ") % conditionToBeDeleted->name % QSL(" from routine ") % routine->name() % QSL("(") %
                             QString::number(routine->key()) % QSL(") doesn't exist anymore and has been removed."));
         }
 
@@ -2034,7 +2034,7 @@ void Experiment::remove_component(ComponentKey componentKey){
         // remove action containing component from conditions
         for(auto &condition : routine->conditions){
             if(auto action = condition->get_action_from_component_key(componentKey, false); action != nullptr){
-                QtLogger::message(QSL("[EXP] Remove ") % action->to_string() % QSL(" using component ") % action->component->name() % QSL(" from ") %  condition->to_string() % QSL(" from ") % routine->to_string());
+                QtLog::message(QSL("[EXP] Remove ") % action->to_string() % QSL(" using component ") % action->component->name() % QSL(" from ") %  condition->to_string() % QSL(" from ") % routine->to_string());
                 condition->remove_action(ActionKey{action->key()});
             }
         }
@@ -2084,7 +2084,7 @@ void Experiment::sort_components_by_name(){
 
 void Experiment::delete_unused_components(){
 
-//    QtLogger::message("### CHECK DUPLICATE NAMES###");
+//    QtLog::message(u"### CHECK DUPLICATE NAMES###");
 //    std::set<QString> cNames;
 //    for(auto &component : compM.components){
 
@@ -2094,13 +2094,13 @@ void Experiment::delete_unused_components(){
 //            while(cNames.contains(n)){
 //                n = component->name() % QSL(" (") % QString::number(iter++) % QSL(")");
 //            }
-//            QtLogger::message(QSL("Rename component [") % component->name() % QSL("] into [") % n % QSL("]"));
+//            QtLog::message(QSL("Rename component [") % component->name() % QSL("] into [") % n % QSL("]"));
 //            component->set_name(n);
 //        }
 //    }
 
 
-//    QtLogger::message("### REMOVE ACTIONS###");
+//    QtLog::message(u"### REMOVE ACTIONS###");
 //    std::vector<std::tuple<ElementKey, ConditionKey, ActionKey>> actionsToRemove;
 //    for(const auto &routine : get_elements_from_type<Routine>()){
 //        for(const auto &condition : routine->conditions){
@@ -2122,7 +2122,7 @@ void Experiment::delete_unused_components(){
 //                }
 
 //                if(removeAction){
-//                    QtLogger::message(QSL(" - remove component [") % action->component->name() % QSL("] from [") % condition->name % QSL("] from routine [") % routine->name() % QSL("]"));
+//                    QtLog::message(QSL(" - remove component [") % action->component->name() % QSL("] from [") % condition->name % QSL("] from routine [") % routine->name() % QSL("]"));
 //                    actionsToRemove.push_back(std::make_tuple(ElementKey{routine->key()}, ConditionKey{condition->key()}, ActionKey{action->key()}));
 //                }
 //            }
@@ -2133,7 +2133,7 @@ void Experiment::delete_unused_components(){
 //        remove_action_from_condition(std::get<0>(action), std::get<1>(action), std::get<2>(action), false);
 //    }
 
-    QtLogger::message("### REMOVE COMPONENTS###");
+    QtLog::message(u"### REMOVE COMPONENTS###");
     std::unordered_set<int> keys;
     for(const auto &routine : get_elements_from_type<Routine>()){
         for(const auto &condition : routine->conditions){
@@ -2200,7 +2200,7 @@ void Experiment::remove_config_from_component(ComponentKey componentKey, RowId i
                 std::vector<ActionKey> actionsToRemoved;
                 for(auto &action : condition->actions){
                     if(action->config->key() == configKey.v){
-                        QtLogger::message(QSL("[EXP] Remove ") % action->to_string() % QSL(" from ") % condition->to_string() %
+                        QtLog::message(QSL("[EXP] Remove ") % action->to_string() % QSL(" from ") % condition->to_string() %
                                           QSL(" from ") % routine->to_string());
                         actionsToRemoved.push_back(ActionKey{action->key()});
                     }
@@ -2337,7 +2337,7 @@ void Experiment::check_elements(){
 
 //    size_t countAfter = elements.size();
 //    if(countBefore > countAfter){
-//        QtLogger::warning(
+//        QtLog::warning(
 //            QSL("Remove ") % QString::number(countBefore - countAfter) % QSL(" duplicated elements.")
 //        );
 //    }
@@ -2360,7 +2360,7 @@ void Experiment::check_legacy_conditions(){
 
             if(condition->setsKeys.size() == 0){
 
-                QtLogger::error("[XML] OUTDATED SETS SYSTEM, WILL TRY TO UPGRADE, MAY FAIL IF LOOPS HAVE SAME SETS NAMES -> from routine " %
+                QtLog::error(u"[XML] OUTDATED SETS SYSTEM, WILL TRY TO UPGRADE, MAY FAIL IF LOOPS HAVE SAME SETS NAMES -> from routine " %
                                 routine->name() % QSL(" with condition ") % condition->name);
 
                 size_t countMatched = 0;
@@ -2384,7 +2384,7 @@ void Experiment::check_legacy_conditions(){
                         }
                     }
                 }
-                QtLogger::error(QSL("[XML] FOUND ") % QString::number(countMatched) % QSL(" OUT OF ") % QString::number(split.size()) % " SETS MATCHING. PLEASE CHECK IT.");
+                QtLog::error(QSL("[XML] FOUND ") % QString::number(countMatched) % QSL(" OUT OF ") % QString::number(split.size()) % " SETS MATCHING. PLEASE CHECK IT.");
             }
         }
     }
@@ -2394,7 +2394,7 @@ void Experiment::new_experiment(){
 
     clean_experiment();
 
-    QtLogger::message(QSL("[EXP] New experiment"));
+    QtLog::message(QSL("[EXP] New experiment"));
     states.currentName = QSL("new_experiment");
     elements.push_back(std::make_unique<NodeFlow>()); // init with one node
     compute_loops_levels();
@@ -2407,7 +2407,7 @@ void Experiment::new_experiment(){
 
 void Experiment::clean_experiment(){
 
-    QtLogger::message(QSL("[EXP] Clean experiment"));
+    QtLog::message(QSL("[EXP] Clean experiment"));
 
     // remove resources
     resM.clean_resources();
@@ -2546,7 +2546,7 @@ void Experiment::update_exp_state(ExpState state, QStringView infos){
 }
 
 void Experiment::reset_settings(){
-    QtLogger::message(QSL("[EXP] Reset settings"));
+    QtLog::message(QSL("[EXP] Reset settings"));
     m_settings.reset();
     add_to_update_flag(UpdateSettings);
 }

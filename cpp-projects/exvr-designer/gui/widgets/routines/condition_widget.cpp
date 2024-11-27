@@ -371,7 +371,7 @@ void ConditionW::update_timeline(){
     while(nbSteps > 1000.){
         scale *= 10.;
         nbSteps = duration/scale;
-        QtLogger::message(QSL("Timeline scale increased (steps count > 1000)"));
+        QtLog::message(QSL("Timeline scale increased (steps count > 1000)"));
     }
 
     dsbScale->setValue(scale);

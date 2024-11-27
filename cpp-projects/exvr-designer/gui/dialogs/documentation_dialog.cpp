@@ -62,7 +62,7 @@ DocumentationDialog::DocumentationDialog(){
             genPb->setEnabled(false);
             openPb->setEnabled(true);
         }else{
-            QtLogger::error(QSL("Cannot create log file with path ") % currentDocPath);
+            QtLog::error(QSL("Cannot create log file with path ") % currentDocPath);
         }
     });
     connect(openPb, &QPushButton::clicked, this, [&]{

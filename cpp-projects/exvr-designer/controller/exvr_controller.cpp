@@ -78,33 +78,26 @@ ExVrController::ExVrController(const QString &nVersion){
     qRegisterMetaType<QProcess::ProcessState>("QProcess::ProcessState");
     qRegisterMetaType<QProcess::ExitStatus>("QProcess::ExitStatus");
 
-    // init logging system
-    QtLogger::init(QApplication::applicationDirPath() % QSL("/logs"), QSL("designer_log.html"), true);
-    QtLogger::set_html_ui_type_message_color(QtLogger::MessageType::normal,  QColor(189,189,189));
-    QtLogger::set_html_ui_type_message_color(QtLogger::MessageType::warning, QColor(243, 158, 3));
-    QtLogger::set_html_ui_type_message_color(QtLogger::MessageType::error,   QColor(244,4,4));
-    QtLogger::set_html_ui_type_message_color(QtLogger::MessageType::unknow,  Qt::white);
-
     // init scripting
     CSharpScript::initialize();
 
     Bench::disable_display();
 
-//    QtLogger::message("[CONTROLLER] Generate signals");
+//    QtLog::message(u"[CONTROLLER] Generate signals");
 //    GSignals::get();
 
-    QtLogger::message("[CONTROLLER] Initialize experiment");
+    QtLog::message(u"[CONTROLLER] Initialize experiment");
     ExperimentManager::init();
     ExperimentManager::get()->init_current(nVersion);
 
-    QtLogger::message("[CONTROLLER] Read XML manager");
+    QtLog::message(u"[CONTROLLER] Read XML manager");
     m_xmlManager = std::make_unique<XmlIoManager>(exp());
 
-    QtLogger::message("[CONTROLLER] Generate UI");
+    QtLog::message(u"[CONTROLLER] Generate UI");
     m_designerWindow = std::make_unique<DesignerWindow>();
 
     // generate exp launcher
-    QtLogger::message("[CONTROLLER] Generate Exp Launcher");
+    QtLog::message(u"[CONTROLLER] Generate Exp Launcher");
     m_expLauncher = std::make_unique<ExpLauncher>();
     connect(this , &ExVrController::start_communication_signal, m_expLauncher.get(), &ExpLauncher::init_communication);
     connect(this , &ExVrController::stop_communication_signal, m_expLauncher.get(), &ExpLauncher::stop_communications);
@@ -117,7 +110,7 @@ ExVrController::ExVrController(const QString &nVersion){
     m_benchmarkD     = std::make_unique<BenchmarkDialog>();
 
     // connections
-    QtLogger::message("[CONTROLLER] Generate connections");
+    QtLog::message(u"[CONTROLLER] Generate connections");
     generate_global_signals_connections();
     generate_main_window_connections();
     generate_controller_connections();
@@ -126,7 +119,7 @@ ExVrController::ExVrController(const QString &nVersion){
     generate_dialogs_connections();
 
     // update ui
-    QtLogger::message("[CONTROLLER] Update UI from default experiment", false, true);
+    QtLog::message(u"[CONTROLLER] Update UI from default experiment");
     m_designerWindow->show();
 
     connect(&experimentUpdateTimer, &QTimer::timeout, this, &ExVrController::update_gui_from_experiment);
@@ -157,7 +150,7 @@ void ExVrController::close_exvr(){
         QCoreApplication::processEvents(QEventLoop::AllEvents, 10);
     }
 
-    QtLogger::message("[CONTROLLER] Close exvr");
+    QtLog::message(u"[CONTROLLER] Close exvr");
 
     // close exp launcher
     emit close_exp_launcher_signal();
@@ -168,7 +161,7 @@ void ExVrController::close_exvr(){
     // wait for communication to stop
     QCoreApplication::processEvents( QEventLoop::AllEvents, 500);
 
-    // threads QtLogger::message("[CONTROLLER] Stop threads");
+    // threads QtLog::message(u"[CONTROLLER] Stop threads");
     m_expLauncherT.quit();
     if(!m_expLauncherT.wait(1000)){
         m_expLauncherT.terminate();
@@ -176,12 +169,12 @@ void ExVrController::close_exvr(){
 
 
     // close ui
-    QtLogger::message("[CONTROLLER] Clean UI.");
+    QtLog::message(u"[CONTROLLER] Clean UI.");
     m_designerWindow->close_program();
     m_designerWindow    = nullptr;
 
     // close dialogs
-    QtLogger::message("[CONTROLLER] Clean dialogs.");
+    QtLog::message(u"[CONTROLLER] Clean dialogs.");
     if(m_componentsInfoD != nullptr){
         m_componentsInfoD->close();
         m_componentsInfoD = nullptr;
@@ -209,20 +202,20 @@ void ExVrController::close_exvr(){
     m_instancesD.close();
 
     // clean
-    QtLogger::message("[CONTROLLER] Destroy.");
+    QtLog::message(u"[CONTROLLER] Destroy.");
     ExperimentManager::get()->clean();
     m_currentInstance   = nullptr;
     m_xmlManager        = nullptr;   
     m_expLauncher       = nullptr;
 
-    QtLogger::message("[CONTROLLER] Clean logs.");
-    QtLogger::clean();
+    QtLog::message(u"[CONTROLLER] Clean logs.");
+    QtLoggerM::get_instance()->clean();
 }
 
 
 void ExVrController::save_full_exp_with_default_instance(){
 
-    QtLogger::message("[CONTROLLER] Save full experiment with default instance");
+    QtLog::message(u"[CONTROLLER] Save full experiment with default instance");
     if(!QDir().exists(Paths::tempDir)){
         QDir().mkdir(Paths::tempDir);
     }
@@ -234,7 +227,7 @@ void ExVrController::save_full_exp_with_default_instance(){
     exp()->update_randomization_seed(0);
     m_currentInstance = Instance::generate_from_full_experiment(&exp()->randomizer, *exp(), 0);
     if(!m_currentInstance){
-        QtLogger::error("[CONTROLLER] Invalid instance generated from experiment.");
+        QtLog::error(u"[CONTROLLER] Invalid instance generated from experiment.");
         return;
     }
     exp()->set_instance_name(m_currentInstance->fileName);
@@ -245,13 +238,13 @@ void ExVrController::save_full_exp_with_default_instance(){
 void ExVrController::go_to_current_specific_instance_element(){
 
     if(m_currentInstance == nullptr){
-        QtLogger::error("[CONTROLLER] No current instance defined.");
+        QtLog::error(u"[CONTROLLER] No current instance defined.");
         return;
     }
 
     auto element = exp()->selectedElement;
     if(exp()->selectedElement == nullptr){
-        QtLogger::error("[CONTROLLER] No selected element.");
+        QtLog::error(u"[CONTROLLER] No selected element.");
         return;
     }
 
@@ -265,14 +258,14 @@ void ExVrController::go_to_current_specific_instance_element(){
             }
         }
         if(selectedCondition.length() == 0){
-            QtLogger::error("[CONTROLLER] No selected condition from this routine.");
+            QtLog::error(u"[CONTROLLER] No selected condition from this routine.");
             return;
         }
 
         int idOrder = 0;
         for(const auto &instanceElement : m_currentInstance->flow){
             if(instanceElement.elem->key() == routine->key() && instanceElement.condition == selectedCondition){
-                QtLogger::message(QSL("[CONTROLLER] Got to element ") % QString::number(idOrder));
+                QtLog::message(QSL("[CONTROLLER] Got to element ") % QString::number(idOrder));
                 emit go_to_specific_instance_element_signal(idOrder);
                 return;
             }
@@ -319,7 +312,7 @@ void ExVrController::generate_instances(QString directoryPath, unsigned int seed
                 if(!xml()->save_instance_file(*instance, instanceFileName)){
                     return;
                 }
-                QtLogger::message(QSL("[CONTROLLER] Instance [") %  instanceFileName % QSL("] generated."));
+                QtLog::message(QSL("[CONTROLLER] Instance [") %  instanceFileName % QSL("] generated."));
             }
         }else if(manual){
 
@@ -336,7 +329,7 @@ void ExVrController::generate_instances(QString directoryPath, unsigned int seed
                 if(!xml()->save_instance_file(*instance, instanceFileName)){
                     return;
                 }
-                QtLogger::message(QSL("[CONTROLLER] Instance [") %  instanceFileName % QSL("] generated."));
+                QtLog::message(QSL("[CONTROLLER] Instance [") %  instanceFileName % QSL("] generated."));
             }
         }
     }
@@ -345,7 +338,7 @@ void ExVrController::generate_instances(QString directoryPath, unsigned int seed
 void ExVrController::show_got_to_specific_instance_element_dialog(){
 
     if(m_currentInstance == nullptr){
-        QtLogger::error("[CONTROLLER] No current instance defined.");
+        QtLog::error(u"[CONTROLLER] No current instance defined.");
         return;
     }
 
@@ -417,8 +410,8 @@ void ExVrController::show_got_to_specific_instance_element_dialog(){
     auto pbClose = new QPushButton("Close");
     m_goToD->layout()->addWidget(ui::F::old_gen(ui::L::HB(), {pbGoTo, pbClose}, LStretch{true}, LMargins{true}, QFrame::NoFrame));
 
-    connect(pbGoTo,   &QPushButton::clicked, this, [=]{
-        QtLogger::message(QSL("[CONTROLLER] Got to element ") % QString::number(twInstanceElements->currentRow()));
+    connect(pbGoTo,   &QPushButton::clicked, this, [&]{
+        QtLog::message(QSL("[CONTROLLER] Got to element ") % QString::number(twInstanceElements->currentRow()));
         emit go_to_specific_instance_element_signal(twInstanceElements->currentRow());
     });
     connect(pbClose, &QPushButton::clicked, m_goToD.get(), &QDialog::reject);
@@ -438,12 +431,12 @@ void ExVrController::load_full_exp_with_default_instance_to_unity(){
 void ExVrController::load_selected_routine_with_default_instance_to_unity(){
 
     if(exp()->selectedElement == nullptr){
-        QtLogger::message("[CONTROLLER] No selected element.");
+        QtLog::message(u"[CONTROLLER] No selected element.");
         return;
     }
 
     if(exp()->selectedElement->type() != FlowElement::Type::Routine){
-        QtLogger::message("[CONTROLLER] Selected element must be a routine.");
+        QtLog::message(u"[CONTROLLER] Selected element must be a routine.");
         return;
     }
 
@@ -1003,11 +996,11 @@ void ExVrController::start_specific_instance(){
     // save experiment file to temp
     xml()->save_experiment_file(Paths::tempExp);
 
-    QtLogger::message(QSL("[CONTROLLER] Start specific instance from file: ") % pathFile);
+    QtLog::message(QSL("[CONTROLLER] Start specific instance from file: ") % pathFile);
     m_currentInstance = xml()->load_instance_file(pathFile);
     if(!m_currentInstance){
-        QtLogger::error(QSL("Cannot start instance from file dues to errors. "));
-        QtLogger::error(QSL("Are you sure this instance has been generated with the current experiment?"));
+        QtLog::error(QSL("Cannot start instance from file dues to errors. "));
+        QtLog::error(QSL("Are you sure this instance has been generated with the current experiment?"));
         return;
     }
     exp()->set_instance_name(m_currentInstance->fileName);
@@ -1339,13 +1332,13 @@ void ExVrController::generate_resources_manager_connections(){
 
 void ExVrController::generate_logger_connections(){
     // -> main window
-    connect(log(), &QtLogger::message_signal,         ui(), &DMW::insert_log_from_ui);
-    connect(log(), &QtLogger::error_signal,           ui(), &DMW::insert_log_from_ui);
-    connect(log(), &QtLogger::warning_signal,         ui(), &DMW::insert_log_from_ui);
-    connect(log(), &QtLogger::unity_message_signal,   ui(), &DMW::insert_log_from_ui);
-    connect(log(), &QtLogger::unity_error_signal,     ui(), &DMW::insert_log_from_ui);
-    connect(log(), &QtLogger::unity_warning_signal,   ui(), &DMW::insert_log_from_ui);
-    connect(log(), &QtLogger::status_signal,          ui(), &DMW::display_status);
+    connect(log(), &QtLoggerM::message_signal,         ui(), &DMW::insert_log_from_ui);
+    connect(log(), &QtLoggerM::error_signal,           ui(), &DMW::insert_log_from_ui);
+    connect(log(), &QtLoggerM::warning_signal,         ui(), &DMW::insert_log_from_ui);
+    // connect(log(), &QtLog::unity_message_signal,   ui(), &DMW::insert_log_from_ui);
+    // connect(log(), &QtLog::unity_error_signal,     ui(), &DMW::insert_log_from_ui);
+    // connect(log(), &QtLog::unity_warning_signal,   ui(), &DMW::insert_log_from_ui);
+    // connect(log(), &QtLog::status_signal,          ui(), &DMW::display_status);
 }
 
 void ExVrController::generate_dialogs_connections(){

@@ -520,7 +520,7 @@ void ComponentsManagerW::add_new_component(tool::ex::Component::Type type, int i
 
 //    if(const bool unicity = tool::ex::Component::get_unicity(type); unicity == true){
 //        if(tool::ex::Component::count(type) != 0){
-//            QtLogger::warning(QSL("Only one component for this type."));
+//            QtLog::warning(QSL("Only one component for this type."));
 //            return;
 //        }
 //    }

@@ -31,40 +31,40 @@ using namespace tool::cam;
 
 using namespace tool;
 
-K4VolumetricVideoExComponent *create_k4_volumetric_video_ex_component(K4VolumetricVideoExResource *resourceExport){
-    return new K4VolumetricVideoExComponent(resourceExport);
-}
+// K4VolumetricVideoExComponent *create_k4_volumetric_video_ex_component(K4VolumetricVideoExResource *resourceExport){
+//     return new K4VolumetricVideoExComponent(resourceExport);
+// }
 
-int uncompress_frame_c4f_k4_volumetric_video_ex_component(K4VolumetricVideoExComponent *vvC, int idC, int idFrame, tool::geo::Pt3f *vertices, tool::geo::Pt4f *colors){
-    if(auto frame = vvC->resource->get_compressed_frame(idC, idFrame).lock()){
-        // return vvC->uncompressors[idC]->uncompress(frame.get(),  vertices, colors) ? 1 : 0;
-    }
-    return 0;
-}
+// int uncompress_frame_c4f_k4_volumetric_video_ex_component(K4VolumetricVideoExComponent *vvC, int idC, int idFrame, tool::geo::Pt3f *vertices, tool::geo::Pt4f *colors){
+//     if(auto frame = vvC->resource->get_compressed_frame(idC, idFrame).lock()){
+//         // return vvC->uncompressors[idC]->uncompress(frame.get(),  vertices, colors) ? 1 : 0;
+//     }
+//     return 0;
+// }
 
-int uncompress_frame_c3i_k4_volumetric_video_ex_component(K4VolumetricVideoExComponent *vvC, int idC, int idFrame, tool::geo::Pt3f *vertices, tool::geo::Pt4<uint8_t> *colors){
-    if(auto frame = vvC->resource->get_compressed_frame(idC, idFrame).lock()){
-        // return vvC->uncompressors[idC]->uncompress(frame.get(),  vertices, colors) ? 1 : 0;
-    }
-    return 0;
-}
+// int uncompress_frame_c3i_k4_volumetric_video_ex_component(K4VolumetricVideoExComponent *vvC, int idC, int idFrame, tool::geo::Pt3f *vertices, tool::geo::Pt4<uint8_t> *colors){
+//     if(auto frame = vvC->resource->get_compressed_frame(idC, idFrame).lock()){
+//         // return vvC->uncompressors[idC]->uncompress(frame.get(),  vertices, colors) ? 1 : 0;
+//     }
+//     return 0;
+// }
 
-int uncompress_frame_vmd_k4_volumetric_video_ex_component(K4VolumetricVideoExComponent *vvC, int idC, int idFrame, tool::cam::DCVertexMeshData *vertices){
-    if(auto frame = vvC->resource->get_compressed_frame(idC, idFrame).lock()){
-        // return vvC->uncompressors[idC]->uncompress(frame.get(), vertices);// ? 1 : 0;
-    }
-    return 0;
-}
+// int uncompress_frame_vmd_k4_volumetric_video_ex_component(K4VolumetricVideoExComponent *vvC, int idC, int idFrame, tool::cam::DCVertexMeshData *vertices){
+//     if(auto frame = vvC->resource->get_compressed_frame(idC, idFrame).lock()){
+//         // return vvC->uncompressors[idC]->uncompress(frame.get(), vertices);// ? 1 : 0;
+//     }
+//     return 0;
+// }
 
-int process_audio_k4_volumetric_video_ex_component(K4VolumetricVideoExComponent *vvC, int idCamera){
-    if(idCamera < vvC->audioData.size()){
-        vvC->resource->get_audio_samples_all_channels(idCamera, vvC->audioData[idCamera]);
-        return static_cast<int>(vvC->audioData[idCamera].size());
-    }
-    return -1;
-}
+// int process_audio_k4_volumetric_video_ex_component(K4VolumetricVideoExComponent *vvC, int idCamera){
+//     if(idCamera < vvC->audioData.size()){
+//         vvC->resource->get_audio_samples_all_channels(idCamera, vvC->audioData[idCamera]);
+//         return static_cast<int>(vvC->audioData[idCamera].size());
+//     }
+//     return -1;
+// }
 
-void copy_audio_samples_k4_volumetric_video_ex_component(K4VolumetricVideoExComponent *volumetricVideoComponent, int idCamera, float *audioSamples){
-    std::copy(std::begin(volumetricVideoComponent->audioData[idCamera]), std::end(volumetricVideoComponent->audioData[idCamera]), audioSamples);
-}
+// void copy_audio_samples_k4_volumetric_video_ex_component(K4VolumetricVideoExComponent *volumetricVideoComponent, int idCamera, float *audioSamples){
+//     std::copy(std::begin(volumetricVideoComponent->audioData[idCamera]), std::end(volumetricVideoComponent->audioData[idCamera]), audioSamples);
+// }
 

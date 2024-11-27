@@ -83,7 +83,7 @@ Resource *ResourcesManager::get_resource(Resource::Type type, ResourceKey key, b
     }
 
     if(errorIfNotFound){
-        QtLogger::error(QSL("Resource of type : ") % from_view(Resource::get_name(type)) % QSL(" with key ") % QString::number(key.v) % QSL(" not found."));
+        QtLog::error(QSL("Resource of type : ") % from_view(Resource::get_name(type)) % QSL(" with key ") % QString::number(key.v) % QSL(" not found."));
     }
 
     return nullptr;
@@ -102,7 +102,7 @@ Resource *ResourcesManager::get_resource(Resource::Type type, const QString &ali
     }
 
     if(errorIfNotFound){
-        QtLogger::error(QSL("Resource of type : ") % from_view(Resource::get_name(type)) % QSL(" with alias ") % alias % QSL(" not found."));
+        QtLog::error(QSL("Resource of type : ") % from_view(Resource::get_name(type)) % QSL(" with alias ") % alias % QSL(" not found."));
     }
 
     return nullptr;
@@ -127,7 +127,7 @@ void ResourcesManager::add_resource(std::unique_ptr<Resource> resourceToAdd){
 
     const auto path = resourceToAdd->path.toStdString();
     if(m_paths.count(path) != 0){
-        QtLogger::error(QSL("Resource with path: ") % resourceToAdd->path % QSL(" already added."));
+        QtLog::error(QSL("Resource with path: ") % resourceToAdd->path % QSL(" already added."));
         return;
     }
 
@@ -140,7 +140,7 @@ void ResourcesManager::add_resource(std::unique_ptr<Resource> resourceToAdd){
 void ResourcesManager::add_resource(Resource::Type type, const QString &path){
 
     if(m_paths.count(path.toStdString()) != 0){
-        QtLogger::error(QSL("Resource with path: ") % path % QSL(" already added."));
+        QtLog::error(QSL("Resource with path: ") % path % QSL(" already added."));
         return;
     }
 
@@ -152,7 +152,7 @@ void ResourcesManager::add_resources(Resource::Type type, const QStringList &fil
 
     for(const auto &filePath : filesPaths){
         if(m_paths.count(filePath.toStdString()) != 0){
-            QtLogger::error(QSL("Resource with path: ") % filePath % QSL(" already added."));
+            QtLog::error(QSL("Resource with path: ") % filePath % QSL(" already added."));
             continue;
         }        
         insert_resource(std::make_unique<Resource>(type,ResourceKey{-1}, filePath));
@@ -169,12 +169,12 @@ void ResourcesManager::copy_resource(Resource *resource){
 void ResourcesManager::update_resource_path(QString currentPath, QString newPath){
 
     if(m_paths.count(newPath.toStdString()) != 0){
-        QtLogger::error(QSL("Resource with path: ") % newPath % QSL(" already added."));
+        QtLog::error(QSL("Resource with path: ") % newPath % QSL(" already added."));
         return;
     }
 
     if(m_paths.count(currentPath.toStdString()) == 0){
-        QtLogger::error(QSL("Resource with path: ") % currentPath % QSL(" doesn't exist."));
+        QtLog::error(QSL("Resource with path: ") % currentPath % QSL(" doesn't exist."));
         return;
     }
 
@@ -189,12 +189,12 @@ void ResourcesManager::update_resource_path(QString currentPath, QString newPath
 void ResourcesManager::update_resource_alias(QString currentAlias, QString newAlias){
 
     if(m_aliases.count(newAlias.toStdString()) != 0){
-        QtLogger::error(QSL("Resource with alias: ") % newAlias % QSL(" already added."));
+        QtLog::error(QSL("Resource with alias: ") % newAlias % QSL(" already added."));
         return;
     }
 
     if(m_aliases.count(currentAlias.toStdString()) == 0){
-        QtLogger::error(QSL("Resource with alias: ") % currentAlias % QSL(" doesn't exist."));
+        QtLog::error(QSL("Resource with alias: ") % currentAlias % QSL(" doesn't exist."));
         return;
     }
 

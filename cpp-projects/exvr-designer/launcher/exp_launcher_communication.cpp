@@ -62,12 +62,12 @@ ExpLauncherCommunication::ExpLauncherCommunication(QObject *parent){
     for(; readingPort < 8216; ++readingPort){
         success = readSocket->bind(QHostAddress::LocalHost, readingPort, QAbstractSocket::ReuseAddressHint);
         if(success){
-            QtLogger::message(QSL("[IPC] UDP read port connected: ") % QString::number(readingPort));
+            QtLog::message(QSL("[IPC] UDP read port connected: ") % QString::number(readingPort));
             break;
         }
     }
     if(!success){
-        QtLogger::error(QSL("[IPC] UDP port error: ") % QString::number(readingPort));
+        QtLog::error(QSL("[IPC] UDP port error: ") % QString::number(readingPort));
     }
 
     // initialize writing socket

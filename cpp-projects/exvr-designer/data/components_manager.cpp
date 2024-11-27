@@ -85,7 +85,7 @@ void ComponentsManager::duplicate_component(ComponentKey componentKey){
 
     if(const auto compoInfo = get_component_and_position(componentKey); compoInfo.second != nullptr){
         if(Component::get_unicity(compoInfo.second->type)){
-            QtLogger::error(QSL("[ComponentsManager::duplicate_component] You can only have one component of type [") % from_view(Component::get_type_name(compoInfo.second->type)) % QSL("] in the experiment."));
+            QtLog::error(QSL("[ComponentsManager::duplicate_component] You can only have one component of type [") % from_view(Component::get_type_name(compoInfo.second->type)) % QSL("] in the experiment."));
         }else{
 
             auto component = Component::copy_with_new_element_id(compoInfo.second, compoInfo.second->name() % QSL("(copy)"));
@@ -112,7 +112,7 @@ void ComponentsManager::remove_component(ComponentKey componentKey){
 
             remove_component_from_map(components[id].get());
 
-            QtLogger::message(QSL("Remove component ") % components[id]->to_string());
+            QtLog::message(QSL("Remove component ") % components[id]->to_string());
             components.erase(components.begin() + static_cast<int>(id));            
             break;
         }
@@ -126,7 +126,7 @@ void ComponentsManager::update_component_position(ComponentKey componentKey, Row
         components.erase(components.begin() + static_cast<std::vector<std::unique_ptr<Component>>::difference_type>(compoInfo.first));
         components.insert(components.begin() + id.v, std::move(compoToMove));
     }else{
-        QtLogger::error(QSL("[ComponentsManager::update_component_position] Cannot update component position."));
+        QtLog::error(QSL("[ComponentsManager::update_component_position] Cannot update component position."));
     }
 }
 
@@ -136,7 +136,7 @@ Component *ComponentsManager::get_component(RowId id, bool displayError) const{
         return components[id.v].get();
     }
     if(displayError){
-        QtLogger::error(QSL("[ComponentsManager::get_component] Component from row [") % QString::number(id.v) % QSL("] not found."));
+        QtLog::error(QSL("[ComponentsManager::get_component] Component from row [") % QString::number(id.v) % QSL("] not found."));
     }
 
     return nullptr;
@@ -150,7 +150,7 @@ Component *ComponentsManager::get_component(ComponentKey componentKey, bool disp
     }
 
     if(displayError){
-        QtLogger::error(QSL("[ComponentsManager::get_component] Component with key [") % QString::number(componentKey.v) % QSL("] not found."));
+        QtLog::error(QSL("[ComponentsManager::get_component] Component with key [") % QString::number(componentKey.v) % QSL("] not found."));
     }
 
     return nullptr;
@@ -162,7 +162,7 @@ Component *ComponentsManager::get_component(const QString &name) const{
         return m_componentsPerName.at(name);
     }
 
-    QtLogger::error(QSL("[ComponentsManager::get_component] Component with name [") % name % QSL("] not found."));
+    QtLog::error(QSL("[ComponentsManager::get_component] Component with name [") % name % QSL("] not found."));
     return  nullptr;
 }
 
@@ -174,7 +174,7 @@ std::pair<size_t, Component *> ComponentsManager::get_component_and_position(Com
             return {ii, components[ii].get()};
         }
     }
-    QtLogger::error(QSL("[ComponentsManager::get_component_and_position] Component with key [") % QString::number(componentKey.v) % QSL("] and its position not found."));
+    QtLog::error(QSL("[ComponentsManager::get_component_and_position] Component with key [") % QString::number(componentKey.v) % QSL("] and its position not found."));
     return {0, nullptr};
 }
 
@@ -184,14 +184,14 @@ int ComponentsManager::get_position(ComponentKey componentKey) const{
             return static_cast<int>(ii);
         }
     }
-    QtLogger::error(QSL("[ComponentsManager::get_position] Component with key [") % QString::number(componentKey.v) % QSL("] cannot be found."));
+    QtLog::error(QSL("[ComponentsManager::get_position] Component with key [") % QString::number(componentKey.v) % QSL("] cannot be found."));
     return -1;
 }
 
 void ComponentsManager::insert_copy_of_component(Component *component, std::vector<ConfigKey> configKeys, RowId id){
 
     if(Component::get_unicity(component->type) && count(component->type) > 0){
-        QtLogger::error(QSL("[ComponentsManager::insert_copy_of_component] Unique component already inside experiment."));
+        QtLog::error(QSL("[ComponentsManager::insert_copy_of_component] Unique component already inside experiment."));
         return;
     }
 
@@ -223,7 +223,7 @@ void ComponentsManager::insert_copy_of_component(Component *component, std::vect
 bool ComponentsManager::insert_new_component(Component::Type type, RowId id){
 
     if(Component::get_unicity(type) && count(type) > 0){
-        QtLogger::error(QSL("[ComponentsManager::insert_new_component] Component of type [") % from_view(Component::get_type_name(type)) % QSL("] can only be included once per experiment."));
+        QtLog::error(QSL("[ComponentsManager::insert_new_component] Component of type [") % from_view(Component::get_type_name(type)) % QSL("] can only be included once per experiment."));
         return false;
     }
 
@@ -268,12 +268,12 @@ bool ComponentsManager::update_component_name(ComponentKey componentKey, QString
     }
 
     if(newName.length() == 0){
-        QtLogger::error(QSL("[ComponentsManager::update_component_name] Component name must not be empty."));
+        QtLog::error(QSL("[ComponentsManager::update_component_name] Component name must not be empty."));
         return false;
     }
 
     if(m_componentsPerName.contains(newName)){
-        QtLogger::error(QSL("[ComponentsManager::update_component_name] Component name already used."));
+        QtLog::error(QSL("[ComponentsManager::update_component_name] Component name already used."));
         return false;
     }
 

@@ -46,42 +46,42 @@ ExpLauncherProcess::ExpLauncherProcess(QObject *parent){
     connect(this, &ExpLauncherProcess::readyReadStandardError, this, &ExpLauncherProcess::read_error_output);
 
     connect(this, &ExpLauncherProcess::started, this, [&]{
-        QtLogger::message(QSL("[STATE] ExVR-exp has started."));
+        QtLog::message(QSL("[STATE] ExVR-exp has started."));
         isRunning = true;
     });
     connect(this, &ExpLauncherProcess::errorOccurred, this, [&](QProcess::ProcessError error){
 
         switch (error) {
             case QProcess::FailedToStart:
-                QtLogger::error(QSL("ExVR-exp process error: failed to start."));
+                QtLog::error(QSL("ExVR-exp process error: failed to start."));
             break;
             case QProcess::Crashed:
-//                Logger::error(QSL("ExVR-exp process error: crashed."));
+//                Log::error(QSL("ExVR-exp process error: crashed."));
             break;
             case QProcess::Timedout:
-                QtLogger::error(QSL("ExVR-exp process error: start timeout"));
+                QtLog::error(QSL("ExVR-exp process error: start timeout"));
             break;
             case QProcess::WriteError:
-                QtLogger::error(QSL("ExVR-exp process error: write error."));
+                QtLog::error(QSL("ExVR-exp process error: write error."));
             break;
             case QProcess::ReadError:
-                QtLogger::error(QSL("ExVR-exp process error: read error."));
+                QtLog::error(QSL("ExVR-exp process error: read error."));
             break;
             case QProcess::UnknownError:
-                QtLogger::error(QSL("ExVR-exp process error: unknow."));
+                QtLog::error(QSL("ExVR-exp process error: unknow."));
             break;
         }
     });
     connect(this, &ExpLauncherProcess::stateChanged, this, [&](QProcess::ProcessState newState){
         switch (newState) {
             case QProcess::ProcessState::Running:
-                QtLogger::message(QSL("[STATE] ExVR-exp is running."));
+                QtLog::message(QSL("[STATE] ExVR-exp is running."));
             break;
             case QProcess::ProcessState::Starting:
-                QtLogger::message(QSL("[STATE] ExVR-exp is starting."));
+                QtLog::message(QSL("[STATE] ExVR-exp is starting."));
             break;
             case QProcess::ProcessState::NotRunning:
-                QtLogger::message(QSL("[STATE] ExVR-exp is not running."));
+                QtLog::message(QSL("[STATE] ExVR-exp is not running."));
             isRunning = false;
             break;
         }
@@ -90,9 +90,9 @@ ExpLauncherProcess::ExpLauncherProcess(QObject *parent){
     connect(this, QOverload<int, ExpLauncherProcess::ExitStatus>::of(&QProcess::finished), this, [&](int exitCode, QProcess::ExitStatus exitStatus){
         Q_UNUSED(exitStatus)
         if(exitCode == 1){
-            QtLogger::message(QSL("[STATE] ExVR-exp exited successfully."));
+            QtLog::message(QSL("[STATE] ExVR-exp exited successfully."));
         }else{
-            QtLogger::error(QSL("[STATE] ExVR-exp crashed."));
+            QtLog::error(QSL("[STATE] ExVR-exp crashed."));
         }
     });
 }

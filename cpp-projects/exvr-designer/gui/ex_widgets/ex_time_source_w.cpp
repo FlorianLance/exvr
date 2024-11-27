@@ -74,7 +74,7 @@ void ExTimeW::update_from_arg(const Arg &arg){
 
     auto args = arg.split_value_to_atoms_args();
     if(args.size() != 3){
-        QtLogger::error("ExTimeW::Invalid arg.");
+        QtLog::error(QSL("ExTimeW::Invalid arg."));
         return;
     }
 

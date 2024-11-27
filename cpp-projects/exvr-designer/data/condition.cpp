@@ -81,14 +81,14 @@ void Condition::apply_condition(const Condition *conditionToCopy, bool copyActio
 
             if(connection->startType == Connection::Type::Component){
                 if(auto component = get_component_from_key(ComponentKey{connection->startKey}, false); component == nullptr){
-                    QtLogger::message(QSL("From condition ") % conditionToCopy->name % QSL(", starting connection node component with key ") %
+                    QtLog::message(QSL("From condition ") % conditionToCopy->name % QSL(", starting connection node component with key ") %
                                     QString::number(connection->startKey) % QSL(" not available in condition ") % name % QSL(", cannot copy it. "));
                     continue;
                 }
             }
             if(connection->endType == Connection::Type::Component){
                 if(auto component = get_component_from_key(ComponentKey{connection->endKey}, false); component == nullptr){
-                    QtLogger::message(QSL("From condition ") % conditionToCopy->name % QSL(", ending connection node component with key ")
+                    QtLog::message(QSL("From condition ") % conditionToCopy->name % QSL(", ending connection node component with key ")
                                     % QString::number(connection->endKey) % QSL(" not available in condition ") % name % QSL(", cannot copy it. "));
                     continue;
                 }
@@ -109,7 +109,7 @@ int Condition::get_action_id_from_key(ActionKey actionKey, bool displayError) co
     }
 
     if(displayError){
-        QtLogger::error(QSL("Action with key ") % QString::number(actionKey.v) % QSL(" not found"));
+        QtLog::error(QSL("Action with key ") % QString::number(actionKey.v) % QSL(" not found"));
     }
 
     return -1;
@@ -125,7 +125,7 @@ Action *Condition::get_action_from_key(ActionKey actionKey, bool displayError) c
     }
 
     if(displayError){
-        QtLogger::error(QSL("Cannot find Action with key [") % QString::number(actionKey.v) %
+        QtLog::error(QSL("Cannot find Action with key [") % QString::number(actionKey.v) %
                         QSL("] from condition [") % name % QSL("] wtih key [") % QString::number(key()) % QSL("]"));
     }
 
@@ -143,7 +143,7 @@ Action *Condition::get_action_from_component_key(ComponentKey componentKey, bool
 
 
     if(displayError){
-        QtLogger::error(QSL("Cannot find Action with component key [") % QString::number(componentKey.v) %
+        QtLog::error(QSL("Cannot find Action with component key [") % QString::number(componentKey.v) %
                         QSL("] from condition [") % name % QSL("] wtih key [") % QString::number(key()) % QSL("]"));
     }
 
@@ -160,7 +160,7 @@ Connection *Condition::get_connection_from_key(ConnectionKey connectionKey, bool
     }
 
     if(displayError){
-        QtLogger::error(QSL("Connection with key ") % QString::number(connectionKey.v) % QSL(" not found"));
+        QtLog::error(QSL("Connection with key ") % QString::number(connectionKey.v) % QSL(" not found"));
     }
 
     return nullptr;
@@ -176,7 +176,7 @@ Connector *Condition::get_connector_from_key(ConnectorKey connectorKey, bool dis
     }
 
     if(displayError){
-        QtLogger::error(QSL("Connector with key ") % QString::number(connectorKey.v) % QSL(" not found"));
+        QtLog::error(QSL("Connector with key ") % QString::number(connectorKey.v) % QSL(" not found"));
     }
 
     return nullptr;
@@ -196,7 +196,7 @@ Action *Condition::get_action_from_id(RowId  idTab, bool displayError) const{
     }
 
     if(displayError){
-        QtLogger::error(QSL("Action with id ") % QString::number(idTab.v) % QSL(" not found"));
+        QtLog::error(QSL("Action with id ") % QString::number(idTab.v) % QSL(" not found"));
     }
 
     return nullptr;
@@ -209,7 +209,7 @@ Connection *Condition::get_connection_from_id(RowId  idTab, bool displayError) c
     }
 
     if(displayError){
-        QtLogger::error(QSL("Connection with id ") % QString::number(idTab.v) % QSL(" not found"));
+        QtLog::error(QSL("Connection with id ") % QString::number(idTab.v) % QSL(" not found"));
     }
 
     return nullptr;
@@ -222,7 +222,7 @@ Connector *Condition::get_connector_from_id(RowId  idTab, bool displayError) con
     }
 
     if(displayError){
-        QtLogger::error(QSL("Connector with id ") % QString::number(idTab.v) % QSL(" not found"));
+        QtLog::error(QSL("Connector with id ") % QString::number(idTab.v) % QSL(" not found"));
     }
 
     return nullptr;
@@ -254,7 +254,7 @@ void Condition::check_integrity(){
     size_t countAfter = connections.size();
 
     if(countBefore > countAfter){
-        QtLogger::warning(
+        QtLog::warning(
             QSL("Remove ") % QString::number(countBefore - countAfter) % QSL(" duplicated connections from condition ") %
             name % QSL(" with id ") % QString::number(key()) % QSL(".")
         );
@@ -275,7 +275,7 @@ void Condition::check_integrity(){
     }
     countAfter = connectors.size();
     if(countBefore > countAfter){
-        QtLogger::warning(
+        QtLog::warning(
             QSL("Remove ") % QString::number(countBefore - countAfter) % QSL(" duplicated connectors from condition ") %
             name % QSL(" with id ") % QString::number(key()) % QSL(".")
         );
@@ -296,7 +296,7 @@ void Condition::check_integrity(){
     }
     countAfter = actions.size();
     if(countBefore > countAfter){
-        QtLogger::warning(
+        QtLog::warning(
             QSL("Remove ") % QString::number(countBefore - countAfter) % QSL(" duplicated actions from condition ") %
             name % QSL(" with id ") % QString::number(key()) % QSL(".")
         );
@@ -401,7 +401,7 @@ void Condition::remove_action(ActionKey actionKey){
         }
     }
 
-    QtLogger::error(QSL("Cannot remove action with key ") % QString::number(actionKey.v));
+    QtLog::error(QSL("Cannot remove action with key ") % QString::number(actionKey.v));
 }
 
 void Condition::remove_all_actions(){

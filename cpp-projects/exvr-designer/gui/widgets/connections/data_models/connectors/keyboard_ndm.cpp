@@ -75,7 +75,7 @@ void ExKeyboardButtonTrigger::update_from_arg(const Arg &arg){
             keys.update_from_arg(args[0]);
             timeMode.update_from_arg(args[1]);
         }else{
-            QtLogger::error("ExKeyboardButtonTrigger::Invalid arg.");
+            QtLog::error(QSL("ExKeyboardButtonTrigger::Invalid arg."));
         }
     }
 }

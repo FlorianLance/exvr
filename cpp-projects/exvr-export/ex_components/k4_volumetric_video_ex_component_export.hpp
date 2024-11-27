@@ -32,27 +32,27 @@
 
 extern "C"{
 
-    DECL_EXPORT tool::ex::K4VolumetricVideoExComponent *create_k4_volumetric_video_ex_component(
-        tool::ex::K4VolumetricVideoExResource *resourceExport);
+    // DECL_EXPORT tool::ex::K4VolumetricVideoExComponent *create_k4_volumetric_video_ex_component(
+    //     tool::ex::K4VolumetricVideoExResource *resourceExport);
 
-    DECL_EXPORT int uncompress_frame_c4f_k4_volumetric_video_ex_component(
-        tool::ex::K4VolumetricVideoExComponent *vvC,
-        int idC, int idFrame,
-        tool::geo::Pt3f *vertices, tool::geo::Pt4f *colors);
+    // DECL_EXPORT int uncompress_frame_c4f_k4_volumetric_video_ex_component(
+    //     tool::ex::K4VolumetricVideoExComponent *vvC,
+    //     int idC, int idFrame,
+    //     tool::geo::Pt3f *vertices, tool::geo::Pt4f *colors);
 
-    DECL_EXPORT int uncompress_frame_c3i_k4_volumetric_video_ex_component(
-        tool::ex::K4VolumetricVideoExComponent *vvC,
-        int idC, int idFrame,
-        tool::geo::Pt3f *vertices, tool::geo::Pt4<std::uint8_t> *colors);
+    // DECL_EXPORT int uncompress_frame_c3i_k4_volumetric_video_ex_component(
+    //     tool::ex::K4VolumetricVideoExComponent *vvC,
+    //     int idC, int idFrame,
+    //     tool::geo::Pt3f *vertices, tool::geo::Pt4<std::uint8_t> *colors);
 
-    DECL_EXPORT int uncompress_frame_vmd_k4_volumetric_video_ex_component(
-        tool::ex::K4VolumetricVideoExComponent *vvC,
-        int idC, int idFrame,
-        tool::cam::DCVertexMeshData *vertices);
+    // DECL_EXPORT int uncompress_frame_vmd_k4_volumetric_video_ex_component(
+    //     tool::ex::K4VolumetricVideoExComponent *vvC,
+    //     int idC, int idFrame,
+    //     tool::cam::DCVertexMeshData *vertices);
 
-    DECL_EXPORT int process_audio_k4_volumetric_video_ex_component(
-        tool::ex::K4VolumetricVideoExComponent *vvC, int idCamera);
+    // DECL_EXPORT int process_audio_k4_volumetric_video_ex_component(
+    //     tool::ex::K4VolumetricVideoExComponent *vvC, int idCamera);
 
-    DECL_EXPORT void copy_audio_samples_k4_volumetric_video_ex_component(
-        tool::ex::K4VolumetricVideoExComponent *vvC, int idCamera, float *audioSamples);
+    // DECL_EXPORT void copy_audio_samples_k4_volumetric_video_ex_component(
+    //     tool::ex::K4VolumetricVideoExComponent *vvC, int idCamera, float *audioSamples);
 }

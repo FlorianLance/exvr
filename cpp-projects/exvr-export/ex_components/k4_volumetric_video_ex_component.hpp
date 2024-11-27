@@ -36,23 +36,23 @@ namespace tool::ex {
 class K4VolumetricVideoExComponent : public ExComponent{
 public:
     
-    tool::cam::DCVideo *resource = nullptr;
-    std::vector<std::unique_ptr<tool::cam::DCFrameUncompressor>> uncompressors; // dedicated uncompressors for enabling multithreads when using the same video resource
+    // tool::cam::DCVideo *resource = nullptr;
+    // std::vector<std::unique_ptr<tool::cam::DCFrameUncompressor>> uncompressors; // dedicated uncompressors for enabling multithreads when using the same video resource
 
-    K4VolumetricVideoExComponent(tool::ex::K4VolumetricVideoExResource *resourceExport) : resource(&resourceExport->video){
-    }
+    // K4VolumetricVideoExComponent(tool::ex::K4VolumetricVideoExResource *resourceExport) : resource(&resourceExport->video){
+    // }
 
-    bool initialize() override{
-        auto nbCams = resource->nb_cameras();
-        audioData.resize(nbCams);
-        uncompressors.resize(nbCams);
-        for(auto &uncompressor : uncompressors){
-            uncompressor = std::make_unique<tool::cam::DCFrameUncompressor>();
-        }
+    // bool initialize() override{
+    //     auto nbCams = resource->nb_cameras();
+    //     audioData.resize(nbCams);
+    //     uncompressors.resize(nbCams);
+    //     for(auto &uncompressor : uncompressors){
+    //         uncompressor = std::make_unique<tool::cam::DCFrameUncompressor>();
+    //     }
 
-        return true;
-    }
+    //     return true;
+    // }
 
-    std::vector<std::vector<float>> audioData;
+    // std::vector<std::vector<float>> audioData;
 };
 }

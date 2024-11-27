@@ -161,7 +161,7 @@ void Routine::check_integrity(){
     }
     size_t countAfter = conditions.size();
     if(countBefore > countAfter){
-        QtLogger::warning(
+        QtLog::warning(
             QSL("Remove ") % QString::number(countBefore - countAfter) % QSL(" duplicated conditions from routine ") %
             name() % QSL(" with id ") % QString::number(key()) % QSL(".")
         );
@@ -181,7 +181,7 @@ Condition *Routine::get_condition(ConditionKey conditionKey) const{
         }); condFound != conditions.end()){
         return condFound->get();
     }
-    QtLogger::error(QSL("Condition with key ") % QString::number(conditionKey.v) % QSL(" not found."));
+    QtLog::error(QSL("Condition with key ") % QString::number(conditionKey.v) % QSL(" not found."));
     return nullptr;
 }
 

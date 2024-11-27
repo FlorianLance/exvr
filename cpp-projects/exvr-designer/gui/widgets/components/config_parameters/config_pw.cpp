@@ -169,7 +169,7 @@ void ConfigParametersW::init_from_args(std::map<QStringView,Arg> &args){
             if(m_inputUiElements.count(argName) != 0){
                 emit GSignals::get()->arg_updated_signal(componentKey, configKey, m_inputUiElements[argName]->convert_to_arg(), initConfig);
             }else{
-                QtLogger::warning(QSL("ExParametersGeneratorWidgetW::ui_change_signal invalid name ") % argName);
+                QtLog::warning(QSL("ExParametersGeneratorWidgetW::ui_change_signal invalid name ") % argName);
             }
         });
 
@@ -208,7 +208,7 @@ void ConfigParametersW::add_input_ui(ExBaseW *w){
     if(m_inputUiElements.count(uiName) == 0){
         m_inputUiElements[uiName] = w;
     }else{
-        QtLogger::warning(QSL("ConfigParametersW input ui with name ") % uiName % QSL(" already exists."));
+        QtLog::warning(QSL("ConfigParametersW input ui with name ") % uiName % QSL(" already exists."));
     }
 }
 
@@ -223,7 +223,7 @@ void ConfigParametersW::add_action_ui(ExBaseW *w){
     if(m_actionUiElements.count(uiName) == 0){
         m_actionUiElements[uiName] = w;
     }else{
-        QtLogger::warning(QSL("ConfigParametersW action ui with name ") % uiName % QSL(" already exists."));
+        QtLog::warning(QSL("ConfigParametersW action ui with name ") % uiName % QSL(" already exists."));
     }
 }
 
@@ -233,7 +233,7 @@ void ConfigParametersW::add_non_ui_arg(Arg arg){
     if(m_inputNonUiArguments.count(nonUiName) == 0){
         m_inputNonUiArguments[nonUiName] = std::move(arg);
     }else{
-        QtLogger::warning(QSL("ConfigParametersW non ui arg with name ") % nonUiName % QSL(" already exists."));
+        QtLog::warning(QSL("ConfigParametersW non ui arg with name ") % nonUiName % QSL(" already exists."));
     }
 }
 
@@ -242,7 +242,7 @@ void ConfigParametersW::add_generator_ui(ExBaseW *g){
     if(m_generatorsUiElements.count(uiName) == 0){
         m_generatorsUiElements[uiName] = dynamic_cast<ExParametersGeneratorWidgetW*>(g);
     }else{
-        QtLogger::warning(QSL("ConfigParametersW generator ui with name ") % g->itemName % QSL(" already exists."));
+        QtLog::warning(QSL("ConfigParametersW generator ui with name ") % g->itemName % QSL(" already exists."));
     }
 }
 

@@ -297,13 +297,13 @@ void ConnectionsW::add_connection(Connection *connection){
     QtNodes::Node *startNode = nullptr;
     if(connection->startType == Connection::Type::Connector){
         if(!m_connectorsNodes.count(connection->startKey)){
-            QtLogger::error(QString("Cannot create connection %1 , there is no connector node with key %2").arg(connection->key(),connection->startKey));
+            QtLog::error(QString("Cannot create connection %1 , there is no connector node with key %2").arg(connection->key(),connection->startKey));
             return;
         }
         startNode = m_connectorsNodes[connection->startKey].first;
     }else{
         if(!m_componentsNodes.count(connection->startKey)){
-            QtLogger::error(QString("Cannot create connection %1 , there is no component node with key %2").arg(connection->key(),connection->startKey));
+            QtLog::error(QString("Cannot create connection %1 , there is no component node with key %2").arg(connection->key(),connection->startKey));
             return;
         }
         startNode = m_componentsNodes[connection->startKey].first;
@@ -312,13 +312,13 @@ void ConnectionsW::add_connection(Connection *connection){
     QtNodes::Node *endNode = nullptr;
     if(connection->endType == Connection::Type::Connector){
         if(!m_connectorsNodes.count(connection->endKey)){
-            QtLogger::error(QString("Cannot create connection %1 , there is no connector node with key %2").arg(connection->key(),connection->endKey));
+            QtLog::error(QString("Cannot create connection %1 , there is no connector node with key %2").arg(connection->key(),connection->endKey));
             return;
         }
         endNode = m_connectorsNodes[connection->endKey].first;
     }else{
         if(!m_componentsNodes.count(connection->endKey)){
-            QtLogger::error(QString("Cannot create connection %1 , there is no component node with key %2").arg(connection->key(),connection->endKey));
+            QtLog::error(QString("Cannot create connection %1 , there is no component node with key %2").arg(connection->key(),connection->endKey));
             return;
         }
         endNode = m_componentsNodes[connection->endKey].first;

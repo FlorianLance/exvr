@@ -95,12 +95,12 @@ void Loop::set_sets(QStringList setsName){
         }
         // is using "default"?
         if(setName == QSL("default")){
-            QtLogger::error(QSL("[LOOP] Cannot add \"default\" as set name"));
+            QtLog::error(QSL("[LOOP] Cannot add \"default\" as set name"));
             continue;
         }
         // is duplicate?
         if(validNames.contains(setName)){
-            QtLogger::error(QSL("[LOOP] Name \"") % setName % QSL("\" is inserted more than once in the list."));
+            QtLog::error(QSL("[LOOP] Name \"") % setName % QSL("\" is inserted more than once in the list."));
             continue;
         }
         validNames.insert(setName);
@@ -114,7 +114,7 @@ bool Loop::add_set(QString setName, RowId id) {
 
     // cannot add default as set name
     if(setName == QSL("default")){
-        QtLogger::error(QSL("[LOOP] Cannot add \"default\" as set name"));
+        QtLog::error(QSL("[LOOP] Cannot add \"default\" as set name"));
         return false;
     }
 
@@ -126,7 +126,7 @@ bool Loop::add_set(QString setName, RowId id) {
     // name already used
     for(const auto &set : sets){
         if(set->name == setName){
-            QtLogger::error(QSL("[LOOP] Loop already contains a set named \"") % setName % QSL("\""));
+            QtLog::error(QSL("[LOOP] Loop already contains a set named \"") % setName % QSL("\""));
             return false;
         }
     }
@@ -152,12 +152,12 @@ void Loop::add_sets(QStringList setsName, RowId id){
         }
         // is using "default"?
         if(setName == QSL("default")){
-            QtLogger::error(QSL("[LOOP] Cannot add \"default\" as set name"));
+            QtLog::error(QSL("[LOOP] Cannot add \"default\" as set name"));
             continue;
         }
         // is duplicate?
         if(validNames.contains(setName)){
-            QtLogger::error(QSL("[LOOP] Name \"") % setName % QSL("\" is inserted more than once in the list."));
+            QtLog::error(QSL("[LOOP] Name \"") % setName % QSL("\" is inserted more than once in the list."));
             continue;
         }
         validNames.insert(setName);
@@ -178,21 +178,21 @@ void Loop::remove_set(RowId id){
 
     if(sets.size() > 0){
         sets[0]->occurencies = 1;
-        QtLogger::warning(QSL("[LOOP] No remaining set has an occurencies nb > 0, first set occurencies nb has been set to 1."));
+        QtLog::warning(QSL("[LOOP] No remaining set has an occurencies nb > 0, first set occurencies nb has been set to 1."));
     }
 }
 
 bool Loop::modify_set_name(QString newSetName, RowId id){
 
     if(newSetName == QSL("default")){
-        QtLogger::error(QSL("[LOOP] Cannot rename as set to \"default\" name"));
+        QtLog::error(QSL("[LOOP] Cannot rename as set to \"default\" name"));
         return false;
     }
 
     // check if set doesn't already exist
     for(const auto &set : sets){
         if(set->name == newSetName){
-            QtLogger::error(QSL("[LOOP] Set ") % newSetName % QSL(" already exists."));
+            QtLog::error(QSL("[LOOP] Set ") % newSetName % QSL(" already exists."));
             return false;
         }
     }
@@ -216,7 +216,7 @@ bool Loop::modify_set_occurencies_nb(int occurrencies, RowId id){
 
     if(!foundNotZero){
         sets[id.v]->occurencies = currentNb;
-        QtLogger::error(QSL("[LOOP] We need to have at least one set with a non-zero occurency."));
+        QtLog::error(QSL("[LOOP] We need to have at least one set with a non-zero occurency."));
         return false;
     }
     return true;

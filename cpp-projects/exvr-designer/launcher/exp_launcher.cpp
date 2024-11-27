@@ -91,7 +91,7 @@ std::optional<QStringView> look_for_balise(QStringView message, QStringView star
 }
 
 void ExpLauncher::error_message_from_exp_launcher(QStringView error){
-    QtLogger::unity_error(error, true, false);
+    QtLog::error(error);
 }
 
 QString ExpLauncher::gen_command(QStringList messages){
@@ -117,7 +117,7 @@ void ExpLauncher::message_from_exp_launcher(QString m){
 
             // LOG
             if(auto log = extract_balise_message(balise.value(), SLog, ELog); log.has_value()){
-                QtLogger::unity_message(log.value(), true, false);
+                QtLog::log(log.value());
                 continue;
             }
 
@@ -131,7 +131,7 @@ void ExpLauncher::message_from_exp_launcher(QString m){
                 auto info = infoComponent.value();
                 int count = info.count('|');
                 if(count <= 2){
-                    QtLogger::error(QSL("Invalid component info from exp-launcher: ") % info, true, true);
+                    QtLog::error(QSL("Invalid component info from exp-launcher: ") % info);
                     return;
                 }
 
@@ -162,7 +162,7 @@ void ExpLauncher::message_from_exp_launcher(QString m){
                 auto info = infoConnector.value();
                 int count = info.count('|');
                 if(count <= 3){
-                    QtLogger::error(QSL("Invalid connector info from exp-launcher: ") % info, true, true);
+                    QtLog::error(QSL("Invalid connector info from exp-launcher: ") % info);
                     return;
                 }
 
@@ -199,7 +199,7 @@ void ExpLauncher::message_from_exp_launcher(QString m){
                     QStringView infos = expState.mid(idSep+1);
                     emit GSignals::get()->exp_state_updated_signal(state, infos);
                 }else{
-                    QtLogger::error(QSL("Invalid experiment state info from exp-launcher: ") % expState, true, true);
+                    QtLog::error(QSL("Invalid experiment state info from exp-launcher: ") % expState);
                 }
                 continue;
             }
@@ -236,30 +236,30 @@ void ExpLauncher::message_from_exp_launcher(QString m){
 
                         if(editor){
                             // send designer path to exp launcher (useful is using designer from an other path with exp-launcher editor)
-                            QtLogger::message("ExVR-exp started (UnityEditor)");
-                            QtLogger::message(QSL("Send designer path to editor: [") % Paths::exeDir % QSL("]"));
+                            QtLog::message(u"ExVR-exp started (UnityEditor)");
+                            QtLog::message(QSL("Send designer path to editor: [") % Paths::exeDir % QSL("]"));
                             update_designer_dir(Paths::exeDir);
                         }else{
-                            QtLogger::message("ExVR-exp started");
+                            QtLog::message(u"ExVR-exp started");
                         }
                     }
                     emit GSignals::get()->exp_launcher_state_updated_signal(state, infos);
 
                 }else{
-                    QtLogger::error(QSL("Invalid experiment launcher state info from exp-launcher: ") % expLState, true, true);
+                    QtLog::error(QSL("Invalid experiment launcher state info from exp-launcher: ") % expLState);
                 }
                 continue;
             }
 
             // ERROR
             if(auto error = extract_balise_message(balise.value(), SError, EError); error.has_value()){
-                QtLogger::unity_error(error.value(), true, false);
+                QtLog::error(error.value());
                 continue;
             }
 
             // WARNING
             if(auto warning = extract_balise_message(balise.value(), SWarning, EWarning); warning.has_value()){
-                QtLogger::unity_warning(warning.value(), true, false);
+                QtLog::warning(warning.value());
                 continue;
             }
 
@@ -290,7 +290,7 @@ void ExpLauncher::load_experiment(QString expFilePath, QString instanceFilePath)
     if(m_expLauncherProcess || editor){
         m_expLauncherCommunication->send_udp_command(gen_command({to_command_id(ExpLauncherCommand::Load), expFilePath, instanceFilePath}));
     }else{
-        QtLogger::message(QSL("You need to start the Experiment launcher before loading an experiment."));
+        QtLog::message(QSL("You need to start the Experiment launcher before loading an experiment."));
     }
 }
 
@@ -431,7 +431,7 @@ void ExpLauncher::close_program(){
         if(!editor){
             QTimer::singleShot(500, this, &ExpLauncher::stop_exp_launcher_signal);
         }else{
-            QtLogger::message("Close ExVR-exp (UnityEditor)");
+            QtLog::message(u"Close ExVR-exp (UnityEditor)");
             editor = false;
         }
     }
@@ -444,7 +444,7 @@ auto ExpLauncher::close_exp_launcher_process() -> void{
         return;
     }
     if(m_expLauncherProcess != nullptr){
-        QtLogger::message("Close ExVR-exp");
+        QtLog::message(u"Close ExVR-exp");
         m_expLauncherProcess->close();
         if(!m_expLauncherProcess->waitForFinished(500)){
             m_expLauncherProcess->kill();

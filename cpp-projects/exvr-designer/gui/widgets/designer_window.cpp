@@ -154,58 +154,58 @@ void DesignerWindow::update_from_experiment(Experiment *experiment, int update){
 
     bool display = false;
     if(update & ResetUI){
-        QtLogger::log(QSL("Start [Reset ui]"));
+        QtLog::log(QSL("Start [Reset ui]"));
         Bench::start("[Reset ui]"sv, display);
-        QtLogger::log(QSL("Reset components widgets."));
+        QtLog::log(QSL("Reset components widgets."));
         m_componentsW->reset();
-        QtLogger::log(QSL("Reset rouitines widgets."));
+        QtLog::log(QSL("Reset rouitines widgets."));
         m_routinesW->reset();
-        QtLogger::log(QSL("Reset flow diagram widget."));
+        QtLog::log(QSL("Reset flow diagram widget."));
         m_flowDiagramW->reset();
-        QtLogger::log(QSL("Reset element viewer widget."));
+        QtLog::log(QSL("Reset element viewer widget."));
         m_elementViewerW->reset();
         Bench::stop();
-        QtLogger::log(QSL("End [Reset ui]"));
+        QtLog::log(QSL("End [Reset ui]"));
     }
 
     if(update & UpdateComponents){ // update experiment components
-        QtLogger::log(QSL("Start [update experiment components]"));
+        QtLog::log(QSL("Start [update experiment components]"));
         Bench::start("[Update components]"sv, display);
         m_componentsW->update_from_components_manager(&experiment->compM);
         Bench::stop();
-        QtLogger::log(QSL("End [update experiment components]"));
+        QtLog::log(QSL("End [update experiment components]"));
     }
 
     if(update & UpdateFlow){ // update flow
-        QtLogger::log(QSL("Start [update flow]"));
+        QtLog::log(QSL("Start [update flow]"));
         Bench::start("[Update flow]"sv, display);
         m_flowDiagramW->update_from_experiment(experiment);
         Bench::stop();
-        QtLogger::log(QSL("End [update flow]"));
+        QtLog::log(QSL("End [update flow]"));
     }
 
     if(update & UpdateSelection){ // update selected element
-        QtLogger::log(QSL("Start [update selected element]"));
+        QtLog::log(QSL("Start [update selected element]"));
         Bench::start("[Update selected element]"sv, display);
         m_elementViewerW->update_from_current_element(experiment->selectedElement);
         Bench::stop();
-        QtLogger::log(QSL("End [update selected element]"));
+        QtLog::log(QSL("End [update selected element]"));
     }
 
     if(update & UpdateRoutines){ // update routines
-        QtLogger::log(QSL("Start [update routines]"));
+        QtLog::log(QSL("Start [update routines]"));
         Bench::start("[Update routines]"sv, display);
         m_routinesW->update_from_experiment(experiment);
         Bench::stop();
-        QtLogger::log(QSL("End [update routines]"));
+        QtLog::log(QSL("End [update routines]"));
     }
 
     if(update & UpdateUI){
-        // QtLogger::log(QSL("Start [update ui]"));
+        // QtLog::log(QSL("Start [update ui]"));
         Bench::start("[Update main ui]"sv, false);
         update_main_ui(experiment);
         Bench::stop();
-        // QtLogger::log(QSL("End [update ui]"));
+        // QtLog::log(QSL("End [update ui]"));
     }
 
     // update title
@@ -290,7 +290,7 @@ void DesignerWindow::update_main_ui(Experiment *experiment){
 
                 auto nbCallsSplit = experiment->states.nbCalls.split(";");
                 if(nbCallsSplit.size() < 2){
-                    QtLogger::error("Invalid states.");
+                    QtLog::error(u"Invalid states.");
                     break;
                 }
 
@@ -519,7 +519,7 @@ void DesignerWindow::create_actions(){
     m_crashAct.setText(tr("&Make it crash"));
     m_crashAct.setStatusTip(tr("Make it crash"));
     connect(&m_crashAct, &QAction::triggered, this, [&]{
-        QtLogger::error("CRASH ON PURPOSE");
+        QtLog::error(u"CRASH ON PURPOSE");
         abort();
     });
 

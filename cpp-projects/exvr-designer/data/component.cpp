@@ -74,7 +74,7 @@ bool Component::insert_config(RowId id, QString configName){
 
     for(const auto &config : configs){
         if(config->name == configName){
-            QtLogger::error(QSL("[Component::insert_config] Config ") % config->to_string() % QSL(" already exists in ") % to_string());
+            QtLog::error(QSL("[Component::insert_config] Config ") % config->to_string() % QSL(" already exists in ") % to_string());
             return false;
         }
     }
@@ -91,7 +91,7 @@ bool Component::select_config(RowId id){
         selectedConfigId = id;
         return true;
     }
-    QtLogger::error(QSL("[Component::select_config] Config with row id ") % QString::number(id.v) % QSL(" not found in ") % to_string());
+    QtLog::error(QSL("[Component::select_config] Config with row id ") % QString::number(id.v) % QSL(" not found in ") % to_string());
     return false;
 }
 
@@ -99,7 +99,7 @@ bool Component::remove_config(RowId id){
 
     if(id.v < static_cast<int>(configs.size())){
 
-        QtLogger::message(QSL("[INFO] Remove ") % configs[id.v]->to_string() % QSL(" from ") % to_string());
+        QtLog::message(QSL("[INFO] Remove ") % configs[id.v]->to_string() % QSL(" from ") % to_string());
         configs.erase(configs.begin() + id.v);
 
         selectedConfigId = {id.v-1};
@@ -109,18 +109,18 @@ bool Component::remove_config(RowId id){
 
         return true;
     }
-    QtLogger::error(QSL("[Component::remove_config] Config with row id [") % QString::number(id.v) % QSL("] not found in ") % to_string());
+    QtLog::error(QSL("[Component::remove_config] Config with row id [") % QString::number(id.v) % QSL("] not found in ") % to_string());
     return false;
 }
 
 bool Component::move_config(RowId from, RowId to){
 
     if(from.v >= static_cast<int>(configs.size())){
-        QtLogger::error(QSL("[Component::move_config] Config with row id [") % QString::number(from.v) % QSL("] not found in ") % to_string());
+        QtLog::error(QSL("[Component::move_config] Config with row id [") % QString::number(from.v) % QSL("] not found in ") % to_string());
         return false;
     }
     if(to.v >= static_cast<int>(configs.size())){
-        QtLogger::error(QSL("[Component::move_config] Config with row id [") % QString::number(to.v) % QSL("] not found in ") % to_string());
+        QtLog::error(QSL("[Component::move_config] Config with row id [") % QString::number(to.v) % QSL("] not found in ") % to_string());
         return false;
     }
 
@@ -136,7 +136,7 @@ bool Component::rename_config(RowId id, QString configName){
 
         for(const auto &config : configs){
             if(config->name == configName){
-                QtLogger::error(QSL("[Component::rename_config] Config with name [") % configName % QSL("] already exists in ") % to_string());
+                QtLog::error(QSL("[Component::rename_config] Config with name [") % configName % QSL("] already exists in ") % to_string());
                 return false;
             }
         }
@@ -144,7 +144,7 @@ bool Component::rename_config(RowId id, QString configName){
         configs[id.v]->name = configName;
         return true;
     }
-    QtLogger::error(QSL("[Component::rename_config] Config with row id [") % QString::number(id.v) % QSL("] not found in ") % to_string());
+    QtLog::error(QSL("[Component::rename_config] Config with row id [") % QString::number(id.v) % QSL("] not found in ") % to_string());
     return false;
 }
 
@@ -154,7 +154,7 @@ bool Component::copy_config(RowId id, QString configName){
 
         for(const auto &config : configs){
             if(config->name == configName){
-                QtLogger::error(QSL("[Component::copy_config] Config with name [") % configName % QSL("] already exists in ") % to_string());
+                QtLog::error(QSL("[Component::copy_config] Config with name [") % configName % QSL("] already exists in ") % to_string());
                 return false;
             }
         }
@@ -168,7 +168,7 @@ bool Component::copy_config(RowId id, QString configName){
         return true;
     }
 
-    QtLogger::error(QSL("[Component::copy_config] Config with row id [") % QString::number(id.v) % QSL("] not found in ") % to_string());
+    QtLog::error(QSL("[Component::copy_config] Config with row id [") % QString::number(id.v) % QSL("] not found in ") % to_string());
     return false;
 }
 
@@ -178,7 +178,7 @@ Config *Component::get_config(RowId id) const {
     if(id.v < static_cast<int>(configs.size())){
         return configs[id.v].get();
     }
-    QtLogger::error(QSL("[Component::get_config] Config with row id [") % QString::number(id.v) % QSL("] not found in ") % to_string());
+    QtLog::error(QSL("[Component::get_config] Config with row id [") % QString::number(id.v) % QSL("] not found in ") % to_string());
     return nullptr;
 }
 
@@ -191,7 +191,7 @@ tool::ex::Config *Component::get_config(ConfigKey configKey) const {
         return (*configFound).get();
     }
 
-    QtLogger::error(QSL("[Component::get_config] Config with key [") % QString::number(configKey.v) % QSL("] not found in ") % to_string());
+    QtLog::error(QSL("[Component::get_config] Config with key [") % QString::number(configKey.v) % QSL("] not found in ") % to_string());
     return nullptr;
 }
 

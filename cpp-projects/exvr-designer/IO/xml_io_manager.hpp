@@ -79,7 +79,7 @@ namespace tool::ex{
                 }
             }
             if(raiseError){
-                QtLogger::error(QSL("[XML] No attribute found with names: ") % names.join(",") % QSL(", at line ") % QString::number(r->lineNumber()));
+                QtLog::error(QSL("[XML] No attribute found with names: ") % names.join(",") % QSL(", at line ") % QString::number(r->lineNumber()));
             }
 
             return {};
@@ -94,12 +94,12 @@ namespace tool::ex{
                     return value == 1;
                 }
 
-                QtLogger::error(QSL("[XML] Invalid boolean attribute with name: ") %  name % QSL(" cannot convert from ") % r->attributes().value(name) % QSL(", at line ") % QString::number(r->lineNumber()));
+                QtLog::error(QSL("[XML] Invalid boolean attribute with name: ") %  name % QSL(" cannot convert from ") % r->attributes().value(name) % QSL(", at line ") % QString::number(r->lineNumber()));
                 return {};
             }
 
             if(raiseError){
-                QtLogger::error(QSL("[XML] Boolean attribute ") %  name % QSL(" doesn't exist, at line ") % QString::number(r->lineNumber()));
+                QtLog::error(QSL("[XML] Boolean attribute ") %  name % QSL(" doesn't exist, at line ") % QString::number(r->lineNumber()));
             }
 
             return {};
@@ -111,7 +111,7 @@ namespace tool::ex{
             }
 
             if(raiseError){
-                QtLogger::error(QSL("[XML] Size_t attribute ") %  name % QSL(" doesn't exist, at line ") % QString::number(r->lineNumber()));
+                QtLog::error(QSL("[XML] Size_t attribute ") %  name % QSL(" doesn't exist, at line ") % QString::number(r->lineNumber()));
             }
 
             return {};
@@ -126,12 +126,12 @@ namespace tool::ex{
                     return value;
                 }
 
-                QtLogger::error(QSL("[XML] Invalid integer attribute [") % name % QSL("] cannot convert from ") % r->attributes().value(name) % QSL(", at line ") % QString::number(r->lineNumber()));
+                QtLog::error(QSL("[XML] Invalid integer attribute [") % name % QSL("] cannot convert from ") % r->attributes().value(name) % QSL(", at line ") % QString::number(r->lineNumber()));
                 return {};
             }
 
             if(raiseError){
-                QtLogger::error(QSL("[XML] Integer attribute [") % name % QSL("] doesn't exist, at line ") % QString::number(r->lineNumber()));
+                QtLog::error(QSL("[XML] Integer attribute [") % name % QSL("] doesn't exist, at line ") % QString::number(r->lineNumber()));
             }
 
             return {};
@@ -147,12 +147,12 @@ namespace tool::ex{
                     return value;
                 }
 
-                QtLogger::error(QSL("[XML] Invalid double attribute with name [") % name % QSL("] cannot convert from ") % r->attributes().value(name) % QSL(", at line ") % QString::number(r->lineNumber()));
+                QtLog::error(QSL("[XML] Invalid double attribute with name [") % name % QSL("] cannot convert from ") % r->attributes().value(name) % QSL(", at line ") % QString::number(r->lineNumber()));
                 return {};
             }
 
             if(raiseError){
-                QtLogger::error(QSL("[XML] Double attribute [") % name % QSL("], it doesn't exist, at line ") % QString::number(r->lineNumber()));
+                QtLog::error(QSL("[XML] Double attribute [") % name % QSL("], it doesn't exist, at line ") % QString::number(r->lineNumber()));
             }
 
             return {};
@@ -164,7 +164,7 @@ namespace tool::ex{
             }
 
             if(raiseError){
-                QtLogger::error(QSL("[XML] String attribute [") % name % QSL("], it doesn't exist, at line ") % QString::number(r->lineNumber()));
+                QtLog::error(QSL("[XML] String attribute [") % name % QSL("], it doesn't exist, at line ") % QString::number(r->lineNumber()));
             }
 
             return {};
@@ -177,7 +177,7 @@ namespace tool::ex{
                 return;
             }
             if(raiseError){               
-                QtLogger::error(QSL("[XML] Can't assign attribute [") % name % QSL("], it doesn't exist, at line ") % QString::number(r->lineNumber()));
+                QtLog::error(QSL("[XML] Can't assign attribute [") % name % QSL("], it doesn't exist, at line ") % QString::number(r->lineNumber()));
             }
         }
 
@@ -188,7 +188,7 @@ namespace tool::ex{
                 return;
             }
             if(raiseError){
-                QtLogger::error(QSL("[XML] Can't assign attribute, it doesn't exist, at line ") % QString::number(r->lineNumber()));
+                QtLog::error(QSL("[XML] Can't assign attribute, it doesn't exist, at line ") % QString::number(r->lineNumber()));
             }
         }
 
@@ -198,7 +198,7 @@ namespace tool::ex{
                 return v.value() == target;
             }
             if(raiseError){
-                QtLogger::error(QSL("[XML] Can't campare with attribute [") % name % QSL("], it doesn't exist, at line ") % QString::number(r->lineNumber()));
+                QtLog::error(QSL("[XML] Can't campare with attribute [") % name % QSL("], it doesn't exist, at line ") % QString::number(r->lineNumber()));
             }
 
             return false;

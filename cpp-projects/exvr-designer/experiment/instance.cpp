@@ -29,6 +29,7 @@
 
 using namespace tool;
 using namespace tool::ex;
+using namespace Qt::Literals::StringLiterals;
 
 Instance::Instance(const Randomizer *randomizer, const std::vector<FlowElement*> &elements, size_t idInstance){
 
@@ -304,7 +305,7 @@ Instance::Instance(const Randomizer *randomizer, const std::vector<FlowElement*>
                     infos.removeAt(idInfo);
                 }
             }else{
-                QtLogger::error("Instance generation failed due to loop error.");
+                QtLog::error(u"Instance generation failed due to loop error."_s);
             }
         }
     }
@@ -380,13 +381,13 @@ std::unique_ptr<Instance> Instance::generate_from_element_to_the_end(const Rando
     // check if an element is selected
     FlowElement *selectedElement = experiment.selectedElement;
     if(!selectedElement){
-        QtLogger::message("No selected element in the flow.");
+        QtLog::message(u"No selected element in the flow."_s);
         return nullptr;
     }
 
     // check if element inside a loop
     if(selectedElement->insideLoops.size() > 0){
-        QtLogger::message("You must select a routine not inside a loop.");
+        QtLog::message(u"You must select a routine not inside a loop."_s);
         return nullptr;
     }
 
@@ -409,13 +410,13 @@ std::unique_ptr<Instance> Instance::generate_from_start_to_element(const Randomi
     // check if an element is selected
     FlowElement *selectedElement = experiment.selectedElement;
     if(!selectedElement){
-        QtLogger::message("No selected element in the flow.");
+        QtLog::message(u"No selected element in the flow."_s);
         return nullptr;
     }
 
     // check if element inside a loop
     if(selectedElement->insideLoops.size() > 0){
-        QtLogger::message("You must select a routine not inside a loop.");
+        QtLog::message(u"You must select a routine not inside a loop."_s);
         return nullptr;
     }
 

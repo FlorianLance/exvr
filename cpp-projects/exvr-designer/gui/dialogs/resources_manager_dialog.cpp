@@ -303,7 +303,7 @@ void ResourcesManagerDialog::generate_csharp_script(){
 
     QFile defaultScript(Paths::templateCSharpScript);
     if(!defaultScript.open(QFile::ReadOnly)){
-        QtLogger::error("Cannot find template C# script file to copy.");
+        QtLog::error(QSL("Cannot find template C# script file to copy."));
         return;
     }
 
@@ -313,7 +313,7 @@ void ResourcesManagerDialog::generate_csharp_script(){
 
     QFile output(filePath);
     if(!output.open(QFile::WriteOnly)){
-        QtLogger::error("Cannot create new C# script file.");
+        QtLog::error(QSL("Cannot create new C# script file."));
         return;
     }
 

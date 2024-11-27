@@ -84,7 +84,7 @@ void Config::update_arg(Arg arg){
         args[aName] = std::move(arg);
         return;
     }
-    QtLogger::error(QSL("Arg with name ") % name % QSL(" doesn't exists: ") % arg.name % QSL(" ") % arg.value() % QSL(" ") % arg.separator());
+    QtLog::error(QSL("Arg with name ") % name % QSL(" doesn't exists: ") % arg.name % QSL(" ") % arg.value() % QSL(" ") % arg.separator());
 }
 
 void Config::add_arg(Arg newArg){
@@ -92,7 +92,7 @@ void Config::add_arg(Arg newArg){
     QStringView aName = newArg.name;
 
     if(args.count(aName) !=0){
-        QtLogger::warning(QSL("Config::error: arg ") % newArg.name % QSL(" already added."));
+        QtLog::warning(QSL("Config::error: arg ") % newArg.name % QSL(" already added."));
         return;
     }
 

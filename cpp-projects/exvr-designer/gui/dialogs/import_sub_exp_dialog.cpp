@@ -54,14 +54,14 @@ ImportSubExpDialog::ImportSubExpDialog(QString path){
     auto importedExp = ExperimentManager::get()->imported();
 
     XmlIoManager xmlR(importedExp);
-    QtLogger::message("exp read");
+    QtLog::message(QSL("exp read"));
 
     IdKey::set_source(IdKey::Source::Imported);
     bool success = xmlR.load_experiment_file(path);
     IdKey::set_source(IdKey::Source::Current);
 
     if(!success){
-        QtLogger::error(QSL("Cannot load exp ") % path);
+        QtLog::error(QSL("Cannot load exp ") % path);
         return;
     }
 

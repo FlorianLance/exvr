@@ -69,7 +69,7 @@ public :
     inline DesignerWindow *ui(){return m_designerWindow.get();}
     inline ExpLauncher *exp_launcher(){return m_expLauncher.get();}
     inline XmlIoManager *xml(){return m_xmlManager.get();}
-    inline QtLogger *log(){return QtLogger::get();}
+    inline QtLoggerM *log(){return QtLoggerM::get_instance();}
     // dialogs
     inline SettingsDialog *set(){return &m_settingsD;}
     inline BenchmarkDialog *benchmark(){return m_benchmarkD.get();}

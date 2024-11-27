@@ -70,7 +70,7 @@ void tool::ex::OBBFilteringW::update_from_arg(const Arg &arg){
 
     auto values = arg.split_value("[#OBBFW#]");
     if(values.size() != 4){
-        QtLogger::error(QSL("OBBFilteringW: Invalid arg ") % QString::number(values.count()) % QSL("->") % arg.value() );
+        QtLog::error(QSL("OBBFilteringW: Invalid arg ") % QString::number(values.count()) % QSL("->") % arg.value() );
         return;
     }
 
