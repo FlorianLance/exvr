@@ -59,6 +59,8 @@ HEADERS += \
     gui/widgets/components/config_parameters/k4_manager_pw.hpp \
     gui/widgets/components/config_parameters/light_pw.hpp \
     gui/widgets/components/config_parameters/video_resource_pw.hpp \
+    gui/widgets/components/config_parameters/websocket_pw.hpp \
+    gui/widgets/connections/data_models/connectors/from_string_any_ndm.hpp \
     utility/script_utility.hpp \
     utility/path_utility.hpp \
     # IO
@@ -300,6 +302,7 @@ SOURCES += \
     gui/widgets/components/config_parameters/light_pw.cpp \
     gui/widgets/components/config_parameters/primitives_model_pw.cpp \
     gui/widgets/components/config_parameters/video_resource_pw.cpp \
+    gui/widgets/connections/data_models/connectors/from_string_any_ndm.cpp \
     launcher/exp_launcher.cpp \
     launcher/exp_launcher_communication.cpp \
     launcher/exp_launcher_process.cpp \

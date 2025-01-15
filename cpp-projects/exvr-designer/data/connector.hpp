@@ -81,7 +81,7 @@ struct Connector{
     enum class Type : int {
         Component, // Component
         Boolean, Integer,Real, String, Vector2, Vector3, Color, Transform, Id_any, String_any, Random_real,// Generator
-        From_time_any, Reals_to_vec2, Reals_to_vec3, Vec2_to_reals, Vec3_to_reals, String_list_to_id_any, Transform_to_vectors, Vectors_to_transform,// Convertor
+        From_string_any, From_time_any, Reals_to_vec2, Reals_to_vec3, Vec2_to_reals, Vec3_to_reals, String_list_to_id_any, Transform_to_vectors, Vectors_to_transform,// Convertor
         Curve_x, Logger, Post_it, // Display
         Decimal_trigonometry, Decimal_counter, Delay, Variable_delay, // Function
         Binary_operation, Decimal_operation, String_operation, // Operator
@@ -108,7 +108,8 @@ struct Connector{
         {T::Force_component_config, "ForceComponentConfig"sv,       "Force component config"sv},
         {T::Stop,                   "Stop"sv,                       "Stop experiment"sv},
         {T::Pause,                  "PauseAction"sv,                "Pause experiment"sv},
-        // # Convertors        
+        // # Convertors
+        {T::From_string_any,        "FromStringAny"sv,              "From string any"sv},
         {T::From_time_any,          "FromTimeAny"sv,                "From time any"sv},
         {T::Reals_to_vec2,          "RealsToVector2"sv,             "To vec2"sv},
         {T::Vec2_to_reals,          "Vector2ToReals"sv,             "From vec2"sv},
@@ -297,8 +298,8 @@ struct Connector{
         // # Component
         {T::Component,              C::Component, M, {0,{},                        0,{}},                     {i,{},        {}},      LO, FO, 0, PT},
         // # Convertor
-        {T::From_time_any,          C::Convertor, M, {1,{t_time_any},              3,{t_real,t_real,t_any}},  {v,{v},       {v,v,v}},
-         LO, FO, 0, PT},
+        {T::From_string_any,        C::Convertor, M, {1,{t_str_any},               2,{t_str, t_any}},         {v,{v},       {v,v}},   LO, FO, 0, PT},
+        {T::From_time_any,          C::Convertor, M, {1,{t_time_any},              3,{t_real,t_real,t_any}},  {v,{v},       {v,v,v}}, LO, FO, 0, PT},
         {T::Reals_to_vec2,          C::Convertor, M, {2,{t_real,t_real},           1,{t_vec2}},               {v,{v,v},     {v}},     LO, FO, 0, PT},
         {T::Vec2_to_reals,          C::Convertor, M, {1,{t_vec2},                  2,{t_real,t_real}},        {v,{v},       {v,v}},   LO, FO, 0, PT},
         {T::Reals_to_vec3,          C::Convertor, M, {3,{t_real,t_real,t_real},    1,{t_vec3}},               {v,{v,v,v},   {v}},     LO, FO, 0, PT},

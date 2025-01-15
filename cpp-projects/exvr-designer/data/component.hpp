@@ -111,7 +111,7 @@ struct Component {
         /** T */ Target_to_grab, Text_resource, Text_viewer, Thera_trainer_tracking, Thera_trainer_platform, Torus, TPP_avatar_camera,
         /** U */ Unity_asset_bundle, Udp_reader, Udp_writer,
         /** V */ Video_resource, Video_file_camera_viewer, Video_saver, Vive_pro_eye_tracking, Volumetric_video,
-        /** W */ Webcam, Webcam_viewer,
+        /** W */ Webcam, Webcam_viewer, WebsocketClient, WebsocketServer,
         SizeEnum
     };
     using T = Type;
@@ -250,6 +250,8 @@ struct Component {
         {T::Serial_port_writer,       C::Network,     TO::U, CO::B, N, N, Y, N, N, Y, P::H, R::OS, S::Sta, "Serial_port_writer"sv, "Serial port writer"sv, "SerialPortWriter"sv, "USB"sv},
         {T::Udp_reader,               C::Network,     TO::U, CO::I, N, N, Y, N, N, Y, P::H, R::OS, S::Sta, "Udp_reader"sv, "UDP reader"sv, "UdpReader"sv, "UDP"sv},
         {T::Udp_writer,               C::Network,     TO::U, CO::I, N, N, Y, N, N, Y, P::H, R::OS, S::Sta, "Udp_writer"sv, "UDP writer"sv, "UdpWriter"sv, "UDP"sv},
+        {T::WebsocketClient,          C::Network,     TO::U, CO::I, N, N, Y, N, N, Y, P::H, R::OS, S::Sta, "Websocket_client"sv, "Websocket client"sv, "WebsocketClient"sv, "UDP"sv},
+        {T::WebsocketServer,          C::Network,     TO::U, CO::I, N, N, Y, N, N, Y, P::H, R::OS, S::Sta, "Websocket_server"sv, "Websocket server"sv, "WebsocketServer"sv, "UDP"sv},
         // Output
         {T::Global_logger,            C::Output,      TO::N, CO::I, Y, Y, Y, N, N, N, P::H, R::OS, S::Sta, "Global_logger"sv, "Global logger"sv, "GlobalLogger"sv, "Logger"sv},
         {T::Logger,                   C::Output,      TO::N, CO::I, N, N, N, N, N, N, P::H, R::OS, S::Sta, "Logger"sv, "Logger"sv, "Logger"sv, "Logger"sv},
@@ -385,7 +387,7 @@ struct Component {
 
     using TComponentSlots = std::tuple<
         T,                             FunctionN,                      CNT,                    Doc>;
-    static constexpr TupleArray<127,TComponentSlots> componentsSlots = {{
+    static constexpr TupleArray<131,TComponentSlots> componentsSlots = {{
         TComponentSlots
         // Acquisition
         {T::Biopac,                    "inused"sv,                     CNT::void_t,            "TODO: Remove it"sv},
@@ -482,6 +484,10 @@ struct Component {
         {T::Serial_port_writer,        "write message"sv,              CNT::string_t,          "..."sv},
         {T::Serial_port_writer,        "write line message"sv,         CNT::string_t,          "..."sv},
         {T::Udp_writer,                "send message"sv,               CNT::string_t,          "..."sv},
+        {T::WebsocketClient,           "connect"sv,                    CNT::void_t,            "..."sv},
+        {T::WebsocketClient,           "close"sv,                      CNT::void_t,            "..."sv},
+        {T::WebsocketClient,           "send message"sv,               CNT::string_t,          "..."sv},
+        {T::WebsocketServer,           "send message"sv,               CNT::string_t,          "..."sv},
         // Output
         {T::Logger,                    "write"sv,                      CNT::any_t,             ""sv},
         {T::Logger,                    "write line"sv,                 CNT::any_t,             ""sv},
@@ -532,7 +538,7 @@ struct Component {
 
     using TComponentSignals = std::tuple<
         CT,                             FunctionN,                     CNT,                            Doc>;
-    static constexpr TupleArray<64, TComponentSignals> componentsSignals = {{
+    static constexpr TupleArray<70, TComponentSignals> componentsSignals = {{
         TComponentSignals
         // Acquisition
         {T::K2_body_tracking,          "body"sv,                       CNT::kinect_body_t,             "..."sv},
@@ -581,6 +587,12 @@ struct Component {
         {T::Serial_port_reader,        "message read"sv,               CNT::time_any_t,                "..."sv},
         {T::Udp_reader,                "message read"sv,               CNT::time_any_t,                "..."sv},
         {T::Udp_writer,                "message sent"sv,               CNT::time_any_t,                "..."sv},
+        {T::WebsocketClient,           "connection opened"sv,          CNT::void_t,                    "..."sv},
+        {T::WebsocketClient,           "connection closed"sv,          CNT::void_t,                    "..."sv},
+        {T::WebsocketClient,           "message read"sv,               CNT::time_any_t,                "..."sv},
+        {T::WebsocketServer,           "message read"sv,               CNT::time_any_t,                "..."sv},
+        {T::WebsocketServer,           "new connection"sv,             CNT::string_t,                  "..."sv},
+        {T::WebsocketServer,           "connection closed"sv,          CNT::string_t,                  "..."sv},
         // Resource
         {T::Plot_resource,             "plot loaded"sv,                CNT::plot_t,                    "Loaded plot (called at routine start)"sv},
         {T::Plot_resource,             "plot loaded alias"sv,          CNT::string_t,                  "Alias of the loaded plot (called at routine start)"sv},
@@ -607,7 +619,7 @@ struct Component {
         {T::Buttons_ui,                "validated text"sv,             CNT::string_t,                  "Button with text has been validated"sv},
         {T::Slider_ui,                 "value updated"sv,              CNT::float_t,                   "Is triggered when slider value changes"sv},
         // Video
-        {T::Video_resource,                "new frame"sv,                  CNT::image_t,                   "..."sv},
+        {T::Video_resource,            "new frame"sv,                  CNT::image_t,                   "..."sv},
         {T::Webcam,                    "new frame"sv,                  CNT::image_t,                   "..."sv},
     }};
 

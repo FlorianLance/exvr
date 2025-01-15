@@ -98,9 +98,9 @@
 #include "config_parameters/k4_direct_multi_clouds_pw.hpp"
 #include "config_parameters/dc_network_direct_player_pw.hpp"
 #include "config_parameters/light_pw.hpp"
+#include "config_parameters/websocket_pw.hpp"
 
 using namespace tool::ex;
-
 
 
 ConfigW::ConfigW(Config *config, Component *component, bool initConfig, std::map<QStringView,Arg> &args) :
@@ -267,6 +267,10 @@ ConfigParametersW *ConfigW::generate_parameters(Component::Type type, bool initC
         return gen_params_w<UdpReaderInitConfigParametersW,UdpReaderConfigParametersW>(initConfig);
     case CT::Udp_writer:
         return gen_params_w<UdpWriterInitConfigParametersW,UdpWriterConfigParametersW>(initConfig);
+    case CT::WebsocketClient:
+        return gen_params_w<WebSocketClientInitConfigParametersW,WebSocketClientConfigParametersW>(initConfig);
+    case CT::WebsocketServer:
+        return gen_params_w<WebSocketServerInitConfigParametersW,WebSocketServerConfigParametersW>(initConfig);
     // ############################# Output
     case CT::Global_logger:
         return gen_params_w<GlobalLoggerInitConfigParametersW,GlobalLoggerConfigParametersW>(initConfig);

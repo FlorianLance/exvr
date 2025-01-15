@@ -76,6 +76,7 @@
 #include "connectors/basic_ndm.hpp"
 #include "connectors/resources_ndm.hpp"
 #include "connectors/from_time_any_ndm.hpp"
+#include "connectors/from_string_any_ndm.hpp"
 
 using namespace tool;
 using namespace tool::ex;
@@ -422,6 +423,9 @@ std::unique_ptr<ConnectorNodeDataModel> DataNodeModels::generate_connector_data_
         break;
     case T::Check_id:
         connectorDataModel = std::make_unique<CheckIdNodeDataModel>();
+        break;
+    case T::From_string_any:
+        connectorDataModel = std::make_unique<FromStringAnyNodeDataModel>();
         break;
     case T::From_time_any:
         connectorDataModel = std::make_unique<FromTimeAnyNodeDataModel>();

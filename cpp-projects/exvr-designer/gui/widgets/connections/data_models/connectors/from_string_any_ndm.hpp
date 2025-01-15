@@ -1,6 +1,7 @@
-﻿
+
+
 /***********************************************************************************
-** exvr-exp                                                                       **
+** exvr-designer                                                                  **
 ** MIT License                                                                    **
 ** Copyright (c) [2018] [Florian Lance][EPFL-LNCO]                                **
 ** Permission is hereby granted, free of charge, to any person obtaining a copy   **
@@ -22,39 +23,19 @@
 ** SOFTWARE.                                                                      **
 ************************************************************************************/
 
-namespace Ex {
+#pragma once
 
-    public class FromTimeAnyConnector : ExConnector {
 
-        object input0 = null;
+// local
+#include "gui/widgets/connections/data_models/connectors/connector_node_data_model.hpp"
 
-        protected override bool initialize() {
+namespace tool::ex {
 
-            add_signals(3);
-            add_slot(0, (input) => {       
-                base_slot1(input); }
-            );
-
-            return true;
-        }
-
-        protected override void slot1(object arg) {
-            input0 = arg;
-            compute();
-        }
-
-        private void compute() {
-
-            var timeAny = (TimeAny)input0;
-            invoke_signal(0, timeAny.expTime);
-            invoke_signal(1, timeAny.routineTime);
-
-            if (timeAny.value != null) {
-                invoke_signal(2, timeAny.value);
-                send_connector_infos_to_gui(string.Format("Type:{0}", Converter.get_type_name(timeAny.value.GetType())));                
-            } else {
-                send_connector_infos_to_gui("Type: NULL");
-            }            
-        }
-    }
+class FromStringAnyNodeDataModel : public TypedConnectorDataModel<Connector::Type::From_string_any, PlaceHolderEmbeddedW>{
+    Q_OBJECT
+public slots:
+    void compute() override;
+public:
+    void init_ports_caption() override;
+};
 }

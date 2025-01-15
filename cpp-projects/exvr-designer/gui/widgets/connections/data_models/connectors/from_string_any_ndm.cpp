@@ -1,6 +1,6 @@
-﻿
+
 /***********************************************************************************
-** exvr-exp                                                                       **
+** exvr-designer                                                                  **
 ** MIT License                                                                    **
 ** Copyright (c) [2018] [Florian Lance][EPFL-LNCO]                                **
 ** Permission is hereby granted, free of charge, to any person obtaining a copy   **
@@ -22,39 +22,58 @@
 ** SOFTWARE.                                                                      **
 ************************************************************************************/
 
-namespace Ex {
+#include "from_string_any_ndm.hpp"
 
-    public class FromTimeAnyConnector : ExConnector {
+using namespace tool::ex;
 
-        object input0 = null;
+void FromStringAnyNodeDataModel::compute(){
 
-        protected override bool initialize() {
-
-            add_signals(3);
-            add_slot(0, (input) => {       
-                base_slot1(input); }
-            );
-
-            return true;
-        }
-
-        protected override void slot1(object arg) {
-            input0 = arg;
-            compute();
-        }
-
-        private void compute() {
-
-            var timeAny = (TimeAny)input0;
-            invoke_signal(0, timeAny.expTime);
-            invoke_signal(1, timeAny.routineTime);
-
-            if (timeAny.value != null) {
-                invoke_signal(2, timeAny.value);
-                send_connector_infos_to_gui(string.Format("Type:{0}", Converter.get_type_name(timeAny.value.GetType())));                
-            } else {
-                send_connector_infos_to_gui("Type: NULL");
-            }            
-        }
+    if(check_infinity_loop()){
+        return;
     }
+
+    auto inputs = get_inputs();
+
+    // missing inputs
+    if(check_if_missing_inputs(inputs)){
+        return;
+    }
+
+    // runtime inputs
+    if(check_if_runtime_inputs(inputs)){
+        propagate_default_runtime(
+            {
+                std::make_shared<StringData>(""),
+                generate_default_runtime_any_data()
+            });
+        return;
+    }
+
+    // cast
+    auto data = dcast<StringAnyData>(inputs[0]);
+    if(!data){
+        set_invalid_cast();
+        return;
+    }
+
+    // propagate
+    propagate_data(
+        "",
+        {
+            std::make_shared<StringData>(data->value().str),
+            generate_default_runtime_any_data()
+        });
 }
+
+
+void FromStringAnyNodeDataModel::init_ports_caption(){
+
+    const auto io = Connector::get_io(m_type);
+    inPortsInfo[0].caption = QSL("in (") % get_name(io.inTypes[0]) % QSL(")");
+    outPortsInfo[0].caption = QSL("str (") % get_name(io.outTypes[0]) % QSL(")");
+    outPortsInfo[1].caption = QSL("value (") % get_name(io.outTypes[1]) % QSL(")");
+}
+
+
+
+#include "moc_from_string_any_ndm.cpp"
