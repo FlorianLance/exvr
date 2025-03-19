@@ -31,6 +31,7 @@ include($$TOOLSET_REPOSITORY_DIR"/cpp-projects/ts-projects.pri")
 
 # projects list
 EXVR_CPP_PROJECTS +=\    
+    exvr-base \
     exvr-designer \
     exvr-test \
     exvr-export \

@@ -29,7 +29,7 @@
 #include <memory>
 
 // base
-#include "exvr/ex_component.hpp"
+#include "ex_component.hpp"
 
 // opencv
 #include <opencv2/highgui/highgui.hpp>  // Video write

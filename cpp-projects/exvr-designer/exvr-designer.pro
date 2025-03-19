@@ -75,7 +75,7 @@ HEADERS += \
     data/gui.hpp \
     data/set.hpp \
     data/connection_node.hpp \
-    data/connector.hpp \    
+    data/connector.hpp \
     data/interval.hpp \
     data/component.hpp \
     data/timeline.hpp \
@@ -288,7 +288,7 @@ SOURCES += \
     experiment/randomizer.cpp \
     # controller
     controller/exvr_controller.cpp \
-    # launcher   
+    # launcher
     gui/ex_widgets/ex_condition_w.cpp \
     gui/ex_widgets/ex_oob_filtering_w.cpp \
     gui/widgets/components/config_parameters/camera_controller_pw.cpp \

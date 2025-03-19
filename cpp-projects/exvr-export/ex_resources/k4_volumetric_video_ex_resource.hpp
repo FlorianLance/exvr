@@ -25,7 +25,7 @@
 #pragma once
 
 // base
-#include "exvr/ex_resource.hpp"
+#include "ex_resource.hpp"
 #include "depth-camera/dc_video.hpp"
 
 namespace tool::ex {

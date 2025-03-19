@@ -27,26 +27,37 @@
 # include(../toolset/cpp-projects/ts-dependencies.pri)
 include($$TOOLSET_REPOSITORY_DIR"/cpp-projects/ts-dependencies.pri")
 
+########################################################### EXVR-BASE
+EXVR_BASE_DEP_INCLUDEPATH =\
+    # base
+    $$BASE_DEP_INCLUDEPATH\
+    $$BASE_INCLUDES\
+
+EXVR_BASE_DEP_LIBS =\
+    # base
+    $$BASE_DEP_LIBS\
+    $$BASE_LIB\
+
+EXVR_BASE_PRE_TARGETDEPS =\
+    $$BASE_LIB_FILE\
+
 ########################################################### EXVR-EXPORT
 EXVR_EXPORT_DEP_INCLUDEPATH =\
     # thirdparty
     $$PYTHON_INCLUDES \
     # local
-    $$BASE_DEP_INCLUDEPATH\
-    $$BASE_INCLUDES\
-    $$SCANER_COMPONENT_INCLUDES\
+    $$EXVR_BASE_DEP_INCLUDEPATH\
+    $$EXVR_BASE_INCLUDES\
 
 EXVR_EXPORT_DEP_LIBS =\
     # thirdparty
     $$PYTHON_LIBS \
     # local
-    $$BASE_DEP_LIBS\
-    $$BASE_LIB\
-    $$SCANER_COMPONENT_LIB\
+    $$EXVR_BASE_DEP_LIBS\
+    $$EXVR_BASE_LIB\
 
 EXVR_EXPORT_PRE_TARGETDEPS =\
-    $$BASE_LIB_FILE\
-    $$SCANER_COMPONENT_LIB_FILE\
+    $$EXVR_BASE_LIB_FILE\
 
 ########################################################### EXVR-EXPORT-APP
 EXVR_EXPORT_APP_DEP_INCLUDEPATH =\
@@ -62,16 +73,22 @@ EXVR_EXPORT_APP_PRE_TARGETDEPS =\
 
 ########################################################### EXVR-DESIGNER
 EXVR_DESIGNER_DEP_INCLUDEPATH =\
+    $$EXVR_BASE_DEP_INCLUDEPATH\
+    $$EXVR_BASE_INCLUDES\
     $$QT_UTILITY_DEP_INCLUDEPATH\
     $$QT_UTILITY_INCLUDES\
     $$NODES_INCLUDES\
 
 EXVR_DESIGNER_DEP_LIBS =\
+    $$EXVR_BASE_DEP_LIBS\
+    $$EXVR_BASE_LIB\
     $$QT_UTILITY_DEP_LIBS\
     $$QT_UTILITY_LIB\
     $$NODES_LIB\
 
 EXVR_DESIGNER_PRE_TARGETDEPS =\
+    $$EXVR_BASE_PRE_TARGETDEPS\
+    $$EXVR_BASE_LIB_FILE\
     $$QT_UTILITY_PRE_TARGETDEPS\
     $$QT_UTILITY_LIB_FILE\
     $$NODES_LIB_FILE\

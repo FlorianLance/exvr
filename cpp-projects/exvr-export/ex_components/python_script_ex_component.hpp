@@ -33,7 +33,7 @@
 #include <boost/python.hpp>
 
 // base
-#include "exvr/ex_component.hpp"
+#include "ex_component.hpp"
 
 namespace tool::ex{
 

@@ -25,7 +25,7 @@
 #pragma once
 
 // base
-#include "exvr/ex_experiment.hpp"
+#include "ex_experiment.hpp"
 
 // local
 #include "utility/export.hpp"

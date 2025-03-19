@@ -25,7 +25,7 @@
 #pragma once
 
 // local
-#include "exvr/ex_component.hpp"
+#include "ex_component.hpp"
 #include "utility/export.hpp"
 
 extern "C"{

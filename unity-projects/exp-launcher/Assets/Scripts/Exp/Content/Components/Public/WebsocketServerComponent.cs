@@ -39,15 +39,18 @@ namespace Ex {
     public class TcpListenerJob : ThreadedJob {
 
         // parameters
+        private bool m_useIpv6Address = false;
+        private bool m_useAnyAddress = false;
         private string m_address;
         private int m_port;
 
-        // states
+        // states        
         private bool m_initialized = false;
         private volatile bool m_doLoop = false;
+        private IPAddress m_finalIpAddress;
 
         // network
-        public ConcurrentDictionary<string, WebSocketConnection> connnections = new ConcurrentDictionary<string, WebSocketConnection>();
+        public ConcurrentDictionary<string, WebSocketConnection> connnections = new ConcurrentDictionary<string, WebSocketConnection>();        
         private TcpListener m_tcpListener = null;
         private WebSocketServer.WebSocketServer m_server = null;        
 
@@ -59,17 +62,66 @@ namespace Ex {
             return m_address;
         }
 
+        public IPAddress final_ip_address() {
+            return m_finalIpAddress;
+        }
+
         public TcpListenerJob(WebSocketServer.WebSocketServer server) {
             m_server = server;
         }
 
-        public bool initialize(string address, int port) {
+        public bool initialize(bool anyAddress, bool ipv6, string address, int port, bool exclusiveAddressUse) {
 
-            m_address = address;
-            m_port    = port;
+            m_useAnyAddress     = anyAddress;
+            m_useIpv6Address    = ipv6;
+            m_address           = address;
+            m_port              = port;
 
             try {
-                m_tcpListener = new TcpListener(IPAddress.Parse(m_address), m_port);
+
+                m_finalIpAddress =  m_useIpv6Address ? IPAddress.IPv6Any : IPAddress.Any;
+
+                if (!m_useAnyAddress) {                   
+
+                    // parse for normal ip address
+                    bool parsingSuccess = false;
+                    IPAddress parsedAddress;
+                    if (IPAddress.TryParse(address, out parsedAddress)) {
+                        if (m_useIpv6Address && parsedAddress.AddressFamily == AddressFamily.InterNetworkV6) {
+                            parsingSuccess = true;
+                            m_finalIpAddress = parsedAddress;
+                        } else if (!m_useIpv6Address && parsedAddress.AddressFamily == AddressFamily.InterNetwork) {
+                            parsingSuccess = true;
+                            m_finalIpAddress = parsedAddress;
+                        }
+                    }
+
+                    if (!parsingSuccess) {
+
+                        // try to get dns
+                        bool dnsAddressFound = false;
+                        IPAddress[] dnsAddresses = Dns.GetHostAddresses(address);
+                        foreach (var dnsAddress in dnsAddresses) {
+
+                            if (m_useIpv6Address && dnsAddress.AddressFamily == AddressFamily.InterNetworkV6) { 
+                                m_finalIpAddress = dnsAddress;
+                                dnsAddressFound = true;
+                                break;
+                            } else if (!m_useIpv6Address && dnsAddress.AddressFamily == AddressFamily.InterNetwork) {
+                                m_finalIpAddress = dnsAddress;
+                                dnsAddressFound = true;
+                                break;
+                            }
+                        }   
+
+                        if (!dnsAddressFound) {
+                            m_finalIpAddress = m_useIpv6Address ? IPAddress.IPv6Any : IPAddress.Any;
+                        }
+                    }                    
+                }
+
+                m_tcpListener = new TcpListener(m_finalIpAddress, m_port);
+                m_tcpListener.ExclusiveAddressUse = exclusiveAddressUse;
                 m_tcpListener.Start();
                 m_initialized = true;
             } catch (System.Net.Sockets.SocketException e) {
@@ -100,13 +152,19 @@ namespace Ex {
                 ExVR.Log().error(string.Format("Stop listener thread timeout."));
             }
 
+            // remove connections
+            foreach (var connection in connnections) {
+                connection.Value.clean();
+            }
+            connnections = new ConcurrentDictionary<string, WebSocketConnection>();
+
+            // stop listener
             if (m_tcpListener != null) {
                 m_tcpListener.Stop();
             }
 
             m_tcpListener = null;
             m_server      = null;
-            connnections = new ConcurrentDictionary<string, WebSocketConnection>();
         }
 
         public void add_connection(WebSocketConnection connection) {
@@ -117,8 +175,9 @@ namespace Ex {
             ExVR.Log().message(string.Format("Remove connection {0}.", connection.id));
             WebSocketConnection removedConnection = null;
             connnections.TryRemove(connection.id, out removedConnection);
-            if (removedConnection != null) {
+            if (removedConnection != null) { 
                 ExVR.Log().message(string.Format("Connection {0} succesfully removed.", removedConnection.id));
+                removedConnection.clean();
             } else {
                 ExVR.Log().error(string.Format("Cannot remove connection {0}.", connection.id));
             }
@@ -176,9 +235,9 @@ namespace Ex {
 
         TcpListenerJob m_listener = null;
 
-        public bool initialize(string address, int port) {
+        public bool initialize(bool anyAddress, bool ipv6, string address, int port, bool exclusiveAddressUse) {
             m_listener = new TcpListenerJob(this);
-            if (m_listener.initialize(address, port)) {
+            if (m_listener.initialize(anyAddress, ipv6, address, port, exclusiveAddressUse)) {                                
                 return true;
             } else {
                 m_listener = null;
@@ -191,6 +250,10 @@ namespace Ex {
                 m_listener.clean();
                 m_listener = null;
             }
+        }
+
+        public IPAddress get_listening_ip_address() {
+            return m_listener.final_ip_address();
         }
 
         override public void on_open(WebSocketConnection connection) {
@@ -251,7 +314,8 @@ namespace Ex {
                 }
             });
 
-            if (m_server.initialize(initC.get<string>("address"), initC.get<int>("port"))) {
+            if (m_server.initialize(initC.get<bool>("any_address"), initC.get<int>("family") == 1, initC.get<string>("address"), initC.get<int>("port"), initC.get<bool>("exclusive_address_use"))) {
+                send_infos_to_gui_init_config("listening_ip_address", m_server.get_listening_ip_address().ToString());
                 return true;
             }
             m_server = null;
@@ -265,7 +329,6 @@ namespace Ex {
                 m_server = null;
             }
         }
-
         protected override void update() {
             // always update
             if(m_server != null) {

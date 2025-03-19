@@ -25,7 +25,7 @@
 #pragma once
 
 // base
-#include "exvr/ex_component.hpp"
+#include "ex_component.hpp"
 #include "depth-camera/dc_video.hpp"
 
 // local

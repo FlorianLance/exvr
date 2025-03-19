@@ -34,7 +34,7 @@
 #include <turbojpeg.h>
 
 // base
-#include "exvr/ex_resource.hpp"
+#include "ex_resource.hpp"
 #include "geometry/matrix4.hpp"
 #include "data/fastpfor_encoding.hpp"
 #include "depth-camera/impl/k2_types.hpp"
