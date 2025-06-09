@@ -40,6 +40,7 @@ namespace Ex {
         private static readonly string m_connectionOpenedSignalStr = "connection opened";
         private static readonly string m_connectionClosedSignalStr = "connection closed";
         WebSocket m_webSocket = null;
+        private bool m_connectedToServer = false;
 
         protected override bool initialize() {
 
@@ -55,13 +56,13 @@ namespace Ex {
             add_slot("close", (nullArg) => {
                 close_socket();
             });
-
             add_slot("send message", (message) => {
                 send_message((string)message);
             });
 
             m_webSocket = new WebSocket(initC.get<string>("url"));
             m_webSocket.OnOpen += () => {
+                m_connectedToServer = true;
                 log_message(string.Format("Connection opened"));
                 if (is_updating()) {
                     invoke_signal(m_connectionOpenedSignalStr);
@@ -71,6 +72,7 @@ namespace Ex {
                 log_error(string.Format("Error: {0}.", e));
             };
             m_webSocket.OnClose += (WebSocketCloseCode e) => {
+                m_connectedToServer = false;
                 log_message(string.Format("Connection closed, reason: [{0}].", e.ToString()));
                 if (is_updating()) {                    
                     invoke_signal(m_connectionClosedSignalStr);
@@ -98,14 +100,23 @@ namespace Ex {
         }
 
         protected override void start_experiment() {
-            if (initC.get<bool>("connect_at_start")) {
-                connect_socket();
-            }
+            //if (initC.get<bool>("connect_at_start")) {
+            //    connect_socket();
+            //}
         }
 
         protected override void stop_experiment() {
             close_socket();
         }
+
+        protected override void start_routine() {
+            if (initC.get<bool>("connect_at_start")) {
+                if (!m_connectedToServer) {
+                    connect_socket();
+                }
+            }
+        }
+
 
         protected override void update() {
             if (m_webSocket.State == WebSocketState.Open) {

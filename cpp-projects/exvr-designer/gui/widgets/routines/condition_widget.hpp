@@ -32,7 +32,7 @@
 #include <QStyledItemDelegate>
 
 // qt-utility
-#include "gui/widgets/custom_combobox_w.hpp"
+#include "gui/widgets/__qt_custom_combobox_w.hpp"
 
 // local
 // # ui

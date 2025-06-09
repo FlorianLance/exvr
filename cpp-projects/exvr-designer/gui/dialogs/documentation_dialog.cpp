@@ -30,7 +30,7 @@
 
 // qt-utility
 #include "qt_logger.hpp"
-#include "gui/widgets/text_widget_highlighter.hpp"
+#include "gui/widgets/qt_text_widget_highlighter.hpp"
 
 // local
 #include "utility/path_utility.hpp"

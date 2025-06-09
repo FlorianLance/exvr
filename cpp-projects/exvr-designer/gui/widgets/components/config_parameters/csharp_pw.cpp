@@ -26,7 +26,7 @@
 
 
 // qt-utility
-#include "gui/widgets/text_widget_highlighter.hpp"
+#include "gui/widgets/qt_text_widget_highlighter.hpp"
 #include "gui/ex_widgets/ex_text_edit_w.hpp"
 #include "gui/ex_widgets/ex_code_editor_w.hpp"
 #include "gui/ex_widgets/ex_line_edit_w.hpp"
