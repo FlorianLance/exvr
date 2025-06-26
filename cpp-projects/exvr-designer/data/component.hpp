@@ -250,7 +250,7 @@ struct Component {
         {T::Serial_port_writer,       C::Network,     TO::U, CO::B, N, N, Y, N, N, Y, P::H, R::OS, S::Sta, "Serial_port_writer"sv, "Serial port writer"sv, "SerialPortWriter"sv, "USB"sv},
         {T::Udp_reader,               C::Network,     TO::U, CO::I, N, N, Y, N, N, Y, P::H, R::OS, S::Sta, "Udp_reader"sv, "UDP reader"sv, "UdpReader"sv, "UDP"sv},
         {T::Udp_writer,               C::Network,     TO::U, CO::I, N, N, Y, N, N, Y, P::H, R::OS, S::Sta, "Udp_writer"sv, "UDP writer"sv, "UdpWriter"sv, "UDP"sv},
-        {T::WebsocketClient,          C::Network,     TO::U, CO::I, N, N, Y, N, N, Y, P::H, R::OS, S::Sta, "Websocket_client"sv, "Websocket client"sv, "WebsocketClient"sv, "UDP"sv},
+        {T::WebsocketClient,          C::Network,     TO::U, CO::I, N, N, Y, N, Y, Y, P::H, R::OS, S::Sta, "Websocket_client"sv, "Websocket client"sv, "WebsocketClient"sv, "UDP"sv},
         {T::WebsocketServer,          C::Network,     TO::U, CO::I, N, N, Y, N, N, Y, P::H, R::OS, S::Sta, "Websocket_server"sv, "Websocket server"sv, "WebsocketServer"sv, "UDP"sv},
         // Output
         {T::Global_logger,            C::Output,      TO::N, CO::I, Y, Y, Y, N, N, N, P::H, R::OS, S::Sta, "Global_logger"sv, "Global logger"sv, "GlobalLogger"sv, "Logger"sv},

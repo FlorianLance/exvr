@@ -113,7 +113,7 @@ namespace Ex {
                 b.Append(condConfigsFunctionContent[ii]);
                 b.Append("\n}catch(System.Exception ex){\nCSharpFunctionComponent.display_static_exception(countErrors++,ex);}\nreturn output;\n}\n}");
             }
-            b.Append("\n }\n}");
+            b.Append("\n }\n}");            
             return b.ToString();
         }
 

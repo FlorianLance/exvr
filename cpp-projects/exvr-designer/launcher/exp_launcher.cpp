@@ -117,7 +117,8 @@ void ExpLauncher::message_from_exp_launcher(QString m){
 
             // LOG
             if(auto log = extract_balise_message(balise.value(), SLog, ELog); log.has_value()){
-                QtLog::log(log.value());
+                qDebug() << "LOG " << log.value();
+                QtLog::message(log.value());
                 continue;
             }
 

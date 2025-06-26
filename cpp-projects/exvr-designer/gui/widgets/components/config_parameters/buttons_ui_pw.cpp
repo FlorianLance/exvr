@@ -17,6 +17,7 @@ struct ButtonsUiConfigParametersW::Impl{
     QTabWidget tw;
     WordSpaceCanvasSubPart wscsp;
 
+    ExCheckBoxW allButtonsAlwaysInteractable{"buttons_always_interactable"};
     ExTextEditW buttonsText{"buttons_text"};
     ExSelectColorW buttonsColor{"buttons_color"};
     ExSpinBoxW horizontalSpacing{"h_spacing"};
@@ -43,6 +44,9 @@ ButtonsUiConfigParametersW::ButtonsUiConfigParametersW():  ConfigParametersW(), 
 void ButtonsUiConfigParametersW::insert_widgets(){
 
     layout()->setContentsMargins(0,0,0,0);
+
+    add_widget(m_p->allButtonsAlwaysInteractable.w.get());
+
     add_widget(&m_p->tw);
 
     {
@@ -87,6 +91,8 @@ void ButtonsUiConfigParametersW::insert_widgets(){
 }
 
 void ButtonsUiConfigParametersW::init_and_register_widgets(){
+
+    add_input_ui(m_p->allButtonsAlwaysInteractable.init_widget("All buttons are always interactable", false));
 
     add_input_ui(m_p->buttonsColor.init_widget("Select button color", QColor(255,255,255,255)));
     add_input_ui(m_p->buttonsText.init_widget("Button1_Button2_Button3\nButton4_Button5_Button6", Qt::TextFormat::PlainText));

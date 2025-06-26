@@ -22,6 +22,7 @@
 ** SOFTWARE.                                                                      **
 ************************************************************************************/
 // system
+using System.Collections.Generic;
 using System.IO;
 
 // unity
@@ -40,6 +41,11 @@ namespace Ex{
             pixels = webcamTexture.GetPixels32();
             width = webcamTexture.width;
             height = webcamTexture.height;
+
+            var v = new Dictionary<int, int>();
+            foreach (var vv in v) {
+                //vv.Value
+            }
         }
 
         public ImageContainer(Texture2D texture, bool copyData) {

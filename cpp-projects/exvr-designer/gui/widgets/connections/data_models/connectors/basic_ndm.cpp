@@ -189,7 +189,7 @@ void PostItConfigW::initialize(){
 }
 
 void PostItNodeDataModel::compute(){
-    set_embedded_widget_text(embedded_w()->w->text.get_text());
+    set_embedded_widget_text(embedded_w()->w->preview.get_text());
 }
 
 

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--Nb routines: 4-->
+<!-- routine [Waiting for connection] [4] is called [1] times and has [1] conditions-->
+<!--   condition [default] is called [1] times-->
+<!-- routine [Check EEG quality] [8] is called [1] times and has [1] conditions-->
+<!--   condition [default] is called [1] times-->
+<!-- routine [Wait for RESTING STATE] [1] is called [1] times and has [1] conditions-->
+<!--   condition [default] is called [1] times-->
+<!-- routine [    . . .    ] [13] is called [1] times and has [1] conditions-->
+<!--   condition [default] is called [1] times-->
+<ExperimentFlow id_instance="0">
+    <Element key="4" type="routine" name="Waiting for connection" cond="default" elem_iter="0" cond_iter="0"/>
+    <Element key="8" type="routine" name="Check EEG quality" cond="default" elem_iter="0" cond_iter="0"/>
+    <Element key="1" type="routine" name="Wait for RESTING STATE" cond="default" elem_iter="0" cond_iter="0"/>
+    <Element key="13" type="routine" name="    . . .    " cond="default" elem_iter="0" cond_iter="0"/>
+</ExperimentFlow>

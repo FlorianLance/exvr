@@ -1,0 +1,609 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Experiment name="takasago_client" version="1.0b8" mode="designer" designer-used="D:/DEV/Perso/exvr/cpp-projects/_build/bin/exvr-designer/ExVR.exe">
+    <Settings debug="1" csharp_debug_info="0" catch_components_exceptions="0" positional_tracking="1" catch_external_keyboard_events="0">
+        <Display mode="0" stereo_fov="60" fullscreen="0" monitor_id="1" resolution_id="2" custom_width="1920" custom_height="1080"/>
+        <Camera neutral_x="0" neutral_y="1" neutral_z="0"/>
+    </Settings>
+    <Resources reload="200">
+        <Resource key="1" type="Image" alias="epocx-1" path="C:/Users/SDKim/Desktop/exvr/epocx-1.png"/>
+        <Resource key="2" type="Image" alias="epocx-2" path="C:/Users/SDKim/Desktop/exvr/epocx-2.png"/>
+        <Resource key="3" type="Text" alias="epoc-x-electxt" path="C:/Users/SDKim/Desktop/exvr/epoc-x-electxt.txt"/>
+        <Resource key="0" type="CSharpScript" alias="ParseMessagesComponent" path="C:/Users/SDKim/Desktop/exvr/ParseMessagesComponent.cs"/>
+    </Resources>
+    <Components>
+        <Component key="0" name="Global logger" category="Output" type="GlobalLogger" global="1" always_updating="1" exceptions="0" frame_logging="0" trigger_logging="0" restricted="0" priority="2">
+            <InitConfig key="0" name="standard">
+                <Arg name="actions_count" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                <Arg name="add_current_instance_to_sub_directory_name" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                <Arg name="add_date_to_sub_directory_name" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                <Arg name="base_sub_directory_name" ui="Line text editor" value="global_log" type="System.String" dim="0"/>
+                <Arg name="camera_calibration" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                <Arg name="camera_rig" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                <Arg name="condition_duration" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                <Arg name="condition_name" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                <Arg name="condition_nb_calls" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                <Arg name="connections_count" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                <Arg name="connectors_count" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                <Arg name="date_time_format" ui="Line text editor" value="yyyy-MM-dd_H-mm-ss" type="System.String" dim="0"/>
+                <Arg name="directory" ui="Resource" value="%%%-1" type="System.String" dim="1" sep="%%%" sizes="2"/>
+                <Arg name="element_iteration" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                <Arg name="element_order" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                <Arg name="ellapsed_element_time" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                <Arg name="ellapsed_exp_time" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                <Arg name="eyes_camera" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                <Arg name="file_extension" ui="Line text editor" value="csv" type="System.String" dim="0"/>
+                <Arg name="frame_id" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                <Arg name="framerate" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                <Arg name="inputs_components" ui="Components list" value="" type="System.String" dim="1" sep=" " sizes="0"/>
+                <Arg name="network_components" ui="Components list" value="" type="System.String" dim="1" sep=" " sizes="0"/>
+                <Arg name="routine_name" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                <Arg name="start_frame_time" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                <Arg name="tracking_components" ui="Components list" value="" type="System.String" dim="1" sep=" " sizes="0"/>
+                <Arg name="ui_components" ui="Components list" value="" type="System.String" dim="1" sep=" " sizes="0"/>
+            </InitConfig>
+            <Configs>
+                <Config key="1" name="standard"/>
+            </Configs>
+        </Component>
+        <Component key="1" name="Websocket client" category="Network" type="WebsocketClient" global="0" always_updating="1" exceptions="0" frame_logging="0" trigger_logging="1" restricted="0" priority="2">
+            <InitConfig key="2" name="standard">
+                <Arg name="connect_at_start" ui="Check box" value="false" type="System.Boolean" dim="0"/>
+                <Arg name="url" ui="Line text editor" value="ws://localhost:3000" type="System.String" dim="0"/>
+            </InitConfig>
+            <Configs>
+                <Config key="3" name="standard"/>
+            </Configs>
+        </Component>
+        <Component key="2" name="CSharp function" category="Script" type="CSharpFunction" global="0" always_updating="0" exceptions="1" frame_logging="0" trigger_logging="0" restricted="0" priority="0">
+            <InitConfig key="4" name="standard">
+                <Arg name="extra" ui="Code editor" value="" type="System.String" dim="0"/>
+            </InitConfig>
+            <Configs>
+                <Config key="5" name="standard">
+                    <Arg name="extra" ui="Code editor" value="" type="System.String" dim="0"/>
+                    <Arg name="function" ui="Code editor" value="var strList = ( List&lt;string&gt;)input;&#10;//ExVR.Log().message(&quot;strList &quot; + strList.Count);&#10;ExVR.Log().message(strList[0]);&#10;if(strList.Count &lt;= 5){&#10;&#9;output = new IdAny(0, 1.0);&#10;}&#10;&#10;&#9;&#10;if(strList[0] == &quot;COG_FEAT&quot;){&#10;&#9;ExVR.Log().message(strList[2]);&#10;&#9;output = new IdAny(1,Converter.to_double(strList[2]));&#10;}&#10;&#10;//output = new IdAny(1, 2.0);" type="System.String" dim="0"/>
+                </Config>
+            </Configs>
+        </Component>
+        <Component key="3" name="Parse messages script" category="Script" type="CSharpScript" global="0" always_updating="0" exceptions="1" frame_logging="0" trigger_logging="0" restricted="0" priority="0">
+            <InitConfig key="6" name="standard">
+                <Arg name="component_class_name" ui="Line text editor" value="ParseMessagesComponent" type="System.String" dim="0"/>
+            </InitConfig>
+            <Configs>
+                <Config key="7" name="standard"/>
+            </Configs>
+        </Component>
+        <Component key="4" name="Text viewer" category="Viewer" type="TextViewer" global="0" always_updating="0" exceptions="1" frame_logging="0" trigger_logging="0" restricted="0" priority="0">
+            <InitConfig key="8" name="standard"/>
+            <Configs>
+                <Config key="9" name="waition_for_connection">
+                    <Arg name="background_color" ui="Color pick" value="1 1 1 0" type="System.Single" dim="1" sep=" " sizes="4"/>
+                    <Arg name="distance" ui="Float spin box" value="1" type="System.Single" dim="0"/>
+                    <Arg name="eye_to_render" ui="Combo box text" value="Both eyes" type="System.String" dim="0"/>
+                    <Arg name="height" ui="Integer spin box" value="400" type="System.Int32" dim="0"/>
+                    <Arg name="pivot" ui="Vector 2D" value="0.5 0.5" type="System.Single" dim="1" sep=" " sizes="2"/>
+                    <Arg name="position" ui="Vector 3D" value="0 0 10" type="System.Single" dim="1" sep=" " sizes="3"/>
+                    <Arg name="rotation" ui="Vector 3D" value="0 0 0" type="System.Single" dim="1" sep=" " sizes="3"/>
+                    <Arg name="scale_factor" ui="Float spin box" value="0.25" type="System.Single" dim="0"/>
+                    <Arg name="t_alignment" ui="Combo box text" value="Middle centered" type="System.String" dim="0"/>
+                    <Arg name="t_auto_size" ui="Check box" value="false" type="System.Boolean" dim="0"/>
+                    <Arg name="t_bold" ui="Check box" value="false" type="System.Boolean" dim="0"/>
+                    <Arg name="t_character_spacing" ui="Float spin box" value="0" type="System.Single" dim="0"/>
+                    <Arg name="t_face_color" ui="Color pick" value="0 0 0 1" type="System.Single" dim="1" sep=" " sizes="4"/>
+                    <Arg name="t_font_size" ui="Float spin box" value="25" type="System.Single" dim="0"/>
+                    <Arg name="t_highlight" ui="Check box" value="false" type="System.Boolean" dim="0"/>
+                    <Arg name="t_italic" ui="Check box" value="false" type="System.Boolean" dim="0"/>
+                    <Arg name="t_line_spacing" ui="Float spin box" value="0" type="System.Single" dim="0"/>
+                    <Arg name="t_lower_case" ui="Radio buttons" value="false" type="System.Boolean" dim="0"/>
+                    <Arg name="t_normal" ui="Radio buttons" value="true" type="System.Boolean" dim="0"/>
+                    <Arg name="t_outline_color" ui="Color pick" value="0 0 0 1" type="System.Single" dim="1" sep=" " sizes="4"/>
+                    <Arg name="t_outline_width" ui="Float spin box" value="0" type="System.Single" dim="0"/>
+                    <Arg name="t_paragraph_spacing" ui="Float spin box" value="0" type="System.Single" dim="0"/>
+                    <Arg name="t_rich_text" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                    <Arg name="t_text" ui="Block text editor" value="En attente de la connexion avec Takasago-EEG..." type="System.String" dim="0"/>
+                    <Arg name="t_text_component" ui="Component" value="%%%-1" type="System.String" dim="1" sep="%%%" sizes="2"/>
+                    <Arg name="t_text_resource" ui="Resource" value="%%%-1" type="System.String" dim="1" sep="%%%" sizes="2"/>
+                    <Arg name="t_under_line" ui="Check box" value="false" type="System.Boolean" dim="0"/>
+                    <Arg name="t_upper_case" ui="Radio buttons" value="false" type="System.Boolean" dim="0"/>
+                    <Arg name="t_use_component" ui="Radio buttons" value="false" type="System.Boolean" dim="0"/>
+                    <Arg name="t_use_resource" ui="Radio buttons" value="false" type="System.Boolean" dim="0"/>
+                    <Arg name="t_use_text" ui="Radio buttons" value="true" type="System.Boolean" dim="0"/>
+                    <Arg name="t_word_spacing" ui="Float spin box" value="0" type="System.Single" dim="0"/>
+                    <Arg name="t_wrap" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                    <Arg name="use_eye_camera" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                    <Arg name="use_original_size" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                    <Arg name="width" ui="Integer spin box" value="400" type="System.Int32" dim="0"/>
+                </Config>
+                <Config key="10" name="check_eeg_quality">
+                    <Arg name="background_color" ui="Color pick" value="0.713726 1 0.286275 0" type="System.Single" dim="1" sep=" " sizes="4"/>
+                    <Arg name="distance" ui="Float spin box" value="1" type="System.Single" dim="0"/>
+                    <Arg name="eye_to_render" ui="Combo box text" value="Both eyes" type="System.String" dim="0"/>
+                    <Arg name="height" ui="Integer spin box" value="400" type="System.Int32" dim="0"/>
+                    <Arg name="pivot" ui="Vector 2D" value="0.5 0.5" type="System.Single" dim="1" sep=" " sizes="2"/>
+                    <Arg name="position" ui="Vector 3D" value="0 0 10" type="System.Single" dim="1" sep=" " sizes="3"/>
+                    <Arg name="rotation" ui="Vector 3D" value="0 0 0" type="System.Single" dim="1" sep=" " sizes="3"/>
+                    <Arg name="scale_factor" ui="Float spin box" value="0.25" type="System.Single" dim="0"/>
+                    <Arg name="t_alignment" ui="Combo box text" value="Middle centered" type="System.String" dim="0"/>
+                    <Arg name="t_auto_size" ui="Check box" value="false" type="System.Boolean" dim="0"/>
+                    <Arg name="t_bold" ui="Check box" value="false" type="System.Boolean" dim="0"/>
+                    <Arg name="t_character_spacing" ui="Float spin box" value="0" type="System.Single" dim="0"/>
+                    <Arg name="t_face_color" ui="Color pick" value="0 0 0 1" type="System.Single" dim="1" sep=" " sizes="4"/>
+                    <Arg name="t_font_size" ui="Float spin box" value="25" type="System.Single" dim="0"/>
+                    <Arg name="t_highlight" ui="Check box" value="false" type="System.Boolean" dim="0"/>
+                    <Arg name="t_italic" ui="Check box" value="false" type="System.Boolean" dim="0"/>
+                    <Arg name="t_line_spacing" ui="Float spin box" value="0" type="System.Single" dim="0"/>
+                    <Arg name="t_lower_case" ui="Radio buttons" value="false" type="System.Boolean" dim="0"/>
+                    <Arg name="t_normal" ui="Radio buttons" value="true" type="System.Boolean" dim="0"/>
+                    <Arg name="t_outline_color" ui="Color pick" value="0 0 0 1" type="System.Single" dim="1" sep=" " sizes="4"/>
+                    <Arg name="t_outline_width" ui="Float spin box" value="0" type="System.Single" dim="0"/>
+                    <Arg name="t_paragraph_spacing" ui="Float spin box" value="0" type="System.Single" dim="0"/>
+                    <Arg name="t_rich_text" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                    <Arg name="t_text" ui="Block text editor" value="" type="System.String" dim="0"/>
+                    <Arg name="t_text_component" ui="Component" value="%%%-1" type="System.String" dim="1" sep="%%%" sizes="2"/>
+                    <Arg name="t_text_resource" ui="Resource" value="%%%-1" type="System.String" dim="1" sep="%%%" sizes="2"/>
+                    <Arg name="t_under_line" ui="Check box" value="false" type="System.Boolean" dim="0"/>
+                    <Arg name="t_upper_case" ui="Radio buttons" value="false" type="System.Boolean" dim="0"/>
+                    <Arg name="t_use_component" ui="Radio buttons" value="false" type="System.Boolean" dim="0"/>
+                    <Arg name="t_use_resource" ui="Radio buttons" value="false" type="System.Boolean" dim="0"/>
+                    <Arg name="t_use_text" ui="Radio buttons" value="true" type="System.Boolean" dim="0"/>
+                    <Arg name="t_word_spacing" ui="Float spin box" value="0" type="System.Single" dim="0"/>
+                    <Arg name="t_wrap" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                    <Arg name="use_eye_camera" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                    <Arg name="use_original_size" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                    <Arg name="width" ui="Integer spin box" value="400" type="System.Int32" dim="0"/>
+                </Config>
+            </Configs>
+        </Component>
+        <Component key="7" name="EEQ Quality" category="Viewer" type="ImageViewer" global="0" always_updating="0" exceptions="1" frame_logging="0" trigger_logging="0" restricted="0" priority="0">
+            <InitConfig key="15" name="standard"/>
+            <Configs>
+                <Config key="16" name="epoc-x">
+                    <Arg name="background_color" ui="Color pick" value="1 1 1 1" type="System.Single" dim="1" sep=" " sizes="4"/>
+                    <Arg name="distance" ui="Float spin box" value="1" type="System.Single" dim="0"/>
+                    <Arg name="eye_to_render" ui="Combo box text" value="Both eyes" type="System.String" dim="0"/>
+                    <Arg name="height" ui="Integer spin box" value="400" type="System.Int32" dim="0"/>
+                    <Arg name="image" ui="Resource" value="epocx-1%%%1" type="System.String" dim="1" sep="%%%" sizes="2"/>
+                    <Arg name="pivot" ui="Vector 2D" value="0.5 0.5" type="System.Single" dim="1" sep=" " sizes="2"/>
+                    <Arg name="position" ui="Vector 3D" value="0 0 10" type="System.Single" dim="1" sep=" " sizes="3"/>
+                    <Arg name="resource_component" ui="Component" value="%%%-1" type="System.String" dim="1" sep="%%%" sizes="2"/>
+                    <Arg name="rotation" ui="Vector 3D" value="0 0 0" type="System.Single" dim="1" sep=" " sizes="3"/>
+                    <Arg name="scale_factor" ui="Float spin box" value="0.25" type="System.Single" dim="0"/>
+                    <Arg name="use_component" ui="Radio buttons" value="false" type="System.Boolean" dim="0"/>
+                    <Arg name="use_eye_camera" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                    <Arg name="use_nothing" ui="Radio buttons" value="true" type="System.Boolean" dim="0"/>
+                    <Arg name="use_original_size" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                    <Arg name="use_resource" ui="Radio buttons" value="false" type="System.Boolean" dim="0"/>
+                    <Arg name="width" ui="Integer spin box" value="400" type="System.Int32" dim="0"/>
+                </Config>
+            </Configs>
+        </Component>
+        <Component key="8" name="EEQ Quality labels" category="Viewer" type="ImageViewer" global="0" always_updating="0" exceptions="1" frame_logging="0" trigger_logging="0" restricted="0" priority="0">
+            <InitConfig key="17" name="standard"/>
+            <Configs>
+                <Config key="18" name="epoc-x">
+                    <Arg name="background_color" ui="Color pick" value="1 1 1 1" type="System.Single" dim="1" sep=" " sizes="4"/>
+                    <Arg name="distance" ui="Float spin box" value="1" type="System.Single" dim="0"/>
+                    <Arg name="eye_to_render" ui="Combo box text" value="Both eyes" type="System.String" dim="0"/>
+                    <Arg name="height" ui="Integer spin box" value="400" type="System.Int32" dim="0"/>
+                    <Arg name="image" ui="Resource" value="epocx-2%%%2" type="System.String" dim="1" sep="%%%" sizes="2"/>
+                    <Arg name="pivot" ui="Vector 2D" value="0.5 0.5" type="System.Single" dim="1" sep=" " sizes="2"/>
+                    <Arg name="position" ui="Vector 3D" value="0 0 10" type="System.Single" dim="1" sep=" " sizes="3"/>
+                    <Arg name="resource_component" ui="Component" value="%%%-1" type="System.String" dim="1" sep="%%%" sizes="2"/>
+                    <Arg name="rotation" ui="Vector 3D" value="0 0 0" type="System.Single" dim="1" sep=" " sizes="3"/>
+                    <Arg name="scale_factor" ui="Float spin box" value="0.25" type="System.Single" dim="0"/>
+                    <Arg name="use_component" ui="Radio buttons" value="false" type="System.Boolean" dim="0"/>
+                    <Arg name="use_eye_camera" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                    <Arg name="use_nothing" ui="Radio buttons" value="false" type="System.Boolean" dim="0"/>
+                    <Arg name="use_original_size" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                    <Arg name="use_resource" ui="Radio buttons" value="true" type="System.Boolean" dim="0"/>
+                    <Arg name="width" ui="Integer spin box" value="400" type="System.Int32" dim="0"/>
+                </Config>
+            </Configs>
+        </Component>
+        <Component key="9" name="Image resource" category="Resource" type="ImageResource" global="0" always_updating="0" exceptions="1" frame_logging="0" trigger_logging="0" restricted="0" priority="2">
+            <InitConfig key="19" name="standard">
+                <Arg name="images_list" ui="Resources list" value="1" type="System.String" dim="1" sep=" " sizes="1"/>
+            </InitConfig>
+            <Configs>
+                <Config key="20" name="epoc-x">
+                    <Arg name="alias" ui="Line text editor" value="" type="System.String" dim="0"/>
+                    <Arg name="id" ui="Integer spin box" value="0" type="System.Int32" dim="0"/>
+                    <Arg name="start_exp" ui="Check box" value="false" type="System.Boolean" dim="0"/>
+                    <Arg name="start_routine" ui="Check box" value="true" type="System.Boolean" dim="0"/>
+                    <Arg name="stop_routine" ui="Check box" value="false" type="System.Boolean" dim="0"/>
+                    <Arg name="use_alias" ui="Radio buttons" value="false" type="System.Boolean" dim="0"/>
+                    <Arg name="use_id" ui="Radio buttons" value="true" type="System.Boolean" dim="0"/>
+                </Config>
+            </Configs>
+        </Component>
+        <Component key="10" name="Text resource" category="Resource" type="TextResource" global="0" always_updating="0" exceptions="1" frame_logging="0" trigger_logging="0" restricted="0" priority="2">
+            <InitConfig key="21" name="standard"/>
+            <Configs>
+                <Config key="22" name="epoc-x">
+                    <Arg name="text" ui="Resource" value="epoc-x-electxt%%%3" type="System.String" dim="1" sep="%%%" sizes="2"/>
+                </Config>
+            </Configs>
+        </Component>
+        <Component key="11" name="Serial port reader" category="Network" type="SerialPortReader" global="0" always_updating="1" exceptions="0" frame_logging="0" trigger_logging="1" restricted="0" priority="2">
+            <InitConfig key="23" name="standard">
+                <Arg name="port_to_read" ui="Line text editor" value="COM1" type="System.String" dim="0"/>
+            </InitConfig>
+            <Configs>
+                <Config key="24" name="standard">
+                    <Arg name="int_mode" ui="Radio buttons" value="true" type="System.Boolean" dim="0"/>
+                    <Arg name="string_mode" ui="Radio buttons" value="false" type="System.Boolean" dim="0"/>
+                </Config>
+            </Configs>
+        </Component>
+    </Components>
+    <FlowElements>
+        <Routines>
+            <Routine key="4" name="Waiting for connection" randomizer="0" informations="">
+                <Condition key="1" name="default" duration="1000" ui_scale="100" ui_size="1" sets_keys="0">
+                    <Action key="3" key_component="1" key_config="3" node_used="1" node_position="343 113">
+                        <!--Component Websocket client with config standard -->
+                        <Timeline type="Update">
+                            <!--Starts at 0(s) and ends at 1000s(), duration: 1000(s) -->
+                            <Interval t1="0" t2="1000"/>
+                        </Timeline>
+                        <Timeline type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 1000s(), duration: 1000(s) -->
+                            <Interval t1="0" t2="1000"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="4" key_component="4" key_config="9" node_used="0" node_position="49 325">
+                        <!--Component Text viewer with config waition_for_connection -->
+                        <Timeline type="Update">
+                            <!--Starts at 0(s) and ends at 1000s(), duration: 1000(s) -->
+                            <Interval t1="0" t2="1000"/>
+                        </Timeline>
+                        <Timeline type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 1000s(), duration: 1000(s) -->
+                            <Interval t1="0" t2="1000"/>
+                        </Timeline>
+                    </Action>
+                    <Connector key="61" name="Next" node_position="752 97">
+                        <Arg name="value" ui="Label" value="" type="System.String" dim="0"/>
+                    </Connector>
+                    <Connector key="62" name="PassValueTrigger" node_position="783 209">
+                        <Arg name="value" ui="Label" value="" type="System.String" dim="0"/>
+                    </Connector>
+                    <Connector key="63" name="String" node_position="352 291">
+                        <Arg name="value" ui="Line text editor" value="Connection opened! Go to next." type="System.String" dim="0"/>
+                    </Connector>
+                    <Connector key="64" name="Logger" node_position="1107 222">
+                        <Arg name="value" ui="Label" value="" type="System.String" dim="0"/>
+                    </Connector>
+                    <Connector key="65" name="Delay" node_position="31 151">
+                        <Arg name="value" ui="Integer spin box" value="1000" type="System.Int32" dim="0"/>
+                    </Connector>
+                    <Connector key="68" name="Time" node_position="-336 153">
+                        <Arg name="value" ui="Time" value="Time since exp%1%At each frame" type="System.String" dim="1" sep="%" sizes="3"/>
+                    </Connector>
+                    <!--Connection between Key1:Component:Websocket client:Port0 and Key61:Connector:Next:Port0 -->
+                    <Connection key="223" out_type="component" out_key="1" signal_id="0" out_data_type="trigger" signal="connection opened" in_type="connector" in_key="61" slot_id="0" in_data_type="trigger" slot="input value 0"/>
+                    <!--Connection between Key1:Component:Websocket client:Port0 and Key62:Connector:PassValueTrigger:Port1 -->
+                    <Connection key="224" out_type="component" out_key="1" signal_id="0" out_data_type="trigger" signal="connection opened" in_type="connector" in_key="62" slot_id="1" in_data_type="trigger" slot="input value 1"/>
+                    <!--Connection between Key63:Connector:String:Port0 and Key62:Connector:PassValueTrigger:Port0 -->
+                    <Connection key="225" out_type="connector" out_key="63" signal_id="0" out_data_type="string" signal="output value 0" in_type="connector" in_key="62" slot_id="0" in_data_type="any" slot="input value 0"/>
+                    <!--Connection between Key62:Connector:PassValueTrigger:Port0 and Key64:Connector:Logger:Port0 -->
+                    <Connection key="226" out_type="connector" out_key="62" signal_id="0" out_data_type="any" signal="output value 0" in_type="connector" in_key="64" slot_id="0" in_data_type="any" slot="input value 0"/>
+                    <!--Connection between Key65:Connector:Delay:Port0 and Key1:Component:Websocket client:Port0 -->
+                    <Connection key="232" out_type="connector" out_key="65" signal_id="0" out_data_type="any" signal="output value 0" in_type="component" in_key="1" slot_id="0" in_data_type="trigger" slot="connect"/>
+                    <!--Connection between Key68:Connector:Time:Port0 and Key65:Connector:Delay:Port0 -->
+                    <Connection key="280" out_type="connector" out_key="68" signal_id="0" out_data_type="real" signal="output value 0" in_type="connector" in_key="65" slot_id="0" in_data_type="any" slot="input value 0"/>
+                </Condition>
+            </Routine>
+            <Routine key="8" name="Check EEG quality" randomizer="0" informations="">
+                <Condition key="2" name="default" duration="100" ui_scale="1" ui_size="1" sets_keys="0">
+                    <Action key="5" key_component="4" key_config="10" node_used="0" node_position="0 0">
+                        <!--Component Text viewer with config check_eeg_quality -->
+                        <Timeline type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s) -->
+                            <Interval t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s) -->
+                            <Interval t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="6" key_component="1" key_config="3" node_used="1" node_position="338 79">
+                        <!--Component Websocket client with config standard -->
+                        <Timeline type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s) -->
+                            <Interval t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s) -->
+                            <Interval t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="7" key_component="3" key_config="7" node_used="1" node_position="905 175">
+                        <!--Component Parse messages script with config standard -->
+                        <Timeline type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s) -->
+                            <Interval t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s) -->
+                            <Interval t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="10" key_component="7" key_config="16" node_used="1" node_position="1231 287">
+                        <!--Component EEQ Quality with config epoc-x -->
+                        <Timeline type="Update">
+                            <!--Starts at 1(s) and ends at 100s(), duration: 99(s) -->
+                            <Interval t1="1" t2="100"/>
+                        </Timeline>
+                        <Timeline type="Visibiliy">
+                            <!--Starts at 1(s) and ends at 100s(), duration: 99(s) -->
+                            <Interval t1="1" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="11" key_component="8" key_config="18" node_used="0" node_position="0 0">
+                        <!--Component EEQ Quality labels with config epoc-x -->
+                        <Timeline type="Update">
+                            <!--Starts at 1(s) and ends at 100s(), duration: 99(s) -->
+                            <Interval t1="1" t2="100"/>
+                        </Timeline>
+                        <Timeline type="Visibiliy">
+                            <!--Starts at 1(s) and ends at 100s(), duration: 99(s) -->
+                            <Interval t1="1" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="12" key_component="9" key_config="20" node_used="1" node_position="76 234">
+                        <!--Component Image resource with config epoc-x -->
+                        <Timeline type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s) -->
+                            <Interval t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s) -->
+                            <Interval t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="13" key_component="10" key_config="22" node_used="1" node_position="121 426">
+                        <!--Component Text resource with config epoc-x -->
+                        <Timeline type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s) -->
+                            <Interval t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s) -->
+                            <Interval t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Connector key="69" name="IdAny" node_position="404 320">
+                        <Arg name="value" ui="Integer spin box" value="0" type="System.Int32" dim="0"/>
+                    </Connector>
+                    <Connector key="70" name="IdAny" node_position="403 422">
+                        <Arg name="value" ui="Integer spin box" value="1" type="System.Int32" dim="0"/>
+                    </Connector>
+                    <Connector key="71" name="PassValues" node_position="658 357">
+                        <Arg name="value" ui="Label" value="" type="System.String" dim="0"/>
+                    </Connector>
+                    <Connector key="79" name="String" node_position="-261 -56">
+                        <Arg name="value" ui="Line text editor" value="TRIGGER" type="System.String" dim="0"/>
+                    </Connector>
+                    <Connector key="80" name="Button" node_position="-283 129">
+                        <Arg name="value" ui="Action button" value="Send trigger" type="System.String" dim="0"/>
+                    </Connector>
+                    <Connector key="81" name="PassValueTrigger" node_position="11 50">
+                        <Arg name="value" ui="Label" value="" type="System.String" dim="0"/>
+                    </Connector>
+                    <!--Connection between Key9:Component:Image resource:Port0 and Key69:Connector:IdAny:Port0 -->
+                    <Connection key="235" out_type="component" out_key="9" signal_id="0" out_data_type="image" signal="image" in_type="connector" in_key="69" slot_id="0" in_data_type="any" slot="input value 0"/>
+                    <!--Connection between Key69:Connector:IdAny:Port0 and Key71:Connector:PassValues:Port0 -->
+                    <Connection key="237" out_type="connector" out_key="69" signal_id="0" out_data_type="id_any" signal="output value 0" in_type="connector" in_key="71" slot_id="0" in_data_type="any" slot="input value 0"/>
+                    <!--Connection between Key70:Connector:IdAny:Port0 and Key71:Connector:PassValues:Port1 -->
+                    <Connection key="238" out_type="connector" out_key="70" signal_id="0" out_data_type="id_any" signal="output value 0" in_type="connector" in_key="71" slot_id="1" in_data_type="any" slot="input value 1"/>
+                    <!--Connection between Key71:Connector:PassValues:Port0 and Key3:Component:Parse messages script:Port4 -->
+                    <Connection key="239" out_type="connector" out_key="71" signal_id="0" out_data_type="any" signal="output value 0" in_type="component" in_key="3" slot_id="4" in_data_type="id_any" slot="slot5"/>
+                    <!--Connection between Key10:Component:Text resource:Port0 and Key70:Connector:IdAny:Port0 -->
+                    <Connection key="240" out_type="component" out_key="10" signal_id="0" out_data_type="string" signal="full text" in_type="connector" in_key="70" slot_id="0" in_data_type="any" slot="input value 0"/>
+                    <!--Connection between Key3:Component:Parse messages script:Port3 and Key7:Component:EEQ Quality:Port0 -->
+                    <Connection key="241" out_type="component" out_key="3" signal_id="3" out_data_type="any" signal="signal4" in_type="component" in_key="7" slot_id="0" in_data_type="image" slot="set image"/>
+                    <!--Connection between Key1:Component:Websocket client:Port2 and Key3:Component:Parse messages script:Port0 -->
+                    <Connection key="284" out_type="component" out_key="1" signal_id="2" out_data_type="time_any" signal="message read" in_type="component" in_key="3" slot_id="0" in_data_type="any" slot="slot1"/>
+                    <!--Connection between Key79:Connector:String:Port0 and Key81:Connector:PassValueTrigger:Port0 -->
+                    <Connection key="285" out_type="connector" out_key="79" signal_id="0" out_data_type="string" signal="output value 0" in_type="connector" in_key="81" slot_id="0" in_data_type="any" slot="input value 0"/>
+                    <!--Connection between Key80:Connector:Button:Port0 and Key81:Connector:PassValueTrigger:Port1 -->
+                    <Connection key="286" out_type="connector" out_key="80" signal_id="0" out_data_type="trigger" signal="output value 0" in_type="connector" in_key="81" slot_id="1" in_data_type="trigger" slot="input value 1"/>
+                    <!--Connection between Key81:Connector:PassValueTrigger:Port0 and Key1:Component:Websocket client:Port2 -->
+                    <Connection key="287" out_type="connector" out_key="81" signal_id="0" out_data_type="any" signal="output value 0" in_type="component" in_key="1" slot_id="2" in_data_type="string" slot="send message"/>
+                </Condition>
+            </Routine>
+            <Routine key="1" name="Wait for RESTING STATE" randomizer="0" informations="">
+                <Condition key="0" name="default" duration="100" ui_scale="10" ui_size="1" sets_keys="0">
+                    <Action key="0" key_component="1" key_config="3" node_used="1" node_position="628.128 238.872">
+                        <!--Component Websocket client with config standard -->
+                        <Timeline type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s) -->
+                            <Interval t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s) -->
+                            <Interval t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="1" key_component="2" key_config="5" node_used="0" node_position="1925.33 185.472">
+                        <!--Component CSharp function with config standard -->
+                        <Timeline type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s) -->
+                            <Interval t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s) -->
+                            <Interval t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Action key="2" key_component="3" key_config="7" node_used="1" node_position="1057.88 406.022">
+                        <!--Component Parse messages script with config standard -->
+                        <Timeline type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s) -->
+                            <Interval t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s) -->
+                            <Interval t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Connector key="2" name="String" node_position="13.328 248.072">
+                        <Arg name="value" ui="Line text editor" value="TRIGGER" type="System.String" dim="0"/>
+                    </Connector>
+                    <Connector key="7" name="String" node_position="688.728 -78.728">
+                        <Arg name="value" ui="Line text editor" value="Connection opened" type="System.String" dim="0"/>
+                    </Connector>
+                    <Connector key="8" name="String" node_position="686.728 22.272">
+                        <Arg name="value" ui="Line text editor" value="Connection closed" type="System.String" dim="0"/>
+                    </Connector>
+                    <Connector key="9" name="PassValues" node_position="1502.13 -213.728">
+                        <Arg name="value" ui="Label" value="" type="System.String" dim="0"/>
+                    </Connector>
+                    <Connector key="10" name="Logger" node_position="1777.53 -174.528">
+                        <Arg name="value" ui="Label" value="" type="System.String" dim="0"/>
+                    </Connector>
+                    <Connector key="11" name="PassValueTrigger" node_position="1023.73 -109.728">
+                        <Arg name="value" ui="Label" value="" type="System.String" dim="0"/>
+                    </Connector>
+                    <Connector key="12" name="PassValueTrigger" node_position="1084.13 66.472">
+                        <Arg name="value" ui="Label" value="" type="System.String" dim="0"/>
+                    </Connector>
+                    <Connector key="16" name="PassValueTrigger" node_position="333.528 312.072">
+                        <Arg name="value" ui="Label" value="" type="System.String" dim="0"/>
+                    </Connector>
+                    <Connector key="41" name="CheckId" node_position="1553 137">
+                        <Arg name="value" ui="Integer spin box" value="1" type="System.Int32" dim="0"/>
+                    </Connector>
+                    <Connector key="43" name="CheckId" node_position="1551 227">
+                        <Arg name="value" ui="Integer spin box" value="2" type="System.Int32" dim="0"/>
+                    </Connector>
+                    <Connector key="44" name="CheckId" node_position="1549 314">
+                        <Arg name="value" ui="Integer spin box" value="3" type="System.Int32" dim="0"/>
+                    </Connector>
+                    <Connector key="45" name="CheckId" node_position="1552 401">
+                        <Arg name="value" ui="Integer spin box" value="4" type="System.Int32" dim="0"/>
+                    </Connector>
+                    <Connector key="46" name="CurveX" node_position="1802 223">
+                        <Arg name="value" ui="Curve" value="Mental alertness%%0%%10%%true%%1000%%0 0 0 1" type="System.String" dim="1" sep="%%" sizes="6"/>
+                    </Connector>
+                    <Connector key="47" name="CurveX" node_position="1802 314">
+                        <Arg name="value" ui="Curve" value="Mental fatigue%%0%%10%%true%%1000%%0 0 0 1" type="System.String" dim="1" sep="%%" sizes="6"/>
+                    </Connector>
+                    <Connector key="48" name="CurveX" node_position="1800 402">
+                        <Arg name="value" ui="Curve" value="Valence%%0%%10%%true%%1000%%0 0 0 1" type="System.String" dim="1" sep="%%" sizes="6"/>
+                    </Connector>
+                    <Connector key="49" name="Button" node_position="24.2 416.4">
+                        <Arg name="value" ui="Action button" value="Send trigger" type="System.String" dim="0"/>
+                    </Connector>
+                    <Connector key="50" name="CurveX" node_position="1801 126">
+                        <Arg name="value" ui="Curve" value="Arousal%%0%%10%%true%%1000%%0 0 0 1" type="System.String" dim="1" sep="%%" sizes="6"/>
+                    </Connector>
+                    <Connector key="51" name="PostIt" node_position="1550.92 70.6">
+                        <Arg name="value" ui="Notepad" value="1%%%&lt;b&gt;COMPUTED COGNITIVE FEATURES&lt;/b&gt;" type="System.String" dim="1" sep="%%%" sizes="2"/>
+                    </Connector>
+                    <Connector key="52" name="CheckId" node_position="1547.52 661.92">
+                        <Arg name="value" ui="Integer spin box" value="1" type="System.Int32" dim="0"/>
+                    </Connector>
+                    <Connector key="53" name="CheckId" node_position="1553.76 768.36">
+                        <Arg name="value" ui="Integer spin box" value="2" type="System.Int32" dim="0"/>
+                    </Connector>
+                    <Connector key="56" name="Real" node_position="1834.76 682.92">
+                        <Arg name="value" ui="Double spin box" value="0.97" type="System.Double" dim="0"/>
+                    </Connector>
+                    <Connector key="57" name="Real" node_position="1834.76 777.92">
+                        <Arg name="value" ui="Double spin box" value="1" type="System.Double" dim="0"/>
+                    </Connector>
+                    <Connector key="58" name="PostIt" node_position="2098.76 697.92">
+                        <Arg name="value" ui="Notepad" value="1%%%&lt;b&gt;SAMPLE RATE QUALITY&lt;/b&gt;" type="System.String" dim="1" sep="%%%" sizes="2"/>
+                    </Connector>
+                    <Connector key="59" name="PostIt" node_position="2096.76 784.36">
+                        <Arg name="value" ui="Notepad" value="1%%%&lt;b&gt;OVERALL QUALITY&lt;/b&gt;" type="System.String" dim="1" sep="%%%" sizes="2"/>
+                    </Connector>
+                    <Connector key="60" name="PostIt" node_position="1551.96 596.4">
+                        <Arg name="value" ui="Notepad" value="1%%%&lt;h1&gt;EEG QUALITY&lt;/h1&gt;" type="System.String" dim="1" sep="%%%" sizes="2"/>
+                    </Connector>
+                    <!--Connection between Key9:Connector:PassValues:Port0 and Key10:Connector:Logger:Port0 -->
+                    <Connection key="10" out_type="connector" out_key="9" signal_id="0" out_data_type="any" signal="output value 0" in_type="connector" in_key="10" slot_id="0" in_data_type="any" slot="input value 0"/>
+                    <!--Connection between Key12:Connector:PassValueTrigger:Port0 and Key9:Connector:PassValues:Port1 -->
+                    <Connection key="11" out_type="connector" out_key="12" signal_id="0" out_data_type="any" signal="output value 0" in_type="connector" in_key="9" slot_id="1" in_data_type="any" slot="input value 1"/>
+                    <!--Connection between Key11:Connector:PassValueTrigger:Port0 and Key9:Connector:PassValues:Port0 -->
+                    <Connection key="12" out_type="connector" out_key="11" signal_id="0" out_data_type="any" signal="output value 0" in_type="connector" in_key="9" slot_id="0" in_data_type="any" slot="input value 0"/>
+                    <!--Connection between Key7:Connector:String:Port0 and Key11:Connector:PassValueTrigger:Port0 -->
+                    <Connection key="13" out_type="connector" out_key="7" signal_id="0" out_data_type="string" signal="output value 0" in_type="connector" in_key="11" slot_id="0" in_data_type="any" slot="input value 0"/>
+                    <!--Connection between Key3:Component:Parse messages script:Port0 and Key41:Connector:CheckId:Port0 -->
+                    <Connection key="109" out_type="component" out_key="3" signal_id="0" out_data_type="any" signal="signal1" in_type="connector" in_key="41" slot_id="0" in_data_type="id_any" slot="input value 0"/>
+                    <!--Connection between Key3:Component:Parse messages script:Port0 and Key43:Connector:CheckId:Port0 -->
+                    <Connection key="110" out_type="component" out_key="3" signal_id="0" out_data_type="any" signal="signal1" in_type="connector" in_key="43" slot_id="0" in_data_type="id_any" slot="input value 0"/>
+                    <!--Connection between Key3:Component:Parse messages script:Port0 and Key44:Connector:CheckId:Port0 -->
+                    <Connection key="111" out_type="component" out_key="3" signal_id="0" out_data_type="any" signal="signal1" in_type="connector" in_key="44" slot_id="0" in_data_type="id_any" slot="input value 0"/>
+                    <!--Connection between Key3:Component:Parse messages script:Port0 and Key45:Connector:CheckId:Port0 -->
+                    <Connection key="112" out_type="component" out_key="3" signal_id="0" out_data_type="any" signal="signal1" in_type="connector" in_key="45" slot_id="0" in_data_type="id_any" slot="input value 0"/>
+                    <!--Connection between Key45:Connector:CheckId:Port0 and Key48:Connector:CurveX:Port0 -->
+                    <Connection key="113" out_type="connector" out_key="45" signal_id="0" out_data_type="any" signal="output value 0" in_type="connector" in_key="48" slot_id="0" in_data_type="real_list" slot="input value 0"/>
+                    <!--Connection between Key44:Connector:CheckId:Port0 and Key47:Connector:CurveX:Port0 -->
+                    <Connection key="114" out_type="connector" out_key="44" signal_id="0" out_data_type="any" signal="output value 0" in_type="connector" in_key="47" slot_id="0" in_data_type="real_list" slot="input value 0"/>
+                    <!--Connection between Key43:Connector:CheckId:Port0 and Key46:Connector:CurveX:Port0 -->
+                    <Connection key="115" out_type="connector" out_key="43" signal_id="0" out_data_type="any" signal="output value 0" in_type="connector" in_key="46" slot_id="0" in_data_type="real_list" slot="input value 0"/>
+                    <!--Connection between Key8:Connector:String:Port0 and Key12:Connector:PassValueTrigger:Port0 -->
+                    <Connection key="132" out_type="connector" out_key="8" signal_id="0" out_data_type="string" signal="output value 0" in_type="connector" in_key="12" slot_id="0" in_data_type="any" slot="input value 0"/>
+                    <!--Connection between Key41:Connector:CheckId:Port0 and Key50:Connector:CurveX:Port0 -->
+                    <Connection key="150" out_type="connector" out_key="41" signal_id="0" out_data_type="any" signal="output value 0" in_type="connector" in_key="50" slot_id="0" in_data_type="real_list" slot="input value 0"/>
+                    <!--Connection between Key1:Component:Websocket client:Port2 and Key3:Component:Parse messages script:Port0 -->
+                    <Connection key="169" out_type="component" out_key="1" signal_id="2" out_data_type="time_any" signal="message read" in_type="component" in_key="3" slot_id="0" in_data_type="any" slot="slot1"/>
+                    <!--Connection between Key49:Connector:Button:Port0 and Key16:Connector:PassValueTrigger:Port1 -->
+                    <Connection key="170" out_type="connector" out_key="49" signal_id="0" out_data_type="trigger" signal="output value 0" in_type="connector" in_key="16" slot_id="1" in_data_type="trigger" slot="input value 1"/>
+                    <!--Connection between Key2:Connector:String:Port0 and Key16:Connector:PassValueTrigger:Port0 -->
+                    <Connection key="171" out_type="connector" out_key="2" signal_id="0" out_data_type="string" signal="output value 0" in_type="connector" in_key="16" slot_id="0" in_data_type="any" slot="input value 0"/>
+                    <!--Connection between Key16:Connector:PassValueTrigger:Port0 and Key1:Component:Websocket client:Port2 -->
+                    <Connection key="172" out_type="connector" out_key="16" signal_id="0" out_data_type="any" signal="output value 0" in_type="component" in_key="1" slot_id="2" in_data_type="string" slot="send message"/>
+                    <!--Connection between Key1:Component:Websocket client:Port0 and Key11:Connector:PassValueTrigger:Port1 -->
+                    <Connection key="173" out_type="component" out_key="1" signal_id="0" out_data_type="trigger" signal="connection opened" in_type="connector" in_key="11" slot_id="1" in_data_type="trigger" slot="input value 1"/>
+                    <!--Connection between Key1:Component:Websocket client:Port1 and Key12:Connector:PassValueTrigger:Port1 -->
+                    <Connection key="174" out_type="component" out_key="1" signal_id="1" out_data_type="trigger" signal="connection closed" in_type="connector" in_key="12" slot_id="1" in_data_type="trigger" slot="input value 1"/>
+                    <!--Connection between Key3:Component:Parse messages script:Port1 and Key52:Connector:CheckId:Port0 -->
+                    <Connection key="194" out_type="component" out_key="3" signal_id="1" out_data_type="any" signal="signal2" in_type="connector" in_key="52" slot_id="0" in_data_type="id_any" slot="input value 0"/>
+                    <!--Connection between Key3:Component:Parse messages script:Port1 and Key53:Connector:CheckId:Port0 -->
+                    <Connection key="195" out_type="component" out_key="3" signal_id="1" out_data_type="any" signal="signal2" in_type="connector" in_key="53" slot_id="0" in_data_type="id_any" slot="input value 0"/>
+                    <!--Connection between Key52:Connector:CheckId:Port0 and Key56:Connector:Real:Port0 -->
+                    <Connection key="198" out_type="connector" out_key="52" signal_id="0" out_data_type="any" signal="output value 0" in_type="connector" in_key="56" slot_id="0" in_data_type="real" slot="input value 0"/>
+                    <!--Connection between Key53:Connector:CheckId:Port0 and Key57:Connector:Real:Port0 -->
+                    <Connection key="199" out_type="connector" out_key="53" signal_id="0" out_data_type="any" signal="output value 0" in_type="connector" in_key="57" slot_id="0" in_data_type="real" slot="input value 0"/>
+                </Condition>
+            </Routine>
+            <Routine key="13" name="    . . .    " randomizer="0" informations="">
+                <Condition key="3" name="default" duration="100" ui_scale="10" ui_size="1" sets_keys="">
+                    <Action key="15" key_component="11" key_config="24" node_used="1" node_position="339 168">
+                        <!--Component Serial port reader with config standard -->
+                        <Timeline type="Update">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s) -->
+                            <Interval t1="0" t2="100"/>
+                        </Timeline>
+                        <Timeline type="Visibiliy">
+                            <!--Starts at 0(s) and ends at 100s(), duration: 100(s) -->
+                            <Interval t1="0" t2="100"/>
+                        </Timeline>
+                    </Action>
+                    <Connector key="77" name="Delay" node_position="586 167">
+                        <Arg name="value" ui="Integer spin box" value="500" type="System.Int32" dim="0"/>
+                    </Connector>
+                    <Connector key="78" name="Next" node_position="847 167">
+                        <Arg name="value" ui="Label" value="" type="System.String" dim="0"/>
+                    </Connector>
+                    <!--Connection between Key11:Component:Serial port reader:Port0 and Key77:Connector:Delay:Port0 -->
+                    <Connection key="282" out_type="component" out_key="11" signal_id="0" out_data_type="time_any" signal="message read" in_type="connector" in_key="77" slot_id="0" in_data_type="any" slot="input value 0"/>
+                    <!--Connection between Key77:Connector:Delay:Port0 and Key78:Connector:Next:Port0 -->
+                    <Connection key="283" out_type="connector" out_key="77" signal_id="0" out_data_type="any" signal="output value 0" in_type="connector" in_key="78" slot_id="0" in_data_type="trigger" slot="input value 0"/>
+                </Condition>
+            </Routine>
+        </Routines>
+        <ISIs/>
+        <Loops/>
+    </FlowElements>
+    <FlowSequence>
+        <Element key="4" type="Routine"/>
+        <Element key="8" type="Routine"/>
+        <Element key="1" type="Routine"/>
+        <Element key="13" type="Routine"/>
+    </FlowSequence>
+</Experiment>

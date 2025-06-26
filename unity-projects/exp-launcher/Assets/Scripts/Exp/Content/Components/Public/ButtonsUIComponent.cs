@@ -197,7 +197,8 @@ namespace Ex {
                     }
                 }
             }
-            
+
+
             // reconstruct buttons           
             if (reset) {
 
@@ -255,12 +256,12 @@ namespace Ex {
                             buttonGO.transform.localRotation = Quaternion.identity;
 
                             var button = buttonGO.GetComponent<Button>();
-                            button.GetComponent<UnityEngine.UI.Image>().material = m_buttonsMat;
-
+                            button.GetComponent<UnityEngine.UI.Image>().material = Instantiate(m_buttonsMat);
+                     
                             //button.GetComponent<UnityEngine.UI.Image>().sprite = new Sprite()
-                            button.interactable = false;
+                            button.interactable = currentC.get<bool>("buttons_always_interactable");
                             buttonGO.SetActive(true);
-
+                            
                             lineButtons.Add(jj, button);
                             var textGUI = buttonGO.transform.Find("Text (TMP)").gameObject.GetComponent<TextMeshProUGUI>();
                             //textGUI.material = ExVR.GlobalResources().instantiate_default_ui_mat();
@@ -277,8 +278,16 @@ namespace Ex {
                         m_buttons.Add(ii, lineButtons);
                         m_buttonsText.Add(ii, lineButtonsText);
                         m_buttonsNb.Add(lineButtons.Count);
+
+                        
                     }
                 }
+            }
+
+            // update layout spacing
+            m_buttonsParent.GetComponent<VerticalLayoutGroup>().spacing = currentC.get<int>("v_spacing");
+            foreach(var buttonsL in m_buttonsLine) {
+                buttonsL.GetComponent<HorizontalLayoutGroup>().spacing = currentC.get<int>("h_spacing");
             }
 
             // update text
@@ -372,6 +381,13 @@ namespace Ex {
             }
         }
 
+        public void set_button_color(int id, Color color) {            
+            if (id < m_buttonsL.Count) {
+                
+                m_buttonsL[id].Item1.GetComponent<Image>().material.color = color;
+            }
+        }
+
         public void select_button(int id) {
 
             if (m_buttonsL.Count == 0) {
@@ -379,7 +395,7 @@ namespace Ex {
             }
 
             for (int ii = 0; ii < m_buttonsL.Count; ++ii) {
-                m_buttonsL[ii].Item1.interactable = (ii == id);
+                m_buttonsL[ii].Item1.interactable = currentC.get<bool>("buttons_always_interactable") ? true : (ii == id);
             }
             selectedButtonId = id;
         }

@@ -1353,5 +1353,4 @@ void ExVrController::generate_dialogs_connections(){
     connect(&m_copyToCondD, &CopyToConditionDialog::copy_to_conditions_signal, exp(), &Experiment::copy_to_conditions);
 }
 
-
 #include "moc_exvr_controller.cpp"

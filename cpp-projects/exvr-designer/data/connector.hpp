@@ -86,7 +86,7 @@ struct Connector{
         Decimal_trigonometry, Decimal_counter, Delay, Variable_delay, // Function
         Binary_operation, Decimal_operation, String_operation, // Operator
         Pass_value_trigger, Conditional_trigger, Pass_values, Conditional_gate, Check_id, Check_str, // Link
-        Filter_keyboard_button, Check_joypad_button, Check_joypad_axis, Check_mouse_button, Check_mouse_axis, Check_keyboard_button, // Event
+        Button, Filter_keyboard_button, Check_joypad_button, Check_joypad_axis, Check_mouse_button, Check_mouse_axis, Check_keyboard_button, // Event
         Next, Previous, Stop, Pause, Next_with_name, Next_with_cond, Previous_with_name, Previous_with_cond, Force_component_config, // Action
         Time, Start_routine, Stop_routine, Update_routine, Pre_update_routine, Post_update_routine, Routine_condition,// Flow
         Image_resource,Text_resource, // Resource
@@ -123,6 +123,7 @@ struct Connector{
         {T::Logger,                 "Logger"sv,                     "Logger"sv},
         {T::Post_it,                "PostIt"sv,                     "Post-it"sv},
         // # Event
+        {T::Button,                 "Button"sv,                     "Button"sv},
         {T::Check_keyboard_button,  "CheckKeyboardButton"sv,        "Check keyboard button"sv},
         {T::Filter_keyboard_button, "FilterKeyboardButton"sv,       "Filter keyboard button"sv},
         {T::Check_joypad_button,    "CheckJoypadButton"sv,          "Check joypad button"sv},
@@ -340,6 +341,7 @@ struct Connector{
         {T::Conditional_trigger,    C::Link,      M, {1,{t_bool},                  1,{t_void}},               {v,{v},       {v}},     LO, FO, 1, PT},
         {T::Conditional_gate,       C::Link,      M, {2,{t_any, t_bool},           1,{t_any}},                {v,{v,v},     {v}},     IN, FO, 1, PT},
         // # Event
+        {T::Button,                 C::Event,     M, {1,{t_void},                  1,{t_void}},               {v,{v},       {v}},     IN, FO, 0, PT},
         {T::Check_keyboard_button,  C::Event,     M, {1,{t_key_but_s},             3,{t_real,t_real,t_real}}, {v,{v},       {v,v,v}}, IN, FO, 1, PT},
         {T::Filter_keyboard_button, C::Event,     M, {1,{t_key_but_s},             1,{t_key_but_s}},          {v,{v},       {v}},     IN, FO, 1, PT},
         {T::Check_joypad_button,    C::Event,     M, {1,{t_joy_but_s},             3,{t_real,t_real,t_real}}, {v,{v},       {v,v,v}}, IN, FO, 1, PT},

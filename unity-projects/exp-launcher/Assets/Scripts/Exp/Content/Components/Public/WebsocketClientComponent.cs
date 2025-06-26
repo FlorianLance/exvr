@@ -24,10 +24,9 @@
 ************************************************************************************/
 
 // system
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-
-// unity
-using UnityEngine;
 
 // others
 using NativeWebSocket;
@@ -41,6 +40,10 @@ namespace Ex {
         private static readonly string m_connectionClosedSignalStr = "connection closed";
         WebSocket m_webSocket = null;
         private bool m_connectedToServer = false;
+
+
+
+        private List<Tuple<double, double, string>> triggersEvents = null;
 
         protected override bool initialize() {
 
@@ -63,7 +66,7 @@ namespace Ex {
             m_webSocket = new WebSocket(initC.get<string>("url"));
             m_webSocket.OnOpen += () => {
                 m_connectedToServer = true;
-                log_message(string.Format("Connection opened"));
+                log_message(string.Format("Websocket client: connection opened"));
                 if (is_updating()) {
                     invoke_signal(m_connectionOpenedSignalStr);
                 }
@@ -73,7 +76,7 @@ namespace Ex {
             };
             m_webSocket.OnClose += (WebSocketCloseCode e) => {
                 m_connectedToServer = false;
-                log_message(string.Format("Connection closed, reason: [{0}].", e.ToString()));
+                log_message(string.Format("Websocket client: connection closed, reason: [{0}].", e.ToString()));
                 if (is_updating()) {                    
                     invoke_signal(m_connectionClosedSignalStr);
                 }
@@ -83,7 +86,16 @@ namespace Ex {
                     double expTime = ExVR.Time().ellapsed_exp_ms();
                     double routineTime = ExVR.Time().ellapsed_element_ms();
                     try {
-                        invoke_signal(m_messageReadSignalStr, new TimeAny(expTime, routineTime, System.Text.Encoding.UTF8.GetString(bytes)));
+
+                        string message = System.Text.Encoding.UTF8.GetString(bytes);
+                        invoke_signal(m_messageReadSignalStr, new TimeAny(expTime, routineTime, message));
+
+                        if (triggersEvents == null) {
+                            triggersEvents = new List<Tuple<double, double, string>>();
+                        }
+                        triggersEvents.Add(new Tuple<double, double, string>(expTime, routineTime,  string.Format("received_{0}",message)));
+
+                        
                     } catch (System.Text.DecoderFallbackException e) {
                         log_error(string.Format("GetString decoder error: {0}", e.Message));
                     } catch (System.ArgumentException e) {
@@ -100,9 +112,7 @@ namespace Ex {
         }
 
         protected override void start_experiment() {
-            //if (initC.get<bool>("connect_at_start")) {
-            //    connect_socket();
-            //}
+
         }
 
         protected override void stop_experiment() {
@@ -117,7 +127,6 @@ namespace Ex {
             }
         }
 
-
         protected override void update() {
             if (m_webSocket.State == WebSocketState.Open) {
                 m_webSocket.DispatchMessageQueue();
@@ -125,21 +134,52 @@ namespace Ex {
         }
 
         public void connect_socket() {
-            var connectTask = Task.Run(async () => await m_webSocket.Connect());
+            if (m_webSocket.State == WebSocketState.Closed) {
+                var connectTask = Task.Run(async () => await m_webSocket.Connect());
+            } else {
+                log_warning("Cannot open connection with server, socket is not closed.");
+            }
         }
 
         public void close_socket() {
-            var closeTask = Task.Run(async () => await m_webSocket.Close());
+            if (m_webSocket.State == WebSocketState.Open || m_webSocket.State == WebSocketState.Connecting) {
+                var closeTask = Task.Run(async () => await m_webSocket.Close());
+            } else {
+                log_warning("Cannot close connection with server, socket is not opened.");
+            }
         }
 
         public void send_message(string message) {
+
             if (is_updating()) {
                 if (m_webSocket.State == WebSocketState.Open) {
+
+                    double expTime = ExVR.Time().ellapsed_exp_ms();
+                    double routineTime = ExVR.Time().ellapsed_element_ms();
+
                     var sendTask = Task.Run(async () => await m_webSocket.SendText(message));
+
+                    if (triggersEvents == null) {
+                        triggersEvents = new List<Tuple<double, double, string>>();
+                    }
+                    triggersEvents.Add(new Tuple<double, double, string>(expTime, routineTime, string.Format("sent_{0}", message)));
                 } else {
                     log_warning(string.Format("Socket not opened for message {0}", message));
                 }
             }
+        }
+
+        public override string format_frame_data_for_global_logger(bool header) {
+            if (header) {
+                return "connected_to_server";
+            }
+            return m_connectedToServer ? "1" : "0";
+        }
+
+        public override List<Tuple<double, double, string>> format_trigger_data_for_global_logger() {
+            var triggersLogs = triggersEvents;
+            triggersEvents = null;
+            return triggersLogs;
         }
     }
 }

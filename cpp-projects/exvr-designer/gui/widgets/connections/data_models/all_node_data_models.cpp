@@ -77,6 +77,7 @@
 #include "connectors/resources_ndm.hpp"
 #include "connectors/from_time_any_ndm.hpp"
 #include "connectors/from_string_any_ndm.hpp"
+#include "connectors/button_ndm.hpp"
 
 using namespace tool;
 using namespace tool::ex;
@@ -498,6 +499,9 @@ std::unique_ptr<ConnectorNodeDataModel> DataNodeModels::generate_connector_data_
         break;
     case T::String_operation:
         connectorDataModel = std::make_unique<StringOperationNodeDataModel>();
+        break;
+    case T::Button:
+        connectorDataModel = std::make_unique<ButtonNodeDataModel>();
         break;
     case T::Pass_value_trigger:
         connectorDataModel = std::make_unique<PassValueTriggerNodeDataModel>();
