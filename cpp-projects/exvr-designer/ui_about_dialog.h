@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'about_dialog.ui'
 **
-** Created by: Qt User Interface Compiler version 6.5.0
+** Created by: Qt User Interface Compiler version 6.8.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -49,7 +49,7 @@ public:
         widget->setObjectName("widget");
         horizontalLayout = new QHBoxLayout(widget);
         horizontalLayout->setObjectName("horizontalLayout");
-        horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+        horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
 
         horizontalLayout->addItem(horizontalSpacer);
 

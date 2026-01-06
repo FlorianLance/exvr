@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'conditions_selecter.ui'
 **
-** Created by: Qt User Interface Compiler version 6.5.0
+** Created by: Qt User Interface Compiler version 6.8.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -116,7 +116,7 @@ public:
 
         horizontalLayout->addWidget(pbUncheckRoutineConds);
 
-        horizontalSpacer_2 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+        horizontalSpacer_2 = new QSpacerItem(40, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
 
         horizontalLayout->addItem(horizontalSpacer_2);
 
@@ -130,8 +130,8 @@ public:
 
         line = new QFrame(wMid);
         line->setObjectName("line");
-        line->setFrameShape(QFrame::VLine);
-        line->setFrameShadow(QFrame::Sunken);
+        line->setFrameShape(QFrame::Shape::VLine);
+        line->setFrameShadow(QFrame::Shadow::Sunken);
 
         gridLayout_2->addWidget(line, 0, 1, 3, 1);
 
@@ -161,7 +161,7 @@ public:
 
         horizontalLayout_2->addWidget(pbUncheckAllConds);
 
-        horizontalSpacer_3 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+        horizontalSpacer_3 = new QSpacerItem(40, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
 
         horizontalLayout_2->addItem(horizontalSpacer_3);
 

@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'base_component_config_widget.ui'
 **
-** Created by: Qt User Interface Compiler version 6.5.0
+** Created by: Qt User Interface Compiler version 6.8.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -104,7 +104,7 @@ public:
         pbPin->setMinimumSize(QSize(25, 25));
         pbPin->setMaximumSize(QSize(25, 25));
         QIcon icon;
-        icon.addFile(QString::fromUtf8(":/icons/Pin"), QSize(), QIcon::Normal, QIcon::Off);
+        icon.addFile(QString::fromUtf8(":/icons/Pin"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
         pbPin->setIcon(icon);
         pbPin->setIconSize(QSize(25, 25));
 
@@ -116,7 +116,7 @@ public:
         pbHelp->setMaximumSize(QSize(25, 25));
         pbHelp->setStyleSheet(QString::fromUtf8(""));
         QIcon icon1;
-        icon1.addFile(QString::fromUtf8(":/icons/Help"), QSize(), QIcon::Normal, QIcon::Off);
+        icon1.addFile(QString::fromUtf8(":/icons/Help"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
         pbHelp->setIcon(icon1);
         pbHelp->setIconSize(QSize(25, 25));
 
@@ -131,8 +131,8 @@ public:
 
         line_2 = new QFrame(BaseComponentConfigWidget);
         line_2->setObjectName("line_2");
-        line_2->setFrameShape(QFrame::HLine);
-        line_2->setFrameShadow(QFrame::Sunken);
+        line_2->setFrameShape(QFrame::Shape::HLine);
+        line_2->setFrameShadow(QFrame::Shadow::Sunken);
 
         verticalLayout->addWidget(line_2);
 
@@ -218,7 +218,7 @@ public:
 
         horizontalLayout_3->addWidget(pbDuplicate);
 
-        horizontalSpacer_2 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+        horizontalSpacer_2 = new QSpacerItem(40, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
 
         horizontalLayout_3->addItem(horizontalSpacer_2);
 

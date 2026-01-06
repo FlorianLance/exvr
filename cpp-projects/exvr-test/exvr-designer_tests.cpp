@@ -26,12 +26,8 @@
 // std
 #include <format>
 
-
-// base
-#include "thirdparty/catch/catch.hpp"
-
-// qt-utility
-#include "qt_logger.hpp"
+// catch
+#include <catch/catch.hpp>
 
 // exvr-designer
 #include "IO/xml_io_manager.hpp"

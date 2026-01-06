@@ -130,8 +130,8 @@ bool PythonScriptExComponent::initialize(){
         // Read data from initConfig
         m_modulePath = get<std::string>(ParametersContainer::InitConfig, "path_module");
 
-        auto [moduleDirectoryPath, moduleName] = tool::String::split_path_and_filename(m_modulePath);
-        tool::String::remove_from_right(moduleName, '.');
+        auto [moduleDirectoryPath, moduleName] = tool::str::split_path_and_filename(m_modulePath);
+        tool::str::remove_from_right(moduleName, '.');
         m_moduleName = moduleName;
         m_moduleDirectoryPath = moduleDirectoryPath;
         m_className    = get<std::string>(ParametersContainer::InitConfig, "class_name");

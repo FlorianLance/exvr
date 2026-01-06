@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'loop.ui'
 **
-** Created by: Qt User Interface Compiler version 6.5.0
+** Created by: Qt User Interface Compiler version 6.8.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -96,7 +96,7 @@ public:
 
         hl1->addWidget(laName);
 
-        horizontalSpacer_4 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+        horizontalSpacer_4 = new QSpacerItem(40, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
 
         hl1->addItem(horizontalSpacer_4);
 
@@ -115,8 +115,8 @@ public:
 
         line2 = new QFrame(LoopW);
         line2->setObjectName("line2");
-        line2->setFrameShape(QFrame::HLine);
-        line2->setFrameShadow(QFrame::Sunken);
+        line2->setFrameShape(QFrame::Shape::HLine);
+        line2->setFrameShadow(QFrame::Shadow::Sunken);
 
         verticalLayout->addWidget(line2);
 
@@ -141,7 +141,7 @@ public:
 
         hl2->addWidget(cbLoopStyle);
 
-        horizontalSpacer_3 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+        horizontalSpacer_3 = new QSpacerItem(40, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
 
         hl2->addItem(horizontalSpacer_3);
 
@@ -161,7 +161,7 @@ public:
 
         horizontalLayout->addWidget(cbNoFollowingValues);
 
-        horizontalSpacer_8 = new QSpacerItem(132, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+        horizontalSpacer_8 = new QSpacerItem(132, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
 
         horizontalLayout->addItem(horizontalSpacer_8);
 
@@ -170,8 +170,8 @@ public:
 
         line1 = new QFrame(LoopW);
         line1->setObjectName("line1");
-        line1->setFrameShape(QFrame::HLine);
-        line1->setFrameShadow(QFrame::Sunken);
+        line1->setFrameShape(QFrame::Shape::HLine);
+        line1->setFrameShadow(QFrame::Shadow::Sunken);
 
         verticalLayout->addWidget(line1);
 
@@ -202,7 +202,7 @@ public:
 
         hl4->addWidget(sbN);
 
-        horizontalSpacer_2 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+        horizontalSpacer_2 = new QSpacerItem(40, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
 
         hl4->addItem(horizontalSpacer_2);
 
@@ -213,8 +213,8 @@ public:
 
         line3 = new QFrame(LoopW);
         line3->setObjectName("line3");
-        line3->setFrameShape(QFrame::HLine);
-        line3->setFrameShadow(QFrame::Sunken);
+        line3->setFrameShape(QFrame::Shape::HLine);
+        line3->setFrameShadow(QFrame::Shadow::Sunken);
 
         verticalLayout->addWidget(line3);
 
@@ -230,7 +230,7 @@ public:
         gridLayout_2 = new QGridLayout(wAddSet);
         gridLayout_2->setObjectName("gridLayout_2");
         gridLayout_2->setContentsMargins(2, 2, 2, 2);
-        horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+        horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
 
         gridLayout_2->addItem(horizontalSpacer, 0, 2, 1, 1);
 
@@ -275,7 +275,7 @@ public:
         if (twSets->rowCount() < 1)
             twSets->setRowCount(1);
         twSets->setObjectName("twSets");
-        QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+        QSizePolicy sizePolicy(QSizePolicy::Policy::Preferred, QSizePolicy::Policy::Preferred);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
         sizePolicy.setHeightForWidth(twSets->sizePolicy().hasHeightForWidth());
@@ -299,7 +299,7 @@ public:
         gridLayout->setSpacing(0);
         gridLayout->setObjectName("gridLayout");
         gridLayout->setContentsMargins(0, 0, 0, 0);
-        horizontalSpacer_5 = new QSpacerItem(366, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+        horizontalSpacer_5 = new QSpacerItem(366, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
 
         gridLayout->addItem(horizontalSpacer_5, 0, 3, 4, 1);
 
@@ -320,8 +320,8 @@ public:
 
         line4 = new QFrame(LoopW);
         line4->setObjectName("line4");
-        line4->setFrameShape(QFrame::HLine);
-        line4->setFrameShadow(QFrame::Sunken);
+        line4->setFrameShape(QFrame::Shape::HLine);
+        line4->setFrameShadow(QFrame::Shadow::Sunken);
 
         verticalLayout->addWidget(line4);
 

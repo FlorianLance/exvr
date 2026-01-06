@@ -108,7 +108,7 @@ struct Component {
         /** P */ Parallel_port_writer, Plane, Plot_resource, Post_process, Python_script,
         /** Q */ Qualisys,
         /** S */ Scaner_video, Scene_scaner, Serial_port_reader, Serial_port_writer, Sky, Slider_ui, Sonceboz_SG, Sphere,
-        /** T */ Target_to_grab, Text_resource, Text_viewer, Thera_trainer_tracking, Thera_trainer_platform, Torus, TPP_avatar_camera,
+        /** T */ TkvEEG, Target_to_grab, Text_resource, Text_viewer, Thera_trainer_tracking, Thera_trainer_platform, Torus, TPP_avatar_camera,
         /** U */ Unity_asset_bundle, Udp_reader, Udp_writer,
         /** V */ Video_resource, Video_file_camera_viewer, Video_saver, Vive_pro_eye_tracking, Volumetric_video,
         /** W */ Webcam, Webcam_viewer, WebsocketClient, WebsocketServer,
@@ -201,6 +201,7 @@ struct Component {
         {T::Qualisys,                 C::Acquisition, TO::B, CO::B, Y, Y, Y, Y, Y, N, P::M, R::OS, S::Sta, "Qualisys_tracking"sv, "Qualisys tracking"sv, "QualisysTracking"sv, "Qualisys"sv},
         {T::Scene_scaner,             C::Acquisition, TO::B, CO::B, Y, N, N, Y, N, N, P::M, R::OS, S::Sta, "Scene_scaner"sv, "Scene scaner"sv, "SceneScaner"sv,"Body_scanner"sv},
         {T::Sonceboz_SG,              C::Acquisition, TO::U, CO::B, Y, Y, Y, Y, Y, Y, P::H, R::OS, S::Sta, "Sonceboz_SG"sv, "Sonceboz SG"sv, "SoncebozSG"sv,"Sonceboz"sv},
+        {T::TkvEEG,                   C::Acquisition, TO::U, CO::B, Y, Y, Y, Y, Y, Y, P::H, R::OS, S::Sta, "Tkv_EEG"sv, "TKV EEG"sv, "TkvEEG"sv,"Physio"sv},
         {T::Thera_trainer_tracking,   C::Acquisition, TO::U, CO::I, Y, N, N, Y, N, N, P::M, R::OS, S::Sta, "Thera_trainer_tracking"sv, "Thera trainer tracking"sv, "TheraTrainerTracking"sv, "Thera_trainer"sv},
         {T::Thera_trainer_platform,   C::Acquisition, TO::B, CO::C, N, N, N, Y, N, N, P::M, R::OS, S::Sta, "Thera_trainer_platform"sv, "Thera trainer platform"sv, "TheraTrainerPlatform"sv, "Thera_trainer"sv},
         {T::Vive_pro_eye_tracking,    C::Acquisition, TO::B, CO::C, N, N, N, Y, N, N, P::H, R::OS, S::Sta, "Vive_pro_eye_tracking"sv, "Vive pro eye tracking"sv, "ViveProEyeTracking"sv, "Thera_trainer"sv},
@@ -387,7 +388,7 @@ struct Component {
 
     using TComponentSlots = std::tuple<
         T,                             FunctionN,                      CNT,                    Doc>;
-    static constexpr TupleArray<131,TComponentSlots> componentsSlots = {{
+    static constexpr TupleArray<132,TComponentSlots> componentsSlots = {{
         TComponentSlots
         // Acquisition
         {T::Biopac,                    "inused"sv,                     CNT::void_t,            "TODO: Remove it"sv},
@@ -397,6 +398,7 @@ struct Component {
         {T::Leap_motion_arms_display,  "trigger"sv,                    CNT::void_t,            "..."sv},
         {T::Leap_motion_arms_display,  "update frame"sv,               CNT::lm_frame_t,        "..."sv},
         {T::Leap_motion_tracking,      "update tracking"sv,            CNT::lm_hands_frame_t,  "..."sv},
+        {T::TkvEEG,                    "send trigger"sv,               CNT::string_t,          "..."sv},
         {T::Thera_trainer_platform,    "update rotation"sv,            CNT::vector2_t,         "Set thera trainer platform current rotation angles"sv},
         // Audio
         {T::AudioSource,               "play"sv,                       CNT::void_t,            "..."sv},
@@ -538,7 +540,7 @@ struct Component {
 
     using TComponentSignals = std::tuple<
         CT,                             FunctionN,                     CNT,                            Doc>;
-    static constexpr TupleArray<70, TComponentSignals> componentsSignals = {{
+    static constexpr TupleArray<74, TComponentSignals> componentsSignals = {{
         TComponentSignals
         // Acquisition
         {T::K2_body_tracking,          "body"sv,                       CNT::kinect_body_t,             "..."sv},
@@ -560,6 +562,10 @@ struct Component {
         {T::Sonceboz_SG,               "feedback"sv,                   CNT::transform_t,               "..."sv},
         {T::Sonceboz_SG,               "tEnd"sv,                       CNT::float_t,                   "..."sv},
         {T::Sonceboz_SG,               "tAcc"sv,                       CNT::float_t,                   "..."sv},
+        {T::TkvEEG,                    "eeg quality"sv,                CNT::image_t,                   "..."sv},
+        {T::TkvEEG,                    "eeg quality validated"sv,      CNT::boolean_t,                 "..."sv},
+        {T::TkvEEG,                    "COG features"sv,               CNT::string_any_t,              "..."sv},
+        {T::TkvEEG,                    "bands powers"sv,               CNT::string_any_t,              "..."sv},
         {T::Vive_pro_eye_tracking,     "gaze direction"sv,             CNT::vector3_t,                 "..."sv},
         {T::Vive_pro_eye_tracking,     "eye openess"sv,                CNT::id_any_t,                  "..."sv},
         {T::Vive_pro_eye_tracking,     "pupil position"sv,             CNT::id_any_t,                  "..."sv},

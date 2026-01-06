@@ -28,114 +28,29 @@
 include($$TOOLSET_REPOSITORY_DIR"/cpp-projects/ts-dependencies.pri")
 
 ########################################################### EXVR-BASE
-EXVR_BASE_DEP_INCLUDEPATH =\
-    # base
-    $$BASE_DEP_INCLUDEPATH\
-    $$BASE_INCLUDES\
 
-EXVR_BASE_DEP_LIBS =\
-    # base
-    $$BASE_DEP_LIBS\
-    $$BASE_LIB\
+EXVR_BASE_THIRDPARTY_INCLUDES =\
 
-EXVR_BASE_PRE_TARGETDEPS =\
-    $$BASE_LIB_FILE\
+EXVR_BASE_THIRDPARTY_LIBS =\
 
 ########################################################### EXVR-EXPORT
-EXVR_EXPORT_DEP_INCLUDEPATH =\
-    # thirdparty
+
+EXVR_EXPORT_THIRDPARTY_INCLUDES =\
     $$PYTHON_INCLUDES \
-    # local
-    $$EXVR_BASE_DEP_INCLUDEPATH\
-    $$EXVR_BASE_INCLUDES\
 
-EXVR_EXPORT_DEP_LIBS =\
-    # thirdparty
+EXVR_EXPORT_THIRDPARTY_LIBS =\
     $$PYTHON_LIBS \
-    # local
-    $$EXVR_BASE_DEP_LIBS\
-    $$EXVR_BASE_LIB\
-
-EXVR_EXPORT_PRE_TARGETDEPS =\
-    $$EXVR_BASE_LIB_FILE\
-
-########################################################### EXVR-EXPORT-APP
-EXVR_EXPORT_APP_DEP_INCLUDEPATH =\
-    $$EXVR_EXPORT_DEP_INCLUDEPATH\
-    $$EXVR_EXPORT_INCLUDES\
-
-EXVR_EXPORT_APP_DEP_LIBS =\
-    $$EXVR_EXPORT_DEP_LIBS\
-    $$EXVR_EXPORT_OBJ"\*.obj"\
-
-EXVR_EXPORT_APP_PRE_TARGETDEPS =\
-    $$EXVR_EXPORT_PRE_TARGETDEPS\
 
 ########################################################### EXVR-DESIGNER
-EXVR_DESIGNER_DEP_INCLUDEPATH =\
-    $$EXVR_BASE_DEP_INCLUDEPATH\
-    $$EXVR_BASE_INCLUDES\
-    $$QT_UTILITY_DEP_INCLUDEPATH\
-    $$QT_UTILITY_INCLUDES\
-    $$NODES_INCLUDES\
 
-EXVR_DESIGNER_DEP_LIBS =\
-    $$EXVR_BASE_DEP_LIBS\
-    $$EXVR_BASE_LIB\
-    $$QT_UTILITY_DEP_LIBS\
-    $$QT_UTILITY_LIB\
-    $$NODES_LIB\
+EXVR_DESIGNER_THIRDPARTY_INCLUDES =\
+    $$PYTHON_INCLUDES \
 
-EXVR_DESIGNER_PRE_TARGETDEPS =\
-    $$EXVR_BASE_PRE_TARGETDEPS\
-    $$EXVR_BASE_LIB_FILE\
-    $$QT_UTILITY_PRE_TARGETDEPS\
-    $$QT_UTILITY_LIB_FILE\
-    $$NODES_LIB_FILE\
+EXVR_DESIGNER_THIRDPARTY_LIBS =\
+    $$PYTHON_LIBS \
 
 ########################################################### EXVR-TEST
-EXVR_TEST_DEP_INCLUDEPATH =\
-    $$EXVR_DESIGNER_DEP_INCLUDEPATH\
-    $$EXVR_DESIGNER_INCLUDES\
 
-EXVR_TEST_DEP_LIBS =\
-    $$EXVR_DESIGNER_DEP_LIBS\
-    $$EXVR_DESIGNER_OBJ"/ExVR-designer_pch.obj" \
-    $$EXVR_DESIGNER_OBJ"/xml_io_manager.obj" \
-    $$EXVR_DESIGNER_OBJ"/experiment.obj" \
-    $$EXVR_DESIGNER_OBJ"/randomizer.obj" \
-    $$EXVR_DESIGNER_OBJ"/component.obj" \
-    $$EXVR_DESIGNER_OBJ"/timeline.obj" \
-    $$EXVR_DESIGNER_OBJ"/config.obj" \
-    $$EXVR_DESIGNER_OBJ"/action.obj" \
-    $$EXVR_DESIGNER_OBJ"/condition.obj" \
-    $$EXVR_DESIGNER_OBJ"/routine.obj" \
-    $$EXVR_DESIGNER_OBJ"/isi.obj" \
-    $$EXVR_DESIGNER_OBJ"/loop.obj" \
-    $$EXVR_DESIGNER_OBJ"/interval.obj" \
-    $$EXVR_DESIGNER_OBJ"/components_manager.obj" \
-    $$EXVR_DESIGNER_OBJ"/resources_manager.obj" \
-    $$EXVR_DESIGNER_OBJ"/connector.obj" \
-    $$EXVR_DESIGNER_OBJ"/path_utility.obj" \
+EXVR_TEST_THIRDPARTY_INCLUDES =\
 
-EXVR_TEST_PRE_TARGETDEPS =\
-    $$EXVR_DESIGNER_PRE_TARGETDEPS\
-
-# generate projects variables
-for(project, EXVR_CPP_PROJECTS):{
-
-    ## deps files
-    TLOW = $$lower($$TARGET)
-    equals(TLOW, $$project){
-
-        UPT = $$upper($$project)
-        UPT = $$replace(UPT, "-", "_")
-
-        INCLUDEPATH     += $$eval($$UPT"_DEP_INCLUDEPATH")
-        LIBS            += $$eval($$UPT"_DEP_LIBS")
-        PRE_TARGETDEPS  += $$eval($$UPT"_PRE_TARGETDEPS")
-    }
-}
-
-
-
+EXVR_TEST_THIRDPARTY_LIBS =\

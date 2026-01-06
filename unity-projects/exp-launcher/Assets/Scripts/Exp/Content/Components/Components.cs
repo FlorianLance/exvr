@@ -91,10 +91,12 @@ namespace Ex{
             }
 
             foreach (XML.Component xmlComponent in xmlComponents.Component) {
+
                 
                 Type typeComponent = Type.GetType(string.Format("Ex.{0}Component", xmlComponent.Type));
                 if (typeComponent == null) {
-                    ExVR.Log().error(string.Format("Error when creating component: {0}", xmlComponent.Type));
+                    ExVR.Log().error(string.Format("Error when creating component: Ex.{0}Component", xmlComponent.Type));
+                    ExVR.Log().error(xmlComponent.ToString());
                     return false;
                 }
 

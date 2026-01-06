@@ -25,7 +25,7 @@
 #include "check_mouse_ndm.hpp"
 
 // base
-#include "io/mouse.hpp"
+#include "input/mouse.hpp"
 
 using namespace tool::ex;
 
@@ -33,14 +33,14 @@ void CheckMouseButtonEmbeddedW::initialize(){
 
     // init widget
     QStringList items;
-    for(const auto &buttonName : io::Mouse::buttons.tuple_column<1>()){
+    for(const auto &buttonName : inp::Mouse::buttons.tuple_column<1>()){
         items << from_view(buttonName);
     }
     w->init_widget(items);
 
     // set widget connections
     connect(w.get(), &ExComboBoxTextW::ui_change_signal, this, [=]{
-        auto button = io::Mouse::get_button(w->w->currentText().toStdString());
+        auto button = inp::Mouse::get_button(w->w->currentText().toStdString());
         if(button.has_value()){
             emit update_internal_data_signal({0}, {std::make_shared<IntData>(static_cast<int>(button.value()))});
             emit compute_data_signal();
@@ -131,14 +131,14 @@ void CheckMouseAxisEmbeddedW::initialize(){
 
     // init widget
     QStringList items;
-    for(const auto &axisName : io::Mouse::axes.tuple_column<1>()){
+    for(const auto &axisName : inp::Mouse::axes.tuple_column<1>()){
         items << from_view(axisName);
     }
     w->init_widget(items);
 
     // set widget connections
     connect(w.get(), &ExComboBoxTextW::ui_change_signal, this, [=]{
-        auto axis = io::Mouse::get_axis(w->w->currentText().toStdString());
+        auto axis = inp::Mouse::get_axis(w->w->currentText().toStdString());
         if(axis.has_value()){
             emit update_internal_data_signal({0}, {std::make_shared<IntData>(static_cast<int>(axis.value()))});
             emit compute_data_signal();

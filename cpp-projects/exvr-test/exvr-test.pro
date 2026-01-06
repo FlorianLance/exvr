@@ -40,6 +40,60 @@ include(../exvr-projects.pri)
 include(../exvr-thirdparty.pri)
 include(../exvr-dependencies.pri)
 
+####################################### INCLUDES
+
+EXVR_TEST_DEP_INCLUDEPATH =\
+    #
+    $$EXVR_TEST_THIRDPARTY_INCLUDES\
+    $$EXVR_DESIGNER_THIRDPARTY_INCLUDES\
+    $$EXVR_BASE_THIRDPARTY_INCLUDES\
+    $$TS_QT_THIRDPARTY_INCLUDES\
+    $$TS_QT_NODES_THIRDPARTY_INCLUDES\
+    $$TS_BASE_THIRDPARTY_INCLUDES\
+    #
+    $$EXVR_DESIGNER_INCLUDES\
+    $$EXVR_BASE_INCLUDES\
+    $$TS_QT_INCLUDES\
+    $$TS_QT_NODES_INCLUDES\
+    $$TS_BASE_INCLUDES\
+
+####################################### LIBS
+
+
+EXVR_TEST_DEP_LIBS =\
+    #
+    $$EXVR_TEST_THIRDPARTY_LIBS\
+    $$EXVR_DESIGNER_THIRDPARTY_LIBS\
+    $$EXVR_BASE_THIRDPARTY_LIBS\
+    $$TS_QT_THIRDPARTY_LIBS\
+    $$TS_BASE_THIRDPARTY_LIBS\
+    #
+    $$EXVR_DESIGNER_OBJ_FILES\
+    $$EXVR_DESIGNER_MOC_OBJ_FILES\
+    $$EXVR_BASE_LIB\
+    $$TS_QT_LIB\
+    $$TS_QT_NODES_LIB\
+    $$TS_BASE_LIB\
+    # $$TS_QT_NODES_LIB\
+
+    # $$EXVR_BASE_LIB\
+    # $$TS_QT_LIB\
+
+message("APP")
+message($$EXVR_BASE_MOC_OBJ_FILES)
+
+####################################### DEP
+
+EXVR_TEST_PRE_TARGETDEPS =\
+    $$EXVR_BASE_LIB_FILE\
+    $$TS_QT_LIB_FILE\
+    $$TS_QT_NODES_FILE\
+    $$TS_BASE_LIB_FILE\
+
+####################################### GENERATE VARIABLES
+
+include(../exvr-gen-var.pri)
+
 ######################################## PROJECT FILES
 HEADERS += \
 

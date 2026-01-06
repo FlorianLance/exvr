@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'routine.ui'
 **
-** Created by: Qt User Interface Compiler version 6.5.0
+** Created by: Qt User Interface Compiler version 6.8.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -69,13 +69,13 @@ public:
 
         horizontalLayout->addWidget(laName);
 
-        horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+        horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
 
         horizontalLayout->addItem(horizontalSpacer);
 
         pbSetName = new QPushButton(RoutineW);
         pbSetName->setObjectName("pbSetName");
-        pbSetName->setMinimumSize(QSize(50, 0));
+        pbSetName->setMinimumSize(QSize(100, 0));
 
         horizontalLayout->addWidget(pbSetName);
 
@@ -88,8 +88,8 @@ public:
 
         line1 = new QFrame(RoutineW);
         line1->setObjectName("line1");
-        line1->setFrameShape(QFrame::HLine);
-        line1->setFrameShadow(QFrame::Sunken);
+        line1->setFrameShape(QFrame::Shape::HLine);
+        line1->setFrameShadow(QFrame::Shadow::Sunken);
 
         verticalLayout->addWidget(line1);
 
@@ -111,13 +111,13 @@ public:
 
         frame = new QFrame(RoutineW);
         frame->setObjectName("frame");
-        frame->setFrameShape(QFrame::StyledPanel);
-        frame->setFrameShadow(QFrame::Raised);
+        frame->setFrameShape(QFrame::Shape::StyledPanel);
+        frame->setFrameShadow(QFrame::Shadow::Raised);
         horizontalLayout_4 = new QHBoxLayout(frame);
         horizontalLayout_4->setSpacing(2);
         horizontalLayout_4->setObjectName("horizontalLayout_4");
         horizontalLayout_4->setContentsMargins(2, 2, 2, 2);
-        horizontalSpacer_4 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+        horizontalSpacer_4 = new QSpacerItem(40, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
 
         horizontalLayout_4->addItem(horizontalSpacer_4);
 
@@ -133,7 +133,7 @@ public:
 
         horizontalLayout_4->addWidget(pbDown);
 
-        horizontalSpacer_2 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+        horizontalSpacer_2 = new QSpacerItem(40, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
 
         horizontalLayout_4->addItem(horizontalSpacer_2);
 
@@ -142,8 +142,8 @@ public:
 
         line2 = new QFrame(RoutineW);
         line2->setObjectName("line2");
-        line2->setFrameShape(QFrame::HLine);
-        line2->setFrameShadow(QFrame::Sunken);
+        line2->setFrameShape(QFrame::Shape::HLine);
+        line2->setFrameShadow(QFrame::Shadow::Sunken);
 
         verticalLayout->addWidget(line2);
 

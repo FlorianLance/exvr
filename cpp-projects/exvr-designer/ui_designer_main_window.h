@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'designer_main_window.ui'
 **
-** Created by: Qt User Interface Compiler version 6.5.0
+** Created by: Qt User Interface Compiler version 6.8.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -101,7 +101,7 @@ public:
         vlExpDesigner->setContentsMargins(0, 0, 0, 0);
         wFlow = new QWidget(wMiddle);
         wFlow->setObjectName("wFlow");
-        QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+        QSizePolicy sizePolicy(QSizePolicy::Policy::Preferred, QSizePolicy::Policy::Preferred);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(1);
         sizePolicy.setHeightForWidth(wFlow->sizePolicy().hasHeightForWidth());
@@ -127,7 +127,7 @@ public:
         verticalLayout->setContentsMargins(0, 2, 0, 2);
         pbResize = new QPushButton(wZoom);
         pbResize->setObjectName("pbResize");
-        QSizePolicy sizePolicy1(QSizePolicy::Preferred, QSizePolicy::Preferred);
+        QSizePolicy sizePolicy1(QSizePolicy::Policy::Preferred, QSizePolicy::Policy::Preferred);
         sizePolicy1.setHorizontalStretch(0);
         sizePolicy1.setVerticalStretch(0);
         sizePolicy1.setHeightForWidth(pbResize->sizePolicy().hasHeightForWidth());
@@ -135,7 +135,7 @@ public:
         pbResize->setMinimumSize(QSize(0, 0));
         pbResize->setMaximumSize(QSize(16777215, 16777215));
         QIcon icon;
-        icon.addFile(QString::fromUtf8(":/icons/Expand"), QSize(), QIcon::Normal, QIcon::Off);
+        icon.addFile(QString::fromUtf8(":/icons/Expand"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
         pbResize->setIcon(icon);
         pbResize->setIconSize(QSize(14, 14));
 
@@ -213,8 +213,8 @@ public:
         line1 = new QFrame(fState);
         line1->setObjectName("line1");
         line1->setStyleSheet(QString::fromUtf8("background-color: white;"));
-        line1->setFrameShape(QFrame::VLine);
-        line1->setFrameShadow(QFrame::Sunken);
+        line1->setFrameShape(QFrame::Shape::VLine);
+        line1->setFrameShadow(QFrame::Shadow::Sunken);
 
         horizontalLayout->addWidget(line1);
 
@@ -226,8 +226,8 @@ public:
         line2 = new QFrame(fState);
         line2->setObjectName("line2");
         line2->setStyleSheet(QString::fromUtf8("background-color: white;"));
-        line2->setFrameShape(QFrame::VLine);
-        line2->setFrameShadow(QFrame::Sunken);
+        line2->setFrameShape(QFrame::Shape::VLine);
+        line2->setFrameShadow(QFrame::Shadow::Sunken);
 
         horizontalLayout->addWidget(line2);
 
@@ -239,12 +239,12 @@ public:
         line3 = new QFrame(fState);
         line3->setObjectName("line3");
         line3->setStyleSheet(QString::fromUtf8("background-color: white;"));
-        line3->setFrameShape(QFrame::VLine);
-        line3->setFrameShadow(QFrame::Sunken);
+        line3->setFrameShape(QFrame::Shape::VLine);
+        line3->setFrameShadow(QFrame::Shadow::Sunken);
 
         horizontalLayout->addWidget(line3);
 
-        horizontalSpacer_2 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+        horizontalSpacer_2 = new QSpacerItem(40, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
 
         horizontalLayout->addItem(horizontalSpacer_2);
 

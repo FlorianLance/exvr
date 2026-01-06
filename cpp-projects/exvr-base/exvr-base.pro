@@ -38,6 +38,33 @@ include(../exvr-projects.pri)
 include(../exvr-thirdparty.pri)
 include(../exvr-dependencies.pri)
 
+####################################### INCLUDES
+
+EXVR_BASE_DEP_INCLUDEPATH =\
+    #
+    $$EXVR_BASE_THIRDPARTY_INCLUDES\
+    $$TS_BASE_THIRDPARTY_INCLUDES\
+    #
+    $$TS_BASE_INCLUDES\
+
+####################################### LIBS
+
+EXVR_BASE_DEP_LIBS =\
+    #
+    $$EXVR_BASE_THIRDPARTY_LIBS\
+    $$TS_BASE_THIRDPARTY_LIBS\
+    #
+    $$TS_BASE_LIB\
+
+####################################### DEP
+
+EXVR_BASE_PRE_TARGETDEPS =\
+    $$TS_BASE_LIB_FILE\
+
+####################################### GENERATE VARIABLES
+
+include(../exvr-gen-var.pri)
+
 ####################################### PROJECT FILES
 HEADERS += \
     ex_component.hpp \

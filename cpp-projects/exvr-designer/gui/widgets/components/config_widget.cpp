@@ -99,6 +99,7 @@
 #include "config_parameters/dc_network_direct_player_pw.hpp"
 #include "config_parameters/light_pw.hpp"
 #include "config_parameters/websocket_pw.hpp"
+#include "config_parameters/tkv_eeg_pw.hpp"
 
 using namespace tool::ex;
 
@@ -179,6 +180,8 @@ ConfigParametersW *ConfigW::generate_parameters(Component::Type type, bool initC
         return gen_params_w<SceneScanerInitConfigParametersW,SceneScanerConfigParametersW>(initConfig);
     case CT::Sonceboz_SG:
         return gen_params_w<SoncebozSgInitConfigParametersW,SoncebozSgConfigParametersW>(initConfig);
+    case CT::TkvEEG:
+        return gen_params_w<TkvEEGInitConfigParametersW,TkvEEGConfigParametersW>(initConfig);
     case CT::Thera_trainer_tracking:
         return gen_params_w<TheraTrainerTrackingInitConfigParametersW,TheraTrainerTrackingConfigParametersW>(initConfig);
     case CT::Thera_trainer_platform:

@@ -41,9 +41,9 @@ namespace Ex {
         WebSocket m_webSocket = null;
         private bool m_connectedToServer = false;
 
-
-
         private List<Tuple<double, double, string>> triggersEvents = null;
+
+        #region ex_functions
 
         protected override bool initialize() {
 
@@ -77,7 +77,7 @@ namespace Ex {
             m_webSocket.OnClose += (WebSocketCloseCode e) => {
                 m_connectedToServer = false;
                 log_message(string.Format("Websocket client: connection closed, reason: [{0}].", e.ToString()));
-                if (is_updating()) {                    
+                if (is_updating()) {
                     invoke_signal(m_connectionClosedSignalStr);
                 }
             };
@@ -93,9 +93,9 @@ namespace Ex {
                         if (triggersEvents == null) {
                             triggersEvents = new List<Tuple<double, double, string>>();
                         }
-                        triggersEvents.Add(new Tuple<double, double, string>(expTime, routineTime,  string.Format("received_{0}",message)));
+                        triggersEvents.Add(new Tuple<double, double, string>(expTime, routineTime, string.Format("received_{0}", message)));
 
-                        
+
                     } catch (System.Text.DecoderFallbackException e) {
                         log_error(string.Format("GetString decoder error: {0}", e.Message));
                     } catch (System.ArgumentException e) {
@@ -112,14 +112,6 @@ namespace Ex {
         }
 
         protected override void start_experiment() {
-
-        }
-
-        protected override void stop_experiment() {
-            close_socket();
-        }
-
-        protected override void start_routine() {
             if (initC.get<bool>("connect_at_start")) {
                 if (!m_connectedToServer) {
                     connect_socket();
@@ -127,10 +119,39 @@ namespace Ex {
             }
         }
 
+        protected override void stop_experiment() {
+            close_socket();
+        }
+
+        protected override void start_routine() {
+
+        }
+
         protected override void update() {
             if (m_webSocket.State == WebSocketState.Open) {
                 m_webSocket.DispatchMessageQueue();
             }
+        }
+
+        public override string format_frame_data_for_global_logger(bool header) {
+            if (header) {
+                return "connected_to_server";
+            }
+            return m_connectedToServer ? "1" : "0";
+        }
+
+        public override List<Tuple<double, double, string>> format_trigger_data_for_global_logger() {
+            var triggersLogs = triggersEvents;
+            triggersEvents = null;
+            return triggersLogs;
+        }
+
+
+        #endregion
+
+        #region public_functions
+        public bool is_socket_opened() {
+            return m_webSocket.State == WebSocketState.Open;
         }
 
         public void connect_socket() {
@@ -142,7 +163,7 @@ namespace Ex {
         }
 
         public void close_socket() {
-            if (m_webSocket.State == WebSocketState.Open || m_webSocket.State == WebSocketState.Connecting) {
+            if (is_socket_opened() || m_webSocket.State == WebSocketState.Connecting) {
                 var closeTask = Task.Run(async () => await m_webSocket.Close());
             } else {
                 log_warning("Cannot close connection with server, socket is not opened.");
@@ -152,7 +173,7 @@ namespace Ex {
         public void send_message(string message) {
 
             if (is_updating()) {
-                if (m_webSocket.State == WebSocketState.Open) {
+                if (is_socket_opened()) {
 
                     double expTime = ExVR.Time().ellapsed_exp_ms();
                     double routineTime = ExVR.Time().ellapsed_element_ms();
@@ -169,18 +190,7 @@ namespace Ex {
             }
         }
 
-        public override string format_frame_data_for_global_logger(bool header) {
-            if (header) {
-                return "connected_to_server";
-            }
-            return m_connectedToServer ? "1" : "0";
-        }
-
-        public override List<Tuple<double, double, string>> format_trigger_data_for_global_logger() {
-            var triggersLogs = triggersEvents;
-            triggersEvents = null;
-            return triggersLogs;
-        }
+        #endregion
     }
 }
 

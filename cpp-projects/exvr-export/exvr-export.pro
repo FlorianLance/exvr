@@ -40,6 +40,54 @@ include(../exvr-projects.pri)
 include(../exvr-thirdparty.pri)
 include(../exvr-dependencies.pri)
 
+####################################### INCLUDES
+
+EXVR_EXPORT_DEP_INCLUDEPATH =\
+    #
+    $$EXVR_EXPORT_THIRDPARTY_INCLUDES\
+    $$EXVR_BASE_THIRDPARTY_INCLUDES\
+    $$TS_DEPTH_CAMERA_THIRDPARTY_INCLUDES\
+    $$TS_NETWORK_THIRDPARTY_INCLUDES\
+    $$TS_DATA_THIRDPARTY_INCLUDES\
+    $$TS_BASE_THIRDPARTY_INCLUDES\
+    #
+    $$EXVR_BASE_INCLUDES\
+    $$TS_DEPTH_CAMERA_INCLUDES\
+    $$TS_NETWORK_CAMERA_INCLUDES\
+    $$TS_DATA_INCLUDES\
+    $$TS_BASE_INCLUDES\
+
+####################################### LIBS
+
+EXVR_EXPORT_DEP_LIBS =\
+    #
+    $$EXVR_EXPORT_THIRDPARTY_LIBS\
+    $$EXVR_BASE_THIRDPARTY_LIBS\
+    $$TS_DEPTH_CAMERA_THIRDPARTY_LIBS\
+    $$TS_NETWORK_THIRDPARTY_LIBS\
+    $$TS_DATA_THIRDPARTY_LIBS\
+    $$TS_BASE_THIRDPARTY_LIBS\
+    #
+    $$EXVR_BASE_LIB\
+    $$TS_DEPTH_CAMERA_LIB\
+    $$TS_NETWORK_LIB\
+    $$TS_DATA_LIB\
+    $$TS_BASE_LIB\
+
+####################################### DEP
+
+EXVR_EXPORT_PRE_TARGETDEPS =\
+    $$EXVR_BASE_LIB_FILE\
+    $$TS_DEPTH_CAMERA_LIB_FILE\
+    $$TS_NETWORK_LIB_FILE\
+    $$TS_DATA_LIB_FILE\
+    $$TS_BASE_LIB_FILE\
+
+####################################### GENERATE VARIABLES
+
+include(../exvr-gen-var.pri)
+
+
 ######################################## PROJECT FILES
 HEADERS += \
     # ex_components

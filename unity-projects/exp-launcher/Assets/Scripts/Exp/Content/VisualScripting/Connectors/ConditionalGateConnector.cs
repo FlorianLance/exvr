@@ -54,5 +54,9 @@ namespace Ex {
             inputStateValue = (bool)arg;
             send_connector_infos_to_gui(Converter.to_string(inputStateValue));
         }
+
+        protected override void stop_routine() {
+            inputStateValue = null;
+        }
     }
 }

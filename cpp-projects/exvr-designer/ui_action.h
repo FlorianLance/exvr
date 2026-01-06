@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'action.ui'
 **
-** Created by: Qt User Interface Compiler version 6.5.0
+** Created by: Qt User Interface Compiler version 6.8.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -104,7 +104,7 @@ public:
         pbUpTop->setMinimumSize(QSize(0, 0));
         pbUpTop->setMaximumSize(QSize(20, 25));
         QIcon icon;
-        icon.addFile(QString::fromUtf8(":/icons/up"), QSize(), QIcon::Normal, QIcon::Off);
+        icon.addFile(QString::fromUtf8(":/icons/up"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
         pbUpTop->setIcon(icon);
         pbUpTop->setIconSize(QSize(10, 10));
 
@@ -115,7 +115,7 @@ public:
         pbDownTop->setMinimumSize(QSize(0, 0));
         pbDownTop->setMaximumSize(QSize(20, 25));
         QIcon icon1;
-        icon1.addFile(QString::fromUtf8(":/icons/down"), QSize(), QIcon::Normal, QIcon::Off);
+        icon1.addFile(QString::fromUtf8(":/icons/down"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
         pbDownTop->setIcon(icon1);
         pbDownTop->setIconSize(QSize(10, 10));
 
@@ -142,14 +142,14 @@ public:
 
         hlTop->addWidget(cbConfig);
 
-        horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+        horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
 
         hlTop->addItem(horizontalSpacer);
 
         line_2 = new QFrame(wTop);
         line_2->setObjectName("line_2");
-        line_2->setFrameShape(QFrame::VLine);
-        line_2->setFrameShadow(QFrame::Sunken);
+        line_2->setFrameShape(QFrame::Shape::VLine);
+        line_2->setFrameShadow(QFrame::Shadow::Sunken);
 
         hlTop->addWidget(line_2);
 
@@ -172,14 +172,14 @@ public:
 
         pbFill = new QPushButton(wTop);
         pbFill->setObjectName("pbFill");
-        QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+        QSizePolicy sizePolicy(QSizePolicy::Policy::Preferred, QSizePolicy::Policy::Preferred);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
         sizePolicy.setHeightForWidth(pbFill->sizePolicy().hasHeightForWidth());
         pbFill->setSizePolicy(sizePolicy);
         pbFill->setMaximumSize(QSize(16777215, 16777215));
         QIcon icon2;
-        icon2.addFile(QString::fromUtf8(":/icons/Fill_action"), QSize(), QIcon::Normal, QIcon::Off);
+        icon2.addFile(QString::fromUtf8(":/icons/Fill_action"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
         pbFill->setIcon(icon2);
         pbFill->setIconSize(QSize(25, 25));
 
@@ -191,7 +191,7 @@ public:
         pbClean->setSizePolicy(sizePolicy);
         pbClean->setMaximumSize(QSize(16777215, 16777215));
         QIcon icon3;
-        icon3.addFile(QString::fromUtf8(":/icons/Empty_action"), QSize(), QIcon::Normal, QIcon::Off);
+        icon3.addFile(QString::fromUtf8(":/icons/Empty_action"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
         pbClean->setIcon(icon3);
         pbClean->setIconSize(QSize(25, 25));
 
@@ -201,7 +201,7 @@ public:
         pbDelete->setObjectName("pbDelete");
         pbDelete->setMaximumSize(QSize(16777215, 16777215));
         QIcon icon4;
-        icon4.addFile(QString::fromUtf8(":/icons/remove_action"), QSize(), QIcon::Normal, QIcon::Off);
+        icon4.addFile(QString::fromUtf8(":/icons/remove_action"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
         pbDelete->setIcon(icon4);
         pbDelete->setIconSize(QSize(25, 25));
 
@@ -289,7 +289,7 @@ public:
 
         verticalLayout->addWidget(pbDown);
 
-        verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+        verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Policy::Minimum, QSizePolicy::Policy::Expanding);
 
         verticalLayout->addItem(verticalSpacer);
 
@@ -304,7 +304,7 @@ public:
         horizontalLayout_3->setContentsMargins(2, 2, 2, 2);
         scrollArea = new QScrollArea(wTimeline);
         scrollArea->setObjectName("scrollArea");
-        QSizePolicy sizePolicy1(QSizePolicy::Expanding, QSizePolicy::Expanding);
+        QSizePolicy sizePolicy1(QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Expanding);
         sizePolicy1.setHorizontalStretch(10);
         sizePolicy1.setVerticalStretch(0);
         sizePolicy1.setHeightForWidth(scrollArea->sizePolicy().hasHeightForWidth());

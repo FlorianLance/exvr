@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'condition.ui'
 **
-** Created by: Qt User Interface Compiler version 6.5.0
+** Created by: Qt User Interface Compiler version 6.8.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -68,7 +68,7 @@ public:
         vlMain->setContentsMargins(0, 0, 0, 0);
         fTop = new QFrame(ConditionUiW);
         fTop->setObjectName("fTop");
-        QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+        QSizePolicy sizePolicy(QSizePolicy::Policy::Preferred, QSizePolicy::Policy::Preferred);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
         sizePolicy.setHeightForWidth(fTop->sizePolicy().hasHeightForWidth());
@@ -156,7 +156,7 @@ public:
 
         hlOptions->addWidget(wLeftOptions);
 
-        spacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+        spacer = new QSpacerItem(40, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
 
         hlOptions->addItem(spacer);
 
@@ -174,7 +174,7 @@ public:
         pbFillActions->setMinimumSize(QSize(0, 0));
         pbFillActions->setMaximumSize(QSize(16777215, 16777215));
         QIcon icon;
-        icon.addFile(QString::fromUtf8(":/icons/fill_all"), QSize(), QIcon::Normal, QIcon::Off);
+        icon.addFile(QString::fromUtf8(":/icons/fill_all"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
         pbFillActions->setIcon(icon);
         pbFillActions->setIconSize(QSize(20, 20));
 
@@ -187,7 +187,7 @@ public:
         pbCleanActions->setMinimumSize(QSize(0, 0));
         pbCleanActions->setMaximumSize(QSize(16777215, 16777215));
         QIcon icon1;
-        icon1.addFile(QString::fromUtf8(":/icons/empty_all"), QSize(), QIcon::Normal, QIcon::Off);
+        icon1.addFile(QString::fromUtf8(":/icons/empty_all"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
         pbCleanActions->setIcon(icon1);
         pbCleanActions->setIconSize(QSize(20, 20));
 
@@ -200,7 +200,7 @@ public:
         pbRemoveActions->setMinimumSize(QSize(0, 0));
         pbRemoveActions->setMaximumSize(QSize(16777215, 16777215));
         QIcon icon2;
-        icon2.addFile(QString::fromUtf8(":/icons/remove_all"), QSize(), QIcon::Normal, QIcon::Off);
+        icon2.addFile(QString::fromUtf8(":/icons/remove_all"), QSize(), QIcon::Mode::Normal, QIcon::State::Off);
         pbRemoveActions->setIcon(icon2);
         pbRemoveActions->setIconSize(QSize(20, 20));
 
@@ -217,8 +217,8 @@ public:
 
         line_2 = new QFrame(wRightOptions);
         line_2->setObjectName("line_2");
-        line_2->setFrameShape(QFrame::VLine);
-        line_2->setFrameShadow(QFrame::Sunken);
+        line_2->setFrameShape(QFrame::Shape::VLine);
+        line_2->setFrameShadow(QFrame::Shadow::Sunken);
 
         horizontalLayout->addWidget(line_2);
 
@@ -233,8 +233,8 @@ public:
 
         line = new QFrame(wRightOptions);
         line->setObjectName("line");
-        line->setFrameShape(QFrame::VLine);
-        line->setFrameShadow(QFrame::Sunken);
+        line->setFrameShape(QFrame::Shape::VLine);
+        line->setFrameShadow(QFrame::Shadow::Sunken);
 
         horizontalLayout->addWidget(line);
 

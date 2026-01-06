@@ -30,102 +30,121 @@
 //TEST_CASE( "1: All test cases reside in other .cpp files (empty)", "[multi-file:1]" ) {
 //}
 
-// Qt
-#include <QCoreApplication>
+// // Qt
+// #include <QCoreApplication>
 
-// base
-#include "utility/benchmark.hpp"
+// // base
+// #include "utility/benchmark.hpp"
 
-// qt-utility
-#include "qt_logger.hpp"
+// // qt-utility
+// #include "qt_logger.hpp"
 
-// exvr-designer
-#include "IO/xml_io_manager.hpp"
-#include "utility/path_utility.hpp"
+// // exvr-designer
+// #include "IO/xml_io_manager.hpp"
+// #include "utility/path_utility.hpp"
 
-#define CATCH_CONFIG_RUNNER
-#include "thirdparty/catch/catch.hpp"
+// #define CATCH_CONFIG_RUNNER
+// #include "thirdparty/catch/catch.hpp"
 
-using namespace tool;
-using namespace tool::ex;
+// catch
+#define CATCH_CONFIG_MAIN  // This tells Catch to provide a main() - only do this in one cpp file
+#include <catch/catch.hpp>
 
-int main(int argc, char **argv){
+// local
+#include "utility/logger.hpp"
 
-//    tool::Bench::disable_display();
+TEST_CASE( "1: All test cases reside in other .cpp files (empty)", "[multi-file:1]" ) {
 
-    QCoreApplication app(argc, argv);
+    auto logger = std::make_unique<tool::Logger>();
+    logger->nofile_init();
+    logger->config(tool::Logger::MessageType::normal).displayToConsole = true;
+    logger->config(tool::Logger::MessageType::warning).displayToConsole = true;
+    logger->config(tool::Logger::MessageType::error).displayToConsole = true;
+    logger->config(tool::Logger::MessageType::log).displayToConsole = true;
+    tool::Logger::set_logger_instance(std::move(logger));
 
-    // // init logging system
-    // QtLogger::init(QApplication::applicationDirPath() % QSL("/logs/"), QSL("designer_test.html"));
-    // QtLogger::set_html_ui_type_message_color(QtLogger::MessageType::normal,  QColor(189,189,189));
-    // QtLogger::set_html_ui_type_message_color(QtLogger::MessageType::warning, QColor(243, 158, 3));
-    // QtLogger::set_html_ui_type_message_color(QtLogger::MessageType::error,   QColor(244,4,4));
-    // QtLogger::set_html_ui_type_message_color(QtLogger::MessageType::unknow,  Qt::white);
-
-    // size_t countMessages = 0;
-    // size_t countWarnings = 0;
-    // size_t countErrors = 0;
-    // QtLogger::connect(QtLogger::get(), &QtLogger::message_signal, [&](QString m){++countMessages;
-    //     qDebug() << m.remove("<p><font color=#bdbdbd>").remove("</font></p>\n");
-    // });
-    // QtLogger::connect(QtLogger::get(), &QtLogger::warning_signal, [&](QString w){++countWarnings;
-    //     qWarning() << w.remove("<p><font color=#f39e03>").remove("</font></p>\n");
-    // });
-    // QtLogger::connect(QtLogger::get(), &QtLog::error_signal, [&](QString e){++countErrors;
-    //     qCritical() << e.remove("<p><font color=#f40404>").remove("</font></p>\n");
-    // });
-    // tool::ex::Paths::initialize_paths(QApplication::applicationDirPath() + "/../exvr-test");
-
-
-    // const int res = Catch::Session().run(argc, argv);
-
-    // QtLog::message(QSL("Messages: ") % QString::number(countMessages));
-    // QtLog::warning(QSL("Warnings: ") % QString::number(countWarnings));
-    // QtLog::error(QSL("Errors: ") % QString::number(countErrors));
-
-    // return (res < 0xff ? res : 0xff);
-    return 0;
+    tool::Log::message("## Start all tests ##\n");
 }
 
-// REQUIRE( expression ) : quit if failed
-// CHECK( expression ) : continue if failed
-// REQUIRE_FALSE( expression )
-// CHECK_FALSE( expression )
-// REQUIRE( performComputation() == Approx( 2.1 ) );
-// using namespace Catch::literals;
-// REQUIRE( performComputation() == 2.1_a );
 
-// Approx target = Approx(100).epsilon(0.01);
-// 100.0 == target; // Obviously true
-// 200.0 == target; // Obviously still false
-// 100.5 == target; // True, because we set target to allow up to 1% difference
 
-// Approx target = Approx(100).margin(5);
-// 100.0 == target; // Obviously true
-// 200.0 == target; // Obviously still false
-// 104.0 == target; // True, because we set target to allow absolute difference of at most 5
+// int main(int argc, char **argv){
 
-// REQUIRE_NOTHROW( expression ) and
-// CHECK_NOTHROW( expression )
-// REQUIRE_THROWS( expression ) and
-// CHECK_THROWS( expression )
-// REQUIRE_THROWS_WITH( expression, string or string matcher ) and
-// CHECK_THROWS_WITH( expression, string or string matcher )
-// REQUIRE_THROWS_MATCHES( expression, exception type, matcher for given exception type ) and
-// CHECK_THROWS_MATCHES( expression, exception type, matcher for given exception type )
-//REQUIRE_NOTHROW([&](){
-//    int i = 1;
-//    int j = 2;
-//    auto k = i + j;
-//    if (k == 3) {
-//        throw 1;
-//    }
-//}());
+// //    tool::Bench::disable_display();
 
-// REQUIRE_THAT( lhs, matcher expression ) and
-// CHECK_THAT( lhs, matcher expression )
-// TEST_CASE_METHOD((Fixture<int, int>), "foo", "[bar]") {
-//     SUCCEED();
+//     QCoreApplication app(argc, argv);
+
+//     // // init logging system
+//     // QtLogger::init(QApplication::applicationDirPath() % QSL("/logs/"), QSL("designer_test.html"));
+//     // QtLogger::set_html_ui_type_message_color(QtLogger::MessageType::normal,  QColor(189,189,189));
+//     // QtLogger::set_html_ui_type_message_color(QtLogger::MessageType::warning, QColor(243, 158, 3));
+//     // QtLogger::set_html_ui_type_message_color(QtLogger::MessageType::error,   QColor(244,4,4));
+//     // QtLogger::set_html_ui_type_message_color(QtLogger::MessageType::unknow,  Qt::white);
+
+//     // size_t countMessages = 0;
+//     // size_t countWarnings = 0;
+//     // size_t countErrors = 0;
+//     // QtLogger::connect(QtLogger::get(), &QtLogger::message_signal, [&](QString m){++countMessages;
+//     //     qDebug() << m.remove("<p><font color=#bdbdbd>").remove("</font></p>\n");
+//     // });
+//     // QtLogger::connect(QtLogger::get(), &QtLogger::warning_signal, [&](QString w){++countWarnings;
+//     //     qWarning() << w.remove("<p><font color=#f39e03>").remove("</font></p>\n");
+//     // });
+//     // QtLogger::connect(QtLogger::get(), &QtLog::error_signal, [&](QString e){++countErrors;
+//     //     qCritical() << e.remove("<p><font color=#f40404>").remove("</font></p>\n");
+//     // });
+//     // tool::ex::Paths::initialize_paths(QApplication::applicationDirPath() + "/../exvr-test");
+
+
+//     // const int res = Catch::Session().run(argc, argv);
+
+//     // QtLog::message(QSL("Messages: ") % QString::number(countMessages));
+//     // QtLog::warning(QSL("Warnings: ") % QString::number(countWarnings));
+//     // QtLog::error(QSL("Errors: ") % QString::number(countErrors));
+
+//     // return (res < 0xff ? res : 0xff);
+//     return 0;
 // }
+
+// // REQUIRE( expression ) : quit if failed
+// // CHECK( expression ) : continue if failed
+// // REQUIRE_FALSE( expression )
+// // CHECK_FALSE( expression )
+// // REQUIRE( performComputation() == Approx( 2.1 ) );
+// // using namespace Catch::literals;
+// // REQUIRE( performComputation() == 2.1_a );
+
+// // Approx target = Approx(100).epsilon(0.01);
+// // 100.0 == target; // Obviously true
+// // 200.0 == target; // Obviously still false
+// // 100.5 == target; // True, because we set target to allow up to 1% difference
+
+// // Approx target = Approx(100).margin(5);
+// // 100.0 == target; // Obviously true
+// // 200.0 == target; // Obviously still false
+// // 104.0 == target; // True, because we set target to allow absolute difference of at most 5
+
+// // REQUIRE_NOTHROW( expression ) and
+// // CHECK_NOTHROW( expression )
+// // REQUIRE_THROWS( expression ) and
+// // CHECK_THROWS( expression )
+// // REQUIRE_THROWS_WITH( expression, string or string matcher ) and
+// // CHECK_THROWS_WITH( expression, string or string matcher )
+// // REQUIRE_THROWS_MATCHES( expression, exception type, matcher for given exception type ) and
+// // CHECK_THROWS_MATCHES( expression, exception type, matcher for given exception type )
+// //REQUIRE_NOTHROW([&](){
+// //    int i = 1;
+// //    int j = 2;
+// //    auto k = i + j;
+// //    if (k == 3) {
+// //        throw 1;
+// //    }
+// //}());
+
+// // REQUIRE_THAT( lhs, matcher expression ) and
+// // CHECK_THAT( lhs, matcher expression )
+// // TEST_CASE_METHOD((Fixture<int, int>), "foo", "[bar]") {
+// //     SUCCEED();
+// // }
 
 

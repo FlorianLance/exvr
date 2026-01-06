@@ -267,11 +267,11 @@ void ElementViewerW::init_loop_ui(){
     });
 
     // sets
-    connect(ui->teAdd, &QTextEdit::textChanged, this, [=]{
+    connect(ui->teAdd, &QTextEdit::textChanged, this, [&,ui]{
         ui->pbAdd->setEnabled(ui->teAdd->toPlainText().size() > 0);
     });
 
-    connect(ui->pbAdd, &QPushButton::clicked, this, [&]{
+    connect(ui->pbAdd, &QPushButton::clicked, this, [&,ui]{
         QString txt = ui->teAdd->toPlainText().replace(' ', '_').replace('-', '_');
         ui->teAdd->blockSignals(true);
         ui->teAdd->setText(txt);
@@ -313,27 +313,27 @@ void ElementViewerW::init_isi_ui(){
     });
 
     // checkbox
-    connect(ui->cbRandomize, &QCheckBox::clicked, [=](bool checked){
+    connect(ui->cbRandomize, &QCheckBox::clicked, [&](bool checked){
         emit GSignals::get()->set_isi_randomize_signal(m_currentElementId, checked);
     });
 
     // sets
-    connect(lw, &QListWidget::itemSelectionChanged, this, [=]{
+    connect(lw, &QListWidget::itemSelectionChanged, this, [ui,lw]{
         ui->pbRemove->setEnabled(lw->currentRow()>= 0 && lw->count() > 1);
         ui->pbUp->setEnabled(lw->currentRow() > 0);
         ui->pbDown->setEnabled(lw->currentRow() < lw->count()-1 && lw->count() > 0);
     });
-    connect(lw, &QListWidget::itemChanged, this, [=](QListWidgetItem * item){
+    connect(lw, &QListWidget::itemChanged, this, [&, lw](QListWidgetItem * item){
         emit GSignals::get()->modify_isi_interval_signal(m_currentElementId, item->text().toDouble(), RowId{lw->row(item)});
     });
 
-    connect(ui->pbAdd, &QPushButton::clicked, this, [=]{
+    connect(ui->pbAdd, &QPushButton::clicked, this, [&,ui]{
         int id = lw->currentRow()+1;
         emit GSignals::get()->add_isi_interval_signal(m_currentElementId, ui->dsbNewIsi->value(), RowId{id});
     });
 
     auto teI = ui->teInformations;
-    connect(teI, &QTextEdit::textChanged, this, [=]{
+    connect(teI, &QTextEdit::textChanged, this, [&,teI]{
         emit GSignals::get()->update_element_informations_signal(m_currentElementId, teI->toPlainText());
     });
 }

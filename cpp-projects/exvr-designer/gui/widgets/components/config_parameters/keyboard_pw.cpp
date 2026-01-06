@@ -25,7 +25,7 @@
 #include "keyboard_pw.hpp"
 
 // base
-#include "io/keyboard.hpp"
+#include "input/keyboard.hpp"
 
 // qt-utility
 #include "gui/ex_widgets/ex_line_edit_w.hpp"
@@ -51,7 +51,7 @@ KeyboardInitConfigParametersW::KeyboardInitConfigParametersW() :  ConfigParamete
 void KeyboardInitConfigParametersW::insert_widgets(){
 
     QStringList keysList;
-    for(const auto &buttonName : io::Keyboard::buttons.tuple_column<1>()){
+    for(const auto &buttonName : inp::Keyboard::buttons.tuple_column<1>()){
         keysList << from_view(buttonName);
     }
     m_p->keys.w->addItems(keysList);
@@ -60,7 +60,7 @@ void KeyboardInitConfigParametersW::insert_widgets(){
     auto l2 = ui::F::old_gen(ui::L::HB(), {ui::W::txt("C# key code:"), m_p->code()}, LStretch{false}, LMargins{true}, QFrame::NoFrame);
     auto l3 = ui::F::old_gen(ui::L::HB(), {ui::W::txt("Value:"), m_p->value()}, LStretch{false}, LMargins{true}, QFrame::NoFrame);
     auto l4 = ui::F::old_gen(ui::L::VB(), {ui::W::txt("Last buttons pressed:"), m_p->lastKeys()}, LStretch{false}, LMargins{true}, QFrame::NoFrame);
-    auto l5 = ui::F::old_gen(ui::L::VB(), {m_p->filter(), ui::W::txt("Keys to filter (one per line, use C# key code or button name, ex: \"KeyCode.A\# or \"A\"):"), m_p->keysToFilter()}, LStretch{false}, LMargins{true}, QFrame::NoFrame);
+    auto l5 = ui::F::old_gen(ui::L::VB(), {m_p->filter(), ui::W::txt("Keys to filter (one per line, use C# key code or button name, ex: \"KeyCode.A\" or \"A\"):"), m_p->keysToFilter()}, LStretch{false}, LMargins{true}, QFrame::NoFrame);
     
     add_widget(ui::F::old_gen(ui::L::VB(), {ui::W::txt("<b>Keys infos</b>"),l1,l2,l3}, LStretch{false}, LMargins{true}, QFrame::Box));
     add_widget(ui::F::old_gen(ui::L::VB(), {ui::W::txt("<b>Runtime</b>"),l4}, LStretch{false}, LMargins{true}, QFrame::Box));
@@ -81,7 +81,7 @@ void KeyboardInitConfigParametersW::init_and_register_widgets(){
 
 void KeyboardInitConfigParametersW::create_connections(){
     connect(m_p->keys.w.get(), QOverload<int>::of(&QComboBox::currentIndexChanged), this, [&]{
-        auto button = io::Keyboard::get_button(m_p->keys.w->currentText().toStdString());
+        auto button = inp::Keyboard::get_button(m_p->keys.w->currentText().toStdString());
         if(button.has_value()){
             m_p->value.w->setValue(static_cast<int>(button.value()));
         }
@@ -100,7 +100,7 @@ void KeyboardInitConfigParametersW::update_with_info(QStringView id, QStringView
         QString keys;
         for(const auto &split : value.split(' ')){
             if(split.length() > 0){
-                auto buttonName = io::Keyboard::get_name(split.toInt());
+                auto buttonName = inp::Keyboard::get_name(split.toInt());
                 if(buttonName.has_value()){
                     keys += from_view(buttonName.value()) % QSL(" ");
                 }

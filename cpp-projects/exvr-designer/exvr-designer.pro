@@ -40,6 +40,48 @@ include(../exvr-projects.pri)
 include(../exvr-thirdparty.pri)
 include(../exvr-dependencies.pri)
 
+####################################### INCLUDES
+
+EXVR_DESIGNER_DEP_INCLUDEPATH =\
+    #
+    $$EXVR_DESIGNER_THIRDPARTY_INCLUDES\
+    $$EXVR_BASE_THIRDPARTY_INCLUDES\
+    $$TS_QT_NODES_LIB_THIRDPARTY_INCLUDES\
+    $$TS_QT_THIRDPARTY_INCLUDES\
+    $$TS_BASE_THIRDPARTY_INCLUDES\
+    #
+    $$EXVR_BASE_INCLUDES\
+    $$TS_QT_NODES_INCLUDES\
+    $$TS_QT_INCLUDES\
+    $$TS_BASE_INCLUDES\
+
+####################################### LIBS
+
+EXVR_DESIGNER_DEP_LIBS =\
+    #
+    $$EXVR_DESIGNE_THIRDPARTY_LIBS\
+    $$EXVR_BASE_THIRDPARTY_LIBS\
+    $$TS_QT_NODES_LIB_THIRDPARTY_LIBS\
+    $$TS_QT_THIRDPARTY_LIBS\
+    $$TS_BASE_THIRDPARTY_LIBS\
+    #
+    $$EXVR_BASE_LIB\
+    $$TS_QT_NODES_LIB\
+    $$TS_QT_LIB\
+    $$TS_BASE_LIB\
+
+####################################### DEP
+
+EXVR_DESIGNER_PRE_TARGETDEPS =\
+    $$EXVR_BASE_LIB_FILE\
+    $$TS_QT_NODES_LIB_FILE\
+    $$TS_QT_LIB_FILE\
+    $$TS_BASE_LIB_FILE\
+
+####################################### GENERATE VARIABLES
+
+include(../exvr-gen-var.pri)
+
 ####################################### PRECOMPILED
 PRECOMPILED_HEADER  = stable.h
 PRECOMPILED_DIR     = $$EXVR_DESIGNER_OBJ
@@ -58,6 +100,7 @@ HEADERS += \
     gui/widgets/components/config_parameters/k4_direct_multi_clouds_pw.hpp \
     gui/widgets/components/config_parameters/k4_manager_pw.hpp \
     gui/widgets/components/config_parameters/light_pw.hpp \
+    gui/widgets/components/config_parameters/tkv_eeg_pw.hpp \
     gui/widgets/components/config_parameters/video_resource_pw.hpp \
     gui/widgets/components/config_parameters/websocket_pw.hpp \
     gui/widgets/connections/data_models/connectors/button_ndm.hpp \
@@ -302,6 +345,7 @@ SOURCES += \
     gui/widgets/components/config_parameters/k4_manager_pw.cpp \
     gui/widgets/components/config_parameters/light_pw.cpp \
     gui/widgets/components/config_parameters/primitives_model_pw.cpp \
+    gui/widgets/components/config_parameters/tkv_eeg_pw.cpp \
     gui/widgets/components/config_parameters/video_resource_pw.cpp \
     gui/widgets/connections/data_models/connectors/button_ndm.cpp \
     gui/widgets/connections/data_models/connectors/from_string_any_ndm.cpp \

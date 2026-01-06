@@ -25,7 +25,7 @@
 #include "keyboard_ndm.hpp"
 
 // base
-#include "io/keyboard.hpp"
+#include "input/keyboard.hpp"
 
 // qt-utility
 #include "qt_logger.hpp"
@@ -41,7 +41,7 @@ ExKeyboardButtonTrigger::ExKeyboardButtonTrigger(QString name) : ExItemW<QWidget
 ExKeyboardButtonTrigger *ExKeyboardButtonTrigger::init_widget(bool enabled){
 
     QStringList items;
-    for(const auto &keyName : io::Keyboard::buttons.tuple_column<1>()){
+    for(const auto &keyName : inp::Keyboard::buttons.tuple_column<1>()){
         items << from_view(keyName);
     }
     keys.init_widget(items, Index{0}, enabled);
@@ -101,7 +101,7 @@ void ExKeyboardButtonTriggerEmbeddedW::initialize(){
 
     // set widget connections
     connect(w.get(), &ExKeyboardButtonTrigger::ui_change_signal, this, [=]{
-        auto button = io::Keyboard::get_button(w->keys.w->currentText().toStdString());
+        auto button = inp::Keyboard::get_button(w->keys.w->currentText().toStdString());
         if(button.has_value()){
             auto v1 = std::make_shared<IntData>(static_cast<int>(button.value()));
             emit update_internal_data_signal({0}, {v1});
@@ -122,14 +122,14 @@ void KeyboardButtonEmbeddedW::initialize(){
 
     // init widget
     QStringList items;
-    for(const auto &keyName : io::Keyboard::buttons.tuple_column<1>()){
+    for(const auto &keyName : inp::Keyboard::buttons.tuple_column<1>()){
         items << from_view(keyName);
     }
     w->init_widget(items);
 
     // set widget connections
     connect(w.get(), &ExComboBoxTextW::ui_change_signal, this, [=]{
-        auto button = io::Keyboard::get_button(w->w->currentText().toStdString());
+        auto button = inp::Keyboard::get_button(w->w->currentText().toStdString());
         if(button.has_value()){
             auto v1 = std::make_shared<IntData>(static_cast<int>(button.value()));
             emit update_internal_data_signal({0}, {v1});
